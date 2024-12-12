@@ -76,10 +76,10 @@ namespace vk
 
     VULKAN_HPP_INLINE uint32_t clampSurfaceImageCount( const uint32_t desiredImageCount, const uint32_t minImageCount, const uint32_t maxImageCount )
     {
-      uint32_t imageCount = (std::max)( desiredImageCount, minImageCount );
+      uint32_t imageCount = ( std::max )( desiredImageCount, minImageCount );
       if ( maxImageCount > 0 )
       {
-        imageCount = (std::min)( imageCount, maxImageCount );
+        imageCount = ( std::min )( imageCount, maxImageCount );
       }
       return imageCount;
     }
@@ -355,55 +355,55 @@ namespace vk
       static_assert( !std::numeric_limits<SourceType>::is_signed, "Only unsigned types supported!" );
       static_assert( std::numeric_limits<TargetType>::is_integer, "Only integer types supported!" );
       static_assert( !std::numeric_limits<TargetType>::is_signed, "Only unsigned types supported!" );
-      assert( value <= (std::numeric_limits<TargetType>::max)() );
+      assert( value <= ( std::numeric_limits<TargetType>::max )() );
       return static_cast<TargetType>( value );
     }
 
-    vk::DeviceMemory               allocateDeviceMemory( vk::Device const &                         device,
-                                                         vk::PhysicalDeviceMemoryProperties const & memoryProperties,
-                                                         vk::MemoryRequirements const &             memoryRequirements,
-                                                         vk::MemoryPropertyFlags                    memoryPropertyFlags );
-    bool                           contains( std::vector<vk::ExtensionProperties> const & extensionProperties, std::string const & extensionName );
-    vk::DescriptorPool             createDescriptorPool( vk::Device const & device, std::vector<vk::DescriptorPoolSize> const & poolSizes );
-    vk::DescriptorSetLayout        createDescriptorSetLayout( vk::Device const &                                                                  device,
-                                                              std::vector<std::tuple<vk::DescriptorType, uint32_t, vk::ShaderStageFlags>> const & bindingData,
-                                                              vk::DescriptorSetLayoutCreateFlags                                                  flags = {} );
-    vk::Device                     createDevice( vk::PhysicalDevice const &         physicalDevice,
-                                                 uint32_t                           queueFamilyIndex,
-                                                 std::vector<std::string> const &   extensions             = {},
-                                                 vk::PhysicalDeviceFeatures const * physicalDeviceFeatures = nullptr,
-                                                 void const *                       pNext                  = nullptr );
-    std::vector<vk::Framebuffer>   createFramebuffers( vk::Device const &                 device,
-                                                       vk::RenderPass &                   renderPass,
-                                                       std::vector<vk::ImageView> const & imageViews,
-                                                       vk::ImageView const &              depthImageView,
-                                                       vk::Extent2D const &               extent );
-    vk::Pipeline                   createGraphicsPipeline( vk::Device const &                                                  device,
-                                                           vk::PipelineCache const &                                           pipelineCache,
-                                                           std::pair<vk::ShaderModule, vk::SpecializationInfo const *> const & vertexShaderData,
-                                                           std::pair<vk::ShaderModule, vk::SpecializationInfo const *> const & fragmentShaderData,
-                                                           uint32_t                                                            vertexStride,
-                                                           std::vector<std::pair<vk::Format, uint32_t>> const &                vertexInputAttributeFormatOffset,
-                                                           vk::FrontFace                                                       frontFace,
-                                                           bool                                                                depthBuffered,
-                                                           vk::PipelineLayout const &                                          pipelineLayout,
-                                                           vk::RenderPass const &                                              renderPass );
-    vk::Instance                   createInstance( std::string const &              appName,
-                                                   std::string const &              engineName,
-                                                   std::vector<std::string> const & layers     = {},
-                                                   std::vector<std::string> const & extensions = {},
-                                                   uint32_t                         apiVersion = VK_API_VERSION_1_0 );
-    vk::RenderPass                 createRenderPass( vk::Device const &   device,
-                                                     vk::Format           colorFormat,
-                                                     vk::Format           depthFormat,
-                                                     vk::AttachmentLoadOp loadOp           = vk::AttachmentLoadOp::eClear,
-                                                     vk::ImageLayout      colorFinalLayout = vk::ImageLayout::ePresentSrcKHR );
-    VKAPI_ATTR VkBool32 VKAPI_CALL debugUtilsMessengerCallback( VkDebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
-                                                                VkDebugUtilsMessageTypeFlagsEXT              messageTypes,
-                                                                VkDebugUtilsMessengerCallbackDataEXT const * pCallbackData,
-                                                                void * /*pUserData*/ );
-    uint32_t                       findGraphicsQueueFamilyIndex( std::vector<vk::QueueFamilyProperties> const & queueFamilyProperties );
-    std::pair<uint32_t, uint32_t>  findGraphicsAndPresentQueueFamilyIndex( vk::PhysicalDevice physicalDevice, vk::SurfaceKHR const & surface );
+    vk::DeviceMemory             allocateDeviceMemory( vk::Device const &                         device,
+                                                       vk::PhysicalDeviceMemoryProperties const & memoryProperties,
+                                                       vk::MemoryRequirements const &             memoryRequirements,
+                                                       vk::MemoryPropertyFlags                    memoryPropertyFlags );
+    bool                         contains( std::vector<vk::ExtensionProperties> const & extensionProperties, std::string const & extensionName );
+    vk::DescriptorPool           createDescriptorPool( vk::Device const & device, std::vector<vk::DescriptorPoolSize> const & poolSizes );
+    vk::DescriptorSetLayout      createDescriptorSetLayout( vk::Device const &                                                                  device,
+                                                            std::vector<std::tuple<vk::DescriptorType, uint32_t, vk::ShaderStageFlags>> const & bindingData,
+                                                            vk::DescriptorSetLayoutCreateFlags                                                  flags = {} );
+    vk::Device                   createDevice( vk::PhysicalDevice const &         physicalDevice,
+                                               uint32_t                           queueFamilyIndex,
+                                               std::vector<std::string> const &   extensions             = {},
+                                               vk::PhysicalDeviceFeatures const * physicalDeviceFeatures = nullptr,
+                                               void const *                       pNext                  = nullptr );
+    std::vector<vk::Framebuffer> createFramebuffers( vk::Device const &                 device,
+                                                     vk::RenderPass &                   renderPass,
+                                                     std::vector<vk::ImageView> const & imageViews,
+                                                     vk::ImageView const &              depthImageView,
+                                                     vk::Extent2D const &               extent );
+    vk::Pipeline                 createGraphicsPipeline( vk::Device const &                                                  device,
+                                                         vk::PipelineCache const &                                           pipelineCache,
+                                                         std::pair<vk::ShaderModule, vk::SpecializationInfo const *> const & vertexShaderData,
+                                                         std::pair<vk::ShaderModule, vk::SpecializationInfo const *> const & fragmentShaderData,
+                                                         uint32_t                                                            vertexStride,
+                                                         std::vector<std::pair<vk::Format, uint32_t>> const &                vertexInputAttributeFormatOffset,
+                                                         vk::FrontFace                                                       frontFace,
+                                                         bool                                                                depthBuffered,
+                                                         vk::PipelineLayout const &                                          pipelineLayout,
+                                                         vk::RenderPass const &                                              renderPass );
+    vk::Instance                 createInstance( std::string const &              appName,
+                                                 std::string const &              engineName,
+                                                 std::vector<std::string> const & layers     = {},
+                                                 std::vector<std::string> const & extensions = {},
+                                                 uint32_t                         apiVersion = VK_API_VERSION_1_0 );
+    vk::RenderPass               createRenderPass( vk::Device const &   device,
+                                                   vk::Format           colorFormat,
+                                                   vk::Format           depthFormat,
+                                                   vk::AttachmentLoadOp loadOp           = vk::AttachmentLoadOp::eClear,
+                                                   vk::ImageLayout      colorFinalLayout = vk::ImageLayout::ePresentSrcKHR );
+    VKAPI_ATTR vk::Bool32 VKAPI_CALL debugUtilsMessengerCallback( vk::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
+                                                                  vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
+                                                                  vk::DebugUtilsMessengerCallbackDataEXT const * pCallbackData,
+                                                                  void * /*pUserData*/ );
+    uint32_t                         findGraphicsQueueFamilyIndex( std::vector<vk::QueueFamilyProperties> const & queueFamilyProperties );
+    std::pair<uint32_t, uint32_t>    findGraphicsAndPresentQueueFamilyIndex( vk::PhysicalDevice physicalDevice, vk::SurfaceKHR const & surface );
     uint32_t findMemoryType( vk::PhysicalDeviceMemoryProperties const & memoryProperties, uint32_t typeBits, vk::MemoryPropertyFlags requirementsMask );
     std::vector<char const *> gatherExtensions( std::vector<std::string> const & extensions
 #if !defined( NDEBUG )

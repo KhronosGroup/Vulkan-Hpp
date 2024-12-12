@@ -24,15 +24,14 @@
 static char const * AppName    = "CreateDebugReportMessenger";
 static char const * EngineName = "Vulkan.hpp";
 
-VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
-                                                 VkDebugUtilsMessageTypeFlagsEXT              messageTypes,
-                                                 VkDebugUtilsMessengerCallbackDataEXT const * pCallbackData,
+VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
+                                                 vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
+                                                 vk::DebugUtilsMessengerCallbackDataEXT const * pCallbackData,
                                                  void * /*pUserData*/ )
 {
   std::ostringstream message;
 
-  message << vk::to_string( static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>( messageSeverity ) ) << ": "
-          << vk::to_string( static_cast<vk::DebugUtilsMessageTypeFlagsEXT>( messageTypes ) ) << ":\n";
+  message << vk::to_string( messageSeverity ) << ": " << vk::to_string( messageTypes ) << ":\n";
   message << std::string( "\t" ) << "messageIDName   = <" << pCallbackData->pMessageIdName << ">\n";
   message << std::string( "\t" ) << "messageIdNumber = " << pCallbackData->messageIdNumber << "\n";
   message << std::string( "\t" ) << "message         = <" << pCallbackData->pMessage << ">\n";
@@ -58,7 +57,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
     for ( uint32_t i = 0; i < pCallbackData->objectCount; i++ )
     {
       message << std::string( "\t\t" ) << "Object " << i << "\n";
-      message << std::string( "\t\t\t" ) << "objectType   = " << vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) << "\n";
+      message << std::string( "\t\t\t" ) << "objectType   = " << vk::to_string( pCallbackData->pObjects[i].objectType ) << "\n";
       message << std::string( "\t\t\t" ) << "objectHandle = " << pCallbackData->pObjects[i].objectHandle << "\n";
       if ( pCallbackData->pObjects[i].pObjectName )
       {

@@ -11,6 +11,8 @@
 // include-what-you-use: make sure, vulkan.hpp is used by code-completers
 // IWYU pragma: private; include "vulkan.hpp"
 
+#include <type_traits>
+
 namespace VULKAN_HPP_NAMESPACE
 {
 

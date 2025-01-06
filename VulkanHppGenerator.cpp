@@ -230,6 +230,7 @@ namespace VULKAN_HPP_NAMESPACE
 {
   ${structForwardDeclarations}
   ${handleForwardDeclarations}
+  ${funcPointerReturns}
   ${uniqueHandles}
   ${handles}
 
@@ -289,6 +290,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   std::string str = replaceWithMap( vulkanHandlesHppTemplate,
                                     {
+                                      { "funcPointerReturns", generateFuncPointerReturns() },
                                       { "handles", generateHandles() },
                                       { "handleForwardDeclarations", generateHandleForwardDeclarations() },
                                       { "licenseHeader", m_vulkanLicenseHeader },
@@ -784,7 +786,7 @@ export namespace std
 
 // This VkFlags type is used as part of a bitfield in some structure.
 // As it that can't be mimiced by vk-data types, we need to export just that!!
-using VkGeometryInstanceFlagsKHR;
+export VkGeometryInstanceFlagsKHR;
 )";
 
   auto const str = replaceWithMap( vulkanCppmTemplate,
@@ -5505,7 +5507,7 @@ std::string VulkanHppGenerator::generateCppModuleFuncpointerUsings() const
   //====================
 )";
 
-  auto const  generateUsingsAndProtection = [this]( std::vector<RequireData> const & requireData, std::string const & title )
+  auto const generateUsingsAndProtection = [this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
     auto usings = std::string{};
     for ( auto const & require : requireData )
@@ -6735,6 +6737,10 @@ std::string VulkanHppGenerator::generateDecoratedReturnType( CommandData const &
     if ( commandData.returnType.starts_with( "Vk" ) )
     {
       decoratedReturnType = generateNamespacedType( commandData.returnType );
+    }
+    else if ( commandData.returnType.starts_with( "PFN_vk" ) )
+    {
+      decoratedReturnType = "VULKAN_HPP_NAMESPACE::PFN_" + stripPrefix( commandData.returnType, "PFN_vk" );
     }
     else
     {
@@ -8286,19 +8292,19 @@ std::string VulkanHppGenerator::generateFuncPointer( std::pair<std::string, Func
   const auto [enter, leave] = generateProtection( getProtectFromType( funcPointer.first ) );
 
   std::string funcPointerArguments;
-  for ( auto const & argument : funcPointer.second.arguments )
+  if ( !funcPointer.second.arguments.empty() )
   {
-    funcPointerArguments += argument.type.compose( "VULKAN_HPP_NAMESPACE" ) + " " + argument.name + ", ";
+    for ( auto const & argument : funcPointer.second.arguments )
+    {
+      funcPointerArguments += argument.type.compose( "VULKAN_HPP_NAMESPACE" ) + " " + argument.name + ", ";
+    }
+    assert( !funcPointerArguments.empty() );
+    funcPointerArguments.pop_back();
+    funcPointerArguments.pop_back();
   }
-  assert( !funcPointerArguments.empty() );
-  funcPointerArguments.pop_back();
-  funcPointerArguments.pop_back();
 
   static const std::string funcPointerTemplate = R"(
-  typedef ${returnType} (VKAPI_PTR *PFN_${funcPointerName})
-  (
-    ${funcPointerArguments}
-  );
+  typedef ${returnType} (VKAPI_PTR *PFN_${funcPointerName})( ${funcPointerArguments} );
 )";
 
   str += "\n" + enter +
@@ -8309,6 +8315,27 @@ std::string VulkanHppGenerator::generateFuncPointer( std::pair<std::string, Func
          leave;
 
   listedStructs.insert( funcPointer.first );
+  return str;
+}
+
+std::string VulkanHppGenerator::generateFuncPointerReturns() const
+{
+  std::string           str;
+  std::set<std::string> listedFuncPointers;
+  for ( auto const & handle : m_handles )
+  {
+    for ( auto const & command : handle.second.commands )
+    {
+      auto commandIt = findByNameOrAlias( m_commands, command );
+      assert( commandIt != m_commands.end() );
+      auto funcPointerIt = m_funcPointers.find( commandIt->second.returnType );
+      if ( ( funcPointerIt != m_funcPointers.end() ) && !listedFuncPointers.contains( commandIt->second.returnType ) )
+      {
+        assert( funcPointerIt->second.arguments.empty() );
+        str += generateFuncPointer( *funcPointerIt, listedFuncPointers );
+      }
+    }
+  }
   return str;
 }
 

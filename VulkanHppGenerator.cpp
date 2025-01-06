@@ -11790,7 +11790,7 @@ ${byString}
             {
               static const std::string strcpyTemplate = R"(
     VULKAN_HPP_ASSERT( ${memberName}_.size() < ${arraySize} );
-#if defined( WIN32 )
+#if defined( _WIN32 )
     strncpy_s( ${memberName}, ${memberSize}, ${memberName}_.data(), ${memberName}_.size() );
 #else
     strncpy( ${memberName}, ${memberName}_.data(), std::min<size_t>( ${memberSize}, ${memberName}_.size() ) );
@@ -12515,7 +12515,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
     ${structureName} & set${ArrayName}( std::string const & ${arrayName}_ ) VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( ${arrayName}_.size() < ${arraySize} );
-#if defined( WIN32 )
+#if defined( _WIN32 )
       strncpy_s( ${arrayName}, ${arraySize}, ${arrayName}_.data(), ${arrayName}_.size() );
 #else
       strncpy( ${arrayName}, ${arrayName}_.data(), std::min<size_t>( ${arraySize}, ${arrayName}_.size() ) );

@@ -36,7 +36,7 @@
 #include <thread>
 
 // For timestamp code (getMilliseconds)
-#ifdef WIN32
+#ifdef _WIN32
 #  include <Windows.h>
 #else
 #  include <sys/time.h>
@@ -45,7 +45,7 @@
 typedef unsigned long long timestamp_t;
 timestamp_t                getMilliseconds()
 {
-#ifdef WIN32
+#ifdef _WIN32
   LARGE_INTEGER frequency;
   BOOL          useQPC = QueryPerformanceFrequency( &frequency );
   if ( useQPC )

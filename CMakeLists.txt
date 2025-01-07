@@ -369,6 +369,9 @@ vulkan_hpp__setup_warning_level( NAME VulkanHppGenerator )
 target_compile_definitions( VulkanHppGenerator PUBLIC BASE_PATH="${CMAKE_CURRENT_SOURCE_DIR}" VK_SPEC="${vk_spec}" )
 target_include_directories( VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR} )
 set_target_properties( VulkanHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
+if( UNIX )
+	target_link_libraries( VulkanHppGenerator PUBLIC pthread )
+endif()
 
 # The video generator executable
 add_executable( VideoHppGenerator VideoHppGenerator.cpp VideoHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )

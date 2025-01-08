@@ -9349,10 +9349,10 @@ ${getParent}
 
     void swap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::${handleType} & rhs ) VULKAN_HPP_NOEXCEPT
     {
-${swapMembers}
+      ${swapMembers}
     }
 
-${memberFunctionsDeclarations}
+    ${memberFunctionsDeclarations}
 
   private:
     ${memberVariables}
@@ -9706,13 +9706,6 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
       vulkanType = commandData.params[returnParams.back()].type.type;
     }
 
-    // some special handling for vkCreateDescriptorPool: not to have this flag set!
-    std::string specialAssertion;
-    if ( name == "vkCreateDescriptorPool" )
-    {
-      specialAssertion =
-        "VULKAN_HPP_ASSERT( createInfo.flags & vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet && \"createInfo.flags need to have vk::DescriptorPoolCreateFlagBits::eFreeDesriptors set in order to allow destruction of VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DescriptorSet which requires to return individual allocations to the pool\" );";
-    }
     std::string dataDeclarations =
       generateDataDeclarations( commandData, returnParams, vectorParams, {}, flavourFlags, true, dataTypes, dataType, returnType, returnVariable );
     std::string callSequence =
@@ -9725,7 +9718,6 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
       R"(
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<${returnType}>::Type ${className}::${commandName}( ${argumentList} ) const ${noexcept}
   {
-    ${specialAssertion}
     ${dataDeclarations}
     ${callSequence}
     ${resultCheck}
@@ -9742,8 +9734,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
                              { "noexcept", noexceptString },
                              { "resultCheck", resultCheck },
                              { "returnStatements", returnStatements },
-                             { "returnType", returnType },
-                             { "specialAssertion", specialAssertion } } );
+                             { "returnType", returnType } } );
   }
   else
   {
@@ -13628,11 +13619,11 @@ bool VulkanHppGenerator::handleRemovalType( std::string const & type, std::vecto
   return removed;
 }
 
-bool VulkanHppGenerator::hasArrayConstructor(HandleData const& handleData) const
+bool VulkanHppGenerator::hasArrayConstructor( HandleData const & handleData ) const
 {
   for ( auto constructorIt : handleData.constructorIts )
   {
-    if (!determineVectorParams(constructorIt->second.params).empty())
+    if ( !determineVectorParams( constructorIt->second.params ).empty() )
     {
       return true;
     }

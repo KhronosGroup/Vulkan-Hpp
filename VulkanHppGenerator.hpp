@@ -88,6 +88,13 @@ class VulkanHppGenerator
 public:
   VulkanHppGenerator( tinyxml2::XMLDocument const & document, std::string const & api );
 
+  VulkanHppGenerator()                                             = delete;
+  VulkanHppGenerator( VulkanHppGenerator const & rhs )             = delete;
+  VulkanHppGenerator( VulkanHppGenerator && rhs )                  = delete;
+  VulkanHppGenerator & operator=( VulkanHppGenerator const & rhs ) = delete;
+  VulkanHppGenerator & operator=( VulkanHppGenerator && rhs )      = delete;
+
+  void distributeSecondLevelCommands();
   void generateEnumsHppFile() const;
   void generateExtensionInspectionFile() const;
   void generateFormatTraitsHppFile() const;
@@ -103,7 +110,6 @@ public:
   void generateToStringHppFile() const;
   void generateCppModuleFile() const;
   void prepareRAIIHandles();
-  void prepareVulkanFuncs();
 
   struct MacroData
   {
@@ -343,10 +349,10 @@ private:
 
   struct FuncPointerData
   {
-    std::vector<FuncPointerArgumentData> arguments = {};
-    std::string                          require   = {};
+    std::vector<FuncPointerArgumentData> arguments  = {};
+    std::string                          require    = {};
     TypeInfo                             returnType = {};
-    int                                  xmlLine   = {};
+    int                                  xmlLine    = {};
   };
 
   struct HandleData
@@ -564,7 +570,6 @@ private:
   std::set<size_t>                                determineVoidPointerParams( std::vector<ParamData> const & params ) const;
   void                                            distributeEnumExtends();
   void                                            distributeEnumValueAliases();
-  void                                            distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
   void                                            distributeRequirements();
   void                                            distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy );
   void                                            distributeStructAliases();
@@ -593,7 +598,8 @@ private:
                                                                                 bool                                      definition,
                                                                                 CommandFlavourFlags                       flavourFlags,
                                                                                 bool                                      withDispatcher ) const;
-  std::string generateArgumentListStandard( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams, bool withDispatcher ) const;
+  std::string
+    generateArgumentListStandard( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams, bool definition, bool withDispatcher ) const;
   std::string generateArgumentTemplates( std::vector<ParamData> const &            params,
                                          std::vector<size_t> const &               returnParams,
                                          std::map<size_t, VectorParamData> const & vectorParams,
@@ -925,10 +931,10 @@ private:
                                                                                    std::map<size_t, VectorParamData> const & vectorParamIndices ) const;
   std::pair<std::string, std::string> generateRAIIHandleConstructors( std::pair<std::string, HandleData> const & handle ) const;
   std::string generateRAIIHandleConstructorArgument( ParamData const & param, bool definition, bool singular, bool takesOwnership ) const;
-  std::string generateRAIIHandleConstructorArguments( std::pair<std::string, HandleData> const &                             handle,
-                                                      std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator constructorIt,
-                                                      bool                                                                   singular,
-                                                      bool                                                                   takesOwnership ) const;
+  std::string generateRAIIHandleConstructorArguments( std::pair<std::string, HandleData> const &         handle,
+                                                      std::map<std::string, CommandData>::const_iterator constructorIt,
+                                                      bool                                               singular,
+                                                      bool                                               takesOwnership ) const;
   std::string generateRAIIHandleConstructorInitializationList( std::pair<std::string, HandleData> const &         handle,
                                                                std::map<std::string, CommandData>::const_iterator constructorIt,
                                                                std::map<std::string, CommandData>::const_iterator destructorIt,
@@ -1047,6 +1053,7 @@ private:
   bool                                handleRemovalCommand( std::string const & command, std::vector<RequireData> & requireData );
   void                                handleRemovals();
   bool                                handleRemovalType( std::string const & type, std::vector<RequireData> & requireData );
+  bool                                hasArrayConstructor( HandleData const & handleData ) const;
   bool                                hasLen( MemberData const & md, std::vector<MemberData> const & members ) const;
   bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
   bool isConstructorCandidate( std::pair<std::string, VulkanHppGenerator::CommandData> const & command, std::string const & handleType ) const;

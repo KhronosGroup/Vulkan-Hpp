@@ -3117,7 +3117,7 @@ namespace VULKAN_HPP_NAMESPACE
         VULKAN_HPP_RAII_CREATE_NOEXCEPT;
 
       void debugReportMessageEXT( VULKAN_HPP_NAMESPACE::DebugReportFlagsEXT      flags,
-                                  VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType_,
+                                  VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType,
                                   uint64_t                                       object,
                                   size_t                                         location,
                                   int32_t                                        messageCode,
@@ -4059,12 +4059,12 @@ namespace VULKAN_HPP_NAMESPACE
                                VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const
         VULKAN_HPP_RAII_CREATE_NOEXCEPT;
 
-      void setPrivateData( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
+      void setPrivateData( VULKAN_HPP_NAMESPACE::ObjectType      objectType,
                            uint64_t                              objectHandle,
                            VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot,
                            uint64_t                              data ) const;
 
-      VULKAN_HPP_NODISCARD uint64_t getPrivateData( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
+      VULKAN_HPP_NODISCARD uint64_t getPrivateData( VULKAN_HPP_NAMESPACE::ObjectType      objectType,
                                                     uint64_t                              objectHandle,
                                                     VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot ) const VULKAN_HPP_NOEXCEPT;
 
@@ -4585,12 +4585,12 @@ namespace VULKAN_HPP_NAMESPACE
                                       Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator
                                         VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
-      void setPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
+      void setPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType,
                               uint64_t                              objectHandle,
                               VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot,
                               uint64_t                              data ) const;
 
-      VULKAN_HPP_NODISCARD uint64_t getPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
+      VULKAN_HPP_NODISCARD uint64_t getPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType,
                                                        uint64_t                              objectHandle,
                                                        VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot ) const VULKAN_HPP_NOEXCEPT;
 

@@ -20,6 +20,7 @@
 #include <array>
 #include <cassert>
 #include <fstream>
+#include <future>
 #include <regex>
 #include <sstream>
 
@@ -90,10 +91,52 @@ VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document, 
   m_definesPartition = partitionDefines( m_defines );
 }
 
+void VulkanHppGenerator::distributeSecondLevelCommands()
+{
+  // distribute commands from instance/device to second-level handles, like Queue, Event,... for RAII handles
+  for ( auto & handle : m_handles )
+  {
+    if ( !handle.first.empty() )
+    {
+      for ( auto command = handle.second.commands.begin(); command != handle.second.commands.end(); )
+      {
+        bool foundCommand = false;
+        if ( !m_RAIISpecialFunctions.contains( *command ) )
+        {
+          auto commandIt = findByNameOrAlias( m_commands, *command );
+          assert( commandIt != m_commands.end() );
+          assert( commandIt->second.params.front().type.type == handle.first );
+          if ( ( 1 < commandIt->second.params.size() ) && ( isHandleType( commandIt->second.params[1].type.type ) ) && !commandIt->second.params[1].optional )
+          {
+            auto handleIt = m_handles.find( commandIt->second.params[1].type.type );
+            assert( handleIt != m_handles.end() );
+            // filter out functions seem to fit due to taking handles as first and second argument, but the first argument is not the
+            // type to create the second one, and so it's unknown to the raii handle!
+            assert( !handleIt->second.constructorIts.empty() );
+            if ( ( *handleIt->second.constructorIts.begin() )->second.handle == handle.first )
+            {
+              assert( std::none_of( handleIt->second.constructorIts.begin(),
+                                    handleIt->second.constructorIts.end(),
+                                    [&handle]( auto const & constructorIt ) { return constructorIt->second.handle != handle.first; } ) );
+              handleIt->second.secondLevelCommands.insert( *command );
+              command      = handle.second.commands.erase( command );
+              foundCommand = true;
+            }
+          }
+        }
+        if ( !foundCommand )
+        {
+          ++command;
+        }
+      }
+    }
+  }
+}
+
 void VulkanHppGenerator::generateEnumsHppFile() const
 {
   std::string const vulkan_enums_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_enums.hpp";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_enums_hpp << " ..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + vulkan_enums_hpp + " ...\n" );
 
   std::string const vulkanEnumsHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_ENUMS_HPP
@@ -124,7 +167,7 @@ ${objectTypeToDebugReportObjectType}
 void VulkanHppGenerator::generateExtensionInspectionFile() const
 {
   std::string const vulkan_extension_inspection_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_extension_inspection.hpp";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_extension_inspection_hpp << " ..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + vulkan_extension_inspection_hpp + " ...\n" );
 
   std::string const vulkanExtensionInspectionHppTemplate = readSnippet( "ExtensionInspection.hpp" );
   std::string const deprecatedExtensions = generateReplacedExtensionsList( []( ExtensionData const & extension ) { return extension.isDeprecated; },
@@ -168,7 +211,7 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
 void VulkanHppGenerator::generateFormatTraitsHppFile() const
 {
   std::string const vulkan_format_traits_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_format_traits.hpp";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_format_traits_hpp << " ..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + vulkan_format_traits_hpp + " ...\n" );
 
   std::string const vulkanFormatTraitsHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_FORMAT_TRAITS_HPP
@@ -192,7 +235,7 @@ ${formatTraits}
 void VulkanHppGenerator::generateFuncsHppFile() const
 {
   std::string const vulkan_funcs_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_funcs.hpp";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_funcs_hpp << " ..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + vulkan_funcs_hpp + " ...\n" );
 
   std::string const vulkanFuncsHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_FUNCS_HPP
@@ -217,7 +260,7 @@ ${commandDefinitions}
 void VulkanHppGenerator::generateHandlesHppFile() const
 {
   std::string const vulkan_handles_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_handles.hpp";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_handles_hpp << " ..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + vulkan_handles_hpp + " ...\n" );
 
   std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_HANDLES_HPP
@@ -304,7 +347,7 @@ namespace VULKAN_HPP_NAMESPACE
 void VulkanHppGenerator::generateHashHppFile() const
 {
   std::string const vulkan_hash_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_hash.hpp";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_hash_hpp << " ..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + vulkan_hash_hpp + " ...\n" );
 
   std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_HASH_HPP
@@ -346,7 +389,7 @@ ${structHashStructures}
 void VulkanHppGenerator::generateHppFile() const
 {
   std::string const vulkan_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + ".hpp";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_hpp << " ... " << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + vulkan_hpp + " ...\n" );
 
   std::string const vulkanHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_HPP
@@ -485,7 +528,8 @@ namespace VULKAN_HPP_NAMESPACE
 void VulkanHppGenerator::generateMacrosFile() const
 {
   std::string const macros_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_hpp_macros.hpp";
-  std::cout << "VulkanHppGenerator: Generating " << macros_hpp << " ..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + macros_hpp + " ...\n" );
+
   std::string const macrosTemplate = R"(${licenseHeader}
 
 #ifndef VULKAN_HPP_MACROS_HPP
@@ -509,7 +553,7 @@ ${macros}
 void VulkanHppGenerator::generateRAIIHppFile() const
 {
   std::string const vulkan_raii_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_raii.hpp";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_raii_hpp << " ..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + vulkan_raii_hpp + " ...\n" );
 
   std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_RAII_HPP
@@ -592,7 +636,7 @@ namespace VULKAN_HPP_NAMESPACE
 void VulkanHppGenerator::generateSharedHppFile() const
 {
   std::string const vulkan_shared_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_shared.hpp";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_shared_hpp << " ..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + vulkan_shared_hpp + " ...\n" );
 
   std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_SHARED_HPP
@@ -637,7 +681,7 @@ namespace VULKAN_HPP_NAMESPACE
 void VulkanHppGenerator::generateStaticAssertionsHppFile() const
 {
   std::string const static_assertions_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_static_assertions.hpp";
-  std::cout << "VulkanHppGenerator: Generating " << static_assertions_hpp << " ..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + static_assertions_hpp + " ...\n" );
 
   std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_STATIC_ASSERTIONS_HPP
@@ -662,7 +706,7 @@ ${staticAssertions}
 void VulkanHppGenerator::generateStructsHppFile() const
 {
   std::string const vulkan_structs_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_structs.hpp";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_structs_hpp << " ..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + vulkan_structs_hpp + " ...\n" );
 
   std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_STRUCTS_HPP
@@ -688,7 +732,7 @@ ${structs}
 void VulkanHppGenerator::generateToStringHppFile() const
 {
   std::string const vulkan_to_string_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_to_string.hpp";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_to_string_hpp << "..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + vulkan_to_string_hpp + " ...\n" );
 
   std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_TO_STRING_HPP
@@ -742,7 +786,7 @@ ${enumsToString}
 void VulkanHppGenerator::generateCppModuleFile() const
 {
   std::string const vulkan_cppm = std::string( BASE_PATH ) + "/vulkan/" + m_api + ".cppm";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_cppm << "..." << std::endl;
+  messager.message( "VulkanHppGenerator: Generating " + vulkan_cppm + " ...\n" );
 
   std::string const vulkanCppmTemplate = R"(${licenseHeader}
 
@@ -812,24 +856,6 @@ void VulkanHppGenerator::prepareRAIIHandles()
       m_RAIISpecialFunctions.insert( handleIt->second.destructorIt->first );
     }
     handleIt->second.constructorIts = determineRAIIHandleConstructors( handleIt->first, handleIt->second.destructorIt );
-  }
-
-  distributeSecondLevelCommands( m_RAIISpecialFunctions );
-}
-
-void VulkanHppGenerator::prepareVulkanFuncs()
-{
-  // rename a couple of function parameters to prevent this warning, treated as an error:
-  // warning C4458: declaration of 'objectType' hides class member
-  for ( auto & command : m_commands )
-  {
-    for ( auto & param : command.second.params )
-    {
-      if ( param.name == "objectType" )
-      {
-        param.name += "_";
-      }
-    }
   }
 }
 
@@ -2258,48 +2284,6 @@ void VulkanHppGenerator::distributeEnumValueAliases()
   }
 }
 
-void VulkanHppGenerator::distributeSecondLevelCommands( std::set<std::string> const & specialFunctions )
-{
-  // distribute commands from instance/device to second-level handles, like Queue, Event,... for RAII handles
-  for ( auto & handle : m_handles )
-  {
-    if ( !handle.first.empty() )
-    {
-      for ( auto command = handle.second.commands.begin(); command != handle.second.commands.end(); )
-      {
-        bool foundCommand = false;
-        if ( !specialFunctions.contains( *command ) )
-        {
-          auto commandIt = findByNameOrAlias( m_commands, *command );
-          assert( commandIt != m_commands.end() );
-          assert( commandIt->second.params.front().type.type == handle.first );
-          if ( ( 1 < commandIt->second.params.size() ) && ( isHandleType( commandIt->second.params[1].type.type ) ) && !commandIt->second.params[1].optional )
-          {
-            auto handleIt = m_handles.find( commandIt->second.params[1].type.type );
-            assert( handleIt != m_handles.end() );
-            // filter out functions seem to fit due to taking handles as first and second argument, but the first argument is not the
-            // type to create the second one, and so it's unknown to the raii handle!
-            assert( !handleIt->second.constructorIts.empty() );
-            if ( ( *handleIt->second.constructorIts.begin() )->second.handle == handle.first )
-            {
-              assert( std::none_of( handleIt->second.constructorIts.begin(),
-                                    handleIt->second.constructorIts.end(),
-                                    [&handle]( auto const & constructorIt ) { return constructorIt->second.handle != handle.first; } ) );
-              handleIt->second.secondLevelCommands.insert( *command );
-              command      = handle.second.commands.erase( command );
-              foundCommand = true;
-            }
-          }
-        }
-        if ( !foundCommand )
-        {
-          ++command;
-        }
-      }
-    }
-  }
-}
-
 void VulkanHppGenerator::distributeRequirements()
 {
   for ( auto const & feature : m_features )
@@ -2598,7 +2582,9 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
       else
       {
         assert( params[i].type.isValue() );
-        arguments.push_back( composedType + " " + params[i].name + generateCArraySizes( params[i].arraySizes ) );
+        // parameters named "objectType" collide with the member variable -> append an _ to here
+        std::string paramName = ( definition && ( params[i].name == "objectType" ) ) ? "objectType_" : params[i].name;
+        arguments.push_back( composedType + " " + paramName + generateCArraySizes( params[i].arraySizes ) );
       }
       arguments.back() += std::string( !definition && ( defaultStartIndex <= i ) && !hasDefaultAssignment ? " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT" : "" );
     }
@@ -2653,15 +2639,19 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
   return generateList( arguments, "", ", " );
 }
 
-std::string
-  VulkanHppGenerator::generateArgumentListStandard( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams, bool withDispatcher ) const
+std::string VulkanHppGenerator::generateArgumentListStandard( std::vector<ParamData> const & params,
+                                                              std::set<size_t> const &       skippedParams,
+                                                              bool                           definition,
+                                                              bool                           withDispatcher ) const
 {
   std::string argumentList;
   for ( size_t i = 0; i < params.size(); ++i )
   {
     if ( !skippedParams.contains( i ) )
     {
-      argumentList += params[i].type.compose( "VULKAN_HPP_NAMESPACE" ) + " " + params[i].name + generateCArraySizes( params[i].arraySizes ) + ", ";
+      // parameters named "objectType" collide with the member variable -> append an _ to here
+      std::string paramName = ( definition && ( params[i].name == "objectType" ) ) ? "objectType_" : params[i].name;
+      argumentList += params[i].type.compose( "VULKAN_HPP_NAMESPACE" ) + " " + paramName + generateCArraySizes( params[i].arraySizes ) + ", ";
     }
   }
   if ( withDispatcher )
@@ -2994,6 +2984,11 @@ std::string VulkanHppGenerator::generateCallArgumentsStandard( std::vector<Param
       }
       else if ( param.type.isValue() )
       {
+        // parameters named "objectType" collide with the member variable -> append an _ to here
+        if ( argument == "objectType" )
+        {
+          argument += "_";
+        }
         argument = "static_cast<" + param.type.type + ">( " + argument + " )";
       }
       else
@@ -3190,7 +3185,9 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue(
       else
       {
         assert( param.type.isValue() );
-        argument = "static_cast<" + param.type.type + ">( " + param.name + " )";
+        // parameters named "objectType" collide with the member variable -> append an _ to here
+        std::string paramName = ( param.name == "objectType" ) ? "objectType_" : param.name;
+        argument              = "static_cast<" + param.type.type + ">( " + paramName + " )";
       }
       // check if this param is used as the stride of an other param
       assert( std::none_of( params.begin(), params.end(), [paramIndex]( ParamData const & pd ) { return pd.strideParam.second == paramIndex; } ) );
@@ -4835,7 +4832,7 @@ std::string
 {
   std::set<size_t> skippedParams = determineSkippedParams( commandData.params, initialSkipCount, {}, {}, false );
 
-  std::string argumentList = generateArgumentListStandard( commandData.params, skippedParams, true );
+  std::string argumentList = generateArgumentListStandard( commandData.params, skippedParams, definition, true );
   std::string commandName  = generateCommandName( name, commandData.params, initialSkipCount );
   std::string nodiscard    = ( 1 < commandData.successCodes.size() + commandData.errorCodes.size() ) ? "VULKAN_HPP_NODISCARD " : "";
   std::string returnType   = stripPrefix( commandData.returnType, "Vk" );
@@ -6081,7 +6078,7 @@ std::string VulkanHppGenerator::generateCppModuleRaiiUsings() const
           usings += replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( handleIt->first, "Vk" ) } } );
 
           // if there is an array constructor, generate the plural type also
-          if ( !generateRAIIHandleConstructors( *handleIt ).second.empty() )
+          if ( hasArrayConstructor( handleIt->second ) )
           {
             usings += replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( type.name, "Vk" ) + "s" } } );
           }
@@ -9782,7 +9779,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandStandard( std::string c
                                                                    bool                definition ) const
 {
   std::set<size_t> skippedParams = determineSkippedParams( commandData.params, initialSkipCount, {}, {}, false );
-  std::string      argumentList  = generateArgumentListStandard( commandData.params, skippedParams, false );
+  std::string      argumentList  = generateArgumentListStandard( commandData.params, skippedParams, definition, false );
   std::string      commandName   = generateCommandName( name, commandData.params, initialSkipCount );
   std::string      nodiscard     = ( commandData.returnType != "void" ) ? "VULKAN_HPP_NODISCARD" : "";
   std::string      returnType =
@@ -9828,11 +9825,10 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandStandard( std::string c
   }
 }
 
-std::pair<std::string, std::string>
-  VulkanHppGenerator::generateRAIIHandleConstructor( std::pair<std::string, HandleData> const &                             handle,
-                                                     std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator constructorIt,
-                                                     std::string const &                                                    enter,
-                                                     std::string const &                                                    leave ) const
+std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstructor( std::pair<std::string, HandleData> const &         handle,
+                                                                                       std::map<std::string, CommandData>::const_iterator constructorIt,
+                                                                                       std::string const &                                enter,
+                                                                                       std::string const &                                leave ) const
 {
   std::string singularConstructor, arrayConstructor;
   if ( constructorIt->second.returnType == "VkResult" )
@@ -9972,10 +9968,10 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArgument( ParamData
   return argument;
 }
 
-std::string VulkanHppGenerator::generateRAIIHandleConstructorArguments( std::pair<std::string, HandleData> const &                             handle,
-                                                                        std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator constructorIt,
-                                                                        bool                                                                   singular,
-                                                                        bool takesOwnership ) const
+std::string VulkanHppGenerator::generateRAIIHandleConstructorArguments( std::pair<std::string, HandleData> const &         handle,
+                                                                        std::map<std::string, CommandData>::const_iterator constructorIt,
+                                                                        bool                                               singular,
+                                                                        bool                                               takesOwnership ) const
 {
   auto [parentType, parentName] = getParentTypeAndName( handle );
 
@@ -10266,12 +10262,12 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
   return std::make_pair( "", "" );
 }
 
-std::string VulkanHppGenerator::generateRAIIHandleConstructorByCall( std::pair<std::string, HandleData> const &                             handle,
-                                                                     std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator constructorIt,
-                                                                     std::string const &                                                    enter,
-                                                                     std::string const &                                                    leave,
-                                                                     bool                                                                   isPlural,
-                                                                     bool forceSingular ) const
+std::string VulkanHppGenerator::generateRAIIHandleConstructorByCall( std::pair<std::string, HandleData> const &         handle,
+                                                                     std::map<std::string, CommandData>::const_iterator constructorIt,
+                                                                     std::string const &                                enter,
+                                                                     std::string const &                                leave,
+                                                                     bool                                               isPlural,
+                                                                     bool                                               forceSingular ) const
 {
   const auto [parentType, parentName] = getParentTypeAndName( handle );
 
@@ -13630,6 +13626,18 @@ bool VulkanHppGenerator::handleRemovalType( std::string const & type, std::vecto
     }
   }
   return removed;
+}
+
+bool VulkanHppGenerator::hasArrayConstructor(HandleData const& handleData) const
+{
+  for ( auto constructorIt : handleData.constructorIts )
+  {
+    if (!determineVectorParams(constructorIt->second.params).empty())
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 bool VulkanHppGenerator::hasLen( MemberData const & memberData, std::vector<MemberData> const & members ) const
@@ -17383,6 +17391,8 @@ int main( int argc, char const ** argv )
   {
     std::cout << "VulkanHppGenerator: failed to determine clang_format version with error <" << ret << ">\n";
   }
+#else
+  std::cout << "VulkanHppGenerator: could not find clang-format. The generated files will not be formatted accordingly.\n";
 #endif
 
   tinyxml2::XMLDocument doc;
@@ -17399,26 +17409,27 @@ int main( int argc, char const ** argv )
     std::cout << "VulkanHppGenerator: Parsing " << filename << std::endl;
     VulkanHppGenerator generator( doc, api );
 
-    generator.generateHppFile();
-    generator.generateEnumsHppFile();
-    generator.generateExtensionInspectionFile();
-    generator.generateFormatTraitsHppFile();
-    generator.prepareVulkanFuncs();
-    generator.generateFuncsHppFile();
-    generator.generateHandlesHppFile();
-    generator.generateHashHppFile();
     generator.prepareRAIIHandles();
-    generator.generateMacrosFile();
-    generator.generateRAIIHppFile();
-    generator.generateSharedHppFile();
-    generator.generateStaticAssertionsHppFile();
-    generator.generateStructsHppFile();
-    generator.generateToStringHppFile();
-    generator.generateCppModuleFile();
 
-#if !defined( CLANG_FORMAT_EXECUTABLE )
-    std::cout << "VulkanHppGenerator: could not find clang-format. The generated files will not be formatted accordingly.\n";
-#endif
+    std::vector<std::future<void>> generateFutures;
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateCppModuleFile, &generator ) );
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateHppFile, &generator ) );
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateEnumsHppFile, &generator ) );
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateExtensionInspectionFile, &generator ) );
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateFormatTraitsHppFile, &generator ) );
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateFuncsHppFile, &generator ) );
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateHandlesHppFile, &generator ) );
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateHashHppFile, &generator ) );
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateMacrosFile, &generator ) );
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateSharedHppFile, &generator ) );
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateStaticAssertionsHppFile, &generator ) );
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateStructsHppFile, &generator ) );
+    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateToStringHppFile, &generator ) );
+    std::ranges::for_each( generateFutures, []( auto & generatorFuture ) { generatorFuture.wait(); } );
+
+    // this modifies the generator data and needs to be done after all the other generations are done
+    generator.distributeSecondLevelCommands();
+    generator.generateRAIIHppFile();
   }
   catch ( std::exception const & e )
   {

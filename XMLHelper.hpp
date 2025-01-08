@@ -18,6 +18,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <mutex>
 #include <regex>
 #include <set>
 #include <string>
@@ -55,6 +56,21 @@ std::string                                      trim( std::string const & input
 std::string                                      trimEnd( std::string const & input );
 std::string                                      trimStars( std::string const & input );
 void                                             writeToFile( std::string const & str, std::string const & fileName );
+
+class SyncedMessageHandler
+{
+public:
+  void message( std::string const & m )
+  {
+    std::lock_guard<std::mutex> guard( m_messageMutex );
+    std::cout << m;
+  }
+
+private:
+  std::mutex m_messageMutex;
+};
+
+SyncedMessageHandler messager;
 
 struct TypeInfo
 {
@@ -209,7 +225,8 @@ inline void checkElements( int                                               lin
     // check: r.second (means: required excactly once) => (encouteredIt->second == 1)
     checkForError( !r.second || ( encounteredIt->second == 1 ),
                    line,
-                   "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " + std::to_string( encounteredIt->second ) + " times" );
+                   "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " + std::to_string( encounteredIt->second ) +
+                     " times" );
   }
 }
 
@@ -548,12 +565,12 @@ void writeToFile( std::string const & str, std::string const & fileName )
   ofs.close();
 
 #if defined( CLANG_FORMAT_EXECUTABLE )
-  std::cout << "VulkanHppGenerator: Formatting " << fileName << " ..." << std::endl;
+  messager.message( "VulkanHppGenerator: Formatting " + fileName + " ...\n" );
   const std::string commandString = "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " + fileName;
   const int         ret           = std::system( commandString.c_str() );
   if ( ret != 0 )
   {
-    std::cout << "VulkanHppGenerator: failed to format file " << fileName << " with error <" << ret << ">\n";
+    messager.message( "VulkanHppGenerator: failed to format file " + fileName + " with error <" + std::to_string( ret ) + ">\n" );
   }
 #endif
 }

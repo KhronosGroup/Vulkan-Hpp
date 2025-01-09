@@ -12078,7 +12078,7 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
   {
     // special handling for this structure, as it is filled with dynamic memory on vk::Device::getFaultInfoEXT!
     constructorsAndSetters += R"(
-#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
     VULKAN_HPP_CONSTEXPR_14 DeviceFaultInfoEXT( std::array<char, VK_MAX_DESCRIPTION_SIZE> const & description_       = {},
                                                 VULKAN_HPP_NAMESPACE::DeviceFaultAddressInfoEXT * pAddressInfos_     = {},
                                                 VULKAN_HPP_NAMESPACE::DeviceFaultVendorInfoEXT *  pVendorInfos_      = {},
@@ -12145,18 +12145,18 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
       free( pVendorBinaryData );
     }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+#endif   /*VULKAN_HPP_NO_CONSTRUCTORS*/
 )";
   }
   else
   {
     static const std::string constructorsTemplate = R"(
-#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
 ${constructors}
 ${subConstructors}
 ${deprecatedConstructors}
     ${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
 
     ${structName} & operator=( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -12175,13 +12175,13 @@ ${deprecatedConstructors}
   if ( !structure.second.returnedOnly )
   {
     // only structs that are not returnedOnly get setters!
-    constructorsAndSetters += "\n#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )";
+    constructorsAndSetters += "\n#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )";
     for ( size_t i = 0; i < structure.second.members.size(); i++ )
     {
       constructorsAndSetters += generateStructSetter( stripPrefix( structure.first, "Vk" ), structure.second.members, i );
     }
     constructorsAndSetters += generateDeprecatedStructSetters( structure.first );
-    constructorsAndSetters += "#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/\n";
+    constructorsAndSetters += "#endif /*VULKAN_HPP_NO_SETTERS*/\n";
   }
 
   std::string structureType = stripPrefix( structure.first, "Vk" );
@@ -12964,13 +12964,13 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
 ${enter}  union ${unionName}
   {
     using NativeType = Vk${unionName};
-#if !defined( VULKAN_HPP_NO_UNION_CONSTRUCTORS )
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_UNION_CONSTRUCTORS )
 ${constructors}
-#endif /*VULKAN_HPP_NO_UNION_CONSTRUCTORS*/
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
 
-#if !defined( VULKAN_HPP_NO_UNION_SETTERS )
+#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_UNION_SETTERS )
 ${setters}
-#endif /*VULKAN_HPP_NO_UNION_SETTERS*/
+#endif /*VULKAN_HPP_NO_SETTERS*/
 
     operator Vk${unionName} const &() const
     {

@@ -364,6 +364,12 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
 endif()
 
+# Create Vulkan-Hpp interface target
+add_library( Vulkan-Hpp INTERFACE )
+add_library( Vulkan::Hpp ALIAS Vulkan-Hpp )
+target_include_directories( Vulkan-Hpp INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
+
+# Build Vulkan-Hpp and Video-Hpp generators
 if ( VULKAN_HPP_GENERATOR_BUILD )
 	# The generator executable
 	add_executable( VulkanHppGenerator VulkanHppGenerator.cpp VulkanHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )

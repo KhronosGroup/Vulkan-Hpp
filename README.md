@@ -164,7 +164,7 @@ vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B
 
 ### Designated Initializers
 
-Beginning with C++20, C++ supports designated initializers. As that feature requires to not have any user-declared or inherited constructors, you have to `#define VULKAN_HPP_NO_CONSTRUCTORS`, which removes all the structure and union constructors from `vulkan.hpp`. Instead you can then use aggregate initialization. The first few vk-lines in your source might then look like:
+Beginning with C++20, C++ supports designated initializers. As that feature requires to not have any user-declared or inherited constructors, you have to `#define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS`, which removes all the structure and union constructors from `vulkan.hpp`. Instead you can then use aggregate initialization. The first few vk-lines in your source might then look like:
 
 ```c++
 // initialize the vk::ApplicationInfo structure
@@ -759,7 +759,7 @@ Configuring the named module is straightforward; add any required Vulkan-Hpp fea
 target_compile_definitions( VulkanHppModule PRIVATE
   VULKAN_HPP_NO_EXCEPTIONS
   VULKAN_HPP_NO_SMART_HANDLE
-  VULKAN_HPP_NO_CONSTRUCTORS
+  VULKAN_HPP_NO_STRUCT_CONSTRUCTORS
 )
 ```
 
@@ -926,10 +926,6 @@ By default, the namespace used with `vulkan.hpp` is `vk`. By defining `VULKAN_HP
 
 By default, the file [`vulkan_to_string.hpp`](vulkan/vulkan_to_string.hpp) is included by `vulkan.hpp` and provides functions `vk::to_string` for enums and bitmasks. If you don't need those functions, you can define `VULKAN_HPP_NO_TO_STRING` to prevent that inclusion. If you have certain files where you want to use those functions nevertheless, you can explicitly include `vulkan_to_string.hpp` there.
 
-#### VULKAN_HPP_NO_CONSTRUCTORS
-
-With C++20, designated initializers are available. Their use requires the absence of any user-defined constructors. Define `VULKAN_HPP_NO_CONSTRUCTORS` to remove constructors from structs and unions.
-
 #### VULKAN_HPP_NO_EXCEPTIONS
 
 When a vulkan function returns an error code that is not specified to be a success code, an exception is thrown unless `VULKAN_HPP_NO_EXCEPTIONS` is defined before including `vulkan.hpp`.
@@ -938,10 +934,6 @@ When a vulkan function returns an error code that is not specified to be a succe
 
 With C++17, all vk-functions returning something are declared with the attribute `[[nodiscard]]`. This can be removed by defining `VULKAN_HPP_NO_NODISCARD_WARNINGS` before including `vulkan.hpp`.
 
-#### VULKAN_HPP_NO_SETTERS
-
-By defining `VULKAN_HPP_NO_SETTERS` before including `vulkan.hpp`, setter member functions will not be available within structs and unions. Modifying their data members will then only be possible via direct assignment.
-
 #### VULKAN_HPP_NO_SMART_HANDLE
 
 By defining `VULKAN_HPP_NO_SMART_HANDLE` before including `vulkan.hpp`, the helper class `vk::UniqueHandle` and all the unique handle types are not available.
@@ -949,6 +941,14 @@ By defining `VULKAN_HPP_NO_SMART_HANDLE` before including `vulkan.hpp`, the help
 #### VULKAN_HPP_NO_SPACESHIP_OPERATOR
 
 With C++20, the so-called spaceship-operator `<=>` is introduced. If that operator is supported, all the structs and classes in vulkan.hpp use the default implementation of it. As currently some implementations of this operator are very slow, and others seem to be incomplete, by defining `VULKAN_HPP_NO_SPACESHIP_OPERATOR` before including `vulkan.hpp` you can remove that operator from those structs and classes.
+
+#### VULKAN_HPP_NO_STRUCT_CONSTRUCTORS
+
+With C++20, designated initializers are available. Their use requires the absence of any user-defined constructors. Define `VULKAN_HPP_NO_STRUCT_CONSTRUCTORS` to remove constructors from structs and unions.
+
+#### VULKAN_HPP_NO_STRUCT_SETTERS
+
+By defining `VULKAN_HPP_NO_STRUCT_SETTERS` before including `vulkan.hpp`, setter member functions will not be available within structs and unions. Modifying their data members will then only be possible via direct assignment.
 
 #### VULKAN_HPP_NO_WIN32_PROTOTYPES
 

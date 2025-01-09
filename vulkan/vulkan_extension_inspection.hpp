@@ -2400,7 +2400,13 @@ namespace VULKAN_HPP_NAMESPACE
         { { "VK_VERSION_1_0",
             { {
               "VK_KHR_cooperative_matrix",
-            } } } } }
+            } } } } },
+      { "VK_EXT_vertex_attribute_robustness",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } }
     };
     auto depIt = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;

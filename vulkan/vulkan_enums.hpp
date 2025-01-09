@@ -4151,7 +4151,7 @@ namespace VULKAN_HPP_NAMESPACE
     eMesaNvk                   = VK_DRIVER_ID_MESA_NVK,
     eImaginationOpenSourceMESA = VK_DRIVER_ID_IMAGINATION_OPEN_SOURCE_MESA,
     eMesaHoneykrisp            = VK_DRIVER_ID_MESA_HONEYKRISP,
-    eReserved27                = VK_DRIVER_ID_RESERVED_27
+    eVulkanScEmulationOnVulkan = VK_DRIVER_ID_VULKAN_SC_EMULATION_ON_VULKAN
   };
   using DriverIdKHR = DriverId;
 

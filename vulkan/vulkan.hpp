@@ -63,7 +63,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 303, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 304, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -17642,11 +17642,11 @@ namespace VULKAN_HPP_NAMESPACE
             m_library = dlopen( "/usr/local/lib/libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
           }
 #  elif defined( __unix__ ) || defined( __QNX__ ) || defined( __Fuchsia__ )
-          m_library = dlopen( "libvulkan.so", RTLD_NOW | RTLD_LOCAL );
-          if ( !m_library )
-          {
-            m_library = dlopen( "libvulkan.so.1", RTLD_NOW | RTLD_LOCAL );
-          }
+            m_library = dlopen( "libvulkan.so", RTLD_NOW | RTLD_LOCAL );
+            if ( !m_library )
+            {
+              m_library = dlopen( "libvulkan.so.1", RTLD_NOW | RTLD_LOCAL );
+            }
 #  else
 #    error unsupported platform
 #  endif

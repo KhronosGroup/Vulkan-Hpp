@@ -14798,7 +14798,7 @@ void VulkanHppGenerator::readFormatComponent( tinyxml2::XMLElement const * eleme
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line,
                    attributes,
-                   { { "bits", { "1", "2", "4", "5", "6", "8", "9", "10", "11", "12", "16", "24", "32", "64", "compressed" } },
+                   { { "bits", { "1", "2", "4", "5", "6", "8", "9", "10", "11", "12", "14", "16", "24", "32", "64", "compressed" } },
                      { "name", {} },
                      { "numericFormat", { "BOOL", "SFLOAT", "SINT", "SNORM", "SRGB", "SFIXED5", "SSCALED", "UFLOAT", "UINT", "UNORM", "USCALED" } } },
                    { { "planeIndex", { "0", "1", "2" } } } );

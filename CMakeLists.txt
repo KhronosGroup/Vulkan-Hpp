@@ -31,6 +31,7 @@ endif()
 # all the options for this project
 option( VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sample builds" ON )
 option( VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF )
+option( VULKAN_HPP_GENERATOR_BUILD "Build the HPP generator" ON )
 option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
 option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
 option( VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic. Required in case the Vulkan SDK is not available" OFF )
@@ -363,25 +364,32 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
 endif()
 
-# The generator executable
-add_executable( VulkanHppGenerator VulkanHppGenerator.cpp VulkanHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
-vulkan_hpp__setup_warning_level( NAME VulkanHppGenerator )
-target_compile_definitions( VulkanHppGenerator PUBLIC BASE_PATH="${CMAKE_CURRENT_SOURCE_DIR}" VK_SPEC="${vk_spec}" )
-target_include_directories( VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR} )
-set_target_properties( VulkanHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
-if( UNIX )
-	target_link_libraries( VulkanHppGenerator PUBLIC pthread )
+# Create Vulkan-Hpp interface target
+add_library( Vulkan-Hpp INTERFACE )
+add_library( Vulkan::Hpp ALIAS Vulkan-Hpp )
+target_include_directories( Vulkan-Hpp INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
+
+# Build Vulkan-Hpp and Video-Hpp generators
+if ( VULKAN_HPP_GENERATOR_BUILD )
+	# The generator executable
+	add_executable( VulkanHppGenerator VulkanHppGenerator.cpp VulkanHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
+	vulkan_hpp__setup_warning_level( NAME VulkanHppGenerator )
+	target_compile_definitions( VulkanHppGenerator PUBLIC BASE_PATH="${CMAKE_CURRENT_SOURCE_DIR}" VK_SPEC="${vk_spec}" )
+	target_include_directories( VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR} )
+	set_target_properties( VulkanHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
+	if( UNIX )
+		target_link_libraries( VulkanHppGenerator PUBLIC pthread )
+	endif()
+
+	# The video generator executable
+	add_executable( VideoHppGenerator VideoHppGenerator.cpp VideoHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
+	vulkan_hpp__setup_warning_level( NAME VideoHppGenerator )
+	file( TO_NATIVE_PATH ${VulkanRegistry_DIR}/video.xml video_spec )
+	string( REPLACE "\\" "\\\\" video_spec ${video_spec} )
+	target_compile_definitions( VideoHppGenerator PUBLIC BASE_PATH="${CMAKE_CURRENT_SOURCE_DIR}" VIDEO_SPEC="${video_spec}" )
+	target_include_directories( VideoHppGenerator PRIVATE  ${VULKAN_HPP_TINYXML2_SRC_DIR} )
+	set_target_properties( VideoHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
 endif()
-
-# The video generator executable
-add_executable( VideoHppGenerator VideoHppGenerator.cpp VideoHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
-vulkan_hpp__setup_warning_level( NAME VideoHppGenerator )
-file( TO_NATIVE_PATH ${VulkanRegistry_DIR}/video.xml video_spec )
-string( REPLACE "\\" "\\\\" video_spec ${video_spec} )
-target_compile_definitions( VideoHppGenerator PUBLIC BASE_PATH="${CMAKE_CURRENT_SOURCE_DIR}" VIDEO_SPEC="${video_spec}" )
-target_include_directories( VideoHppGenerator PRIVATE  ${VULKAN_HPP_TINYXML2_SRC_DIR} )
-set_target_properties( VideoHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
-
 
 # if the generators are to be run, add a custom commands and targets
 if( VULKAN_HPP_RUN_GENERATOR )

@@ -31,10 +31,15 @@ endif()
 cmake_minimum_required( VERSION 3.12 )
 project( VulkanHppGenerator LANGUAGES CXX )
 
+if (CMAKE_VERSION VERSION_LESS "3.21")
+    # https://cmake.org/cmake/help/latest/variable/PROJECT_IS_TOP_LEVEL.html
+    string(COMPARE EQUAL ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR} PROJECT_IS_TOP_LEVEL)
+endif()
+
 # all the options for this project
 option( VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sample builds" ON )
 option( VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF )
-option( VULKAN_HPP_GENERATOR_BUILD "Build the HPP generator" ON )
+option( VULKAN_HPP_GENERATOR_BUILD "Build the HPP generator" ${PROJECT_IS_TOP_LEVEL} )
 option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
 option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
 option( VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic. Required in case the Vulkan SDK is not available" OFF )

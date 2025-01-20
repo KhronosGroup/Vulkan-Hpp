@@ -357,7 +357,7 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	else()
 		target_compile_definitions( VulkanHppModule PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
 	endif()
-		if( VULKAN_HPP_ENABLE_STD_MODULE )
+	if( VULKAN_HPP_ENABLE_STD_MODULE )
 		target_compile_features( VulkanHppModule PUBLIC cxx_std_23 )
 		set_target_properties( VulkanHppModule PROPERTIES CXX_MODULE_STD ON )
 	else()
@@ -366,8 +366,8 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	target_sources( VulkanHppModule
 		PUBLIC
 		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.cppm )
-		target_include_directories( VulkanHppModule PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
-		target_link_libraries( VulkanHppModule PUBLIC Vulkan::Hpp )
+	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
+	target_link_libraries( VulkanHppModule PUBLIC Vulkan::Hpp )
 endif()
 
 # Build Vulkan-Hpp and Video-Hpp generators

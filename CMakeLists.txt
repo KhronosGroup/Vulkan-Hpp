@@ -339,6 +339,11 @@ set( TINYXML2_SOURCES ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.cpp )
 set( TINYXML2_HEADERS ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.h )
 source_group( TinyXML2 FILES ${TINYXML2_HEADERS} ${TINYXML2_SOURCES} )
 
+# Create Vulkan-Hpp interface target
+add_library( VulkanHpp INTERFACE )
+add_library( Vulkan::Hpp ALIAS VulkanHpp )
+target_include_directories( VulkanHpp INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
+
 # Build Vulkan-Hpp as a module
 if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	# create a target to provide VulkanHpp as C++20 module
@@ -364,11 +369,6 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	target_include_directories( VulkanHppModule PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
 	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
 endif()
-
-# Create Vulkan-Hpp interface target
-add_library( Vulkan-Hpp INTERFACE )
-add_library( Vulkan::Hpp ALIAS Vulkan-Hpp )
-target_include_directories( Vulkan-Hpp INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
 
 # Build Vulkan-Hpp and Video-Hpp generators
 if ( VULKAN_HPP_GENERATOR_BUILD )

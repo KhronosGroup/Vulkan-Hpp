@@ -28,12 +28,7 @@ if ( NOT CMAKE_CXX_STANDARD )
 	set( CMAKE_CXX_STANDARD 11 )
 endif()
 
-if ( VULKAN_HPP_ENABLE_CPP20_MODULES )
-	cmake_minimum_required( VERSION 3.28 )
-else()
-	cmake_minimum_required( VERSION 3.12 )
-endif()
-
+cmake_minimum_required( VERSION 3.12 )
 project( VulkanHppGenerator LANGUAGES CXX )
 
 # all the options for this project
@@ -48,6 +43,14 @@ option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers"
 option( VULKAN_HPP_ENABLE_CPP20_MODULES "Build Vulkan-Hpp as C++20 module; requires minimum CMake version 3.28" OFF )
 option( VULKAN_HPP_ENABLE_STD_MODULE "Build Vulkan-Hpp with import std; requires minimum CMake version 3.30" OFF )
 option( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER "Build C++20 module with dynamic Dispatcher" ON )
+
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+	if( VULKAN_HPP_ENABLE_STD_MODULE AND CMAKE_VERSION VERSION_LESS "3.30")
+		message( FATAL_ERROR "Vulkan-Hpp: C++20 modules with import std require CMake 3.30 or later" )
+	elseif ( CMAKE_VERSION VERSION_LESS "3.28" )
+		message( FATAL_ERROR "Vulkan-Hpp: C++20 modules require CMake 3.28 or later" )
+	endif()
+endif()
 
 function( vulkan_hpp__setup_platform )
 	set( options )

@@ -343,6 +343,7 @@ source_group( TinyXML2 FILES ${TINYXML2_HEADERS} ${TINYXML2_SOURCES} )
 if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	# create a target to provide VulkanHpp as C++20 module
 	add_library( VulkanHppModule )
+	add_library( Vulkan::HppModule ALIAS VulkanHppModule )
 	set_target_properties( VulkanHppModule PROPERTIES
 		CXX_STANDARD_REQUIRED ON
 		CXX_EXTENSIONS OFF )

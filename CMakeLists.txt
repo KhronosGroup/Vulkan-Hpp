@@ -31,9 +31,9 @@ endif()
 cmake_minimum_required( VERSION 3.12 )
 project( VulkanHppGenerator LANGUAGES CXX )
 
-if (CMAKE_VERSION VERSION_LESS "3.21")
+if( CMAKE_VERSION VERSION_LESS "3.21" )
     # https://cmake.org/cmake/help/latest/variable/PROJECT_IS_TOP_LEVEL.html
-    string(COMPARE EQUAL ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR} PROJECT_IS_TOP_LEVEL)
+    string( COMPARE EQUAL ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR} PROJECT_IS_TOP_LEVEL )
 endif()
 
 # all the options for this project

@@ -24,16 +24,16 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-if ( NOT CMAKE_CXX_STANDARD )
-	set( CMAKE_CXX_STANDARD 11 )
-endif()
-
 cmake_minimum_required( VERSION 3.12 )
 project( VulkanHppGenerator LANGUAGES CXX )
 
 if( CMAKE_VERSION VERSION_LESS "3.21" )
     # https://cmake.org/cmake/help/latest/variable/PROJECT_IS_TOP_LEVEL.html
     string( COMPARE EQUAL ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR} PROJECT_IS_TOP_LEVEL )
+endif()
+
+if ( NOT CMAKE_CXX_STANDARD )
+	set( CMAKE_CXX_STANDARD 11 )
 endif()
 
 # all the options for this project

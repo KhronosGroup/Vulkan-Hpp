@@ -366,8 +366,8 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	target_sources( VulkanHppModule
 		PUBLIC
 		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.cppm )
-	target_include_directories( VulkanHppModule PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
-	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
+		target_include_directories( VulkanHppModule PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
+		target_link_libraries( VulkanHppModule PUBLIC Vulkan::Hpp )
 endif()
 
 # Build Vulkan-Hpp and Video-Hpp generators

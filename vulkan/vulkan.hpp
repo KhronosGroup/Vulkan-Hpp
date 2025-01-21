@@ -1,4 +1,4 @@
-// Copyright 2015-2024 The Khronos Group Inc.
+// Copyright 2015-2025 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -63,7 +63,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 304, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 305, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -8837,6 +8837,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTDeviceGeneratedCommandsExtensionName = VK_EXT_DEVICE_GENERATED_COMMANDS_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTDeviceGeneratedCommandsSpecVersion   = VK_EXT_DEVICE_GENERATED_COMMANDS_SPEC_VERSION;
 
+  //=== VK_KHR_maintenance8 ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance8ExtensionName = VK_KHR_MAINTENANCE_8_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance8SpecVersion   = VK_KHR_MAINTENANCE_8_SPEC_VERSION;
+
   //=== VK_MESA_image_alignment_control ===
   VULKAN_HPP_CONSTEXPR_INLINE auto MESAImageAlignmentControlExtensionName = VK_MESA_IMAGE_ALIGNMENT_CONTROL_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto MESAImageAlignmentControlSpecVersion   = VK_MESA_IMAGE_ALIGNMENT_CONTROL_SPEC_VERSION;
@@ -8852,6 +8856,14 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_cooperative_matrix2 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto NVCooperativeMatrix2ExtensionName = VK_NV_COOPERATIVE_MATRIX_2_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVCooperativeMatrix2SpecVersion   = VK_NV_COOPERATIVE_MATRIX_2_SPEC_VERSION;
+
+  //=== VK_ARM_pipeline_opacity_micromap ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto ARMPipelineOpacityMicromapExtensionName = VK_ARM_PIPELINE_OPACITY_MICROMAP_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto ARMPipelineOpacityMicromapSpecVersion   = VK_ARM_PIPELINE_OPACITY_MICROMAP_SPEC_VERSION;
+
+  //=== VK_KHR_depth_clamp_zero_one ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRDepthClampZeroOneExtensionName = VK_KHR_DEPTH_CLAMP_ZERO_ONE_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRDepthClampZeroOneSpecVersion   = VK_KHR_DEPTH_CLAMP_ZERO_ONE_SPEC_VERSION;
 
   //=== VK_EXT_vertex_attribute_robustness ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTVertexAttributeRobustnessExtensionName = VK_EXT_VERTEX_ATTRIBUTE_ROBUSTNESS_EXTENSION_NAME;
@@ -15482,25 +15494,6 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
-  //=== VK_EXT_depth_clamp_zero_one ===
-  template <>
-  struct StructExtends<PhysicalDeviceDepthClampZeroOneFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<PhysicalDeviceDepthClampZeroOneFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
   //=== VK_EXT_non_seamless_cube_map ===
   template <>
   struct StructExtends<PhysicalDeviceNonSeamlessCubeMapFeaturesEXT, PhysicalDeviceFeatures2>
@@ -17447,6 +17440,52 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_KHR_maintenance8 ===
+  template <>
+  struct StructExtends<PhysicalDeviceMaintenance8FeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceMaintenance8FeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<MemoryBarrierAccessFlags3KHR, MemoryBarrier2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<MemoryBarrierAccessFlags3KHR, BufferMemoryBarrier2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<MemoryBarrierAccessFlags3KHR, ImageMemoryBarrier2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_MESA_image_alignment_control ===
   template <>
   struct StructExtends<PhysicalDeviceImageAlignmentControlFeaturesMESA, PhysicalDeviceFeatures2>
@@ -17561,6 +17600,44 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceCooperativeMatrix2PropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_ARM_pipeline_opacity_micromap ===
+  template <>
+  struct StructExtends<PhysicalDevicePipelineOpacityMicromapFeaturesARM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDevicePipelineOpacityMicromapFeaturesARM, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_depth_clamp_zero_one ===
+  template <>
+  struct StructExtends<PhysicalDeviceDepthClampZeroOneFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceDepthClampZeroOneFeaturesKHR, DeviceCreateInfo>
   {
     enum
     {

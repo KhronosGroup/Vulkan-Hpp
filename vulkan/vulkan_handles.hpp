@@ -1,4 +1,4 @@
-// Copyright 2015-2024 The Khronos Group Inc.
+// Copyright 2015-2025 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -1618,9 +1618,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct DescriptorSetBindingReferenceVALVE;
   struct DescriptorSetLayoutHostMappingInfoVALVE;
 
-  //=== VK_EXT_depth_clamp_zero_one ===
-  struct PhysicalDeviceDepthClampZeroOneFeaturesEXT;
-
   //=== VK_EXT_non_seamless_cube_map ===
   struct PhysicalDeviceNonSeamlessCubeMapFeaturesEXT;
 
@@ -1956,6 +1953,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct GeneratedCommandsShaderInfoEXT;
   struct WriteIndirectExecutionSetShaderEXT;
 
+  //=== VK_KHR_maintenance8 ===
+  struct PhysicalDeviceMaintenance8FeaturesKHR;
+  struct MemoryBarrierAccessFlags3KHR;
+
   //=== VK_MESA_image_alignment_control ===
   struct PhysicalDeviceImageAlignmentControlFeaturesMESA;
   struct PhysicalDeviceImageAlignmentControlPropertiesMESA;
@@ -1974,6 +1975,13 @@ namespace VULKAN_HPP_NAMESPACE
   struct CooperativeMatrixFlexibleDimensionsPropertiesNV;
   struct PhysicalDeviceCooperativeMatrix2FeaturesNV;
   struct PhysicalDeviceCooperativeMatrix2PropertiesNV;
+
+  //=== VK_ARM_pipeline_opacity_micromap ===
+  struct PhysicalDevicePipelineOpacityMicromapFeaturesARM;
+
+  //=== VK_KHR_depth_clamp_zero_one ===
+  struct PhysicalDeviceDepthClampZeroOneFeaturesKHR;
+  using PhysicalDeviceDepthClampZeroOneFeaturesEXT = PhysicalDeviceDepthClampZeroOneFeaturesKHR;
 
   //=== VK_EXT_vertex_attribute_robustness ===
   struct PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;

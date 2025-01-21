@@ -1,4 +1,4 @@
-// Copyright 2015-2024 The Khronos Group Inc.
+// Copyright 2015-2025 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -454,10 +454,13 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_EXT_shader_replicated_composites",
       "VK_NV_ray_tracing_validation",
       "VK_EXT_device_generated_commands",
+      "VK_KHR_maintenance8",
       "VK_MESA_image_alignment_control",
       "VK_EXT_depth_clamp_control",
       "VK_HUAWEI_hdr_vivid",
       "VK_NV_cooperative_matrix2",
+      "VK_ARM_pipeline_opacity_micromap",
+      "VK_KHR_depth_clamp_zero_one",
       "VK_EXT_vertex_attribute_robustness"
     };
     return deviceExtensions;
@@ -2374,6 +2377,7 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_buffer_device_address",
               "VK_KHR_maintenance5",
             } } } } },
+      { "VK_KHR_maintenance8", { { "VK_VERSION_1_1", { {} } } } },
       { "VK_MESA_image_alignment_control",
         { { "VK_VERSION_1_0",
             { {
@@ -2401,6 +2405,17 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_cooperative_matrix",
             } } } } },
+      { "VK_ARM_pipeline_opacity_micromap",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_EXT_opacity_micromap",
+            } } } } },
+      { "VK_KHR_depth_clamp_zero_one",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_EXT_vertex_attribute_robustness",
         { { "VK_VERSION_1_0",
             { {
@@ -2543,6 +2558,7 @@ namespace VULKAN_HPP_NAMESPACE
       { "VK_EXT_load_store_op_none", "VK_KHR_load_store_op_none" },
       { "VK_KHR_maintenance4", "VK_VERSION_1_3" },
       { "VK_KHR_shader_subgroup_rotate", "VK_VERSION_1_4" },
+      { "VK_EXT_depth_clamp_zero_one", "VK_KHR_depth_clamp_zero_one" },
       { "VK_EXT_pipeline_protected_access", "VK_VERSION_1_4" },
       { "VK_KHR_maintenance5", "VK_VERSION_1_4" },
       { "VK_KHR_vertex_attribute_divisor", "VK_VERSION_1_4" },
@@ -3012,6 +3028,10 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return "VK_VERSION_1_4";
     }
+    if ( extension == "VK_EXT_depth_clamp_zero_one" )
+    {
+      return "VK_KHR_depth_clamp_zero_one";
+    }
     if ( extension == "VK_EXT_pipeline_protected_access" )
     {
       return "VK_VERSION_1_4";
@@ -3264,9 +3284,10 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_NV_raw_access_chains" ) || ( extension == "VK_KHR_shader_relaxed_extended_instruction" ) ||
            ( extension == "VK_NV_command_buffer_inheritance" ) || ( extension == "VK_KHR_maintenance7" ) ||
            ( extension == "VK_NV_shader_atomic_float16_vector" ) || ( extension == "VK_EXT_shader_replicated_composites" ) ||
-           ( extension == "VK_NV_ray_tracing_validation" ) || ( extension == "VK_EXT_device_generated_commands" ) ||
+           ( extension == "VK_NV_ray_tracing_validation" ) || ( extension == "VK_EXT_device_generated_commands" ) || ( extension == "VK_KHR_maintenance8" ) ||
            ( extension == "VK_MESA_image_alignment_control" ) || ( extension == "VK_EXT_depth_clamp_control" ) || ( extension == "VK_HUAWEI_hdr_vivid" ) ||
-           ( extension == "VK_NV_cooperative_matrix2" ) || ( extension == "VK_EXT_vertex_attribute_robustness" );
+           ( extension == "VK_NV_cooperative_matrix2" ) || ( extension == "VK_ARM_pipeline_opacity_micromap" ) ||
+           ( extension == "VK_KHR_depth_clamp_zero_one" ) || ( extension == "VK_EXT_vertex_attribute_robustness" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )
@@ -3376,7 +3397,8 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_ARM_rasterization_order_attachment_access" ) || ( extension == "VK_VALVE_mutable_descriptor_type" ) ||
            ( extension == "VK_KHR_format_feature_flags2" ) || ( extension == "VK_EXT_extended_dynamic_state2" ) ||
            ( extension == "VK_EXT_global_priority_query" ) || ( extension == "VK_EXT_load_store_op_none" ) || ( extension == "VK_KHR_maintenance4" ) ||
-           ( extension == "VK_KHR_shader_subgroup_rotate" ) || ( extension == "VK_EXT_pipeline_protected_access" ) || ( extension == "VK_KHR_maintenance5" ) ||
+           ( extension == "VK_KHR_shader_subgroup_rotate" ) || ( extension == "VK_EXT_depth_clamp_zero_one" ) ||
+           ( extension == "VK_EXT_pipeline_protected_access" ) || ( extension == "VK_KHR_maintenance5" ) ||
            ( extension == "VK_KHR_vertex_attribute_divisor" ) || ( extension == "VK_KHR_load_store_op_none" ) ||
            ( extension == "VK_KHR_shader_float_controls2" ) || ( extension == "VK_KHR_index_type_uint8" ) || ( extension == "VK_KHR_line_rasterization" ) ||
            ( extension == "VK_KHR_shader_expect_assume" ) || ( extension == "VK_KHR_maintenance6" );

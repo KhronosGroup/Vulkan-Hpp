@@ -11,7 +11,6 @@ jobs:
     strategy:
       matrix:
         build_type: [Debug]
-        cxx_compiler: [g++-9]
         cxx_standard: [11]
 
     steps:
@@ -41,7 +40,6 @@ jobs:
             -DVULKAN_HPP_SAMPLES_BUILD=OFF
             -DVULKAN_HPP_TESTS_BUILD=OFF
             -DVULKAN_HPP_RUN_GENERATOR=ON
-            -DCMAKE_CXX_COMPILER=${{matrix.cxx_compiler}}
             -DCMAKE_CXX_STANDARD=${{matrix.cxx_standard}}
 
     - name: Build

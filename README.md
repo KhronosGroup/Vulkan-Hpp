@@ -508,7 +508,7 @@ protected:
 
 The API will be extended to provide creation functions in the future.
 
-## RAII-classes
+### RAII-classes
 
 In addition to `vk::UniqueHandles` and `vk::SharedHandles`, there's a set of wrapper classes for all the handle types that follow the RAII-paradigm (resource acquisition is initialization), provided in the `vk::raii` namespace.
 

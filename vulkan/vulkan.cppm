@@ -1,4 +1,4 @@
-// Copyright 2015-2024 The Khronos Group Inc.
+// Copyright 2015-2025 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -918,6 +918,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutUsageFlagsEXT;
   using VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeEXT;
   using VULKAN_HPP_NAMESPACE::IndirectExecutionSetInfoTypeEXT;
+
+  //=== VK_KHR_maintenance8 ===
+  using VULKAN_HPP_NAMESPACE::AccessFlagBits3KHR;
+  using VULKAN_HPP_NAMESPACE::AccessFlags3KHR;
 
   //=== VK_EXT_depth_clamp_control ===
   using VULKAN_HPP_NAMESPACE::DepthClampModeEXT;
@@ -2638,6 +2642,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTDeviceGeneratedCommandsExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTDeviceGeneratedCommandsSpecVersion;
 
+  //=== VK_KHR_maintenance8 ===
+  using VULKAN_HPP_NAMESPACE::KHRMaintenance8ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRMaintenance8SpecVersion;
+
   //=== VK_MESA_image_alignment_control ===
   using VULKAN_HPP_NAMESPACE::MESAImageAlignmentControlExtensionName;
   using VULKAN_HPP_NAMESPACE::MESAImageAlignmentControlSpecVersion;
@@ -2653,6 +2661,14 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_cooperative_matrix2 ===
   using VULKAN_HPP_NAMESPACE::NVCooperativeMatrix2ExtensionName;
   using VULKAN_HPP_NAMESPACE::NVCooperativeMatrix2SpecVersion;
+
+  //=== VK_ARM_pipeline_opacity_micromap ===
+  using VULKAN_HPP_NAMESPACE::ARMPipelineOpacityMicromapExtensionName;
+  using VULKAN_HPP_NAMESPACE::ARMPipelineOpacityMicromapSpecVersion;
+
+  //=== VK_KHR_depth_clamp_zero_one ===
+  using VULKAN_HPP_NAMESPACE::KHRDepthClampZeroOneExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRDepthClampZeroOneSpecVersion;
 
   //=== VK_EXT_vertex_attribute_robustness ===
   using VULKAN_HPP_NAMESPACE::EXTVertexAttributeRobustnessExtensionName;
@@ -4316,9 +4332,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::DescriptorSetLayoutHostMappingInfoVALVE;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE;
 
-  //=== VK_EXT_depth_clamp_zero_one ===
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampZeroOneFeaturesEXT;
-
   //=== VK_EXT_non_seamless_cube_map ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceNonSeamlessCubeMapFeaturesEXT;
 
@@ -4654,6 +4667,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::WriteIndirectExecutionSetPipelineEXT;
   using VULKAN_HPP_NAMESPACE::WriteIndirectExecutionSetShaderEXT;
 
+  //=== VK_KHR_maintenance8 ===
+  using VULKAN_HPP_NAMESPACE::MemoryBarrierAccessFlags3KHR;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance8FeaturesKHR;
+
   //=== VK_MESA_image_alignment_control ===
   using VULKAN_HPP_NAMESPACE::ImageAlignmentControlCreateInfoMESA;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageAlignmentControlFeaturesMESA;
@@ -4672,6 +4689,13 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrix2FeaturesNV;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrix2PropertiesNV;
+
+  //=== VK_ARM_pipeline_opacity_micromap ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDevicePipelineOpacityMicromapFeaturesARM;
+
+  //=== VK_KHR_depth_clamp_zero_one ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampZeroOneFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampZeroOneFeaturesKHR;
 
   //=== VK_EXT_vertex_attribute_robustness ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;
@@ -7671,10 +7695,6 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::DescriptorSetLayoutHostMappingInfoVALVE>;
 
-  //=== VK_EXT_depth_clamp_zero_one ===
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampZeroOneFeaturesEXT>;
-
   //=== VK_EXT_non_seamless_cube_map ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceNonSeamlessCubeMapFeaturesEXT>;
@@ -8211,6 +8231,12 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::WriteIndirectExecutionSetShaderEXT>;
 
+  //=== VK_KHR_maintenance8 ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance8FeaturesKHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::MemoryBarrierAccessFlags3KHR>;
+
   //=== VK_MESA_image_alignment_control ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceImageAlignmentControlFeaturesMESA>;
@@ -8240,6 +8266,14 @@ export namespace std
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrix2FeaturesNV>;
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrix2PropertiesNV>;
+
+  //=== VK_ARM_pipeline_opacity_micromap ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePipelineOpacityMicromapFeaturesARM>;
+
+  //=== VK_KHR_depth_clamp_zero_one ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampZeroOneFeaturesKHR>;
 
   //=== VK_EXT_vertex_attribute_robustness ===
   template <>

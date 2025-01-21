@@ -1,4 +1,4 @@
-// Copyright 2015-2024 The Khronos Group Inc.
+// Copyright 2015-2025 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -1352,7 +1352,6 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceDescriptorSetHostMappingFeaturesVALVE         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE,
     eDescriptorSetBindingReferenceVALVE                          = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_BINDING_REFERENCE_VALVE,
     eDescriptorSetLayoutHostMappingInfoVALVE                     = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE,
-    ePhysicalDeviceDepthClampZeroOneFeaturesEXT                  = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT,
     ePhysicalDeviceNonSeamlessCubeMapFeaturesEXT                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT,
     ePhysicalDeviceRenderPassStripedFeaturesARM                  = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RENDER_PASS_STRIPED_FEATURES_ARM,
     ePhysicalDeviceRenderPassStripedPropertiesARM                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RENDER_PASS_STRIPED_PROPERTIES_ARM,
@@ -1538,6 +1537,8 @@ namespace VULKAN_HPP_NAMESPACE
     eIndirectExecutionSetShaderLayoutInfoEXT                   = VK_STRUCTURE_TYPE_INDIRECT_EXECUTION_SET_SHADER_LAYOUT_INFO_EXT,
     eGeneratedCommandsPipelineInfoEXT                          = VK_STRUCTURE_TYPE_GENERATED_COMMANDS_PIPELINE_INFO_EXT,
     eGeneratedCommandsShaderInfoEXT                            = VK_STRUCTURE_TYPE_GENERATED_COMMANDS_SHADER_INFO_EXT,
+    ePhysicalDeviceMaintenance8FeaturesKHR                     = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_8_FEATURES_KHR,
+    eMemoryBarrierAccessFlags3KHR                              = VK_STRUCTURE_TYPE_MEMORY_BARRIER_ACCESS_FLAGS_3_KHR,
     ePhysicalDeviceImageAlignmentControlFeaturesMESA           = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA,
     ePhysicalDeviceImageAlignmentControlPropertiesMESA         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA,
     eImageAlignmentControlCreateInfoMESA                       = VK_STRUCTURE_TYPE_IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA,
@@ -1548,6 +1549,9 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceCooperativeMatrix2FeaturesNV                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV,
     eCooperativeMatrixFlexibleDimensionsPropertiesNV           = VK_STRUCTURE_TYPE_COOPERATIVE_MATRIX_FLEXIBLE_DIMENSIONS_PROPERTIES_NV,
     ePhysicalDeviceCooperativeMatrix2PropertiesNV              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV,
+    ePhysicalDevicePipelineOpacityMicromapFeaturesARM          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_OPACITY_MICROMAP_FEATURES_ARM,
+    ePhysicalDeviceDepthClampZeroOneFeaturesKHR                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR,
+    ePhysicalDeviceDepthClampZeroOneFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT,
     ePhysicalDeviceVertexAttributeRobustnessFeaturesEXT        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT
   };
 
@@ -2733,8 +2737,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class PipelineCacheCreateFlagBits : VkPipelineCacheCreateFlags
   {
-    eExternallySynchronized    = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT,
-    eExternallySynchronizedEXT = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT_EXT
+    eExternallySynchronized         = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT,
+    eExternallySynchronizedEXT      = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT_EXT,
+    eInternallySynchronizedMergeKHR = VK_PIPELINE_CACHE_CREATE_INTERNALLY_SYNCHRONIZED_MERGE_BIT_KHR
   };
 
   using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits>;
@@ -2743,7 +2748,8 @@ namespace VULKAN_HPP_NAMESPACE
   struct FlagTraits<PipelineCacheCreateFlagBits>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                     isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineCacheCreateFlags allFlags  = PipelineCacheCreateFlagBits::eExternallySynchronized;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineCacheCreateFlags allFlags =
+      PipelineCacheCreateFlagBits::eExternallySynchronized | PipelineCacheCreateFlagBits::eInternallySynchronizedMergeKHR;
   };
 
   enum class BlendFactor
@@ -3539,12 +3545,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class DependencyFlagBits : VkDependencyFlags
   {
-    eByRegion        = VK_DEPENDENCY_BY_REGION_BIT,
-    eDeviceGroup     = VK_DEPENDENCY_DEVICE_GROUP_BIT,
-    eDeviceGroupKHR  = VK_DEPENDENCY_DEVICE_GROUP_BIT_KHR,
-    eViewLocal       = VK_DEPENDENCY_VIEW_LOCAL_BIT,
-    eViewLocalKHR    = VK_DEPENDENCY_VIEW_LOCAL_BIT_KHR,
-    eFeedbackLoopEXT = VK_DEPENDENCY_FEEDBACK_LOOP_BIT_EXT
+    eByRegion                                    = VK_DEPENDENCY_BY_REGION_BIT,
+    eDeviceGroup                                 = VK_DEPENDENCY_DEVICE_GROUP_BIT,
+    eDeviceGroupKHR                              = VK_DEPENDENCY_DEVICE_GROUP_BIT_KHR,
+    eViewLocal                                   = VK_DEPENDENCY_VIEW_LOCAL_BIT,
+    eViewLocalKHR                                = VK_DEPENDENCY_VIEW_LOCAL_BIT_KHR,
+    eFeedbackLoopEXT                             = VK_DEPENDENCY_FEEDBACK_LOOP_BIT_EXT,
+    eQueueFamilyOwnershipTransferUseAllStagesKHR = VK_DEPENDENCY_QUEUE_FAMILY_OWNERSHIP_TRANSFER_USE_ALL_STAGES_BIT_KHR
   };
 
   using DependencyFlags = Flags<DependencyFlagBits>;
@@ -3553,8 +3560,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct FlagTraits<DependencyFlagBits>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool            isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR DependencyFlags allFlags =
-      DependencyFlagBits::eByRegion | DependencyFlagBits::eDeviceGroup | DependencyFlagBits::eViewLocal | DependencyFlagBits::eFeedbackLoopEXT;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DependencyFlags allFlags  = DependencyFlagBits::eByRegion | DependencyFlagBits::eDeviceGroup |
+                                                                    DependencyFlagBits::eViewLocal | DependencyFlagBits::eFeedbackLoopEXT |
+                                                                    DependencyFlagBits::eQueueFamilyOwnershipTransferUseAllStagesKHR;
   };
 
   enum class FramebufferCreateFlagBits : VkFramebufferCreateFlags
@@ -4665,6 +4673,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDepthStencilAttachmentFeedbackLoopEXT       = VK_PIPELINE_CREATE_2_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT,
     eRayTracingDisplacementMicromapNV            = VK_PIPELINE_CREATE_2_RAY_TRACING_DISPLACEMENT_MICROMAP_BIT_NV,
     eDescriptorBufferEXT                         = VK_PIPELINE_CREATE_2_DESCRIPTOR_BUFFER_BIT_EXT,
+    eDisallowOpacityMicromapARM                  = VK_PIPELINE_CREATE_2_DISALLOW_OPACITY_MICROMAP_BIT_ARM,
     eCaptureDataKHR                              = VK_PIPELINE_CREATE_2_CAPTURE_DATA_BIT_KHR,
     eIndirectBindableEXT                         = VK_PIPELINE_CREATE_2_INDIRECT_BINDABLE_BIT_EXT
   };
@@ -4694,8 +4703,8 @@ namespace VULKAN_HPP_NAMESPACE
       PipelineCreateFlagBits2::eRayTracingAllowMotionNV | PipelineCreateFlagBits2::eRenderingFragmentShadingRateAttachmentKHR |
       PipelineCreateFlagBits2::eRenderingFragmentDensityMapAttachmentEXT | PipelineCreateFlagBits2::eRayTracingOpacityMicromapEXT |
       PipelineCreateFlagBits2::eColorAttachmentFeedbackLoopEXT | PipelineCreateFlagBits2::eDepthStencilAttachmentFeedbackLoopEXT |
-      PipelineCreateFlagBits2::eRayTracingDisplacementMicromapNV | PipelineCreateFlagBits2::eDescriptorBufferEXT | PipelineCreateFlagBits2::eCaptureDataKHR |
-      PipelineCreateFlagBits2::eIndirectBindableEXT;
+      PipelineCreateFlagBits2::eRayTracingDisplacementMicromapNV | PipelineCreateFlagBits2::eDescriptorBufferEXT |
+      PipelineCreateFlagBits2::eDisallowOpacityMicromapARM | PipelineCreateFlagBits2::eCaptureDataKHR | PipelineCreateFlagBits2::eIndirectBindableEXT;
   };
 
   enum class BufferUsageFlagBits2 : VkBufferUsageFlags2
@@ -7684,6 +7693,22 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                              isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR IndirectCommandsInputModeFlagsEXT allFlags =
       IndirectCommandsInputModeFlagBitsEXT::eVulkanIndexBuffer | IndirectCommandsInputModeFlagBitsEXT::eDxgiIndexBuffer;
+  };
+
+  //=== VK_KHR_maintenance8 ===
+
+  enum class AccessFlagBits3KHR : VkAccessFlags3KHR
+  {
+    eNone = VK_ACCESS_3_NONE_KHR
+  };
+
+  using AccessFlags3KHR = Flags<AccessFlagBits3KHR>;
+
+  template <>
+  struct FlagTraits<AccessFlagBits3KHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool            isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR AccessFlags3KHR allFlags  = AccessFlagBits3KHR::eNone;
   };
 
   //=== VK_EXT_depth_clamp_control ===

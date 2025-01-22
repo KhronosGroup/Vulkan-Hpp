@@ -168,6 +168,9 @@ endif()
 add_library( VulkanHpp INTERFACE )
 add_library( Vulkan::Hpp ALIAS VulkanHpp )
 target_include_directories( VulkanHpp INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
+if( VULKAN_HPP_RUN_GENERATOR )
+	add_dependencies( ${TARGET_NAME} build_vulkan_hpp )
+endif()
 
 # Build Vulkan-Hpp as a module
 if( VULKAN_HPP_ENABLE_CPP20_MODULES )

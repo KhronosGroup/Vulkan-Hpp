@@ -2776,6 +2776,7 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
   }
 
   static const std::string bitmaskTemplate = R"(
+  // wrapper using for bitmask Vk${bitmaskName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/Vk${bitmaskName}.html
   using ${bitmaskName} = Flags<${enumName}>;
 ${aliases}
 
@@ -3745,7 +3746,8 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
                                                            false );
 
     std::string const functionTemplate =
-      R"(  template <${argumentTemplates}${allocatorTemplates}typename Dispatch${uniqueHandleAllocatorTemplates}${typenameCheck}>
+      R"(  // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
+  template <${argumentTemplates}${allocatorTemplates}typename Dispatch${uniqueHandleAllocatorTemplates}${typenameCheck}>
   ${nodiscard}VULKAN_HPP_INLINE ${decoratedReturnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const}${noexcept}
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -3781,12 +3783,14 @@ ${vectorSizeCheck}
                              { "returnStatement", returnStatement },
                              { "typenameCheck", typenameCheck },
                              { "uniqueHandleAllocatorTemplates", uniqueHandleAllocatorTemplates },
-                             { "vectorSizeCheck", vectorSizeCheckString } } );
+                             { "vectorSizeCheck", vectorSizeCheckString },
+                             { "vkCommandName", name } } );
   }
   else
   {
     std::string const functionTemplate =
-      R"(    template <${argumentTemplates}${allocatorTemplates}typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${uniqueHandleAllocatorTemplates}${typenameCheck}>
+      R"(    // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
+    template <${argumentTemplates}${allocatorTemplates}typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${uniqueHandleAllocatorTemplates}${typenameCheck}>
     ${nodiscard}${decoratedReturnType} ${commandName}( ${argumentList} )${const}${noexcept};)";
 
     return replaceWithMap( functionTemplate,
@@ -3799,7 +3803,8 @@ ${vectorSizeCheck}
                              { "nodiscard", nodiscard },
                              { "noexcept", noexceptString },
                              { "typenameCheck", typenameCheck },
-                             { "uniqueHandleAllocatorTemplates", uniqueHandleAllocatorTemplates } } );
+                             { "uniqueHandleAllocatorTemplates", uniqueHandleAllocatorTemplates },
+                             { "vkCommandName", name } } );
   }
 }
 
@@ -4850,7 +4855,8 @@ std::string
     }
 
     std::string const functionTemplate =
-      R"(  template <typename Dispatch>
+      R"(  // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
+  template <typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const} VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -4865,12 +4871,14 @@ std::string
                              { "const", commandData.handle.empty() ? "" : " const" },
                              { "functionBody", functionBody },
                              { "nodiscard", nodiscard },
-                             { "returnType", returnType } } );
+                             { "returnType", returnType },
+                             { "vkCommandName", name } } );
   }
   else
   {
     std::string const functionTemplate =
-      R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+      R"(    // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     ${nodiscard}${returnType} ${commandName}( ${argumentList} VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )${const} VULKAN_HPP_NOEXCEPT;)";
 
     return replaceWithMap( functionTemplate,
@@ -4878,7 +4886,8 @@ std::string
                              { "commandName", commandName },
                              { "const", commandData.handle.empty() ? "" : " const" },
                              { "nodiscard", nodiscard },
-                             { "returnType", returnType } } );
+                             { "returnType", returnType },
+                             { "vkCommandName", name } } );
   }
 }
 
@@ -7417,9 +7426,11 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
     typeTraits = generateLayerSettingTypeTraits();
   }
 
-  const std::string enumTemplate = R"(  enum class ${enumName}${baseType}
-  {${enumValues}};
-${typeTraits}${enumUsing}${bitmask})";
+  const std::string enumTemplate = R"(  // wrapper class for enum Vk${enumName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/Vk${enumName}.html
+  enum class ${enumName}${baseType}{${enumValues}};
+  ${typeTraits}
+  ${enumUsing}
+  ${bitmask})";
 
   return replaceWithMap( enumTemplate,
                          { { "baseType", baseType },
@@ -8405,6 +8416,7 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
     const std::string typesafeConversionConditionalEnd = handleData.second.isDispatchable ? "" : "#endif\n";
 
     static const std::string templateString = R"(
+  // wrapper class for handle Vk${className}, see https://registry.khronos.org/vulkan/specs/latest/man/html/Vk${className}.html
 ${enter}  class ${className}
   {
   public:
@@ -9286,6 +9298,7 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
     }
 
     const std::string handleTemplate = R"(
+  // wrapper class for handle Vk${handleType}, see https://registry.khronos.org/vulkan/specs/latest/man/html/Vk${handleType}.html
 ${enter}  class ${handleType}
   {
   public:
@@ -9573,8 +9586,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandEnhanced( std::string c
   {
     std::string const definitionTemplate =
       R"(
-  ${argumentTemplates}
-  ${nodiscard} VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const ${noexcept}
+  // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
+  ${argumentTemplates} ${nodiscard} VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const ${noexcept}
   {
 ${functionPointerCheck}
 ${vectorSizeCheck}
@@ -9626,14 +9639,15 @@ ${vectorSizeCheck}
                              { "resultCheck", resultCheck },
                              { "returnStatement", returnStatement },
                              { "returnType", decoratedReturnType },
-                             { "vectorSizeCheck", vectorSizeCheckString } } );
+                             { "vectorSizeCheck", vectorSizeCheckString },
+                             { "vkCommandName", name } } );
   }
   else
   {
     std::string const declarationTemplate =
       R"(
-    ${argumentTemplates}
-    ${nodiscard} ${returnType} ${commandName}( ${argumentList} ) const ${noexcept};
+    // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
+    ${argumentTemplates} ${nodiscard} ${returnType} ${commandName}( ${argumentList} ) const ${noexcept};
 )";
 
     return replaceWithMap( declarationTemplate,
@@ -9642,7 +9656,8 @@ ${vectorSizeCheck}
                              { "commandName", commandName },
                              { "nodiscard", nodiscard },
                              { "noexcept", noexceptString },
-                             { "returnType", decoratedReturnType } } );
+                             { "returnType", decoratedReturnType },
+                             { "vkCommandName", name } } );
   }
 }
 
@@ -9716,6 +9731,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
 
     std::string const definitionTemplate =
       R"(
+  // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<${returnType}>::Type ${className}::${commandName}( ${argumentList} ) const ${noexcept}
   {
     ${dataDeclarations}
@@ -9734,17 +9750,23 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
                              { "noexcept", noexceptString },
                              { "resultCheck", resultCheck },
                              { "returnStatements", returnStatements },
-                             { "returnType", returnType } } );
+                             { "returnType", returnType },
+                             { "vkCommandName", name } } );
   }
   else
   {
     std::string const declarationTemplate =
       R"(
+  // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
   VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<${returnType}>::Type ${commandName}( ${argumentList} ) const ${noexcept};
 )";
 
     return replaceWithMap( declarationTemplate,
-                           { { "argumentList", argumentList }, { "commandName", commandName }, { "noexcept", noexceptString }, { "returnType", returnType } } );
+                           { { "argumentList", argumentList },
+                             { "commandName", commandName },
+                             { "noexcept", noexceptString },
+                             { "returnType", returnType },
+                             { "vkCommandName", name } } );
   }
 }
 
@@ -9789,7 +9811,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandStandard( std::string c
     }
 
     std::string const functionTemplate =
-      R"(  ${nodiscard} VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
+      R"(  // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
+  ${nodiscard} VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
   {
     ${functionPointerCheck}
     ${functionBody};
@@ -9802,17 +9825,23 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandStandard( std::string c
                              { "functionBody", functionBody },
                              { "functionPointerCheck", generateFunctionPointerCheck( name, commandData.requiredBy, true ) },
                              { "nodiscard", nodiscard },
-                             { "returnType", returnType } } );
+                             { "returnType", returnType },
+                             { "vkCommandName", name } } );
   }
   else
   {
     std::string const declarationTemplate =
       R"(
+    // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
     ${nodiscard} ${returnType} ${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT;
 )";
 
     return replaceWithMap( declarationTemplate,
-                           { { "argumentList", argumentList }, { "commandName", commandName }, { "nodiscard", nodiscard }, { "returnType", returnType } } );
+                           { { "argumentList", argumentList },
+                             { "commandName", commandName },
+                             { "nodiscard", nodiscard },
+                             { "returnType", returnType },
+                             { "vkCommandName", name } } );
   }
 }
 
@@ -12219,7 +12248,8 @@ ${deprecatedConstructors}
     compareOperators += generateStructCompareOperators( structure );
   }
 
-  static const std::string structureTemplate = R"(  struct ${structureType}
+  static const std::string structureTemplate = R"(  // wrapper struct for struct Vk${structureType}, see https://registry.khronos.org/vulkan/specs/latest/man/html/Vk${structureType}.html
+  struct ${structureType}
   {
     using NativeType = Vk${structureType};
 

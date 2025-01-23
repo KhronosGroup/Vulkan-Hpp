@@ -185,7 +185,7 @@ add_library( Vulkan::Hpp ALIAS VulkanHpp )
 target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}" )
 target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
 if( VULKAN_HPP_RUN_GENERATOR )
-	add_dependencies( VulkanHpp build_vulkan_hpp )
+	add_dependencies( VulkanHpp build_vulkan_hpp build_video_hpp )
 endif()
 
 # Build Vulkan-Hpp as a module

@@ -49,12 +49,174 @@ option( VULKAN_HPP_ENABLE_CPP20_MODULES "Build Vulkan-Hpp as C++20 module; requi
 option( VULKAN_HPP_ENABLE_STD_MODULE "Build Vulkan-Hpp with import std; requires minimum CMake version 3.30" OFF )
 option( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER "Build C++20 module with dynamic Dispatcher" ON )
 
+function( vulkan_hpp__setup_warning_level )
+	set( options )
+	set( oneValueArgs NAME )
+	set( multiValueArgs )
+	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+
+	if( MSVC )
+		target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX )
+		if( MSVC_VER GREATER_EQUAL 1910 )
+			target_compile_options( ${TARGET_NAME} PRIVATE /permissive- )
+		endif()
+	else()
+		target_compile_options( ${TARGET_NAME} PRIVATE -Wall -Wextra -pedantic -Werror )
+	endif()
+endfunction()
+
+# Build Vulkan-Hpp and Video-Hpp generators
+if ( VULKAN_HPP_GENERATOR_BUILD )
+	set_property( GLOBAL PROPERTY USE_FOLDERS ON )
+
+	# find a clang-format version to format the generated header files
+	find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format)
+	if( CLANG_FORMAT_EXECUTABLE )
+		# get the clang-format version string
+		execute_process( COMMAND ${CLANG_FORMAT_EXECUTABLE} "--version" OUTPUT_VARIABLE clangFormatVersion )
+		# filter out the actual version
+		string( REGEX MATCH [0123456789.]+ clangFormatVersion "${clangFormatVersion}" )
+		# we need at least version 7.0.0 !
+		if( clangFormatVersion VERSION_LESS 7.0.0 )
+			message( WARNING " Found too old clang-format version <" ${clangFormatVersion} ">, we need version 7 and up to nicely format vulkan.hpp and vulkan_raii.hpp" )
+		else()
+			message( STATUS " Found clang-format version <" ${clangFormatVersion} ">." )
+			add_definitions( -DCLANG_FORMAT_EXECUTABLE="${CLANG_FORMAT_EXECUTABLE}" )
+			if( clangFormatVersion VERSION_LESS 11.0.0 )
+				message( STATUS " Using .clang-format version 7." )
+				file( READ ".clang-format_7" clangFormat )
+			elseif( clangFormatVersion VERSION_LESS 12.0.0 )
+				message( STATUS " Using .clang-format version 11." )
+				file( READ ".clang-format_11" clangFormat )
+			elseif( clangFormatVersion VERSION_LESS 13.0.0 )
+				message( STATUS " Using .clang-format version 12." )
+				file( READ ".clang-format_12" clangFormat )
+			elseif( clangFormatVersion VERSION_LESS 14.0.0 )
+				message( STATUS " Using .clang-format version 13." )
+				file( READ ".clang-format_13" clangFormat )
+			elseif( clangFormatVersion VERSION_LESS 15.0.0 )
+				message( STATUS " Using .clang-format version 14." )
+				file( READ ".clang-format_14" clangFormat )
+			else()
+				message(STATUS " Using .clang-format version 15." )
+				file( READ ".clang-format_15" clangFormat )
+			endif()
+			file( WRITE ".clang-format" ${clangFormat} )
+		endif()
+	else()
+		message( WARNING " Could not find clang-format. Generated vulkan.hpp and vulkan_raii.hpp will not be nicely formatted." )
+	endif()
+
+	# look for the file vk.xml, the ultimate source of truth for vulkan, to generate the headers from
+	if( NOT DEFINED VulkanRegistry_DIR )
+		if( DEFINED VULKAN_HPP_VULKAN_HEADERS_SRC_DIR )
+			set( VulkanRegistry_DIR "${VULKAN_HPP_VULKAN_HEADERS_SRC_DIR}/registry" )
+		else()
+			set( VulkanRegistry_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/registry" )
+		endif()
+	endif()
+	file( TO_NATIVE_PATH ${VulkanRegistry_DIR}/vk.xml vk_spec )
+	string( REPLACE "\\" "\\\\" vk_spec ${vk_spec} )
+
+	# gather the tinyxml2 sources, to be used directly in the generator project
+	if( NOT DEFINED VULKAN_HPP_TINYXML2_SRC_DIR )
+		set( VULKAN_HPP_TINYXML2_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tinyxml2" )
+	endif()
+	set( TINYXML2_SOURCES ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.cpp )
+	set( TINYXML2_HEADERS ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.h )
+	source_group( TinyXML2 FILES ${TINYXML2_HEADERS} ${TINYXML2_SOURCES} )
+
+	# The generator executable
+	add_executable( VulkanHppGenerator VulkanHppGenerator.cpp VulkanHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
+	vulkan_hpp__setup_warning_level( NAME VulkanHppGenerator )
+	target_compile_definitions( VulkanHppGenerator PUBLIC BASE_PATH="${CMAKE_CURRENT_SOURCE_DIR}" VK_SPEC="${vk_spec}" )
+	target_include_directories( VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR} )
+	set_target_properties( VulkanHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
+	if( UNIX )
+		target_link_libraries( VulkanHppGenerator PUBLIC pthread )
+	endif()
+
+	# The video generator executable
+	add_executable( VideoHppGenerator VideoHppGenerator.cpp VideoHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
+	vulkan_hpp__setup_warning_level( NAME VideoHppGenerator )
+	file( TO_NATIVE_PATH ${VulkanRegistry_DIR}/video.xml video_spec )
+	string( REPLACE "\\" "\\\\" video_spec ${video_spec} )
+	target_compile_definitions( VideoHppGenerator PUBLIC BASE_PATH="${CMAKE_CURRENT_SOURCE_DIR}" VIDEO_SPEC="${video_spec}" )
+	target_include_directories( VideoHppGenerator PRIVATE  ${VULKAN_HPP_TINYXML2_SRC_DIR} )
+	set_target_properties( VideoHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
+endif()
+
+# if the generators are to be run, add a custom commands and targets
+if( VULKAN_HPP_RUN_GENERATOR )
+	if( NOT DEFINED VulkanHeaders_INCLUDE_DIR )
+		if( DEFINED VULKAN_HPP_PATH )
+			set( VulkanHeaders_INCLUDE_DIR ${VULKAN_HPP_PATH} )
+		else()
+			set( VulkanHeaders_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
+		endif()
+	endif()
+	
+	file( TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp )
+	string( REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp} )
+
+	add_custom_command(
+		COMMAND VulkanHppGenerator
+		OUTPUT "${vulkan_hpp}"
+		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+		COMMENT "run VulkanHppGenerator"
+		DEPENDS VulkanHppGenerator "${vk_spec}" )
+	add_custom_target( build_vulkan_hpp ALL DEPENDS "${vulkan_hpp}" "${vk_spec}" )
+
+	file( TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_video.hpp vulkan_video_hpp )
+	string( REPLACE "\\" "\\\\" vulkan_video_hpp ${vulkan_video_hpp} )
+
+	add_custom_command(
+		COMMAND VideoHppGenerator
+		OUTPUT "${vulkan_video_hpp}"
+		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+		COMMENT "run VideoHppGenerator"
+		DEPENDS VideoHppGenerator "${video_spec}" )
+	add_custom_target( build_video_hpp ALL DEPENDS "${vulkan_video_hpp}" "${video_spec}" )
+endif()
+
+# Create Vulkan-Hpp interface target
+add_library( VulkanHpp INTERFACE )
+add_library( Vulkan::Hpp ALIAS VulkanHpp )
+target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}" )
+target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
+if( VULKAN_HPP_RUN_GENERATOR )
+	add_dependencies( VulkanHpp build_vulkan_hpp build_video_hpp )
+endif()
+
+# Build Vulkan-Hpp as a module
 if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	if( VULKAN_HPP_ENABLE_STD_MODULE AND CMAKE_VERSION VERSION_LESS "3.30")
 		message( FATAL_ERROR "Vulkan-Hpp: C++20 modules with import std require CMake 3.30 or later" )
 	elseif ( CMAKE_VERSION VERSION_LESS "3.28" )
 		message( FATAL_ERROR "Vulkan-Hpp: C++20 modules require CMake 3.28 or later" )
 	endif()
+
+	# create a target to provide VulkanHpp as C++20 module
+	add_library( VulkanHppModule )
+	add_library( Vulkan::HppModule ALIAS VulkanHppModule )
+	set_target_properties( VulkanHppModule PROPERTIES
+		CXX_STANDARD_REQUIRED ON
+		CXX_EXTENSIONS OFF )
+	if ( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER )
+		target_compile_definitions( VulkanHppModule PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 )
+	else()
+		target_compile_definitions( VulkanHppModule PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
+	endif()
+	if( VULKAN_HPP_ENABLE_STD_MODULE )
+		target_compile_features( VulkanHppModule PUBLIC cxx_std_23 )
+		set_target_properties( VulkanHppModule PROPERTIES CXX_MODULE_STD ON )
+	else()
+		target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
+	endif()
+	target_sources( VulkanHppModule
+		PUBLIC
+		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.cppm )
+	target_link_libraries( VulkanHppModule PUBLIC Vulkan::Hpp )
 endif()
 
 function( vulkan_hpp__setup_platform )
@@ -84,29 +246,9 @@ function( vulkan_hpp__setup_vulkan_include )
 	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 	
 	if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
-		target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}" )
-		target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
-		if( VULKAN_HPP_RUN_GENERATOR )
-			add_dependencies( ${TARGET_NAME} build_vulkan_hpp )
-		endif()
+		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
 	else()
 		target_include_directories( ${TARGET_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}" )
-	endif()
-endfunction()
-
-function( vulkan_hpp__setup_warning_level )
-	set( options )
-	set( oneValueArgs NAME )
-	set( multiValueArgs )
-	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-
-	if( MSVC )
-		target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX )
-		if( MSVC_VER GREATER_EQUAL 1910 )
-			target_compile_options( ${TARGET_NAME} PRIVATE /permissive- )
-		endif()
-	else()
-		target_compile_options( ${TARGET_NAME} PRIVATE -Wall -Wextra -pedantic -Werror )
 	endif()
 endfunction()
 
@@ -287,151 +429,6 @@ function( vulkan_hpp__setup_test )
 	endif()
 	target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_LIBRARIES} )
 endfunction()
-
-set_property( GLOBAL PROPERTY USE_FOLDERS ON )
-
-# find a clang-format version to format the generated header files
-find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format)
-if( CLANG_FORMAT_EXECUTABLE )
-	# get the clang-format version string
-	execute_process( COMMAND ${CLANG_FORMAT_EXECUTABLE} "--version" OUTPUT_VARIABLE clangFormatVersion )
-	# filter out the actual version
-	string( REGEX MATCH [0123456789.]+ clangFormatVersion "${clangFormatVersion}" )
-	# we need at least version 7.0.0 !
-	if( clangFormatVersion VERSION_LESS 7.0.0 )
-		message( WARNING " Found too old clang-format version <" ${clangFormatVersion} ">, we need version 7 and up to nicely format vulkan.hpp and vulkan_raii.hpp" )
-	else()
-		message( STATUS " Found clang-format version <" ${clangFormatVersion} ">." )
-		add_definitions( -DCLANG_FORMAT_EXECUTABLE="${CLANG_FORMAT_EXECUTABLE}" )
-		if( clangFormatVersion VERSION_LESS 11.0.0 )
-			message( STATUS " Using .clang-format version 7." )
-			file( READ ".clang-format_7" clangFormat )
-		elseif( clangFormatVersion VERSION_LESS 12.0.0 )
-			message( STATUS " Using .clang-format version 11." )
-			file( READ ".clang-format_11" clangFormat )
-		elseif( clangFormatVersion VERSION_LESS 13.0.0 )
-			message( STATUS " Using .clang-format version 12." )
-			file( READ ".clang-format_12" clangFormat )
-		elseif( clangFormatVersion VERSION_LESS 14.0.0 )
-			message( STATUS " Using .clang-format version 13." )
-			file( READ ".clang-format_13" clangFormat )
-		elseif( clangFormatVersion VERSION_LESS 15.0.0 )
-			message( STATUS " Using .clang-format version 14." )
-			file( READ ".clang-format_14" clangFormat )
-		else()
-			message(STATUS " Using .clang-format version 15." )
-			file( READ ".clang-format_15" clangFormat )
-		endif()
-		file( WRITE ".clang-format" ${clangFormat} )
-	endif()
-else()
-	message( WARNING " Could not find clang-format. Generated vulkan.hpp and vulkan_raii.hpp will not be nicely formatted." )
-endif()
-
-# look for the file vk.xml, the ultimate source of truth for vulkan, to generate the headers from
-if( NOT DEFINED VulkanRegistry_DIR )
-	if( DEFINED VULKAN_HPP_VULKAN_HEADERS_SRC_DIR )
-		set( VulkanRegistry_DIR "${VULKAN_HPP_VULKAN_HEADERS_SRC_DIR}/registry" )
-	else()
-		set( VulkanRegistry_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/registry" )
-	endif()
-endif()
-file( TO_NATIVE_PATH ${VulkanRegistry_DIR}/vk.xml vk_spec )
-string( REPLACE "\\" "\\\\" vk_spec ${vk_spec} )
-
-# gather the tinyxml2 sources, to be used directly in the generator project
-if( NOT DEFINED VULKAN_HPP_TINYXML2_SRC_DIR )
-	set( VULKAN_HPP_TINYXML2_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tinyxml2" )
-endif()
-set( TINYXML2_SOURCES ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.cpp )
-set( TINYXML2_HEADERS ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.h )
-source_group( TinyXML2 FILES ${TINYXML2_HEADERS} ${TINYXML2_SOURCES} )
-
-# Create Vulkan-Hpp interface target
-add_library( VulkanHpp INTERFACE )
-add_library( Vulkan::Hpp ALIAS VulkanHpp )
-target_include_directories( VulkanHpp INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
-
-# Build Vulkan-Hpp as a module
-if( VULKAN_HPP_ENABLE_CPP20_MODULES )
-	# create a target to provide VulkanHpp as C++20 module
-	add_library( VulkanHppModule )
-	add_library( Vulkan::HppModule ALIAS VulkanHppModule )
-	set_target_properties( VulkanHppModule PROPERTIES
-		CXX_STANDARD_REQUIRED ON
-		CXX_EXTENSIONS OFF )
-	if ( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER )
-		target_compile_definitions( VulkanHppModule PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 )
-	else()
-		target_compile_definitions( VulkanHppModule PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
-	endif()
-	if( VULKAN_HPP_ENABLE_STD_MODULE )
-		target_compile_features( VulkanHppModule PUBLIC cxx_std_23 )
-		set_target_properties( VulkanHppModule PROPERTIES CXX_MODULE_STD ON )
-	else()
-		target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
-	endif()
-	target_sources( VulkanHppModule
-		PUBLIC
-		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.cppm )
-	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
-	target_link_libraries( VulkanHppModule PUBLIC Vulkan::Hpp )
-endif()
-
-# Build Vulkan-Hpp and Video-Hpp generators
-if ( VULKAN_HPP_GENERATOR_BUILD )
-	# The generator executable
-	add_executable( VulkanHppGenerator VulkanHppGenerator.cpp VulkanHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
-	vulkan_hpp__setup_warning_level( NAME VulkanHppGenerator )
-	target_compile_definitions( VulkanHppGenerator PUBLIC BASE_PATH="${CMAKE_CURRENT_SOURCE_DIR}" VK_SPEC="${vk_spec}" )
-	target_include_directories( VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR} )
-	set_target_properties( VulkanHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
-	if( UNIX )
-		target_link_libraries( VulkanHppGenerator PUBLIC pthread )
-	endif()
-
-	# The video generator executable
-	add_executable( VideoHppGenerator VideoHppGenerator.cpp VideoHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
-	vulkan_hpp__setup_warning_level( NAME VideoHppGenerator )
-	file( TO_NATIVE_PATH ${VulkanRegistry_DIR}/video.xml video_spec )
-	string( REPLACE "\\" "\\\\" video_spec ${video_spec} )
-	target_compile_definitions( VideoHppGenerator PUBLIC BASE_PATH="${CMAKE_CURRENT_SOURCE_DIR}" VIDEO_SPEC="${video_spec}" )
-	target_include_directories( VideoHppGenerator PRIVATE  ${VULKAN_HPP_TINYXML2_SRC_DIR} )
-	set_target_properties( VideoHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
-endif()
-
-# if the generators are to be run, add a custom commands and targets
-if( VULKAN_HPP_RUN_GENERATOR )
-	if( NOT DEFINED VulkanHeaders_INCLUDE_DIR )
-		if( DEFINED VULKAN_HPP_PATH )
-			set( VulkanHeaders_INCLUDE_DIR ${VULKAN_HPP_PATH} )
-		else()
-			set( VulkanHeaders_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
-		endif()
-	endif()
-	
-	file( TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp )
-	string( REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp} )
-
-	add_custom_command(
-		COMMAND VulkanHppGenerator
-		OUTPUT "${vulkan_hpp}"
-		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-		COMMENT "run VulkanHppGenerator"
-		DEPENDS VulkanHppGenerator "${vk_spec}" )
-	add_custom_target( build_vulkan_hpp ALL DEPENDS "${vulkan_hpp}" "${vk_spec}" )
-
-	file( TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_video.hpp vulkan_video_hpp )
-	string( REPLACE "\\" "\\\\" vulkan_video_hpp ${vulkan_video_hpp} )
-
-	add_custom_command(
-		COMMAND VideoHppGenerator
-		OUTPUT "${vulkan_video_hpp}"
-		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-		COMMENT "run VideoHppGenerator"
-		DEPENDS VideoHppGenerator "${video_spec}" )
-	add_custom_target( build_video_hpp ALL DEPENDS "${vulkan_video_hpp}" "${video_spec}" )
-endif()
 
 if( VULKAN_HPP_SAMPLES_BUILD )
 	# external libraries

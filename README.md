@@ -543,30 +543,30 @@ There are a couple of static assertions for each handle class and each struct in
 
 ### Extensions / Per Device function pointers
 
-The Vulkan loader exposes only the Vulkan core functions and a limited number of extensions. To use Vulkan-Hpp with extensions it's required to have either a library which provides stubs to all used Vulkan functions or to tell Vulkan-Hpp to dispatch those functions pointers. Vulkan-Hpp provides a per-function dispatch mechanism by accepting a dispatch class as last parameter in each function call. The dispatch class must provide a callable type for each used Vulkan function. Vulkan-Hpp provides one implementation, `DispatchLoaderDynamic`, which fetches all function pointers known to the library.
+The Vulkan loader exposes only the Vulkan core functions and a limited number of extensions. To use Vulkan-Hpp with extensions it's required to have either a library which provides stubs to all used Vulkan functions or to tell Vulkan-Hpp to dispatch those functions pointers. Vulkan-Hpp provides a per-function dispatch mechanism by accepting a dispatch class as last parameter in each function call. The dispatch class must provide a callable type for each used Vulkan function. Vulkan-Hpp provides one implementation, `vk::detail::DispatchLoaderDynamic`, which fetches all function pointers known to the library.
 
 ```c++
 // Providing a function pointer resolving vkGetInstanceProcAddr, just the few functions not depending an an instance or a device are fetched
-vk::DispatchLoaderDynamic dld(getInstanceProcAddr);
+vk::detail::DispatchLoaderDynamic dld(getInstanceProcAddr);
 
 // Providing an already created VkInstance and a function pointer resolving vkGetInstanceProcAddr, all functions are fetched
-vk::DispatchLoaderDynamic dldi(instance, getInstanceProcAddr);
+vk::detail::DispatchLoaderDynamic dldi(instance, getInstanceProcAddr);
 
 // Providing also an already created VkDevice and optionally a function pointer resolving vkGetDeviceProcAddr, all functions are fetched as well, but now device-specific functions are fetched via vkDeviceGetProcAddr.
-vk::DispatchLoaderDynamic dldid( nstance, getInstanceProcAddr, device);
+vk::detail::DispatchLoaderDynamic dldid( nstance, getInstanceProcAddr, device);
 
 // Pass dispatch class to function call as last parameter
 device.getQueue(graphics_queue_family_index, 0, &graphics_queue, dldid);
 ```
 
-To use the `vk::DispatchLoaderDynamic` as the default dispatcher (means: you don't need to explicitly add it to every function call),  you need to  `#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1`, and have the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code to provide storage for that default dispatcher. Then you can use it by the macro `VULKAN_HPP_DEFAULT_DISPATCHER`, as is shown in the code snippets below.
-Creating a full featured `vk::DispatchLoaderDynamic` is a two- to three-step process, where you have three choices for the first step:
+To use the `vk::detail::DispatchLoaderDynamic` as the default dispatcher (means: you don't need to explicitly add it to every function call),  you need to  `#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1`, and have the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code to provide storage for that default dispatcher. Then you can use it by the macro `VULKAN_HPP_DEFAULT_DISPATCHER`, as is shown in the code snippets below.
+Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-step process, where you have three choices for the first step:
 1. Before any call into a vk-function you need to initialize the dynamic dispatcher by one of three methods
-- Let Vulkan-Hpp do all the work by internally using a little helper class `vk::DynamicLoader`:
+- Let Vulkan-Hpp do all the work by internally using a little helper class `vk::detail::DynamicLoader`:
 ```c++
     VULKAN_HPP_DEFAULT_DISPATCHER.init();
 ```
-- Use your own dynamic loader, which just needs to provide a templated function `getProcAddress` (compare with `vk::DynamicLoader` in `vulkan.hpp`):
+- Use your own dynamic loader, which just needs to provide a templated function `getProcAddress` (compare with `vk::detail::DynamicLoader` in `vulkan.hpp`):
 ```c++
     YourDynamicLoader ydl;
     VULKAN_HPP_DEFAULT_DISPATCHER.init(ydl);
@@ -592,7 +592,7 @@ Creating a full featured `vk::DispatchLoaderDynamic` is a two- to three-step pro
 ```
 After the second step above, the dispatcher is fully functional. Adding the third step can potentially result in more efficient code. But if you intend to use multiple devices, you could just omit that third step and let the driver do the device-dispatching.
 
-In some cases the storage for the DispatchLoaderDynamic should be embedded in a DLL. For those cases you need to define `VULKAN_HPP_STORAGE_SHARED` to tell Vulkan-Hpp that the storage resides in a DLL. When compiling the DLL with the storage it is also required to define `VULKAN_HPP_STORAGE_SHARED_EXPORT` to export the required symbols.
+In some cases the storage for the `vk::detail::DispatchLoaderDynamic` should be embedded in a DLL. For those cases you need to define `VULKAN_HPP_STORAGE_SHARED` to tell Vulkan-Hpp that the storage resides in a DLL. When compiling the DLL with the storage it is also required to define `VULKAN_HPP_STORAGE_SHARED_EXPORT` to export the required symbols.
 
 For all functions, that `VULKAN_HPP_DEFAULT_DISPATCHER` is the default for the last argument to that function. If you want to explicitly provide the dispatcher for each and every function call (when you have multiple dispatchers for different devices, for example) and you want to make sure, that you don't accidentally miss any function call, you can define `VULKAN_HPP_NO_DEFAULT_DISPATCHER` before you include `vulkan.hpp` to remove that default argument.
 
@@ -864,12 +864,12 @@ If there are no exceptions enabled (see `VULKAN_HPP_NO_EXCEPTIONS`), an assertio
 
 #### VULKAN_HPP_DEFAULT_DISPATCHER
 
-Every vk-function gets a Dispatcher as its very last argument, which defaults to `VULKAN_HPP_DEFAULT_DISPATCHER`. If `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` is defined to be `1`, it is `defaultDispatchLoaderDynamic`. This in turn is the dispatcher instance, which is defined by `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE`, which has to be used exactly once in your sources. If, on the other hand, `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` is defined to something different from `1`, `VULKAN_HPP_DEFAULT_DISPATCHER` is set to be `DispatchLoaderStatic()`.
+Every vk-function gets a Dispatcher as its very last argument, which defaults to `VULKAN_HPP_DEFAULT_DISPATCHER`. If `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` is defined to be `1`, it is `vk::detail::defaultDispatchLoaderDynamic`. This in turn is the dispatcher instance, which is defined by `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE`, which has to be used exactly once in your sources. If, on the other hand, `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` is defined to something different from `1`, `VULKAN_HPP_DEFAULT_DISPATCHER` is set to be `vk::detail::DispatchLoaderStatic()`.
 You can use your own default dispatcher by setting `VULKAN_HPP_DEFAULT_DISPATCHER` to an object that provides the same API. If you explicitly set `VULKAN_HPP_DEFAULT_DISPATCHER`, you need to set `VULKAN_HPP_DEFAULT_DISPATCHER_TYPE` accordingly as well.
 
 #### VULKAN_HPP_DEFAULT_DISPATCHER_TYPE
 
-This names the default dispatcher type, as specified by `VULKAN_HPP_DEFAULT_DISPATCHER`. Per default, it is DispatchLoaderDynamic or DispatchLoaderStatic, depending on `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` being `1` or not `1`, respectively. If you explicitly set `VULKAN_HPP_DEFAULT_DISPATCHER`, you need to set `VULKAN_HPP_DEFAULT_DISPATCHER_TYPE` accordingly as well.
+This names the default dispatcher type, as specified by `VULKAN_HPP_DEFAULT_DISPATCHER`. Per default, it is `vk::detail::DispatchLoaderDynamic` or `vk::detail::DispatchLoaderStatic`, depending on `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` being `1` or not `1`, respectively. If you explicitly set `VULKAN_HPP_DEFAULT_DISPATCHER`, you need to set `VULKAN_HPP_DEFAULT_DISPATCHER_TYPE` accordingly as well.
 
 #### VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
@@ -896,7 +896,7 @@ This either selects the dynamic (when it's `1`) or the static (when it's not `1`
 
 #### VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
 
-By default, a little helper class `DynamicLoader` is used to dynamically load the vulkan library. If you set it to something different than `1` before including `vulkan.hpp`, this helper is not available, and you need to explicitly provide your own loader type for the function `DispatchLoaderDynamic::init()`.
+By default, a little helper class `vk::detail::DynamicLoader` is used to dynamically load the vulkan library. If you set it to something different than `1` before including `vulkan.hpp`, this helper is not available, and you need to explicitly provide your own loader type for the function `vk::detail::DispatchLoaderDynamic::init()`.
 
 #### VULKAN_HPP_EXPECTED
 
@@ -965,7 +965,7 @@ Even though `vk::UniqueHandle` and `vk::SharedHandle` are semantically close to 
 
 #### VULKAN_HPP_STORAGE_API
 
-With this define you can specify whether the `DispatchLoaderDynamic` is imported or exported (see `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE`). If `VULKAN_HPP_STORAGE_API` is not defined externally, and `VULKAN_HPP_STORAGE_SHARED` is defined, depending on the `VULKAN_HPP_STORAGE_SHARED_EXPORT` being defined, `VULKAN_HPP_STORAGE_API` is either set to `__declspec( dllexport )` (for MSVC) / `__attribute__( ( visibility( "default" ) ) )` (for gcc or clang) or `__declspec( dllimport )` (for MSVC), respectively. For other compilers, you might specify the corresponding storage by defining `VULKAN_HPP_STORAGE_API` on your own.
+With this define you can specify whether the `vk::detail::DispatchLoaderDynamic` is imported or exported (see `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE`). If `VULKAN_HPP_STORAGE_API` is not defined externally, and `VULKAN_HPP_STORAGE_SHARED` is defined, depending on the `VULKAN_HPP_STORAGE_SHARED_EXPORT` being defined, `VULKAN_HPP_STORAGE_API` is either set to `__declspec( dllexport )` (for MSVC) / `__attribute__( ( visibility( "default" ) ) )` (for gcc or clang) or `__declspec( dllimport )` (for MSVC), respectively. For other compilers, you might specify the corresponding storage by defining `VULKAN_HPP_STORAGE_API` on your own.
 
 #### VULKAN_HPP_TYPESAFE_CONVERSION
 

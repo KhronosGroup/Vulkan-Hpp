@@ -20846,7 +20846,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  else
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
-    Device::acquireFullScreenExclusiveModeEXT( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, Dispatch const & d ) const
+                                          Device::acquireFullScreenExclusiveModeEXT( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -20872,7 +20872,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  else
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
-    Device::releaseFullScreenExclusiveModeEXT( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, Dispatch const & d ) const
+                                          Device::releaseFullScreenExclusiveModeEXT( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -23851,7 +23851,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  else
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
-    PhysicalDevice::acquireWinrtDisplayNV( VULKAN_HPP_NAMESPACE::DisplayKHR display, Dispatch const & d ) const
+                                          PhysicalDevice::acquireWinrtDisplayNV( VULKAN_HPP_NAMESPACE::DisplayKHR display, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -28798,6 +28798,77 @@ namespace VULKAN_HPP_NAMESPACE
     return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+#if defined( VK_USE_PLATFORM_METAL_EXT )
+  //=== VK_EXT_external_memory_metal ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getMemoryMetalHandleEXT( const VULKAN_HPP_NAMESPACE::MemoryGetMetalHandleInfoEXT * pGetMetalHandleInfo,
+                                                                                 void **                                                   pHandle,
+                                                                                 Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkGetMemoryMetalHandleEXT(
+      static_cast<VkDevice>( m_device ), reinterpret_cast<const VkMemoryGetMetalHandleInfoEXT *>( pGetMetalHandleInfo ), pHandle ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<void *>::type
+                       Device::getMemoryMetalHandleEXT( const VULKAN_HPP_NAMESPACE::MemoryGetMetalHandleInfoEXT & getMetalHandleInfo, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetMemoryMetalHandleEXT && "Function <vkGetMemoryMetalHandleEXT> requires <VK_EXT_external_memory_metal>" );
+#    endif
+
+    void *                       handle;
+    VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+      d.vkGetMemoryMetalHandleEXT( m_device, reinterpret_cast<const VkMemoryGetMetalHandleInfoEXT *>( &getMetalHandleInfo ), &handle ) );
+    VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryMetalHandleEXT" );
+
+    return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( handle ) );
+  }
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    Device::getMemoryMetalHandlePropertiesEXT( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
+                                               const void *                                           pHandle,
+                                               VULKAN_HPP_NAMESPACE::MemoryMetalHandlePropertiesEXT * pMemoryMetalHandleProperties,
+                                               Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkGetMemoryMetalHandlePropertiesEXT( static_cast<VkDevice>( m_device ),
+                                                                       static_cast<VkExternalMemoryHandleTypeFlagBits>( handleType ),
+                                                                       pHandle,
+                                                                       reinterpret_cast<VkMemoryMetalHandlePropertiesEXT *>( pMemoryMetalHandleProperties ) ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename HandleType, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::MemoryMetalHandlePropertiesEXT>::type
+                       Device::getMemoryMetalHandlePropertiesEXT( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
+                                               HandleType const &                                     handle,
+                                               Dispatch const &                                       d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetMemoryMetalHandlePropertiesEXT && "Function <vkGetMemoryMetalHandlePropertiesEXT> requires <VK_EXT_external_memory_metal>" );
+#    endif
+
+    VULKAN_HPP_NAMESPACE::MemoryMetalHandlePropertiesEXT memoryMetalHandleProperties;
+    VULKAN_HPP_NAMESPACE::Result                         result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+      d.vkGetMemoryMetalHandlePropertiesEXT( m_device,
+                                             static_cast<VkExternalMemoryHandleTypeFlagBits>( handleType ),
+                                             reinterpret_cast<const void *>( &handle ),
+                                             reinterpret_cast<VkMemoryMetalHandlePropertiesEXT *>( &memoryMetalHandleProperties ) ) );
+    VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryMetalHandlePropertiesEXT" );
+
+    return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( memoryMetalHandleProperties ) );
+  }
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif   /*VK_USE_PLATFORM_METAL_EXT*/
 
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

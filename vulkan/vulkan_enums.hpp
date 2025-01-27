@@ -1544,15 +1544,24 @@ namespace VULKAN_HPP_NAMESPACE
     eImageAlignmentControlCreateInfoMESA                       = VK_STRUCTURE_TYPE_IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA,
     ePhysicalDeviceDepthClampControlFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT,
     ePipelineViewportDepthClampControlCreateInfoEXT            = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT,
+    ePhysicalDeviceVideoMaintenance2FeaturesKHR                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_MAINTENANCE_2_FEATURES_KHR,
+    eVideoDecodeH264InlineSessionParametersInfoKHR             = VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_INLINE_SESSION_PARAMETERS_INFO_KHR,
+    eVideoDecodeH265InlineSessionParametersInfoKHR             = VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_INLINE_SESSION_PARAMETERS_INFO_KHR,
+    eVideoDecodeAv1InlineSessionParametersInfoKHR              = VK_STRUCTURE_TYPE_VIDEO_DECODE_AV1_INLINE_SESSION_PARAMETERS_INFO_KHR,
     ePhysicalDeviceHdrVividFeaturesHUAWEI                      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI,
     eHdrVividDynamicMetadataHUAWEI                             = VK_STRUCTURE_TYPE_HDR_VIVID_DYNAMIC_METADATA_HUAWEI,
     ePhysicalDeviceCooperativeMatrix2FeaturesNV                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV,
     eCooperativeMatrixFlexibleDimensionsPropertiesNV           = VK_STRUCTURE_TYPE_COOPERATIVE_MATRIX_FLEXIBLE_DIMENSIONS_PROPERTIES_NV,
     ePhysicalDeviceCooperativeMatrix2PropertiesNV              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV,
     ePhysicalDevicePipelineOpacityMicromapFeaturesARM          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_OPACITY_MICROMAP_FEATURES_ARM,
-    ePhysicalDeviceDepthClampZeroOneFeaturesKHR                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR,
-    ePhysicalDeviceDepthClampZeroOneFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT,
-    ePhysicalDeviceVertexAttributeRobustnessFeaturesEXT        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT
+#if defined( VK_USE_PLATFORM_METAL_EXT )
+    eImportMemoryMetalHandleInfoEXT = VK_STRUCTURE_TYPE_IMPORT_MEMORY_METAL_HANDLE_INFO_EXT,
+    eMemoryMetalHandlePropertiesEXT = VK_STRUCTURE_TYPE_MEMORY_METAL_HANDLE_PROPERTIES_EXT,
+    eMemoryGetMetalHandleInfoEXT    = VK_STRUCTURE_TYPE_MEMORY_GET_METAL_HANDLE_INFO_EXT,
+#endif /*VK_USE_PLATFORM_METAL_EXT*/
+    ePhysicalDeviceDepthClampZeroOneFeaturesKHR         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_KHR,
+    ePhysicalDeviceDepthClampZeroOneFeaturesEXT         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT,
+    ePhysicalDeviceVertexAttributeRobustnessFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_ROBUSTNESS_FEATURES_EXT
   };
 
   enum class PipelineCacheHeaderVersion
@@ -3961,8 +3970,13 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
     eRdmaAddressNV = VK_EXTERNAL_MEMORY_HANDLE_TYPE_RDMA_ADDRESS_BIT_NV,
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
-    eScreenBufferQNX = VK_EXTERNAL_MEMORY_HANDLE_TYPE_SCREEN_BUFFER_BIT_QNX
+    eScreenBufferQNX = VK_EXTERNAL_MEMORY_HANDLE_TYPE_SCREEN_BUFFER_BIT_QNX,
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+#if defined( VK_USE_PLATFORM_METAL_EXT )
+    eMtlbufferEXT  = VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLBUFFER_BIT_EXT,
+    eMtltextureEXT = VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLTEXTURE_BIT_EXT,
+    eMtlheapEXT    = VK_EXTERNAL_MEMORY_HANDLE_TYPE_MTLHEAP_BIT_EXT
+#endif /*VK_USE_PLATFORM_METAL_EXT*/
   };
   using ExternalMemoryHandleTypeFlagBitsKHR = ExternalMemoryHandleTypeFlagBits;
 
@@ -3988,6 +4002,9 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
       | ExternalMemoryHandleTypeFlagBits::eScreenBufferQNX
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+#if defined( VK_USE_PLATFORM_METAL_EXT )
+      | ExternalMemoryHandleTypeFlagBits::eMtlbufferEXT | ExternalMemoryHandleTypeFlagBits::eMtltextureEXT | ExternalMemoryHandleTypeFlagBits::eMtlheapEXT
+#endif /*VK_USE_PLATFORM_METAL_EXT*/
       ;
   };
 
@@ -5218,7 +5235,8 @@ namespace VULKAN_HPP_NAMESPACE
     eAllowEncodeParameterOptimizations = VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_PARAMETER_OPTIMIZATIONS_BIT_KHR,
     eInlineQueries                     = VK_VIDEO_SESSION_CREATE_INLINE_QUERIES_BIT_KHR,
     eAllowEncodeQuantizationDeltaMap   = VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR,
-    eAllowEncodeEmphasisMap            = VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_EMPHASIS_MAP_BIT_KHR
+    eAllowEncodeEmphasisMap            = VK_VIDEO_SESSION_CREATE_ALLOW_ENCODE_EMPHASIS_MAP_BIT_KHR,
+    eInlineSessionParameters           = VK_VIDEO_SESSION_CREATE_INLINE_SESSION_PARAMETERS_BIT_KHR
   };
 
   using VideoSessionCreateFlagsKHR = Flags<VideoSessionCreateFlagBitsKHR>;
@@ -5230,7 +5248,7 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR VideoSessionCreateFlagsKHR allFlags =
       VideoSessionCreateFlagBitsKHR::eProtectedContent | VideoSessionCreateFlagBitsKHR::eAllowEncodeParameterOptimizations |
       VideoSessionCreateFlagBitsKHR::eInlineQueries | VideoSessionCreateFlagBitsKHR::eAllowEncodeQuantizationDeltaMap |
-      VideoSessionCreateFlagBitsKHR::eAllowEncodeEmphasisMap;
+      VideoSessionCreateFlagBitsKHR::eAllowEncodeEmphasisMap | VideoSessionCreateFlagBitsKHR::eInlineSessionParameters;
   };
 
   enum class VideoCodingControlFlagBitsKHR : VkVideoCodingControlFlagsKHR

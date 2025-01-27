@@ -44,7 +44,7 @@ export namespace VULKAN_HPP_NAMESPACE
     using VULKAN_HPP_NAMESPACE::detail::DispatchLoaderStatic;
     using VULKAN_HPP_NAMESPACE::detail::getDispatchLoaderStatic;
 #endif /*VK_NO_PROTOTYPES*/
-  }    // namespace detail
+  }  // namespace detail
 
   using VULKAN_HPP_NAMESPACE::operator&;
   using VULKAN_HPP_NAMESPACE::operator|;
@@ -2654,6 +2654,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTDepthClampControlExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTDepthClampControlSpecVersion;
 
+  //=== VK_KHR_video_maintenance2 ===
+  using VULKAN_HPP_NAMESPACE::KHRVideoMaintenance2ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRVideoMaintenance2SpecVersion;
+
   //=== VK_HUAWEI_hdr_vivid ===
   using VULKAN_HPP_NAMESPACE::HUAWEIHdrVividExtensionName;
   using VULKAN_HPP_NAMESPACE::HUAWEIHdrVividSpecVersion;
@@ -2665,6 +2669,12 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_ARM_pipeline_opacity_micromap ===
   using VULKAN_HPP_NAMESPACE::ARMPipelineOpacityMicromapExtensionName;
   using VULKAN_HPP_NAMESPACE::ARMPipelineOpacityMicromapSpecVersion;
+
+#if defined( VK_USE_PLATFORM_METAL_EXT )
+  //=== VK_EXT_external_memory_metal ===
+  using VULKAN_HPP_NAMESPACE::EXTExternalMemoryMetalExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTExternalMemoryMetalSpecVersion;
+#endif /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_KHR_depth_clamp_zero_one ===
   using VULKAN_HPP_NAMESPACE::KHRDepthClampZeroOneExtensionName;
@@ -4681,6 +4691,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampControlFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PipelineViewportDepthClampControlCreateInfoEXT;
 
+  //=== VK_KHR_video_maintenance2 ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoMaintenance2FeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::VideoDecodeAV1InlineSessionParametersInfoKHR;
+  using VULKAN_HPP_NAMESPACE::VideoDecodeH264InlineSessionParametersInfoKHR;
+  using VULKAN_HPP_NAMESPACE::VideoDecodeH265InlineSessionParametersInfoKHR;
+
   //=== VK_HUAWEI_hdr_vivid ===
   using VULKAN_HPP_NAMESPACE::HdrVividDynamicMetadataHUAWEI;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceHdrVividFeaturesHUAWEI;
@@ -4692,6 +4708,13 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_ARM_pipeline_opacity_micromap ===
   using VULKAN_HPP_NAMESPACE::PhysicalDevicePipelineOpacityMicromapFeaturesARM;
+
+#if defined( VK_USE_PLATFORM_METAL_EXT )
+  //=== VK_EXT_external_memory_metal ===
+  using VULKAN_HPP_NAMESPACE::ImportMemoryMetalHandleInfoEXT;
+  using VULKAN_HPP_NAMESPACE::MemoryGetMetalHandleInfoEXT;
+  using VULKAN_HPP_NAMESPACE::MemoryMetalHandlePropertiesEXT;
+#endif /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_KHR_depth_clamp_zero_one ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampZeroOneFeaturesEXT;
@@ -5048,7 +5071,7 @@ export namespace VULKAN_HPP_NAMESPACE
   namespace detail
   {
     using VULKAN_HPP_NAMESPACE::detail::DynamicLoader;
-  }    // namespace detail
+  }  // namespace detail
 #endif /*VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL*/
 
   //=====================
@@ -8253,6 +8276,16 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::DepthClampRangeEXT>;
 
+  //=== VK_KHR_video_maintenance2 ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoMaintenance2FeaturesKHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoDecodeH264InlineSessionParametersInfoKHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoDecodeH265InlineSessionParametersInfoKHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoDecodeAV1InlineSessionParametersInfoKHR>;
+
   //=== VK_HUAWEI_hdr_vivid ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceHdrVividFeaturesHUAWEI>;
@@ -8270,6 +8303,16 @@ export namespace std
   //=== VK_ARM_pipeline_opacity_micromap ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePipelineOpacityMicromapFeaturesARM>;
+
+#if defined( VK_USE_PLATFORM_METAL_EXT )
+  //=== VK_EXT_external_memory_metal ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ImportMemoryMetalHandleInfoEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::MemoryMetalHandlePropertiesEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::MemoryGetMetalHandleInfoEXT>;
+#endif /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_KHR_depth_clamp_zero_one ===
   template <>

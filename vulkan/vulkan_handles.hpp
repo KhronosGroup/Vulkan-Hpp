@@ -1967,6 +1967,12 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineViewportDepthClampControlCreateInfoEXT;
   struct DepthClampRangeEXT;
 
+  //=== VK_KHR_video_maintenance2 ===
+  struct PhysicalDeviceVideoMaintenance2FeaturesKHR;
+  struct VideoDecodeH264InlineSessionParametersInfoKHR;
+  struct VideoDecodeH265InlineSessionParametersInfoKHR;
+  struct VideoDecodeAV1InlineSessionParametersInfoKHR;
+
   //=== VK_HUAWEI_hdr_vivid ===
   struct PhysicalDeviceHdrVividFeaturesHUAWEI;
   struct HdrVividDynamicMetadataHUAWEI;
@@ -1978,6 +1984,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_ARM_pipeline_opacity_micromap ===
   struct PhysicalDevicePipelineOpacityMicromapFeaturesARM;
+
+#if defined( VK_USE_PLATFORM_METAL_EXT )
+  //=== VK_EXT_external_memory_metal ===
+  struct ImportMemoryMetalHandleInfoEXT;
+  struct MemoryMetalHandlePropertiesEXT;
+  struct MemoryGetMetalHandleInfoEXT;
+#endif /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_KHR_depth_clamp_zero_one ===
   struct PhysicalDeviceDepthClampZeroOneFeaturesKHR;
@@ -15263,6 +15276,34 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::WriteIndirectExecutionSetShaderEXT> const & executionSetWrites,
       Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+#if defined( VK_USE_PLATFORM_METAL_EXT )
+    //=== VK_EXT_external_memory_metal ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getMemoryMetalHandleEXT( const VULKAN_HPP_NAMESPACE::MemoryGetMetalHandleInfoEXT * pGetMetalHandleInfo,
+                                                         void **                                                   pHandle,
+                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<void *>::type
+      getMemoryMetalHandleEXT( const VULKAN_HPP_NAMESPACE::MemoryGetMetalHandleInfoEXT & getMetalHandleInfo,
+                               Dispatch const & d                                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getMemoryMetalHandlePropertiesEXT( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
+                                                                   const void *                                           pHandle,
+                                                                   VULKAN_HPP_NAMESPACE::MemoryMetalHandlePropertiesEXT * pMemoryMetalHandleProperties,
+                                                                   Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename HandleType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<VULKAN_HPP_NAMESPACE::MemoryMetalHandlePropertiesEXT>::type
+      getMemoryMetalHandlePropertiesEXT( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
+                                         HandleType const &                                     handle,
+                                         Dispatch const & d                                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif   /*VK_USE_PLATFORM_METAL_EXT*/
 
     operator VkDevice() const VULKAN_HPP_NOEXCEPT
     {

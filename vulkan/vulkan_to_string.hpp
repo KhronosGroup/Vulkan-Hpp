@@ -1343,6 +1343,14 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ExternalMemoryHandleTypeFlagBits::eScreenBufferQNX )
       result += "ScreenBufferQNX | ";
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+#if defined( VK_USE_PLATFORM_METAL_EXT )
+    if ( value & ExternalMemoryHandleTypeFlagBits::eMtlbufferEXT )
+      result += "MtlbufferEXT | ";
+    if ( value & ExternalMemoryHandleTypeFlagBits::eMtltextureEXT )
+      result += "MtltextureEXT | ";
+    if ( value & ExternalMemoryHandleTypeFlagBits::eMtlheapEXT )
+      result += "MtlheapEXT | ";
+#endif /*VK_USE_PLATFORM_METAL_EXT*/
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -2323,6 +2331,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "AllowEncodeQuantizationDeltaMap | ";
     if ( value & VideoSessionCreateFlagBitsKHR::eAllowEncodeEmphasisMap )
       result += "AllowEncodeEmphasisMap | ";
+    if ( value & VideoSessionCreateFlagBitsKHR::eInlineSessionParameters )
+      result += "InlineSessionParameters | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -4804,12 +4814,21 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eImageAlignmentControlCreateInfoMESA: return "ImageAlignmentControlCreateInfoMESA";
       case StructureType::ePhysicalDeviceDepthClampControlFeaturesEXT: return "PhysicalDeviceDepthClampControlFeaturesEXT";
       case StructureType::ePipelineViewportDepthClampControlCreateInfoEXT: return "PipelineViewportDepthClampControlCreateInfoEXT";
+      case StructureType::ePhysicalDeviceVideoMaintenance2FeaturesKHR: return "PhysicalDeviceVideoMaintenance2FeaturesKHR";
+      case StructureType::eVideoDecodeH264InlineSessionParametersInfoKHR: return "VideoDecodeH264InlineSessionParametersInfoKHR";
+      case StructureType::eVideoDecodeH265InlineSessionParametersInfoKHR: return "VideoDecodeH265InlineSessionParametersInfoKHR";
+      case StructureType::eVideoDecodeAv1InlineSessionParametersInfoKHR: return "VideoDecodeAv1InlineSessionParametersInfoKHR";
       case StructureType::ePhysicalDeviceHdrVividFeaturesHUAWEI: return "PhysicalDeviceHdrVividFeaturesHUAWEI";
       case StructureType::eHdrVividDynamicMetadataHUAWEI: return "HdrVividDynamicMetadataHUAWEI";
       case StructureType::ePhysicalDeviceCooperativeMatrix2FeaturesNV: return "PhysicalDeviceCooperativeMatrix2FeaturesNV";
       case StructureType::eCooperativeMatrixFlexibleDimensionsPropertiesNV: return "CooperativeMatrixFlexibleDimensionsPropertiesNV";
       case StructureType::ePhysicalDeviceCooperativeMatrix2PropertiesNV: return "PhysicalDeviceCooperativeMatrix2PropertiesNV";
       case StructureType::ePhysicalDevicePipelineOpacityMicromapFeaturesARM: return "PhysicalDevicePipelineOpacityMicromapFeaturesARM";
+#if defined( VK_USE_PLATFORM_METAL_EXT )
+      case StructureType::eImportMemoryMetalHandleInfoEXT: return "ImportMemoryMetalHandleInfoEXT";
+      case StructureType::eMemoryMetalHandlePropertiesEXT: return "MemoryMetalHandlePropertiesEXT";
+      case StructureType::eMemoryGetMetalHandleInfoEXT: return "MemoryGetMetalHandleInfoEXT";
+#endif /*VK_USE_PLATFORM_METAL_EXT*/
       case StructureType::ePhysicalDeviceDepthClampZeroOneFeaturesKHR: return "PhysicalDeviceDepthClampZeroOneFeaturesKHR";
       case StructureType::ePhysicalDeviceVertexAttributeRobustnessFeaturesEXT: return "PhysicalDeviceVertexAttributeRobustnessFeaturesEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
@@ -6658,6 +6677,11 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
       case ExternalMemoryHandleTypeFlagBits::eScreenBufferQNX: return "ScreenBufferQNX";
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+#if defined( VK_USE_PLATFORM_METAL_EXT )
+      case ExternalMemoryHandleTypeFlagBits::eMtlbufferEXT: return "MtlbufferEXT";
+      case ExternalMemoryHandleTypeFlagBits::eMtltextureEXT: return "MtltextureEXT";
+      case ExternalMemoryHandleTypeFlagBits::eMtlheapEXT: return "MtlheapEXT";
+#endif /*VK_USE_PLATFORM_METAL_EXT*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7513,6 +7537,7 @@ namespace VULKAN_HPP_NAMESPACE
       case VideoSessionCreateFlagBitsKHR::eInlineQueries: return "InlineQueries";
       case VideoSessionCreateFlagBitsKHR::eAllowEncodeQuantizationDeltaMap: return "AllowEncodeQuantizationDeltaMap";
       case VideoSessionCreateFlagBitsKHR::eAllowEncodeEmphasisMap: return "AllowEncodeEmphasisMap";
+      case VideoSessionCreateFlagBitsKHR::eInlineSessionParameters: return "InlineSessionParameters";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

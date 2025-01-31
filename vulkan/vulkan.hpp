@@ -63,7 +63,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 306, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 307, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -5959,6 +5959,27 @@ namespace VULKAN_HPP_NAMESPACE
         return ::vkGetDynamicRenderingTilePropertiesQCOM( device, pRenderingInfo, pProperties );
       }
 
+      //=== VK_NV_cooperative_vector ===
+
+      VkResult vkGetPhysicalDeviceCooperativeVectorPropertiesNV( VkPhysicalDevice                  physicalDevice,
+                                                                 uint32_t *                        pPropertyCount,
+                                                                 VkCooperativeVectorPropertiesNV * pProperties ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetPhysicalDeviceCooperativeVectorPropertiesNV( physicalDevice, pPropertyCount, pProperties );
+      }
+
+      VkResult vkConvertCooperativeVectorMatrixNV( VkDevice device, const VkConvertCooperativeVectorMatrixInfoNV * pInfo ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkConvertCooperativeVectorMatrixNV( device, pInfo );
+      }
+
+      void vkCmdConvertCooperativeVectorMatrixNV( VkCommandBuffer                                commandBuffer,
+                                                  uint32_t                                       infoCount,
+                                                  const VkConvertCooperativeVectorMatrixInfoNV * pInfos ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkCmdConvertCooperativeVectorMatrixNV( commandBuffer, infoCount, pInfos );
+      }
+
       //=== VK_NV_low_latency2 ===
 
       VkResult vkSetLatencySleepModeNV( VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepModeInfoNV * pSleepModeInfo ) const VULKAN_HPP_NOEXCEPT
@@ -6072,6 +6093,36 @@ namespace VULKAN_HPP_NAMESPACE
         const VkBindDescriptorBufferEmbeddedSamplersInfoEXT * pBindDescriptorBufferEmbeddedSamplersInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindDescriptorBufferEmbeddedSamplers2EXT( commandBuffer, pBindDescriptorBufferEmbeddedSamplersInfo );
+      }
+
+      //=== VK_NV_cluster_acceleration_structure ===
+
+      void vkGetClusterAccelerationStructureBuildSizesNV( VkDevice                                          device,
+                                                          const VkClusterAccelerationStructureInputInfoNV * pInfo,
+                                                          VkAccelerationStructureBuildSizesInfoKHR *        pSizeInfo ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetClusterAccelerationStructureBuildSizesNV( device, pInfo, pSizeInfo );
+      }
+
+      void vkCmdBuildClusterAccelerationStructureIndirectNV( VkCommandBuffer                                      commandBuffer,
+                                                             const VkClusterAccelerationStructureCommandsInfoNV * pCommandInfos ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkCmdBuildClusterAccelerationStructureIndirectNV( commandBuffer, pCommandInfos );
+      }
+
+      //=== VK_NV_partitioned_acceleration_structure ===
+
+      void vkGetPartitionedAccelerationStructuresBuildSizesNV( VkDevice                                                   device,
+                                                               const VkPartitionedAccelerationStructureInstancesInputNV * pInfo,
+                                                               VkAccelerationStructureBuildSizesInfoKHR *                 pSizeInfo ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetPartitionedAccelerationStructuresBuildSizesNV( device, pInfo, pSizeInfo );
+      }
+
+      void vkCmdBuildPartitionedAccelerationStructuresNV( VkCommandBuffer                                       commandBuffer,
+                                                          const VkBuildPartitionedAccelerationStructureInfoNV * pBuildInfo ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkCmdBuildPartitionedAccelerationStructuresNV( commandBuffer, pBuildInfo );
       }
 
       //=== VK_EXT_device_generated_commands ===
@@ -7136,6 +7187,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_video_decode_av1 ===
   VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxVideoAv1ReferencesPerFrameKHR = VK_MAX_VIDEO_AV1_REFERENCES_PER_FRAME_KHR;
+
+  //=== VK_NV_partitioned_acceleration_structure ===
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t PartitionedAccelerationStructurePartitionIndexGlobalNV = VK_PARTITIONED_ACCELERATION_STRUCTURE_PARTITION_INDEX_GLOBAL_NV;
 
   //========================
   //=== CONSTEXPR VALUEs ===
@@ -8587,6 +8641,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto NVDeviceGeneratedCommandsComputeExtensionName = VK_NV_DEVICE_GENERATED_COMMANDS_COMPUTE_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVDeviceGeneratedCommandsComputeSpecVersion   = VK_NV_DEVICE_GENERATED_COMMANDS_COMPUTE_SPEC_VERSION;
 
+  //=== VK_NV_ray_tracing_linear_swept_spheres ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingLinearSweptSpheresExtensionName = VK_NV_RAY_TRACING_LINEAR_SWEPT_SPHERES_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingLinearSweptSpheresSpecVersion   = VK_NV_RAY_TRACING_LINEAR_SWEPT_SPHERES_SPEC_VERSION;
+
   //=== VK_NV_linear_color_attachment ===
   VULKAN_HPP_CONSTEXPR_INLINE auto NVLinearColorAttachmentExtensionName = VK_NV_LINEAR_COLOR_ATTACHMENT_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVLinearColorAttachmentSpecVersion   = VK_NV_LINEAR_COLOR_ATTACHMENT_SPEC_VERSION;
@@ -8688,6 +8746,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_ray_tracing_invocation_reorder ===
   VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingInvocationReorderExtensionName = VK_NV_RAY_TRACING_INVOCATION_REORDER_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingInvocationReorderSpecVersion   = VK_NV_RAY_TRACING_INVOCATION_REORDER_SPEC_VERSION;
+
+  //=== VK_NV_cooperative_vector ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVCooperativeVectorExtensionName = VK_NV_COOPERATIVE_VECTOR_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVCooperativeVectorSpecVersion   = VK_NV_COOPERATIVE_VECTOR_SPEC_VERSION;
 
   //=== VK_NV_extended_sparse_address_space ===
   VULKAN_HPP_CONSTEXPR_INLINE auto NVExtendedSparseAddressSpaceExtensionName = VK_NV_EXTENDED_SPARSE_ADDRESS_SPACE_EXTENSION_NAME;
@@ -8850,6 +8912,14 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_ray_tracing_validation ===
   VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingValidationExtensionName = VK_NV_RAY_TRACING_VALIDATION_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingValidationSpecVersion   = VK_NV_RAY_TRACING_VALIDATION_SPEC_VERSION;
+
+  //=== VK_NV_cluster_acceleration_structure ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVClusterAccelerationStructureExtensionName = VK_NV_CLUSTER_ACCELERATION_STRUCTURE_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVClusterAccelerationStructureSpecVersion   = VK_NV_CLUSTER_ACCELERATION_STRUCTURE_SPEC_VERSION;
+
+  //=== VK_NV_partitioned_acceleration_structure ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVPartitionedAccelerationStructureExtensionName = VK_NV_PARTITIONED_ACCELERATION_STRUCTURE_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVPartitionedAccelerationStructureSpecVersion   = VK_NV_PARTITIONED_ACCELERATION_STRUCTURE_SPEC_VERSION;
 
   //=== VK_EXT_device_generated_commands ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTDeviceGeneratedCommandsExtensionName = VK_EXT_DEVICE_GENERATED_COMMANDS_EXTENSION_NAME;
@@ -15716,6 +15786,25 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_NV_ray_tracing_linear_swept_spheres ===
+  template <>
+  struct StructExtends<PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_NV_linear_color_attachment ===
   template <>
   struct StructExtends<PhysicalDeviceLinearColorAttachmentFeaturesNV, PhysicalDeviceFeatures2>
@@ -16354,6 +16443,34 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceRayTracingInvocationReorderFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_cooperative_vector ===
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeVectorPropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeVectorFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeVectorFeaturesNV, DeviceCreateInfo>
   {
     enum
     {
@@ -17396,6 +17513,89 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceRayTracingValidationFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_cluster_acceleration_structure ===
+  template <>
+  struct StructExtends<PhysicalDeviceClusterAccelerationStructureFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceClusterAccelerationStructureFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceClusterAccelerationStructurePropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<RayTracingPipelineClusterAccelerationStructureCreateInfoNV, RayTracingPipelineCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_partitioned_acceleration_structure ===
+  template <>
+  struct StructExtends<PhysicalDevicePartitionedAccelerationStructureFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDevicePartitionedAccelerationStructureFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDevicePartitionedAccelerationStructurePropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PartitionedAccelerationStructureFlagsNV, PartitionedAccelerationStructureInstancesInputNV>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<WriteDescriptorSetPartitionedAccelerationStructureNV, WriteDescriptorSet>
   {
     enum
     {
@@ -19009,6 +19209,11 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetFramebufferTilePropertiesQCOM      vkGetFramebufferTilePropertiesQCOM      = 0;
       PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM = 0;
 
+      //=== VK_NV_cooperative_vector ===
+      PFN_vkGetPhysicalDeviceCooperativeVectorPropertiesNV vkGetPhysicalDeviceCooperativeVectorPropertiesNV = 0;
+      PFN_vkConvertCooperativeVectorMatrixNV               vkConvertCooperativeVectorMatrixNV               = 0;
+      PFN_vkCmdConvertCooperativeVectorMatrixNV            vkCmdConvertCooperativeVectorMatrixNV            = 0;
+
       //=== VK_NV_low_latency2 ===
       PFN_vkSetLatencySleepModeNV  vkSetLatencySleepModeNV  = 0;
       PFN_vkLatencySleepNV         vkLatencySleepNV         = 0;
@@ -19043,6 +19248,14 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdPushDescriptorSetWithTemplate2KHR        vkCmdPushDescriptorSetWithTemplate2KHR        = 0;
       PFN_vkCmdSetDescriptorBufferOffsets2EXT           vkCmdSetDescriptorBufferOffsets2EXT           = 0;
       PFN_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT vkCmdBindDescriptorBufferEmbeddedSamplers2EXT = 0;
+
+      //=== VK_NV_cluster_acceleration_structure ===
+      PFN_vkGetClusterAccelerationStructureBuildSizesNV    vkGetClusterAccelerationStructureBuildSizesNV    = 0;
+      PFN_vkCmdBuildClusterAccelerationStructureIndirectNV vkCmdBuildClusterAccelerationStructureIndirectNV = 0;
+
+      //=== VK_NV_partitioned_acceleration_structure ===
+      PFN_vkGetPartitionedAccelerationStructuresBuildSizesNV vkGetPartitionedAccelerationStructuresBuildSizesNV = 0;
+      PFN_vkCmdBuildPartitionedAccelerationStructuresNV      vkCmdBuildPartitionedAccelerationStructuresNV      = 0;
 
       //=== VK_EXT_device_generated_commands ===
       PFN_vkGetGeneratedCommandsMemoryRequirementsEXT vkGetGeneratedCommandsMemoryRequirementsEXT = 0;
@@ -20516,6 +20729,13 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetDynamicRenderingTilePropertiesQCOM =
           PFN_vkGetDynamicRenderingTilePropertiesQCOM( vkGetInstanceProcAddr( instance, "vkGetDynamicRenderingTilePropertiesQCOM" ) );
 
+        //=== VK_NV_cooperative_vector ===
+        vkGetPhysicalDeviceCooperativeVectorPropertiesNV =
+          PFN_vkGetPhysicalDeviceCooperativeVectorPropertiesNV( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCooperativeVectorPropertiesNV" ) );
+        vkConvertCooperativeVectorMatrixNV = PFN_vkConvertCooperativeVectorMatrixNV( vkGetInstanceProcAddr( instance, "vkConvertCooperativeVectorMatrixNV" ) );
+        vkCmdConvertCooperativeVectorMatrixNV =
+          PFN_vkCmdConvertCooperativeVectorMatrixNV( vkGetInstanceProcAddr( instance, "vkCmdConvertCooperativeVectorMatrixNV" ) );
+
         //=== VK_NV_low_latency2 ===
         vkSetLatencySleepModeNV  = PFN_vkSetLatencySleepModeNV( vkGetInstanceProcAddr( instance, "vkSetLatencySleepModeNV" ) );
         vkLatencySleepNV         = PFN_vkLatencySleepNV( vkGetInstanceProcAddr( instance, "vkLatencySleepNV" ) );
@@ -20564,6 +20784,18 @@ namespace VULKAN_HPP_NAMESPACE
           PFN_vkCmdSetDescriptorBufferOffsets2EXT( vkGetInstanceProcAddr( instance, "vkCmdSetDescriptorBufferOffsets2EXT" ) );
         vkCmdBindDescriptorBufferEmbeddedSamplers2EXT =
           PFN_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT( vkGetInstanceProcAddr( instance, "vkCmdBindDescriptorBufferEmbeddedSamplers2EXT" ) );
+
+        //=== VK_NV_cluster_acceleration_structure ===
+        vkGetClusterAccelerationStructureBuildSizesNV =
+          PFN_vkGetClusterAccelerationStructureBuildSizesNV( vkGetInstanceProcAddr( instance, "vkGetClusterAccelerationStructureBuildSizesNV" ) );
+        vkCmdBuildClusterAccelerationStructureIndirectNV =
+          PFN_vkCmdBuildClusterAccelerationStructureIndirectNV( vkGetInstanceProcAddr( instance, "vkCmdBuildClusterAccelerationStructureIndirectNV" ) );
+
+        //=== VK_NV_partitioned_acceleration_structure ===
+        vkGetPartitionedAccelerationStructuresBuildSizesNV =
+          PFN_vkGetPartitionedAccelerationStructuresBuildSizesNV( vkGetInstanceProcAddr( instance, "vkGetPartitionedAccelerationStructuresBuildSizesNV" ) );
+        vkCmdBuildPartitionedAccelerationStructuresNV =
+          PFN_vkCmdBuildPartitionedAccelerationStructuresNV( vkGetInstanceProcAddr( instance, "vkCmdBuildPartitionedAccelerationStructuresNV" ) );
 
         //=== VK_EXT_device_generated_commands ===
         vkGetGeneratedCommandsMemoryRequirementsEXT =
@@ -21679,6 +21911,11 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetDynamicRenderingTilePropertiesQCOM =
           PFN_vkGetDynamicRenderingTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetDynamicRenderingTilePropertiesQCOM" ) );
 
+        //=== VK_NV_cooperative_vector ===
+        vkConvertCooperativeVectorMatrixNV = PFN_vkConvertCooperativeVectorMatrixNV( vkGetDeviceProcAddr( device, "vkConvertCooperativeVectorMatrixNV" ) );
+        vkCmdConvertCooperativeVectorMatrixNV =
+          PFN_vkCmdConvertCooperativeVectorMatrixNV( vkGetDeviceProcAddr( device, "vkCmdConvertCooperativeVectorMatrixNV" ) );
+
         //=== VK_NV_low_latency2 ===
         vkSetLatencySleepModeNV  = PFN_vkSetLatencySleepModeNV( vkGetDeviceProcAddr( device, "vkSetLatencySleepModeNV" ) );
         vkLatencySleepNV         = PFN_vkLatencySleepNV( vkGetDeviceProcAddr( device, "vkLatencySleepNV" ) );
@@ -21720,6 +21957,18 @@ namespace VULKAN_HPP_NAMESPACE
         vkCmdSetDescriptorBufferOffsets2EXT = PFN_vkCmdSetDescriptorBufferOffsets2EXT( vkGetDeviceProcAddr( device, "vkCmdSetDescriptorBufferOffsets2EXT" ) );
         vkCmdBindDescriptorBufferEmbeddedSamplers2EXT =
           PFN_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT( vkGetDeviceProcAddr( device, "vkCmdBindDescriptorBufferEmbeddedSamplers2EXT" ) );
+
+        //=== VK_NV_cluster_acceleration_structure ===
+        vkGetClusterAccelerationStructureBuildSizesNV =
+          PFN_vkGetClusterAccelerationStructureBuildSizesNV( vkGetDeviceProcAddr( device, "vkGetClusterAccelerationStructureBuildSizesNV" ) );
+        vkCmdBuildClusterAccelerationStructureIndirectNV =
+          PFN_vkCmdBuildClusterAccelerationStructureIndirectNV( vkGetDeviceProcAddr( device, "vkCmdBuildClusterAccelerationStructureIndirectNV" ) );
+
+        //=== VK_NV_partitioned_acceleration_structure ===
+        vkGetPartitionedAccelerationStructuresBuildSizesNV =
+          PFN_vkGetPartitionedAccelerationStructuresBuildSizesNV( vkGetDeviceProcAddr( device, "vkGetPartitionedAccelerationStructuresBuildSizesNV" ) );
+        vkCmdBuildPartitionedAccelerationStructuresNV =
+          PFN_vkCmdBuildPartitionedAccelerationStructuresNV( vkGetDeviceProcAddr( device, "vkCmdBuildPartitionedAccelerationStructuresNV" ) );
 
         //=== VK_EXT_device_generated_commands ===
         vkGetGeneratedCommandsMemoryRequirementsEXT =

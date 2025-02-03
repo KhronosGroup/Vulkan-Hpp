@@ -15686,6 +15686,9 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
   }
   assert( !name.empty() );
 
+  checkForError( ( memberData.type.postfix.length() < 3 ) || !memberData.type.postfix.starts_with( "[" ) || !memberData.type.postfix.ends_with( "]" ),
+                 line,
+                 "struct member <" + name + "> has its array size <" + memberData.type.postfix + "> at the wrong position" );
   if ( api.empty() || ( api == m_api ) )
   {
     checkForError( std::none_of( members.begin(), members.end(), [&name]( MemberData const & md ) { return md.name == name; } ),

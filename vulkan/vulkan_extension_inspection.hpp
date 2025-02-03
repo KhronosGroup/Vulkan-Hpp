@@ -385,6 +385,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_NV_copy_memory_indirect",
                                                             "VK_NV_memory_decompression",
                                                             "VK_NV_device_generated_commands_compute",
+                                                            "VK_NV_ray_tracing_linear_swept_spheres",
                                                             "VK_NV_linear_color_attachment",
                                                             "VK_KHR_shader_maximal_reconvergence",
                                                             "VK_EXT_image_compression_control_swapchain",
@@ -410,6 +411,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_SEC_amigo_profiling",
                                                             "VK_QCOM_multiview_per_view_viewports",
                                                             "VK_NV_ray_tracing_invocation_reorder",
+                                                            "VK_NV_cooperative_vector",
                                                             "VK_NV_extended_sparse_address_space",
                                                             "VK_EXT_mutable_descriptor_type",
                                                             "VK_EXT_legacy_vertex_attributes",
@@ -450,6 +452,8 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_NV_shader_atomic_float16_vector",
                                                             "VK_EXT_shader_replicated_composites",
                                                             "VK_NV_ray_tracing_validation",
+                                                            "VK_NV_cluster_acceleration_structure",
+                                                            "VK_NV_partitioned_acceleration_structure",
                                                             "VK_EXT_device_generated_commands",
                                                             "VK_KHR_maintenance8",
                                                             "VK_MESA_image_alignment_control",
@@ -2059,6 +2063,11 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_NV_device_generated_commands",
             } } } } },
+      { "VK_NV_ray_tracing_linear_swept_spheres",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_ray_tracing_pipeline",
+            } } } } },
       { "VK_NV_linear_color_attachment",
         { { "VK_VERSION_1_0",
             { {
@@ -2369,6 +2378,16 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_format_feature_flags2",
             } } } } },
       { "VK_KHR_maintenance7", { { "VK_VERSION_1_1", { {} } } } },
+      { "VK_NV_cluster_acceleration_structure",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_acceleration_structure",
+            } } } } },
+      { "VK_NV_partitioned_acceleration_structure",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_acceleration_structure",
+            } } } } },
       { "VK_EXT_device_generated_commands",
         { { "VK_VERSION_1_0",
             { {
@@ -3264,25 +3283,27 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_non_seamless_cube_map" ) || ( extension == "VK_ARM_render_pass_striped" ) ||
            ( extension == "VK_QCOM_fragment_density_map_offset" ) || ( extension == "VK_NV_copy_memory_indirect" ) ||
            ( extension == "VK_NV_memory_decompression" ) || ( extension == "VK_NV_device_generated_commands_compute" ) ||
-           ( extension == "VK_NV_linear_color_attachment" ) || ( extension == "VK_KHR_shader_maximal_reconvergence" ) ||
-           ( extension == "VK_EXT_image_compression_control_swapchain" ) || ( extension == "VK_QCOM_image_processing" ) ||
-           ( extension == "VK_EXT_nested_command_buffer" ) || ( extension == "VK_EXT_external_memory_acquire_unmodified" ) ||
-           ( extension == "VK_EXT_extended_dynamic_state3" ) || ( extension == "VK_EXT_subpass_merge_feedback" ) ||
-           ( extension == "VK_EXT_shader_module_identifier" ) || ( extension == "VK_EXT_rasterization_order_attachment_access" ) ||
-           ( extension == "VK_NV_optical_flow" ) || ( extension == "VK_EXT_legacy_dithering" ) || ( extension == "VK_EXT_pipeline_protected_access" )
+           ( extension == "VK_NV_ray_tracing_linear_swept_spheres" ) || ( extension == "VK_NV_linear_color_attachment" ) ||
+           ( extension == "VK_KHR_shader_maximal_reconvergence" ) || ( extension == "VK_EXT_image_compression_control_swapchain" ) ||
+           ( extension == "VK_QCOM_image_processing" ) || ( extension == "VK_EXT_nested_command_buffer" ) ||
+           ( extension == "VK_EXT_external_memory_acquire_unmodified" ) || ( extension == "VK_EXT_extended_dynamic_state3" ) ||
+           ( extension == "VK_EXT_subpass_merge_feedback" ) || ( extension == "VK_EXT_shader_module_identifier" ) ||
+           ( extension == "VK_EXT_rasterization_order_attachment_access" ) || ( extension == "VK_NV_optical_flow" ) ||
+           ( extension == "VK_EXT_legacy_dithering" ) || ( extension == "VK_EXT_pipeline_protected_access" )
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
         || ( extension == "VK_ANDROID_external_format_resolve" )
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
         || ( extension == "VK_KHR_maintenance5" ) || ( extension == "VK_AMD_anti_lag" ) || ( extension == "VK_KHR_ray_tracing_position_fetch" ) ||
            ( extension == "VK_EXT_shader_object" ) || ( extension == "VK_KHR_pipeline_binary" ) || ( extension == "VK_QCOM_tile_properties" ) ||
            ( extension == "VK_SEC_amigo_profiling" ) || ( extension == "VK_QCOM_multiview_per_view_viewports" ) ||
-           ( extension == "VK_NV_ray_tracing_invocation_reorder" ) || ( extension == "VK_NV_extended_sparse_address_space" ) ||
-           ( extension == "VK_EXT_mutable_descriptor_type" ) || ( extension == "VK_EXT_legacy_vertex_attributes" ) ||
-           ( extension == "VK_ARM_shader_core_builtins" ) || ( extension == "VK_EXT_pipeline_library_group_handles" ) ||
-           ( extension == "VK_EXT_dynamic_rendering_unused_attachments" ) || ( extension == "VK_NV_low_latency2" ) ||
-           ( extension == "VK_KHR_cooperative_matrix" ) || ( extension == "VK_QCOM_multiview_per_view_render_areas" ) ||
-           ( extension == "VK_KHR_compute_shader_derivatives" ) || ( extension == "VK_KHR_video_decode_av1" ) || ( extension == "VK_KHR_video_encode_av1" ) ||
-           ( extension == "VK_KHR_video_maintenance1" ) || ( extension == "VK_NV_per_stage_descriptor_set" ) || ( extension == "VK_QCOM_image_processing2" ) ||
+           ( extension == "VK_NV_ray_tracing_invocation_reorder" ) || ( extension == "VK_NV_cooperative_vector" ) ||
+           ( extension == "VK_NV_extended_sparse_address_space" ) || ( extension == "VK_EXT_mutable_descriptor_type" ) ||
+           ( extension == "VK_EXT_legacy_vertex_attributes" ) || ( extension == "VK_ARM_shader_core_builtins" ) ||
+           ( extension == "VK_EXT_pipeline_library_group_handles" ) || ( extension == "VK_EXT_dynamic_rendering_unused_attachments" ) ||
+           ( extension == "VK_NV_low_latency2" ) || ( extension == "VK_KHR_cooperative_matrix" ) ||
+           ( extension == "VK_QCOM_multiview_per_view_render_areas" ) || ( extension == "VK_KHR_compute_shader_derivatives" ) ||
+           ( extension == "VK_KHR_video_decode_av1" ) || ( extension == "VK_KHR_video_encode_av1" ) || ( extension == "VK_KHR_video_maintenance1" ) ||
+           ( extension == "VK_NV_per_stage_descriptor_set" ) || ( extension == "VK_QCOM_image_processing2" ) ||
            ( extension == "VK_QCOM_filter_cubic_weights" ) || ( extension == "VK_QCOM_ycbcr_degamma" ) || ( extension == "VK_QCOM_filter_cubic_clamp" ) ||
            ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" ) || ( extension == "VK_KHR_vertex_attribute_divisor" ) ||
            ( extension == "VK_KHR_load_store_op_none" ) || ( extension == "VK_KHR_shader_float_controls2" )
@@ -3295,8 +3316,9 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_NV_raw_access_chains" ) || ( extension == "VK_KHR_shader_relaxed_extended_instruction" ) ||
            ( extension == "VK_NV_command_buffer_inheritance" ) || ( extension == "VK_KHR_maintenance7" ) ||
            ( extension == "VK_NV_shader_atomic_float16_vector" ) || ( extension == "VK_EXT_shader_replicated_composites" ) ||
-           ( extension == "VK_NV_ray_tracing_validation" ) || ( extension == "VK_EXT_device_generated_commands" ) || ( extension == "VK_KHR_maintenance8" ) ||
-           ( extension == "VK_MESA_image_alignment_control" ) || ( extension == "VK_EXT_depth_clamp_control" ) ||
+           ( extension == "VK_NV_ray_tracing_validation" ) || ( extension == "VK_NV_cluster_acceleration_structure" ) ||
+           ( extension == "VK_NV_partitioned_acceleration_structure" ) || ( extension == "VK_EXT_device_generated_commands" ) ||
+           ( extension == "VK_KHR_maintenance8" ) || ( extension == "VK_MESA_image_alignment_control" ) || ( extension == "VK_EXT_depth_clamp_control" ) ||
            ( extension == "VK_KHR_video_maintenance2" ) || ( extension == "VK_HUAWEI_hdr_vivid" ) || ( extension == "VK_NV_cooperative_matrix2" ) ||
            ( extension == "VK_ARM_pipeline_opacity_micromap" )
 #if defined( VK_USE_PLATFORM_METAL_EXT )

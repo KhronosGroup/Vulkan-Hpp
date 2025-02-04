@@ -826,6 +826,11 @@ export namespace VULKAN_HPP_NAMESPACE
 export namespace std
 {
   ${hashSpecializations}
+
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+  using std::tuple_size;
+  using std::tuple_element;
+#endif
 }
 
 // This VkFlags type is used as part of a bitfield in some structure.

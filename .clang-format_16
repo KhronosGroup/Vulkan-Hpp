@@ -8,9 +8,10 @@ AlignConsecutiveDeclarations : Consecutive
 AlignConsecutiveMacros : Consecutive
 AlignEscapedNewlines : Left
 AlignOperands : AlignAfterOperator
-AlignTrailingComments : true
+AlignTrailingComments :
+    Kind : Always
+    OverEmptyLines : 0
 AllowAllArgumentsOnNextLine : true
-AllowAllConstructorInitializersOnNextLine : true
 AllowAllParametersOfDeclarationOnNextLine : true
 AllowShortBlocksOnASingleLine : Empty
 AllowShortCaseLabelsOnASingleLine : true
@@ -43,16 +44,17 @@ BraceWrapping :
     SplitEmptyFunction : true
     SplitEmptyRecord : true
     SplitEmptyNamespace : true
+BreakAfterAttributes: Leave
 BreakBeforeBinaryOperators : None
 BreakBeforeBraces : Custom
 BreakBeforeConceptDeclarations : Always
+BreakBeforeInlineASMColon : OnlyMultiline
 BreakBeforeTernaryOperators : true
 BreakConstructorInitializers : BeforeComma
 BreakInheritanceList : BeforeComma
 BreakStringLiterals : false
 ColumnLimit : 160
 CompactNamespaces : false
-ConstructorInitializerAllOnOneLineOrOnePerLine : true
 ConstructorInitializerIndentWidth : 2
 ContinuationIndentWidth : 2
 Cpp11BracedListStyle : false
@@ -65,17 +67,29 @@ IndentCaseBlocks : true
 IndentCaseLabels : true
 IndentExternBlock : true
 IndentPPDirectives : AfterHash
-IndentRequires : false
+IndentRequiresClause : false
 IndentWidth : 2
 IndentWrappedFunctionNames : true
+InsertBraces : false
+InsertNewlineAtEOF : true
+IntegerLiteralSeparator :
+    Binary : 4
+    Decimal : 0
+    Hex : 2
+    HexMinDigits : 6
 KeepEmptyLinesAtTheStartOfBlocks : false
 LambdaBodyIndentation : Signature
 MaxEmptyLinesToKeep : 1
 NamespaceIndentation : All
+PackConstructorInitializers : NextLine
 PPIndentWidth : -1
 PointerAlignment : Middle
 ReferenceAlignment : Pointer
 ReflowComments : true
+RemoveBracesLLVM : false
+RequiresClausePosition : OwnLine
+RequiresExpressionIndentation : Keyword
+SeparateDefinitionBlocks : Always
 ShortNamespaceLines : 0
 SortIncludes : true
 SortUsingDeclarations : true

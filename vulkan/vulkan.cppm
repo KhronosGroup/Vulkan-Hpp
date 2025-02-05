@@ -8483,6 +8483,14 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT>;
 
+  //===============================================
+  //=== Required exports for vk::StructureChain ===
+  //===============================================
+
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+  using std::tuple_element;
+  using std::tuple_size;
+#endif
 }  // namespace std
 
 // This VkFlags type is used as part of a bitfield in some structure.

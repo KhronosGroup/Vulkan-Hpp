@@ -6884,44 +6884,44 @@ namespace VULKAN_HPP_NAMESPACE
     {
       switch ( result )
       {
-        case Result::eErrorOutOfHostMemory: throw OutOfHostMemoryError( message );
-        case Result::eErrorOutOfDeviceMemory: throw OutOfDeviceMemoryError( message );
-        case Result::eErrorInitializationFailed: throw InitializationFailedError( message );
-        case Result::eErrorDeviceLost: throw DeviceLostError( message );
-        case Result::eErrorMemoryMapFailed: throw MemoryMapFailedError( message );
-        case Result::eErrorLayerNotPresent: throw LayerNotPresentError( message );
-        case Result::eErrorExtensionNotPresent: throw ExtensionNotPresentError( message );
-        case Result::eErrorFeatureNotPresent: throw FeatureNotPresentError( message );
-        case Result::eErrorIncompatibleDriver: throw IncompatibleDriverError( message );
-        case Result::eErrorTooManyObjects: throw TooManyObjectsError( message );
-        case Result::eErrorFormatNotSupported: throw FormatNotSupportedError( message );
-        case Result::eErrorFragmentedPool: throw FragmentedPoolError( message );
-        case Result::eErrorUnknown: throw UnknownError( message );
-        case Result::eErrorOutOfPoolMemory: throw OutOfPoolMemoryError( message );
-        case Result::eErrorInvalidExternalHandle: throw InvalidExternalHandleError( message );
-        case Result::eErrorFragmentation: throw FragmentationError( message );
-        case Result::eErrorInvalidOpaqueCaptureAddress: throw InvalidOpaqueCaptureAddressError( message );
-        case Result::eErrorNotPermitted: throw NotPermittedError( message );
-        case Result::eErrorSurfaceLostKHR: throw SurfaceLostKHRError( message );
-        case Result::eErrorNativeWindowInUseKHR: throw NativeWindowInUseKHRError( message );
-        case Result::eErrorOutOfDateKHR: throw OutOfDateKHRError( message );
-        case Result::eErrorIncompatibleDisplayKHR: throw IncompatibleDisplayKHRError( message );
-        case Result::eErrorValidationFailedEXT: throw ValidationFailedEXTError( message );
-        case Result::eErrorInvalidShaderNV: throw InvalidShaderNVError( message );
-        case Result::eErrorImageUsageNotSupportedKHR: throw ImageUsageNotSupportedKHRError( message );
-        case Result::eErrorVideoPictureLayoutNotSupportedKHR: throw VideoPictureLayoutNotSupportedKHRError( message );
-        case Result::eErrorVideoProfileOperationNotSupportedKHR: throw VideoProfileOperationNotSupportedKHRError( message );
-        case Result::eErrorVideoProfileFormatNotSupportedKHR: throw VideoProfileFormatNotSupportedKHRError( message );
-        case Result::eErrorVideoProfileCodecNotSupportedKHR: throw VideoProfileCodecNotSupportedKHRError( message );
-        case Result::eErrorVideoStdVersionNotSupportedKHR: throw VideoStdVersionNotSupportedKHRError( message );
+        case Result::eErrorOutOfHostMemory                       : throw OutOfHostMemoryError( message );
+        case Result::eErrorOutOfDeviceMemory                     : throw OutOfDeviceMemoryError( message );
+        case Result::eErrorInitializationFailed                  : throw InitializationFailedError( message );
+        case Result::eErrorDeviceLost                            : throw DeviceLostError( message );
+        case Result::eErrorMemoryMapFailed                       : throw MemoryMapFailedError( message );
+        case Result::eErrorLayerNotPresent                       : throw LayerNotPresentError( message );
+        case Result::eErrorExtensionNotPresent                   : throw ExtensionNotPresentError( message );
+        case Result::eErrorFeatureNotPresent                     : throw FeatureNotPresentError( message );
+        case Result::eErrorIncompatibleDriver                    : throw IncompatibleDriverError( message );
+        case Result::eErrorTooManyObjects                        : throw TooManyObjectsError( message );
+        case Result::eErrorFormatNotSupported                    : throw FormatNotSupportedError( message );
+        case Result::eErrorFragmentedPool                        : throw FragmentedPoolError( message );
+        case Result::eErrorUnknown                               : throw UnknownError( message );
+        case Result::eErrorOutOfPoolMemory                       : throw OutOfPoolMemoryError( message );
+        case Result::eErrorInvalidExternalHandle                 : throw InvalidExternalHandleError( message );
+        case Result::eErrorFragmentation                         : throw FragmentationError( message );
+        case Result::eErrorInvalidOpaqueCaptureAddress           : throw InvalidOpaqueCaptureAddressError( message );
+        case Result::eErrorNotPermitted                          : throw NotPermittedError( message );
+        case Result::eErrorSurfaceLostKHR                        : throw SurfaceLostKHRError( message );
+        case Result::eErrorNativeWindowInUseKHR                  : throw NativeWindowInUseKHRError( message );
+        case Result::eErrorOutOfDateKHR                          : throw OutOfDateKHRError( message );
+        case Result::eErrorIncompatibleDisplayKHR                : throw IncompatibleDisplayKHRError( message );
+        case Result::eErrorValidationFailedEXT                   : throw ValidationFailedEXTError( message );
+        case Result::eErrorInvalidShaderNV                       : throw InvalidShaderNVError( message );
+        case Result::eErrorImageUsageNotSupportedKHR             : throw ImageUsageNotSupportedKHRError( message );
+        case Result::eErrorVideoPictureLayoutNotSupportedKHR     : throw VideoPictureLayoutNotSupportedKHRError( message );
+        case Result::eErrorVideoProfileOperationNotSupportedKHR  : throw VideoProfileOperationNotSupportedKHRError( message );
+        case Result::eErrorVideoProfileFormatNotSupportedKHR     : throw VideoProfileFormatNotSupportedKHRError( message );
+        case Result::eErrorVideoProfileCodecNotSupportedKHR      : throw VideoProfileCodecNotSupportedKHRError( message );
+        case Result::eErrorVideoStdVersionNotSupportedKHR        : throw VideoStdVersionNotSupportedKHRError( message );
         case Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: throw InvalidDrmFormatModifierPlaneLayoutEXTError( message );
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
         case Result::eErrorFullScreenExclusiveModeLostEXT: throw FullScreenExclusiveModeLostEXTError( message );
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
         case Result::eErrorInvalidVideoStdParametersKHR: throw InvalidVideoStdParametersKHRError( message );
-        case Result::eErrorCompressionExhaustedEXT: throw CompressionExhaustedEXTError( message );
-        case Result::eErrorNotEnoughSpaceKHR: throw NotEnoughSpaceKHRError( message );
-        default: throw SystemError( make_error_code( result ), message );
+        case Result::eErrorCompressionExhaustedEXT     : throw CompressionExhaustedEXTError( message );
+        case Result::eErrorNotEnoughSpaceKHR           : throw NotEnoughSpaceKHRError( message );
+        default                                        : throw SystemError( make_error_code( result ), message );
       }
     }
   }  // namespace detail

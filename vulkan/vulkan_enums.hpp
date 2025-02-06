@@ -8228,15 +8228,15 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( layerSettingType )
     {
-      case LayerSettingTypeEXT::eBool32: return std::is_same<T, VULKAN_HPP_NAMESPACE::Bool32>::value;
-      case LayerSettingTypeEXT::eInt32: return std::is_same<T, int32_t>::value;
-      case LayerSettingTypeEXT::eInt64: return std::is_same<T, int64_t>::value;
-      case LayerSettingTypeEXT::eUint32: return std::is_same<T, uint32_t>::value;
-      case LayerSettingTypeEXT::eUint64: return std::is_same<T, uint64_t>::value;
+      case LayerSettingTypeEXT::eBool32 : return std::is_same<T, VULKAN_HPP_NAMESPACE::Bool32>::value;
+      case LayerSettingTypeEXT::eInt32  : return std::is_same<T, int32_t>::value;
+      case LayerSettingTypeEXT::eInt64  : return std::is_same<T, int64_t>::value;
+      case LayerSettingTypeEXT::eUint32 : return std::is_same<T, uint32_t>::value;
+      case LayerSettingTypeEXT::eUint64 : return std::is_same<T, uint64_t>::value;
       case LayerSettingTypeEXT::eFloat32: return std::is_same<T, float>::value;
       case LayerSettingTypeEXT::eFloat64: return std::is_same<T, double>::value;
-      case LayerSettingTypeEXT::eString: return std::is_same<T, char *>::value;
-      default: return false;
+      case LayerSettingTypeEXT::eString : return std::is_same<T, char *>::value;
+      default                           : return false;
     }
   }
 
@@ -8722,30 +8722,30 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( objectType )
     {
         //=== VK_VERSION_1_0 ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eInstance: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eInstance;
-      case VULKAN_HPP_NAMESPACE::ObjectType::ePhysicalDevice: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePhysicalDevice;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDevice: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDevice;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eQueue: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eQueue;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDeviceMemory: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDeviceMemory;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eFence: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eFence;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eSemaphore: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSemaphore;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eEvent: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eEvent;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eQueryPool: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eQueryPool;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eBuffer: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBuffer;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eBufferView: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBufferView;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eImage: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eImage;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eImageView: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eImageView;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eShaderModule: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eShaderModule;
-      case VULKAN_HPP_NAMESPACE::ObjectType::ePipelineCache: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipelineCache;
-      case VULKAN_HPP_NAMESPACE::ObjectType::ePipeline: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipeline;
-      case VULKAN_HPP_NAMESPACE::ObjectType::ePipelineLayout: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipelineLayout;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eSampler: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSampler;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorPool: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorPool;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorSet: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorSet;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eInstance           : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eInstance;
+      case VULKAN_HPP_NAMESPACE::ObjectType::ePhysicalDevice     : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePhysicalDevice;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eDevice             : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDevice;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eQueue              : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eQueue;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eDeviceMemory       : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDeviceMemory;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eFence              : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eFence;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eSemaphore          : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSemaphore;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eEvent              : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eEvent;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eQueryPool          : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eQueryPool;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eBuffer             : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBuffer;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eBufferView         : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBufferView;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eImage              : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eImage;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eImageView          : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eImageView;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eShaderModule       : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eShaderModule;
+      case VULKAN_HPP_NAMESPACE::ObjectType::ePipelineCache      : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipelineCache;
+      case VULKAN_HPP_NAMESPACE::ObjectType::ePipeline           : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipeline;
+      case VULKAN_HPP_NAMESPACE::ObjectType::ePipelineLayout     : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipelineLayout;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eSampler            : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSampler;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorPool     : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorPool;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorSet      : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorSet;
       case VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorSetLayout: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorSetLayout;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eFramebuffer: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eFramebuffer;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eRenderPass: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eRenderPass;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eCommandPool: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCommandPool;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eFramebuffer        : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eFramebuffer;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eRenderPass         : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eRenderPass;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eCommandPool        : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCommandPool;
       case VULKAN_HPP_NAMESPACE::ObjectType::eCommandBuffer:
         return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCommandBuffer;
 
@@ -8814,7 +8814,7 @@ namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         //=== VK_NV_cuda_kernel_launch ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eCudaModuleNV: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCudaModuleNV;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eCudaModuleNV  : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCudaModuleNV;
       case VULKAN_HPP_NAMESPACE::ObjectType::eCudaFunctionNV: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCudaFunctionNV;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
@@ -8841,7 +8841,7 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_EXT_device_generated_commands ===
       case VULKAN_HPP_NAMESPACE::ObjectType::eIndirectCommandsLayoutEXT: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eIndirectExecutionSetEXT: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eIndirectExecutionSetEXT  : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
 
       default: VULKAN_HPP_ASSERT( false && "unknown ObjectType" ); return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
     }

@@ -47,7 +47,7 @@ option( VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC "Build only dynamic" OFF )
 option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
 option( VULKAN_HPP_ENABLE_CPP20_MODULES "Build Vulkan-Hpp as C++20 module; requires minimum CMake version 3.28" OFF )
 option( VULKAN_HPP_ENABLE_STD_MODULE "Build Vulkan-Hpp with import std; requires minimum CMake version 3.30" OFF )
-option( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER "Build C++20 module with dynamic Dispatcher" ON )
+option( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER "Build C++20 module with dynamic Dispatcher" ON ) # TODO: remove this one
 # options for vulkan hpp compile definitions
 option( VULKAN_HPP_DISABLE_ENHANCED_MODE "TODO" OFF )
 option( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC "TODO" OFF )
@@ -297,11 +297,6 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	set_target_properties( VulkanHppModule PROPERTIES
 		CXX_STANDARD_REQUIRED ON
 		CXX_EXTENSIONS OFF )
-	if ( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER )
-		target_compile_definitions( VulkanHppModule PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 )
-	else()
-		target_compile_definitions( VulkanHppModule PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
-	endif()
 	if( VULKAN_HPP_ENABLE_STD_MODULE )
 		target_compile_features( VulkanHppModule PUBLIC cxx_std_23 )
 		set_target_properties( VulkanHppModule PROPERTIES CXX_MODULE_STD ON )

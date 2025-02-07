@@ -48,6 +48,36 @@ option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers"
 option( VULKAN_HPP_ENABLE_CPP20_MODULES "Build Vulkan-Hpp as C++20 module; requires minimum CMake version 3.28" OFF )
 option( VULKAN_HPP_ENABLE_STD_MODULE "Build Vulkan-Hpp with import std; requires minimum CMake version 3.30" OFF )
 option( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER "Build C++20 module with dynamic Dispatcher" ON )
+# options for vulkan hpp compile definitions
+option( VULKAN_HPP_DISABLE_ENHANCED_MODE "TODO" OFF )
+option( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC "TODO" OFF )
+option( VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL "TODO" ON ) # "NO_DYNAMIC_LOADER_TOOL" might be better
+option( VULKAN_HPP_USE_REFLECT "TODO" OFF )
+option( VULKAN_HPP_TYPESAFE_CONVERSION "TODO" ON )
+option( VULKAN_HPP_HANDLES_MOVE_EXCHANGE "TODO" OFF )
+option( VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC "TODO" OFF )
+option( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST "TODO" OFF )
+option( VULKAN_HPP_NO_SETTERS "TODO" OFF )
+option( VULKAN_HPP_NO_TO_STRING "TODO" OFF )
+option( VULKAN_HPP_NO_EXCEPTIONS "TODO" OFF )
+option( VULKAN_HPP_NO_CONSTRUCTORS "TODO" OFF )
+option( VULKAN_HPP_NO_SMART_HANDLE "TODO" OFF )
+option( VULKAN_HPP_RAII_NO_EXCEPTIONS "TODO" OFF )
+option( VULKAN_HPP_NO_WIN32_PROTOTYPES "TODO" OFF )
+option( VULKAN_HPP_NO_NODISCARD_WARNINGS "TODO" OFF )
+option( VULKAN_HPP_NO_SPACESHIP_OPERATOR "TODO" OFF )
+# TODO: not sure how to easily add these (particularly for cpp module) as they arent simple flags
+# VULKAN_HPP_ASSERT
+# VULKAN_HPP_ASSERT_ON_RESULT
+# VULKAN_HPP_DEFAULT_DISPATCHER
+# VULKAN_HPP_DEFAULT_DISPATCHER_TYPE
+# VULKAN_HPP_EXPECTED
+# VULKAN_HPP_UNEXPECTED
+# VULKAN_HPP_HASH_COMBINE
+# VULKAN_HPP_INLINE
+# VULKAN_HPP_NAMESPACE
+# VULKAN_HPP_STORAGE_API
+# TODO: allow generation of shorter vulkan header files by reading compile definitions?
 
 function( vulkan_hpp__setup_warning_level )
 	set( options )
@@ -195,6 +225,62 @@ target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}" )
 target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
 if( VULKAN_HPP_RUN_GENERATOR )
 	add_dependencies( VulkanHpp build_vulkan_hpp build_video_hpp )
+endif()
+
+# set up compile definitions
+if ( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_DISABLE_ENHANCED_MODE")
+endif()
+if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+	target_compile_definitions(VulkanHpp INTERFACE "VK_NO_PROTOTYPES")
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC") # theoretically unnecessary
+else()
+	# TODO: shouldnt we link to the vulkan-1 lib here?
+endif()
+if ( VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL")
+endif()
+if ( VULKAN_HPP_USE_REFLECT )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_USE_REFLECT")
+endif()
+if ( NOT VULKAN_HPP_TYPESAFE_CONVERSION )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_TYPESAFE_CONVERSION=0")
+endif()
+if ( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_HANDLES_MOVE_EXCHANGE")
+endif()
+if ( VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC")
+endif()
+if ( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST")
+endif()
+if ( VULKAN_HPP_NO_SETTERS )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_SETTERS")
+endif()
+if ( VULKAN_HPP_NO_TO_STRING )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_TO_STRING")
+endif()
+if ( VULKAN_HPP_NO_EXCEPTIONS )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_EXCEPTIONS")
+endif()
+if ( VULKAN_HPP_NO_CONSTRUCTORS )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_CONSTRUCTORS")
+endif()
+if ( VULKAN_HPP_NO_SMART_HANDLE )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_SMART_HANDLE")
+endif()
+if ( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_RAII_NO_EXCEPTIONS")
+endif()
+if ( VULKAN_HPP_NO_WIN32_PROTOTYPES )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_WIN32_PROTOTYPES")
+endif()
+if ( VULKAN_HPP_NO_NODISCARD_WARNINGS )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_NODISCARD_WARNINGS")
+endif()
+if ( VULKAN_HPP_NO_SPACESHIP_OPERATOR )
+	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_SPACESHIP_OPERATOR")
 endif()
 
 # Build Vulkan-Hpp as a module

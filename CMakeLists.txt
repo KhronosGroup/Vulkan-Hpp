@@ -52,7 +52,6 @@ option( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER "Build C++20 module with dyna
 # options for vulkan hpp compile definitions
 option( VULKAN_HPP_DISABLE_ENHANCED_MODE "TODO" OFF )
 option( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC "TODO" OFF )
-option( VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL "TODO" ON )
 option( VULKAN_HPP_USE_REFLECT "TODO" OFF )
 option( VULKAN_HPP_TYPESAFE_CONVERSION "TODO" ON )
 option( VULKAN_HPP_HANDLES_MOVE_EXCHANGE "TODO" OFF )
@@ -78,6 +77,7 @@ option( VULKAN_HPP_NO_SPACESHIP_OPERATOR "TODO" OFF )
 # VULKAN_HPP_INLINE
 # VULKAN_HPP_NAMESPACE
 # VULKAN_HPP_STORAGE_API
+# VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
 # TODO: allow generation of shorter vulkan header files by reading compile definitions?
 
 function( vulkan_hpp__setup_warning_level )
@@ -235,7 +235,6 @@ endif()
 if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
 	target_compile_definitions(VulkanHpp INTERFACE "VK_NO_PROTOTYPES")
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC")
-	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL=${VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL}")
 else()
 	# TODO: shouldnt we link to the vulkan-1 lib here?
 endif()

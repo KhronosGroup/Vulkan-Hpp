@@ -922,10 +922,6 @@ This is set to be the compiler-dependent attribute used to mark functions as inl
 
 By default, the namespace used with `vulkan.hpp` is `vk`. By defining `VULKAN_HPP_NAMESPACE` before including `vulkan.hpp`, you can adjust this.
 
-#### VULKAN_HPP_NO_TO_STRING
-
-By default, the file [`vulkan_to_string.hpp`](vulkan/vulkan_to_string.hpp) is included by `vulkan.hpp` and provides functions `vk::to_string` for enums and bitmasks. If you don't need those functions, you can define `VULKAN_HPP_NO_TO_STRING` to prevent that inclusion. If you have certain files where you want to use those functions nevertheless, you can explicitly include `vulkan_to_string.hpp` there.
-
 #### VULKAN_HPP_NO_CONSTRUCTORS
 
 With C++20, designated initializers are available. Their use requires the absence of any user-defined constructors. Define `VULKAN_HPP_NO_CONSTRUCTORS` to remove constructors from structs and unions.
@@ -949,6 +945,10 @@ By defining `VULKAN_HPP_NO_SMART_HANDLE` before including `vulkan.hpp`, the help
 #### VULKAN_HPP_NO_SPACESHIP_OPERATOR
 
 With C++20, the so-called spaceship-operator `<=>` is introduced. If that operator is supported, all the structs and classes in vulkan.hpp use the default implementation of it. As currently some implementations of this operator are very slow, and others seem to be incomplete, by defining `VULKAN_HPP_NO_SPACESHIP_OPERATOR` before including `vulkan.hpp` you can remove that operator from those structs and classes.
+
+#### VULKAN_HPP_NO_TO_STRING
+
+By default, the file [`vulkan_to_string.hpp`](vulkan/vulkan_to_string.hpp) is included by `vulkan.hpp` and provides functions `vk::to_string` for enums and bitmasks. If you don't need those functions, you can define `VULKAN_HPP_NO_TO_STRING` to prevent that inclusion. If you have certain files where you want to use those functions nevertheless, you can explicitly include `vulkan_to_string.hpp` there.
 
 #### VULKAN_HPP_NO_WIN32_PROTOTYPES
 

@@ -66,18 +66,6 @@ option( VULKAN_HPP_RAII_NO_EXCEPTIONS "TODO" OFF )
 option( VULKAN_HPP_NO_WIN32_PROTOTYPES "TODO" OFF )
 option( VULKAN_HPP_NO_NODISCARD_WARNINGS "TODO" OFF )
 option( VULKAN_HPP_NO_SPACESHIP_OPERATOR "TODO" OFF )
-# TODO: not sure how to easily add these (particularly for cpp module) as they arent simple flags
-# VULKAN_HPP_ASSERT
-# VULKAN_HPP_ASSERT_ON_RESULT
-# VULKAN_HPP_DEFAULT_DISPATCHER
-# VULKAN_HPP_DEFAULT_DISPATCHER_TYPE
-# VULKAN_HPP_EXPECTED
-# VULKAN_HPP_UNEXPECTED
-# VULKAN_HPP_HASH_COMBINE
-# VULKAN_HPP_INLINE
-# VULKAN_HPP_NAMESPACE
-# VULKAN_HPP_STORAGE_API
-# VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
 # TODO: allow generation of shorter vulkan header files by reading compile definitions?
 
 function( vulkan_hpp__setup_warning_level )

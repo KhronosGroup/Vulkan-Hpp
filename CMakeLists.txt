@@ -51,7 +51,7 @@ option( VULKAN_HPP_ENABLE_STD_MODULE "Build Vulkan-Hpp with import std; requires
 option( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER "Build C++20 module with dynamic Dispatcher" ON )
 # options for vulkan hpp compile definitions
 option( VULKAN_HPP_DISABLE_ENHANCED_MODE "TODO" OFF )
-option( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC "TODO" OFF )
+option( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC "TODO" ${VK_NO_PROTOTYPES} )
 option( VULKAN_HPP_USE_REFLECT "TODO" OFF )
 option( VULKAN_HPP_TYPESAFE_CONVERSION "TODO" ON )
 option( VULKAN_HPP_HANDLES_MOVE_EXCHANGE "TODO" OFF )
@@ -66,6 +66,10 @@ option( VULKAN_HPP_RAII_NO_EXCEPTIONS "TODO" OFF )
 option( VULKAN_HPP_NO_WIN32_PROTOTYPES "TODO" OFF )
 option( VULKAN_HPP_NO_NODISCARD_WARNINGS "TODO" OFF )
 option( VULKAN_HPP_NO_SPACESHIP_OPERATOR "TODO" OFF )
+# manually set VK_NO_PROTOTYPES undefined
+if ( NOT DEFINED VK_NO_PROTOTYPES )
+	set ( VK_NO_PROTOTYPES ${VULKAN_HPP_DISPATCH_LOADER_DYNAMIC} )
+endif()
 # TODO: allow generation of shorter vulkan header files by reading compile definitions?
 
 function( vulkan_hpp__setup_warning_level )
@@ -220,8 +224,12 @@ endif()
 if ( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_DISABLE_ENHANCED_MODE")
 endif()
-if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+if ( VK_NO_PROTOTYPES )
 	target_compile_definitions(VulkanHpp INTERFACE "VK_NO_PROTOTYPES")
+else()
+	# TODO: shouldnt we link to the vulkan-1 lib here?
+endif()
+if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC")
 else()
 	# TODO: shouldnt we link to the vulkan-1 lib here?

@@ -44,7 +44,7 @@ BraceWrapping :
     SplitEmptyNamespace : true
 BreakBeforeBinaryOperators : None
 BreakBeforeBraces : Custom
-BreakBeforeConceptDeclarations : Always
+BreakBeforeConceptDeclarations : true		# This flag seems to be a boolean with clang-format 14 ?!?
 BreakBeforeTernaryOperators : true
 BreakConstructorInitializers : BeforeComma
 BreakInheritanceList : BeforeComma

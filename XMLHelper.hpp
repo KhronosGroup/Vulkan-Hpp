@@ -570,7 +570,7 @@ void writeToFile( std::string const & str, std::string const & fileName )
   const int         ret           = std::system( commandString.c_str() );
   if ( ret != 0 )
   {
-    messager.message( "VulkanHppGenerator: failed to format file " + fileName + " with error <" + std::to_string( ret ) + ">\n" );
+    throw std::runtime_error( "VulkanHppGenerator: failed to format file " + fileName + " with error <" + std::to_string( ret ) + ">" );
   }
 #endif
 }

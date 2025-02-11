@@ -3955,10 +3955,10 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors(
   std::vector<size_t> returnParams = determineReturnParams( commandData.params );
   switch ( returnParams.size() )
   {
-    case 0: return generateCommandResultWithErrors0Return( name, commandData, initialSkipCount, definition, raii );
-    case 1: return generateCommandResultMultiSuccessWithErrors1Return( name, commandData, initialSkipCount, definition, returnParams[0], raii );
-    case 2: return generateCommandResultMultiSuccessWithErrors2Return( name, commandData, initialSkipCount, definition, returnParams, raii );
-    case 3: return generateCommandResultMultiSuccessWithErrors3Return( name, commandData, initialSkipCount, definition, returnParams, raii );
+    case 0 : return generateCommandResultWithErrors0Return( name, commandData, initialSkipCount, definition, raii );
+    case 1 : return generateCommandResultMultiSuccessWithErrors1Return( name, commandData, initialSkipCount, definition, returnParams[0], raii );
+    case 2 : return generateCommandResultMultiSuccessWithErrors2Return( name, commandData, initialSkipCount, definition, returnParams, raii );
+    case 3 : return generateCommandResultMultiSuccessWithErrors3Return( name, commandData, initialSkipCount, definition, returnParams, raii );
     default: break;
   }
   return "";
@@ -4365,10 +4365,10 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors(
   std::vector<size_t> returnParams = determineReturnParams( commandData.params );
   switch ( returnParams.size() )
   {
-    case 0: return generateCommandResultWithErrors0Return( name, commandData, initialSkipCount, definition, raii );
-    case 1: return generateCommandResultSingleSuccessWithErrors1Return( name, commandData, initialSkipCount, definition, returnParams[0], raii );
-    case 2: return generateCommandResultSingleSuccessWithErrors2Return( name, commandData, initialSkipCount, definition, returnParams, raii );
-    case 3: return generateCommandResultSingleSuccessWithErrors3Return( name, commandData, initialSkipCount, definition, returnParams, raii );
+    case 0 : return generateCommandResultWithErrors0Return( name, commandData, initialSkipCount, definition, raii );
+    case 1 : return generateCommandResultSingleSuccessWithErrors1Return( name, commandData, initialSkipCount, definition, returnParams[0], raii );
+    case 2 : return generateCommandResultSingleSuccessWithErrors2Return( name, commandData, initialSkipCount, definition, returnParams, raii );
+    case 3 : return generateCommandResultSingleSuccessWithErrors3Return( name, commandData, initialSkipCount, definition, returnParams, raii );
     default: break;
   }
   return "";
@@ -4906,9 +4906,9 @@ std::string VulkanHppGenerator::generateCommandVoid(
   std::vector<size_t> returnParams = determineReturnParams( commandData.params );
   switch ( returnParams.size() )
   {
-    case 0: return generateCommandVoid0Return( name, commandData, initialSkipCount, definition, raii );
-    case 1: return generateCommandVoid1Return( name, commandData, initialSkipCount, definition, returnParams[0], raii );
-    case 2: return generateCommandVoid2Return( name, commandData, initialSkipCount, definition, returnParams, raii );
+    case 0 : return generateCommandVoid0Return( name, commandData, initialSkipCount, definition, raii );
+    case 1 : return generateCommandVoid1Return( name, commandData, initialSkipCount, definition, returnParams[0], raii );
+    case 2 : return generateCommandVoid2Return( name, commandData, initialSkipCount, definition, returnParams, raii );
     default: break;
   }
   return "";
@@ -7435,7 +7435,8 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
     typeTraits = generateLayerSettingTypeTraits();
   }
 
-  const std::string enumTemplate = R"(  // wrapper class for enum Vk${enumName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/Vk${enumName}.html
+  const std::string enumTemplate =
+    R"(  // wrapper class for enum Vk${enumName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/Vk${enumName}.html
   enum class ${enumName}${baseType}{${enumValues}};
   ${typeTraits}
   ${enumUsing}
@@ -10220,7 +10221,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
                 }
               }
               break;
-            case 2: return generateRAIIHandleConstructor1Return2Vector( handle, constructorIt, enter, leave, returnParams[0], vectorParams );
+            case 2 : return generateRAIIHandleConstructor1Return2Vector( handle, constructorIt, enter, leave, returnParams[0], vectorParams );
             default: break;
           }
         }
@@ -12257,7 +12258,8 @@ ${deprecatedConstructors}
     compareOperators += generateStructCompareOperators( structure );
   }
 
-  static const std::string structureTemplate = R"(  // wrapper struct for struct Vk${structureType}, see https://registry.khronos.org/vulkan/specs/latest/man/html/Vk${structureType}.html
+  static const std::string structureTemplate =
+    R"(  // wrapper struct for struct Vk${structureType}, see https://registry.khronos.org/vulkan/specs/latest/man/html/Vk${structureType}.html
   struct ${structureType}
   {
     using NativeType = Vk${structureType};
@@ -17103,17 +17105,17 @@ std::string VulkanHppGenerator::toString( TypeCategory category )
 {
   switch ( category )
   {
-    case TypeCategory::Bitmask: return "bitmask";
-    case TypeCategory::BaseType: return "basetype";
-    case TypeCategory::Define: return "define";
-    case TypeCategory::Enum: return "enum";
+    case TypeCategory::Bitmask     : return "bitmask";
+    case TypeCategory::BaseType    : return "basetype";
+    case TypeCategory::Define      : return "define";
+    case TypeCategory::Enum        : return "enum";
     case TypeCategory::ExternalType: return "ExternalType";
-    case TypeCategory::FuncPointer: return "funcpointer";
-    case TypeCategory::Handle: return "handle";
-    case TypeCategory::Struct: return "struct";
-    case TypeCategory::Union: return "union";
-    case TypeCategory::Unknown: return "unkown";
-    default: assert( false ); return "";
+    case TypeCategory::FuncPointer : return "funcpointer";
+    case TypeCategory::Handle      : return "handle";
+    case TypeCategory::Struct      : return "struct";
+    case TypeCategory::Union       : return "union";
+    case TypeCategory::Unknown     : return "unkown";
+    default                        : assert( false ); return "";
   }
 }
 

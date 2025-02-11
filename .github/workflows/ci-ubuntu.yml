@@ -14,15 +14,6 @@ jobs:
     strategy:
       matrix:
         include:
-            - os: ubuntu-20.04
-              compiler: clang++-10
-            - os: ubuntu-20.04
-              compiler: clang++-11
-            - os: ubuntu-20.04
-              compiler: clang++-12
-            - os: ubuntu-20.04
-              compiler: g++-10
-              
             - os: ubuntu-22.04
               compiler: clang++-13
             - os: ubuntu-22.04

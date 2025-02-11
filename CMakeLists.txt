@@ -65,13 +65,12 @@ option( VULKAN_HPP_NO_WIN32_PROTOTYPES "Remove HINSTANCE, LoadLibraryA and other
 option( VULKAN_HPP_RAII_NO_EXCEPTIONS "Do not throw exceptions when vulkan functions from vk::raii return an error code." OFF )
 option( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST "Enable implicit casts from vk::UniqueHandle and vk::SharedHandle to their matching vk::Handle" OFF )
 option( VULKAN_HPP_TYPESAFE_CONVERSION "Enable copy constructors for non-dispatchable handles" ON )
-option( VULKAN_HPP_USE_REFLECT "Adds reflect function to structures, which returns an iteratable tuple" OFF )
+option( VULKAN_HPP_USE_REFLECT "Adds reflect function to structures, which returns an iterable tuple" OFF )
 
 # manually set VK_NO_PROTOTYPES undefined
 if ( NOT DEFINED VK_NO_PROTOTYPES )
 	set ( VK_NO_PROTOTYPES ${VULKAN_HPP_DISPATCH_LOADER_DYNAMIC} )
 endif()
-# TODO: allow generation of shorter vulkan header files by reading compile definitions?
 
 function( vulkan_hpp__setup_warning_level )
 	set( options )

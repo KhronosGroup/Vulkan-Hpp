@@ -65,7 +65,7 @@ option( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST "Enable implicit casts from vk::Un
 option( VULKAN_HPP_TYPESAFE_CONVERSION "Enable copy constructors for non-dispatchable handles" ON )
 option( VULKAN_HPP_USE_REFLECT "Adds reflect function to structures, which returns an iterable tuple" OFF )
 
-# manually set VK_NO_PROTOTYPES undefined
+# manually set VK_NO_PROTOTYPES if undefined
 if ( NOT DEFINED VK_NO_PROTOTYPES )
 	set ( VK_NO_PROTOTYPES ${VULKAN_HPP_DISPATCH_LOADER_DYNAMIC} )
 endif()

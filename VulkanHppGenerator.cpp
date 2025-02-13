@@ -262,76 +262,7 @@ void VulkanHppGenerator::generateHandlesHppFile() const
   std::string const vulkan_handles_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_handles.hpp";
   messager.message( "VulkanHppGenerator: Generating " + vulkan_handles_hpp + " ...\n" );
 
-  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
-#ifndef VULKAN_HANDLES_HPP
-#  define VULKAN_HANDLES_HPP
-
-// include-what-you-use: make sure, vulkan.hpp is used by code-completers
-// IWYU pragma: private; include "vulkan.hpp"
-
-namespace VULKAN_HPP_NAMESPACE
-{
-  ${structForwardDeclarations}
-  ${handleForwardDeclarations}
-  ${funcPointerReturns}
-  ${uniqueHandles}
-  ${handles}
-
-  // operators to compare vk::-handles
-#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, int>::type = 0>
-  auto operator<=>( T const & lhs, T const & rhs )
-  {
-    return static_cast<typename T::NativeType>( lhs ) <=> static_cast<typename T::NativeType>( rhs );
-  }
-#else
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, int>::type = 0>
-  bool operator==( T const & lhs, T const & rhs )
-  {
-    return static_cast<typename T::NativeType>( lhs ) == static_cast<typename T::NativeType>( rhs );
-  }
-
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, int>::type = 0>
-  bool operator!=( T const & lhs, T const & rhs )
-  {
-    return static_cast<typename T::NativeType>( lhs ) != static_cast<typename T::NativeType>( rhs );
-  }
-
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, int>::type = 0>
-  bool operator<( T const & lhs, T const & rhs )
-  {
-    return static_cast<typename T::NativeType>( lhs ) < static_cast<typename T::NativeType>( rhs );
-  }
-#endif
-
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, int>::type = 0>
-  bool operator==( T const & v, std::nullptr_t )
-  {
-    return !v;
-  }
-
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, int>::type = 0>
-  bool operator==( std::nullptr_t, T const & v )
-  {
-    return !v;
-  }
-
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, int>::type = 0>
-  bool operator!=( T const & v, std::nullptr_t )
-  {
-    return !!v;
-  }
-
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, int>::type = 0>
-  bool operator!=( std::nullptr_t, T const & v )
-  {
-    return !!v;
-  }
-}   // namespace VULKAN_HPP_NAMESPACE
-#endif
-)";
-
-  std::string str = replaceWithMap( vulkanHandlesHppTemplate,
+  std::string str = replaceWithMap( readSnippet( "HandlesTemplate.hpp" ),
                                     {
                                       { "funcPointerReturns", generateFuncPointerReturns() },
                                       { "handles", generateHandles() },
@@ -391,106 +322,8 @@ void VulkanHppGenerator::generateHppFile() const
   std::string const vulkan_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + ".hpp";
   messager.message( "VulkanHppGenerator: Generating " + vulkan_hpp + " ...\n" );
 
-  std::string const vulkanHppTemplate = R"(${licenseHeader}
-#ifndef VULKAN_HPP
-#  define VULKAN_HPP
-
-${includes}
-
-static_assert( VK_HEADER_VERSION == ${headerVersion}, "Wrong VK_HEADER_VERSION!" );
-
-${defines}
-
-namespace VULKAN_HPP_NAMESPACE
-{
-  ${ArrayWrapper1D}
-  ${ArrayWrapper2D}
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-  ${ArrayProxy}
-  ${ArrayProxyNoTemporaries}
-  ${StridedArrayProxy}
-  ${Optional}
-  ${StructureChain}
-  ${UniqueHandle}
-#endif  // VULKAN_HPP_DISABLE_ENHANCED_MODE
-
-  namespace detail
-  {
-    ${DispatchLoaderBase}
-    ${DispatchLoaderStatic}
-  }
-  ${Exchange}
-
-#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
-  struct AllocationCallbacks;
-
-  namespace detail
-  {
-    ${ObjectDestroy}
-    ${ObjectFree}
-    ${ObjectRelease}
-    ${PoolFree}
-  }
-#endif // !VULKAN_HPP_NO_SMART_HANDLE
-
-  ${baseTypes}
-
-  template <typename Type, Type value = Type{}>
-  struct CppType
-  {};
-} // namespace VULKAN_HPP_NAMESPACE
-
-#include <vulkan/${api}_enums.hpp>
-#if !defined( VULKAN_HPP_NO_TO_STRING )
-#include <vulkan/${api}_to_string.hpp>
-#endif
-
-#ifndef VULKAN_HPP_NO_EXCEPTIONS
-namespace std
-{
-  template <>
-  struct is_error_code_enum<VULKAN_HPP_NAMESPACE::Result> : public true_type
-  {};
-}  // namespace std
-#endif
-
-namespace VULKAN_HPP_NAMESPACE
-{
-#ifndef VULKAN_HPP_NO_EXCEPTIONS
-${Exceptions}
-${resultExceptions}
-${throwResultException}
-#endif
-
-${ResultValue}
-${resultChecks}
-${constexprDefines}
-} // namespace VULKAN_HPP_NAMESPACE
-
-// clang-format off
-#include <vulkan/${api}_handles.hpp>
-#include <vulkan/${api}_structs.hpp>
-#include <vulkan/${api}_funcs.hpp>
-// clang-format on
-
-
-namespace VULKAN_HPP_NAMESPACE
-{
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-  ${structExtendsStructs}
-#endif // VULKAN_HPP_DISABLE_ENHANCED_MODE
-
-  namespace detail
-  {
-    ${DynamicLoader}
-    ${DispatchLoaderDynamic}
-  }
-}   // namespace VULKAN_HPP_NAMESPACE
-#endif
-)";
-
   std::string str = replaceWithMap(
-    vulkanHppTemplate,
+    readSnippet( "HppFileTemplate.hpp" ),
     { { "api", m_api },
       { "ArrayProxy", readSnippet( "ArrayProxy.hpp" ) },
       { "ArrayProxyNoTemporaries", readSnippet( "ArrayProxyNoTemporaries.hpp" ) },
@@ -555,75 +388,7 @@ void VulkanHppGenerator::generateRAIIHppFile() const
   std::string const vulkan_raii_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_raii.hpp";
   messager.message( "VulkanHppGenerator: Generating " + vulkan_raii_hpp + " ...\n" );
 
-  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
-#ifndef VULKAN_RAII_HPP
-#define VULKAN_RAII_HPP
-
-#include <vulkan/${api}.hpp>
-#if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
-#  include <memory>   // std::unique_ptr
-#  include <utility>  // std::forward
-#endif
-
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-namespace VULKAN_HPP_NAMESPACE
-{
-  namespace VULKAN_HPP_RAII_NAMESPACE
-  {
-    namespace detail
-    {
-      template <class T>
-      class CreateReturnType
-      {
-        public:
-#if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
-          using Type = VULKAN_HPP_EXPECTED<T, VULKAN_HPP_NAMESPACE::Result>;
-#else
-          using Type = T;
-#endif
-      };
-
-      using PFN_dummy = void ( * )();
-
-      ${RAIIDispatchers}
-    }
-
-    ${RAIIHandles}
-    ${RAIICommandDefinitions}
-
-    //====================
-    //=== RAII Helpers ===
-    //====================
-
-    template <typename RAIIType>
-    std::vector<typename RAIIType::CppType> filterCppTypes( std::vector<RAIIType> const & raiiTypes )
-    {
-      std::vector<typename RAIIType::CppType> cppTypes( raiiTypes.size() );
-      std::transform( raiiTypes.begin(), raiiTypes.end(), cppTypes.begin(), []( RAIIType const & d ) { return *d; } );
-      return cppTypes;
-    }
-
-    template <typename RAIIType, class UnaryPredicate>
-    std::vector<typename RAIIType::CppType> filterCppTypes( std::vector<RAIIType> const & raiiTypes, UnaryPredicate p)
-    {
-      std::vector<typename RAIIType::CppType> cppTypes;
-      for (auto const& t : raiiTypes)
-      {
-        if (p(t))
-        {
-          cppTypes.push_back( *t );
-        }
-      }
-      return cppTypes;
-    }
-
-  } // namespace VULKAN_HPP_RAII_NAMESPACE
-}   // namespace VULKAN_HPP_NAMESPACE
-#endif
-#endif
-)";
-
-  std::string str = replaceWithMap( vulkanHandlesHppTemplate,
+  std::string str = replaceWithMap( readSnippet( "RAIIHppFileTemplate.hpp" ),
                                     { { "api", m_api },
                                       { "licenseHeader", m_vulkanLicenseHeader },
                                       { "RAIICommandDefinitions", generateRAIICommandDefinitions() },
@@ -734,47 +499,7 @@ void VulkanHppGenerator::generateToStringHppFile() const
   std::string const vulkan_to_string_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_to_string.hpp";
   messager.message( "VulkanHppGenerator: Generating " + vulkan_to_string_hpp + " ...\n" );
 
-  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
-#ifndef VULKAN_TO_STRING_HPP
-#  define VULKAN_TO_STRING_HPP
-
-#include <vulkan/${api}.hpp>
-
-// ignore warnings on using deprecated enum values in this header
-#if defined( __clang__ ) || defined( __GNUC__ )
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#elif defined( _MSC_VER )
-#  pragma warning( push )
-#  pragma warning( disable : 4996 )
-#endif
-
-#if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
-import VULKAN_HPP_STD_MODULE;
-#else
-#  if __cpp_lib_format
-#    include <format>   // std::format
-#  else
-#    include <sstream>  // std::stringstream
-#  endif
-#endif
-
-namespace VULKAN_HPP_NAMESPACE
-{
-${bitmasksToString}
-${enumsToString}
-} // namespace VULKAN_HPP_NAMESPACE
-
-#if defined( __clang__ ) || defined( __GNUC__ )
-#  pragma GCC diagnostic pop
-#elif defined( _MSC_VER )
-#  pragma warning( pop )
-#endif
-
-#endif
-)";
-
-  std::string str = replaceWithMap( vulkanHandlesHppTemplate,
+  std::string str = replaceWithMap( readSnippet( "ToStringHppFileTemplate.hpp" ),
                                     { { "api", m_api },
                                       { "bitmasksToString", generateBitmasksToString() },
                                       { "enumsToString", generateEnumsToString() },
@@ -788,61 +513,7 @@ void VulkanHppGenerator::generateCppModuleFile() const
   std::string const vulkan_cppm = std::string( BASE_PATH ) + "/vulkan/" + m_api + ".cppm";
   messager.message( "VulkanHppGenerator: Generating " + vulkan_cppm + " ...\n" );
 
-  std::string const vulkanCppmTemplate = R"(${licenseHeader}
-
-// Note: This module is still in an experimental state.
-// Any feedback is welcome on https://github.com/KhronosGroup/Vulkan-Hpp/issues.
-
-module;
-
-#include <vulkan/vulkan_hpp_macros.hpp>
-
-#if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_ENABLE_STD_MODULE )
-#define VULKAN_HPP_ENABLE_STD_MODULE
-#endif
-
-#include <vulkan/${api}.hpp>
-#include <vulkan/${api}_extension_inspection.hpp>
-#include <vulkan/${api}_format_traits.hpp>
-#include <vulkan/${api}_hash.hpp>
-#include <vulkan/${api}_raii.hpp>
-#include <vulkan/${api}_shared.hpp>
-#include <vulkan/${api}_to_string.hpp>
-
-export module ${api}_hpp;
-
-export namespace VULKAN_HPP_NAMESPACE
-{
-  ${usings}
-
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-  namespace VULKAN_HPP_RAII_NAMESPACE
-  {
-    ${raiiUsings}
-  } // namespace VULKAN_HPP_RAII_NAMESPACE
-#endif
-} // namespace VULKAN_HPP_NAMESPACE
-
-export namespace std
-{
-  ${hashSpecializations}
-
-  //===============================================
-  //=== Required exports for vk::StructureChain ===
-  //===============================================
-
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-  using std::tuple_size;
-  using std::tuple_element;
-#endif
-}
-
-// This VkFlags type is used as part of a bitfield in some structure.
-// As it that can't be mimiced by vk-data types, we need to export just that!!
-export VkGeometryInstanceFlagsKHR;
-)";
-
-  auto const str = replaceWithMap( vulkanCppmTemplate,
+  auto const str = replaceWithMap( readSnippet( "CppModuleFileTemplate.hpp" ),
                                    { { "api", m_api },
                                      { "hashSpecializations", generateCppModuleHashSpecializations() },
                                      { "licenseHeader", m_vulkanLicenseHeader },

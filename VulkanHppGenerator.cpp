@@ -8108,7 +8108,7 @@ ${enter}  class ${className}
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};
 
   public:
-    ${className}() VULKAN_HPP_NOEXCEPT {};    // = default - try to workaround a compiler issue
+    ${className}() VULKAN_HPP_NOEXCEPT {}    // = default; - try to workaround a compiler issue
     ${className}( ${className} const & rhs ) = default;
     ${className} & operator=( ${className} const & rhs ) = default;
 

@@ -219,10 +219,10 @@ endif()
 # Get Vulkan C headers from subdirectory, existing target or FindVulkan
 if ( EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include")
 	target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
-elseif ( TARGET Vulkan::Headers )
-	target_link_libraries( VulkanHpp INTERFACE Vulkan::Headers )
 else()
-	find_package( Vulkan REQUIRED )
+	if ( NOT TARGET Vulkan::Headers )
+		find_package( Vulkan REQUIRED )
+	endif()
 	target_link_libraries( VulkanHpp INTERFACE Vulkan::Headers )
 endif()
 

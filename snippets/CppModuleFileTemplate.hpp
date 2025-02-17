@@ -18,7 +18,7 @@ module;
 #include <vulkan/${api}_raii.hpp>
 #include <vulkan/${api}_shared.hpp>
 #ifndef VULKAN_HPP_NO_TO_STRING
-#  include <vulkan/${api}_to_string.hpp>
+#include <vulkan/${api}_to_string.hpp>
 #endif
 
 export module ${api}_hpp;

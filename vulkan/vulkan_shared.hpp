@@ -462,7 +462,7 @@ namespace VULKAN_HPP_NAMESPACE
 
 #  if defined( __GNUC__ ) && !defined( __clang__ ) && !defined( __INTEL_COMPILER )
 #    pragma GCC diagnostic pop
-#  elif defined( __clang__ ) && !defined( __INTEL_COMPILER )
+#  elif defined( __clang__ ) && ( __clang_major__ >= 13 ) && !defined( __INTEL_COMPILER )
 #    pragma clang diagnostic pop
 #  endif
 

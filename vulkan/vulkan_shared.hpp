@@ -317,7 +317,7 @@ namespace VULKAN_HPP_NAMESPACE
 #    pragma GCC diagnostic ignored "-Wcast-function-type"
 #  elif defined( __clang__ ) && !defined( __INTEL_COMPILER )
 #    pragma clang diagnostic push
-#    pragma clang diagnostic ignored "-Wcast-function-type-mismatch"
+#    pragma clang diagnostic ignored "-Wcast-function-type"
 #  endif
 
     template <typename HandleType>

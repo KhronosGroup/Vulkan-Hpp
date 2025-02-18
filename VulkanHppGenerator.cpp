@@ -794,9 +794,16 @@ void VulkanHppGenerator::checkBitmaskCorrectness() const
     // check that the requirement is an enum
     if ( !bitmask.second.require.empty() )
     {
-      checkForError( m_enums.contains( bitmask.second.require ),
+      auto requireTypeIt = m_types.find( bitmask.second.require );
+      checkForError(
+        requireTypeIt != m_types.end(), bitmask.second.xmlLine, "bitmask <" + bitmask.first + "> requires unknown type <" + bitmask.second.require + ">" );
+      checkForError( requireTypeIt->second.category == TypeCategory::Enum,
                      bitmask.second.xmlLine,
-                     "bitmask <" + bitmask.first + "> requires unknown enum <" + bitmask.second.require + ">" );
+                     "bitmask <" + bitmask.first + "> requires non-enum type <" + bitmask.second.require + ">" );
+      assert( m_enums.contains( bitmask.second.require ) );
+      checkForError( !requireTypeIt->second.requiredBy.empty(),
+                     bitmask.second.xmlLine,
+                     "bitmask <" + bitmask.first + "> requires <" + bitmask.second.require + "> which is not required by any feature or extension!" );
     }
   }
 }
@@ -804,26 +811,7 @@ void VulkanHppGenerator::checkBitmaskCorrectness() const
 void VulkanHppGenerator::checkCommandCorrectness() const
 {
   // prepare command checks by gathering all result codes (including aliases and not supported ones!) into one set of resultCodes
-  auto resultIt = m_enums.find( "VkResult" );
-  assert( resultIt != m_enums.end() );
-  std::set<std::string> resultCodes;
-  for ( auto rc : resultIt->second.values )
-  {
-    resultCodes.insert( rc.name );
-    for ( auto ac : rc.aliases )
-    {
-      resultCodes.insert( ac.name );
-    }
-  }
-  // some special handling needed for vulkansc!!
-  if ( m_api == "vulkansc" )
-  {
-    resultCodes.insert( { "VK_ERROR_FRAGMENTATION_EXT",
-                          "VK_ERROR_INVALID_EXTERNAL_HANDLE_KHR",
-                          "VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR",
-                          "VK_ERROR_NOT_PERMITTED_EXT",
-                          "VK_PIPELINE_COMPILE_REQUIRED_EXT" } );
-  }
+  std::set<std::string> resultCodes = gatherResultCodes();
 
   // command checks
   for ( auto const & command : m_commands )
@@ -876,9 +864,9 @@ void VulkanHppGenerator::checkCorrectness() const
   checkDefineCorrectness();
   checkEnumCorrectness();
   checkExtensionCorrectness();
-  checkFeatureCorrectness();
   checkFuncPointerCorrectness();
   checkHandleCorrectness();
+  checkRequireCorrectness();
   checkSpirVCapabilityCorrectness();
   checkStructCorrectness();
   checkSyncAccessCorrectness();
@@ -905,16 +893,23 @@ void VulkanHppGenerator::checkEnumCorrectness() const
     auto typeIt = m_types.find( e.first );
     assert( typeIt != m_types.end() );
     checkForWarning( !typeIt->second.requiredBy.empty(), e.second.xmlLine, "enum <" + e.first + "> not required in any feature or extension" );
-  }
 
-  // enum checks by features and extensions
-  for ( auto & feature : m_features )
-  {
-    checkEnumCorrectness( feature.requireData );
-  }
-  for ( auto & ext : m_extensions )
-  {
-    checkEnumCorrectness( ext.requireData );
+    if ( e.second.isBitmask )
+    {
+      if ( std::ranges::any_of( e.second.values, []( auto const & v ) { return v.supported; } ) )
+      {
+        // check that any enum of a bitmask with supported values is listed as "require" or "bitvalues" for a bitmask
+        auto bitmaskIt = std::find_if( m_bitmasks.begin(), m_bitmasks.end(), [&e]( auto const & bitmask ) { return bitmask.second.require == e.first; } );
+        checkForError( bitmaskIt != m_bitmasks.end(),
+                       e.second.xmlLine,
+                       "enum <" + e.first + "> is not listed as an requires or bitvalues for any bitmask in the types section" );
+
+        // check that bitwidth of the enum and type of the corresponding bitmask are equal
+        checkForError( ( e.second.bitwidth != "64" ) || ( bitmaskIt->second.type == "VkFlags64" ),
+                       e.second.xmlLine,
+                       "enum <" + e.first + "> is marked with bitwidth <64> but corresponding bitmask <" + bitmaskIt->first + "> is not of type <VkFlags64>" );
+      }
+    }
   }
 
   // special check for VkFormat
@@ -928,70 +923,6 @@ void VulkanHppGenerator::checkEnumCorrectness() const
       checkForError( !enumValueIt->supported || m_formats.contains( enumValueIt->name ),
                      enumValueIt->xmlLine,
                      "missing format specification for <" + enumValueIt->name + ">" );
-    }
-  }
-}
-
-void VulkanHppGenerator::checkEnumCorrectness( std::vector<RequireData> const & requireData ) const
-{
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto typeIt = m_types.find( type.name );
-      assert( typeIt != m_types.end() );
-      switch ( typeIt->second.category )
-      {
-        case TypeCategory::Bitmask:
-          {
-            // check that each "require" listed for a bitmask is listed for a feature or an extension
-            auto bitmaskIt = m_bitmasks.find( type.name );
-            if ( bitmaskIt != m_bitmasks.end() )
-            {
-              // not for every bitmask is a "require" listed
-              if ( !bitmaskIt->second.require.empty() )
-              {
-                auto requireTypeIt = m_types.find( bitmaskIt->second.require );
-                assert( requireTypeIt != m_types.end() );
-                checkForError( !requireTypeIt->second.requiredBy.empty(),
-                               bitmaskIt->second.xmlLine,
-                               "bitmask <" + bitmaskIt->first + "> requires <" + bitmaskIt->second.require +
-                                 "> which is not required by any feature or extension!" );
-              }
-            }
-          }
-          break;
-        case TypeCategory::Enum:
-          {
-            auto enumIt = m_enums.find( type.name );
-            if ( enumIt != m_enums.end() )
-            {
-              if ( enumIt->second.isBitmask && !enumIt->second.values.empty() )
-              {
-                // check that any non-empty enum of a bitmask is listed as "require" or "bitvalues" for a bitmask
-                auto bitmaskIt =
-                  std::find_if( m_bitmasks.begin(), m_bitmasks.end(), [&enumIt]( auto const & bitmask ) { return bitmask.second.require == enumIt->first; } );
-                checkForError( bitmaskIt != m_bitmasks.end(),
-                               enumIt->second.xmlLine,
-                               "enum <" + enumIt->first + "> is not listed as an requires or bitvalues for any bitmask in the types section" );
-
-                // check that bitwidth of the enum and type of the corresponding bitmask are equal
-                checkForError( ( enumIt->second.bitwidth != "64" ) || ( bitmaskIt->second.type == "VkFlags64" ),
-                               enumIt->second.xmlLine,
-                               "enum <" + enumIt->first + "> is marked with bitwidth <64> but corresponding bitmask <" + bitmaskIt->first +
-                                 "> is not of type <VkFlags64>" );
-              }
-            }
-            else
-            {
-              // every enum not listed in the m_enums, should be an alias of such a thing
-              checkForError(
-                findByNameOrAlias( m_enums, type.name ) != m_enums.end(), typeIt->second.xmlLine, "enum type <" + type.name + "> is not listed as an enum" );
-            }
-          }
-          break;
-        default: break;
-      }
     }
   }
 }
@@ -1079,23 +1010,6 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
   }
 }
 
-void VulkanHppGenerator::checkFeatureCorrectness() const
-{
-  // check that each require depends actually is an extension
-  // remove this check temporarily !
-  // for ( auto const & feature : m_features )
-  //{
-  //  for ( auto const & require : feature.requireData )
-  //  {
-  //    checkForError(
-  //      require.depends.empty() ||
-  //        std::any_of( m_extensions.begin(), m_extensions.end(), [&depends = require.depends]( ExtensionData const & ed ) { return ed.name == depends; } ),
-  //      require.xmlLine,
-  //      "feature <" + feature.name + "> depends on an unknown extension <" + require.depends + ">" );
-  //  }
-  //}
-}
-
 void VulkanHppGenerator::checkFuncPointerCorrectness() const
 {
   for ( auto const & funcPointer : m_funcPointers )
@@ -1148,6 +1062,101 @@ void VulkanHppGenerator::checkHandleCorrectness() const
                                   { return hd.second.objTypeEnum == objectTypeValue.name; } ),
                      objectTypeValue.xmlLine,
                      "VkObjectType value <" + objectTypeValue.name + "> not specified as \"objtypeenum\" for any handle" );
+    }
+  }
+}
+
+void VulkanHppGenerator::checkRequireCorrectness() const
+{
+  // checks by features and extensions
+  for ( auto & feature : m_features )
+  {
+    checkRequireCorrectness( feature.requireData, "feature", feature.name );
+  }
+  for ( auto & extension : m_extensions )
+  {
+    checkRequireCorrectness( extension.requireData, "extension", extension.name );
+  }
+}
+
+void VulkanHppGenerator::checkRequireCorrectness( std::vector<RequireData> const & requireData, std::string const & section, std::string const & name ) const
+{
+  for ( auto const & require : requireData )
+  {
+    std::vector<std::string> dependencies = tokenize( require.depends, "," );
+    for ( auto const & depends : dependencies )
+    {
+      size_t separatorPos = depends.find( "::" );
+      if ( separatorPos == std::string::npos )
+      {
+        checkForError( isFeature( depends ) || isExtension( depends ),
+                       require.xmlLine,
+                       section + " <" + name + "> depends on unknown extension or feature <" + depends + ">" );
+      }
+      else
+      {
+        std::string structure = depends.substr( 0, separatorPos );
+        std::string member    = depends.substr( separatorPos + 2 );
+        auto        structIt  = m_structs.find( structure );
+        checkForError( structIt != m_structs.end(), require.xmlLine, section + " <" + name + "> requires member of an unknown struct <" + structure + ">" );
+        checkForError( std::ranges::find_if( structIt->second.members, [&member]( auto const & md ) { return md.name == member; } ) !=
+                         structIt->second.members.end(),
+                       require.xmlLine,
+                       section + " <" + name + "> requires unknown member <" + member + "> as part of the struct <" + structure + ">" );
+      }
+    }
+
+    for ( auto const & type : require.types )
+    {
+      auto typeIt = m_types.find( type.name );
+      assert( typeIt != m_types.end() );
+      // every required type should be listed in the corresponding map
+      switch ( typeIt->second.category )
+      {
+        case TypeCategory::Bitmask:
+          checkForError( findByNameOrAlias( m_bitmasks, type.name ) != m_bitmasks.end(),
+                         typeIt->second.xmlLine,
+                         "required bitmask type <" + type.name + "> is not listed as bitmask" );
+          break;
+        case TypeCategory::BaseType:
+          checkForError( m_baseTypes.contains( type.name ), typeIt->second.xmlLine, "required base type <" + type.name + "> is not listed as a base type" );
+          break;
+        case TypeCategory::Constant:
+          checkForError( m_constants.contains( type.name ), typeIt->second.xmlLine, "required constant <" + type.name + "> is not listed as a constant" );
+          break;
+        case TypeCategory::Define:
+          checkForError( m_defines.contains( type.name ), typeIt->second.xmlLine, "required define <" + type.name + "> is not listed as a define" );
+          break;
+        case TypeCategory::Enum:
+          checkForError( findByNameOrAlias( m_enums, type.name ) != m_enums.end(),
+                         typeIt->second.xmlLine,
+                         "required enum type <" + type.name + "> is not listed as an enum" );
+          break;
+        case TypeCategory::ExternalType:
+          checkForError(
+            m_externalTypes.contains( type.name ), typeIt->second.xmlLine, "required external type <" + type.name + "> is not listed as an external type" );
+          break;
+        case TypeCategory::FuncPointer:
+          checkForError(
+            m_funcPointers.contains( type.name ), typeIt->second.xmlLine, "required funcpointer <" + type.name + "> is not listed as a funcpointer" );
+          break;
+        case TypeCategory::Handle:
+          checkForError( findByNameOrAlias( m_handles, type.name ) != m_handles.end(),
+                         typeIt->second.xmlLine,
+                         "required handle type <" + type.name + "> is not listed as a handle" );
+          break;
+        case TypeCategory::Include:
+          checkForError( m_includes.contains( type.name ), typeIt->second.xmlLine, "required include <" + type.name + "> is not listed as an include" );
+          break;
+        case TypeCategory::Struct:
+        case TypeCategory::Union:
+          checkForError( findByNameOrAlias( m_structs, type.name ) != m_structs.end(),
+                         typeIt->second.xmlLine,
+                         "required struct type <" + type.name + "> is not listed as a struct" );
+          break;
+        case TypeCategory::Unknown: break;
+        default                   : assert( false ); break;
+      }
     }
   }
 }
@@ -1600,8 +1609,8 @@ size_t VulkanHppGenerator::determineDefaultStartIndex( std::vector<ParamData> co
 
 bool VulkanHppGenerator::determineEnumeration( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & returnParams ) const
 {
-  // a command is considered to be enumerating some data, if for at least one vectorParam the data is a returnParam and either the vectorParams is specified
-  // by a structure or the lenParam is a returnParam as well
+  // a command is considered to be enumerating some data, if for at least one vectorParam the data is a returnParam and either the vectorParams is
+  // specified by a structure or the lenParam is a returnParam as well
   return std::any_of( vectorParams.begin(),
                       vectorParams.end(),
                       [&returnParams]( auto const & vp )
@@ -2097,6 +2106,31 @@ std::string VulkanHppGenerator::findTag( std::string const & name, std::string c
   auto tagIt = std::find_if(
     m_tags.begin(), m_tags.end(), [&name, &postfix]( std::pair<std::string, TagData> const & t ) { return name.ends_with( t.first + postfix ); } );
   return ( tagIt != m_tags.end() ) ? tagIt->first : "";
+}
+
+std::set<std::string> VulkanHppGenerator::gatherResultCodes() const
+{
+  auto resultIt = m_enums.find( "VkResult" );
+  assert( resultIt != m_enums.end() );
+  std::set<std::string> resultCodes;
+  for ( auto rc : resultIt->second.values )
+  {
+    resultCodes.insert( rc.name );
+    for ( auto ac : rc.aliases )
+    {
+      resultCodes.insert( ac.name );
+    }
+  }
+  // some special handling needed for vulkansc!!
+  if ( m_api == "vulkansc" )
+  {
+    resultCodes.insert( { "VK_ERROR_FRAGMENTATION_EXT",
+                          "VK_ERROR_INVALID_EXTERNAL_HANDLE_KHR",
+                          "VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR",
+                          "VK_ERROR_NOT_PERMITTED_EXT",
+                          "VK_PIPELINE_COMPILE_REQUIRED_EXT" } );
+  }
+  return resultCodes;
 }
 
 std::pair<std::string, std::string> VulkanHppGenerator::generateAllocatorTemplates( std::vector<size_t> const &               returnParams,

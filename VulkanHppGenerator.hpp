@@ -521,14 +521,14 @@ private:
   void        checkCorrectness() const;
   void        checkDefineCorrectness() const;
   void        checkEnumCorrectness() const;
-  void        checkEnumCorrectness( std::vector<RequireData> const & requireData ) const;
   bool        checkEquivalentSingularConstructor( std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts,
                                                   std::map<std::string, CommandData>::const_iterator                      constructorIt,
                                                   std::vector<ParamData>::const_iterator                                  lenIt ) const;
   void        checkExtensionCorrectness() const;
-  void        checkFeatureCorrectness() const;
   void        checkFuncPointerCorrectness() const;
   void        checkHandleCorrectness() const;
+  void        checkRequireCorrectness() const;
+  void        checkRequireCorrectness( std::vector<RequireData> const & requireData, std::string const & section, std::string const & name ) const;
   void        checkSpirVCapabilityCorrectness() const;
   void        checkStructCorrectness() const;
   void checkStructMemberCorrectness( std::string const & structureName, std::vector<MemberData> const & members, std::set<std::string> & sTypeValues ) const;
@@ -582,6 +582,7 @@ private:
   std::vector<MemberData>::const_iterator         findStructMemberItByType( std::string const & type, std::vector<MemberData> const & memberData ) const;
   std::vector<ExtensionData>::const_iterator      findSupportedExtension( std::string const & name ) const;
   std::string                                     findTag( std::string const & name, std::string const & postfix = "" ) const;
+  std::set<std::string>                           gatherResultCodes() const;
   std::pair<std::string, std::string>             generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
                                                                               std::vector<std::string> const &          returnDataTypes,
                                                                               std::map<size_t, VectorParamData> const & vectorParams,

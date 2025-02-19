@@ -147,11 +147,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
 
-    vk::raii::su::setImageLayout( commandBuffer,
-                                  static_cast<vk::Image>( swapChainData.images[imageIndex] ),
-                                  swapChainData.colorFormat,
-                                  vk::ImageLayout::eUndefined,
-                                  vk::ImageLayout::eColorAttachmentOptimal );
+    vk::raii::su::setImageLayout(
+      commandBuffer, swapChainData.images[imageIndex], swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eColorAttachmentOptimal );
 
     const vk::DeviceSize offset = 0;
     vk::Viewport         viewport( 0.0f, 0.0f, 200.0f, 200.0f, 0.0f, 1.0f );
@@ -198,7 +195,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                               vk::ImageLayout::ePresentSrcKHR,
                                               VK_QUEUE_FAMILY_IGNORED,
                                               VK_QUEUE_FAMILY_IGNORED,
-                                              static_cast<vk::Image>( swapChainData.images[imageIndex] ),
+                                              swapChainData.images[imageIndex],
                                               imageSubresourceRange );
     commandBuffer.pipelineBarrier(
       vk::PipelineStageFlagBits::eColorAttachmentOutput, vk::PipelineStageFlagBits::eBottomOfPipe, vk::DependencyFlags(), nullptr, nullptr, prePresentBarrier );
@@ -216,9 +213,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     result = presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, imageIndex, {} ) );
     switch ( result )
     {
-      case vk::Result::eSuccess: break;
+      case vk::Result::eSuccess      : break;
       case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n"; break;
-      default: assert( false );  // an unexpected result is returned !
+      default                        : assert( false );  // an unexpected result is returned !
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 

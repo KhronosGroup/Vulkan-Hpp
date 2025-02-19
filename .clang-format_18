@@ -84,8 +84,7 @@ InsertNewlineAtEOF : true
 IntegerLiteralSeparator :
     Binary : 4
     Decimal : 0
-    Hex : 2
-    HexMinDigits : 6
+    Hex : 0
 KeepEmptyLinesAtTheStartOfBlocks : false
 LambdaBodyIndentation : Signature
 MaxEmptyLinesToKeep : 1

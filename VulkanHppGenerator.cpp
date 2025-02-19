@@ -1083,80 +1083,88 @@ void VulkanHppGenerator::checkRequireCorrectness( std::vector<RequireData> const
 {
   for ( auto const & require : requireData )
   {
-    std::vector<std::string> dependencies = tokenize( require.depends, "," );
-    for ( auto const & depends : dependencies )
-    {
-      size_t separatorPos = depends.find( "::" );
-      if ( separatorPos == std::string::npos )
-      {
-        checkForError( isFeature( depends ) || isExtension( depends ),
-                       require.xmlLine,
-                       section + " <" + name + "> depends on unknown extension or feature <" + depends + ">" );
-      }
-      else
-      {
-        std::string structure = depends.substr( 0, separatorPos );
-        std::string member    = depends.substr( separatorPos + 2 );
-        auto        structIt  = m_structs.find( structure );
-        checkForError( structIt != m_structs.end(), require.xmlLine, section + " <" + name + "> requires member of an unknown struct <" + structure + ">" );
-        checkForError( std::ranges::find_if( structIt->second.members, [&member]( auto const & md ) { return md.name == member; } ) !=
-                         structIt->second.members.end(),
-                       require.xmlLine,
-                       section + " <" + name + "> requires unknown member <" + member + "> as part of the struct <" + structure + ">" );
-      }
-    }
+    checkRequireDependenciesCorrectness( require, section, name );
+    checkRequireTypesCorrectness( require );
+  }
+}
 
-    for ( auto const & type : require.types )
+void VulkanHppGenerator::checkRequireDependenciesCorrectness( RequireData const & require, std::string const & section, std::string const & name ) const
+{
+  std::vector<std::string> dependencies = tokenize( require.depends, "," );
+  for ( auto const & depends : dependencies )
+  {
+    size_t separatorPos = depends.find( "::" );
+    if ( separatorPos == std::string::npos )
     {
-      auto typeIt = m_types.find( type.name );
-      assert( typeIt != m_types.end() );
-      // every required type should be listed in the corresponding map
-      switch ( typeIt->second.category )
-      {
-        case TypeCategory::Bitmask:
-          checkForError( findByNameOrAlias( m_bitmasks, type.name ) != m_bitmasks.end(),
-                         typeIt->second.xmlLine,
-                         "required bitmask type <" + type.name + "> is not listed as bitmask" );
-          break;
-        case TypeCategory::BaseType:
-          checkForError( m_baseTypes.contains( type.name ), typeIt->second.xmlLine, "required base type <" + type.name + "> is not listed as a base type" );
-          break;
-        case TypeCategory::Constant:
-          checkForError( m_constants.contains( type.name ), typeIt->second.xmlLine, "required constant <" + type.name + "> is not listed as a constant" );
-          break;
-        case TypeCategory::Define:
-          checkForError( m_defines.contains( type.name ), typeIt->second.xmlLine, "required define <" + type.name + "> is not listed as a define" );
-          break;
-        case TypeCategory::Enum:
-          checkForError( findByNameOrAlias( m_enums, type.name ) != m_enums.end(),
-                         typeIt->second.xmlLine,
-                         "required enum type <" + type.name + "> is not listed as an enum" );
-          break;
-        case TypeCategory::ExternalType:
-          checkForError(
-            m_externalTypes.contains( type.name ), typeIt->second.xmlLine, "required external type <" + type.name + "> is not listed as an external type" );
-          break;
-        case TypeCategory::FuncPointer:
-          checkForError(
-            m_funcPointers.contains( type.name ), typeIt->second.xmlLine, "required funcpointer <" + type.name + "> is not listed as a funcpointer" );
-          break;
-        case TypeCategory::Handle:
-          checkForError( findByNameOrAlias( m_handles, type.name ) != m_handles.end(),
-                         typeIt->second.xmlLine,
-                         "required handle type <" + type.name + "> is not listed as a handle" );
-          break;
-        case TypeCategory::Include:
-          checkForError( m_includes.contains( type.name ), typeIt->second.xmlLine, "required include <" + type.name + "> is not listed as an include" );
-          break;
-        case TypeCategory::Struct:
-        case TypeCategory::Union:
-          checkForError( findByNameOrAlias( m_structs, type.name ) != m_structs.end(),
-                         typeIt->second.xmlLine,
-                         "required struct type <" + type.name + "> is not listed as a struct" );
-          break;
-        case TypeCategory::Unknown: break;
-        default                   : assert( false ); break;
-      }
+      checkForError( isFeature( depends ) || isExtension( depends ),
+                     require.xmlLine,
+                     section + " <" + name + "> depends on unknown extension or feature <" + depends + ">" );
+    }
+    else
+    {
+      std::string structure = depends.substr( 0, separatorPos );
+      std::string member    = depends.substr( separatorPos + 2 );
+      auto        structIt  = m_structs.find( structure );
+      checkForError( structIt != m_structs.end(), require.xmlLine, section + " <" + name + "> requires member of an unknown struct <" + structure + ">" );
+      checkForError( std::ranges::find_if( structIt->second.members, [&member]( auto const & md ) { return md.name == member; } ) !=
+                       structIt->second.members.end(),
+                     require.xmlLine,
+                     section + " <" + name + "> requires unknown member <" + member + "> as part of the struct <" + structure + ">" );
+    }
+  }
+}
+
+void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & require ) const
+{
+  for ( auto const & type : require.types )
+  {
+    auto typeIt = m_types.find( type.name );
+    assert( typeIt != m_types.end() );
+    // every required type should be listed in the corresponding map
+    switch ( typeIt->second.category )
+    {
+      case TypeCategory::Bitmask:
+        checkForError( findByNameOrAlias( m_bitmasks, type.name ) != m_bitmasks.end(),
+                       typeIt->second.xmlLine,
+                       "required bitmask type <" + type.name + "> is not listed as bitmask" );
+        break;
+      case TypeCategory::BaseType:
+        checkForError( m_baseTypes.contains( type.name ), typeIt->second.xmlLine, "required base type <" + type.name + "> is not listed as a base type" );
+        break;
+      case TypeCategory::Constant:
+        checkForError( m_constants.contains( type.name ), typeIt->second.xmlLine, "required constant <" + type.name + "> is not listed as a constant" );
+        break;
+      case TypeCategory::Define:
+        checkForError( m_defines.contains( type.name ), typeIt->second.xmlLine, "required define <" + type.name + "> is not listed as a define" );
+        break;
+      case TypeCategory::Enum:
+        checkForError(
+          findByNameOrAlias( m_enums, type.name ) != m_enums.end(), typeIt->second.xmlLine, "required enum type <" + type.name + "> is not listed as an enum" );
+        break;
+      case TypeCategory::ExternalType:
+        checkForError(
+          m_externalTypes.contains( type.name ), typeIt->second.xmlLine, "required external type <" + type.name + "> is not listed as an external type" );
+        break;
+      case TypeCategory::FuncPointer:
+        checkForError(
+          m_funcPointers.contains( type.name ), typeIt->second.xmlLine, "required funcpointer <" + type.name + "> is not listed as a funcpointer" );
+        break;
+      case TypeCategory::Handle:
+        checkForError( findByNameOrAlias( m_handles, type.name ) != m_handles.end(),
+                       typeIt->second.xmlLine,
+                       "required handle type <" + type.name + "> is not listed as a handle" );
+        break;
+      case TypeCategory::Include:
+        checkForError( m_includes.contains( type.name ), typeIt->second.xmlLine, "required include <" + type.name + "> is not listed as an include" );
+        break;
+      case TypeCategory::Struct:
+      case TypeCategory::Union:
+        checkForError( findByNameOrAlias( m_structs, type.name ) != m_structs.end(),
+                       typeIt->second.xmlLine,
+                       "required struct type <" + type.name + "> is not listed as a struct" );
+        break;
+      case TypeCategory::Unknown: break;
+      default                   : assert( false ); break;
     }
   }
 }

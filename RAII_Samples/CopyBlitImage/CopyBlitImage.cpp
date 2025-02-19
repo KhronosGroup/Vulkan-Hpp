@@ -78,11 +78,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( imageIndex < swapChainData.images.size() );
 
     commandBuffer.begin( vk::CommandBufferBeginInfo() );
-    vk::raii::su::setImageLayout( commandBuffer,
-                                  static_cast<vk::Image>( swapChainData.images[imageIndex] ),
-                                  swapChainData.colorFormat,
-                                  vk::ImageLayout::eUndefined,
-                                  vk::ImageLayout::eTransferDstOptimal );
+    vk::raii::su::setImageLayout(
+      commandBuffer, swapChainData.images[imageIndex], swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
 
     // in order to get a clean desctruction sequence, instantiate the DeviceMemory for the image first
     vk::raii::DeviceMemory deviceMemory( nullptr );
@@ -150,7 +147,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     // Intend to blit from this image, set the layout accordingly
     vk::raii::su::setImageLayout( commandBuffer, blitSourceImage, swapChainData.colorFormat, vk::ImageLayout::eGeneral, vk::ImageLayout::eTransferSrcOptimal );
 
-    vk::Image blitDestinationImage = static_cast<vk::Image>( swapChainData.images[imageIndex] );
+    vk::Image blitDestinationImage = swapChainData.images[imageIndex];
 
     // Do a 32x32 blit to all of the dst image - should get big squares
     vk::ImageSubresourceLayers imageSubresourceLayers( vk::ImageAspectFlagBits::eColor, 0, 0, 1 );
@@ -203,9 +200,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     result = presentQueue.presentKHR( presentInfoKHR );
     switch ( result )
     {
-      case vk::Result::eSuccess: break;
+      case vk::Result::eSuccess      : break;
       case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n"; break;
-      default: assert( false );  // an unexpected result is returned !
+      default                        : assert( false );  // an unexpected result is returned !
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 

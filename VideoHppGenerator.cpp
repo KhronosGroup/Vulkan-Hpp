@@ -269,6 +269,16 @@ std::string VideoHppGenerator::generateStruct( std::pair<std::string, StructureD
     {
       return *reinterpret_cast<StdVideo${structureType}*>( this );
     }
+
+    operator StdVideo${structureType} const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<const StdVideo${structureType}*>( this );
+    }
+
+    operator StdVideo${structureType} *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<StdVideo${structureType}*>( this );
+    }
 ${compareOperators}
     public:
 ${members}

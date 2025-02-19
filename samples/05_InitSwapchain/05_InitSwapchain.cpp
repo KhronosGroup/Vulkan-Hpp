@@ -44,7 +44,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::SurfaceKHR     surface;
     {
       VkSurfaceKHR _surface;
-      glfwCreateWindowSurface( static_cast<VkInstance>( instance ), window.handle, nullptr, &_surface );
+      glfwCreateWindowSurface( instance, window.handle, nullptr, &_surface );
       surface = vk::SurfaceKHR( _surface );
     }
 

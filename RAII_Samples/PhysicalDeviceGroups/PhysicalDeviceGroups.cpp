@@ -40,22 +40,19 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( size_t i = 0; i < groupProperties.size(); i++ )
     {
       std::cout << "Group Properties " << i << " :\n";
-      std::cout << "\t"
-                << "physicalDeviceCount = " << groupProperties[i].physicalDeviceCount << "\n";
-      std::cout << "\t"
-                << "physicalDevices:\n";
+      std::cout << "\t" << "physicalDeviceCount = " << groupProperties[i].physicalDeviceCount << "\n";
+      std::cout << "\t" << "physicalDevices:\n";
       for ( size_t j = 0; j < groupProperties[i].physicalDeviceCount; j++ )
       {
-        vk::raii::PhysicalDevice physicalDevice( instance, static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[j] ) );
+        vk::raii::PhysicalDevice physicalDevice( instance, groupProperties[i].physicalDevices[j] );
         std::cout << "\t\t" << j << " : " << physicalDevice.getProperties().deviceName << "\n";
       }
-      std::cout << "\t"
-                << "subsetAllocation    = " << !!groupProperties[i].subsetAllocation << "\n";
+      std::cout << "\t" << "subsetAllocation    = " << !!groupProperties[i].subsetAllocation << "\n";
       std::cout << "\n";
 
       if ( 1 < groupProperties[i].physicalDeviceCount )
       {
-        vk::raii::PhysicalDevice physicalDevice( instance, static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[0] ) );
+        vk::raii::PhysicalDevice physicalDevice( instance, groupProperties[i].physicalDevices[0] );
 
         // get the QueueFamilyProperties of the first PhysicalDevice
         std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();

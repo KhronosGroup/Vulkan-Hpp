@@ -562,6 +562,7 @@ void writeToFile( std::string const & str, std::string const & fileName )
   std::ofstream ofs( fileName );
   assert( !ofs.fail() );
   ofs << str;
+  ofs.flush();
   ofs.close();
 
 #if defined( CLANG_FORMAT_EXECUTABLE )

@@ -216,21 +216,6 @@ target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}" )
 if( VULKAN_HPP_RUN_GENERATOR )
 	add_dependencies( VulkanHpp build_vulkan_hpp build_video_hpp )
 endif()
-# Get Vulkan C headers from subdirectory, existing target or FindVulkan
-if ( EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include")
-	target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
-else()
-	# try to use FindVulkan if target is missing
-	if ( NOT TARGET Vulkan::Headers )
-		find_package( Vulkan QUIET )
-	endif()
-	# check if target was found
-	if ( NOT TARGET Vulkan::Headers )
-		message( WARNING "Could not find Vulkan::Headers, include directories for Vulkan C headers will be missing" )
-	else()
-		target_link_libraries( VulkanHpp INTERFACE Vulkan::Headers )
-	endif()
-endif()
 
 # set up compile definitions
 if ( VULKAN_HPP_DISABLE_ENHANCED_MODE )
@@ -345,8 +330,17 @@ function( vulkan_hpp__setup_vulkan_include )
 	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 	
 	if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
+		# Vulkan C++ headers
 		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
+
+		# Vulkan C headers
+		if ( EXISTS "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
+			target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
+		else()
+			message( WARNING "Could not find vulkan C headers locally, pull the Vulkan-Headers submodule or disable VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP" )
+		endif()
 	else()
+		find_package( Vulkan REQUIRED )
 		target_include_directories( ${TARGET_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}" )
 	endif()
 endfunction()

@@ -11982,6 +11982,11 @@ ${constructorsAndSetters}
     {
       return *reinterpret_cast<Vk${structureType}*>( this );
     }
+
+    operator Vk${structureType} const 8() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<Vk${structureType} const *>( this );
+    }
 ${reflect}
 ${compareOperators}
     public:

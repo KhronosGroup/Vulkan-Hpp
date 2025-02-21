@@ -559,13 +559,15 @@ inline std::string trimStars( std::string const & input )
 
 void writeToFile( std::string const & str, std::string const & fileName )
 {
-  {
-    std::ofstream ofs( fileName );
-    assert( !ofs.fail() );
-    ofs << str;
-  }
+  std::ofstream ofs( fileName );
+  assert( !ofs.fail() );
+  ofs << str;
+  ofs.close();
 
 #if defined( CLANG_FORMAT_EXECUTABLE )
+  // explicitly flush std::cout, as std::system spawns a sub-process
+  std::cout.flush();
+
   messager.message( "VulkanHppGenerator: Formatting " + fileName + " ...\n" );
   const std::string commandString = "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " + fileName;
   const int         ret           = std::system( commandString.c_str() );

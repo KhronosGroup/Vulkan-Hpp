@@ -2728,6 +2728,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTVertexAttributeRobustnessExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTVertexAttributeRobustnessSpecVersion;
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_NV_present_metering ===
+  using VULKAN_HPP_NAMESPACE::NVPresentMeteringExtensionName;
+  using VULKAN_HPP_NAMESPACE::NVPresentMeteringSpecVersion;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //========================
   //=== CONSTEXPR VALUEs ===
   //========================
@@ -4807,6 +4813,12 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_vertex_attribute_robustness ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_NV_present_metering ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDevicePresentMeteringFeaturesNV;
+  using VULKAN_HPP_NAMESPACE::SetPresentConfigNV;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //===============
   //=== HANDLEs ===
@@ -8484,6 +8496,14 @@ export namespace std
   //=== VK_EXT_vertex_attribute_robustness ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT>;
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_NV_present_metering ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::SetPresentConfigNV>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePresentMeteringFeaturesNV>;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //===============================================
   //=== Required exports for vk::StructureChain ===

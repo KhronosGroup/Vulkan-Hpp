@@ -2040,6 +2040,12 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_vertex_attribute_robustness ===
   struct PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_NV_present_metering ===
+  struct SetPresentConfigNV;
+  struct PhysicalDevicePresentMeteringFeaturesNV;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //===================================
   //=== HANDLE forward declarations ===
   //===================================

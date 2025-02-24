@@ -817,6 +817,7 @@ private:
   std::string generateDecoratedReturnType( CommandData const &                       commandData,
                                            std::vector<size_t> const &               returnParams,
                                            std::map<size_t, VectorParamData> const & vectorParams,
+                                           bool                                      enumerating,
                                            CommandFlavourFlags                       flavourFlags,
                                            bool                                      raii,
                                            std::string const &                       returnType ) const;

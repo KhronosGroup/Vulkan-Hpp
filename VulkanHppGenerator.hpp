@@ -529,6 +529,8 @@ private:
   void        checkHandleCorrectness() const;
   void        checkRequireCorrectness() const;
   void        checkRequireCorrectness( std::vector<RequireData> const & requireData, std::string const & section, std::string const & name ) const;
+  void        checkRequireDependenciesCorrectness( RequireData const & require, std::string const & section, std::string const & name ) const;
+  void        checkRequireTypesCorrectness( RequireData const & require ) const;
   void        checkSpirVCapabilityCorrectness() const;
   void        checkStructCorrectness() const;
   void checkStructMemberCorrectness( std::string const & structureName, std::vector<MemberData> const & members, std::set<std::string> & sTypeValues ) const;

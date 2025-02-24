@@ -780,7 +780,7 @@ namespace vk
       : extent( extent_ ), window( vk::su::createWindow( windowName, extent ) )
     {
       VkSurfaceKHR _surface;
-      VkResult     err = glfwCreateWindowSurface( static_cast<VkInstance>( instance ), window.handle, nullptr, &_surface );
+      VkResult     err = glfwCreateWindowSurface( instance, window.handle, nullptr, &_surface );
       if ( err != VK_SUCCESS )
         throw std::runtime_error( "Failed to create window!" );
       surface = vk::SurfaceKHR( _surface );

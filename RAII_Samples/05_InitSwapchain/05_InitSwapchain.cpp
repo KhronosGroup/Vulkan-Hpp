@@ -42,7 +42,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     uint32_t           height = 64;
     vk::su::WindowData window = vk::su::createWindow( AppName, { width, height } );
     VkSurfaceKHR       _surface;
-    glfwCreateWindowSurface( static_cast<VkInstance>( *instance ), window.handle, nullptr, &_surface );
+    glfwCreateWindowSurface( *instance, window.handle, nullptr, &_surface );
     vk::raii::SurfaceKHR surface( instance, _surface );
 
     // determine a queueFamilyIndex that suports present

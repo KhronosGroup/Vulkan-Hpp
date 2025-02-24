@@ -84,7 +84,7 @@ public:
   void createDeviceAndSwapChain( const vk::su::WindowData & window )
   {
     VkSurfaceKHR surface;
-    VkResult     err = glfwCreateWindowSurface( static_cast<VkInstance>( instance.get() ), window.handle, nullptr, &surface );
+    VkResult     err = glfwCreateWindowSurface( instance.get(), window.handle, nullptr, &surface );
     if ( err != VK_SUCCESS )
       throw std::runtime_error( "Failed to create window!" );
     vk::SharedSurfaceKHR sharedSurface{ surface, instance };

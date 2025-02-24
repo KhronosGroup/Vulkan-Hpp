@@ -595,7 +595,7 @@ static void keyCallback( GLFWwindow * window, int key, int /*scancode*/, int act
     switch ( key )
     {
       case GLFW_KEY_ESCAPE:
-      case 'Q': glfwSetWindowShouldClose( window, 1 ); break;
+      case 'Q'            : glfwSetWindowShouldClose( window, 1 ); break;
       case 'R':
         {
           AppInfo * appInfo        = reinterpret_cast<AppInfo *>( glfwGetWindowUserPointer( window ) );
@@ -725,7 +725,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // Create Window Surface (using glfw)
     vk::SurfaceKHR surface;
-    VkResult       err = glfwCreateWindowSurface( static_cast<VkInstance>( instance ), window, nullptr, reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    VkResult       err = glfwCreateWindowSurface( instance, window, nullptr, reinterpret_cast<VkSurfaceKHR *>( &surface ) );
     check_vk_result( err );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surface );
@@ -1225,9 +1225,9 @@ int main( int /*argc*/, char ** /*argv*/ )
         presentQueue.presentKHR( vk::PresentInfoKHR( perFrameData[frameIndex].renderCompleteSemaphore, swapChainData.swapChain, backBufferIndex ) );
       switch ( result )
       {
-        case vk::Result::eSuccess: break;
+        case vk::Result::eSuccess      : break;
         case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n"; break;
-        default: assert( false );  // an unexpected result is returned !
+        default                        : assert( false );  // an unexpected result is returned !
       }
       frameIndex = ( frameIndex + 1 ) % IMGUI_VK_QUEUED_FRAMES;
 

@@ -581,7 +581,7 @@ static void keyCallback( GLFWwindow * window, int key, int /*scancode*/, int act
     switch ( key )
     {
       case GLFW_KEY_ESCAPE:
-      case 'Q': glfwSetWindowShouldClose( window, 1 ); break;
+      case 'Q'            : glfwSetWindowShouldClose( window, 1 ); break;
       case 'R':
         {
           AppInfo * appInfo        = reinterpret_cast<AppInfo *>( glfwGetWindowUserPointer( window ) );
@@ -725,7 +725,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // Create Window Surface (using glfw)
     VkSurfaceKHR glfwSurface;
-    VkResult     err = glfwCreateWindowSurface( static_cast<VkInstance>( *instance ), window, nullptr, &glfwSurface );
+    VkResult     err = glfwCreateWindowSurface( *instance, window, nullptr, &glfwSurface );
     check_vk_result( err );
     vk::raii::SurfaceKHR surface( instance, glfwSurface );
 
@@ -1188,11 +1188,8 @@ int main( int /*argc*/, char ** /*argv*/ )
         vk::WriteDescriptorSet  writeDescriptorSet( *rayTracingDescriptorSets[backBufferIndex], 1, 0, bindings[1].descriptorType, imageInfo );
         device.updateDescriptorSets( writeDescriptorSet, nullptr );
 
-        vk::raii::su::setImageLayout( commandBuffer,
-                                      static_cast<vk::Image>( swapChainData.images[backBufferIndex] ),
-                                      surfaceFormat.format,
-                                      vk::ImageLayout::eUndefined,
-                                      vk::ImageLayout::eGeneral );
+        vk::raii::su::setImageLayout(
+          commandBuffer, swapChainData.images[backBufferIndex], surfaceFormat.format, vk::ImageLayout::eUndefined, vk::ImageLayout::eGeneral );
 
         commandBuffer.bindPipeline( vk::PipelineBindPoint::eRayTracingNV, *rayTracingPipeline );
 
@@ -1214,11 +1211,8 @@ int main( int /*argc*/, char ** /*argv*/ )
                                    windowExtent.height,
                                    1 );
 
-        vk::raii::su::setImageLayout( commandBuffer,
-                                      static_cast<vk::Image>( swapChainData.images[backBufferIndex] ),
-                                      surfaceFormat.format,
-                                      vk::ImageLayout::eGeneral,
-                                      vk::ImageLayout::ePresentSrcKHR );
+        vk::raii::su::setImageLayout(
+          commandBuffer, swapChainData.images[backBufferIndex], surfaceFormat.format, vk::ImageLayout::eGeneral, vk::ImageLayout::ePresentSrcKHR );
       }
 
       // frame end
@@ -1236,9 +1230,9 @@ int main( int /*argc*/, char ** /*argv*/ )
       result = presentQueue.presentKHR( presentInfoKHR );
       switch ( result )
       {
-        case vk::Result::eSuccess: break;
+        case vk::Result::eSuccess      : break;
         case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n"; break;
-        default: assert( false );  // an unexpected result is returned !
+        default                        : assert( false );  // an unexpected result is returned !
       }
       frameIndex = ( frameIndex + 1 ) % IMGUI_VK_QUEUED_FRAMES;
 

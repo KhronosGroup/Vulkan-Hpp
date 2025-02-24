@@ -41,7 +41,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::UniqueInstance  instance = vk::createInstanceUnique( vk::InstanceCreateInfo( {}, &appInfo ) );
 
       auto h1 = std::hash<vk::Instance>{}( *instance );
-      auto h2 = std::hash<VkInstance>{}( static_cast<VkInstance>( *instance ) );
+      auto h2 = std::hash<VkInstance>{}( *instance );
       assert( h1 == h2 );
 
       std::unordered_set<vk::Instance> uset;

@@ -4948,7 +4948,11 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
       case StructureType::ePhysicalDeviceDepthClampZeroOneFeaturesKHR        : return "PhysicalDeviceDepthClampZeroOneFeaturesKHR";
       case StructureType::ePhysicalDeviceVertexAttributeRobustnessFeaturesEXT: return "PhysicalDeviceVertexAttributeRobustnessFeaturesEXT";
-      default                                                                : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case StructureType::eSetPresentConfigNV                     : return "SetPresentConfigNV";
+      case StructureType::ePhysicalDevicePresentMeteringFeaturesNV: return "PhysicalDevicePresentMeteringFeaturesNV";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 

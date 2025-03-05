@@ -2586,12 +2586,13 @@ std::string VulkanHppGenerator::generateBitmaskToString( std::map<std::string, B
     static const std::string bitmaskToStringTemplate = R"(
   VULKAN_HPP_INLINE std::string to_string( ${bitmaskName} value )
   {
-    if ( !value )
-      return "${emptyValue}";
-
-    std::string result;
+    std::string result = "{";
 ${toStringChecks}
-    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else 
+      result = "${emptyValue}";
+    return result;
   }
 )";
 
@@ -2612,7 +2613,7 @@ ${toStringChecks}
         {
           const auto [enter, leave] = generateProtection( value.protect );
           toStringChecks += ( ( previousEnter != enter ) ? ( previousLeave + enter ) : "" ) + "    if ( value & " + enumName + "::" + valueName +
-                            " ) result += \"" + valueName.substr( 1 ) + " | \";\n";
+                            " ) result += \" " + valueName.substr( 1 ) + " |\";\n";
           previousEnter = enter;
           previousLeave = leave;
         }

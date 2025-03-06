@@ -191,9 +191,6 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
                       { "deviceTest", generateExtensionTypeTest( "device" ) },
                       { "deprecatedBy", deprecatedBy },
                       { "deprecatedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return extension.isDeprecated; } ) },
-                      { "extensionDependencies", generateExtensionDependencies() },
-                      { "getExtensionDependsByVersionDeclaration", generateExtensionDependsByVersion( false ) },
-                      { "getExtensionDependsByVersionDefinition", generateExtensionDependsByVersion( true ) },
                       { "instanceExtensions", generateExtensionsList( "instance" ) },
                       { "instanceTest", generateExtensionTypeTest( "instance" ) },
                       { "licenseHeader", m_vulkanLicenseHeader },
@@ -962,18 +959,10 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
   for ( auto const & extension : m_extensions )
   {
     // check for existence of any depends, deprecation, obsoletion, or promotion
-    for ( auto const & dependsByVersion : extension.depends )
+    std::vector<std::string> depends = tokenizeAny( extension.depends, ",+()" );
+    for ( auto const & dep : depends )
     {
-      checkForError( isFeature( dependsByVersion.first ),
-                     extension.xmlLine,
-                     "extension <" + extension.name + "> lists an unknown feature <" + dependsByVersion.first + ">" );
-      for ( auto const & dependsSet : dependsByVersion.second )
-      {
-        for ( auto const & depends : dependsSet )
-        {
-          checkForError( isExtension( depends ), extension.xmlLine, "extension <" + extension.name + "> lists an unknown depends <" + depends + ">" );
-        }
-      }
+      checkForError( isExtension( dep ) || isFeature( dep ), extension.xmlLine, "extension <" + extension.name + "> lists an unknow depends <" + dep + ">" );
     }
     if ( !extension.deprecatedBy.empty() )
     {
@@ -999,11 +988,10 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
     {
       if ( !require.depends.empty() )
       {
-        std::vector<std::string> depends = tokenizeAny( require.depends, ",+()" );
-        for ( auto const & depend : depends )
+        std::vector<std::string> requireDepends = tokenizeAny( require.depends, ",+()" );
+        for ( auto const & dep : requireDepends )
         {
-          checkForError(
-            isFeature( depend ) || isExtension( depend ), require.xmlLine, "extension <" + extension.name + "> lists an unknown depends <" + depend + ">" );
+          checkForError( isFeature( dep ) || isExtension( dep ), require.xmlLine, "extension <" + extension.name + "> lists an unknown depends <" + dep + ">" );
         }
       }
     }
@@ -7468,108 +7456,6 @@ std::string VulkanHppGenerator::generateEnumValueName( std::string const & enumN
     result = result.substr( 0, result.length() - tag.length() ) + tag;
   }
   return result;
-}
-
-std::string VulkanHppGenerator::generateExtensionDependencies() const
-{
-  std::string extensionDependencies, previousEnter, previousLeave;
-  for ( auto const & extension : m_extensions )
-  {
-    if ( !extension.depends.empty() )
-    {
-      std::string dependsPerExtension = "{ \"" + extension.name + "\", { ";
-      for ( auto const & dependsByVersion : extension.depends )
-      {
-        dependsPerExtension += "{ \"" + dependsByVersion.first + "\", { ";
-        if ( !dependsByVersion.second.empty() )
-        {
-          dependsPerExtension += " { ";
-          for ( auto const & dependsSet : dependsByVersion.second )
-          {
-            for ( auto const & depends : dependsSet )
-            {
-              dependsPerExtension += "\"" + depends + "\", ";
-            }
-          }
-          dependsPerExtension += " }, ";
-          assert( dependsPerExtension.ends_with( ", " ) );
-          dependsPerExtension = dependsPerExtension.substr( 0, dependsPerExtension.length() - 2 );
-        }
-        dependsPerExtension += " } }, ";
-      }
-      assert( dependsPerExtension.ends_with( ", " ) );
-      dependsPerExtension = dependsPerExtension.substr( 0, dependsPerExtension.length() - 2 );
-      dependsPerExtension += " } }, ";
-
-      const auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
-      extensionDependencies += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + dependsPerExtension;
-      previousEnter = enter;
-      previousLeave = leave;
-    }
-  }
-  assert( extensionDependencies.ends_with( ", " ) );
-  extensionDependencies = extensionDependencies.substr( 0, extensionDependencies.length() - 2 );
-
-  if ( !previousLeave.empty() )
-  {
-    extensionDependencies += "\n" + previousLeave;
-  }
-  return extensionDependencies;
-}
-
-std::string VulkanHppGenerator::generateExtensionDependsByVersion( bool definition ) const
-{
-  if ( m_api != "vulkan" )
-  {
-    return "";
-  }
-
-  if ( definition )
-  {
-    const std::string generateExtensionDependsTemplate =
-      R"(  VULKAN_HPP_INLINE std::pair<bool, std::vector<std::vector<std::string>> const &> getExtensionDepends( std::string const & version, std::string const & extension )
-    {
-#if !defined( NDEBUG )
-      static std::set<std::string> versions = { ${versions} };
-      assert( versions.find( version ) != versions.end() );
-#endif
-      static std::vector<std::vector<std::string>> noDependencies;
-
-      std::map<std::string, std::vector<std::vector<std::string>>> const & dependencies = getExtensionDepends( extension );
-      if ( dependencies.empty() )
-      {
-        return { true, noDependencies };
-      }
-      auto depIt = dependencies.lower_bound( version );
-      if ( ( depIt == dependencies.end() ) || ( depIt->first != version ) )
-      {
-        depIt = std::prev( depIt );
-      }
-      if ( depIt == dependencies.end() )
-      {
-        return { false, noDependencies };
-      }
-      else
-      {
-        return { true, depIt->second };
-      }
-    }
-)";
-
-    std::string versions;
-    for ( auto const & feature : m_features )
-    {
-      versions += "\"" + feature.name + "\", ";
-    }
-    assert( versions.ends_with( ", " ) );
-    versions = versions.substr( 0, versions.length() - 2 );
-
-    return replaceWithMap( generateExtensionDependsTemplate, { { "versions", versions } } );
-  }
-  else
-  {
-    return "std::pair<bool, std::vector<std::vector<std::string>> const &> getExtensionDepends( std::string const & version, std::string const & extension );";
-  }
 }
 
 template <class Predicate, class Extraction>
@@ -14261,50 +14147,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "depends" )
     {
-      // currently, we map the few complex depends attributes to a canonical format!
-      const std::map<std::string, std::string> complexToCanonicalDepends = {
-        { "(VK_EXT_filter_cubic)+(VK_VERSION_1_2,VK_EXT_sampler_filter_minmax)",
-          "VK_EXT_filter_cubic+VK_EXT_sampler_filter_minmax,VK_VERSION_1_2+VK_EXT_filter_cubic" },
-        { "VK_KHR_swapchain+VK_KHR_get_surface_capabilities2+(VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)",
-          "VK_KHR_swapchain+VK_KHR_get_surface_capabilities2+VK_KHR_get_physical_device_properties2,VK_VERSION_1_1+VK_KHR_swapchain+VK_KHR_get_surface_capabilities2" },
-        { "((VK_KHR_bind_memory2+VK_KHR_get_physical_device_properties2+VK_KHR_sampler_ycbcr_conversion),VK_VERSION_1_1)+(VK_KHR_image_format_list,VK_VERSION_1_2)",
-          "VK_KHR_bind_memory2+VK_KHR_get_physical_device_properties2+VK_KHR_sampler_ycbcr_conversion+VK_KHR_image_format_list,VK_VERSION_1_1+VK_KHR_image_format_list,VK_VERSION_1_2" },
-        { "VK_KHR_swapchain+(VK_KHR_maintenance2,VK_VERSION_1_1)+(VK_KHR_image_format_list,VK_VERSION_1_2)",
-          "VK_KHR_swapchain+VK_KHR_maintenance2+VK_KHR_image_format_list,VK_VERSION_1_1+VK_KHR_swapchain+VK_KHR_image_format_list,VK_VERSION_1_2+VK_KHR_swapchain" },
-        { "(VK_KHR_create_renderpass2,VK_VERSION_1_2)+(VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)",
-          "VK_KHR_create_renderpass2+VK_KHR_get_physical_device_properties2,VK_VERSION_1_1+VK_KHR_create_renderpass2,VK_VERSION_1_2" },
-        { "(VK_KHR_get_physical_device_properties2+VK_KHR_device_group),VK_VERSION_1_1",
-          "VK_KHR_get_physical_device_properties2+VK_KHR_device_group,VK_VERSION_1_1" },
-        { "(VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)+(VK_KHR_dynamic_rendering,VK_VERSION_1_3)",
-          "VK_KHR_get_physical_device_properties2+VK_KHR_dynamic_rendering,VK_VERSION_1_1+VK_KHR_dynamic_rendering,VK_VERSION_1_3" }
-      };
-      auto        canonicalIt = complexToCanonicalDepends.find( attribute.second );
-      std::string depends;
-      if ( canonicalIt == complexToCanonicalDepends.end() )
-      {
-        depends = attribute.second;
-        std::erase_if( depends, []( char c ) { return ( c == '(' ) || ( c == ')' ); } );
-      }
-      else
-      {
-        depends = canonicalIt->second;
-      }
-
-      // first tokenize by ',', giving a vector of dependencies for different vulkan versions
-      std::vector<std::string> allDependencies = tokenize( depends, "," );
-      for ( auto dep : allDependencies )
-      {
-        // for ease of handling, prepend the (optional) VK_VERSION_1_0
-        if ( !dep.starts_with( "VK_VERSION" ) )
-        {
-          assert( dep.find( "VK_VERSION" ) == std::string::npos );
-          dep = "VK_VERSION_1_0+" + dep;
-        }
-
-        // then tokenize by '+', giving a vector of dependendies for the vulkan version listed as the first element here
-        std::vector<std::string> dependsByVersion = tokenize( dep, "+" );
-        extensionData.depends[dependsByVersion[0]].push_back( { std::next( dependsByVersion.begin() ), dependsByVersion.end() } );
-      }
+      extensionData.depends = attribute.second;
     }
     else if ( attribute.first == "deprecatedby" )
     {

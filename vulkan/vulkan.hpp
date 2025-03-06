@@ -81,7 +81,7 @@ static_assert( VK_HEADER_VERSION == 309, "Wrong VK_HEADER_VERSION!" );
 #  undef MemoryBarrier
 #endif
 
-// XLib.h defines True/False, which collides with our vk::True/vk::False
+// XLib.h defines True/False, which collides with our VULKAN_HPP_NAMESPACE::True/VULKAN_HPP_NAMESPACE::False
 // ->  undef them and provide some namepace-secure constexpr
 #if defined( True )
 #  undef True
@@ -6252,9 +6252,9 @@ namespace VULKAN_HPP_NAMESPACE
     public:
       ObjectDestroy() = default;
 
-      ObjectDestroy( OwnerType                                                   owner,
-                     Optional<const vk::AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                     Dispatch const & dispatch                                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+      ObjectDestroy( OwnerType                                                                     owner,
+                     Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                     Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
         : m_owner( owner )
         , m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
@@ -6266,7 +6266,7 @@ namespace VULKAN_HPP_NAMESPACE
         return m_owner;
       }
 
-      Optional<const vk::AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+      Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
       {
         return m_allocationCallbacks;
       }
@@ -6285,9 +6285,9 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
     private:
-      OwnerType                               m_owner               = {};
-      Optional<const vk::AllocationCallbacks> m_allocationCallbacks = nullptr;
-      Dispatch const *                        m_dispatch            = nullptr;
+      OwnerType                                                 m_owner               = {};
+      Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> m_allocationCallbacks = nullptr;
+      Dispatch const *                                          m_dispatch            = nullptr;
     };
 
     class NoParent;
@@ -6298,14 +6298,14 @@ namespace VULKAN_HPP_NAMESPACE
     public:
       ObjectDestroy() = default;
 
-      ObjectDestroy( Optional<const vk::AllocationCallbacks> allocationCallbacks,
-                     Dispatch const & dispatch               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+      ObjectDestroy( Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocationCallbacks,
+                     Dispatch const & dispatch                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
         : m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
       {
       }
 
-      Optional<const vk::AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+      Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
       {
         return m_allocationCallbacks;
       }
@@ -6324,8 +6324,8 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
     private:
-      Optional<const vk::AllocationCallbacks> m_allocationCallbacks = nullptr;
-      Dispatch const *                        m_dispatch            = nullptr;
+      Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> m_allocationCallbacks = nullptr;
+      Dispatch const *                                          m_dispatch            = nullptr;
     };
 
     template <typename OwnerType, typename Dispatch>

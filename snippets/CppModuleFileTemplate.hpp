@@ -39,9 +39,9 @@ export namespace std
 {
   ${hashSpecializations}
 
-  //===============================================
-  //=== Required exports for vk::StructureChain ===
-  //===============================================
+  //=================================================================
+  //=== Required exports for VULKAN_HPP_NAMESPACE::StructureChain ===
+  //=================================================================
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   using std::tuple_size;

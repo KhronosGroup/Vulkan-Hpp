@@ -14,7 +14,7 @@
 #  undef MemoryBarrier
 #endif
 
-// XLib.h defines True/False, which collides with our vk::True/vk::False
+// XLib.h defines True/False, which collides with our VULKAN_HPP_NAMESPACE::True/VULKAN_HPP_NAMESPACE::False
 // ->  undef them and provide some namepace-secure constexpr
 #if defined( True )
 #  undef True

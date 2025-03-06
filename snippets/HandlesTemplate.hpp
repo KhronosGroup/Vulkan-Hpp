@@ -13,7 +13,7 @@ namespace VULKAN_HPP_NAMESPACE
   ${uniqueHandles}
   ${handles}
 
-  // operators to compare vk::-handles
+  // operators to compare VULKAN_HPP_NAMESPACE::-handles
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
   template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, int>::type = 0>
   auto operator<=>( T const & lhs, T const & rhs )

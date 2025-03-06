@@ -1,7 +1,7 @@
 ${licenseHeader}
 
 #ifndef VULKAN_EXTENSION_INSPECTION_HPP
-#  define VULKAN_EXTENSION_INSPECTION_HPP
+#define VULKAN_EXTENSION_INSPECTION_HPP
 
 #if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
 import VULKAN_HPP_STD_MODULE;
@@ -19,13 +19,11 @@ namespace VULKAN_HPP_NAMESPACE
   //=== Extension inspection functions ===
   //======================================
 
-  std::set<std::string> const &                                        getDeviceExtensions();
-  std::set<std::string> const &                                        getInstanceExtensions();
-  std::map<std::string, std::string> const &                           getDeprecatedExtensions();
-  std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension );
-  ${getExtensionDependsByVersionDeclaration}
-  std::map<std::string, std::string> const &              getObsoletedExtensions();
-  std::map<std::string, std::string> const &              getPromotedExtensions();
+  std::set<std::string> const &              getDeviceExtensions();
+  std::set<std::string> const &              getInstanceExtensions();
+  std::map<std::string, std::string> const & getDeprecatedExtensions();
+  std::map<std::string, std::string> const & getObsoletedExtensions();
+  std::map<std::string, std::string> const & getPromotedExtensions();
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & extension );
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionObsoletedBy( std::string const & extension );
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & extension );
@@ -56,16 +54,6 @@ namespace VULKAN_HPP_NAMESPACE
     static const std::set<std::string> instanceExtensions = { ${instanceExtensions} };
     return instanceExtensions;
   }
-
-  VULKAN_HPP_INLINE std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension )
-  {
-    static const std::map<std::string, std::vector<std::vector<std::string>>> noDependencies;
-    static const std::map<std::string, std::map<std::string, std::vector<std::vector<std::string>>>> dependencies = { ${extensionDependencies} };
-    auto depIt = dependencies.find( extension );
-    return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
-  }
-
-  ${getExtensionDependsByVersionDefinition}
 
   VULKAN_HPP_INLINE std::map<std::string, std::string> const & getObsoletedExtensions()
   {
@@ -122,6 +110,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return ${promotedTest};
   }
-}   // namespace VULKAN_HPP_NAMESPACE
+}  // namespace VULKAN_HPP_NAMESPACE
 
 #endif

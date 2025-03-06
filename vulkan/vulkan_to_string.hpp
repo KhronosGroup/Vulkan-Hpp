@@ -3942,15 +3942,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_maintenance8 ===
 
-  VULKAN_HPP_INLINE std::string to_string( AccessFlags3KHR value )
+  VULKAN_HPP_INLINE std::string to_string( AccessFlags3KHR )
   {
-    std::string result = "{";
-
-    if ( result.size() > 1 )
-      result.back() = '}';
-    else
-      result = "None";
-    return result;
+    return "None";
   }
 
   //=======================

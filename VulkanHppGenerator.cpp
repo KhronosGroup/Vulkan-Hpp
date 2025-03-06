@@ -2558,61 +2558,60 @@ std::string VulkanHppGenerator::generateBitmaskToString( std::map<std::string, B
   std::string enumName    = stripPrefix( bitmaskBitsIt->first, "Vk" );
 
   std::string str;
-  if ( bitmaskBitsIt->second.values.empty() ||
-       std::none_of( bitmaskBitsIt->second.values.begin(), bitmaskBitsIt->second.values.end(), []( auto const & evd ) { return evd.supported; } ) )
+  std::string emptyValue = "{}";
+  std::string toStringChecks;
+  std::string previousEnter, previousLeave;
+  for ( auto const & value : bitmaskBitsIt->second.values )
   {
-    static std::string bitmaskToStringTemplate = R"(
+    if ( value.supported )
+    {
+      std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true );
+      if ( value.value == "0" )
+      {
+        assert( emptyValue == "{}" );
+        emptyValue = valueName.substr( 1 );
+      }
+      else if ( !value.bitpos.empty() )
+      {
+        const auto [enter, leave] = generateProtection( value.protect );
+        toStringChecks += ( ( previousEnter != enter ) ? ( previousLeave + enter ) : "" ) + "    if ( value & " + enumName + "::" + valueName +
+                          " ) result += \" " + valueName.substr( 1 ) + " |\";\n";
+        previousEnter = enter;
+        previousLeave = leave;
+      }
+    }
+  }
+  if ( !previousLeave.empty() )
+  {
+    assert( previousLeave.ends_with( "\n" ) );
+    toStringChecks += previousLeave;
+    previousLeave.resize( previousLeave.size() - strlen( "\n" ) );
+  }
+
+  if ( toStringChecks.empty() )
+  {
+    static const std::string bitmaskToStringTemplate = R"(
   VULKAN_HPP_INLINE std::string to_string( ${bitmaskName} )
   {
-    return "{}";
+    return "${emptyValue}";
   }
 )";
-    str += replaceWithMap( bitmaskToStringTemplate, { { "bitmaskName", bitmaskName } } );
+    str += replaceWithMap( bitmaskToStringTemplate, { { "bitmaskName", bitmaskName }, { "emptyValue", emptyValue } } );
   }
   else
   {
     static const std::string bitmaskToStringTemplate = R"(
   VULKAN_HPP_INLINE std::string to_string( ${bitmaskName} value )
   {
-    if ( !value )
-      return "${emptyValue}";
-
-    std::string result;
+    std::string result = "{";
 ${toStringChecks}
-    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else 
+      result = "${emptyValue}";
+    return result;
   }
 )";
-
-    std::string emptyValue = "{}";
-    std::string toStringChecks;
-    std::string previousEnter, previousLeave;
-    for ( auto const & value : bitmaskBitsIt->second.values )
-    {
-      if ( value.supported )
-      {
-        std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true );
-        if ( value.value == "0" )
-        {
-          assert( emptyValue == "{}" );
-          emptyValue = valueName.substr( 1 );
-        }
-        else if ( !value.bitpos.empty() )
-        {
-          const auto [enter, leave] = generateProtection( value.protect );
-          toStringChecks += ( ( previousEnter != enter ) ? ( previousLeave + enter ) : "" ) + "    if ( value & " + enumName + "::" + valueName +
-                            " ) result += \"" + valueName.substr( 1 ) + " | \";\n";
-          previousEnter = enter;
-          previousLeave = leave;
-        }
-      }
-    }
-    if ( !previousLeave.empty() )
-    {
-      assert( previousLeave.ends_with( "\n" ) );
-      toStringChecks += previousLeave;
-      previousLeave.resize( previousLeave.size() - strlen( "\n" ) );
-    }
-
     str += replaceWithMap( bitmaskToStringTemplate, { { "bitmaskName", bitmaskName }, { "emptyValue", emptyValue }, { "toStringChecks", toStringChecks } } );
   }
 

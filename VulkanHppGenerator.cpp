@@ -8574,7 +8574,7 @@ std::string VulkanHppGenerator::generateLayerSettingTypeTraits() const
   template <>
   struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eBool32>
   {
-    using Type = vk::Bool32;
+    using Type = VULKAN_HPP_NAMESPACE::Bool32;
   };
 
   template <>
@@ -10296,7 +10296,7 @@ std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::
     }
     else if ( param.type.type == "VkAllocationCallbacks" )
     {
-      // vk::AllocationCallbacks is stored as a member of the handle class
+      // VULKAN_HPP_NAMESPACE::AllocationCallbacks is stored as a member of the handle class
       arguments.push_back( "reinterpret_cast<const VkAllocationCallbacks *>( m_allocator )" );
     }
     else if ( isHandleType( param.type.type ) )
@@ -10506,7 +10506,7 @@ ${forwardDeclarations}
 
 ${raiiHandles}
 
-  // operators to compare vk::raii-handles
+  // operators to compare VULKAN_HPP_NAMESPACE::raii-handles
 #if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
   template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   auto operator<=>( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
@@ -11484,7 +11484,7 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
             ( structData.second.members[3].name == "valueCount" ) && ( structData.second.members[4].name == "pValues" ) );
 
     static const std::string byTypeTemplate =
-      R"(    LayerSettingEXT( char const * pLayerName_, char const * pSettingName_, VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT type_, vk::ArrayProxyNoTemporaries<const ${type}> const & values_ )
+      R"(    LayerSettingEXT( char const * pLayerName_, char const * pSettingName_, VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT type_, VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const ${type}> const & values_ )
       : pLayerName( pLayerName_ )
       , pSettingName( pSettingName_ )
       , type( type_ )
@@ -11496,7 +11496,7 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
 
     static const std::string constructorTemplate = R"(
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-// NOTE: you need to provide the type because vk::Bool32 and uint32_t are indistinguishable!
+// NOTE: you need to provide the type because VULKAN_HPP_NAMESPACE::Bool32 and uint32_t are indistinguishable!
 ${byInt32}
 ${byInt64}
 ${byUint32}
@@ -11878,7 +11878,7 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
   std::string constructorsAndSetters;
   if ( strcmp( &structure.first[0], "VkDeviceFaultInfoEXT" ) == 0 )
   {
-    // special handling for this structure, as it is filled with dynamic memory on vk::Device::getFaultInfoEXT!
+    // special handling for this structure, as it is filled with dynamic memory on VULKAN_HPP_NAMESPACE::Device::getFaultInfoEXT!
     constructorsAndSetters += R"(
 #if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
     VULKAN_HPP_CONSTEXPR_14 DeviceFaultInfoEXT( std::array<char, VK_MAX_DESCRIPTION_SIZE> const & description_       = {},

@@ -8182,7 +8182,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <>
   struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eBool32>
   {
-    using Type = vk::Bool32;
+    using Type = VULKAN_HPP_NAMESPACE::Bool32;
   };
 
   template <>

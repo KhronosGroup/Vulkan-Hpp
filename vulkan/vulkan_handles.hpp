@@ -20426,7 +20426,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD typename ResultValueType<uint32_t>::type enumerateInstanceVersion( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
-  // operators to compare vk::-handles
+  // operators to compare VULKAN_HPP_NAMESPACE::-handles
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
   template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, int>::type = 0>
   auto operator<=>( T const & lhs, T const & rhs )

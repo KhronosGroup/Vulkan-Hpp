@@ -14252,7 +14252,7 @@ namespace VULKAN_HPP_NAMESPACE
       static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
-    // operators to compare vk::raii-handles
+    // operators to compare VULKAN_HPP_NAMESPACE::raii-handles
 #  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
     template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
     auto operator<=>( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT

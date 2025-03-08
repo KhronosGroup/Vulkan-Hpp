@@ -2370,12 +2370,12 @@ namespace VULKAN_HPP_NAMESPACE
     eFragmentDensityProcessEXT        = VK_PIPELINE_STAGE_FRAGMENT_DENSITY_PROCESS_BIT_EXT,
     eFragmentShadingRateAttachmentKHR = VK_PIPELINE_STAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR,
     eShadingRateImageNV               = VK_PIPELINE_STAGE_SHADING_RATE_IMAGE_BIT_NV,
-    eCommandPreprocessNV              = VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_NV,
-    eCommandPreprocessEXT             = VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_EXT,
     eTaskShaderEXT                    = VK_PIPELINE_STAGE_TASK_SHADER_BIT_EXT,
     eTaskShaderNV                     = VK_PIPELINE_STAGE_TASK_SHADER_BIT_NV,
     eMeshShaderEXT                    = VK_PIPELINE_STAGE_MESH_SHADER_BIT_EXT,
-    eMeshShaderNV                     = VK_PIPELINE_STAGE_MESH_SHADER_BIT_NV
+    eMeshShaderNV                     = VK_PIPELINE_STAGE_MESH_SHADER_BIT_NV,
+    eCommandPreprocessEXT             = VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_EXT,
+    eCommandPreprocessNV              = VK_PIPELINE_STAGE_COMMAND_PREPROCESS_BIT_NV
   };
 
   // wrapper using for bitmask VkPipelineStageFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineStageFlags.html
@@ -2393,8 +2393,8 @@ namespace VULKAN_HPP_NAMESPACE
       PipelineStageFlagBits::eBottomOfPipe | PipelineStageFlagBits::eHost | PipelineStageFlagBits::eAllGraphics | PipelineStageFlagBits::eAllCommands |
       PipelineStageFlagBits::eNone | PipelineStageFlagBits::eTransformFeedbackEXT | PipelineStageFlagBits::eConditionalRenderingEXT |
       PipelineStageFlagBits::eAccelerationStructureBuildKHR | PipelineStageFlagBits::eRayTracingShaderKHR | PipelineStageFlagBits::eFragmentDensityProcessEXT |
-      PipelineStageFlagBits::eFragmentShadingRateAttachmentKHR | PipelineStageFlagBits::eCommandPreprocessNV | PipelineStageFlagBits::eTaskShaderEXT |
-      PipelineStageFlagBits::eMeshShaderEXT;
+      PipelineStageFlagBits::eFragmentShadingRateAttachmentKHR | PipelineStageFlagBits::eTaskShaderEXT | PipelineStageFlagBits::eMeshShaderEXT |
+      PipelineStageFlagBits::eCommandPreprocessEXT;
   };
 
   // wrapper class for enum VkMemoryMapFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkMemoryMapFlagBits.html
@@ -3668,10 +3668,10 @@ namespace VULKAN_HPP_NAMESPACE
     eFragmentDensityMapReadEXT            = VK_ACCESS_FRAGMENT_DENSITY_MAP_READ_BIT_EXT,
     eFragmentShadingRateAttachmentReadKHR = VK_ACCESS_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR,
     eShadingRateImageReadNV               = VK_ACCESS_SHADING_RATE_IMAGE_READ_BIT_NV,
-    eCommandPreprocessReadNV              = VK_ACCESS_COMMAND_PREPROCESS_READ_BIT_NV,
     eCommandPreprocessReadEXT             = VK_ACCESS_COMMAND_PREPROCESS_READ_BIT_EXT,
-    eCommandPreprocessWriteNV             = VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_NV,
-    eCommandPreprocessWriteEXT            = VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_EXT
+    eCommandPreprocessReadNV              = VK_ACCESS_COMMAND_PREPROCESS_READ_BIT_NV,
+    eCommandPreprocessWriteEXT            = VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_EXT,
+    eCommandPreprocessWriteNV             = VK_ACCESS_COMMAND_PREPROCESS_WRITE_BIT_NV
   };
 
   // wrapper using for bitmask VkAccessFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkAccessFlags.html
@@ -3689,7 +3689,7 @@ namespace VULKAN_HPP_NAMESPACE
       AccessFlagBits::eMemoryWrite | AccessFlagBits::eNone | AccessFlagBits::eTransformFeedbackWriteEXT | AccessFlagBits::eTransformFeedbackCounterReadEXT |
       AccessFlagBits::eTransformFeedbackCounterWriteEXT | AccessFlagBits::eConditionalRenderingReadEXT | AccessFlagBits::eColorAttachmentReadNoncoherentEXT |
       AccessFlagBits::eAccelerationStructureReadKHR | AccessFlagBits::eAccelerationStructureWriteKHR | AccessFlagBits::eFragmentDensityMapReadEXT |
-      AccessFlagBits::eFragmentShadingRateAttachmentReadKHR | AccessFlagBits::eCommandPreprocessReadNV | AccessFlagBits::eCommandPreprocessWriteNV;
+      AccessFlagBits::eFragmentShadingRateAttachmentReadKHR | AccessFlagBits::eCommandPreprocessReadEXT | AccessFlagBits::eCommandPreprocessWriteEXT;
   };
 
   // wrapper class for enum VkAttachmentDescriptionFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkAttachmentDescriptionFlagBits.html
@@ -4651,8 +4651,8 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoEncodeKHR                   = VK_PIPELINE_STAGE_2_VIDEO_ENCODE_BIT_KHR,
     eTransformFeedbackEXT             = VK_PIPELINE_STAGE_2_TRANSFORM_FEEDBACK_BIT_EXT,
     eConditionalRenderingEXT          = VK_PIPELINE_STAGE_2_CONDITIONAL_RENDERING_BIT_EXT,
-    eCommandPreprocessNV              = VK_PIPELINE_STAGE_2_COMMAND_PREPROCESS_BIT_NV,
     eCommandPreprocessEXT             = VK_PIPELINE_STAGE_2_COMMAND_PREPROCESS_BIT_EXT,
+    eCommandPreprocessNV              = VK_PIPELINE_STAGE_2_COMMAND_PREPROCESS_BIT_NV,
     eFragmentShadingRateAttachmentKHR = VK_PIPELINE_STAGE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR,
     eShadingRateImageNV               = VK_PIPELINE_STAGE_2_SHADING_RATE_IMAGE_BIT_NV,
     eAccelerationStructureBuildKHR    = VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_KHR,
@@ -4693,7 +4693,7 @@ namespace VULKAN_HPP_NAMESPACE
       PipelineStageFlagBits2::eAllCommands | PipelineStageFlagBits2::eCopy | PipelineStageFlagBits2::eResolve | PipelineStageFlagBits2::eBlit |
       PipelineStageFlagBits2::eClear | PipelineStageFlagBits2::eIndexInput | PipelineStageFlagBits2::eVertexAttributeInput |
       PipelineStageFlagBits2::ePreRasterizationShaders | PipelineStageFlagBits2::eVideoDecodeKHR | PipelineStageFlagBits2::eVideoEncodeKHR |
-      PipelineStageFlagBits2::eTransformFeedbackEXT | PipelineStageFlagBits2::eConditionalRenderingEXT | PipelineStageFlagBits2::eCommandPreprocessNV |
+      PipelineStageFlagBits2::eTransformFeedbackEXT | PipelineStageFlagBits2::eConditionalRenderingEXT | PipelineStageFlagBits2::eCommandPreprocessEXT |
       PipelineStageFlagBits2::eFragmentShadingRateAttachmentKHR | PipelineStageFlagBits2::eAccelerationStructureBuildKHR |
       PipelineStageFlagBits2::eRayTracingShaderKHR | PipelineStageFlagBits2::eFragmentDensityProcessEXT | PipelineStageFlagBits2::eTaskShaderEXT |
       PipelineStageFlagBits2::eMeshShaderEXT | PipelineStageFlagBits2::eSubpassShaderHUAWEI | PipelineStageFlagBits2::eInvocationMaskHUAWEI |
@@ -4733,10 +4733,10 @@ namespace VULKAN_HPP_NAMESPACE
     eTransformFeedbackCounterReadEXT      = VK_ACCESS_2_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT,
     eTransformFeedbackCounterWriteEXT     = VK_ACCESS_2_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT,
     eConditionalRenderingReadEXT          = VK_ACCESS_2_CONDITIONAL_RENDERING_READ_BIT_EXT,
-    eCommandPreprocessReadNV              = VK_ACCESS_2_COMMAND_PREPROCESS_READ_BIT_NV,
     eCommandPreprocessReadEXT             = VK_ACCESS_2_COMMAND_PREPROCESS_READ_BIT_EXT,
-    eCommandPreprocessWriteNV             = VK_ACCESS_2_COMMAND_PREPROCESS_WRITE_BIT_NV,
+    eCommandPreprocessReadNV              = VK_ACCESS_2_COMMAND_PREPROCESS_READ_BIT_NV,
     eCommandPreprocessWriteEXT            = VK_ACCESS_2_COMMAND_PREPROCESS_WRITE_BIT_EXT,
+    eCommandPreprocessWriteNV             = VK_ACCESS_2_COMMAND_PREPROCESS_WRITE_BIT_NV,
     eFragmentShadingRateAttachmentReadKHR = VK_ACCESS_2_FRAGMENT_SHADING_RATE_ATTACHMENT_READ_BIT_KHR,
     eShadingRateImageReadNV               = VK_ACCESS_2_SHADING_RATE_IMAGE_READ_BIT_NV,
     eAccelerationStructureReadKHR         = VK_ACCESS_2_ACCELERATION_STRUCTURE_READ_BIT_KHR,
@@ -4773,7 +4773,7 @@ namespace VULKAN_HPP_NAMESPACE
       AccessFlagBits2::eShaderStorageRead | AccessFlagBits2::eShaderStorageWrite | AccessFlagBits2::eVideoDecodeReadKHR |
       AccessFlagBits2::eVideoDecodeWriteKHR | AccessFlagBits2::eVideoEncodeReadKHR | AccessFlagBits2::eVideoEncodeWriteKHR |
       AccessFlagBits2::eTransformFeedbackWriteEXT | AccessFlagBits2::eTransformFeedbackCounterReadEXT | AccessFlagBits2::eTransformFeedbackCounterWriteEXT |
-      AccessFlagBits2::eConditionalRenderingReadEXT | AccessFlagBits2::eCommandPreprocessReadNV | AccessFlagBits2::eCommandPreprocessWriteNV |
+      AccessFlagBits2::eConditionalRenderingReadEXT | AccessFlagBits2::eCommandPreprocessReadEXT | AccessFlagBits2::eCommandPreprocessWriteEXT |
       AccessFlagBits2::eFragmentShadingRateAttachmentReadKHR | AccessFlagBits2::eAccelerationStructureReadKHR |
       AccessFlagBits2::eAccelerationStructureWriteKHR | AccessFlagBits2::eFragmentDensityMapReadEXT | AccessFlagBits2::eColorAttachmentReadNoncoherentEXT |
       AccessFlagBits2::eDescriptorBufferReadEXT | AccessFlagBits2::eInvocationMaskReadHUAWEI | AccessFlagBits2::eShaderBindingTableReadKHR |

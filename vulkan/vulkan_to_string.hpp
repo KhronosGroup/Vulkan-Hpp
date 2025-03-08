@@ -395,12 +395,12 @@ namespace VULKAN_HPP_NAMESPACE
       result += " FragmentDensityProcessEXT |";
     if ( value & PipelineStageFlagBits::eFragmentShadingRateAttachmentKHR )
       result += " FragmentShadingRateAttachmentKHR |";
-    if ( value & PipelineStageFlagBits::eCommandPreprocessNV )
-      result += " CommandPreprocessNV |";
     if ( value & PipelineStageFlagBits::eTaskShaderEXT )
       result += " TaskShaderEXT |";
     if ( value & PipelineStageFlagBits::eMeshShaderEXT )
       result += " MeshShaderEXT |";
+    if ( value & PipelineStageFlagBits::eCommandPreprocessEXT )
+      result += " CommandPreprocessEXT |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -1083,10 +1083,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += " FragmentDensityMapReadEXT |";
     if ( value & AccessFlagBits::eFragmentShadingRateAttachmentReadKHR )
       result += " FragmentShadingRateAttachmentReadKHR |";
-    if ( value & AccessFlagBits::eCommandPreprocessReadNV )
-      result += " CommandPreprocessReadNV |";
-    if ( value & AccessFlagBits::eCommandPreprocessWriteNV )
-      result += " CommandPreprocessWriteNV |";
+    if ( value & AccessFlagBits::eCommandPreprocessReadEXT )
+      result += " CommandPreprocessReadEXT |";
+    if ( value & AccessFlagBits::eCommandPreprocessWriteEXT )
+      result += " CommandPreprocessWriteEXT |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -1686,8 +1686,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " TransformFeedbackEXT |";
     if ( value & PipelineStageFlagBits2::eConditionalRenderingEXT )
       result += " ConditionalRenderingEXT |";
-    if ( value & PipelineStageFlagBits2::eCommandPreprocessNV )
-      result += " CommandPreprocessNV |";
+    if ( value & PipelineStageFlagBits2::eCommandPreprocessEXT )
+      result += " CommandPreprocessEXT |";
     if ( value & PipelineStageFlagBits2::eFragmentShadingRateAttachmentKHR )
       result += " FragmentShadingRateAttachmentKHR |";
     if ( value & PipelineStageFlagBits2::eAccelerationStructureBuildKHR )
@@ -1781,10 +1781,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += " TransformFeedbackCounterWriteEXT |";
     if ( value & AccessFlagBits2::eConditionalRenderingReadEXT )
       result += " ConditionalRenderingReadEXT |";
-    if ( value & AccessFlagBits2::eCommandPreprocessReadNV )
-      result += " CommandPreprocessReadNV |";
-    if ( value & AccessFlagBits2::eCommandPreprocessWriteNV )
-      result += " CommandPreprocessWriteNV |";
+    if ( value & AccessFlagBits2::eCommandPreprocessReadEXT )
+      result += " CommandPreprocessReadEXT |";
+    if ( value & AccessFlagBits2::eCommandPreprocessWriteEXT )
+      result += " CommandPreprocessWriteEXT |";
     if ( value & AccessFlagBits2::eFragmentShadingRateAttachmentReadKHR )
       result += " FragmentShadingRateAttachmentReadKHR |";
     if ( value & AccessFlagBits2::eAccelerationStructureReadKHR )
@@ -5708,9 +5708,9 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineStageFlagBits::eRayTracingShaderKHR             : return "RayTracingShaderKHR";
       case PipelineStageFlagBits::eFragmentDensityProcessEXT       : return "FragmentDensityProcessEXT";
       case PipelineStageFlagBits::eFragmentShadingRateAttachmentKHR: return "FragmentShadingRateAttachmentKHR";
-      case PipelineStageFlagBits::eCommandPreprocessNV             : return "CommandPreprocessNV";
       case PipelineStageFlagBits::eTaskShaderEXT                   : return "TaskShaderEXT";
       case PipelineStageFlagBits::eMeshShaderEXT                   : return "MeshShaderEXT";
+      case PipelineStageFlagBits::eCommandPreprocessEXT            : return "CommandPreprocessEXT";
       default                                                      : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6603,8 +6603,8 @@ namespace VULKAN_HPP_NAMESPACE
       case AccessFlagBits::eAccelerationStructureWriteKHR       : return "AccelerationStructureWriteKHR";
       case AccessFlagBits::eFragmentDensityMapReadEXT           : return "FragmentDensityMapReadEXT";
       case AccessFlagBits::eFragmentShadingRateAttachmentReadKHR: return "FragmentShadingRateAttachmentReadKHR";
-      case AccessFlagBits::eCommandPreprocessReadNV             : return "CommandPreprocessReadNV";
-      case AccessFlagBits::eCommandPreprocessWriteNV            : return "CommandPreprocessWriteNV";
+      case AccessFlagBits::eCommandPreprocessReadEXT            : return "CommandPreprocessReadEXT";
+      case AccessFlagBits::eCommandPreprocessWriteEXT           : return "CommandPreprocessWriteEXT";
       default                                                   : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7196,7 +7196,7 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineStageFlagBits2::eVideoEncodeKHR                  : return "VideoEncodeKHR";
       case PipelineStageFlagBits2::eTransformFeedbackEXT            : return "TransformFeedbackEXT";
       case PipelineStageFlagBits2::eConditionalRenderingEXT         : return "ConditionalRenderingEXT";
-      case PipelineStageFlagBits2::eCommandPreprocessNV             : return "CommandPreprocessNV";
+      case PipelineStageFlagBits2::eCommandPreprocessEXT            : return "CommandPreprocessEXT";
       case PipelineStageFlagBits2::eFragmentShadingRateAttachmentKHR: return "FragmentShadingRateAttachmentKHR";
       case PipelineStageFlagBits2::eAccelerationStructureBuildKHR   : return "AccelerationStructureBuildKHR";
       case PipelineStageFlagBits2::eRayTracingShaderKHR             : return "RayTracingShaderKHR";
@@ -7247,8 +7247,8 @@ namespace VULKAN_HPP_NAMESPACE
       case AccessFlagBits2::eTransformFeedbackCounterReadEXT     : return "TransformFeedbackCounterReadEXT";
       case AccessFlagBits2::eTransformFeedbackCounterWriteEXT    : return "TransformFeedbackCounterWriteEXT";
       case AccessFlagBits2::eConditionalRenderingReadEXT         : return "ConditionalRenderingReadEXT";
-      case AccessFlagBits2::eCommandPreprocessReadNV             : return "CommandPreprocessReadNV";
-      case AccessFlagBits2::eCommandPreprocessWriteNV            : return "CommandPreprocessWriteNV";
+      case AccessFlagBits2::eCommandPreprocessReadEXT            : return "CommandPreprocessReadEXT";
+      case AccessFlagBits2::eCommandPreprocessWriteEXT           : return "CommandPreprocessWriteEXT";
       case AccessFlagBits2::eFragmentShadingRateAttachmentReadKHR: return "FragmentShadingRateAttachmentReadKHR";
       case AccessFlagBits2::eAccelerationStructureReadKHR        : return "AccelerationStructureReadKHR";
       case AccessFlagBits2::eAccelerationStructureWriteKHR       : return "AccelerationStructureWriteKHR";

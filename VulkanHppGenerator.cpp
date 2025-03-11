@@ -5602,7 +5602,7 @@ std::string VulkanHppGenerator::generateCppModuleExtensionInspectionUsings() con
 )" };
 
   auto const extensionInspectionFunctions =
-    std::array{ "getDeviceExtensions",    "getInstanceExtensions", "getDeprecatedExtensions",  "getExtensionDepends",     "getExtensionDepends",
+    std::array{ "getDeviceExtensions",    "getInstanceExtensions", "getDeprecatedExtensions",  /*"getExtensionDepends",     "getExtensionDepends",*/
                 "getObsoletedExtensions", "getPromotedExtensions", "getExtensionDeprecatedBy", "getExtensionObsoletedBy", "getExtensionPromotedTo",
                 "isDeprecatedExtension",  "isDeviceExtension",     "isInstanceExtension",      "isObsoletedExtension",    "isPromotedExtension" };
 

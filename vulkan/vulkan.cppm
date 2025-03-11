@@ -5197,7 +5197,6 @@ export namespace VULKAN_HPP_NAMESPACE
   //======================================
   using VULKAN_HPP_NAMESPACE::getDeprecatedExtensions;
   using VULKAN_HPP_NAMESPACE::getDeviceExtensions;
-  using VULKAN_HPP_NAMESPACE::getExtensionDepends;
   using VULKAN_HPP_NAMESPACE::getExtensionDeprecatedBy;
   using VULKAN_HPP_NAMESPACE::getExtensionObsoletedBy;
   using VULKAN_HPP_NAMESPACE::getExtensionPromotedTo;

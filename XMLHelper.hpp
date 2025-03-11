@@ -346,7 +346,7 @@ inline std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2:
       checkForError( ( value[0] == ';' ) || ( value[0] == ')' ), node->GetLineNum(), "unknown modifier <" + value + ">" );
     }
   }
-  return std::make_pair( arraySizes, bitCount );
+  return { arraySizes, bitCount };
 }
 
 inline TypeInfo readTypeInfo( tinyxml2::XMLElement const * element )

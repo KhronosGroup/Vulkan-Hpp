@@ -17060,22 +17060,19 @@ int main( int argc, char const ** argv )
     VulkanHppGenerator generator( doc, api );
 
     generator.prepareRAIIHandles();
-
-    std::vector<std::future<void>> generateFutures;
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateCppModuleFile, &generator ) );
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateHppFile, &generator ) );
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateEnumsHppFile, &generator ) );
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateExtensionInspectionFile, &generator ) );
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateFormatTraitsHppFile, &generator ) );
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateFuncsHppFile, &generator ) );
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateHandlesHppFile, &generator ) );
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateHashHppFile, &generator ) );
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateMacrosFile, &generator ) );
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateSharedHppFile, &generator ) );
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateStaticAssertionsHppFile, &generator ) );
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateStructsHppFile, &generator ) );
-    generateFutures.emplace_back( std::async( &VulkanHppGenerator::generateToStringHppFile, &generator ) );
-    std::ranges::for_each( generateFutures, []( auto & generatorFuture ) { generatorFuture.wait(); } );
+    generator.generateCppModuleFile();
+    generator.generateHppFile();
+    generator.generateEnumsHppFile();
+    generator.generateExtensionInspectionFile();
+    generator.generateFormatTraitsHppFile();
+    generator.generateFuncsHppFile();
+    generator.generateHandlesHppFile();
+    generator.generateHashHppFile();
+    generator.generateMacrosFile();
+    generator.generateSharedHppFile();
+    generator.generateStaticAssertionsHppFile();
+    generator.generateStructsHppFile();
+    generator.generateToStringHppFile();
 
     // this modifies the generator data and needs to be done after all the other generations are done
     generator.distributeSecondLevelCommands();

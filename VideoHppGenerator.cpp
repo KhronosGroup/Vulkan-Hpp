@@ -16,6 +16,7 @@
 
 #include "XMLHelper.hpp"
 
+#include <algorithm>
 #include <iostream>
 #include <vector>
 
@@ -51,13 +52,13 @@ void VideoHppGenerator::generateHppFile() const
 #if ( 301 < VK_HEADER_VERSION )
 # include <vk_video/vulkan_video_codec_av1std_encode.h>
 #endif
-#include <vk_video/vulkan_video_codecs_common.h>
 #include <vk_video/vulkan_video_codec_h264std.h>
 #include <vk_video/vulkan_video_codec_h264std_decode.h>
 #include <vk_video/vulkan_video_codec_h264std_encode.h>
 #include <vk_video/vulkan_video_codec_h265std.h>
 #include <vk_video/vulkan_video_codec_h265std_decode.h>
 #include <vk_video/vulkan_video_codec_h265std_encode.h>
+#include <vk_video/vulkan_video_codecs_common.h>
 
 #if !defined( VULKAN_HPP_VIDEO_NAMESPACE )
 #  define VULKAN_HPP_VIDEO_NAMESPACE video
@@ -425,7 +426,7 @@ std::string VideoHppGenerator::generateStructs( RequireData const & requireData,
 
 bool VideoHppGenerator::isExtension( std::string const & name ) const
 {
-  return std::any_of( m_extensions.begin(), m_extensions.end(), [&name]( ExtensionData const & ed ) { return ed.name == name; } );
+  return std::ranges::any_of( m_extensions, [&name]( ExtensionData const & ed ) { return ed.name == name; } );
 }
 
 void VideoHppGenerator::readEnums( tinyxml2::XMLElement const * element )
@@ -521,10 +522,9 @@ void VideoHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, std
     checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
     checkForError( isNumber( value ) || isHexNumber( value ), line, "enum value uses unknown constant <" + value + ">" );
 
-    checkForError(
-      std::none_of( enumIt->second.values.begin(), enumIt->second.values.end(), [&name]( EnumValueData const & evd ) { return evd.name == name; } ),
-      line,
-      "enum value <" + name + "> already part of enum <" + enumIt->first + ">" );
+    checkForError( std::ranges::none_of( enumIt->second.values, [&name]( EnumValueData const & evd ) { return evd.name == name; } ),
+                   line,
+                   "enum value <" + name + "> already part of enum <" + enumIt->first + ">" );
     enumIt->second.values.push_back( { {}, name, value, line } );
   }
 }
@@ -732,9 +732,8 @@ void VideoHppGenerator::readStructMember( tinyxml2::XMLElement const * element, 
   }
   assert( !name.empty() );
 
-  checkForError( std::none_of( members.begin(), members.end(), [&name]( MemberData const & md ) { return md.name == name; } ),
-                 line,
-                 "struct member name <" + name + "> already used" );
+  checkForError(
+    std::ranges::none_of( members, [&name]( MemberData const & md ) { return md.name == name; } ), line, "struct member name <" + name + "> already used" );
   memberData.name = name;
   members.push_back( memberData );
 }
@@ -876,7 +875,7 @@ void VideoHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, st
   checkForError( require.empty() || m_types.contains( require ), line, "struct <" + name + "> requires unknown type <" + require + ">" );
   checkForError( m_types.insert( { name, TypeData{ TypeCategory::Struct, {}, line } } ).second, line, "struct <" + name + "> already specified" );
   assert( !m_structs.contains( name ) );
-  std::map<std::string, StructureData>::iterator it = m_structs.insert( std::make_pair( name, structureData ) ).first;
+  std::map<std::string, StructureData>::iterator it = m_structs.insert( { name, structureData } ).first;
 
   for ( auto child : children )
   {
@@ -960,9 +959,8 @@ void VideoHppGenerator::sortStructs()
             else
             {
               auto depIt = std::find_if( m_extensions.begin(), m_extensions.end(), [&ext]( ExtensionData const & ed ) { return ed.name == ext.depends; } );
-              assert( ( depIt != m_extensions.end() ) && std::any_of( depIt->requireData.types.begin(),
-                                                                      depIt->requireData.types.end(),
-                                                                      [&member]( std::string const & type ) { return type == member.type.type; } ) );
+              assert( ( depIt != m_extensions.end() ) &&
+                      std::ranges::any_of( depIt->requireData.types, [&member]( std::string const & type ) { return type == member.type.type; } ) );
             }
 #endif
           }

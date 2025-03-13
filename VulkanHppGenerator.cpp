@@ -8531,7 +8531,6 @@ std::string VulkanHppGenerator::generateLenInitializer(
             ( ( arrayIt->lenExpressions.front() == "codeSize / 4" ) && ( litit->first->name == "codeSize" ) ) );
 
     assert( arrayIt->type.isPointer() || !arrayIt->arraySizes.empty() );
-    assert( !arrayIt->type.isPointer() || arrayIt->name.starts_with( "p" ) );
     std::string argumentName = ( arrayIt->type.isPointer() ? startLowerCase( stripPrefix( arrayIt->name, "p" ) ) : arrayIt->name ) + "_";
 
     assert( mit->type.prefix.empty() && mit->type.postfix.empty() );
@@ -12186,7 +12185,6 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
     if ( hasLen( member, memberData ) )
     {
       assert( member.type.isPointer() || !member.arraySizes.empty() );
-      assert( !member.type.isPointer() || member.name.starts_with( "p" ) );
       std::string arrayName = member.type.isPointer() ? startLowerCase( stripPrefix( member.name, "p" ) ) : member.name;
 
       if ( member.lenExpressions[0] == "null-terminated" )
@@ -15222,12 +15220,6 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
         checkForError( !memberData.lenExpressions.empty() && ( memberData.lenExpressions.size() <= 2 ),
                        line,
                        "member attribute <len> holds unknown number of data: " + std::to_string( memberData.lenExpressions.size() ) );
-        if ( memberData.lenExpressions[0] != "null-terminated" )
-        {
-          auto lenMemberIt = findStructMemberIt( memberData.lenExpressions[0], members );
-          checkForError( lenMemberIt != members.end(), line, "member attribute <len> holds unknown value <" + memberData.lenExpressions[0] + ">" );
-          memberData.lenMembers.push_back( { memberData.lenExpressions[0], std::distance( members.cbegin(), lenMemberIt ) } );
-        }
         if ( 1 < memberData.lenExpressions.size() )
         {
           checkForError( ( memberData.lenExpressions[1] == "1" ) || ( memberData.lenExpressions[1] == "null-terminated" ),
@@ -16038,6 +16030,16 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
       if ( value == "member" )
       {
         readStructMember( child, it->second.members, isUnion );
+      }
+    }
+    // check for any "len" references needs to be done after all members are read, as the len might name a member that's listed after the array member
+    for ( auto & member : it->second.members )
+    {
+      if ( !member.lenExpressions.empty() && ( member.lenExpressions[0] != "null-terminated" ) && member.lenMembers.empty() )
+      {
+        auto lenMemberIt = findStructMemberIt( member.lenExpressions[0], it->second.members );
+        checkForError( lenMemberIt != it->second.members.end(), line, "member attribute <len> holds unknown value <" + member.lenExpressions[0] + ">" );
+        member.lenMembers.push_back( { member.lenExpressions[0], std::distance( it->second.members.cbegin(), lenMemberIt ) } );
       }
     }
     it->second.subStruct = determineSubStruct( *it );

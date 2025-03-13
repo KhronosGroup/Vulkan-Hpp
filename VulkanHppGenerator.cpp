@@ -2577,7 +2577,7 @@ std::string VulkanHppGenerator::generateBitmaskToString( std::map<std::string, B
   if ( toStringChecks.empty() )
   {
     static const std::string bitmaskToStringTemplate = R"(
-  VULKAN_HPP_INLINE std::string to_string( ${bitmaskName} )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ${bitmaskName} )
   {
     return "${emptyValue}";
   }
@@ -7355,7 +7355,7 @@ ${cases}      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( 
   }
 
   const std::string enumToStringTemplate = R"(
-  VULKAN_HPP_INLINE std::string to_string( ${enumName}${argument} )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ${enumName}${argument} )
   {
 ${functionBody}
   }

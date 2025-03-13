@@ -328,7 +328,7 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceCreateFlags )
   {
     return "{}";
   }
@@ -498,7 +498,7 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SemaphoreCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SemaphoreCreateFlags )
   {
     return "{}";
   }
@@ -555,7 +555,7 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( QueryPoolCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueryPoolCreateFlags )
   {
     return "{}";
   }
@@ -671,7 +671,7 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( BufferViewCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BufferViewCreateFlags )
   {
     return "{}";
   }
@@ -693,7 +693,7 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ShaderModuleCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ShaderModuleCreateFlags )
   {
     return "{}";
   }
@@ -850,12 +850,12 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineDynamicStateCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineDynamicStateCreateFlags )
   {
     return "{}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineInputAssemblyStateCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineInputAssemblyStateCreateFlags )
   {
     return "{}";
   }
@@ -873,12 +873,12 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineMultisampleStateCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineMultisampleStateCreateFlags )
   {
     return "{}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineRasterizationStateCreateFlags )
   {
     return "{}";
   }
@@ -898,17 +898,17 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineTessellationStateCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineTessellationStateCreateFlags )
   {
     return "{}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineVertexInputStateCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineVertexInputStateCreateFlags )
   {
     return "{}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineViewportStateCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineViewportStateCreateFlags )
   {
     return "{}";
   }
@@ -998,7 +998,7 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DescriptorPoolResetFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DescriptorPoolResetFlags )
   {
     return "{}";
   }
@@ -1341,12 +1341,12 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CommandPoolTrimFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CommandPoolTrimFlags )
   {
     return "{}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DescriptorUpdateTemplateCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DescriptorUpdateTemplateCreateFlags )
   {
     return "{}";
   }
@@ -1622,7 +1622,7 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PrivateDataSlotCreateFlags )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PrivateDataSlotCreateFlags )
   {
     return "{}";
   }
@@ -2199,7 +2199,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_display ===
 
-  VULKAN_HPP_INLINE std::string to_string( DisplayModeCreateFlagsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DisplayModeCreateFlagsKHR )
   {
     return "{}";
   }
@@ -2223,7 +2223,7 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DisplaySurfaceCreateFlagsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DisplaySurfaceCreateFlagsKHR )
   {
     return "{}";
   }
@@ -2260,7 +2260,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_XLIB_KHR )
   //=== VK_KHR_xlib_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( XlibSurfaceCreateFlagsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( XlibSurfaceCreateFlagsKHR )
   {
     return "{}";
   }
@@ -2269,7 +2269,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_XCB_KHR )
   //=== VK_KHR_xcb_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( XcbSurfaceCreateFlagsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( XcbSurfaceCreateFlagsKHR )
   {
     return "{}";
   }
@@ -2278,7 +2278,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_WAYLAND_KHR )
   //=== VK_KHR_wayland_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( WaylandSurfaceCreateFlagsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( WaylandSurfaceCreateFlagsKHR )
   {
     return "{}";
   }
@@ -2287,7 +2287,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
   //=== VK_KHR_android_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( AndroidSurfaceCreateFlagsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AndroidSurfaceCreateFlagsKHR )
   {
     return "{}";
   }
@@ -2296,7 +2296,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
   //=== VK_KHR_win32_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( Win32SurfaceCreateFlagsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( Win32SurfaceCreateFlagsKHR )
   {
     return "{}";
   }
@@ -2437,12 +2437,12 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoBeginCodingFlagsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoBeginCodingFlagsKHR )
   {
     return "{}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEndCodingFlagsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEndCodingFlagsKHR )
   {
     return "{}";
   }
@@ -2498,14 +2498,14 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoDecodeFlagsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoDecodeFlagsKHR )
   {
     return "{}";
   }
 
   //=== VK_EXT_transform_feedback ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateStreamCreateFlagsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineRasterizationStateStreamCreateFlagsEXT )
   {
     return "{}";
   }
@@ -2780,7 +2780,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_GGP )
   //=== VK_GGP_stream_descriptor_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( StreamDescriptorSurfaceCreateFlagsGGP )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( StreamDescriptorSurfaceCreateFlagsGGP )
   {
     return "{}";
   }
@@ -2827,7 +2827,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_VI_NN )
   //=== VK_NN_vi_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( ViSurfaceCreateFlagsNN )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ViSurfaceCreateFlagsNN )
   {
     return "{}";
   }
@@ -2865,28 +2865,28 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_viewport_swizzle ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineViewportSwizzleStateCreateFlagsNV )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineViewportSwizzleStateCreateFlagsNV )
   {
     return "{}";
   }
 
   //=== VK_EXT_discard_rectangles ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineDiscardRectangleStateCreateFlagsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineDiscardRectangleStateCreateFlagsEXT )
   {
     return "{}";
   }
 
   //=== VK_EXT_conservative_rasterization ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationConservativeStateCreateFlagsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineRasterizationConservativeStateCreateFlagsEXT )
   {
     return "{}";
   }
 
   //=== VK_EXT_depth_clip_enable ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationDepthClipStateCreateFlagsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineRasterizationDepthClipStateCreateFlagsEXT )
   {
     return "{}";
   }
@@ -2908,7 +2908,7 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AcquireProfilingLockFlagsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AcquireProfilingLockFlagsKHR )
   {
     return "{}";
   }
@@ -2916,7 +2916,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_IOS_MVK )
   //=== VK_MVK_ios_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( IOSSurfaceCreateFlagsMVK )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( IOSSurfaceCreateFlagsMVK )
   {
     return "{}";
   }
@@ -2925,7 +2925,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_MACOS_MVK )
   //=== VK_MVK_macos_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( MacOSSurfaceCreateFlagsMVK )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MacOSSurfaceCreateFlagsMVK )
   {
     return "{}";
   }
@@ -2971,19 +2971,19 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCallbackDataFlagsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DebugUtilsMessengerCallbackDataFlagsEXT )
   {
     return "{}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCreateFlagsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DebugUtilsMessengerCreateFlagsEXT )
   {
     return "{}";
   }
 
   //=== VK_NV_fragment_coverage_to_color ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCoverageToColorStateCreateFlagsNV )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCoverageToColorStateCreateFlagsNV )
   {
     return "{}";
   }
@@ -3082,21 +3082,21 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_framebuffer_mixed_samples ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCoverageModulationStateCreateFlagsNV )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCoverageModulationStateCreateFlagsNV )
   {
     return "{}";
   }
 
   //=== VK_EXT_validation_cache ===
 
-  VULKAN_HPP_INLINE std::string to_string( ValidationCacheCreateFlagsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ValidationCacheCreateFlagsEXT )
   {
     return "{}";
   }
 
   //=== VK_AMD_pipeline_compiler_control ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCompilerControlFlagsAMD )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCompilerControlFlagsAMD )
   {
     return "{}";
   }
@@ -3104,7 +3104,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_imagepipe_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( ImagePipeSurfaceCreateFlagsFUCHSIA )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImagePipeSurfaceCreateFlagsFUCHSIA )
   {
     return "{}";
   }
@@ -3113,7 +3113,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( MetalSurfaceCreateFlagsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MetalSurfaceCreateFlagsEXT )
   {
     return "{}";
   }
@@ -3121,21 +3121,21 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_AMD_shader_core_properties2 ===
 
-  VULKAN_HPP_INLINE std::string to_string( ShaderCorePropertiesFlagsAMD )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ShaderCorePropertiesFlagsAMD )
   {
     return "{}";
   }
 
   //=== VK_NV_coverage_reduction_mode ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCoverageReductionStateCreateFlagsNV )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCoverageReductionStateCreateFlagsNV )
   {
     return "{}";
   }
 
   //=== VK_EXT_headless_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( HeadlessSurfaceCreateFlagsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( HeadlessSurfaceCreateFlagsEXT )
   {
     return "{}";
   }
@@ -3210,7 +3210,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_device_memory_report ===
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceMemoryReportFlagsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceMemoryReportFlagsEXT )
   {
     return "{}";
   }
@@ -3304,7 +3304,7 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeRateControlFlagsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeRateControlFlagsKHR )
   {
     return "{}";
   }
@@ -3397,12 +3397,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_ray_tracing_motion_blur ===
 
-  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInfoFlagsNV )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccelerationStructureMotionInfoFlagsNV )
   {
     return "{}";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInstanceFlagsNV )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccelerationStructureMotionInstanceFlagsNV )
   {
     return "{}";
   }
@@ -3488,7 +3488,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
   //=== VK_EXT_directfb_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( DirectFBSurfaceCreateFlagsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DirectFBSurfaceCreateFlagsEXT )
   {
     return "{}";
   }
@@ -3512,7 +3512,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_buffer_collection ===
 
-  VULKAN_HPP_INLINE std::string to_string( ImageFormatConstraintsFlagsFUCHSIA )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageFormatConstraintsFlagsFUCHSIA )
   {
     return "{}";
   }
@@ -3557,7 +3557,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_screen_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( ScreenSurfaceCreateFlagsQNX )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ScreenSurfaceCreateFlagsQNX )
   {
     return "{}";
   }
@@ -3627,7 +3627,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_LUNARG_direct_driver_loading ===
 
-  VULKAN_HPP_INLINE std::string to_string( DirectDriverLoadingFlagsLUNARG )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DirectDriverLoadingFlagsLUNARG )
   {
     return "{}";
   }
@@ -3942,7 +3942,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_maintenance8 ===
 
-  VULKAN_HPP_INLINE std::string to_string( AccessFlags3KHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccessFlags3KHR )
   {
     return "None";
   }
@@ -3964,7 +3964,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_VERSION_1_0 ===
 
-  VULKAN_HPP_INLINE std::string to_string( Result value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( Result value )
   {
     switch ( value )
     {
@@ -4023,7 +4023,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( StructureType value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( StructureType value )
   {
     switch ( value )
     {
@@ -5094,7 +5094,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCacheHeaderVersion value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCacheHeaderVersion value )
   {
     switch ( value )
     {
@@ -5103,7 +5103,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ObjectType value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ObjectType value )
   {
     switch ( value )
     {
@@ -5169,7 +5169,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VendorId value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VendorId value )
   {
     switch ( value )
     {
@@ -5185,7 +5185,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( Format value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( Format value )
   {
     switch ( value )
     {
@@ -5443,7 +5443,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( FormatFeatureFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( FormatFeatureFlagBits value )
   {
     switch ( value )
     {
@@ -5483,7 +5483,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ImageCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageCreateFlagBits value )
   {
     switch ( value )
     {
@@ -5511,7 +5511,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ImageTiling value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageTiling value )
   {
     switch ( value )
     {
@@ -5522,7 +5522,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ImageType value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageType value )
   {
     switch ( value )
     {
@@ -5533,7 +5533,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ImageUsageFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageUsageFlagBits value )
   {
     switch ( value )
     {
@@ -5564,7 +5564,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( InstanceCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( InstanceCreateFlagBits value )
   {
     switch ( value )
     {
@@ -5573,7 +5573,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( InternalAllocationType value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( InternalAllocationType value )
   {
     switch ( value )
     {
@@ -5582,7 +5582,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( MemoryHeapFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MemoryHeapFlagBits value )
   {
     switch ( value )
     {
@@ -5592,7 +5592,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( MemoryPropertyFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MemoryPropertyFlagBits value )
   {
     switch ( value )
     {
@@ -5609,7 +5609,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PhysicalDeviceType value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PhysicalDeviceType value )
   {
     switch ( value )
     {
@@ -5622,7 +5622,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( QueueFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueueFlagBits value )
   {
     switch ( value )
     {
@@ -5638,7 +5638,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SampleCountFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SampleCountFlagBits value )
   {
     switch ( value )
     {
@@ -5653,7 +5653,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SystemAllocationScope value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SystemAllocationScope value )
   {
     switch ( value )
     {
@@ -5666,12 +5666,12 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceQueueCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceQueueCreateFlagBits value )
   {
     switch ( value )
     {
@@ -5680,7 +5680,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineStageFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineStageFlagBits value )
   {
     switch ( value )
     {
@@ -5715,7 +5715,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( MemoryMapFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MemoryMapFlagBits value )
   {
     switch ( value )
     {
@@ -5724,7 +5724,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ImageAspectFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageAspectFlagBits value )
   {
     switch ( value )
     {
@@ -5744,7 +5744,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SparseImageFormatFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SparseImageFormatFlagBits value )
   {
     switch ( value )
     {
@@ -5755,7 +5755,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SparseMemoryBindFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SparseMemoryBindFlagBits value )
   {
     switch ( value )
     {
@@ -5764,7 +5764,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( FenceCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( FenceCreateFlagBits value )
   {
     switch ( value )
     {
@@ -5773,12 +5773,12 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SemaphoreCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SemaphoreCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( EventCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( EventCreateFlagBits value )
   {
     switch ( value )
     {
@@ -5787,7 +5787,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( QueryPipelineStatisticFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueryPipelineStatisticFlagBits value )
   {
     switch ( value )
     {
@@ -5809,7 +5809,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( QueryResultFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueryResultFlagBits value )
   {
     switch ( value )
     {
@@ -5822,7 +5822,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( QueryType value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueryType value )
   {
     switch ( value )
     {
@@ -5847,12 +5847,12 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( QueryPoolCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueryPoolCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( BufferCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BufferCreateFlagBits value )
   {
     switch ( value )
     {
@@ -5867,7 +5867,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( BufferUsageFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BufferUsageFlagBits value )
   {
     switch ( value )
     {
@@ -5903,7 +5903,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SharingMode value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SharingMode value )
   {
     switch ( value )
     {
@@ -5913,12 +5913,12 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( BufferViewCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BufferViewCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ImageLayout value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageLayout value )
   {
     switch ( value )
     {
@@ -5956,7 +5956,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ComponentSwizzle value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ComponentSwizzle value )
   {
     switch ( value )
     {
@@ -5971,7 +5971,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ImageViewCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageViewCreateFlagBits value )
   {
     switch ( value )
     {
@@ -5982,7 +5982,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ImageViewType value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageViewType value )
   {
     switch ( value )
     {
@@ -5997,12 +5997,12 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ShaderModuleCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ShaderModuleCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCacheCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCacheCreateFlagBits value )
   {
     switch ( value )
     {
@@ -6012,7 +6012,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( BlendFactor value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BlendFactor value )
   {
     switch ( value )
     {
@@ -6039,7 +6039,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( BlendOp value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BlendOp value )
   {
     switch ( value )
     {
@@ -6098,7 +6098,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ColorComponentFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ColorComponentFlagBits value )
   {
     switch ( value )
     {
@@ -6110,7 +6110,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CompareOp value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CompareOp value )
   {
     switch ( value )
     {
@@ -6126,7 +6126,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CullModeFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CullModeFlagBits value )
   {
     switch ( value )
     {
@@ -6138,7 +6138,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DynamicState value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DynamicState value )
   {
     switch ( value )
     {
@@ -6219,7 +6219,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( FrontFace value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( FrontFace value )
   {
     switch ( value )
     {
@@ -6229,7 +6229,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( LogicOp value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( LogicOp value )
   {
     switch ( value )
     {
@@ -6253,7 +6253,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCreateFlagBits value )
   {
     switch ( value )
     {
@@ -6294,7 +6294,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineShaderStageCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineShaderStageCreateFlagBits value )
   {
     switch ( value )
     {
@@ -6304,7 +6304,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PolygonMode value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PolygonMode value )
   {
     switch ( value )
     {
@@ -6316,7 +6316,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PrimitiveTopology value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PrimitiveTopology value )
   {
     switch ( value )
     {
@@ -6335,7 +6335,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ShaderStageFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ShaderStageFlagBits value )
   {
     switch ( value )
     {
@@ -6361,7 +6361,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( StencilOp value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( StencilOp value )
   {
     switch ( value )
     {
@@ -6377,7 +6377,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VertexInputRate value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VertexInputRate value )
   {
     switch ( value )
     {
@@ -6387,7 +6387,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineColorBlendStateCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineColorBlendStateCreateFlagBits value )
   {
     switch ( value )
     {
@@ -6396,7 +6396,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineDepthStencilStateCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineDepthStencilStateCreateFlagBits value )
   {
     switch ( value )
     {
@@ -6406,17 +6406,17 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineDynamicStateCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineDynamicStateCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineInputAssemblyStateCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineInputAssemblyStateCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineLayoutCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineLayoutCreateFlagBits value )
   {
     switch ( value )
     {
@@ -6425,32 +6425,32 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineMultisampleStateCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineMultisampleStateCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineRasterizationStateCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineTessellationStateCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineTessellationStateCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineVertexInputStateCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineVertexInputStateCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineViewportStateCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineViewportStateCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( BorderColor value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BorderColor value )
   {
     switch ( value )
     {
@@ -6466,7 +6466,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( Filter value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( Filter value )
   {
     switch ( value )
     {
@@ -6477,7 +6477,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SamplerAddressMode value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SamplerAddressMode value )
   {
     switch ( value )
     {
@@ -6490,7 +6490,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SamplerCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SamplerCreateFlagBits value )
   {
     switch ( value )
     {
@@ -6503,7 +6503,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SamplerMipmapMode value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SamplerMipmapMode value )
   {
     switch ( value )
     {
@@ -6513,7 +6513,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DescriptorPoolCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DescriptorPoolCreateFlagBits value )
   {
     switch ( value )
     {
@@ -6526,7 +6526,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DescriptorSetLayoutCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DescriptorSetLayoutCreateFlagBits value )
   {
     switch ( value )
     {
@@ -6541,7 +6541,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DescriptorType value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DescriptorType value )
   {
     switch ( value )
     {
@@ -6567,12 +6567,12 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DescriptorPoolResetFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DescriptorPoolResetFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AccessFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccessFlagBits value )
   {
     switch ( value )
     {
@@ -6609,7 +6609,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AttachmentDescriptionFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AttachmentDescriptionFlagBits value )
   {
     switch ( value )
     {
@@ -6618,7 +6618,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AttachmentLoadOp value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AttachmentLoadOp value )
   {
     switch ( value )
     {
@@ -6630,7 +6630,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AttachmentStoreOp value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AttachmentStoreOp value )
   {
     switch ( value )
     {
@@ -6641,7 +6641,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DependencyFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DependencyFlagBits value )
   {
     switch ( value )
     {
@@ -6654,7 +6654,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( FramebufferCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( FramebufferCreateFlagBits value )
   {
     switch ( value )
     {
@@ -6663,7 +6663,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineBindPoint value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineBindPoint value )
   {
     switch ( value )
     {
@@ -6678,7 +6678,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( RenderPassCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( RenderPassCreateFlagBits value )
   {
     switch ( value )
     {
@@ -6687,7 +6687,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SubpassDescriptionFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SubpassDescriptionFlagBits value )
   {
     switch ( value )
     {
@@ -6703,7 +6703,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CommandPoolCreateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CommandPoolCreateFlagBits value )
   {
     switch ( value )
     {
@@ -6714,7 +6714,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CommandPoolResetFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CommandPoolResetFlagBits value )
   {
     switch ( value )
     {
@@ -6723,7 +6723,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CommandBufferLevel value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CommandBufferLevel value )
   {
     switch ( value )
     {
@@ -6733,7 +6733,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CommandBufferResetFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CommandBufferResetFlagBits value )
   {
     switch ( value )
     {
@@ -6742,7 +6742,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CommandBufferUsageFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CommandBufferUsageFlagBits value )
   {
     switch ( value )
     {
@@ -6753,7 +6753,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( QueryControlFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueryControlFlagBits value )
   {
     switch ( value )
     {
@@ -6762,7 +6762,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( IndexType value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( IndexType value )
   {
     switch ( value )
     {
@@ -6774,7 +6774,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( StencilFaceFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( StencilFaceFlagBits value )
   {
     switch ( value )
     {
@@ -6785,7 +6785,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SubpassContents value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SubpassContents value )
   {
     switch ( value )
     {
@@ -6798,7 +6798,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_VERSION_1_1 ===
 
-  VULKAN_HPP_INLINE std::string to_string( SubgroupFeatureFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SubgroupFeatureFlagBits value )
   {
     switch ( value )
     {
@@ -6817,7 +6817,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PeerMemoryFeatureFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PeerMemoryFeatureFlagBits value )
   {
     switch ( value )
     {
@@ -6829,7 +6829,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( MemoryAllocateFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MemoryAllocateFlagBits value )
   {
     switch ( value )
     {
@@ -6840,12 +6840,12 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CommandPoolTrimFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CommandPoolTrimFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PointClippingBehavior value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PointClippingBehavior value )
   {
     switch ( value )
     {
@@ -6855,7 +6855,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( TessellationDomainOrigin value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( TessellationDomainOrigin value )
   {
     switch ( value )
     {
@@ -6865,7 +6865,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SamplerYcbcrModelConversion value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SamplerYcbcrModelConversion value )
   {
     switch ( value )
     {
@@ -6878,7 +6878,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SamplerYcbcrRange value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SamplerYcbcrRange value )
   {
     switch ( value )
     {
@@ -6888,7 +6888,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ChromaLocation value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ChromaLocation value )
   {
     switch ( value )
     {
@@ -6898,7 +6898,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DescriptorUpdateTemplateType value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DescriptorUpdateTemplateType value )
   {
     switch ( value )
     {
@@ -6908,12 +6908,12 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DescriptorUpdateTemplateCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DescriptorUpdateTemplateCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ExternalMemoryHandleTypeFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ExternalMemoryHandleTypeFlagBits value )
   {
     switch ( value )
     {
@@ -6946,7 +6946,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ExternalMemoryFeatureFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ExternalMemoryFeatureFlagBits value )
   {
     switch ( value )
     {
@@ -6957,7 +6957,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ExternalFenceHandleTypeFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ExternalFenceHandleTypeFlagBits value )
   {
     switch ( value )
     {
@@ -6969,7 +6969,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ExternalFenceFeatureFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ExternalFenceFeatureFlagBits value )
   {
     switch ( value )
     {
@@ -6979,7 +6979,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( FenceImportFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( FenceImportFlagBits value )
   {
     switch ( value )
     {
@@ -6988,7 +6988,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SemaphoreImportFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SemaphoreImportFlagBits value )
   {
     switch ( value )
     {
@@ -6997,7 +6997,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ExternalSemaphoreHandleTypeFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ExternalSemaphoreHandleTypeFlagBits value )
   {
     switch ( value )
     {
@@ -7013,7 +7013,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ExternalSemaphoreFeatureFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ExternalSemaphoreFeatureFlagBits value )
   {
     switch ( value )
     {
@@ -7025,7 +7025,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_VERSION_1_2 ===
 
-  VULKAN_HPP_INLINE std::string to_string( DriverId value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DriverId value )
   {
     switch ( value )
     {
@@ -7060,7 +7060,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ShaderFloatControlsIndependence value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ShaderFloatControlsIndependence value )
   {
     switch ( value )
     {
@@ -7071,7 +7071,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DescriptorBindingFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DescriptorBindingFlagBits value )
   {
     switch ( value )
     {
@@ -7083,7 +7083,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ResolveModeFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ResolveModeFlagBits value )
   {
     switch ( value )
     {
@@ -7099,7 +7099,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SamplerReductionMode value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SamplerReductionMode value )
   {
     switch ( value )
     {
@@ -7111,7 +7111,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SemaphoreType value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SemaphoreType value )
   {
     switch ( value )
     {
@@ -7121,7 +7121,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SemaphoreWaitFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SemaphoreWaitFlagBits value )
   {
     switch ( value )
     {
@@ -7132,7 +7132,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_VERSION_1_3 ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCreationFeedbackFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCreationFeedbackFlagBits value )
   {
     switch ( value )
     {
@@ -7143,7 +7143,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ToolPurposeFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ToolPurposeFlagBits value )
   {
     switch ( value )
     {
@@ -7158,12 +7158,12 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PrivateDataSlotCreateFlagBits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PrivateDataSlotCreateFlagBits )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineStageFlagBits2 value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineStageFlagBits2 value )
   {
     switch ( value )
     {
@@ -7214,7 +7214,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AccessFlagBits2 value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccessFlagBits2 value )
   {
     switch ( value )
     {
@@ -7265,7 +7265,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( SubmitFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SubmitFlagBits value )
   {
     switch ( value )
     {
@@ -7274,7 +7274,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( RenderingFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( RenderingFlagBits value )
   {
     switch ( value )
     {
@@ -7287,7 +7287,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( FormatFeatureFlagBits2 value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( FormatFeatureFlagBits2 value )
   {
     switch ( value )
     {
@@ -7344,7 +7344,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_VERSION_1_4 ===
 
-  VULKAN_HPP_INLINE std::string to_string( QueueGlobalPriority value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueueGlobalPriority value )
   {
     switch ( value )
     {
@@ -7356,7 +7356,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( LineRasterizationMode value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( LineRasterizationMode value )
   {
     switch ( value )
     {
@@ -7368,7 +7368,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( MemoryUnmapFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MemoryUnmapFlagBits value )
   {
     switch ( value )
     {
@@ -7377,7 +7377,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCreateFlagBits2 value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCreateFlagBits2 value )
   {
     switch ( value )
     {
@@ -7424,7 +7424,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( BufferUsageFlagBits2 value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BufferUsageFlagBits2 value )
   {
     switch ( value )
     {
@@ -7461,7 +7461,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineRobustnessBufferBehavior value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineRobustnessBufferBehavior value )
   {
     switch ( value )
     {
@@ -7473,7 +7473,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineRobustnessImageBehavior value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineRobustnessImageBehavior value )
   {
     switch ( value )
     {
@@ -7485,7 +7485,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( HostImageCopyFlagBits value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( HostImageCopyFlagBits value )
   {
     switch ( value )
     {
@@ -7496,7 +7496,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( SurfaceTransformFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SurfaceTransformFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7513,7 +7513,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PresentModeKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PresentModeKHR value )
   {
     switch ( value )
     {
@@ -7528,7 +7528,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ColorSpaceKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ColorSpaceKHR value )
   {
     switch ( value )
     {
@@ -7552,7 +7552,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CompositeAlphaFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CompositeAlphaFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7566,7 +7566,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_swapchain ===
 
-  VULKAN_HPP_INLINE std::string to_string( SwapchainCreateFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SwapchainCreateFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7578,7 +7578,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceGroupPresentModeFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceGroupPresentModeFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7592,7 +7592,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_display ===
 
-  VULKAN_HPP_INLINE std::string to_string( DisplayPlaneAlphaFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DisplayPlaneAlphaFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7604,12 +7604,12 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DisplayModeCreateFlagBitsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DisplayModeCreateFlagBitsKHR )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DisplaySurfaceCreateFlagBitsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DisplaySurfaceCreateFlagBitsKHR )
   {
     return "(void)";
   }
@@ -7617,7 +7617,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_XLIB_KHR )
   //=== VK_KHR_xlib_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( XlibSurfaceCreateFlagBitsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( XlibSurfaceCreateFlagBitsKHR )
   {
     return "(void)";
   }
@@ -7626,7 +7626,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_XCB_KHR )
   //=== VK_KHR_xcb_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( XcbSurfaceCreateFlagBitsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( XcbSurfaceCreateFlagBitsKHR )
   {
     return "(void)";
   }
@@ -7635,7 +7635,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_WAYLAND_KHR )
   //=== VK_KHR_wayland_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( WaylandSurfaceCreateFlagBitsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( WaylandSurfaceCreateFlagBitsKHR )
   {
     return "(void)";
   }
@@ -7644,7 +7644,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
   //=== VK_KHR_android_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( AndroidSurfaceCreateFlagBitsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AndroidSurfaceCreateFlagBitsKHR )
   {
     return "(void)";
   }
@@ -7653,7 +7653,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
   //=== VK_KHR_win32_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( Win32SurfaceCreateFlagBitsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( Win32SurfaceCreateFlagBitsKHR )
   {
     return "(void)";
   }
@@ -7661,7 +7661,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_debug_report ===
 
-  VULKAN_HPP_INLINE std::string to_string( DebugReportFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DebugReportFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -7674,7 +7674,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DebugReportObjectTypeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DebugReportObjectTypeEXT value )
   {
     switch ( value )
     {
@@ -7729,7 +7729,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_AMD_rasterization_order ===
 
-  VULKAN_HPP_INLINE std::string to_string( RasterizationOrderAMD value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( RasterizationOrderAMD value )
   {
     switch ( value )
     {
@@ -7741,7 +7741,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_video_queue ===
 
-  VULKAN_HPP_INLINE std::string to_string( VideoCodecOperationFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoCodecOperationFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7756,7 +7756,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoChromaSubsamplingFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoChromaSubsamplingFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7769,7 +7769,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoComponentBitDepthFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoComponentBitDepthFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7781,7 +7781,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoCapabilityFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoCapabilityFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7791,7 +7791,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoSessionCreateFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoSessionCreateFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7805,7 +7805,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoCodingControlFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoCodingControlFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7816,7 +7816,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( QueryResultStatusKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueryResultStatusKHR value )
   {
     switch ( value )
     {
@@ -7828,7 +7828,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoSessionParametersCreateFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoSessionParametersCreateFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7837,19 +7837,19 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoBeginCodingFlagBitsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoBeginCodingFlagBitsKHR )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEndCodingFlagBitsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEndCodingFlagBitsKHR )
   {
     return "(void)";
   }
 
   //=== VK_KHR_video_decode_queue ===
 
-  VULKAN_HPP_INLINE std::string to_string( VideoDecodeCapabilityFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoDecodeCapabilityFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7859,7 +7859,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoDecodeUsageFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoDecodeUsageFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7871,21 +7871,21 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoDecodeFlagBitsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoDecodeFlagBitsKHR )
   {
     return "(void)";
   }
 
   //=== VK_EXT_transform_feedback ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateStreamCreateFlagBitsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineRasterizationStateStreamCreateFlagBitsEXT )
   {
     return "(void)";
   }
 
   //=== VK_KHR_video_encode_h264 ===
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264CapabilityFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeH264CapabilityFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7903,7 +7903,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264StdFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeH264StdFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7931,7 +7931,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264RateControlFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeH264RateControlFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7946,7 +7946,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_video_encode_h265 ===
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265CapabilityFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeH265CapabilityFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7965,7 +7965,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265StdFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeH265StdFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -7994,7 +7994,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265CtbSizeFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeH265CtbSizeFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8005,7 +8005,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265TransformBlockSizeFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeH265TransformBlockSizeFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8017,7 +8017,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265RateControlFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeH265RateControlFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8032,7 +8032,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_video_decode_h264 ===
 
-  VULKAN_HPP_INLINE std::string to_string( VideoDecodeH264PictureLayoutFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoDecodeH264PictureLayoutFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8045,7 +8045,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_AMD_shader_info ===
 
-  VULKAN_HPP_INLINE std::string to_string( ShaderInfoTypeAMD value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ShaderInfoTypeAMD value )
   {
     switch ( value )
     {
@@ -8059,7 +8059,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_GGP )
   //=== VK_GGP_stream_descriptor_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( StreamDescriptorSurfaceCreateFlagBitsGGP )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( StreamDescriptorSurfaceCreateFlagBitsGGP )
   {
     return "(void)";
   }
@@ -8067,7 +8067,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_external_memory_capabilities ===
 
-  VULKAN_HPP_INLINE std::string to_string( ExternalMemoryHandleTypeFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ExternalMemoryHandleTypeFlagBitsNV value )
   {
     switch ( value )
     {
@@ -8079,7 +8079,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ExternalMemoryFeatureFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ExternalMemoryFeatureFlagBitsNV value )
   {
     switch ( value )
     {
@@ -8092,7 +8092,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_validation_flags ===
 
-  VULKAN_HPP_INLINE std::string to_string( ValidationCheckEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ValidationCheckEXT value )
   {
     switch ( value )
     {
@@ -8105,7 +8105,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_VI_NN )
   //=== VK_NN_vi_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( ViSurfaceCreateFlagBitsNN )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ViSurfaceCreateFlagBitsNN )
   {
     return "(void)";
   }
@@ -8113,7 +8113,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_conditional_rendering ===
 
-  VULKAN_HPP_INLINE std::string to_string( ConditionalRenderingFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ConditionalRenderingFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -8124,7 +8124,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_display_surface_counter ===
 
-  VULKAN_HPP_INLINE std::string to_string( SurfaceCounterFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SurfaceCounterFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -8135,7 +8135,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_display_control ===
 
-  VULKAN_HPP_INLINE std::string to_string( DisplayPowerStateEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DisplayPowerStateEXT value )
   {
     switch ( value )
     {
@@ -8146,7 +8146,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceEventTypeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceEventTypeEXT value )
   {
     switch ( value )
     {
@@ -8155,7 +8155,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DisplayEventTypeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DisplayEventTypeEXT value )
   {
     switch ( value )
     {
@@ -8166,7 +8166,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_viewport_swizzle ===
 
-  VULKAN_HPP_INLINE std::string to_string( ViewportCoordinateSwizzleNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ViewportCoordinateSwizzleNV value )
   {
     switch ( value )
     {
@@ -8182,14 +8182,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineViewportSwizzleStateCreateFlagBitsNV )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineViewportSwizzleStateCreateFlagBitsNV )
   {
     return "(void)";
   }
 
   //=== VK_EXT_discard_rectangles ===
 
-  VULKAN_HPP_INLINE std::string to_string( DiscardRectangleModeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DiscardRectangleModeEXT value )
   {
     switch ( value )
     {
@@ -8199,14 +8199,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineDiscardRectangleStateCreateFlagBitsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineDiscardRectangleStateCreateFlagBitsEXT )
   {
     return "(void)";
   }
 
   //=== VK_EXT_conservative_rasterization ===
 
-  VULKAN_HPP_INLINE std::string to_string( ConservativeRasterizationModeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ConservativeRasterizationModeEXT value )
   {
     switch ( value )
     {
@@ -8217,21 +8217,21 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationConservativeStateCreateFlagBitsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineRasterizationConservativeStateCreateFlagBitsEXT )
   {
     return "(void)";
   }
 
   //=== VK_EXT_depth_clip_enable ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationDepthClipStateCreateFlagBitsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineRasterizationDepthClipStateCreateFlagBitsEXT )
   {
     return "(void)";
   }
 
   //=== VK_KHR_performance_query ===
 
-  VULKAN_HPP_INLINE std::string to_string( PerformanceCounterDescriptionFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PerformanceCounterDescriptionFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8241,7 +8241,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PerformanceCounterScopeKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PerformanceCounterScopeKHR value )
   {
     switch ( value )
     {
@@ -8252,7 +8252,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PerformanceCounterStorageKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PerformanceCounterStorageKHR value )
   {
     switch ( value )
     {
@@ -8266,7 +8266,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PerformanceCounterUnitKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PerformanceCounterUnitKHR value )
   {
     switch ( value )
     {
@@ -8285,7 +8285,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AcquireProfilingLockFlagBitsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AcquireProfilingLockFlagBitsKHR )
   {
     return "(void)";
   }
@@ -8293,7 +8293,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_IOS_MVK )
   //=== VK_MVK_ios_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( IOSSurfaceCreateFlagBitsMVK )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( IOSSurfaceCreateFlagBitsMVK )
   {
     return "(void)";
   }
@@ -8302,7 +8302,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_MACOS_MVK )
   //=== VK_MVK_macos_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( MacOSSurfaceCreateFlagBitsMVK )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MacOSSurfaceCreateFlagBitsMVK )
   {
     return "(void)";
   }
@@ -8310,7 +8310,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_debug_utils ===
 
-  VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessageSeverityFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DebugUtilsMessageSeverityFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -8322,7 +8322,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessageTypeFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DebugUtilsMessageTypeFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -8334,19 +8334,19 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCallbackDataFlagBitsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DebugUtilsMessengerCallbackDataFlagBitsEXT )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCreateFlagBitsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DebugUtilsMessengerCreateFlagBitsEXT )
   {
     return "(void)";
   }
 
   //=== VK_EXT_blend_operation_advanced ===
 
-  VULKAN_HPP_INLINE std::string to_string( BlendOverlapEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BlendOverlapEXT value )
   {
     switch ( value )
     {
@@ -8359,14 +8359,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_fragment_coverage_to_color ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCoverageToColorStateCreateFlagBitsNV )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCoverageToColorStateCreateFlagBitsNV )
   {
     return "(void)";
   }
 
   //=== VK_KHR_acceleration_structure ===
 
-  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureTypeKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccelerationStructureTypeKHR value )
   {
     switch ( value )
     {
@@ -8377,7 +8377,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureBuildTypeKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccelerationStructureBuildTypeKHR value )
   {
     switch ( value )
     {
@@ -8388,7 +8388,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( GeometryFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( GeometryFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8398,7 +8398,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( GeometryInstanceFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( GeometryInstanceFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8412,7 +8412,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( BuildAccelerationStructureFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BuildAccelerationStructureFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8433,7 +8433,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CopyAccelerationStructureModeKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CopyAccelerationStructureModeKHR value )
   {
     switch ( value )
     {
@@ -8445,7 +8445,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( GeometryTypeKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( GeometryTypeKHR value )
   {
     switch ( value )
     {
@@ -8458,7 +8458,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureCompatibilityKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccelerationStructureCompatibilityKHR value )
   {
     switch ( value )
     {
@@ -8468,7 +8468,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureCreateFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccelerationStructureCreateFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8479,7 +8479,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( BuildAccelerationStructureModeKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BuildAccelerationStructureModeKHR value )
   {
     switch ( value )
     {
@@ -8491,7 +8491,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_ray_tracing_pipeline ===
 
-  VULKAN_HPP_INLINE std::string to_string( RayTracingShaderGroupTypeKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( RayTracingShaderGroupTypeKHR value )
   {
     switch ( value )
     {
@@ -8502,7 +8502,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ShaderGroupShaderKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ShaderGroupShaderKHR value )
   {
     switch ( value )
     {
@@ -8516,7 +8516,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_framebuffer_mixed_samples ===
 
-  VULKAN_HPP_INLINE std::string to_string( CoverageModulationModeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CoverageModulationModeNV value )
   {
     switch ( value )
     {
@@ -8528,14 +8528,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCoverageModulationStateCreateFlagBitsNV )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCoverageModulationStateCreateFlagBitsNV )
   {
     return "(void)";
   }
 
   //=== VK_EXT_validation_cache ===
 
-  VULKAN_HPP_INLINE std::string to_string( ValidationCacheHeaderVersionEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ValidationCacheHeaderVersionEXT value )
   {
     switch ( value )
     {
@@ -8544,14 +8544,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ValidationCacheCreateFlagBitsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ValidationCacheCreateFlagBitsEXT )
   {
     return "(void)";
   }
 
   //=== VK_NV_shading_rate_image ===
 
-  VULKAN_HPP_INLINE std::string to_string( ShadingRatePaletteEntryNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ShadingRatePaletteEntryNV value )
   {
     switch ( value )
     {
@@ -8571,7 +8571,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CoarseSampleOrderTypeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CoarseSampleOrderTypeNV value )
   {
     switch ( value )
     {
@@ -8585,7 +8585,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_ray_tracing ===
 
-  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMemoryRequirementsTypeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccelerationStructureMemoryRequirementsTypeNV value )
   {
     switch ( value )
     {
@@ -8598,14 +8598,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_AMD_pipeline_compiler_control ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCompilerControlFlagBitsAMD )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCompilerControlFlagBitsAMD )
   {
     return "(void)";
   }
 
   //=== VK_AMD_memory_overallocation_behavior ===
 
-  VULKAN_HPP_INLINE std::string to_string( MemoryOverallocationBehaviorAMD value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MemoryOverallocationBehaviorAMD value )
   {
     switch ( value )
     {
@@ -8618,7 +8618,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_INTEL_performance_query ===
 
-  VULKAN_HPP_INLINE std::string to_string( PerformanceConfigurationTypeINTEL value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PerformanceConfigurationTypeINTEL value )
   {
     switch ( value )
     {
@@ -8627,7 +8627,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( QueryPoolSamplingModeINTEL value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueryPoolSamplingModeINTEL value )
   {
     switch ( value )
     {
@@ -8636,7 +8636,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PerformanceOverrideTypeINTEL value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PerformanceOverrideTypeINTEL value )
   {
     switch ( value )
     {
@@ -8646,7 +8646,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PerformanceParameterTypeINTEL value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PerformanceParameterTypeINTEL value )
   {
     switch ( value )
     {
@@ -8656,7 +8656,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PerformanceValueTypeINTEL value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PerformanceValueTypeINTEL value )
   {
     switch ( value )
     {
@@ -8672,7 +8672,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_imagepipe_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( ImagePipeSurfaceCreateFlagBitsFUCHSIA )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImagePipeSurfaceCreateFlagBitsFUCHSIA )
   {
     return "(void)";
   }
@@ -8681,7 +8681,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( MetalSurfaceCreateFlagBitsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MetalSurfaceCreateFlagBitsEXT )
   {
     return "(void)";
   }
@@ -8689,7 +8689,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_fragment_shading_rate ===
 
-  VULKAN_HPP_INLINE std::string to_string( FragmentShadingRateCombinerOpKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( FragmentShadingRateCombinerOpKHR value )
   {
     switch ( value )
     {
@@ -8704,14 +8704,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_AMD_shader_core_properties2 ===
 
-  VULKAN_HPP_INLINE std::string to_string( ShaderCorePropertiesFlagBitsAMD )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ShaderCorePropertiesFlagBitsAMD )
   {
     return "(void)";
   }
 
   //=== VK_EXT_validation_features ===
 
-  VULKAN_HPP_INLINE std::string to_string( ValidationFeatureEnableEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ValidationFeatureEnableEXT value )
   {
     switch ( value )
     {
@@ -8724,7 +8724,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ValidationFeatureDisableEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ValidationFeatureDisableEXT value )
   {
     switch ( value )
     {
@@ -8742,7 +8742,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_coverage_reduction_mode ===
 
-  VULKAN_HPP_INLINE std::string to_string( CoverageReductionModeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CoverageReductionModeNV value )
   {
     switch ( value )
     {
@@ -8752,14 +8752,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineCoverageReductionStateCreateFlagBitsNV )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCoverageReductionStateCreateFlagBitsNV )
   {
     return "(void)";
   }
 
   //=== VK_EXT_provoking_vertex ===
 
-  VULKAN_HPP_INLINE std::string to_string( ProvokingVertexModeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ProvokingVertexModeEXT value )
   {
     switch ( value )
     {
@@ -8772,7 +8772,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
   //=== VK_EXT_full_screen_exclusive ===
 
-  VULKAN_HPP_INLINE std::string to_string( FullScreenExclusiveEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( FullScreenExclusiveEXT value )
   {
     switch ( value )
     {
@@ -8787,14 +8787,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_headless_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( HeadlessSurfaceCreateFlagBitsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( HeadlessSurfaceCreateFlagBitsEXT )
   {
     return "(void)";
   }
 
   //=== VK_KHR_pipeline_executable_properties ===
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineExecutableStatisticFormatKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineExecutableStatisticFormatKHR value )
   {
     switch ( value )
     {
@@ -8808,7 +8808,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_surface_maintenance1 ===
 
-  VULKAN_HPP_INLINE std::string to_string( PresentScalingFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PresentScalingFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -8819,7 +8819,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PresentGravityFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PresentGravityFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -8832,7 +8832,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_device_generated_commands ===
 
-  VULKAN_HPP_INLINE std::string to_string( IndirectStateFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( IndirectStateFlagBitsNV value )
   {
     switch ( value )
     {
@@ -8841,7 +8841,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( IndirectCommandsTokenTypeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( IndirectCommandsTokenTypeNV value )
   {
     switch ( value )
     {
@@ -8860,7 +8860,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( IndirectCommandsLayoutUsageFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( IndirectCommandsLayoutUsageFlagBitsNV value )
   {
     switch ( value )
     {
@@ -8873,7 +8873,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_depth_bias_control ===
 
-  VULKAN_HPP_INLINE std::string to_string( DepthBiasRepresentationEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DepthBiasRepresentationEXT value )
   {
     switch ( value )
     {
@@ -8886,7 +8886,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_device_memory_report ===
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceMemoryReportEventTypeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceMemoryReportEventTypeEXT value )
   {
     switch ( value )
     {
@@ -8899,14 +8899,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceMemoryReportFlagBitsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceMemoryReportFlagBitsEXT )
   {
     return "(void)";
   }
 
   //=== VK_KHR_video_encode_queue ===
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeCapabilityFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeCapabilityFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8918,7 +8918,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeFeedbackFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeFeedbackFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8929,7 +8929,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeUsageFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeUsageFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8942,7 +8942,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeContentFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeContentFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8954,7 +8954,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeTuningModeKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeTuningModeKHR value )
   {
     switch ( value )
     {
@@ -8967,7 +8967,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeRateControlModeFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeRateControlModeFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8979,7 +8979,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -8989,14 +8989,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeRateControlFlagBitsKHR )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeRateControlFlagBitsKHR )
   {
     return "(void)";
   }
 
   //=== VK_NV_device_diagnostics_config ===
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceDiagnosticsConfigFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceDiagnosticsConfigFlagBitsNV value )
   {
     switch ( value )
     {
@@ -9011,7 +9011,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_objects ===
 
-  VULKAN_HPP_INLINE std::string to_string( ExportMetalObjectTypeFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ExportMetalObjectTypeFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -9028,7 +9028,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_graphics_pipeline_library ===
 
-  VULKAN_HPP_INLINE std::string to_string( GraphicsPipelineLibraryFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( GraphicsPipelineLibraryFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -9042,7 +9042,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_fragment_shading_rate_enums ===
 
-  VULKAN_HPP_INLINE std::string to_string( FragmentShadingRateNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( FragmentShadingRateNV value )
   {
     switch ( value )
     {
@@ -9062,7 +9062,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( FragmentShadingRateTypeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( FragmentShadingRateTypeNV value )
   {
     switch ( value )
     {
@@ -9074,7 +9074,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_ray_tracing_motion_blur ===
 
-  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInstanceTypeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccelerationStructureMotionInstanceTypeNV value )
   {
     switch ( value )
     {
@@ -9085,19 +9085,19 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInfoFlagBitsNV )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccelerationStructureMotionInfoFlagBitsNV )
   {
     return "(void)";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInstanceFlagBitsNV )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccelerationStructureMotionInstanceFlagBitsNV )
   {
     return "(void)";
   }
 
   //=== VK_EXT_image_compression_control ===
 
-  VULKAN_HPP_INLINE std::string to_string( ImageCompressionFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageCompressionFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -9109,7 +9109,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ImageCompressionFixedRateFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageCompressionFixedRateFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -9144,7 +9144,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_device_fault ===
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceFaultAddressTypeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceFaultAddressTypeEXT value )
   {
     switch ( value )
     {
@@ -9159,7 +9159,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceFaultVendorBinaryHeaderVersionEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceFaultVendorBinaryHeaderVersionEXT value )
   {
     switch ( value )
     {
@@ -9171,7 +9171,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
   //=== VK_EXT_directfb_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( DirectFBSurfaceCreateFlagBitsEXT )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DirectFBSurfaceCreateFlagBitsEXT )
   {
     return "(void)";
   }
@@ -9179,7 +9179,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_device_address_binding_report ===
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceAddressBindingFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceAddressBindingFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -9188,7 +9188,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DeviceAddressBindingTypeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceAddressBindingTypeEXT value )
   {
     switch ( value )
     {
@@ -9201,7 +9201,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_buffer_collection ===
 
-  VULKAN_HPP_INLINE std::string to_string( ImageConstraintsInfoFlagBitsFUCHSIA value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageConstraintsInfoFlagBitsFUCHSIA value )
   {
     switch ( value )
     {
@@ -9214,7 +9214,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ImageFormatConstraintsFlagBitsFUCHSIA )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageFormatConstraintsFlagBitsFUCHSIA )
   {
     return "(void)";
   }
@@ -9222,7 +9222,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_frame_boundary ===
 
-  VULKAN_HPP_INLINE std::string to_string( FrameBoundaryFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( FrameBoundaryFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -9234,7 +9234,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_screen_surface ===
 
-  VULKAN_HPP_INLINE std::string to_string( ScreenSurfaceCreateFlagBitsQNX )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ScreenSurfaceCreateFlagBitsQNX )
   {
     return "(void)";
   }
@@ -9242,7 +9242,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_opacity_micromap ===
 
-  VULKAN_HPP_INLINE std::string to_string( MicromapTypeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MicromapTypeEXT value )
   {
     switch ( value )
     {
@@ -9254,7 +9254,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( BuildMicromapFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BuildMicromapFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -9265,7 +9265,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( CopyMicromapModeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CopyMicromapModeEXT value )
   {
     switch ( value )
     {
@@ -9277,7 +9277,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( MicromapCreateFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MicromapCreateFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -9286,7 +9286,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( BuildMicromapModeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BuildMicromapModeEXT value )
   {
     switch ( value )
     {
@@ -9295,7 +9295,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( OpacityMicromapFormatEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( OpacityMicromapFormatEXT value )
   {
     switch ( value )
     {
@@ -9305,7 +9305,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( OpacityMicromapSpecialIndexEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( OpacityMicromapSpecialIndexEXT value )
   {
     switch ( value )
     {
@@ -9321,7 +9321,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_NV_displacement_micromap ===
 
-  VULKAN_HPP_INLINE std::string to_string( DisplacementMicromapFormatNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DisplacementMicromapFormatNV value )
   {
     switch ( value )
     {
@@ -9335,7 +9335,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_ARM_scheduling_controls ===
 
-  VULKAN_HPP_INLINE std::string to_string( PhysicalDeviceSchedulingControlsFlagBitsARM value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PhysicalDeviceSchedulingControlsFlagBitsARM value )
   {
     switch ( value )
     {
@@ -9346,7 +9346,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_memory_decompression ===
 
-  VULKAN_HPP_INLINE std::string to_string( MemoryDecompressionMethodFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( MemoryDecompressionMethodFlagBitsNV value )
   {
     switch ( value )
     {
@@ -9357,7 +9357,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_ray_tracing_linear_swept_spheres ===
 
-  VULKAN_HPP_INLINE std::string to_string( RayTracingLssIndexingModeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( RayTracingLssIndexingModeNV value )
   {
     switch ( value )
     {
@@ -9367,7 +9367,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( RayTracingLssPrimitiveEndCapsModeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( RayTracingLssPrimitiveEndCapsModeNV value )
   {
     switch ( value )
     {
@@ -9379,7 +9379,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_subpass_merge_feedback ===
 
-  VULKAN_HPP_INLINE std::string to_string( SubpassMergeStatusEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SubpassMergeStatusEXT value )
   {
     switch ( value )
     {
@@ -9403,7 +9403,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_LUNARG_direct_driver_loading ===
 
-  VULKAN_HPP_INLINE std::string to_string( DirectDriverLoadingModeLUNARG value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DirectDriverLoadingModeLUNARG value )
   {
     switch ( value )
     {
@@ -9413,14 +9413,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( DirectDriverLoadingFlagBitsLUNARG )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DirectDriverLoadingFlagBitsLUNARG )
   {
     return "(void)";
   }
 
   //=== VK_NV_optical_flow ===
 
-  VULKAN_HPP_INLINE std::string to_string( OpticalFlowUsageFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( OpticalFlowUsageFlagBitsNV value )
   {
     switch ( value )
     {
@@ -9434,7 +9434,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( OpticalFlowGridSizeFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( OpticalFlowGridSizeFlagBitsNV value )
   {
     switch ( value )
     {
@@ -9447,7 +9447,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( OpticalFlowPerformanceLevelNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( OpticalFlowPerformanceLevelNV value )
   {
     switch ( value )
     {
@@ -9459,7 +9459,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( OpticalFlowSessionBindingPointNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( OpticalFlowSessionBindingPointNV value )
   {
     switch ( value )
     {
@@ -9476,7 +9476,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( OpticalFlowSessionCreateFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( OpticalFlowSessionCreateFlagBitsNV value )
   {
     switch ( value )
     {
@@ -9489,7 +9489,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( OpticalFlowExecuteFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( OpticalFlowExecuteFlagBitsNV value )
   {
     switch ( value )
     {
@@ -9500,7 +9500,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_AMD_anti_lag ===
 
-  VULKAN_HPP_INLINE std::string to_string( AntiLagModeAMD value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AntiLagModeAMD value )
   {
     switch ( value )
     {
@@ -9511,7 +9511,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( AntiLagStageAMD value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AntiLagStageAMD value )
   {
     switch ( value )
     {
@@ -9523,7 +9523,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_shader_object ===
 
-  VULKAN_HPP_INLINE std::string to_string( ShaderCreateFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ShaderCreateFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -9539,7 +9539,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ShaderCodeTypeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ShaderCodeTypeEXT value )
   {
     switch ( value )
     {
@@ -9551,7 +9551,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_ray_tracing_invocation_reorder ===
 
-  VULKAN_HPP_INLINE std::string to_string( RayTracingInvocationReorderModeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( RayTracingInvocationReorderModeNV value )
   {
     switch ( value )
     {
@@ -9563,7 +9563,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_cooperative_vector ===
 
-  VULKAN_HPP_INLINE std::string to_string( CooperativeVectorMatrixLayoutNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CooperativeVectorMatrixLayoutNV value )
   {
     switch ( value )
     {
@@ -9575,7 +9575,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ComponentTypeKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ComponentTypeKHR value )
   {
     switch ( value )
     {
@@ -9600,7 +9600,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_layer_settings ===
 
-  VULKAN_HPP_INLINE std::string to_string( LayerSettingTypeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( LayerSettingTypeEXT value )
   {
     switch ( value )
     {
@@ -9618,7 +9618,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_low_latency2 ===
 
-  VULKAN_HPP_INLINE std::string to_string( LatencyMarkerNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( LatencyMarkerNV value )
   {
     switch ( value )
     {
@@ -9638,7 +9638,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( OutOfBandQueueTypeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( OutOfBandQueueTypeNV value )
   {
     switch ( value )
     {
@@ -9650,7 +9650,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_cooperative_matrix ===
 
-  VULKAN_HPP_INLINE std::string to_string( ScopeKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ScopeKHR value )
   {
     switch ( value )
     {
@@ -9664,7 +9664,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_video_encode_av1 ===
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeAV1PredictionModeKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeAV1PredictionModeKHR value )
   {
     switch ( value )
     {
@@ -9676,7 +9676,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeAV1RateControlGroupKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeAV1RateControlGroupKHR value )
   {
     switch ( value )
     {
@@ -9687,7 +9687,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeAV1CapabilityFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeAV1CapabilityFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -9700,7 +9700,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeAV1StdFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeAV1StdFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -9712,7 +9712,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeAV1SuperblockSizeFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeAV1SuperblockSizeFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -9722,7 +9722,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeAV1RateControlFlagBitsKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( VideoEncodeAV1RateControlFlagBitsKHR value )
   {
     switch ( value )
     {
@@ -9736,7 +9736,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_QCOM_image_processing2 ===
 
-  VULKAN_HPP_INLINE std::string to_string( BlockMatchWindowCompareModeQCOM value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BlockMatchWindowCompareModeQCOM value )
   {
     switch ( value )
     {
@@ -9748,7 +9748,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_QCOM_filter_cubic_weights ===
 
-  VULKAN_HPP_INLINE std::string to_string( CubicFilterWeightsQCOM value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CubicFilterWeightsQCOM value )
   {
     switch ( value )
     {
@@ -9762,7 +9762,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_MSFT_layered_driver ===
 
-  VULKAN_HPP_INLINE std::string to_string( LayeredDriverUnderlyingApiMSFT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( LayeredDriverUnderlyingApiMSFT value )
   {
     switch ( value )
     {
@@ -9774,7 +9774,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_calibrated_timestamps ===
 
-  VULKAN_HPP_INLINE std::string to_string( TimeDomainKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( TimeDomainKHR value )
   {
     switch ( value )
     {
@@ -9788,7 +9788,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_display_stereo ===
 
-  VULKAN_HPP_INLINE std::string to_string( DisplaySurfaceStereoTypeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DisplaySurfaceStereoTypeNV value )
   {
     switch ( value )
     {
@@ -9802,7 +9802,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_maintenance7 ===
 
-  VULKAN_HPP_INLINE std::string to_string( PhysicalDeviceLayeredApiKHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PhysicalDeviceLayeredApiKHR value )
   {
     switch ( value )
     {
@@ -9817,7 +9817,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_cluster_acceleration_structure ===
 
-  VULKAN_HPP_INLINE std::string to_string( ClusterAccelerationStructureClusterFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ClusterAccelerationStructureClusterFlagBitsNV value )
   {
     switch ( value )
     {
@@ -9826,7 +9826,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ClusterAccelerationStructureGeometryFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ClusterAccelerationStructureGeometryFlagBitsNV value )
   {
     switch ( value )
     {
@@ -9837,7 +9837,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ClusterAccelerationStructureAddressResolutionFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ClusterAccelerationStructureAddressResolutionFlagBitsNV value )
   {
     switch ( value )
     {
@@ -9851,7 +9851,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ClusterAccelerationStructureIndexFormatFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ClusterAccelerationStructureIndexFormatFlagBitsNV value )
   {
     switch ( value )
     {
@@ -9862,7 +9862,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ClusterAccelerationStructureTypeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ClusterAccelerationStructureTypeNV value )
   {
     switch ( value )
     {
@@ -9873,7 +9873,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ClusterAccelerationStructureOpTypeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ClusterAccelerationStructureOpTypeNV value )
   {
     switch ( value )
     {
@@ -9886,7 +9886,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( ClusterAccelerationStructureOpModeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ClusterAccelerationStructureOpModeNV value )
   {
     switch ( value )
     {
@@ -9899,7 +9899,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_partitioned_acceleration_structure ===
 
-  VULKAN_HPP_INLINE std::string to_string( PartitionedAccelerationStructureOpTypeNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PartitionedAccelerationStructureOpTypeNV value )
   {
     switch ( value )
     {
@@ -9910,7 +9910,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( PartitionedAccelerationStructureInstanceFlagBitsNV value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PartitionedAccelerationStructureInstanceFlagBitsNV value )
   {
     switch ( value )
     {
@@ -9925,7 +9925,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_device_generated_commands ===
 
-  VULKAN_HPP_INLINE std::string to_string( IndirectCommandsTokenTypeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( IndirectCommandsTokenTypeEXT value )
   {
     switch ( value )
     {
@@ -9948,7 +9948,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( IndirectExecutionSetInfoTypeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( IndirectExecutionSetInfoTypeEXT value )
   {
     switch ( value )
     {
@@ -9958,7 +9958,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( IndirectCommandsLayoutUsageFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( IndirectCommandsLayoutUsageFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -9968,7 +9968,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( IndirectCommandsInputModeFlagBitsEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( IndirectCommandsInputModeFlagBitsEXT value )
   {
     switch ( value )
     {
@@ -9980,7 +9980,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_maintenance8 ===
 
-  VULKAN_HPP_INLINE std::string to_string( AccessFlagBits3KHR value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccessFlagBits3KHR value )
   {
     switch ( value )
     {
@@ -9991,7 +9991,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_depth_clamp_control ===
 
-  VULKAN_HPP_INLINE std::string to_string( DepthClampModeEXT value )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DepthClampModeEXT value )
   {
     switch ( value )
     {

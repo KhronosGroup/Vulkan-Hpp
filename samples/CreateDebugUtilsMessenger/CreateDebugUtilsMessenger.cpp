@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 // VulkanHpp Samples : CreateDebugReportMessenger
-//                     Draw a cube
+//                     Set up a debug messenger
 
 #include <iostream>
 #include <sstream>

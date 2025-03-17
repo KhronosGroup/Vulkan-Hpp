@@ -70,21 +70,45 @@ jobs:
         do
           for build_type in Debug Release
           do
-            echo "================================================================================="
-            echo "Building C++"$cpp_standard" in "$build_type" mode on "${{matrix.os}}" with "${{matrix.compiler}}
-            echo "================================================================================="
-            cmake -B build/$cpp_standard/$build_type -GNinja \
-              -DVULKAN_HPP_SAMPLES_BUILD=ON                  \
-              -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON     \
-              -DVULKAN_HPP_TESTS_BUILD=ON                    \
-              -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON       \
-              -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
-              -DVULKAN_HPP_PRECOMPILE=OFF                    \
-              -DVULKAN_HPP_RUN_GENERATOR=ON                  \
-              -DCMAKE_CXX_COMPILER=${{matrix.compiler}}      \
-              -DCMAKE_CXX_STANDARD=$cpp_standard             \
-              -DCMAKE_BUILD_TYPE=$build_type
-            cmake --build build/$cpp_standard/$build_type --parallel
+            # filter out compilers that should not compile cpp modules (clang <= 17, gcc <= 13)
+            if [[ ${{matrix.compiler}} != clang++-10 && ${{matrix.compiler}} != clang++-11 && ${{matrix.compiler}} != clang++-12 && ${{matrix.compiler}} != clang++-13 \
+              && ${{matrix.compiler}} != clang++-14 && ${{matrix.compiler}} != clang++-15 && ${{matrix.compiler}} != clang++-16 && ${{matrix.compiler}} != clang++-17  \
+              && ${{matrix.compiler}} != g++-10 && ${{matrix.compiler}} != g++-11 && ${{matrix.compiler}} != g++-12 && ${{matrix.compiler}} != g++-13 ]]
+            then
+              echo "================================================================================="
+              echo "Building C++"$cpp_standard" in "$build_type" mode on "${{matrix.os}}" with "${{matrix.compiler}}
+              echo "================================================================================="
+              cmake -B build/$cpp_standard/$build_type -GNinja \
+                -DVULKAN_HPP_SAMPLES_BUILD=ON                  \
+                -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON     \
+                -DVULKAN_HPP_TESTS_BUILD=ON                    \
+                -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON       \
+                -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
+                -DVULKAN_HPP_ENABLE_CPP20_MODULES=ON           \
+                -DVULKAN_HPP_PRECOMPILE=OFF                    \
+                -DVULKAN_HPP_RUN_GENERATOR=ON                  \
+                -DCMAKE_CXX_COMPILER=${{matrix.compiler}}      \
+                -DCMAKE_CXX_STANDARD=$cpp_standard             \
+                -DCMAKE_BUILD_TYPE=$build_type
+              cmake --build build/$cpp_standard/$build_type --parallel
+            else
+              echo "================================================================================="
+              echo "Building C++"$cpp_standard" in "$build_type" mode on "${{matrix.os}}" with "${{matrix.compiler}}
+              echo "================================================================================="
+              cmake -B build/$cpp_standard/$build_type -GNinja \
+                -DVULKAN_HPP_SAMPLES_BUILD=ON                  \
+                -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON     \
+                -DVULKAN_HPP_TESTS_BUILD=ON                    \
+                -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON       \
+                -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
+                -DVULKAN_HPP_ENABLE_CPP20_MODULES=OFF          \
+                -DVULKAN_HPP_PRECOMPILE=OFF                    \
+                -DVULKAN_HPP_RUN_GENERATOR=ON                  \
+                -DCMAKE_CXX_COMPILER=${{matrix.compiler}}      \
+                -DCMAKE_CXX_STANDARD=$cpp_standard             \
+                -DCMAKE_BUILD_TYPE=$build_type
+              cmake --build build/$cpp_standard/$build_type --parallel
+            fi
           done
         done
 

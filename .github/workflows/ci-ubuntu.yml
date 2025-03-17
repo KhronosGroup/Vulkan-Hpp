@@ -71,7 +71,7 @@ jobs:
           for build_type in Debug Release
           do
             # filter out compilers that should not compile cpp modules (clang <= 17, gcc <= 13), as well as cmake versions < 3.28
-            if [[ ${{matrix.os}} == ubuntu-24.04 &&                                                                                                                   \
+            if [[ ${{matrix.os}} == ubuntu-24.04                                                                                                                      \
               && ${{matrix.compiler}} != clang++-10 && ${{matrix.compiler}} != clang++-11 && ${{matrix.compiler}} != clang++-12 && ${{matrix.compiler}} != clang++-13 \
               && ${{matrix.compiler}} != clang++-14 && ${{matrix.compiler}} != clang++-15 && ${{matrix.compiler}} != clang++-16 && ${{matrix.compiler}} != clang++-17 \
               && ${{matrix.compiler}} != g++-10 && ${{matrix.compiler}} != g++-11 && ${{matrix.compiler}} != g++-12 && ${{matrix.compiler}} != g++-13 ]]

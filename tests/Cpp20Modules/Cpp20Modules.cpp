@@ -17,6 +17,8 @@
 
 import vulkan_hpp;
 
+#include <string>
+#include <iostream>
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 static std::string AppName    = "Cpp20Modules";

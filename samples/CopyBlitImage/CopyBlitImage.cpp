@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 // VulkanHpp Samples : CopyBlitImage
-//                     Draw a cube
+//                     Perform an image blit operation
 
 #include "../utils/utils.hpp"
 

@@ -226,6 +226,9 @@ if ( VK_NO_PROTOTYPES )
 endif()
 if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC" )
+	if( UNIX )
+		target_link_libraries( DispatchLoaderDynamicSharedLibrary PRIVATE ${CMAKE_DL_LIBS} )
+	endif()
 else()
 	find_package( Vulkan )
 	if ( Vulkan_FOUND )
@@ -288,18 +291,21 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	# create a target to provide VulkanHpp as C++20 module
 	add_library( VulkanHppModule )
 	add_library( Vulkan::HppModule ALIAS VulkanHppModule )
-	set_target_properties( VulkanHppModule PROPERTIES
-		CXX_STANDARD_REQUIRED ON
-		CXX_EXTENSIONS OFF )
+	# Clang 16's module support can be broken with extensions enabled
+	if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "16.0" )
+		set_target_properties( VulkanHppModule PROPERTIES CXX_EXTENSIONS OFF )
+	endif()
 	if( VULKAN_HPP_ENABLE_STD_MODULE )
 		target_compile_features( VulkanHppModule PUBLIC cxx_std_23 )
 		set_target_properties( VulkanHppModule PROPERTIES CXX_MODULE_STD ON )
 	else()
 		target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
 	endif()
-	target_sources( VulkanHppModule
-		PUBLIC
-		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.cppm )
+	target_sources( VulkanHppModule PUBLIC
+		FILE_SET vulkan_module_file
+		BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
+		TYPE CXX_MODULES
+		FILES vulkan/vulkan.cppm )
 	target_link_libraries( VulkanHppModule PUBLIC Vulkan::Hpp )
 endif()
 

@@ -1074,7 +1074,7 @@ void VulkanHppGenerator::checkRequireCorrectness( std::vector<RequireData> const
 
 void VulkanHppGenerator::checkRequireDependenciesCorrectness( RequireData const & require, std::string const & section, std::string const & name ) const
 {
-  std::vector<std::string> dependencies = tokenize( require.depends, "," );
+  std::vector<std::string> dependencies = tokenizeAny( require.depends, ",+()" );
   for ( auto const & depends : dependencies )
   {
     size_t separatorPos = depends.find( "::" );

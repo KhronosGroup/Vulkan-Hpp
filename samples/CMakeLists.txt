@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-add_subdirectory( utils )
 add_subdirectory( 01_InitInstance )
 add_subdirectory( 02_EnumerateDevices )
 add_subdirectory( 03_InitDevice )

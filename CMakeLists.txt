@@ -529,13 +529,19 @@ function( vulkan_hpp__setup_test )
 	target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_LIBRARIES} )
 endfunction()
 
-if( VULKAN_HPP_SAMPLES_BUILD )
+if( VULKAN_HPP_SAMPLES_BUILD OR VULKAN_HPP_TESTS_BUILD )
 	# external libraries
 	add_subdirectory( glm )
 	set( GLFW_BUILD_EXAMPLES OFF )
 	set( GLFW_BUILD_TESTS OFF )
 	add_subdirectory( glfw )
 	add_subdirectory( glslang )
+
+	add_subdirectory( samples/utils )
+	add_subdirectory( RAII_Samples/utils )
+endif()
+
+if( VULKAN_HPP_SAMPLES_BUILD )
 	# samples
 	add_subdirectory( samples )
 	add_subdirectory( RAII_Samples )

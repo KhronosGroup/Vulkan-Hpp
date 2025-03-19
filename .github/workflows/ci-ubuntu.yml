@@ -16,38 +16,54 @@ jobs:
         include:
             - os: ubuntu-20.04
               compiler: clang++-10
+              cpp20-modules: OFF
             - os: ubuntu-20.04
               compiler: clang++-11
+              cpp20-modules: OFF
             - os: ubuntu-20.04
               compiler: clang++-12
+              cpp20-modules: OFF
             - os: ubuntu-20.04
               compiler: g++-10
+              cpp20-modules: OFF
               
             - os: ubuntu-22.04
               compiler: clang++-13
+              cpp20-modules: OFF
             - os: ubuntu-22.04
               compiler: clang++-14
+              cpp20-modules: OFF
             - os: ubuntu-22.04
               compiler: clang++-15
+              cpp20-modules: OFF
             - os: ubuntu-22.04
               compiler: g++-10
+              cpp20-modules: OFF
             - os: ubuntu-22.04
               compiler: g++-11
+              cpp20-modules: OFF
             - os: ubuntu-22.04
               compiler: g++-12
+              cpp20-modules: OFF
               
             - os: ubuntu-24.04
               compiler: clang++-16
+              cpp20-modules: OFF
             - os: ubuntu-24.04
               compiler: clang++-17
+              cpp20-modules: ON
             - os: ubuntu-24.04
               compiler: clang++-18
+              cpp20-modules: ON
             - os: ubuntu-24.04
               compiler: g++-12
+              cpp20-modules: OFF
             - os: ubuntu-24.04
               compiler: g++-13
+              cpp20-modules: OFF
             - os: ubuntu-24.04
               compiler: g++-14
+              cpp20-modules: OFF
     
     runs-on: ${{matrix.os}}
 
@@ -70,46 +86,23 @@ jobs:
         do
           for build_type in Debug Release
           do
-            # selectively filter out compilers that do not have the requisite C++20 modules capabilities
-            if [[ $cpp_standard != 11 && $cpp_standard != 14 && $cpp_standard != 17
-              && ${{matrix.compiler}} != clang++-10 && ${{matrix.compiler}} != clang++-11 && ${{matrix.compiler}} != clang++-12 && ${{matrix.compiler}} != clang++-13
-              && ${{matrix.compiler}} != clang++-14 && ${{matrix.compiler}} != clang++-15
-              && ${{matrix.compiler}} != g++-10 && ${{matrix.compiler}} != g++-11 && ${{matrix.compiler}} != g++-12 && ${{matrix.compiler}} != g++-13 && ${{matrix.compiler}} != g++-14 ]]
-            then
-              echo "================================================================================="
-              echo "Building C++"$cpp_standard" with modules in "$build_type" mode on "${{matrix.os}}" with "${{matrix.compiler}}
-              echo "================================================================================="
-              cmake -B build/$cpp_standard/$build_type -GNinja \
-                -DVULKAN_HPP_SAMPLES_BUILD=ON                  \
-                -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON     \
-                -DVULKAN_HPP_TESTS_BUILD=ON                    \
-                -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON       \
-                -DVULKAN_HPP_ENABLE_CPP20_MODULES=ON           \
-                -DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
-                -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
-                -DVULKAN_HPP_PRECOMPILE=OFF                    \
-                -DVULKAN_HPP_RUN_GENERATOR=ON                  \
-                -DCMAKE_CXX_COMPILER=${{matrix.compiler}}      \
-                -DCMAKE_CXX_STANDARD=$cpp_standard             \
-                -DCMAKE_BUILD_TYPE=$build_type
-              cmake --build build/$cpp_standard/$build_type --parallel
-            else
-              echo "================================================================================="
-              echo "Building C++"$cpp_standard" in "$build_type" mode on "${{matrix.os}}" with "${{matrix.compiler}}
-              echo "================================================================================="
-              cmake -B build/$cpp_standard/$build_type -GNinja \
-                -DVULKAN_HPP_SAMPLES_BUILD=ON                  \
-                -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON     \
-                -DVULKAN_HPP_TESTS_BUILD=ON                    \
-                -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON       \
-                -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
-                -DVULKAN_HPP_PRECOMPILE=OFF                    \
-                -DVULKAN_HPP_RUN_GENERATOR=ON                  \
-                -DCMAKE_CXX_COMPILER=${{matrix.compiler}}      \
-                -DCMAKE_CXX_STANDARD=$cpp_standard             \
-                -DCMAKE_BUILD_TYPE=$build_type
-              cmake --build build/$cpp_standard/$build_type --parallel
-            fi
+            echo "================================================================================="
+            echo "Building C++"$cpp_standard" in "$build_type" mode on "${{matrix.os}}" with "${{matrix.compiler}}
+            echo "================================================================================="
+            cmake -B build/$cpp_standard/$build_type -GNinja              \
+              -DVULKAN_HPP_SAMPLES_BUILD=ON                               \
+              -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON                  \
+              -DVULKAN_HPP_TESTS_BUILD=ON                                 \
+              -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON                    \
+              -DVULKAN_HPP_ENABLE_CPP20_MODULES=${{matrix.cpp20-modules}} \
+              -DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                     \
+              -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON                 \
+              -DVULKAN_HPP_PRECOMPILE=OFF                                 \
+              -DVULKAN_HPP_RUN_GENERATOR=ON                               \
+              -DCMAKE_CXX_COMPILER=${{matrix.compiler}}                   \
+              -DCMAKE_CXX_STANDARD=$cpp_standard                          \
+              -DCMAKE_BUILD_TYPE=$build_type
+            cmake --build build/$cpp_standard/$build_type --parallel
           done
         done
 

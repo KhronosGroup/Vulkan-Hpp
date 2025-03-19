@@ -43,8 +43,6 @@ jobs:
             - os: ubuntu-24.04
               compiler: clang++-18
             - os: ubuntu-24.04
-              compiler: clang++-19
-            - os: ubuntu-24.04
               compiler: g++-12
             - os: ubuntu-24.04
               compiler: g++-13

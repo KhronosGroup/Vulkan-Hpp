@@ -956,10 +956,13 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
   for ( auto const & extension : m_extensions )
   {
     // check for existence of any depends, deprecation, obsoletion, or promotion
-    std::vector<std::string> depends = tokenizeAny( extension.depends, ",+()" );
-    for ( auto const & dep : depends )
+    for ( auto const & dep : extension.depends )
     {
-      checkForError( isExtension( dep ) || isFeature( dep ), extension.xmlLine, "extension <" + extension.name + "> lists an unknow depends <" + dep + ">" );
+      checkForError( isFeature( dep.first ), extension.xmlLine, "extension <" + extension.name + "> lists an unknown feature dependency <" + dep.first + ">" );
+      for ( auto const & d : dep.second )
+      {
+        checkForError( isExtension( d ), extension.xmlLine, "extension <" + extension.name + "> lists an unknown extension dependency <" + d + ">" );
+      }
     }
     if ( !extension.deprecatedBy.empty() )
     {
@@ -14067,6 +14070,183 @@ void VulkanHppGenerator::readExtensions( tinyxml2::XMLElement const * element )
   }
 }
 
+enum class NodeType
+{
+  AND,
+  OR,
+  VAR
+};
+
+struct Node
+{
+  NodeType              type;
+  std::string           value;
+  std::shared_ptr<Node> left;
+  std::shared_ptr<Node> right;
+
+  Node( NodeType t, const std::string & val ) : type( t ), value( val ), left( nullptr ), right( nullptr ) {}
+
+  Node( NodeType t, std::shared_ptr<Node> l, std::shared_ptr<Node> r ) : type( t ), left( l ), right( r ) {}
+};
+
+class Parser
+{
+public:
+  Parser( const std::string & expr ) : expr( expr ), pos( 0 ) {}
+
+  std::shared_ptr<Node> parse()
+  {
+    auto result = parse_or();
+    if ( pos != expr.length() )
+    {
+      throw std::runtime_error( "Unexpected characters at end of expression" );
+    }
+    return result;
+  }
+
+private:
+  std::string expr;
+  size_t      pos;
+
+  std::shared_ptr<Node> parse_or()
+  {
+    auto left = parse_and();
+    while ( match( "," ) )
+    {
+      auto right = parse_and();
+      left       = std::make_shared<Node>( NodeType::OR, left, right );
+    }
+    return left;
+  }
+
+  std::shared_ptr<Node> parse_and()
+  {
+    auto left = parse_primary();
+    while ( match( "+" ) )
+    {
+      auto right = parse_primary();
+      left       = std::make_shared<Node>( NodeType::AND, left, right );
+    }
+    return left;
+  }
+
+  std::shared_ptr<Node> parse_primary()
+  {
+    if ( match( "(" ) )
+    {
+      auto result = parse_or();
+      if ( !match( ")" ) )
+      {
+        throw std::runtime_error( "Expected closing parenthesis" );
+      }
+      return result;
+    }
+    return parse_variable();
+  }
+
+  std::shared_ptr<Node> parse_variable()
+  {
+    size_t start = pos;
+    while ( pos < expr.length() && ( std::isalnum( expr[pos] ) || ( expr[pos] == '_' ) ) )
+    {
+      pos++;
+    }
+    if ( start == pos )
+    {
+      throw std::runtime_error( "Expected variable" );
+    }
+    return std::make_shared<Node>( NodeType::VAR, expr.substr( start, pos - start ) );
+  }
+
+  bool match( const std::string & token )
+  {
+    skip_whitespace();
+    if ( expr.substr( pos, token.length() ) == token )
+    {
+      pos += token.length();
+      skip_whitespace();
+      return true;
+    }
+    return false;
+  }
+
+  void skip_whitespace()
+  {
+    while ( pos < expr.length() && std::isspace( expr[pos] ) )
+    {
+      pos++;
+    }
+  }
+};
+
+std::shared_ptr<Node> distribute_and_over_or( std::shared_ptr<Node> node )
+{
+  if ( node->type == NodeType::AND )
+  {
+    if ( node->left->type == NodeType::OR )
+    {
+      return std::make_shared<Node>( NodeType::OR,
+                                     distribute_and_over_or( std::make_shared<Node>( NodeType::AND, node->left->left, node->right ) ),
+                                     distribute_and_over_or( std::make_shared<Node>( NodeType::AND, node->left->right, node->right ) ) );
+    }
+    else if ( node->right->type == NodeType::OR )
+    {
+      return std::make_shared<Node>( NodeType::OR,
+                                     distribute_and_over_or( std::make_shared<Node>( NodeType::AND, node->left, node->right->left ) ),
+                                     distribute_and_over_or( std::make_shared<Node>( NodeType::AND, node->left, node->right->right ) ) );
+    }
+  }
+  return node;
+}
+
+std::shared_ptr<Node> normalize( std::shared_ptr<Node> node )
+{
+  if ( node->left )
+  {
+    node->left = normalize( node->left );
+  }
+  if ( node->right )
+  {
+    node->right = normalize( node->right );
+  }
+  if ( node->type == NodeType::AND )
+  {
+    node = distribute_and_over_or( node );
+  }
+  return node;
+}
+
+std::vector<std::vector<std::string>> vectorize( std::shared_ptr<Node> node )
+{
+  if ( node->type == NodeType::VAR )
+  {
+    return { { node->value } };
+  }
+  else if ( node->type == NodeType::OR )
+  {
+    auto left  = vectorize( node->left );
+    auto right = vectorize( node->right );
+    left.insert( left.end(), right.begin(), right.end() );
+    return left;
+  }
+  else
+  {
+    assert( node->type == NodeType::AND );
+    auto                                  left  = vectorize( node->left );
+    auto                                  right = vectorize( node->right );
+    std::vector<std::vector<std::string>> result;
+    for ( auto const & l : left )
+    {
+      for ( auto const & r : right )
+      {
+        result.push_back( l );
+        result.back().insert( result.back().end(), r.begin(), r.end() );
+      }
+    }
+    return result;
+  }
+}
+
 void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
 {
   const int                                 line       = element->GetLineNum();
@@ -14097,7 +14277,43 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "depends" )
     {
-      extensionData.depends = attribute.second;
+      Parser                                parser( attribute.second );
+      std::vector<std::vector<std::string>> dependencies = vectorize( normalize( parser.parse() ) );
+      for ( auto & dep : dependencies )
+      {
+        auto featureIt = std::ranges::find_if( dep, []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
+        if ( ( featureIt != dep.end() ) && ( featureIt != dep.begin() ) )
+        {
+          auto nextFeatureIt = std::find_if( std::next( featureIt ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
+          while ( nextFeatureIt != dep.end() )
+          {
+            if ( *featureIt < *nextFeatureIt )
+            {
+              featureIt = nextFeatureIt;
+            }
+            nextFeatureIt = std::find_if( std::next( nextFeatureIt ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
+          }
+          std::iter_swap( featureIt, dep.begin() );
+        }
+      }
+      if ( !dependencies[0][0].starts_with( "VK_VERSION" ) )
+      {
+        dependencies[0].insert( dependencies[0].begin(), "VK_VERSION_1_0" );
+      }
+      assert( std::ranges::all_of( dependencies, []( std::vector<std::string> const & dep ) { return dep[0].starts_with( "VK_VERSION" ); } ) );
+      for ( auto & dep : dependencies )
+      {
+        auto [it, inserted] = extensionData.depends.insert( { dep[0], {} } );
+        assert( inserted );
+        for ( auto depIt = std::next( dep.begin() ); depIt != dep.end(); ++depIt )
+        {
+          if ( !depIt->starts_with( "VK_VERSION" ) )
+          {
+            inserted = it->second.insert( *depIt ).second;
+            assert( inserted );
+          }
+        }
+      }
     }
     else if ( attribute.first == "deprecatedby" )
     {

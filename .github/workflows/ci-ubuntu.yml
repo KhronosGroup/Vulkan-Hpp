@@ -93,7 +93,7 @@ jobs:
     - name: Loop over build_types (Debug, Release) with cpp_standard 23 for compilers supporting that
       run: |
         # clang++17 gives in some strange errors in std::tuple!
-        if [[ ${{contains(fromJSON('["g++-10", "clang++-10", "clang++-11", "clang++-17"]'), matrix.compiler)}} ]]
+        if [[ ${{!contains(fromJSON('["g++-10", "clang++-10", "clang++-11", "clang++-17"]'), matrix.compiler)}} ]]
         then
           cpp_standard=23
           for build_type in Debug Release

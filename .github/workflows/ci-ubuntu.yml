@@ -93,7 +93,7 @@ jobs:
     - name: Loop over build_types (Debug, Release) with cpp_standard 23 for compilers supporting that
       run: |
         # clang++17 gives in some strange errors in std::tuple!
-        if [[ ${{matrix.compiler}} != clang++-10 && ${{matrix.compiler}} != clang++-11 && ${{matrix.compiler}} != clang++-17 && ${{matrix.compiler}} != g++-10 ]]
+        if [[ ${{contains(fromJSON('["g++-10", "clang++-10", "clang++-11", "clang++-17"]'), matrix.compiler)}} ]]
         then
           cpp_standard=23
           for build_type in Debug Release
@@ -106,6 +106,8 @@ jobs:
               -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON     \
               -DVULKAN_HPP_TESTS_BUILD=ON                    \
               -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON       \
+              -DVULKAN_HPP_ENABLE_CPP20_MODULES=${{contains(fromJSON('["g++-11", "g++-12", "g++-13", "g++-14", "clang++-12", "clang++-13", "clang++-14", "clang++-15", "clang++-16"]'), matrix.compiler) && 'OFF' || 'ON'}} \
+              -DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
               -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
               -DVULKAN_HPP_PRECOMPILE=OFF                    \
               -DVULKAN_HPP_RUN_GENERATOR=ON                  \

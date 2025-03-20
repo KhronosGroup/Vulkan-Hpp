@@ -32,16 +32,16 @@ jobs:
         
     - name: Build
       run: |
-        cmake -B build/${{matrix.cpp_standard}}/${{matrix.build_type}}                          \
-          -DVULKAN_HPP_SAMPLES_BUILD=ON                                                         \
-          -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON                                            \
-          -DVULKAN_HPP_TESTS_BUILD=ON                                                           \
-          -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON                                              \
-          -DVULKAN_HPP_ENABLE_CPP20_MODULES=${{ matrix.os != 'windows-2019' && 'ON' || 'OFF' }} \
-          -DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                                               \
-          -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON                                           \
-          -DVULKAN_HPP_PRECOMPILE=OFF                                                           \
-          -DVULKAN_HPP_RUN_GENERATOR=ON                                                         \
-          -DCMAKE_CXX_STANDARD=${{matrix.cpp_standard}}                                         \
+        cmake -B build/${{matrix.cpp_standard}}/${{matrix.build_type}}                        \
+          -DVULKAN_HPP_SAMPLES_BUILD=ON                                                       \
+          -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON                                          \
+          -DVULKAN_HPP_TESTS_BUILD=ON                                                         \
+          -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON                                            \
+          -DVULKAN_HPP_ENABLE_CPP20_MODULES=${{matrix.os != 'windows-2019' && 'ON' || 'OFF'}} \
+          -DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                                             \
+          -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON                                         \
+          -DVULKAN_HPP_PRECOMPILE=OFF                                                         \
+          -DVULKAN_HPP_RUN_GENERATOR=ON                                                       \
+          -DCMAKE_CXX_STANDARD=${{matrix.cpp_standard}}                                       \
           -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
         cmake --build build/${{matrix.cpp_standard}}/${{matrix.build_type}} --parallel

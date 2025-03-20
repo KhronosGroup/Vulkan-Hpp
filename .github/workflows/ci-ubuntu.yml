@@ -16,54 +16,38 @@ jobs:
         include:
             - os: ubuntu-20.04
               compiler: clang++-10
-              cpp20-modules: OFF
             - os: ubuntu-20.04
               compiler: clang++-11
-              cpp20-modules: OFF
             - os: ubuntu-20.04
               compiler: clang++-12
-              cpp20-modules: OFF
             - os: ubuntu-20.04
               compiler: g++-10
-              cpp20-modules: OFF
               
             - os: ubuntu-22.04
               compiler: clang++-13
-              cpp20-modules: OFF
             - os: ubuntu-22.04
               compiler: clang++-14
-              cpp20-modules: OFF
             - os: ubuntu-22.04
               compiler: clang++-15
-              cpp20-modules: OFF
             - os: ubuntu-22.04
               compiler: g++-10
-              cpp20-modules: OFF
             - os: ubuntu-22.04
               compiler: g++-11
-              cpp20-modules: OFF
             - os: ubuntu-22.04
               compiler: g++-12
-              cpp20-modules: OFF
               
             - os: ubuntu-24.04
               compiler: clang++-16
-              cpp20-modules: OFF
             - os: ubuntu-24.04
               compiler: clang++-17
-              cpp20-modules: ON
             - os: ubuntu-24.04
               compiler: clang++-18
-              cpp20-modules: ON
             - os: ubuntu-24.04
               compiler: g++-12
-              cpp20-modules: OFF
             - os: ubuntu-24.04
               compiler: g++-13
-              cpp20-modules: OFF
             - os: ubuntu-24.04
               compiler: g++-14
-              cpp20-modules: OFF
     
     runs-on: ${{matrix.os}}
 
@@ -94,7 +78,7 @@ jobs:
               -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON                  \
               -DVULKAN_HPP_TESTS_BUILD=ON                                 \
               -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON                    \
-              -DVULKAN_HPP_ENABLE_CPP20_MODULES=${{matrix.cpp20-modules}} \
+              -DVULKAN_HPP_ENABLE_CPP20_MODULES=${{contains(fromJSON('["g++-10", "g++-11", "g++-12", "g++-13", "g++-14", "clang++-10", "clang++-11", "clang++-12", "clang++-13", "clang++-14", "clang++-15", "clang++-16"]'), matrix.compiler) && 'OFF' || 'ON'}} \
               -DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                     \
               -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON                 \
               -DVULKAN_HPP_PRECOMPILE=OFF                                 \

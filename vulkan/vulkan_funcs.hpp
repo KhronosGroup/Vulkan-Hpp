@@ -31501,5 +31501,32 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_METAL_EXT*/
 
+  //=== VK_EXT_fragment_density_map_offset ===
+
+  // wrapper function for command vkCmdEndRendering2EXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndRendering2EXT.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::endRendering2EXT( const VULKAN_HPP_NAMESPACE::RenderingEndInfoEXT * pRenderingEndInfo,
+                                                          Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdEndRendering2EXT( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<const VkRenderingEndInfoEXT *>( pRenderingEndInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCmdEndRendering2EXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndRendering2EXT.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::endRendering2EXT( Optional<const VULKAN_HPP_NAMESPACE::RenderingEndInfoEXT> renderingEndInfo,
+                                                          Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdEndRendering2EXT && "Function <vkCmdEndRendering2EXT> requires <VK_EXT_fragment_density_map_offset>" );
+#  endif
+
+    d.vkCmdEndRendering2EXT(
+      m_commandBuffer, reinterpret_cast<const VkRenderingEndInfoEXT *>( static_cast<const VULKAN_HPP_NAMESPACE::RenderingEndInfoEXT *>( renderingEndInfo ) ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

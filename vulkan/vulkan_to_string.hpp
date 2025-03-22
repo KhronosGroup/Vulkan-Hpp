@@ -150,10 +150,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += " MultisampledRenderToSingleSampledEXT |";
     if ( value & ImageCreateFlagBits::e2DViewCompatibleEXT )
       result += " 2DViewCompatibleEXT |";
-    if ( value & ImageCreateFlagBits::eFragmentDensityMapOffsetQCOM )
-      result += " FragmentDensityMapOffsetQCOM |";
     if ( value & ImageCreateFlagBits::eVideoProfileIndependentKHR )
       result += " VideoProfileIndependentKHR |";
+    if ( value & ImageCreateFlagBits::eFragmentDensityMapOffsetEXT )
+      result += " FragmentDensityMapOffsetEXT |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -4499,6 +4499,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePipelineShaderStageNodeCreateInfoAMDX    : return "PipelineShaderStageNodeCreateInfoAMDX";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case StructureType::eAttachmentSampleCountInfoAMD                     : return "AttachmentSampleCountInfoAMD";
+      case StructureType::ePhysicalDeviceShaderBfloat16FeaturesKHR          : return "PhysicalDeviceShaderBfloat16FeaturesKHR";
       case StructureType::eSampleLocationsInfoEXT                           : return "SampleLocationsInfoEXT";
       case StructureType::eRenderPassSampleLocationsBeginInfoEXT            : return "RenderPassSampleLocationsBeginInfoEXT";
       case StructureType::ePipelineSampleLocationsStateCreateInfoEXT        : return "PipelineSampleLocationsStateCreateInfoEXT";
@@ -4867,9 +4868,6 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eRenderPassStripeBeginInfoARM                               : return "RenderPassStripeBeginInfoARM";
       case StructureType::eRenderPassStripeInfoARM                                    : return "RenderPassStripeInfoARM";
       case StructureType::eRenderPassStripeSubmitInfoARM                              : return "RenderPassStripeSubmitInfoARM";
-      case StructureType::ePhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM         : return "PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM";
-      case StructureType::ePhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM       : return "PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM";
-      case StructureType::eSubpassFragmentDensityMapOffsetEndInfoQCOM                 : return "SubpassFragmentDensityMapOffsetEndInfoQCOM";
       case StructureType::ePhysicalDeviceCopyMemoryIndirectFeaturesNV                 : return "PhysicalDeviceCopyMemoryIndirectFeaturesNV";
       case StructureType::ePhysicalDeviceCopyMemoryIndirectPropertiesNV               : return "PhysicalDeviceCopyMemoryIndirectPropertiesNV";
       case StructureType::ePhysicalDeviceMemoryDecompressionFeaturesNV                : return "PhysicalDeviceMemoryDecompressionFeaturesNV";
@@ -5090,7 +5088,11 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSetPresentConfigNV                     : return "SetPresentConfigNV";
       case StructureType::ePhysicalDevicePresentMeteringFeaturesNV: return "PhysicalDevicePresentMeteringFeaturesNV";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+      case StructureType::ePhysicalDeviceFragmentDensityMapOffsetFeaturesEXT  : return "PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT";
+      case StructureType::ePhysicalDeviceFragmentDensityMapOffsetPropertiesEXT: return "PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT";
+      case StructureType::eRenderPassFragmentDensityMapOffsetEndInfoEXT       : return "RenderPassFragmentDensityMapOffsetEndInfoEXT";
+      case StructureType::eRenderingEndInfoEXT                                : return "RenderingEndInfoEXT";
+      default                                                                 : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -5505,8 +5507,8 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageCreateFlagBits::eDescriptorBufferCaptureReplayEXT    : return "DescriptorBufferCaptureReplayEXT";
       case ImageCreateFlagBits::eMultisampledRenderToSingleSampledEXT: return "MultisampledRenderToSingleSampledEXT";
       case ImageCreateFlagBits::e2DViewCompatibleEXT                 : return "2DViewCompatibleEXT";
-      case ImageCreateFlagBits::eFragmentDensityMapOffsetQCOM        : return "FragmentDensityMapOffsetQCOM";
       case ImageCreateFlagBits::eVideoProfileIndependentKHR          : return "VideoProfileIndependentKHR";
+      case ImageCreateFlagBits::eFragmentDensityMapOffsetEXT         : return "FragmentDensityMapOffsetEXT";
       default                                                        : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -9590,6 +9592,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ComponentTypeKHR::eUint16       : return "Uint16";
       case ComponentTypeKHR::eUint32       : return "Uint32";
       case ComponentTypeKHR::eUint64       : return "Uint64";
+      case ComponentTypeKHR::eBfloat16     : return "Bfloat16";
       case ComponentTypeKHR::eSint8PackedNV: return "Sint8PackedNV";
       case ComponentTypeKHR::eUint8PackedNV: return "Uint8PackedNV";
       case ComponentTypeKHR::eFloatE4M3NV  : return "FloatE4M3NV";

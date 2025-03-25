@@ -1338,9 +1338,13 @@ void VulkanHppGenerator::checkSyncAccessCorrectness() const
     {
       // with alias
       auto aliasIt = findByNameOrAlias( accessFlagBitsIt->second.values, syncAccess.second.name );
-      checkForError( aliasIt != accessFlagBitsIt->second.values.end(),
-                     syncAccess.second.xmlLine,
-                     "syncaccess alias <" + syncAccess.second.name + "> not specified as a VkAccessFlagBits value!" );
+      if ( aliasIt == accessFlagBitsIt->second.values.end() )
+      {
+        aliasIt = findByNameOrAlias( accessFlagBits2It->second.values, syncAccess.second.name );
+        checkForError( aliasIt != accessFlagBits2It->second.values.end(),
+                       syncAccess.second.xmlLine,
+                       "syncaccess alias <" + syncAccess.second.name + "> not specified as a VkAccessFlagBits or a VkAccessFlagBits2 value!" );
+      }
       checkForError( ( aliasIt->value == nameIt->value ) && ( aliasIt->bitpos == nameIt->bitpos ),
                      syncAccess.second.xmlLine,
                      "syncaccess name <" + syncAccess.first + "> has an alias <" + syncAccess.second.name + "> with a different value or bitpos!" );
@@ -1366,9 +1370,13 @@ void VulkanHppGenerator::checkSyncStageCorrectness() const
     {
       // with alias
       auto aliasIt = findByNameOrAlias( stageFlagBitsIt->second.values, syncStage.second.name );
-      checkForError( aliasIt != stageFlagBitsIt->second.values.end(),
-                     syncStage.second.xmlLine,
-                     "syncstage alias <" + syncStage.second.name + "> not specified as a VkPipelineStageFlagBits value!" );
+      if ( aliasIt == stageFlagBitsIt->second.values.end() )
+      {
+        aliasIt = findByNameOrAlias( stageFlagBits2It->second.values, syncStage.second.name );
+        checkForError( aliasIt != stageFlagBits2It->second.values.end(),
+                       syncStage.second.xmlLine,
+                       "syncstage alias <" + syncStage.second.name + "> not specified as a VkPipelineStageFlagBits or a VkPipelineStageFlagBits2 value!" );
+      }
       checkForError( ( aliasIt->value == nameIt->value ) && ( aliasIt->bitpos == nameIt->bitpos ),
                      syncStage.second.xmlLine,
                      "syncstate name <" + syncStage.first + "> has an alias <" + syncStage.second.name + "> with a different value or bitpos!" );
@@ -5583,7 +5591,7 @@ std::string VulkanHppGenerator::generateCppModuleExtensionInspectionUsings() con
 )" };
 
   auto const extensionInspectionFunctions =
-    std::array{ "getDeviceExtensions",    "getInstanceExtensions", "getDeprecatedExtensions",  /*"getExtensionDepends",     "getExtensionDepends",*/
+    std::array{ "getDeviceExtensions",    "getInstanceExtensions", "getDeprecatedExtensions", /*"getExtensionDepends",     "getExtensionDepends",*/
                 "getObsoletedExtensions", "getPromotedExtensions", "getExtensionDeprecatedBy", "getExtensionObsoletedBy", "getExtensionPromotedTo",
                 "isDeprecatedExtension",  "isDeviceExtension",     "isInstanceExtension",      "isObsoletedExtension",    "isPromotedExtension" };
 
@@ -11069,7 +11077,7 @@ std::string VulkanHppGenerator::generateStruct( std::pair<std::string, Structure
     {
       auto structIt = findByNameOrAlias( m_structs, member.type.type );
       assert( structIt != m_structs.end() );
-      if ( ( structure.first != member.type.type ) && !listedStructs.contains( member.type.type ) )
+      if ( ( structure.first != member.type.type ) && !listedStructs.contains( structIt->first ) )
       {
         str += generateStruct( *structIt, listedStructs );
       }
@@ -12729,8 +12737,10 @@ ${uniqueHandles}
   {
     uniqueHandles += generateUniqueHandle( extension.requireData, extension.name );
   }
-  assert( uniqueHandles.back() == '\n' );
-  uniqueHandles.pop_back();
+  if ( uniqueHandles.back() == '\n' )
+  {
+    uniqueHandles.pop_back();
+  }
   return replaceWithMap( uniqueHandlesTemplate, { { "uniqueHandles", uniqueHandles } } );
 }
 
@@ -12872,8 +12882,10 @@ ${sharedHandles}
   {
     sharedHandles += generateSharedHandle( extension.requireData, extension.name );
   }
-  assert( sharedHandles.back() == '\n' );
-  sharedHandles.pop_back();
+  if ( sharedHandles.back() == '\n' )
+  {
+    sharedHandles.pop_back();
+  }
   return replaceWithMap( sharedHandlesTemplate, { { "sharedHandles", sharedHandles } } );
 }
 

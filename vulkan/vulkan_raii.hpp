@@ -1843,6 +1843,9 @@ namespace VULKAN_HPP_NAMESPACE
           vkGetMemoryMetalHandleEXT           = PFN_vkGetMemoryMetalHandleEXT( vkGetDeviceProcAddr( device, "vkGetMemoryMetalHandleEXT" ) );
           vkGetMemoryMetalHandlePropertiesEXT = PFN_vkGetMemoryMetalHandlePropertiesEXT( vkGetDeviceProcAddr( device, "vkGetMemoryMetalHandlePropertiesEXT" ) );
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+          //=== VK_EXT_fragment_density_map_offset ===
+          vkCmdEndRendering2EXT = PFN_vkCmdEndRendering2EXT( vkGetDeviceProcAddr( device, "vkCmdEndRendering2EXT" ) );
         }
 
       public:
@@ -2790,6 +2793,9 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_dummy vkGetMemoryMetalHandleEXT_placeholder           = 0;
         PFN_dummy vkGetMemoryMetalHandlePropertiesEXT_placeholder = 0;
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+        //=== VK_EXT_fragment_density_map_offset ===
+        PFN_vkCmdEndRendering2EXT vkCmdEndRendering2EXT = 0;
       };
 
     }  // namespace detail
@@ -7852,6 +7858,12 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdExecuteGeneratedCommandsEXT.html
       void executeGeneratedCommandsEXT( VULKAN_HPP_NAMESPACE::Bool32                           isPreprocessed,
                                         const VULKAN_HPP_NAMESPACE::GeneratedCommandsInfoEXT & generatedCommandsInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_EXT_fragment_density_map_offset ===
+
+      // wrapper function for command vkCmdEndRendering2EXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndRendering2EXT.html
+      void endRendering2EXT( Optional<const VULKAN_HPP_NAMESPACE::RenderingEndInfoEXT> renderingEndInfo VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const
+        VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                                      m_device        = {};
@@ -27212,6 +27224,19 @@ namespace VULKAN_HPP_NAMESPACE
       return memoryMetalHandleProperties;
     }
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+    //=== VK_EXT_fragment_density_map_offset ===
+
+    // wrapper function for command vkCmdEndRendering2EXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndRendering2EXT.html
+    VULKAN_HPP_INLINE void
+      CommandBuffer::endRendering2EXT( Optional<const VULKAN_HPP_NAMESPACE::RenderingEndInfoEXT> renderingEndInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdEndRendering2EXT && "Function <vkCmdEndRendering2EXT> requires <VK_EXT_fragment_density_map_offset>" );
+
+      getDispatcher()->vkCmdEndRendering2EXT(
+        static_cast<VkCommandBuffer>( m_commandBuffer ),
+        reinterpret_cast<const VkRenderingEndInfoEXT *>( static_cast<const VULKAN_HPP_NAMESPACE::RenderingEndInfoEXT *>( renderingEndInfo ) ) );
+    }
 
     //====================
     //=== RAII Helpers ===

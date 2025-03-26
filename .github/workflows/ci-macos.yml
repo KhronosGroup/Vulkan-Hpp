@@ -36,7 +36,7 @@ jobs:
     - name: Loop over cpp_standards (11, 14, ...) and build_types (Debug, Release)
       run: |
         clang_compiler=${{matrix.compiler == 'clang++-18' && '$(brew --prefix llvm@18)/bin/clang++' || matrix.compiler}}
-        modules_flag=${{matrix.compiler == 'clang++-18' && 'ON' || 'OFF'}}
+        modules_flag=${{(matrix.compiler == 'clang++-18' && matrix.cpp_standard >= 20) && 'ON' || 'OFF'}}
         cmake -B build/${{matrix.cpp_standard}}/${{matrix.build_type}} -GNinja \
           -DVULKAN_HPP_SAMPLES_BUILD=ON                                        \
           -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON                           \

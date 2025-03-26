@@ -1555,6 +1555,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTShaderStencilExportExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTShaderStencilExportSpecVersion;
 
+  //=== VK_KHR_shader_bfloat16 ===
+  using VULKAN_HPP_NAMESPACE::KHRShaderBfloat16ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRShaderBfloat16SpecVersion;
+
   //=== VK_EXT_sample_locations ===
   using VULKAN_HPP_NAMESPACE::EXTSampleLocationsExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTSampleLocationsSpecVersion;
@@ -2734,6 +2738,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::NVPresentMeteringSpecVersion;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
+  //=== VK_EXT_fragment_density_map_offset ===
+  using VULKAN_HPP_NAMESPACE::EXTFragmentDensityMapOffsetExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTFragmentDensityMapOffsetSpecVersion;
+
   //========================
   //=== CONSTEXPR VALUEs ===
   //========================
@@ -3723,6 +3731,9 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::AttachmentSampleCountInfoAMD;
   using VULKAN_HPP_NAMESPACE::AttachmentSampleCountInfoNV;
 
+  //=== VK_KHR_shader_bfloat16 ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderBfloat16FeaturesKHR;
+
   //=== VK_EXT_sample_locations ===
   using VULKAN_HPP_NAMESPACE::AttachmentSampleLocationsEXT;
   using VULKAN_HPP_NAMESPACE::MultisamplePropertiesEXT;
@@ -4402,11 +4413,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::RenderPassStripeInfoARM;
   using VULKAN_HPP_NAMESPACE::RenderPassStripeSubmitInfoARM;
 
-  //=== VK_QCOM_fragment_density_map_offset ===
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM;
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM;
-  using VULKAN_HPP_NAMESPACE::SubpassFragmentDensityMapOffsetEndInfoQCOM;
-
   //=== VK_NV_copy_memory_indirect ===
   using VULKAN_HPP_NAMESPACE::CopyMemoryIndirectCommandNV;
   using VULKAN_HPP_NAMESPACE::CopyMemoryToImageIndirectCommandNV;
@@ -4819,6 +4825,15 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PhysicalDevicePresentMeteringFeaturesNV;
   using VULKAN_HPP_NAMESPACE::SetPresentConfigNV;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_EXT_fragment_density_map_offset ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM;
+  using VULKAN_HPP_NAMESPACE::RenderingEndInfoEXT;
+  using VULKAN_HPP_NAMESPACE::RenderPassFragmentDensityMapOffsetEndInfoEXT;
+  using VULKAN_HPP_NAMESPACE::SubpassFragmentDensityMapOffsetEndInfoQCOM;
 
   //===============
   //=== HANDLEs ===
@@ -6770,6 +6785,10 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::AttachmentSampleCountInfoAMD>;
 
+  //=== VK_KHR_shader_bfloat16 ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderBfloat16FeaturesKHR>;
+
   //=== VK_EXT_sample_locations ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::SampleLocationEXT>;
@@ -7830,14 +7849,6 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::RenderPassStripeSubmitInfoARM>;
 
-  //=== VK_QCOM_fragment_density_map_offset ===
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM>;
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM>;
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::SubpassFragmentDensityMapOffsetEndInfoQCOM>;
-
   //=== VK_NV_copy_memory_indirect ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::CopyMemoryIndirectCommandNV>;
@@ -8503,6 +8514,16 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePresentMeteringFeaturesNV>;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_EXT_fragment_density_map_offset ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::RenderingEndInfoEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::RenderPassFragmentDensityMapOffsetEndInfoEXT>;
 
   //=================================================================
   //=== Required exports for VULKAN_HPP_NAMESPACE::StructureChain ===

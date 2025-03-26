@@ -949,6 +949,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct AttachmentSampleCountInfoAMD;
   using AttachmentSampleCountInfoNV = AttachmentSampleCountInfoAMD;
 
+  //=== VK_KHR_shader_bfloat16 ===
+  struct PhysicalDeviceShaderBfloat16FeaturesKHR;
+
   //=== VK_EXT_sample_locations ===
   struct SampleLocationEXT;
   struct SampleLocationsInfoEXT;
@@ -1628,11 +1631,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct RenderPassStripeInfoARM;
   struct RenderPassStripeSubmitInfoARM;
 
-  //=== VK_QCOM_fragment_density_map_offset ===
-  struct PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM;
-  struct PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM;
-  struct SubpassFragmentDensityMapOffsetEndInfoQCOM;
-
   //=== VK_NV_copy_memory_indirect ===
   struct CopyMemoryIndirectCommandNV;
   struct CopyMemoryToImageIndirectCommandNV;
@@ -2045,6 +2043,15 @@ namespace VULKAN_HPP_NAMESPACE
   struct SetPresentConfigNV;
   struct PhysicalDevicePresentMeteringFeaturesNV;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_EXT_fragment_density_map_offset ===
+  struct RenderingEndInfoEXT;
+  struct PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT;
+  using PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM = PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT;
+  struct PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT;
+  using PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM = PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT;
+  struct RenderPassFragmentDensityMapOffsetEndInfoEXT;
+  using SubpassFragmentDensityMapOffsetEndInfoQCOM = RenderPassFragmentDensityMapOffsetEndInfoEXT;
 
   //===================================
   //=== HANDLE forward declarations ===
@@ -7795,6 +7802,19 @@ namespace VULKAN_HPP_NAMESPACE
     void executeGeneratedCommandsEXT( VULKAN_HPP_NAMESPACE::Bool32                           isPreprocessed,
                                       const VULKAN_HPP_NAMESPACE::GeneratedCommandsInfoEXT & generatedCommandsInfo,
                                       Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_EXT_fragment_density_map_offset ===
+
+    // wrapper function for command vkCmdEndRendering2EXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndRendering2EXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void endRendering2EXT( const VULKAN_HPP_NAMESPACE::RenderingEndInfoEXT * pRenderingEndInfo,
+                           Dispatch const & d                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdEndRendering2EXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndRendering2EXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void endRendering2EXT( Optional<const VULKAN_HPP_NAMESPACE::RenderingEndInfoEXT> renderingEndInfo VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     operator VkCommandBuffer() const VULKAN_HPP_NOEXCEPT

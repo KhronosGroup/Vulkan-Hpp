@@ -37,7 +37,7 @@ jobs:
 
     - name: Build
       run: |
-        modules_flag=${{contains(fromJSON('"clang++-16", "g++-12", "g++-13", "g++-14"'), matrix.compiler) && 'OFF' || 'ON'}}
+        modules_flag=${{contains(fromJSON('["clang++-16", "g++-12", "g++-13", "g++-14"]'), matrix.compiler) && 'OFF' || 'ON'}}
         cmake -B build/${{matrix.cpp_standard}}/${{matrix.build_type}} -GNinja \
           -DVULKAN_HPP_SAMPLES_BUILD=ON                                        \
           -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON                           \

@@ -37,11 +37,14 @@ jobs:
 
     - name: Build
       run: |
+        modules_flag=${{contains(fromJSON('"clang++-16", "g++-12", "g++-13", "g++-14"'), matrix.compiler) && 'OFF' || 'ON'}}
         cmake -B build/${{matrix.cpp_standard}}/${{matrix.build_type}} -GNinja \
           -DVULKAN_HPP_SAMPLES_BUILD=ON                                        \
           -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON                           \
           -DVULKAN_HPP_TESTS_BUILD=ON                                          \
           -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON                             \
+          -DVULKAN_HPP_ENABLE_CPP20_MODULES=$modules_flag                      \
+          -DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                              \
           -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON                          \
           -DVULKAN_HPP_PRECOMPILE=OFF                                          \
           -DVULKAN_HPP_RUN_GENERATOR=ON                                        \

@@ -17,7 +17,6 @@
 
 import vulkan_hpp;
 
-#include <optional> // std::optional (seems to be needed on MacOS)
 #include <memory>   // std::unique_ptr (seems to be needed on Windows)
 #include <string>   // std::string
 #include <iostream> // std::cout

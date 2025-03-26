@@ -11,10 +11,13 @@ jobs:
     
     strategy:
       matrix:
-        os: [macos-14]
+        os: [macos-14, macos-15]
         compiler: [clang++, clang++-18]
         cpp_standard: [11, 14, 17, 20, 23]
         build_type: [Debug, Release]
+        exclude:
+          - os: macos-14
+            compiler: clang++-18
 
     steps:
     - uses: actions/checkout@v4

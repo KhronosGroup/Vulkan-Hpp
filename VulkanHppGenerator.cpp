@@ -2203,7 +2203,6 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
         assert( !params[i].optional );
         assert( params[i].type.isConstPointer() && !params[i].lenExpression.empty() && !isLenByStructMember( params[i].lenExpression, params ) &&
                 params[i].type.type.starts_with( "Vk" ) );
-        assert( !isHandleType( params[i].type.type ) );
         assert( composedType.ends_with( " *" ) );
         arguments.push_back( stripPostfix( composedType, " *" ) + " & " + stripPluralS( startLowerCase( stripPrefix( params[i].name, "p" ) ) ) );
       }
@@ -4218,8 +4217,9 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
         {
           if ( commandData.params[vectorParams.begin()->second.lenParam].type.type == "uint32_t" )
           {
-            if ( isStructureType( commandData.params[vectorParams.begin()->first].type.type ) &&
-                 !isStructureChainAnchor( commandData.params[vectorParams.begin()->first].type.type ) )
+            if ( isHandleType( commandData.params[vectorParams.begin()->first].type.type ) ||
+                 ( isStructureType( commandData.params[vectorParams.begin()->first].type.type ) &&
+                   !isStructureChainAnchor( commandData.params[vectorParams.begin()->first].type.type ) ) )
             {
               return generateCommandSetInclusive( name,
                                                   commandData,

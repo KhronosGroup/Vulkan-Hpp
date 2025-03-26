@@ -12,7 +12,9 @@ jobs:
     strategy:
       matrix:
         os: [macos-14]
-        compiler: [clang++]
+        compiler: [clang++, clang++-18]
+        cpp_standard: [11, 14, 17, 20, 23]
+        build_type: [Debug, Release]
 
     steps:
     - uses: actions/checkout@v4
@@ -30,21 +32,19 @@ jobs:
       
     - name: Loop over cpp_standards (11, 14, ...) and build_types (Debug, Release)
       run: |
-        for cpp_standard in 11 14 17 20 23
-        do
-          for build_type in Debug Release
-          do
-            cmake -B build/$cpp_standard/$build_type -GNinja \
-              -DVULKAN_HPP_SAMPLES_BUILD=ON                  \
-              -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON     \
-              -DVULKAN_HPP_TESTS_BUILD=ON                    \
-              -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON       \
-              -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
-              -DVULKAN_HPP_PRECOMPILE=OFF                    \
-              -DVULKAN_HPP_RUN_GENERATOR=ON                  \
-              -DCMAKE_CXX_COMPILER=${{matrix.compiler}}      \
-              -DCMAKE_CXX_STANDARD=$cpp_standard             \
-              -DCMAKE_BUILD_TYPE=$build_type
-            cmake --build build/$cpp_standard/$build_type --parallel
-          done
-        done
+        clang_compiler=${{matrix.compiler == 'clang++-18' && '$(brew --prefix llvm@18)/bin/clang++' || matrix.compiler}}
+        modules_flag=${{matrix.compiler == 'clang++-18' && 'ON' || 'OFF'}}
+        cmake -B build/${{matrix.cpp_standard}}/${{matrix.build_type}} -GNinja \
+          -DVULKAN_HPP_SAMPLES_BUILD=ON                                        \
+          -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON                           \
+          -DVULKAN_HPP_TESTS_BUILD=ON                                          \
+          -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON                             \
+          -DVULKAN_HPP_ENABLE_CPP20_MODULES=$modules_flag                      \
+          -DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                              \
+          -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON                          \
+          -DVULKAN_HPP_PRECOMPILE=OFF                                          \
+          -DVULKAN_HPP_RUN_GENERATOR=ON                                        \
+          -DCMAKE_CXX_COMPILER=$clang_compiler                                 \
+          -DCMAKE_CXX_STANDARD=${{matrix.cpp_standard}}                        \
+          -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
+        cmake --build build/${{matrix.cpp_standard}}/${{matrix.build_type}} --parallel

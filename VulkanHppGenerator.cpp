@@ -2639,8 +2639,7 @@ std::string VulkanHppGenerator::generateCallArgumentsEnhanced( CommandData const
           arguments.push_back( "static_cast<" + commandData.handle + ">( m_" + startLowerCase( stripPrefix( commandData.handle, "Vk" ) ) + " )" );
 
           assert( commandData.params[1].type.isValue() && commandData.params[1].arraySizes.empty() && commandData.params[1].lenExpression.empty() );
-          arguments.push_back( "static_cast<" + commandData.params[1].type.type + ">( m_" +
-                               generateRAIIHandleConstructorParamName( handleIt->first, handleIt->second.destructorIt ) + " )" );
+          arguments.push_back( "static_cast<" + commandData.params[1].type.type + ">( m_" + startLowerCase( stripPrefix( handleIt->first, "Vk" ) ) + " )" );
         }
         break;
       default: assert( false ); break;
@@ -8866,7 +8865,7 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
 
     auto [enter, leave]    = generateProtection( getProtectFromType( handle.first ) );
     std::string handleType = stripPrefix( handle.first, "Vk" );
-    std::string handleName = generateRAIIHandleConstructorParamName( handle.first, handle.second.destructorIt );
+    std::string handleName = startLowerCase( stripPrefix( handle.first, "Vk" ) );
 
     auto [singularConstructors, arrayConstructors] = generateRAIIHandleConstructors( handle );
 
@@ -9695,7 +9694,7 @@ std::string
       {
         if ( takesOwnership )
         {
-          initializationList += "m_" + handleName + "( " + handleName + " ), ";
+          initializationList += "m_" + startLowerCase( stripPrefix( handle.first, "Vk" ) ) + "( " + handleName + " ), ";
         }
       }
       else if ( destructorParam.type.type == "VkAllocationCallbacks" )
@@ -10140,14 +10139,14 @@ std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::
   {
     if ( param.type.type == handleType )
     {
-      std::string handleName = param.name;
+      std::string handleName = startLowerCase( stripPrefix( handleType, "Vk" ) );
       if ( param.type.isValue() )
       {
         arguments.push_back( "static_cast<" + handleType + ">( m_" + handleName + " )" );
       }
       else
       {
-        arguments.push_back( "reinterpret_cast<" + handleType + " const *>( &m_" + stripPluralS( startLowerCase( stripPrefix( handleName, "p" ) ) ) + " )" );
+        arguments.push_back( "reinterpret_cast<" + handleType + " const *>( &m_" + handleName + " )" );
       }
     }
     else if ( param.type.type == "VkAllocationCallbacks" )
@@ -10198,7 +10197,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
 
   const auto [parentType, parentName] = getParentTypeAndName( handle );
 
-  std::string handleName = generateRAIIHandleConstructorParamName( handle.first, handle.second.destructorIt );
+  std::string handleName = startLowerCase( stripPrefix( handle.first, "Vk" ) );
 
   std::string clearMembers, moveConstructorInitializerList, moveAssignmentInstructions, memberVariables, swapMembers, releaseMembers;
 

@@ -17,8 +17,9 @@
 
 import vulkan_hpp;
 
-#include <string>
-#include <iostream>
+#include <memory>   // std::unique_ptr (seems to be needed on Windows)
+#include <string>   // std::string
+#include <iostream> // std::cout
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 static std::string AppName    = "Cpp20Modules";

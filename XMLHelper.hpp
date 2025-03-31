@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <assert.h>
 #include <fstream>
 #include <iostream>
@@ -525,7 +526,7 @@ std::string toUpperCase( std::string const & name )
 inline std::string trim( std::string const & input )
 {
   std::string result = input;
-  result.erase( result.begin(), std::find_if( result.begin(), result.end(), []( char c ) noexcept { return !std::isspace( c ); } ) );
+  result.erase( result.begin(), std::ranges::find_if( result, []( char c ) noexcept { return !std::isspace( c ); } ) );
   result.erase( std::find_if( result.rbegin(), result.rend(), []( char c ) noexcept { return !std::isspace( c ); } ).base(), result.end() );
   return result;
 }

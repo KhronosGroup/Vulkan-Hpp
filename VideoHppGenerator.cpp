@@ -135,8 +135,7 @@ void VideoHppGenerator::checkCorrectness() const
     checkForError( !typeIt->second.requiredBy.empty(), structure.second.xmlLine, "structure <" + structure.first + "> not required by any extension" );
 
     assert( typeIt->second.requiredBy.size() == 1 );
-    auto extIt =
-      std::find_if( m_extensions.begin(), m_extensions.end(), [&typeIt]( ExtensionData const & ed ) { return ed.name == *typeIt->second.requiredBy.begin(); } );
+    auto extIt = std::ranges::find_if( m_extensions, [&typeIt]( ExtensionData const & ed ) { return ed.name == *typeIt->second.requiredBy.begin(); } );
     assert( extIt != m_extensions.end() );
 
     // checks on the members of a struct
@@ -165,7 +164,7 @@ void VideoHppGenerator::checkCorrectness() const
           {
             checkForError(
               !extIt->depends.empty(), extIt->xmlLine, "struct member <" + member.name + "> uses unknown constant <" + arraySize + "> as array size" );
-            auto depIt = std::find_if( m_extensions.begin(), m_extensions.end(), [&extIt]( ExtensionData const & ed ) { return ed.name == extIt->depends; } );
+            auto depIt = std::ranges::find_if( m_extensions, [&extIt]( ExtensionData const & ed ) { return ed.name == extIt->depends; } );
             assert( depIt != m_extensions.end() );
             checkForError( depIt->requireData.constants.contains( arraySize ),
                            member.xmlLine,
@@ -490,11 +489,9 @@ void VideoHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, std
     }
     assert( !name.empty() );
 
-    auto valueIt =
-      std::find_if( enumIt->second.values.begin(), enumIt->second.values.end(), [&alias]( EnumValueData const & evd ) { return evd.name == alias; } );
+    auto valueIt = std::ranges::find_if( enumIt->second.values, [&alias]( EnumValueData const & evd ) { return evd.name == alias; } );
     checkForError( valueIt != enumIt->second.values.end(), line, "enum value <" + name + "> uses unknown alias <" + alias + ">" );
-    checkForError( std::find_if( valueIt->aliases.begin(), valueIt->aliases.end(), [&name]( auto const & alias ) { return alias.first == name; } ) ==
-                     valueIt->aliases.end(),
+    checkForError( std::ranges::find_if( valueIt->aliases, [&name]( auto const & alias ) { return alias.first == name; } ) == valueIt->aliases.end(),
                    line,
                    "enum alias <" + name + "> already listed for enum value <" + alias + ">" );
 
@@ -958,7 +955,7 @@ void VideoHppGenerator::sortStructs()
 #if !defined( NDEBUG )
             else
             {
-              auto depIt = std::find_if( m_extensions.begin(), m_extensions.end(), [&ext]( ExtensionData const & ed ) { return ed.name == ext.depends; } );
+              auto depIt = std::ranges::find_if( m_extensions, [&ext]( ExtensionData const & ed ) { return ed.name == ext.depends; } );
               assert( ( depIt != m_extensions.end() ) &&
                       std::ranges::any_of( depIt->requireData.types, [&member]( std::string const & type ) { return type == member.type.type; } ) );
             }

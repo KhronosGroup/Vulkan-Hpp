@@ -15,9 +15,6 @@ jobs:
         compiler: [clang++]
         cpp_standard: [11, 14, 17, 20, 23]
         build_type: [Debug, Release]
-        exclude:
-          - os: macos-14
-            compiler: clang++-18
 
     steps:
     - uses: actions/checkout@v4
@@ -33,7 +30,7 @@ jobs:
       with:
         version: 1.11.0
       
-    - name: Loop over cpp_standards (11, 14, ...) and build_types (Debug, Release)
+    - name: Build
       run: |
         cmake -B build/${{matrix.cpp_standard}}/${{matrix.build_type}} -GNinja \
           -DVULKAN_HPP_SAMPLES_BUILD=ON                                        \
@@ -43,7 +40,7 @@ jobs:
           -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON                          \
           -DVULKAN_HPP_PRECOMPILE=OFF                                          \
           -DVULKAN_HPP_RUN_GENERATOR=ON                                        \
-          -DCMAKE_CXX_COMPILER=${{matrix.compiler}}                                 \
+          -DCMAKE_CXX_COMPILER=${{matrix.compiler}}                            \
           -DCMAKE_CXX_STANDARD=${{matrix.cpp_standard}}                        \
           -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
         cmake --build build/${{matrix.cpp_standard}}/${{matrix.build_type}} --parallel

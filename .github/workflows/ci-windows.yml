@@ -32,7 +32,7 @@ jobs:
         
     - name: Build
       run: |
-        modules_flag=${{(matrix.os != 'windows-2019' && matrix.cpp_standard >= 20) && 'ON' || 'OFF'}}
+        modules_flag=${{(contains(fromJSON('["windows-2019"]'), matrix.os) || matrix.cpp_standard < 20) && 'OFF' || 'ON'}}
         cmake -B build/${{matrix.cpp_standard}}/${{matrix.build_type}} \
           -DVULKAN_HPP_SAMPLES_BUILD=ON                                \
           -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON                   \

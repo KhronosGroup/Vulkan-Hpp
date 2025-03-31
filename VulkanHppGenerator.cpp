@@ -4842,7 +4842,8 @@ std::string VulkanHppGenerator::generateCommandVoid2Return( std::string const & 
     case 0:
       if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
       {
-        if ( isStructureType( commandData.params[returnParams[1]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+        if ( ( commandData.params[returnParams[1]].type.type == "void" ) ||
+             ( isStructureType( commandData.params[returnParams[1]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) ) )
         {
           return generateCommandSetInclusive( name,
                                               commandData,

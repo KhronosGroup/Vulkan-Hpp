@@ -12,8 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if( NOT VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC )
-	find_package( Vulkan REQUIRED )
-
-	vulkan_hpp__setup_test( NAME DeviceFunctions LIBRARIES ${Vulkan_LIBRARIES} )
-endif()
+vulkan_hpp__setup_test( NAME DeviceFunctions LIBRARIES ${Vulkan_LIBRARIES} )

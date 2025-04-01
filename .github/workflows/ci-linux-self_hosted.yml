@@ -1,5 +1,5 @@
 
-name: CI Ubuntu 24
+name: Self-hosted Linux
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, linux]
 
     defaults:
       run:

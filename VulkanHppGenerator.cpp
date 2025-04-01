@@ -16526,11 +16526,12 @@ void VulkanHppGenerator::registerDeleter( std::string const & commandName, Comma
 {
   // some special handling for release functions that don't release an object
   const std::set<std::string> noDeleterFunctions = {
-    "vkReleaseCapturedPipelineDataKHR", "vkReleaseFullScreenExclusiveModeEXT", "vkReleaseProfilingLockKHR", "vkReleaseSwapchainImagesEXT"
+    "vkReleaseCapturedPipelineData", "vkReleaseFullScreenExclusiveMode", "vkReleaseProfilingLock", "vkReleaseSwapchainImages"
   };
 
+  std::string tag = findTag( commandName );
   if ( ( commandName.substr( 2, 7 ) == "Destroy" ) || ( commandName.substr( 2, 4 ) == "Free" ) ||
-       ( ( commandName.substr( 2, 7 ) == "Release" ) && !noDeleterFunctions.contains( commandName ) ) )
+       ( ( commandName.substr( 2, 7 ) == "Release" ) && !noDeleterFunctions.contains( stripPostfix( commandName, tag ) ) ) )
   {
     std::string key;
     size_t      valueIndex = 0;

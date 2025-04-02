@@ -845,6 +845,7 @@ private:
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
   std::pair<std::string, std::string> generateEnumSuffixes( std::string const & name, bool bitmask ) const;
   std::string                         generateEnumValueName( std::string const & enumName, std::string const & valueName, bool bitmask ) const;
+  std::string                         generateExtensionDependencies() const;
   template <class Predicate, class Extraction>
   std::string generateExtensionReplacedBy( Predicate p, Extraction e ) const;
   template <class Predicate>

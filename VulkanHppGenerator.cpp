@@ -182,6 +182,14 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
   std::string const promotedTo           = generateExtensionReplacedBy( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); },
                                                               []( ExtensionData const & extension ) { return extension.promotedTo; } );
 
+  std::string versions;
+  for ( auto const & feature : m_features )
+  {
+    versions += "\"" + feature.name + "\", ";
+  }
+  assert( versions.ends_with( ", " ) );
+  versions = versions.substr( 0, versions.length() - 2 );
+
   std::string str =
     replaceWithMap( vulkanExtensionInspectionHppTemplate,
                     { { "api", m_api },
@@ -190,6 +198,7 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
                       { "deviceTest", generateExtensionTypeTest( "device" ) },
                       { "deprecatedBy", deprecatedBy },
                       { "deprecatedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return extension.isDeprecated; } ) },
+                      { "extensionDependencies", generateExtensionDependencies() },
                       { "instanceExtensions", generateExtensionsList( "instance" ) },
                       { "instanceTest", generateExtensionTypeTest( "instance" ) },
                       { "licenseHeader", m_vulkanLicenseHeader },
@@ -199,6 +208,7 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
                       { "promotedExtensions", promotedExtensions },
                       { "promotedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); } ) },
                       { "promotedTo", promotedTo },
+                      { "versions", versions },
                       { "voidExtension", ( m_api == "vulkan" ) ? "" : "(void)extension;" } } );
 
   writeToFile( str, vulkan_extension_inspection_hpp );
@@ -5585,9 +5595,9 @@ std::string VulkanHppGenerator::generateCppModuleExtensionInspectionUsings() con
 )" };
 
   auto const extensionInspectionFunctions =
-    std::array{ "getDeviceExtensions",    "getInstanceExtensions", "getDeprecatedExtensions", /*"getExtensionDepends",     "getExtensionDepends",*/
-                "getObsoletedExtensions", "getPromotedExtensions", "getExtensionDeprecatedBy", "getExtensionObsoletedBy", "getExtensionPromotedTo",
-                "isDeprecatedExtension",  "isDeviceExtension",     "isInstanceExtension",      "isObsoletedExtension",    "isPromotedExtension" };
+    std::array{ "getDeviceExtensions",   "getInstanceExtensions",    "getDeprecatedExtensions", "getExtensionDepends",    "getObsoletedExtensions",
+                "getPromotedExtensions", "getExtensionDeprecatedBy", "getExtensionObsoletedBy", "getExtensionPromotedTo", "isDeprecatedExtension",
+                "isDeviceExtension",     "isInstanceExtension",      "isObsoletedExtension",    "isPromotedExtension" };
 
   for ( auto const & func : extensionInspectionFunctions )
   {
@@ -7436,6 +7446,48 @@ std::string VulkanHppGenerator::generateEnumValueName( std::string const & enumN
     result = result.substr( 0, result.length() - tag.length() ) + tag;
   }
   return result;
+}
+
+std::string VulkanHppGenerator::generateExtensionDependencies() const
+{
+  std::string extensionDependencies, previousEnter, previousLeave;
+  for ( auto const & extension : m_extensions )
+  {
+    if ( !extension.depends.empty() )
+    {
+      std::string dependsPerExtension = "{ \"" + extension.name + "\", { ";
+      for ( auto const & dependsByVersion : extension.depends )
+      {
+        dependsPerExtension += "{ \"" + dependsByVersion.first + "\", { ";
+        if ( !dependsByVersion.second.empty() )
+        {
+          for ( auto const & depends : dependsByVersion.second )
+          {
+            dependsPerExtension += "\""s + depends + "\", ";
+          }
+          assert( dependsPerExtension.ends_with( ", " ) );
+          dependsPerExtension = dependsPerExtension.substr( 0, dependsPerExtension.length() - 2 );
+        }
+        dependsPerExtension += " } }, ";
+      }
+      assert( dependsPerExtension.ends_with( ", " ) );
+      dependsPerExtension = dependsPerExtension.substr( 0, dependsPerExtension.length() - 2 );
+      dependsPerExtension += " } }, ";
+
+      const auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
+      extensionDependencies += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + dependsPerExtension;
+      previousEnter = enter;
+      previousLeave = leave;
+    }
+  }
+  assert( extensionDependencies.ends_with( ", " ) );
+  extensionDependencies = extensionDependencies.substr( 0, extensionDependencies.length() - 2 );
+
+  if ( !previousLeave.empty() )
+  {
+    extensionDependencies += "\n" + previousLeave;
+  }
+  return extensionDependencies;
 }
 
 template <class Predicate, class Extraction>
@@ -14272,6 +14324,24 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
                      { "type", { "device", "instance" } } } );
   checkElements( line, children, { { "require", false } }, { "remove" } );
 
+  // some special handling for two extensions
+  std::string name = attributes.find( "name" )->second;
+  if ( ( name == "VK_EXT_fragment_density_map_offset" ) || ( name == "VK_KHR_swapchain_mutable_format" ) )
+  {
+    auto dependsIt = attributes.find( "depends" );
+    assert( dependsIt != attributes.end() );
+    std::string depends = dependsIt->second;
+    assert(
+      ( name == "VK_EXT_fragment_density_map_offset" )
+        ? ( depends ==
+            "(VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)+VK_EXT_fragment_density_map+(VK_KHR_create_renderpass2,VK_VERSION_1_2)+(VK_VERSION_1_3,VK_KHR_dynamic_rendering)" )
+        : ( depends == "VK_KHR_swapchain+(VK_KHR_maintenance2,VK_VERSION_1_1)+(VK_KHR_image_format_list,VK_VERSION_1_2)" ) );
+    dependsIt->second =
+      ( name == "VK_EXT_fragment_density_map_offset" )
+        ? "VK_EXT_fragment_density_map+(((VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)+VK_KHR_create_renderpass2,VK_VERSION_1_2)+VK_KHR_dynamic_rendering,VK_VERSION_1_3)"
+        : "VK_KHR_swapchain+((VK_KHR_maintenance2,VK_VERSION_1_1)+VK_KHR_image_format_list,VK_VERSION_1_2)";
+  }
+
   ExtensionData extensionData{ .xmlLine = line };
   for ( auto const & attribute : attributes )
   {
@@ -14282,7 +14352,11 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
       for ( auto & dep : dependencies )
       {
         auto featureIt = std::ranges::find_if( dep, []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
-        if ( ( featureIt != dep.end() ) && ( featureIt != dep.begin() ) )
+        if ( featureIt == dep.end() )
+        {
+          dep.insert( dep.begin(), "VK_VERSION_1_0" );
+        }
+        else if ( featureIt != dep.begin() )
         {
           auto nextFeatureIt = std::find_if( std::next( featureIt ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
           while ( nextFeatureIt != dep.end() )
@@ -14295,10 +14369,6 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
           }
           std::iter_swap( featureIt, dep.begin() );
         }
-      }
-      if ( !dependencies[0][0].starts_with( "VK_VERSION" ) )
-      {
-        dependencies[0].insert( dependencies[0].begin(), "VK_VERSION_1_0" );
       }
       assert( std::ranges::all_of( dependencies, []( std::vector<std::string> const & dep ) { return dep[0].starts_with( "VK_VERSION" ); } ) );
       for ( auto & dep : dependencies )

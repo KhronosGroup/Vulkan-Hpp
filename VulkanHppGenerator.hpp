@@ -276,21 +276,21 @@ private:
 
   struct ExtensionData
   {
-    std::string                                  deprecatedBy           = {};
-    bool                                         isDeprecated           = false;
-    std::string                                  name                   = {};
-    std::string                                  number                 = {};
-    std::string                                  obsoletedBy            = {};
-    std::string                                  platform               = {};
-    std::string                                  promotedTo             = {};
-    std::map<std::string, std::set<std::string>> depends                = {};
-    std::vector<std::string>                     ratified               = {};
-    std::vector<RemoveData>                      removeData             = {};
-    std::vector<RequireData>                     requireData            = {};
-    std::vector<std::string>                     supported              = {};
-    std::string                                  type                   = {};
-    std::vector<RequireData>                     unsupportedRequireData = {};
-    int                                          xmlLine                = 0;
+    std::string                                               deprecatedBy           = {};
+    bool                                                      isDeprecated           = false;
+    std::string                                               name                   = {};
+    std::string                                               number                 = {};
+    std::string                                               obsoletedBy            = {};
+    std::string                                               platform               = {};
+    std::string                                               promotedTo             = {};
+    std::map<std::string, std::vector<std::set<std::string>>> depends                = {};
+    std::vector<std::string>                                  ratified               = {};
+    std::vector<RemoveData>                                   removeData             = {};
+    std::vector<RequireData>                                  requireData            = {};
+    std::vector<std::string>                                  supported              = {};
+    std::string                                               type                   = {};
+    std::vector<RequireData>                                  unsupportedRequireData = {};
+    int                                                       xmlLine                = 0;
   };
 
   struct FeatureData

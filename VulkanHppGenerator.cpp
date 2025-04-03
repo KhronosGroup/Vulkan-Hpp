@@ -182,6 +182,14 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
   std::string const promotedTo           = generateExtensionReplacedBy( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); },
                                                               []( ExtensionData const & extension ) { return extension.promotedTo; } );
 
+  std::string versions;
+  for ( auto const & feature : m_features )
+  {
+    versions += "\"" + feature.name + "\", ";
+  }
+  assert( versions.ends_with( ", " ) );
+  versions = versions.substr( 0, versions.length() - 2 );
+
   std::string str =
     replaceWithMap( vulkanExtensionInspectionHppTemplate,
                     { { "api", m_api },
@@ -190,6 +198,7 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
                       { "deviceTest", generateExtensionTypeTest( "device" ) },
                       { "deprecatedBy", deprecatedBy },
                       { "deprecatedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return extension.isDeprecated; } ) },
+                      { "extensionDependencies", generateExtensionDependencies() },
                       { "instanceExtensions", generateExtensionsList( "instance" ) },
                       { "instanceTest", generateExtensionTypeTest( "instance" ) },
                       { "licenseHeader", m_vulkanLicenseHeader },
@@ -199,6 +208,7 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
                       { "promotedExtensions", promotedExtensions },
                       { "promotedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); } ) },
                       { "promotedTo", promotedTo },
+                      { "versions", versions },
                       { "voidExtension", ( m_api == "vulkan" ) ? "" : "(void)extension;" } } );
 
   writeToFile( str, vulkan_extension_inspection_hpp );
@@ -956,10 +966,13 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
   for ( auto const & extension : m_extensions )
   {
     // check for existence of any depends, deprecation, obsoletion, or promotion
-    std::vector<std::string> depends = tokenizeAny( extension.depends, ",+()" );
-    for ( auto const & dep : depends )
+    for ( auto const & dep : extension.depends )
     {
-      checkForError( isExtension( dep ) || isFeature( dep ), extension.xmlLine, "extension <" + extension.name + "> lists an unknow depends <" + dep + ">" );
+      checkForError( isFeature( dep.first ), extension.xmlLine, "extension <" + extension.name + "> lists an unknown feature dependency <" + dep.first + ">" );
+      for ( auto const & d : dep.second )
+      {
+        checkForError( isExtension( d ), extension.xmlLine, "extension <" + extension.name + "> lists an unknown extension dependency <" + d + ">" );
+      }
     }
     if ( !extension.deprecatedBy.empty() )
     {
@@ -5582,9 +5595,9 @@ std::string VulkanHppGenerator::generateCppModuleExtensionInspectionUsings() con
 )" };
 
   auto const extensionInspectionFunctions =
-    std::array{ "getDeviceExtensions",    "getInstanceExtensions", "getDeprecatedExtensions", /*"getExtensionDepends",     "getExtensionDepends",*/
-                "getObsoletedExtensions", "getPromotedExtensions", "getExtensionDeprecatedBy", "getExtensionObsoletedBy", "getExtensionPromotedTo",
-                "isDeprecatedExtension",  "isDeviceExtension",     "isInstanceExtension",      "isObsoletedExtension",    "isPromotedExtension" };
+    std::array{ "getDeviceExtensions",   "getInstanceExtensions",    "getDeprecatedExtensions", "getExtensionDepends",    "getObsoletedExtensions",
+                "getPromotedExtensions", "getExtensionDeprecatedBy", "getExtensionObsoletedBy", "getExtensionPromotedTo", "isDeprecatedExtension",
+                "isDeviceExtension",     "isInstanceExtension",      "isObsoletedExtension",    "isPromotedExtension" };
 
   for ( auto const & func : extensionInspectionFunctions )
   {
@@ -7433,6 +7446,48 @@ std::string VulkanHppGenerator::generateEnumValueName( std::string const & enumN
     result = result.substr( 0, result.length() - tag.length() ) + tag;
   }
   return result;
+}
+
+std::string VulkanHppGenerator::generateExtensionDependencies() const
+{
+  std::string extensionDependencies, previousEnter, previousLeave;
+  for ( auto const & extension : m_extensions )
+  {
+    if ( !extension.depends.empty() )
+    {
+      std::string dependsPerExtension = "{ \"" + extension.name + "\", { ";
+      for ( auto const & dependsByVersion : extension.depends )
+      {
+        dependsPerExtension += "{ \"" + dependsByVersion.first + "\", { ";
+        if ( !dependsByVersion.second.empty() )
+        {
+          for ( auto const & depends : dependsByVersion.second )
+          {
+            dependsPerExtension += "\""s + depends + "\", ";
+          }
+          assert( dependsPerExtension.ends_with( ", " ) );
+          dependsPerExtension = dependsPerExtension.substr( 0, dependsPerExtension.length() - 2 );
+        }
+        dependsPerExtension += " } }, ";
+      }
+      assert( dependsPerExtension.ends_with( ", " ) );
+      dependsPerExtension = dependsPerExtension.substr( 0, dependsPerExtension.length() - 2 );
+      dependsPerExtension += " } }, ";
+
+      const auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
+      extensionDependencies += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + dependsPerExtension;
+      previousEnter = enter;
+      previousLeave = leave;
+    }
+  }
+  assert( extensionDependencies.ends_with( ", " ) );
+  extensionDependencies = extensionDependencies.substr( 0, extensionDependencies.length() - 2 );
+
+  if ( !previousLeave.empty() )
+  {
+    extensionDependencies += "\n" + previousLeave;
+  }
+  return extensionDependencies;
 }
 
 template <class Predicate, class Extraction>
@@ -14067,6 +14122,183 @@ void VulkanHppGenerator::readExtensions( tinyxml2::XMLElement const * element )
   }
 }
 
+enum class NodeType
+{
+  AND,
+  OR,
+  VAR
+};
+
+struct Node
+{
+  NodeType              type;
+  std::string           value;
+  std::shared_ptr<Node> left;
+  std::shared_ptr<Node> right;
+
+  Node( NodeType t, const std::string & val ) : type( t ), value( val ), left( nullptr ), right( nullptr ) {}
+
+  Node( NodeType t, std::shared_ptr<Node> l, std::shared_ptr<Node> r ) : type( t ), left( l ), right( r ) {}
+};
+
+class Parser
+{
+public:
+  Parser( const std::string & expr ) : expr( expr ), pos( 0 ) {}
+
+  std::shared_ptr<Node> parse()
+  {
+    auto result = parse_or();
+    if ( pos != expr.length() )
+    {
+      throw std::runtime_error( "Unexpected characters at end of expression" );
+    }
+    return result;
+  }
+
+private:
+  std::string expr;
+  size_t      pos;
+
+  std::shared_ptr<Node> parse_or()
+  {
+    auto left = parse_and();
+    while ( match( "," ) )
+    {
+      auto right = parse_and();
+      left       = std::make_shared<Node>( NodeType::OR, left, right );
+    }
+    return left;
+  }
+
+  std::shared_ptr<Node> parse_and()
+  {
+    auto left = parse_primary();
+    while ( match( "+" ) )
+    {
+      auto right = parse_primary();
+      left       = std::make_shared<Node>( NodeType::AND, left, right );
+    }
+    return left;
+  }
+
+  std::shared_ptr<Node> parse_primary()
+  {
+    if ( match( "(" ) )
+    {
+      auto result = parse_or();
+      if ( !match( ")" ) )
+      {
+        throw std::runtime_error( "Expected closing parenthesis" );
+      }
+      return result;
+    }
+    return parse_variable();
+  }
+
+  std::shared_ptr<Node> parse_variable()
+  {
+    size_t start = pos;
+    while ( pos < expr.length() && ( std::isalnum( expr[pos] ) || ( expr[pos] == '_' ) ) )
+    {
+      pos++;
+    }
+    if ( start == pos )
+    {
+      throw std::runtime_error( "Expected variable" );
+    }
+    return std::make_shared<Node>( NodeType::VAR, expr.substr( start, pos - start ) );
+  }
+
+  bool match( const std::string & token )
+  {
+    skip_whitespace();
+    if ( expr.substr( pos, token.length() ) == token )
+    {
+      pos += token.length();
+      skip_whitespace();
+      return true;
+    }
+    return false;
+  }
+
+  void skip_whitespace()
+  {
+    while ( pos < expr.length() && std::isspace( expr[pos] ) )
+    {
+      pos++;
+    }
+  }
+};
+
+std::shared_ptr<Node> distribute_and_over_or( std::shared_ptr<Node> node )
+{
+  if ( node->type == NodeType::AND )
+  {
+    if ( node->left->type == NodeType::OR )
+    {
+      return std::make_shared<Node>( NodeType::OR,
+                                     distribute_and_over_or( std::make_shared<Node>( NodeType::AND, node->left->left, node->right ) ),
+                                     distribute_and_over_or( std::make_shared<Node>( NodeType::AND, node->left->right, node->right ) ) );
+    }
+    else if ( node->right->type == NodeType::OR )
+    {
+      return std::make_shared<Node>( NodeType::OR,
+                                     distribute_and_over_or( std::make_shared<Node>( NodeType::AND, node->left, node->right->left ) ),
+                                     distribute_and_over_or( std::make_shared<Node>( NodeType::AND, node->left, node->right->right ) ) );
+    }
+  }
+  return node;
+}
+
+std::shared_ptr<Node> normalize( std::shared_ptr<Node> node )
+{
+  if ( node->left )
+  {
+    node->left = normalize( node->left );
+  }
+  if ( node->right )
+  {
+    node->right = normalize( node->right );
+  }
+  if ( node->type == NodeType::AND )
+  {
+    node = distribute_and_over_or( node );
+  }
+  return node;
+}
+
+std::vector<std::vector<std::string>> vectorize( std::shared_ptr<Node> node )
+{
+  if ( node->type == NodeType::VAR )
+  {
+    return { { node->value } };
+  }
+  else if ( node->type == NodeType::OR )
+  {
+    auto left  = vectorize( node->left );
+    auto right = vectorize( node->right );
+    left.insert( left.end(), right.begin(), right.end() );
+    return left;
+  }
+  else
+  {
+    assert( node->type == NodeType::AND );
+    auto                                  left  = vectorize( node->left );
+    auto                                  right = vectorize( node->right );
+    std::vector<std::vector<std::string>> result;
+    for ( auto const & l : left )
+    {
+      for ( auto const & r : right )
+      {
+        result.push_back( l );
+        result.back().insert( result.back().end(), r.begin(), r.end() );
+      }
+    }
+    return result;
+  }
+}
+
 void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
 {
   const int                                 line       = element->GetLineNum();
@@ -14092,12 +14324,66 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
                      { "type", { "device", "instance" } } } );
   checkElements( line, children, { { "require", false } }, { "remove" } );
 
+  // some special handling for two extensions
+  std::string name = attributes.find( "name" )->second;
+  if ( ( name == "VK_EXT_fragment_density_map_offset" ) || ( name == "VK_KHR_swapchain_mutable_format" ) )
+  {
+    auto dependsIt = attributes.find( "depends" );
+    assert( dependsIt != attributes.end() );
+    std::string depends = dependsIt->second;
+    assert(
+      ( name == "VK_EXT_fragment_density_map_offset" )
+        ? ( depends ==
+            "(VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)+VK_EXT_fragment_density_map+(VK_KHR_create_renderpass2,VK_VERSION_1_2)+(VK_VERSION_1_3,VK_KHR_dynamic_rendering)" )
+        : ( depends == "VK_KHR_swapchain+(VK_KHR_maintenance2,VK_VERSION_1_1)+(VK_KHR_image_format_list,VK_VERSION_1_2)" ) );
+    dependsIt->second =
+      ( name == "VK_EXT_fragment_density_map_offset" )
+        ? "VK_EXT_fragment_density_map+(((VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)+VK_KHR_create_renderpass2,VK_VERSION_1_2)+VK_KHR_dynamic_rendering,VK_VERSION_1_3)"
+        : "VK_KHR_swapchain+((VK_KHR_maintenance2,VK_VERSION_1_1)+VK_KHR_image_format_list,VK_VERSION_1_2)";
+  }
+
   ExtensionData extensionData{ .xmlLine = line };
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "depends" )
     {
-      extensionData.depends = attribute.second;
+      Parser                                parser( attribute.second );
+      std::vector<std::vector<std::string>> dependencies = vectorize( normalize( parser.parse() ) );
+      for ( auto & dep : dependencies )
+      {
+        auto featureIt = std::ranges::find_if( dep, []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
+        if ( featureIt == dep.end() )
+        {
+          dep.insert( dep.begin(), "VK_VERSION_1_0" );
+        }
+        else if ( featureIt != dep.begin() )
+        {
+          auto nextFeatureIt = std::find_if( std::next( featureIt ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
+          while ( nextFeatureIt != dep.end() )
+          {
+            if ( *featureIt < *nextFeatureIt )
+            {
+              featureIt = nextFeatureIt;
+            }
+            nextFeatureIt = std::find_if( std::next( nextFeatureIt ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
+          }
+          std::iter_swap( featureIt, dep.begin() );
+        }
+      }
+      assert( std::ranges::all_of( dependencies, []( std::vector<std::string> const & dep ) { return dep[0].starts_with( "VK_VERSION" ); } ) );
+      for ( auto & dep : dependencies )
+      {
+        auto [it, inserted] = extensionData.depends.insert( { dep[0], {} } );
+        assert( inserted );
+        for ( auto depIt = std::next( dep.begin() ); depIt != dep.end(); ++depIt )
+        {
+          if ( !depIt->starts_with( "VK_VERSION" ) )
+          {
+            inserted = it->second.insert( *depIt ).second;
+            assert( inserted );
+          }
+        }
+      }
     }
     else if ( attribute.first == "deprecatedby" )
     {

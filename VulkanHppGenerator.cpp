@@ -969,9 +969,16 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
     for ( auto const & dep : extension.depends )
     {
       checkForError( isFeature( dep.first ), extension.xmlLine, "extension <" + extension.name + "> lists an unknown feature dependency <" + dep.first + ">" );
-      for ( auto const & d : dep.second )
+      for ( auto depsIt = dep.second.begin(); depsIt != dep.second.end(); ++depsIt )
       {
-        checkForError( isExtension( d ), extension.xmlLine, "extension <" + extension.name + "> lists an unknown extension dependency <" + d + ">" );
+        for ( auto const & d : *depsIt )
+        {
+          checkForError( isExtension( d ), extension.xmlLine, "extension <" + extension.name + "> lists an unknown extension dependency <" + d + ">" );
+        }
+        for ( auto nextDepsIt = std::next( depsIt ); nextDepsIt != dep.second.end(); ++nextDepsIt )
+        {
+          checkForError( *depsIt != *nextDepsIt, extension.xmlLine, "extension <" + extension.name + "> lists multiple identical dependencies" );
+        }
       }
     }
     if ( !extension.deprecatedBy.empty() )
@@ -7463,7 +7470,12 @@ std::string VulkanHppGenerator::generateExtensionDependencies() const
         {
           for ( auto const & depends : dependsByVersion.second )
           {
-            dependsPerExtension += "\""s + depends + "\", ";
+            dependsPerExtension += "{ ";
+            for ( auto const & dep : depends )
+            {
+              dependsPerExtension += "\""s + dep + "\", ";
+            }
+            dependsPerExtension += " }, ";
           }
           assert( dependsPerExtension.ends_with( ", " ) );
           dependsPerExtension = dependsPerExtension.substr( 0, dependsPerExtension.length() - 2 );
@@ -14373,14 +14385,13 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
       assert( std::ranges::all_of( dependencies, []( std::vector<std::string> const & dep ) { return dep[0].starts_with( "VK_VERSION" ); } ) );
       for ( auto & dep : dependencies )
       {
-        auto [it, inserted] = extensionData.depends.insert( { dep[0], {} } );
-        assert( inserted );
+        auto it = extensionData.depends.insert( { dep[0], {} } ).first;
+        it->second.push_back( {} );
         for ( auto depIt = std::next( dep.begin() ); depIt != dep.end(); ++depIt )
         {
           if ( !depIt->starts_with( "VK_VERSION" ) )
           {
-            inserted = it->second.insert( *depIt ).second;
-            assert( inserted );
+            it->second.back().insert( *depIt );
           }
         }
       }

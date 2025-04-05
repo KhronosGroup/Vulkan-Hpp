@@ -308,6 +308,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
                                                             "VK_NV_cuda_kernel_launch",
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+                                                            "VK_QCOM_tile_shading",
                                                             "VK_NV_low_latency",
 #if defined( VK_USE_PLATFORM_METAL_EXT )
                                                             "VK_EXT_metal_objects",
@@ -447,6 +448,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_NV_descriptor_pool_overallocation",
                                                             "VK_KHR_video_encode_quantization_map",
                                                             "VK_NV_raw_access_chains",
+                                                            "VK_NV_external_compute_queue",
                                                             "VK_KHR_shader_relaxed_extended_instruction",
                                                             "VK_NV_command_buffer_inheritance",
                                                             "VK_KHR_maintenance7",
@@ -1700,6 +1702,14 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
+      { "VK_QCOM_tile_shading",
+        { { "VK_VERSION_1_0",
+            { {
+                "VK_QCOM_tile_properties",
+              },
+              {
+                "VK_KHR_get_physical_device_properties2",
+              } } } } },
       { "VK_KHR_synchronization2",
         { { "VK_VERSION_1_0",
             { {
@@ -3368,7 +3378,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         || ( extension == "VK_NV_cuda_kernel_launch" )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-        || ( extension == "VK_NV_low_latency" )
+        || ( extension == "VK_QCOM_tile_shading" ) || ( extension == "VK_NV_low_latency" )
 #if defined( VK_USE_PLATFORM_METAL_EXT )
         || ( extension == "VK_EXT_metal_objects" )
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
@@ -3440,12 +3450,13 @@ namespace VULKAN_HPP_NAMESPACE
         || ( extension == "VK_MSFT_layered_driver" ) || ( extension == "VK_KHR_index_type_uint8" ) || ( extension == "VK_KHR_line_rasterization" ) ||
            ( extension == "VK_KHR_calibrated_timestamps" ) || ( extension == "VK_KHR_shader_expect_assume" ) || ( extension == "VK_KHR_maintenance6" ) ||
            ( extension == "VK_NV_descriptor_pool_overallocation" ) || ( extension == "VK_KHR_video_encode_quantization_map" ) ||
-           ( extension == "VK_NV_raw_access_chains" ) || ( extension == "VK_KHR_shader_relaxed_extended_instruction" ) ||
-           ( extension == "VK_NV_command_buffer_inheritance" ) || ( extension == "VK_KHR_maintenance7" ) ||
-           ( extension == "VK_NV_shader_atomic_float16_vector" ) || ( extension == "VK_EXT_shader_replicated_composites" ) ||
-           ( extension == "VK_NV_ray_tracing_validation" ) || ( extension == "VK_NV_cluster_acceleration_structure" ) ||
-           ( extension == "VK_NV_partitioned_acceleration_structure" ) || ( extension == "VK_EXT_device_generated_commands" ) ||
-           ( extension == "VK_KHR_maintenance8" ) || ( extension == "VK_MESA_image_alignment_control" ) || ( extension == "VK_EXT_depth_clamp_control" ) ||
+           ( extension == "VK_NV_raw_access_chains" ) || ( extension == "VK_NV_external_compute_queue" ) ||
+           ( extension == "VK_KHR_shader_relaxed_extended_instruction" ) || ( extension == "VK_NV_command_buffer_inheritance" ) ||
+           ( extension == "VK_KHR_maintenance7" ) || ( extension == "VK_NV_shader_atomic_float16_vector" ) ||
+           ( extension == "VK_EXT_shader_replicated_composites" ) || ( extension == "VK_NV_ray_tracing_validation" ) ||
+           ( extension == "VK_NV_cluster_acceleration_structure" ) || ( extension == "VK_NV_partitioned_acceleration_structure" ) ||
+           ( extension == "VK_EXT_device_generated_commands" ) || ( extension == "VK_KHR_maintenance8" ) ||
+           ( extension == "VK_MESA_image_alignment_control" ) || ( extension == "VK_EXT_depth_clamp_control" ) ||
            ( extension == "VK_KHR_video_maintenance2" ) || ( extension == "VK_HUAWEI_hdr_vivid" ) || ( extension == "VK_NV_cooperative_matrix2" ) ||
            ( extension == "VK_ARM_pipeline_opacity_micromap" )
 #if defined( VK_USE_PLATFORM_METAL_EXT )

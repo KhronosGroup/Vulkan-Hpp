@@ -24930,6 +24930,66 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_ENABLE_BETA_EXTENSIONS*/
 
+  //=== VK_QCOM_tile_shading ===
+
+  // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::dispatchTileQCOM( Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdDispatchTileQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ) );
+  }
+
+  // wrapper function for command vkCmdBeginPerTileExecutionQCOM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginPerTileExecutionQCOM.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::beginPerTileExecutionQCOM( const VULKAN_HPP_NAMESPACE::PerTileBeginInfoQCOM * pPerTileBeginInfo,
+                                                                   Dispatch const &                                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdBeginPerTileExecutionQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<const VkPerTileBeginInfoQCOM *>( pPerTileBeginInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCmdBeginPerTileExecutionQCOM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginPerTileExecutionQCOM.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::beginPerTileExecutionQCOM( const VULKAN_HPP_NAMESPACE::PerTileBeginInfoQCOM & perTileBeginInfo,
+                                                                   Dispatch const &                                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdBeginPerTileExecutionQCOM && "Function <vkCmdBeginPerTileExecutionQCOM> requires <VK_QCOM_tile_shading>" );
+#  endif
+
+    d.vkCmdBeginPerTileExecutionQCOM( m_commandBuffer, reinterpret_cast<const VkPerTileBeginInfoQCOM *>( &perTileBeginInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  // wrapper function for command vkCmdEndPerTileExecutionQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndPerTileExecutionQCOM.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::endPerTileExecutionQCOM( const VULKAN_HPP_NAMESPACE::PerTileEndInfoQCOM * pPerTileEndInfo,
+                                                                 Dispatch const &                                 d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdEndPerTileExecutionQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<const VkPerTileEndInfoQCOM *>( pPerTileEndInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCmdEndPerTileExecutionQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndPerTileExecutionQCOM.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::endPerTileExecutionQCOM( const VULKAN_HPP_NAMESPACE::PerTileEndInfoQCOM & perTileEndInfo,
+                                                                 Dispatch const &                                 d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdEndPerTileExecutionQCOM && "Function <vkCmdEndPerTileExecutionQCOM> requires <VK_QCOM_tile_shading>" );
+#  endif
+
+    d.vkCmdEndPerTileExecutionQCOM( m_commandBuffer, reinterpret_cast<const VkPerTileEndInfoQCOM *>( &perTileEndInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_objects ===
 
@@ -30714,6 +30774,177 @@ namespace VULKAN_HPP_NAMESPACE
 
     d.vkCmdBindDescriptorBufferEmbeddedSamplers2EXT(
       m_commandBuffer, reinterpret_cast<const VkBindDescriptorBufferEmbeddedSamplersInfoEXT *>( &bindDescriptorBufferEmbeddedSamplersInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  //=== VK_NV_external_compute_queue ===
+
+  // wrapper function for command vkCreateExternalComputeQueueNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateExternalComputeQueueNV.html
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    Device::createExternalComputeQueueNV( const VULKAN_HPP_NAMESPACE::ExternalComputeQueueCreateInfoNV * pCreateInfo,
+                                          const VULKAN_HPP_NAMESPACE::AllocationCallbacks *              pAllocator,
+                                          VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV *                 pExternalQueue,
+                                          Dispatch const &                                               d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkCreateExternalComputeQueueNV( static_cast<VkDevice>( m_device ),
+                                                                  reinterpret_cast<const VkExternalComputeQueueCreateInfoNV *>( pCreateInfo ),
+                                                                  reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ),
+                                                                  reinterpret_cast<VkExternalComputeQueueNV *>( pExternalQueue ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCreateExternalComputeQueueNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateExternalComputeQueueNV.html
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV>::type
+                       Device::createExternalComputeQueueNV( const VULKAN_HPP_NAMESPACE::ExternalComputeQueueCreateInfoNV & createInfo,
+                                          Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>      allocator,
+                                          Dispatch const &                                               d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCreateExternalComputeQueueNV && "Function <vkCreateExternalComputeQueueNV> requires <VK_NV_external_compute_queue>" );
+#  endif
+
+    VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV externalQueue;
+    VULKAN_HPP_NAMESPACE::Result                 result = static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkCreateExternalComputeQueueNV(
+      m_device,
+      reinterpret_cast<const VkExternalComputeQueueCreateInfoNV *>( &createInfo ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+      reinterpret_cast<VkExternalComputeQueueNV *>( &externalQueue ) ) );
+    VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createExternalComputeQueueNV" );
+
+    return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( externalQueue ) );
+  }
+
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
+  // wrapper function for command vkCreateExternalComputeQueueNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateExternalComputeQueueNV.html
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV, Dispatch>>::type
+                       Device::createExternalComputeQueueNVUnique( const VULKAN_HPP_NAMESPACE::ExternalComputeQueueCreateInfoNV & createInfo,
+                                                Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>      allocator,
+                                                Dispatch const &                                               d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCreateExternalComputeQueueNV && "Function <vkCreateExternalComputeQueueNV> requires <VK_NV_external_compute_queue>" );
+#    endif
+
+    VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV externalQueue;
+    VULKAN_HPP_NAMESPACE::Result                 result = static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkCreateExternalComputeQueueNV(
+      m_device,
+      reinterpret_cast<const VkExternalComputeQueueCreateInfoNV *>( &createInfo ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+      reinterpret_cast<VkExternalComputeQueueNV *>( &externalQueue ) ) );
+    VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createExternalComputeQueueNVUnique" );
+
+    return VULKAN_HPP_NAMESPACE::detail::createResultValueType(
+      result,
+      UniqueHandle<VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV, Dispatch>( externalQueue, detail::ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
+  }
+#  endif /* VULKAN_HPP_NO_SMART_HANDLE */
+#endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  // wrapper function for command vkDestroyExternalComputeQueueNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyExternalComputeQueueNV.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroyExternalComputeQueueNV( VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV      externalQueue,
+                                                                const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                                                Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyExternalComputeQueueNV( static_cast<VkDevice>( m_device ),
+                                       static_cast<VkExternalComputeQueueNV>( externalQueue ),
+                                       reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkDestroyExternalComputeQueueNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyExternalComputeQueueNV.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroyExternalComputeQueueNV( VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV              externalQueue,
+                                                                Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                                                Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkDestroyExternalComputeQueueNV && "Function <vkDestroyExternalComputeQueueNV> requires <VK_NV_external_compute_queue>" );
+#  endif
+
+    d.vkDestroyExternalComputeQueueNV(
+      m_device,
+      static_cast<VkExternalComputeQueueNV>( externalQueue ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  // wrapper function for command vkDestroyExternalComputeQueueNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyExternalComputeQueueNV.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV      externalQueue,
+                                          const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                          Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyExternalComputeQueueNV( static_cast<VkDevice>( m_device ),
+                                       static_cast<VkExternalComputeQueueNV>( externalQueue ),
+                                       reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkDestroyExternalComputeQueueNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyExternalComputeQueueNV.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV              externalQueue,
+                                          Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                          Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkDestroyExternalComputeQueueNV && "Function <vkDestroyExternalComputeQueueNV> requires <VK_NV_external_compute_queue>" );
+#  endif
+
+    d.vkDestroyExternalComputeQueueNV(
+      m_device,
+      static_cast<VkExternalComputeQueueNV>( externalQueue ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  // wrapper function for command vkGetExternalComputeQueueDataNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetExternalComputeQueueDataNV.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void ExternalComputeQueueNV::getData( VULKAN_HPP_NAMESPACE::ExternalComputeQueueDataParamsNV * params,
+                                                          void *                                                   pData,
+                                                          Dispatch const &                                         d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkGetExternalComputeQueueDataNV(
+      static_cast<VkExternalComputeQueueNV>( m_externalComputeQueueNV ), reinterpret_cast<VkExternalComputeQueueDataParamsNV *>( params ), pData );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkGetExternalComputeQueueDataNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetExternalComputeQueueDataNV.html
+  template <typename DataType, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::ExternalComputeQueueDataParamsNV, DataType>
+                                         ExternalComputeQueueNV::getData( Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetExternalComputeQueueDataNV && "Function <vkGetExternalComputeQueueDataNV> requires <VK_NV_external_compute_queue>" );
+#  endif
+
+    std::pair<VULKAN_HPP_NAMESPACE::ExternalComputeQueueDataParamsNV, DataType> data_;
+    VULKAN_HPP_NAMESPACE::ExternalComputeQueueDataParamsNV &                    arams = data_.first;
+    DataType &                                                                  data  = data_.second;
+    d.vkGetExternalComputeQueueDataNV( m_externalComputeQueueNV, reinterpret_cast<VkExternalComputeQueueDataParamsNV *>( &arams ), &data );
+
+    return data_;
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

@@ -1166,6 +1166,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " FragmentRegionQCOM |";
     if ( value & SubpassDescriptionFlagBits::eShaderResolveQCOM )
       result += " ShaderResolveQCOM |";
+    if ( value & SubpassDescriptionFlagBits::eTileShadingApronQCOM )
+      result += " TileShadingApronQCOM |";
     if ( value & SubpassDescriptionFlagBits::eRasterizationOrderAttachmentColorAccessEXT )
       result += " RasterizationOrderAttachmentColorAccessEXT |";
     if ( value & SubpassDescriptionFlagBits::eRasterizationOrderAttachmentDepthAccessEXT )
@@ -1773,6 +1775,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += " VideoEncodeReadKHR |";
     if ( value & AccessFlagBits2::eVideoEncodeWriteKHR )
       result += " VideoEncodeWriteKHR |";
+    if ( value & AccessFlagBits2::eShaderTileAttachmentReadQCOM )
+      result += " ShaderTileAttachmentReadQCOM |";
+    if ( value & AccessFlagBits2::eShaderTileAttachmentWriteQCOM )
+      result += " ShaderTileAttachmentWriteQCOM |";
     if ( value & AccessFlagBits2::eTransformFeedbackWriteEXT )
       result += " TransformFeedbackWriteEXT |";
     if ( value & AccessFlagBits2::eTransformFeedbackCounterReadEXT )
@@ -3347,6 +3353,23 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
+  //=== VK_QCOM_tile_shading ===
+
+  VULKAN_HPP_INLINE std::string to_string( TileShadingRenderPassFlagsQCOM value )
+  {
+    std::string result = "{";
+    if ( value & TileShadingRenderPassFlagBitsQCOM::eEnable )
+      result += " Enable |";
+    if ( value & TileShadingRenderPassFlagBitsQCOM::ePerTileExecution )
+      result += " PerTileExecution |";
+
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else
+      result = "{}";
+    return result;
+  }
+
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_objects ===
 
@@ -4717,7 +4740,13 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceCudaKernelLaunchFeaturesNV  : return "PhysicalDeviceCudaKernelLaunchFeaturesNV";
       case StructureType::ePhysicalDeviceCudaKernelLaunchPropertiesNV: return "PhysicalDeviceCudaKernelLaunchPropertiesNV";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      case StructureType::eQueryLowLatencySupportNV: return "QueryLowLatencySupportNV";
+      case StructureType::ePhysicalDeviceTileShadingFeaturesQCOM  : return "PhysicalDeviceTileShadingFeaturesQCOM";
+      case StructureType::ePhysicalDeviceTileShadingPropertiesQCOM: return "PhysicalDeviceTileShadingPropertiesQCOM";
+      case StructureType::eRenderPassTileShadingCreateInfoQCOM    : return "RenderPassTileShadingCreateInfoQCOM";
+      case StructureType::ePerTileBeginInfoQCOM                   : return "PerTileBeginInfoQCOM";
+      case StructureType::ePerTileEndInfoQCOM                     : return "PerTileEndInfoQCOM";
+      case StructureType::eDispatchTileInfoQCOM                   : return "DispatchTileInfoQCOM";
+      case StructureType::eQueryLowLatencySupportNV               : return "QueryLowLatencySupportNV";
 #if defined( VK_USE_PLATFORM_METAL_EXT )
       case StructureType::eExportMetalObjectCreateInfoEXT: return "ExportMetalObjectCreateInfoEXT";
       case StructureType::eExportMetalObjectsInfoEXT     : return "ExportMetalObjectsInfoEXT";
@@ -5022,6 +5051,10 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eVideoEncodeAv1QuantizationMapCapabilitiesKHR              : return "VideoEncodeAv1QuantizationMapCapabilitiesKHR";
       case StructureType::eVideoFormatAv1QuantizationMapPropertiesKHR                : return "VideoFormatAv1QuantizationMapPropertiesKHR";
       case StructureType::ePhysicalDeviceRawAccessChainsFeaturesNV                   : return "PhysicalDeviceRawAccessChainsFeaturesNV";
+      case StructureType::eExternalComputeQueueDeviceCreateInfoNV                    : return "ExternalComputeQueueDeviceCreateInfoNV";
+      case StructureType::eExternalComputeQueueCreateInfoNV                          : return "ExternalComputeQueueCreateInfoNV";
+      case StructureType::eExternalComputeQueueDataParamsNV                          : return "ExternalComputeQueueDataParamsNV";
+      case StructureType::ePhysicalDeviceExternalComputeQueuePropertiesNV            : return "PhysicalDeviceExternalComputeQueuePropertiesNV";
       case StructureType::ePhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR : return "PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR";
       case StructureType::ePhysicalDeviceCommandBufferInheritanceFeaturesNV          : return "PhysicalDeviceCommandBufferInheritanceFeaturesNV";
       case StructureType::ePhysicalDeviceMaintenance7FeaturesKHR                     : return "PhysicalDeviceMaintenance7FeaturesKHR";
@@ -5165,6 +5198,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ObjectType::eOpticalFlowSessionNV     : return "OpticalFlowSessionNV";
       case ObjectType::eShaderEXT                : return "ShaderEXT";
       case ObjectType::ePipelineBinaryKHR        : return "PipelineBinaryKHR";
+      case ObjectType::eExternalComputeQueueNV   : return "ExternalComputeQueueNV";
       case ObjectType::eIndirectCommandsLayoutEXT: return "IndirectCommandsLayoutEXT";
       case ObjectType::eIndirectExecutionSetEXT  : return "IndirectExecutionSetEXT";
       default                                    : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
@@ -6697,6 +6731,7 @@ namespace VULKAN_HPP_NAMESPACE
       case SubpassDescriptionFlagBits::ePerViewPositionXOnlyNVX                     : return "PerViewPositionXOnlyNVX";
       case SubpassDescriptionFlagBits::eFragmentRegionQCOM                          : return "FragmentRegionQCOM";
       case SubpassDescriptionFlagBits::eShaderResolveQCOM                           : return "ShaderResolveQCOM";
+      case SubpassDescriptionFlagBits::eTileShadingApronQCOM                        : return "TileShadingApronQCOM";
       case SubpassDescriptionFlagBits::eRasterizationOrderAttachmentColorAccessEXT  : return "RasterizationOrderAttachmentColorAccessEXT";
       case SubpassDescriptionFlagBits::eRasterizationOrderAttachmentDepthAccessEXT  : return "RasterizationOrderAttachmentDepthAccessEXT";
       case SubpassDescriptionFlagBits::eRasterizationOrderAttachmentStencilAccessEXT: return "RasterizationOrderAttachmentStencilAccessEXT";
@@ -7245,6 +7280,8 @@ namespace VULKAN_HPP_NAMESPACE
       case AccessFlagBits2::eVideoDecodeWriteKHR                 : return "VideoDecodeWriteKHR";
       case AccessFlagBits2::eVideoEncodeReadKHR                  : return "VideoEncodeReadKHR";
       case AccessFlagBits2::eVideoEncodeWriteKHR                 : return "VideoEncodeWriteKHR";
+      case AccessFlagBits2::eShaderTileAttachmentReadQCOM        : return "ShaderTileAttachmentReadQCOM";
+      case AccessFlagBits2::eShaderTileAttachmentWriteQCOM       : return "ShaderTileAttachmentWriteQCOM";
       case AccessFlagBits2::eTransformFeedbackWriteEXT           : return "TransformFeedbackWriteEXT";
       case AccessFlagBits2::eTransformFeedbackCounterReadEXT     : return "TransformFeedbackCounterReadEXT";
       case AccessFlagBits2::eTransformFeedbackCounterWriteEXT    : return "TransformFeedbackCounterWriteEXT";
@@ -9007,6 +9044,18 @@ namespace VULKAN_HPP_NAMESPACE
       case DeviceDiagnosticsConfigFlagBitsNV::eEnableAutomaticCheckpoints: return "EnableAutomaticCheckpoints";
       case DeviceDiagnosticsConfigFlagBitsNV::eEnableShaderErrorReporting: return "EnableShaderErrorReporting";
       default                                                            : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_QCOM_tile_shading ===
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( TileShadingRenderPassFlagBitsQCOM value )
+  {
+    switch ( value )
+    {
+      case TileShadingRenderPassFlagBitsQCOM::eEnable          : return "Enable";
+      case TileShadingRenderPassFlagBitsQCOM::ePerTileExecution: return "PerTileExecution";
+      default                                                  : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 

@@ -1209,7 +1209,13 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceCudaKernelLaunchFeaturesNV   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_FEATURES_NV,
     ePhysicalDeviceCudaKernelLaunchPropertiesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_PROPERTIES_NV,
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-    eQueryLowLatencySupportNV = VK_STRUCTURE_TYPE_QUERY_LOW_LATENCY_SUPPORT_NV,
+    ePhysicalDeviceTileShadingFeaturesQCOM   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TILE_SHADING_FEATURES_QCOM,
+    ePhysicalDeviceTileShadingPropertiesQCOM = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TILE_SHADING_PROPERTIES_QCOM,
+    eRenderPassTileShadingCreateInfoQCOM     = VK_STRUCTURE_TYPE_RENDER_PASS_TILE_SHADING_CREATE_INFO_QCOM,
+    ePerTileBeginInfoQCOM                    = VK_STRUCTURE_TYPE_PER_TILE_BEGIN_INFO_QCOM,
+    ePerTileEndInfoQCOM                      = VK_STRUCTURE_TYPE_PER_TILE_END_INFO_QCOM,
+    eDispatchTileInfoQCOM                    = VK_STRUCTURE_TYPE_DISPATCH_TILE_INFO_QCOM,
+    eQueryLowLatencySupportNV                = VK_STRUCTURE_TYPE_QUERY_LOW_LATENCY_SUPPORT_NV,
 #if defined( VK_USE_PLATFORM_METAL_EXT )
     eExportMetalObjectCreateInfoEXT = VK_STRUCTURE_TYPE_EXPORT_METAL_OBJECT_CREATE_INFO_EXT,
     eExportMetalObjectsInfoEXT      = VK_STRUCTURE_TYPE_EXPORT_METAL_OBJECTS_INFO_EXT,
@@ -1520,6 +1526,10 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoEncodeAv1QuantizationMapCapabilitiesKHR               = VK_STRUCTURE_TYPE_VIDEO_ENCODE_AV1_QUANTIZATION_MAP_CAPABILITIES_KHR,
     eVideoFormatAv1QuantizationMapPropertiesKHR                 = VK_STRUCTURE_TYPE_VIDEO_FORMAT_AV1_QUANTIZATION_MAP_PROPERTIES_KHR,
     ePhysicalDeviceRawAccessChainsFeaturesNV                    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV,
+    eExternalComputeQueueDeviceCreateInfoNV                     = VK_STRUCTURE_TYPE_EXTERNAL_COMPUTE_QUEUE_DEVICE_CREATE_INFO_NV,
+    eExternalComputeQueueCreateInfoNV                           = VK_STRUCTURE_TYPE_EXTERNAL_COMPUTE_QUEUE_CREATE_INFO_NV,
+    eExternalComputeQueueDataParamsNV                           = VK_STRUCTURE_TYPE_EXTERNAL_COMPUTE_QUEUE_DATA_PARAMS_NV,
+    ePhysicalDeviceExternalComputeQueuePropertiesNV             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_COMPUTE_QUEUE_PROPERTIES_NV,
     ePhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR  = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_RELAXED_EXTENDED_INSTRUCTION_FEATURES_KHR,
     ePhysicalDeviceCommandBufferInheritanceFeaturesNV           = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COMMAND_BUFFER_INHERITANCE_FEATURES_NV,
     ePhysicalDeviceMaintenance7FeaturesKHR                      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_7_FEATURES_KHR,
@@ -1664,6 +1674,7 @@ namespace VULKAN_HPP_NAMESPACE
     eOpticalFlowSessionNV      = VK_OBJECT_TYPE_OPTICAL_FLOW_SESSION_NV,
     eShaderEXT                 = VK_OBJECT_TYPE_SHADER_EXT,
     ePipelineBinaryKHR         = VK_OBJECT_TYPE_PIPELINE_BINARY_KHR,
+    eExternalComputeQueueNV    = VK_OBJECT_TYPE_EXTERNAL_COMPUTE_QUEUE_NV,
     eIndirectCommandsLayoutEXT = VK_OBJECT_TYPE_INDIRECT_COMMANDS_LAYOUT_EXT,
     eIndirectExecutionSetEXT   = VK_OBJECT_TYPE_INDIRECT_EXECUTION_SET_EXT
   };
@@ -3813,6 +3824,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePerViewPositionXOnlyNVX                      = VK_SUBPASS_DESCRIPTION_PER_VIEW_POSITION_X_ONLY_BIT_NVX,
     eFragmentRegionQCOM                           = VK_SUBPASS_DESCRIPTION_FRAGMENT_REGION_BIT_QCOM,
     eShaderResolveQCOM                            = VK_SUBPASS_DESCRIPTION_SHADER_RESOLVE_BIT_QCOM,
+    eTileShadingApronQCOM                         = VK_SUBPASS_DESCRIPTION_TILE_SHADING_APRON_BIT_QCOM,
     eRasterizationOrderAttachmentColorAccessEXT   = VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_BIT_EXT,
     eRasterizationOrderAttachmentColorAccessARM   = VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_BIT_ARM,
     eRasterizationOrderAttachmentDepthAccessEXT   = VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_EXT,
@@ -3831,7 +3843,7 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                    isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR SubpassDescriptionFlags allFlags =
       SubpassDescriptionFlagBits::ePerViewAttributesNVX | SubpassDescriptionFlagBits::ePerViewPositionXOnlyNVX |
-      SubpassDescriptionFlagBits::eFragmentRegionQCOM | SubpassDescriptionFlagBits::eShaderResolveQCOM |
+      SubpassDescriptionFlagBits::eFragmentRegionQCOM | SubpassDescriptionFlagBits::eShaderResolveQCOM | SubpassDescriptionFlagBits::eTileShadingApronQCOM |
       SubpassDescriptionFlagBits::eRasterizationOrderAttachmentColorAccessEXT | SubpassDescriptionFlagBits::eRasterizationOrderAttachmentDepthAccessEXT |
       SubpassDescriptionFlagBits::eRasterizationOrderAttachmentStencilAccessEXT | SubpassDescriptionFlagBits::eEnableLegacyDitheringEXT;
   };
@@ -4735,6 +4747,8 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoDecodeWriteKHR                  = VK_ACCESS_2_VIDEO_DECODE_WRITE_BIT_KHR,
     eVideoEncodeReadKHR                   = VK_ACCESS_2_VIDEO_ENCODE_READ_BIT_KHR,
     eVideoEncodeWriteKHR                  = VK_ACCESS_2_VIDEO_ENCODE_WRITE_BIT_KHR,
+    eShaderTileAttachmentReadQCOM         = VK_ACCESS_2_SHADER_TILE_ATTACHMENT_READ_BIT_QCOM,
+    eShaderTileAttachmentWriteQCOM        = VK_ACCESS_2_SHADER_TILE_ATTACHMENT_WRITE_BIT_QCOM,
     eTransformFeedbackWriteEXT            = VK_ACCESS_2_TRANSFORM_FEEDBACK_WRITE_BIT_EXT,
     eTransformFeedbackCounterReadEXT      = VK_ACCESS_2_TRANSFORM_FEEDBACK_COUNTER_READ_BIT_EXT,
     eTransformFeedbackCounterWriteEXT     = VK_ACCESS_2_TRANSFORM_FEEDBACK_COUNTER_WRITE_BIT_EXT,
@@ -4778,12 +4792,13 @@ namespace VULKAN_HPP_NAMESPACE
       AccessFlagBits2::eHostWrite | AccessFlagBits2::eMemoryRead | AccessFlagBits2::eMemoryWrite | AccessFlagBits2::eShaderSampledRead |
       AccessFlagBits2::eShaderStorageRead | AccessFlagBits2::eShaderStorageWrite | AccessFlagBits2::eVideoDecodeReadKHR |
       AccessFlagBits2::eVideoDecodeWriteKHR | AccessFlagBits2::eVideoEncodeReadKHR | AccessFlagBits2::eVideoEncodeWriteKHR |
-      AccessFlagBits2::eTransformFeedbackWriteEXT | AccessFlagBits2::eTransformFeedbackCounterReadEXT | AccessFlagBits2::eTransformFeedbackCounterWriteEXT |
-      AccessFlagBits2::eConditionalRenderingReadEXT | AccessFlagBits2::eCommandPreprocessReadEXT | AccessFlagBits2::eCommandPreprocessWriteEXT |
-      AccessFlagBits2::eFragmentShadingRateAttachmentReadKHR | AccessFlagBits2::eAccelerationStructureReadKHR |
-      AccessFlagBits2::eAccelerationStructureWriteKHR | AccessFlagBits2::eFragmentDensityMapReadEXT | AccessFlagBits2::eColorAttachmentReadNoncoherentEXT |
-      AccessFlagBits2::eDescriptorBufferReadEXT | AccessFlagBits2::eInvocationMaskReadHUAWEI | AccessFlagBits2::eShaderBindingTableReadKHR |
-      AccessFlagBits2::eMicromapReadEXT | AccessFlagBits2::eMicromapWriteEXT | AccessFlagBits2::eOpticalFlowReadNV | AccessFlagBits2::eOpticalFlowWriteNV;
+      AccessFlagBits2::eShaderTileAttachmentReadQCOM | AccessFlagBits2::eShaderTileAttachmentWriteQCOM | AccessFlagBits2::eTransformFeedbackWriteEXT |
+      AccessFlagBits2::eTransformFeedbackCounterReadEXT | AccessFlagBits2::eTransformFeedbackCounterWriteEXT | AccessFlagBits2::eConditionalRenderingReadEXT |
+      AccessFlagBits2::eCommandPreprocessReadEXT | AccessFlagBits2::eCommandPreprocessWriteEXT | AccessFlagBits2::eFragmentShadingRateAttachmentReadKHR |
+      AccessFlagBits2::eAccelerationStructureReadKHR | AccessFlagBits2::eAccelerationStructureWriteKHR | AccessFlagBits2::eFragmentDensityMapReadEXT |
+      AccessFlagBits2::eColorAttachmentReadNoncoherentEXT | AccessFlagBits2::eDescriptorBufferReadEXT | AccessFlagBits2::eInvocationMaskReadHUAWEI |
+      AccessFlagBits2::eShaderBindingTableReadKHR | AccessFlagBits2::eMicromapReadEXT | AccessFlagBits2::eMicromapWriteEXT |
+      AccessFlagBits2::eOpticalFlowReadNV | AccessFlagBits2::eOpticalFlowWriteNV;
   };
 
   // wrapper class for enum VkSubmitFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkSubmitFlagBits.html
@@ -7411,6 +7426,28 @@ namespace VULKAN_HPP_NAMESPACE
       DeviceDiagnosticsConfigFlagBitsNV::eEnableAutomaticCheckpoints | DeviceDiagnosticsConfigFlagBitsNV::eEnableShaderErrorReporting;
   };
 
+  //=== VK_QCOM_tile_shading ===
+
+  // wrapper class for enum VkTileShadingRenderPassFlagBitsQCOM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkTileShadingRenderPassFlagBitsQCOM.html
+  enum class TileShadingRenderPassFlagBitsQCOM : VkTileShadingRenderPassFlagsQCOM
+  {
+    eEnable           = VK_TILE_SHADING_RENDER_PASS_ENABLE_BIT_QCOM,
+    ePerTileExecution = VK_TILE_SHADING_RENDER_PASS_PER_TILE_EXECUTION_BIT_QCOM
+  };
+
+  // wrapper using for bitmask VkTileShadingRenderPassFlagsQCOM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkTileShadingRenderPassFlagsQCOM.html
+  using TileShadingRenderPassFlagsQCOM = Flags<TileShadingRenderPassFlagBitsQCOM>;
+
+  template <>
+  struct FlagTraits<TileShadingRenderPassFlagBitsQCOM>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                           isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR TileShadingRenderPassFlagsQCOM allFlags =
+      TileShadingRenderPassFlagBitsQCOM::eEnable | TileShadingRenderPassFlagBitsQCOM::ePerTileExecution;
+  };
+
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_objects ===
 
@@ -8848,6 +8885,10 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_KHR_pipeline_binary ===
       case VULKAN_HPP_NAMESPACE::ObjectType::ePipelineBinaryKHR:
+        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+        //=== VK_NV_external_compute_queue ===
+      case VULKAN_HPP_NAMESPACE::ObjectType::eExternalComputeQueueNV:
         return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_EXT_device_generated_commands ===

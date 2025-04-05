@@ -536,6 +536,17 @@ namespace std
     }
   };
 
+  //=== VK_NV_external_compute_queue ===
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV const & externalComputeQueueNV ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkExternalComputeQueueNV>{}( static_cast<VkExternalComputeQueueNV>( externalComputeQueueNV ) );
+    }
+  };
+
   //=== VK_EXT_device_generated_commands ===
 
   template <>
@@ -4513,6 +4524,18 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DispatchTileInfoQCOM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::DispatchTileInfoQCOM const & dispatchTileInfoQCOM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, dispatchTileInfoQCOM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, dispatchTileInfoQCOM.pNext );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::DisplayEventInfoEXT>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::DisplayEventInfoEXT const & displayEventInfoEXT ) const VULKAN_HPP_NOEXCEPT
@@ -5239,6 +5262,46 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, externalBufferProperties.sType );
       VULKAN_HPP_HASH_COMBINE( seed, externalBufferProperties.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, externalBufferProperties.externalMemoryProperties );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ExternalComputeQueueCreateInfoNV>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::ExternalComputeQueueCreateInfoNV const & externalComputeQueueCreateInfoNV ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, externalComputeQueueCreateInfoNV.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, externalComputeQueueCreateInfoNV.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, externalComputeQueueCreateInfoNV.preferredQueue );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ExternalComputeQueueDataParamsNV>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::ExternalComputeQueueDataParamsNV const & externalComputeQueueDataParamsNV ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, externalComputeQueueDataParamsNV.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, externalComputeQueueDataParamsNV.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, externalComputeQueueDataParamsNV.deviceIndex );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ExternalComputeQueueDeviceCreateInfoNV>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::ExternalComputeQueueDeviceCreateInfoNV const & externalComputeQueueDeviceCreateInfoNV ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, externalComputeQueueDeviceCreateInfoNV.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, externalComputeQueueDeviceCreateInfoNV.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, externalComputeQueueDeviceCreateInfoNV.reservedExternalQueues );
       return seed;
     }
   };
@@ -8034,6 +8097,30 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PerTileBeginInfoQCOM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PerTileBeginInfoQCOM const & perTileBeginInfoQCOM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, perTileBeginInfoQCOM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, perTileBeginInfoQCOM.pNext );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PerTileEndInfoQCOM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PerTileEndInfoQCOM const & perTileEndInfoQCOM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, perTileEndInfoQCOM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, perTileEndInfoQCOM.pNext );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PerformanceConfigurationAcquireInfoINTEL>
   {
     std::size_t
@@ -9532,6 +9619,21 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExternalBufferInfo.flags );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExternalBufferInfo.usage );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExternalBufferInfo.handleType );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalComputeQueuePropertiesNV>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalComputeQueuePropertiesNV const & physicalDeviceExternalComputeQueuePropertiesNV ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExternalComputeQueuePropertiesNV.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExternalComputeQueuePropertiesNV.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExternalComputeQueuePropertiesNV.externalDataSize );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExternalComputeQueuePropertiesNV.maxExternalQueues );
       return seed;
     }
   };
@@ -13196,6 +13298,50 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceTileShadingFeaturesQCOM>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceTileShadingFeaturesQCOM const & physicalDeviceTileShadingFeaturesQCOM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShading );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingFragmentStage );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingColorAttachments );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingDepthAttachments );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingStencilAttachments );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingInputAttachments );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingSampledAttachments );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingPerTileDraw );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingPerTileDispatch );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingDispatchTile );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingApron );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingAnisotropicApron );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingAtomicOps );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingFeaturesQCOM.tileShadingImageProcessing );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceTileShadingPropertiesQCOM>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceTileShadingPropertiesQCOM const & physicalDeviceTileShadingPropertiesQCOM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingPropertiesQCOM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingPropertiesQCOM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingPropertiesQCOM.maxApronSize );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingPropertiesQCOM.preferNonCoherent );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingPropertiesQCOM.tileGranularity );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceTileShadingPropertiesQCOM.maxTileShadingRate );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceTimelineSemaphoreFeatures>
   {
     std::size_t
@@ -15658,6 +15804,20 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, renderPassSubpassFeedbackCreateInfoEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, renderPassSubpassFeedbackCreateInfoEXT.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, renderPassSubpassFeedbackCreateInfoEXT.pSubpassFeedback );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::RenderPassTileShadingCreateInfoQCOM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::RenderPassTileShadingCreateInfoQCOM const & renderPassTileShadingCreateInfoQCOM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, renderPassTileShadingCreateInfoQCOM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, renderPassTileShadingCreateInfoQCOM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, renderPassTileShadingCreateInfoQCOM.flags );
+      VULKAN_HPP_HASH_COMBINE( seed, renderPassTileShadingCreateInfoQCOM.tileApronSize );
       return seed;
     }
   };

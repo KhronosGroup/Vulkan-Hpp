@@ -1479,6 +1479,11 @@ namespace VULKAN_HPP_NAMESPACE
           vkCmdCudaLaunchKernelNV = PFN_vkCmdCudaLaunchKernelNV( vkGetDeviceProcAddr( device, "vkCmdCudaLaunchKernelNV" ) );
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
+          //=== VK_QCOM_tile_shading ===
+          vkCmdDispatchTileQCOM          = PFN_vkCmdDispatchTileQCOM( vkGetDeviceProcAddr( device, "vkCmdDispatchTileQCOM" ) );
+          vkCmdBeginPerTileExecutionQCOM = PFN_vkCmdBeginPerTileExecutionQCOM( vkGetDeviceProcAddr( device, "vkCmdBeginPerTileExecutionQCOM" ) );
+          vkCmdEndPerTileExecutionQCOM   = PFN_vkCmdEndPerTileExecutionQCOM( vkGetDeviceProcAddr( device, "vkCmdEndPerTileExecutionQCOM" ) );
+
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
           //=== VK_EXT_metal_objects ===
           vkExportMetalObjectsEXT = PFN_vkExportMetalObjectsEXT( vkGetDeviceProcAddr( device, "vkExportMetalObjectsEXT" ) );
@@ -1811,6 +1816,11 @@ namespace VULKAN_HPP_NAMESPACE
           vkCmdSetDescriptorBufferOffsets2EXT = PFN_vkCmdSetDescriptorBufferOffsets2EXT( vkGetDeviceProcAddr( device, "vkCmdSetDescriptorBufferOffsets2EXT" ) );
           vkCmdBindDescriptorBufferEmbeddedSamplers2EXT =
             PFN_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT( vkGetDeviceProcAddr( device, "vkCmdBindDescriptorBufferEmbeddedSamplers2EXT" ) );
+
+          //=== VK_NV_external_compute_queue ===
+          vkCreateExternalComputeQueueNV  = PFN_vkCreateExternalComputeQueueNV( vkGetDeviceProcAddr( device, "vkCreateExternalComputeQueueNV" ) );
+          vkDestroyExternalComputeQueueNV = PFN_vkDestroyExternalComputeQueueNV( vkGetDeviceProcAddr( device, "vkDestroyExternalComputeQueueNV" ) );
+          vkGetExternalComputeQueueDataNV = PFN_vkGetExternalComputeQueueDataNV( vkGetDeviceProcAddr( device, "vkGetExternalComputeQueueDataNV" ) );
 
           //=== VK_NV_cluster_acceleration_structure ===
           vkGetClusterAccelerationStructureBuildSizesNV =
@@ -2503,6 +2513,11 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_dummy vkCmdCudaLaunchKernelNV_placeholder = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
+        //=== VK_QCOM_tile_shading ===
+        PFN_vkCmdDispatchTileQCOM          vkCmdDispatchTileQCOM          = 0;
+        PFN_vkCmdBeginPerTileExecutionQCOM vkCmdBeginPerTileExecutionQCOM = 0;
+        PFN_vkCmdEndPerTileExecutionQCOM   vkCmdEndPerTileExecutionQCOM   = 0;
+
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
         //=== VK_EXT_metal_objects ===
         PFN_vkExportMetalObjectsEXT vkExportMetalObjectsEXT = 0;
@@ -2766,6 +2781,11 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkCmdSetDescriptorBufferOffsets2EXT           vkCmdSetDescriptorBufferOffsets2EXT           = 0;
         PFN_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT vkCmdBindDescriptorBufferEmbeddedSamplers2EXT = 0;
 
+        //=== VK_NV_external_compute_queue ===
+        PFN_vkCreateExternalComputeQueueNV  vkCreateExternalComputeQueueNV  = 0;
+        PFN_vkDestroyExternalComputeQueueNV vkDestroyExternalComputeQueueNV = 0;
+        PFN_vkGetExternalComputeQueueDataNV vkGetExternalComputeQueueDataNV = 0;
+
         //=== VK_NV_cluster_acceleration_structure ===
         PFN_vkGetClusterAccelerationStructureBuildSizesNV    vkGetClusterAccelerationStructureBuildSizesNV    = 0;
         PFN_vkCmdBuildClusterAccelerationStructureIndirectNV vkCmdBuildClusterAccelerationStructureIndirectNV = 0;
@@ -2902,6 +2922,9 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_KHR_pipeline_binary ===
     class PipelineBinaryKHR;
+
+    //=== VK_NV_external_compute_queue ===
+    class ExternalComputeQueueNV;
 
     //=== VK_EXT_device_generated_commands ===
     class IndirectCommandsLayoutEXT;
@@ -5491,6 +5514,16 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD std::pair<uint64_t, uint64_t>
                            getCalibratedTimestampKHR( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR & timestampInfo ) const;
 
+      //=== VK_NV_external_compute_queue ===
+
+      // wrapper function for command vkCreateExternalComputeQueueNV, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateExternalComputeQueueNV.html
+      VULKAN_HPP_NODISCARD
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ExternalComputeQueueNV>::Type
+        createExternalComputeQueueNV( VULKAN_HPP_NAMESPACE::ExternalComputeQueueCreateInfoNV const &                  createInfo,
+                                      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const
+        VULKAN_HPP_RAII_CREATE_NOEXCEPT;
+
       //=== VK_NV_cluster_acceleration_structure ===
 
       // wrapper function for command vkGetClusterAccelerationStructureBuildSizesNV, see
@@ -7413,6 +7446,19 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkCmdCudaLaunchKernelNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCudaLaunchKernelNV.html
       void cudaLaunchKernelNV( const VULKAN_HPP_NAMESPACE::CudaLaunchInfoNV & launchInfo ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+      //=== VK_QCOM_tile_shading ===
+
+      // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
+      void dispatchTileQCOM() const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkCmdBeginPerTileExecutionQCOM, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginPerTileExecutionQCOM.html
+      void beginPerTileExecutionQCOM( const VULKAN_HPP_NAMESPACE::PerTileBeginInfoQCOM & perTileBeginInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkCmdEndPerTileExecutionQCOM, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndPerTileExecutionQCOM.html
+      void endPerTileExecutionQCOM( const VULKAN_HPP_NAMESPACE::PerTileEndInfoQCOM & perTileEndInfo ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_KHR_synchronization2 ===
 
@@ -9958,6 +10004,140 @@ namespace VULKAN_HPP_NAMESPACE
 
     template <>
     struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Event>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
+    // wrapper class for handle VkExternalComputeQueueNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkExternalComputeQueueNV.html
+    class ExternalComputeQueueNV
+    {
+    public:
+      using CType   = VkExternalComputeQueueNV;
+      using CppType = VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eExternalComputeQueueNV;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+    public:
+#  if !defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+      ExternalComputeQueueNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                              VULKAN_HPP_NAMESPACE::ExternalComputeQueueCreateInfoNV const &                  createInfo,
+                              VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+      {
+        *this = device.createExternalComputeQueueNV( createInfo, allocator );
+      }
+#  endif
+
+      ExternalComputeQueueNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                              VkExternalComputeQueueNV                                                        externalQueue,
+                              VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( device )
+        , m_externalComputeQueueNV( externalQueue )
+        , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+      }
+
+      ExternalComputeQueueNV( std::nullptr_t ) {}
+
+      ~ExternalComputeQueueNV()
+      {
+        clear();
+      }
+
+      ExternalComputeQueueNV()                                 = delete;
+      ExternalComputeQueueNV( ExternalComputeQueueNV const & ) = delete;
+
+      ExternalComputeQueueNV( ExternalComputeQueueNV && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_device( VULKAN_HPP_NAMESPACE::exchange( rhs.m_device, {} ) )
+        , m_externalComputeQueueNV( VULKAN_HPP_NAMESPACE::exchange( rhs.m_externalComputeQueueNV, {} ) )
+        , m_allocator( VULKAN_HPP_NAMESPACE::exchange( rhs.m_allocator, {} ) )
+        , m_dispatcher( VULKAN_HPP_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )
+      {
+      }
+
+      ExternalComputeQueueNV & operator=( ExternalComputeQueueNV const & ) = delete;
+
+      ExternalComputeQueueNV & operator=( ExternalComputeQueueNV && rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        if ( this != &rhs )
+        {
+          std::swap( m_device, rhs.m_device );
+          std::swap( m_externalComputeQueueNV, rhs.m_externalComputeQueueNV );
+          std::swap( m_allocator, rhs.m_allocator );
+          std::swap( m_dispatcher, rhs.m_dispatcher );
+        }
+        return *this;
+      }
+
+      VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_externalComputeQueueNV;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_externalComputeQueueNV;
+      }
+
+      void clear() VULKAN_HPP_NOEXCEPT
+      {
+        if ( m_externalComputeQueueNV )
+        {
+          getDispatcher()->vkDestroyExternalComputeQueueNV( static_cast<VkDevice>( m_device ),
+                                                            static_cast<VkExternalComputeQueueNV>( m_externalComputeQueueNV ),
+                                                            reinterpret_cast<const VkAllocationCallbacks *>( m_allocator ) );
+        }
+        m_device                 = nullptr;
+        m_externalComputeQueueNV = nullptr;
+        m_allocator              = nullptr;
+        m_dispatcher             = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::exchange( m_externalComputeQueueNV, nullptr );
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const
+      {
+        return m_device;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * getDispatcher() const
+      {
+        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
+        return m_dispatcher;
+      }
+
+      void swap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ExternalComputeQueueNV & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        std::swap( m_device, rhs.m_device );
+        std::swap( m_externalComputeQueueNV, rhs.m_externalComputeQueueNV );
+        std::swap( m_allocator, rhs.m_allocator );
+        std::swap( m_dispatcher, rhs.m_dispatcher );
+      }
+
+      //=== VK_NV_external_compute_queue ===
+
+      // wrapper function for command vkGetExternalComputeQueueDataNV, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetExternalComputeQueueDataNV.html
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::ExternalComputeQueueDataParamsNV, DataType> getData() const VULKAN_HPP_NOEXCEPT;
+
+    private:
+      VULKAN_HPP_NAMESPACE::Device                                                      m_device                 = {};
+      VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV                                      m_externalComputeQueueNV = {};
+      const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator              = {};
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher             = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ExternalComputeQueueNV>
     {
       static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
@@ -24276,6 +24456,37 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
+    //=== VK_QCOM_tile_shading ===
+
+    // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
+    VULKAN_HPP_INLINE void CommandBuffer::dispatchTileQCOM() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDispatchTileQCOM && "Function <vkCmdDispatchTileQCOM> requires <VK_QCOM_tile_shading>" );
+
+      getDispatcher()->vkCmdDispatchTileQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ) );
+    }
+
+    // wrapper function for command vkCmdBeginPerTileExecutionQCOM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginPerTileExecutionQCOM.html
+    VULKAN_HPP_INLINE void
+      CommandBuffer::beginPerTileExecutionQCOM( const VULKAN_HPP_NAMESPACE::PerTileBeginInfoQCOM & perTileBeginInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBeginPerTileExecutionQCOM && "Function <vkCmdBeginPerTileExecutionQCOM> requires <VK_QCOM_tile_shading>" );
+
+      getDispatcher()->vkCmdBeginPerTileExecutionQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                       reinterpret_cast<const VkPerTileBeginInfoQCOM *>( &perTileBeginInfo ) );
+    }
+
+    // wrapper function for command vkCmdEndPerTileExecutionQCOM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndPerTileExecutionQCOM.html
+    VULKAN_HPP_INLINE void CommandBuffer::endPerTileExecutionQCOM( const VULKAN_HPP_NAMESPACE::PerTileEndInfoQCOM & perTileEndInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdEndPerTileExecutionQCOM && "Function <vkCmdEndPerTileExecutionQCOM> requires <VK_QCOM_tile_shading>" );
+
+      getDispatcher()->vkCmdEndPerTileExecutionQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                     reinterpret_cast<const VkPerTileEndInfoQCOM *>( &perTileEndInfo ) );
+    }
+
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
     //=== VK_EXT_metal_objects ===
 
@@ -26957,6 +27168,53 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkCmdBindDescriptorBufferEmbeddedSamplers2EXT(
         static_cast<VkCommandBuffer>( m_commandBuffer ),
         reinterpret_cast<const VkBindDescriptorBufferEmbeddedSamplersInfoEXT *>( &bindDescriptorBufferEmbeddedSamplersInfo ) );
+    }
+
+    //=== VK_NV_external_compute_queue ===
+
+    // wrapper function for command vkCreateExternalComputeQueueNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateExternalComputeQueueNV.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ExternalComputeQueueNV>::Type
+      Device::createExternalComputeQueueNV( VULKAN_HPP_NAMESPACE::ExternalComputeQueueCreateInfoNV const &                  createInfo,
+                                            VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+      VULKAN_HPP_RAII_CREATE_NOEXCEPT
+    {
+      VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV externalQueue;
+      VULKAN_HPP_NAMESPACE::Result                 result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkCreateExternalComputeQueueNV(
+        static_cast<VkDevice>( m_device ),
+        reinterpret_cast<const VkExternalComputeQueueCreateInfoNV *>( &createInfo ),
+        reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+        reinterpret_cast<VkExternalComputeQueueNV *>( &externalQueue ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+#  if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+        return VULKAN_HPP_UNEXPECTED( result );
+#  else
+        VULKAN_HPP_NAMESPACE::detail::throwResultException( result, "Device::createExternalComputeQueueNV" );
+#  endif
+      }
+
+      return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ExternalComputeQueueNV(
+        *this, *reinterpret_cast<VkExternalComputeQueueNV *>( &externalQueue ), allocator );
+    }
+
+    // wrapper function for command vkGetExternalComputeQueueDataNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetExternalComputeQueueDataNV.html
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::ExternalComputeQueueDataParamsNV, DataType>
+                                           ExternalComputeQueueNV::getData() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetExternalComputeQueueDataNV &&
+                         "Function <vkGetExternalComputeQueueDataNV> requires <VK_NV_external_compute_queue>" );
+
+      std::pair<VULKAN_HPP_NAMESPACE::ExternalComputeQueueDataParamsNV, DataType> data_;
+      VULKAN_HPP_NAMESPACE::ExternalComputeQueueDataParamsNV &                    arams = data_.first;
+      DataType &                                                                  data  = data_.second;
+      getDispatcher()->vkGetExternalComputeQueueDataNV(
+        static_cast<VkExternalComputeQueueNV>( m_externalComputeQueueNV ), reinterpret_cast<VkExternalComputeQueueDataParamsNV *>( &arams ), &data );
+
+      return data_;
     }
 
     //=== VK_NV_cluster_acceleration_structure ===

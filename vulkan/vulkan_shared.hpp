@@ -981,6 +981,17 @@ namespace VULKAN_HPP_NAMESPACE
 
   using SharedPipelineBinaryKHR = SharedHandle<PipelineBinaryKHR>;
 
+  //=== VK_NV_external_compute_queue ===
+  template <>
+  class SharedHandleTraits<ExternalComputeQueueNV>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = detail::ObjectDestroyShared<ExternalComputeQueueNV>;
+  };
+
+  using SharedExternalComputeQueueNV = SharedHandle<ExternalComputeQueueNV>;
+
   //=== VK_EXT_device_generated_commands ===
   template <>
   class SharedHandleTraits<IndirectCommandsLayoutEXT>

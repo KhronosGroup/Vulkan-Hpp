@@ -7529,30 +7529,27 @@ template <class Predicate>
 std::string VulkanHppGenerator::generateExtensionReplacedTest( Predicate p ) const
 {
   std::string replacedTest, previousEnter, previousLeave;
-  bool        unprotectedEntry = false;
   for ( auto const & extension : m_extensions )
   {
     if ( p( extension ) )
     {
       const auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
-      unprotectedEntry |= enter.empty();
       replacedTest += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "( extension == \"" + extension.name + "\" ) || ";
       previousEnter = enter;
       previousLeave = leave;
     }
   }
-  if ( unprotectedEntry )
+  if ( previousLeave.empty() )
   {
+    // the test ends on an unprotected extension -> remove the trailing " || "
     assert( replacedTest.ends_with( " || " ) );
     replacedTest = replacedTest.substr( 0, replacedTest.length() - 4 );
   }
-  if ( !previousLeave.empty() )
+  else
   {
-    replacedTest += "\n" + previousLeave;
-  }
-  if ( !unprotectedEntry )
-  {
-    replacedTest += "false";  // there might be no replacements at all, so add a "false" at the end...
+    // the test ends on a protected extension -> add the previousLeave and a "false" to the end
+    // in order to make it work in case the protection is not defined.
+    replacedTest += "\n" + previousLeave + "false";
   }
   return replacedTest;
 }

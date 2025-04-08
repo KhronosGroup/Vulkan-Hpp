@@ -422,35 +422,50 @@ namespace vk
       std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
       assert( queueFamilyProperties.size() < ( std::numeric_limits<uint32_t>::max )() );
 
-      uint32_t graphicsQueueFamilyIndex = findGraphicsQueueFamilyIndex( queueFamilyProperties );
-      if ( physicalDevice.getSurfaceSupportKHR( graphicsQueueFamilyIndex, surface ) )
+      // look for a queueFamilyIndex that supports graphics and present
+      auto combinedIt = std::find_if( queueFamilyProperties.begin(),
+                                      queueFamilyProperties.end(),
+                                      [&physicalDevice, &surface]( vk::QueueFamilyProperties const & qfp )
+                                      {
+                                        static uint32_t index = 0;
+                                        return ( qfp.queueFlags & vk::QueueFlagBits::eGraphics ) && physicalDevice.getSurfaceSupportKHR( index++, surface );
+                                      } );
+      if ( combinedIt != queueFamilyProperties.end() )
       {
-        return std::make_pair( graphicsQueueFamilyIndex,
-                               graphicsQueueFamilyIndex );  // the first graphicsQueueFamilyIndex does also support presents
+        uint32_t index = static_cast<uint32_t>( std::distance( queueFamilyProperties.begin(), combinedIt ) );
+        return { index, index };  // the first index that supports graphics and present
       }
-
-      // the graphicsQueueFamilyIndex doesn't support present -> look for an other family index that supports both
-      // graphics and present
-      for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
+      else
       {
-        if ( ( queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics ) &&
-             physicalDevice.getSurfaceSupportKHR( static_cast<uint32_t>( i ), surface ) )
+        // there's no single index that supports both graphics and present -> look for separate ones
+        auto graphicsIt = std::find_if( queueFamilyProperties.begin(),
+                                        queueFamilyProperties.end(),
+                                        []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );
+        if ( graphicsIt != queueFamilyProperties.end() )
         {
-          return std::make_pair( static_cast<uint32_t>( i ), static_cast<uint32_t>( i ) );
+          uint32_t graphicsIndex = static_cast<uint32_t>( std::distance( queueFamilyProperties.begin(), graphicsIt ) );
+          auto     presentIt     = std::find_if( queueFamilyProperties.begin(),
+                                         queueFamilyProperties.end(),
+                                         [&physicalDevice, &surface]( vk::QueueFamilyProperties const & )
+                                         {
+                                           static uint32_t index = 0;
+                                           return physicalDevice.getSurfaceSupportKHR( index++, surface );
+                                         } );
+          if ( presentIt != queueFamilyProperties.end() )
+          {
+            uint32_t presentIndex = static_cast<uint32_t>( std::distance( queueFamilyProperties.begin(), presentIt ) );
+            return { graphicsIndex, presentIndex };
+          }
+          else
+          {
+            throw std::runtime_error( "Could not find a queue family index that supports present -> terminating" );
+          }
+        }
+        else
+        {
+          throw std::runtime_error( "Could not find a queue family index that supports graphics -> terminating" );
         }
       }
-
-      // there's nothing like a single family index that supports both graphics and present -> look for an other family
-      // index that supports present
-      for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
-      {
-        if ( physicalDevice.getSurfaceSupportKHR( static_cast<uint32_t>( i ), surface ) )
-        {
-          return std::make_pair( graphicsQueueFamilyIndex, static_cast<uint32_t>( i ) );
-        }
-      }
-
-      throw std::runtime_error( "Could not find queues for both graphics or present -> terminating" );
     }
 
     uint32_t findMemoryType( vk::PhysicalDeviceMemoryProperties const & memoryProperties, uint32_t typeBits, vk::MemoryPropertyFlags requirementsMask )
@@ -574,20 +589,20 @@ namespace vk
       switch ( oldImageLayout )
       {
         case vk::ImageLayout::eTransferDstOptimal: sourceAccessMask = vk::AccessFlagBits::eTransferWrite; break;
-        case vk::ImageLayout::ePreinitialized: sourceAccessMask = vk::AccessFlagBits::eHostWrite; break;
-        case vk::ImageLayout::eGeneral:  // sourceAccessMask is empty
-        case vk::ImageLayout::eUndefined: break;
-        default: assert( false ); break;
+        case vk::ImageLayout::ePreinitialized    : sourceAccessMask = vk::AccessFlagBits::eHostWrite; break;
+        case vk::ImageLayout::eGeneral           :  // sourceAccessMask is empty
+        case vk::ImageLayout::eUndefined         : break;
+        default                                  : assert( false ); break;
       }
 
       vk::PipelineStageFlags sourceStage;
       switch ( oldImageLayout )
       {
         case vk::ImageLayout::eGeneral:
-        case vk::ImageLayout::ePreinitialized: sourceStage = vk::PipelineStageFlagBits::eHost; break;
+        case vk::ImageLayout::ePreinitialized    : sourceStage = vk::PipelineStageFlagBits::eHost; break;
         case vk::ImageLayout::eTransferDstOptimal: sourceStage = vk::PipelineStageFlagBits::eTransfer; break;
-        case vk::ImageLayout::eUndefined: sourceStage = vk::PipelineStageFlagBits::eTopOfPipe; break;
-        default: assert( false ); break;
+        case vk::ImageLayout::eUndefined         : sourceStage = vk::PipelineStageFlagBits::eTopOfPipe; break;
+        default                                  : assert( false ); break;
       }
 
       vk::AccessFlags destinationAccessMask;
@@ -598,24 +613,24 @@ namespace vk
           destinationAccessMask = vk::AccessFlagBits::eDepthStencilAttachmentRead | vk::AccessFlagBits::eDepthStencilAttachmentWrite;
           break;
         case vk::ImageLayout::eGeneral:  // empty destinationAccessMask
-        case vk::ImageLayout::ePresentSrcKHR: break;
+        case vk::ImageLayout::ePresentSrcKHR        : break;
         case vk::ImageLayout::eShaderReadOnlyOptimal: destinationAccessMask = vk::AccessFlagBits::eShaderRead; break;
-        case vk::ImageLayout::eTransferSrcOptimal: destinationAccessMask = vk::AccessFlagBits::eTransferRead; break;
-        case vk::ImageLayout::eTransferDstOptimal: destinationAccessMask = vk::AccessFlagBits::eTransferWrite; break;
-        default: assert( false ); break;
+        case vk::ImageLayout::eTransferSrcOptimal   : destinationAccessMask = vk::AccessFlagBits::eTransferRead; break;
+        case vk::ImageLayout::eTransferDstOptimal   : destinationAccessMask = vk::AccessFlagBits::eTransferWrite; break;
+        default                                     : assert( false ); break;
       }
 
       vk::PipelineStageFlags destinationStage;
       switch ( newImageLayout )
       {
-        case vk::ImageLayout::eColorAttachmentOptimal: destinationStage = vk::PipelineStageFlagBits::eColorAttachmentOutput; break;
+        case vk::ImageLayout::eColorAttachmentOptimal       : destinationStage = vk::PipelineStageFlagBits::eColorAttachmentOutput; break;
         case vk::ImageLayout::eDepthStencilAttachmentOptimal: destinationStage = vk::PipelineStageFlagBits::eEarlyFragmentTests; break;
-        case vk::ImageLayout::eGeneral: destinationStage = vk::PipelineStageFlagBits::eHost; break;
-        case vk::ImageLayout::ePresentSrcKHR: destinationStage = vk::PipelineStageFlagBits::eBottomOfPipe; break;
-        case vk::ImageLayout::eShaderReadOnlyOptimal: destinationStage = vk::PipelineStageFlagBits::eFragmentShader; break;
-        case vk::ImageLayout::eTransferDstOptimal:
-        case vk::ImageLayout::eTransferSrcOptimal: destinationStage = vk::PipelineStageFlagBits::eTransfer; break;
-        default: assert( false ); break;
+        case vk::ImageLayout::eGeneral                      : destinationStage = vk::PipelineStageFlagBits::eHost; break;
+        case vk::ImageLayout::ePresentSrcKHR                : destinationStage = vk::PipelineStageFlagBits::eBottomOfPipe; break;
+        case vk::ImageLayout::eShaderReadOnlyOptimal        : destinationStage = vk::PipelineStageFlagBits::eFragmentShader; break;
+        case vk::ImageLayout::eTransferDstOptimal           :
+        case vk::ImageLayout::eTransferSrcOptimal           : destinationStage = vk::PipelineStageFlagBits::eTransfer; break;
+        default                                             : assert( false ); break;
       }
 
       vk::ImageAspectFlags aspectMask;
@@ -997,12 +1012,7 @@ namespace vk
         glfwContext()
         {
           glfwInit();
-          glfwSetErrorCallback(
-            []( int error, const char * msg )
-            {
-              std::cerr << "glfw: "
-                        << "(" << error << ") " << msg << std::endl;
-            } );
+          glfwSetErrorCallback( []( int error, const char * msg ) { std::cerr << "glfw: " << "(" << error << ") " << msg << std::endl; } );
         }
 
         ~glfwContext()

@@ -23,6 +23,7 @@ namespace VULKAN_HPP_NAMESPACE
   class Flags
   {
   public:
+    using BitsType = BitType;
     using MaskType = typename std::underlying_type<BitType>::type;
 
     // constructors

@@ -2459,7 +2459,7 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
   std::string bitmaskName = stripPrefix( bitmaskIt->first, "Vk" );
   std::string enumName    = stripPrefix( bitmaskBitsIt->first, "Vk" );
 
-  std::string allFlags;
+  std::string allFlags, wrappedType;
   if ( bitmaskBitsIt->second.values.empty() || std::ranges::none_of( bitmaskBitsIt->second.values, []( auto const & evd ) { return evd.supported; } ) )
   {
     allFlags = " {};";
@@ -2491,6 +2491,8 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
       allFlags += "\n" + previousLeave;
     }
     allFlags += ";";
+
+    wrappedType = "using WrappedType = " + bitmaskBitsIt->first + ";";
   }
 
   std::string aliases;
@@ -2506,12 +2508,15 @@ ${aliases}
 
   template <> struct FlagTraits<${enumName}>
   {
+    ${WrappedType}
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR ${bitmaskName} allFlags = ${allFlags}
   };
 )";
 
-  return replaceWithMap( bitmaskTemplate, { { "aliases", aliases }, { "allFlags", allFlags }, { "bitmaskName", bitmaskName }, { "enumName", enumName } } );
+  return replaceWithMap(
+    bitmaskTemplate,
+    { { "aliases", aliases }, { "allFlags", allFlags }, { "bitmaskName", bitmaskName }, { "enumName", enumName }, { "WrappedType", wrappedType } } );
 }
 
 std::string VulkanHppGenerator::generateBitmasksToString() const
@@ -7192,12 +7197,16 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
   }
   enumValues += previousLeave;
 
+  std::string wrapperClassComment;
   if ( !enumValues.empty() )
   {
     const size_t pos = enumValues.rfind( ',' );
     assert( pos != std::string::npos );
     enumValues.erase( pos, 1 );
     enumValues = "\n" + enumValues + "  ";
+
+    wrapperClassComment =
+      "// wrapper class for enum " + enumData.first + ", see https://registry.khronos.org/vulkan/specs/latest/man/html/" + enumData.first + ".html";
   }
 
   std::string enumUsing;
@@ -7217,7 +7226,7 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
   }
 
   const std::string enumTemplate =
-    R"(  // wrapper class for enum Vk${enumName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/Vk${enumName}.html
+    R"(  ${wrapperClassComment}
   enum class ${enumName}${baseType}{${enumValues}};
   ${typeTraits}
   ${enumUsing}
@@ -7229,7 +7238,8 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
                            { "enumName", stripPrefix( enumData.first, "Vk" ) },
                            { "enumUsing", enumUsing },
                            { "enumValues", enumValues },
-                           { "typeTraits", typeTraits } } );
+                           { "typeTraits", typeTraits },
+                           { "wrapperClassComment", wrapperClassComment } } );
 }
 
 std::string VulkanHppGenerator::generateEnums() const

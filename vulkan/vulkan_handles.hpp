@@ -1904,6 +1904,13 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_descriptor_pool_overallocation ===
   struct PhysicalDeviceDescriptorPoolOverallocationFeaturesNV;
 
+  //=== VK_QCOM_tile_memory_heap ===
+  struct PhysicalDeviceTileMemoryHeapFeaturesQCOM;
+  struct PhysicalDeviceTileMemoryHeapPropertiesQCOM;
+  struct TileMemoryRequirementsQCOM;
+  struct TileMemoryBindInfoQCOM;
+  struct TileMemorySizeInfoQCOM;
+
   //=== VK_NV_display_stereo ===
   struct DisplaySurfaceStereoCreateInfoNV;
   struct DisplayModeStereoPropertiesNV;
@@ -7799,6 +7806,19 @@ namespace VULKAN_HPP_NAMESPACE
     void bindDescriptorBufferEmbeddedSamplers2EXT(
       const VULKAN_HPP_NAMESPACE::BindDescriptorBufferEmbeddedSamplersInfoEXT & bindDescriptorBufferEmbeddedSamplersInfo,
       Dispatch const & d                                                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_QCOM_tile_memory_heap ===
+
+    // wrapper function for command vkCmdBindTileMemoryQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBindTileMemoryQCOM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void bindTileMemoryQCOM( const VULKAN_HPP_NAMESPACE::TileMemoryBindInfoQCOM * pTileMemoryBindInfo,
+                             Dispatch const & d                                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdBindTileMemoryQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBindTileMemoryQCOM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void bindTileMemoryQCOM( Optional<const VULKAN_HPP_NAMESPACE::TileMemoryBindInfoQCOM> tileMemoryBindInfo VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                             Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_cluster_acceleration_structure ===

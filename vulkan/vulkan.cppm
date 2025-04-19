@@ -2649,6 +2649,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::NVDescriptorPoolOverallocationExtensionName;
   using VULKAN_HPP_NAMESPACE::NVDescriptorPoolOverallocationSpecVersion;
 
+  //=== VK_QCOM_tile_memory_heap ===
+  using VULKAN_HPP_NAMESPACE::QCOMTileMemoryHeapExtensionName;
+  using VULKAN_HPP_NAMESPACE::QCOMTileMemoryHeapSpecVersion;
+
   //=== VK_NV_display_stereo ===
   using VULKAN_HPP_NAMESPACE::NVDisplayStereoExtensionName;
   using VULKAN_HPP_NAMESPACE::NVDisplayStereoSpecVersion;
@@ -4697,6 +4701,13 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_descriptor_pool_overallocation ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV;
+
+  //=== VK_QCOM_tile_memory_heap ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceTileMemoryHeapFeaturesQCOM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceTileMemoryHeapPropertiesQCOM;
+  using VULKAN_HPP_NAMESPACE::TileMemoryBindInfoQCOM;
+  using VULKAN_HPP_NAMESPACE::TileMemoryRequirementsQCOM;
+  using VULKAN_HPP_NAMESPACE::TileMemorySizeInfoQCOM;
 
   //=== VK_NV_display_stereo ===
   using VULKAN_HPP_NAMESPACE::DisplayModeStereoPropertiesNV;
@@ -8327,6 +8338,18 @@ export namespace std
   //=== VK_NV_descriptor_pool_overallocation ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV>;
+
+  //=== VK_QCOM_tile_memory_heap ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceTileMemoryHeapFeaturesQCOM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceTileMemoryHeapPropertiesQCOM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TileMemoryRequirementsQCOM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TileMemoryBindInfoQCOM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TileMemorySizeInfoQCOM>;
 
   //=== VK_NV_display_stereo ===
   template <>

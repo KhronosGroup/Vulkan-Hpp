@@ -68,7 +68,11 @@ namespace VULKAN_HPP_NAMESPACE
                                                                              { "VK_AMD_gpu_shader_int16", "VK_KHR_shader_float16_int8" },
                                                                              { "VK_NV_ray_tracing", "VK_KHR_ray_tracing_pipeline" },
                                                                              { "VK_EXT_buffer_device_address", "VK_KHR_buffer_device_address" },
-                                                                             { "VK_EXT_validation_features", "VK_EXT_layer_settings" } };
+                                                                             { "VK_EXT_validation_features", "VK_EXT_layer_settings" },
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+                                                                             { "VK_NV_displacement_micromap", "VK_NV_cluster_acceleration_structure" }
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    };
     return deprecatedExtensions;
   }
 
@@ -446,6 +450,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_KHR_shader_expect_assume",
                                                             "VK_KHR_maintenance6",
                                                             "VK_NV_descriptor_pool_overallocation",
+                                                            "VK_QCOM_tile_memory_heap",
                                                             "VK_KHR_video_encode_quantization_map",
                                                             "VK_NV_raw_access_chains",
                                                             "VK_NV_external_compute_queue",
@@ -2464,6 +2469,13 @@ namespace VULKAN_HPP_NAMESPACE
           { "VK_VERSION_1_1", { {} } } } },
       { "VK_KHR_maintenance6", { { "VK_VERSION_1_1", { {} } } } },
       { "VK_NV_descriptor_pool_overallocation", { { "VK_VERSION_1_1", { {} } } } },
+      { "VK_QCOM_tile_memory_heap",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_memory_requirements2",
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_NV_display_stereo",
         { { "VK_VERSION_1_0",
             { {
@@ -2811,6 +2823,13 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return "VK_EXT_layer_settings";
     }
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    if ( extension == "VK_NV_displacement_micromap" )
+    {
+      return "VK_NV_cluster_acceleration_structure";
+    }
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
     return "";
   }
 
@@ -3254,7 +3273,11 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_MVK_macos_surface" ) ||
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
            ( extension == "VK_AMD_gpu_shader_int16" ) || ( extension == "VK_NV_ray_tracing" ) || ( extension == "VK_EXT_buffer_device_address" ) ||
-           ( extension == "VK_EXT_validation_features" );
+           ( extension == "VK_EXT_validation_features" ) ||
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+           ( extension == "VK_NV_displacement_micromap" ) ||
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+           false;
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & extension )
@@ -3449,14 +3472,14 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
         || ( extension == "VK_MSFT_layered_driver" ) || ( extension == "VK_KHR_index_type_uint8" ) || ( extension == "VK_KHR_line_rasterization" ) ||
            ( extension == "VK_KHR_calibrated_timestamps" ) || ( extension == "VK_KHR_shader_expect_assume" ) || ( extension == "VK_KHR_maintenance6" ) ||
-           ( extension == "VK_NV_descriptor_pool_overallocation" ) || ( extension == "VK_KHR_video_encode_quantization_map" ) ||
-           ( extension == "VK_NV_raw_access_chains" ) || ( extension == "VK_NV_external_compute_queue" ) ||
-           ( extension == "VK_KHR_shader_relaxed_extended_instruction" ) || ( extension == "VK_NV_command_buffer_inheritance" ) ||
-           ( extension == "VK_KHR_maintenance7" ) || ( extension == "VK_NV_shader_atomic_float16_vector" ) ||
-           ( extension == "VK_EXT_shader_replicated_composites" ) || ( extension == "VK_NV_ray_tracing_validation" ) ||
-           ( extension == "VK_NV_cluster_acceleration_structure" ) || ( extension == "VK_NV_partitioned_acceleration_structure" ) ||
-           ( extension == "VK_EXT_device_generated_commands" ) || ( extension == "VK_KHR_maintenance8" ) ||
-           ( extension == "VK_MESA_image_alignment_control" ) || ( extension == "VK_EXT_depth_clamp_control" ) ||
+           ( extension == "VK_NV_descriptor_pool_overallocation" ) || ( extension == "VK_QCOM_tile_memory_heap" ) ||
+           ( extension == "VK_KHR_video_encode_quantization_map" ) || ( extension == "VK_NV_raw_access_chains" ) ||
+           ( extension == "VK_NV_external_compute_queue" ) || ( extension == "VK_KHR_shader_relaxed_extended_instruction" ) ||
+           ( extension == "VK_NV_command_buffer_inheritance" ) || ( extension == "VK_KHR_maintenance7" ) ||
+           ( extension == "VK_NV_shader_atomic_float16_vector" ) || ( extension == "VK_EXT_shader_replicated_composites" ) ||
+           ( extension == "VK_NV_ray_tracing_validation" ) || ( extension == "VK_NV_cluster_acceleration_structure" ) ||
+           ( extension == "VK_NV_partitioned_acceleration_structure" ) || ( extension == "VK_EXT_device_generated_commands" ) ||
+           ( extension == "VK_KHR_maintenance8" ) || ( extension == "VK_MESA_image_alignment_control" ) || ( extension == "VK_EXT_depth_clamp_control" ) ||
            ( extension == "VK_KHR_video_maintenance2" ) || ( extension == "VK_HUAWEI_hdr_vivid" ) || ( extension == "VK_NV_cooperative_matrix2" ) ||
            ( extension == "VK_ARM_pipeline_opacity_micromap" )
 #if defined( VK_USE_PLATFORM_METAL_EXT )

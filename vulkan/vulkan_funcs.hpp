@@ -30777,6 +30777,34 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+  //=== VK_QCOM_tile_memory_heap ===
+
+  // wrapper function for command vkCmdBindTileMemoryQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBindTileMemoryQCOM.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::bindTileMemoryQCOM( const VULKAN_HPP_NAMESPACE::TileMemoryBindInfoQCOM * pTileMemoryBindInfo,
+                                                            Dispatch const &                                     d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdBindTileMemoryQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<const VkTileMemoryBindInfoQCOM *>( pTileMemoryBindInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCmdBindTileMemoryQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBindTileMemoryQCOM.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::bindTileMemoryQCOM( Optional<const VULKAN_HPP_NAMESPACE::TileMemoryBindInfoQCOM> tileMemoryBindInfo,
+                                                            Dispatch const &                                             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdBindTileMemoryQCOM && "Function <vkCmdBindTileMemoryQCOM> requires <VK_QCOM_tile_memory_heap>" );
+#  endif
+
+    d.vkCmdBindTileMemoryQCOM(
+      m_commandBuffer,
+      reinterpret_cast<const VkTileMemoryBindInfoQCOM *>( static_cast<const VULKAN_HPP_NAMESPACE::TileMemoryBindInfoQCOM *>( tileMemoryBindInfo ) ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
   //=== VK_NV_external_compute_queue ===
 
   // wrapper function for command vkCreateExternalComputeQueueNV, see

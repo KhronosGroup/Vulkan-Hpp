@@ -207,6 +207,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " SampleWeightQCOM |";
     if ( value & ImageUsageFlagBits::eSampleBlockMatchQCOM )
       result += " SampleBlockMatchQCOM |";
+    if ( value & ImageUsageFlagBits::eTileMemoryQCOM )
+      result += " TileMemoryQCOM |";
     if ( value & ImageUsageFlagBits::eVideoEncodeQuantizationDeltaMapKHR )
       result += " VideoEncodeQuantizationDeltaMapKHR |";
     if ( value & ImageUsageFlagBits::eVideoEncodeEmphasisMapKHR )
@@ -239,6 +241,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " DeviceLocal |";
     if ( value & MemoryHeapFlagBits::eMultiInstance )
       result += " MultiInstance |";
+    if ( value & MemoryHeapFlagBits::eTileMemoryQCOM )
+      result += " TileMemoryQCOM |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -663,6 +667,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " MicromapBuildInputReadOnlyEXT |";
     if ( value & BufferUsageFlagBits::eMicromapStorageEXT )
       result += " MicromapStorageEXT |";
+    if ( value & BufferUsageFlagBits::eTileMemoryQCOM )
+      result += " TileMemoryQCOM |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -2119,6 +2125,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " MicromapBuildInputReadOnlyEXT |";
     if ( value & BufferUsageFlagBits2::eMicromapStorageEXT )
       result += " MicromapStorageEXT |";
+    if ( value & BufferUsageFlagBits2::eTileMemoryQCOM )
+      result += " TileMemoryQCOM |";
     if ( value & BufferUsageFlagBits2::ePreprocessBufferEXT )
       result += " PreprocessBufferEXT |";
 
@@ -5038,6 +5046,11 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSetDescriptorBufferOffsetsInfoEXT                         : return "SetDescriptorBufferOffsetsInfoEXT";
       case StructureType::eBindDescriptorBufferEmbeddedSamplersInfoEXT               : return "BindDescriptorBufferEmbeddedSamplersInfoEXT";
       case StructureType::ePhysicalDeviceDescriptorPoolOverallocationFeaturesNV      : return "PhysicalDeviceDescriptorPoolOverallocationFeaturesNV";
+      case StructureType::ePhysicalDeviceTileMemoryHeapFeaturesQCOM                  : return "PhysicalDeviceTileMemoryHeapFeaturesQCOM";
+      case StructureType::ePhysicalDeviceTileMemoryHeapPropertiesQCOM                : return "PhysicalDeviceTileMemoryHeapPropertiesQCOM";
+      case StructureType::eTileMemoryRequirementsQCOM                                : return "TileMemoryRequirementsQCOM";
+      case StructureType::eTileMemoryBindInfoQCOM                                    : return "TileMemoryBindInfoQCOM";
+      case StructureType::eTileMemorySizeInfoQCOM                                    : return "TileMemorySizeInfoQCOM";
       case StructureType::eDisplaySurfaceStereoCreateInfoNV                          : return "DisplaySurfaceStereoCreateInfoNV";
       case StructureType::eDisplayModeStereoPropertiesNV                             : return "DisplayModeStereoPropertiesNV";
       case StructureType::eVideoEncodeQuantizationMapCapabilitiesKHR                 : return "VideoEncodeQuantizationMapCapabilitiesKHR";
@@ -5594,6 +5607,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageUsageFlagBits::eInvocationMaskHUAWEI              : return "InvocationMaskHUAWEI";
       case ImageUsageFlagBits::eSampleWeightQCOM                  : return "SampleWeightQCOM";
       case ImageUsageFlagBits::eSampleBlockMatchQCOM              : return "SampleBlockMatchQCOM";
+      case ImageUsageFlagBits::eTileMemoryQCOM                    : return "TileMemoryQCOM";
       case ImageUsageFlagBits::eVideoEncodeQuantizationDeltaMapKHR: return "VideoEncodeQuantizationDeltaMapKHR";
       case ImageUsageFlagBits::eVideoEncodeEmphasisMapKHR         : return "VideoEncodeEmphasisMapKHR";
       default                                                     : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
@@ -5622,9 +5636,10 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( value )
     {
-      case MemoryHeapFlagBits::eDeviceLocal  : return "DeviceLocal";
-      case MemoryHeapFlagBits::eMultiInstance: return "MultiInstance";
-      default                                : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+      case MemoryHeapFlagBits::eDeviceLocal   : return "DeviceLocal";
+      case MemoryHeapFlagBits::eMultiInstance : return "MultiInstance";
+      case MemoryHeapFlagBits::eTileMemoryQCOM: return "TileMemoryQCOM";
+      default                                 : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -5935,6 +5950,7 @@ namespace VULKAN_HPP_NAMESPACE
       case BufferUsageFlagBits::ePushDescriptorsDescriptorBufferEXT        : return "PushDescriptorsDescriptorBufferEXT";
       case BufferUsageFlagBits::eMicromapBuildInputReadOnlyEXT             : return "MicromapBuildInputReadOnlyEXT";
       case BufferUsageFlagBits::eMicromapStorageEXT                        : return "MicromapStorageEXT";
+      case BufferUsageFlagBits::eTileMemoryQCOM                            : return "TileMemoryQCOM";
       default                                                              : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7495,6 +7511,7 @@ namespace VULKAN_HPP_NAMESPACE
       case BufferUsageFlagBits2::ePushDescriptorsDescriptorBufferEXT        : return "PushDescriptorsDescriptorBufferEXT";
       case BufferUsageFlagBits2::eMicromapBuildInputReadOnlyEXT             : return "MicromapBuildInputReadOnlyEXT";
       case BufferUsageFlagBits2::eMicromapStorageEXT                        : return "MicromapStorageEXT";
+      case BufferUsageFlagBits2::eTileMemoryQCOM                            : return "TileMemoryQCOM";
       case BufferUsageFlagBits2::ePreprocessBufferEXT                       : return "PreprocessBufferEXT";
       default                                                               : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }

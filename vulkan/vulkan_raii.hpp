@@ -1817,6 +1817,9 @@ namespace VULKAN_HPP_NAMESPACE
           vkCmdBindDescriptorBufferEmbeddedSamplers2EXT =
             PFN_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT( vkGetDeviceProcAddr( device, "vkCmdBindDescriptorBufferEmbeddedSamplers2EXT" ) );
 
+          //=== VK_QCOM_tile_memory_heap ===
+          vkCmdBindTileMemoryQCOM = PFN_vkCmdBindTileMemoryQCOM( vkGetDeviceProcAddr( device, "vkCmdBindTileMemoryQCOM" ) );
+
           //=== VK_NV_external_compute_queue ===
           vkCreateExternalComputeQueueNV  = PFN_vkCreateExternalComputeQueueNV( vkGetDeviceProcAddr( device, "vkCreateExternalComputeQueueNV" ) );
           vkDestroyExternalComputeQueueNV = PFN_vkDestroyExternalComputeQueueNV( vkGetDeviceProcAddr( device, "vkDestroyExternalComputeQueueNV" ) );
@@ -2780,6 +2783,9 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkCmdPushDescriptorSetWithTemplate2KHR        vkCmdPushDescriptorSetWithTemplate2KHR        = 0;
         PFN_vkCmdSetDescriptorBufferOffsets2EXT           vkCmdSetDescriptorBufferOffsets2EXT           = 0;
         PFN_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT vkCmdBindDescriptorBufferEmbeddedSamplers2EXT = 0;
+
+        //=== VK_QCOM_tile_memory_heap ===
+        PFN_vkCmdBindTileMemoryQCOM vkCmdBindTileMemoryQCOM = 0;
 
         //=== VK_NV_external_compute_queue ===
         PFN_vkCreateExternalComputeQueueNV  vkCreateExternalComputeQueueNV  = 0;
@@ -7878,6 +7884,12 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBindDescriptorBufferEmbeddedSamplers2EXT.html
       void bindDescriptorBufferEmbeddedSamplers2EXT(
         const VULKAN_HPP_NAMESPACE::BindDescriptorBufferEmbeddedSamplersInfoEXT & bindDescriptorBufferEmbeddedSamplersInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_QCOM_tile_memory_heap ===
+
+      // wrapper function for command vkCmdBindTileMemoryQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBindTileMemoryQCOM.html
+      void bindTileMemoryQCOM( Optional<const VULKAN_HPP_NAMESPACE::TileMemoryBindInfoQCOM> tileMemoryBindInfo
+                                 VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_NV_cluster_acceleration_structure ===
 
@@ -27168,6 +27180,19 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkCmdBindDescriptorBufferEmbeddedSamplers2EXT(
         static_cast<VkCommandBuffer>( m_commandBuffer ),
         reinterpret_cast<const VkBindDescriptorBufferEmbeddedSamplersInfoEXT *>( &bindDescriptorBufferEmbeddedSamplersInfo ) );
+    }
+
+    //=== VK_QCOM_tile_memory_heap ===
+
+    // wrapper function for command vkCmdBindTileMemoryQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBindTileMemoryQCOM.html
+    VULKAN_HPP_INLINE void
+      CommandBuffer::bindTileMemoryQCOM( Optional<const VULKAN_HPP_NAMESPACE::TileMemoryBindInfoQCOM> tileMemoryBindInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBindTileMemoryQCOM && "Function <vkCmdBindTileMemoryQCOM> requires <VK_QCOM_tile_memory_heap>" );
+
+      getDispatcher()->vkCmdBindTileMemoryQCOM(
+        static_cast<VkCommandBuffer>( m_commandBuffer ),
+        reinterpret_cast<const VkTileMemoryBindInfoQCOM *>( static_cast<const VULKAN_HPP_NAMESPACE::TileMemoryBindInfoQCOM *>( tileMemoryBindInfo ) ) );
     }
 
     //=== VK_NV_external_compute_queue ===

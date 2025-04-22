@@ -5615,6 +5615,11 @@ std::string VulkanHppGenerator::generateCppModuleFormatTraitsUsings() const
                                                 "componentPlaneIndex",
                                                 "componentsAreCompressed",
                                                 "compressionScheme",
+                                                "getDepthFormats",
+                                                "getDepthStencilFormats",
+                                                "getStencilFormats",
+                                                "hasDepthComponent",
+                                                "hasStencilComponent",
                                                 "isCompressed",
                                                 "packed",
                                                 "planeCompatibleFormat",
@@ -7647,199 +7652,24 @@ std::string VulkanHppGenerator::generateExtensionTypeTest( std::string const & t
 
 std::string VulkanHppGenerator::generateFormatTraits() const
 {
-  if ( m_formats.empty() )
-  {
-    return "";
-  }
-
-  const std::string formatTraitsTemplate = R"(
-  //=====================
-  //=== Format Traits ===
-  //=====================
-
-  // The three-dimensional extent of a texel block.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 std::array<uint8_t, 3> blockExtent( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${blockExtentCases}
-      default: return {{1, 1, 1 }};
-    }
-  }
-
-  // The texel block size in bytes.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t blockSize( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${blockSizeCases}
-      default : VULKAN_HPP_ASSERT( false ); return 0;
-    }
-  }
-
-  // The class of the format (can't be just named "class"!)
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * compatibilityClass( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${classCases}
-      default : VULKAN_HPP_ASSERT( false ); return "";
-    }
-  }
-
-  // The number of bits in this component, if not compressed, otherwise 0.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentBits( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
-  {
-    switch( format )
-    {
-${componentBitsCases}
-      default: return 0;
-    }
-  }
-
-  // The number of components of this format.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentCount( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${componentCountCases}
-      default: return 0;
-    }
-  }
-
-  // The name of the component
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * componentName( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
-  {
-    switch( format )
-    {
-${componentNameCases}
-      default: return "";
-    }
-  }
-
-  // The numeric format of the component
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * componentNumericFormat( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
-  {
-    switch( format )
-    {
-${componentNumericFormatCases}
-      default: return "";
-    }
-  }
-
-  // The plane this component lies in.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentPlaneIndex( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
-  {
-    switch( format )
-    {
-${componentPlaneIndexCases}
-      default: return 0;
-    }
-  }
-
-  // True, if the components of this format are compressed, otherwise false.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool componentsAreCompressed( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${componentsAreCompressedCases}
-        return true;
-      default: return false;
-    }
-  }
-
-  // A textual description of the compression scheme, or an empty string if it is not compressed
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * compressionScheme( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${compressionSchemeCases}
-      default: return "";
-    }
-  }
-
-  // True, if this format is a compressed one.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool isCompressed( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    return ( *VULKAN_HPP_NAMESPACE::compressionScheme( format ) != 0 );
-  }
-
-  // The number of bits into which the format is packed. A single image element in this format
-  // can be stored in the same space as a scalar type of this bit width.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t packed( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${packedCases}
-      default: return 0;
-    }
-  }
-
-  // The single-plane format that this plane is compatible with.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_NAMESPACE::Format planeCompatibleFormat( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
-  {
-    switch( format )
-    {
-${planeCompatibleCases}
-      default: VULKAN_HPP_ASSERT( plane == 0 ); return format;
-    }
-  }
-
-  // The number of image planes of this format.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeCount( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${planeCountCases}
-      default: return 1;
-    }
-  }
-
-  // The relative height of this plane. A value of k means that this plane is 1/k the height of the overall format.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeHeightDivisor( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
-  {
-    switch( format )
-    {
-${planeHeightDivisorCases}
-      default: VULKAN_HPP_ASSERT( plane == 0 ); return 1;
-    }
-  }
-
-  // The relative width of this plane. A value of k means that this plane is 1/k the width of the overall format.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeWidthDivisor( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
-  {
-    switch( format )
-    {
-${planeWidthDivisorCases}
-      default: VULKAN_HPP_ASSERT( plane == 0 ); return 1;
-    }
-  }
-
-  // The number of texels in a texel block.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t texelsPerBlock( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${texelsPerBlockCases}
-      default: VULKAN_HPP_ASSERT( false ); return 0;
-    }
-  }
-)";
+  assert( !m_formats.empty() );
 
   auto formatIt = m_enums.find( "VkFormat" );
   assert( formatIt != m_enums.end() );
   assert( formatIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
 
   std::string blockSizeCases, blockExtentCases, classCases, componentBitsCases, componentCountCases, componentNameCases, componentNumericFormatCases,
-    componentPlaneIndexCases, componentsAreCompressedCases, compressionSchemeCases, packedCases, planeCompatibleCases, planeCountCases, planeHeightDivisorCases,
-    planeWidthDivisorCases, texelsPerBlockCases;
+    componentPlaneIndexCases, componentsAreCompressedCases, compressionSchemeCases, depthCases, depthFormats, depthStencilFormats, packedCases,
+    planeCompatibleCases, planeCountCases, planeHeightDivisorCases, planeWidthDivisorCases, stencilCases, stencilFormats, texelsPerBlockCases;
   for ( auto formatValuesIt = std::next( formatIt->second.values.begin() ); formatValuesIt != formatIt->second.values.end(); ++formatValuesIt )
   {
     if ( formatValuesIt->supported )
     {
       auto traitIt = m_formats.find( formatValuesIt->name );
       assert( traitIt != m_formats.end() );
-      std::string caseString = "      case VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", traitIt->first, false ) + ":";
+      std::string formatName = "VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", traitIt->first, false );
+
+      std::string caseString = "      case " + formatName + ":";
 
       blockSizeCases += caseString + " return " + traitIt->second.blockSize + ";\n";
 
@@ -7994,10 +7824,41 @@ ${widthDivisorCases}
       }
 
       texelsPerBlockCases += caseString + " return " + traitIt->second.texelsPerBlock + ";\n";
+
+      if ( std::ranges::find_if( traitIt->second.components, []( auto const & component ) { return component.name == "D"; } ) !=
+           traitIt->second.components.end() )
+      {
+        depthCases += caseString + "\n";
+        depthFormats += formatName + ", ";
+
+        if ( std::ranges::find_if( traitIt->second.components, []( auto const & component ) { return component.name == "S"; } ) !=
+             traitIt->second.components.end() )
+        {
+          depthStencilFormats += formatName + ", ";
+        }
+      }
+
+      if ( std::ranges::find_if( traitIt->second.components, []( auto const & component ) { return component.name == "S"; } ) !=
+           traitIt->second.components.end() )
+      {
+        stencilCases += caseString + "\n";
+        stencilFormats += formatName + ", ";
+      }
     }
   }
 
-  return replaceWithMap( formatTraitsTemplate,
+  assert( depthCases.ends_with( ":\n" ) );
+  depthCases += "        return true;\n";
+  assert( depthFormats.ends_with( ", " ) );
+  depthFormats = depthFormats.substr( 0, depthFormats.length() - 2 );
+  assert( depthStencilFormats.ends_with( ", " ) );
+  depthStencilFormats = depthStencilFormats.substr( 0, depthStencilFormats.length() - 2 );
+  assert( stencilCases.ends_with( ":\n" ) );
+  stencilCases += "        return true;\n";
+  assert( stencilFormats.ends_with( ", " ) );
+  stencilFormats = stencilFormats.substr( 0, stencilFormats.length() - 2 );
+
+  return replaceWithMap( readSnippet( "FormatTraits.hpp" ),
                          { { "blockExtentCases", blockExtentCases },
                            { "blockSizeCases", blockSizeCases },
                            { "classCases", classCases },
@@ -8008,11 +7869,16 @@ ${widthDivisorCases}
                            { "componentPlaneIndexCases", componentPlaneIndexCases },
                            { "componentsAreCompressedCases", componentsAreCompressedCases },
                            { "compressionSchemeCases", compressionSchemeCases },
+                           { "depthCases", depthCases },
+                           { "depthFormats", depthFormats },
+                           { "depthStencilFormats", depthStencilFormats },
                            { "packedCases", packedCases },
                            { "planeCompatibleCases", planeCompatibleCases },
                            { "planeCountCases", planeCountCases },
                            { "planeHeightDivisorCases", planeHeightDivisorCases },
                            { "planeWidthDivisorCases", planeWidthDivisorCases },
+                           { "stencilCases", stencilCases },
+                           { "stencilFormats", stencilFormats },
                            { "texelsPerBlockCases", texelsPerBlockCases } } );
 }
 

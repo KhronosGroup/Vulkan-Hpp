@@ -5245,6 +5245,11 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::componentPlaneIndex;
   using VULKAN_HPP_NAMESPACE::componentsAreCompressed;
   using VULKAN_HPP_NAMESPACE::compressionScheme;
+  using VULKAN_HPP_NAMESPACE::getDepthFormats;
+  using VULKAN_HPP_NAMESPACE::getDepthStencilFormats;
+  using VULKAN_HPP_NAMESPACE::getStencilFormats;
+  using VULKAN_HPP_NAMESPACE::hasDepthComponent;
+  using VULKAN_HPP_NAMESPACE::hasStencilComponent;
   using VULKAN_HPP_NAMESPACE::isCompressed;
   using VULKAN_HPP_NAMESPACE::packed;
   using VULKAN_HPP_NAMESPACE::planeCompatibleFormat;

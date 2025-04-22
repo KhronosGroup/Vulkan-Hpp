@@ -54,7 +54,7 @@ namespace
 
 void writeToFile( std::string const & str, std::string const & fileName );
 
-const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window" };
+const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window", "VkExportMetalObjectsInfoEXT" };
 
 //
 // VulkanHppGenerator public interface
@@ -2294,16 +2294,15 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
       {
         if ( ( params[i].type.type == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) )
         {
-          arguments.push_back( composedType + " " );
+          arguments.push_back( composedType + " " + params[i].name );
         }
         else
         {
           assert( withDispatcher || !isHandleType( params[i].type.type ) );
           assert( params[i].lenExpression.empty() && !params[i].optional );
           assert( composedType.ends_with( " *" ) );
-          arguments.push_back( stripPostfix( composedType, " *" ) + " & " );
+          arguments.push_back( stripPostfix( composedType, " *" ) + " & " + startLowerCase( stripPrefix( params[i].name, "p" ) ) );
         }
-        arguments.back() += params[i].name;
       }
       else
       {

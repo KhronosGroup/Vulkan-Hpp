@@ -58,10 +58,10 @@ namespace VULKAN_HPP_NAMESPACE
   std::vector<VULKAN_HPP_NAMESPACE::Format> const & getStencilFormats();
 
   // True, if this format has a depth component
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool hasDepthComponent( VULKAN_HPP_NAMESPACE::Format format );
+  VULKAN_HPP_CONSTEXPR_14 bool hasDepthComponent( VULKAN_HPP_NAMESPACE::Format format );
 
   // True, if this format has a stencil component
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool hasStencilComponent( VULKAN_HPP_NAMESPACE::Format format );
+  VULKAN_HPP_CONSTEXPR_14 bool hasStencilComponent( VULKAN_HPP_NAMESPACE::Format format );
 
   // True, if this format is a compressed one.
   VULKAN_HPP_CONSTEXPR_14 bool isCompressed( VULKAN_HPP_NAMESPACE::Format format );

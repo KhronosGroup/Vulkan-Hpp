@@ -617,38 +617,50 @@ For all functions, that `VULKAN_HPP_DEFAULT_DISPATCHER` is the default for the l
 ### vk::Format trait functions
 
 With the additional header [`vulkan_format_traits.hpp`](vulkan/vulkan_format_traits.hpp), a couple of trait functions on `vk::Format` are provided. With C++14 and above, all those functions are marked as `constexpr`, that is with appropriate arguments, they are resolved at compile time.
-- `uin8_t blockSize( vk::Format format );`
-	Gets the texel block size of this format in bytes.
-- `uint8_t texelsPerBlock( vk::Format format );`
-	Gets the number of texels in a texel block.
 - `std::array<uint8_t, 3> blockExtent( vk::Format format );`
 	Gets the three-dimensional extent of texel blocks.
-- `char const * compressionScheme( vk::Format format );`
-	Gets a textual description of the compression scheme of this format, or an empty text if it is not compressed.
-- `bool isCompressed( vk::Format format );`
-	True, if format is a compressed format, otherwise false.
-- `uint8_t packed( vk::Format format );`
-	Gets the number of bits into which the format is packed. A single image element in this format can be stored in the same space as a scalar type of this bit width.
-- `uint8_t componentCount( vk::Format format );`
-	Gets the number of components of this format.
-- `bool componentsAreCompressed( vk::Format format );`
-	True, if the components of this format are compressed, otherwise False.
+- `uin8_t blockSize( vk::Format format );`
+	Gets the texel block size of this format in bytes.
+- `char const * compatibilityClass( VULKAN_HPP_NAMESPACE::Format format );`
+	The class of the format (can't be just named "class"!)
 - `uint8_t componentBits( vk::Format format, uint8_t component );`
 	Gets the number of bits in this component, if not compressed, otherwise 0.
+- `uint8_t componentCount( vk::Format format );`
+	Gets the number of components of this format.
 - `char const * componentName( vk::Format format, uint8_t component );`
 	Gets the name of this component as a c-string.
 - `char const * componentNumericFormat( vk::Format format, uint8_t component );`
 	Gets the numeric format of this component as a c-string.
 - `uint8_t componentPlaneIndex( vk::Format format, uint8_t component );`
 	Gets the plane index, this component lies in.
-- `uint8_t planeCount( vk::Format format );`
-	Gets the number of image planes of this format.
+- `bool componentsAreCompressed( vk::Format format );`
+	True, if the components of this format are compressed, otherwise False.
+- `char const * compressionScheme( vk::Format format );`
+	Gets a textual description of the compression scheme of this format, or an empty text if it is not compressed.
+- `std::vector<VULKAN_HPP_NAMESPACE::Format> const & getDepthFormats();`
+	Get all formats with a depth component
+- `std::vector<VULKAN_HPP_NAMESPACE::Format> const & getDepthStencilFormats();`
+	Get all formats with a depth and a stencil component
+- `std::vector<VULKAN_HPP_NAMESPACE::Format> const & getStencilFormats();`
+	Get all formats with a stencil component
+- `bool hasDepthComponent( VULKAN_HPP_NAMESPACE::Format format );`
+	True, if this format has a depth component, otherwise false.
+- `hasStencilComponent( VULKAN_HPP_NAMESPACE::Format format );`
+	True, if this format has a stencil component, otherwise false.
+- `bool isCompressed( vk::Format format );`
+	True, if this format is a compressed one, otherwise false.
+- `uint8_t packed( vk::Format format );`
+	Gets the number of bits into which the format is packed. A single image element in this format can be stored in the same space as a scalar type of this bit width.
 - `vk::Format planeCompatibleFormat( vk::Format format, uint8_t plane );`
 	Gets a single-plane format compatible with this plane.
+- `uint8_t planeCount( vk::Format format );`
+	Gets the number of image planes of this format.
 - `uint8_t planeHeightDivisor( vk::Format format, uint8_t plane );`
 	Gets the relative height of this plane. A value of k means that this plane is 1/k the height of the overall format.
 - `uint8_t planeWidthDivisor( vk::Format format, uint8_t plane );`
 	Gets the relative width of this plane. A value of k means that this plane is 1/k the width of the overall format.
+- `uint8_t texelsPerBlock( vk::Format format );`
+	Gets the number of texels in a texel block.
 
 ### Hashing Vulkan types
 

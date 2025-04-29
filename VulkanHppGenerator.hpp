@@ -163,8 +163,8 @@ private:
 
   struct EnumData
   {
-    void addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & protect, bool supported );
-    void addEnumValue( int                 line,
+    bool addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & protect, bool supported );
+    bool addEnumValue( int                 line,
                        std::string const & valueName,
                        std::string const & protect,
                        std::string const & bitpos,
@@ -516,15 +516,25 @@ private:
                                             std::string &                    deviceMembers,
                                             std::string &                    instanceAssignments,
                                             std::string &                    instanceMembers ) const;
+  void        checkAttributes( int                                                  line,
+                               std::map<std::string, std::string> const &           attributes,
+                               std::map<std::string, std::set<std::string>> const & required,
+                               std::map<std::string, std::set<std::string>> const & optional = {} ) const;
   void        checkBitmaskCorrectness() const;
   void        checkCommandCorrectness() const;
   void        checkCorrectness() const;
   void        checkDefineCorrectness() const;
+  void        checkElements( int                                               line,
+                             std::vector<tinyxml2::XMLElement const *> const & elements,
+                             std::map<std::string, bool> const &               required,
+                             std::set<std::string> const &                     optional = {} ) const;
   void        checkEnumCorrectness() const;
   bool        checkEquivalentSingularConstructor( std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts,
                                                   std::map<std::string, CommandData>::const_iterator                      constructorIt,
                                                   std::vector<ParamData>::const_iterator                                  lenIt ) const;
   void        checkExtensionCorrectness() const;
+  void        checkForError( bool condition, int line, std::string const & message ) const;
+  void        checkForWarning( bool condition, int line, std::string const & message ) const;
   void        checkFuncPointerCorrectness() const;
   void        checkHandleCorrectness() const;
   void        checkRequireCorrectness() const;
@@ -1092,28 +1102,30 @@ private:
   std::pair<bool, ParamData>                             readCommandParam( tinyxml2::XMLElement const * element, std::vector<ParamData> const & params );
   std::pair<std::string, std::string>                    readCommandProto( tinyxml2::XMLElement const * element );
   void                                                   readCommands( tinyxml2::XMLElement const * element );
+  std::string                                            readComment( tinyxml2::XMLElement const * element ) const;
   void                                                   readEnums( tinyxml2::XMLElement const * element );
   void                                                   readEnumsConstants( tinyxml2::XMLElement const * element );
-  void                          readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt );
-  void                          readExtension( tinyxml2::XMLElement const * element );
-  void                          readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData, bool extensionSupported );
-  void                          readExtensions( tinyxml2::XMLElement const * element );
-  void                          readFeature( tinyxml2::XMLElement const * element );
-  void                          readFeatureRequire( tinyxml2::XMLElement const * element, FeatureData & featureData, bool featureSupported );
-  void                          readFormat( tinyxml2::XMLElement const * element );
-  void                          readFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData );
-  void                          readFormatPlane( tinyxml2::XMLElement const * element, FormatData & formatData );
-  void                          readFormats( tinyxml2::XMLElement const * element );
-  void                          readFormatSPIRVImageFormat( tinyxml2::XMLElement const * element, FormatData & formatData );
-  std::string                   readName( tinyxml2::XMLElement const * elements );
-  std::pair<NameData, TypeInfo> readNameAndType( tinyxml2::XMLElement const * elements );
-  void                          readPlatform( tinyxml2::XMLElement const * element );
-  void                          readPlatforms( tinyxml2::XMLElement const * element );
-  void                          readRegistry( tinyxml2::XMLElement const * element );
-  RemoveData                    readRemoveData( tinyxml2::XMLElement const * element );
-  NameLine                      readRequireCommand( tinyxml2::XMLElement const * element );
-  void                          readRequireEnum(
-                             tinyxml2::XMLElement const * element, std::string const & requiredBy, std::string const & platform, bool supported, RequireData & requireData );
+  void readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt );
+  void readExtension( tinyxml2::XMLElement const * element );
+  void readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData, bool extensionSupported );
+  void readExtensions( tinyxml2::XMLElement const * element );
+  void readFeature( tinyxml2::XMLElement const * element );
+  void readFeatureRequire( tinyxml2::XMLElement const * element, FeatureData & featureData, bool featureSupported );
+  void readFormat( tinyxml2::XMLElement const * element );
+  void readFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData );
+  void readFormatPlane( tinyxml2::XMLElement const * element, FormatData & formatData );
+  void readFormats( tinyxml2::XMLElement const * element );
+  void readFormatSPIRVImageFormat( tinyxml2::XMLElement const * element, FormatData & formatData );
+  std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node ) const;
+  std::string                                      readName( tinyxml2::XMLElement const * elements );
+  std::pair<NameData, TypeInfo>                    readNameAndType( tinyxml2::XMLElement const * elements );
+  void                                             readPlatform( tinyxml2::XMLElement const * element );
+  void                                             readPlatforms( tinyxml2::XMLElement const * element );
+  void                                             readRegistry( tinyxml2::XMLElement const * element );
+  RemoveData                                       readRemoveData( tinyxml2::XMLElement const * element );
+  NameLine                                         readRequireCommand( tinyxml2::XMLElement const * element );
+  void                                             readRequireEnum(
+                                                tinyxml2::XMLElement const * element, std::string const & requiredBy, std::string const & platform, bool supported, RequireData & requireData );
   RequireFeature           readRequireFeature( tinyxml2::XMLElement const * element );
   NameLine                 readRequireType( tinyxml2::XMLElement const * element );
   void                     readSPIRVCapability( tinyxml2::XMLElement const * element );

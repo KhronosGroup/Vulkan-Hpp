@@ -785,6 +785,14 @@ void VulkanHppGenerator::appendRAIIDispatcherCommands( std::vector<RequireData> 
   instanceMembers += addTitleAndProtection( title, im, imp );
 }
 
+void VulkanHppGenerator::checkAttributes( int                                                  line,
+                                          std::map<std::string, std::string> const &           attributes,
+                                          std::map<std::string, std::set<std::string>> const & required,
+                                          std::map<std::string, std::set<std::string>> const & optional ) const
+{
+  ::checkAttributes( "VulkanHppGenerator", line, attributes, required, optional );
+}
+
 void VulkanHppGenerator::checkBitmaskCorrectness() const
 {
   for ( auto const & bitmask : m_bitmasks )
@@ -886,6 +894,14 @@ void VulkanHppGenerator::checkDefineCorrectness() const
                    d.second.xmlLine,
                    "define <" + d.first + "> uses unknown require <" + d.second.require + ">" );
   }
+}
+
+void VulkanHppGenerator::checkElements( int                                               line,
+                                        std::vector<tinyxml2::XMLElement const *> const & elements,
+                                        std::map<std::string, bool> const &               required,
+                                        std::set<std::string> const &                     optional ) const
+{
+  ::checkElements( "VulkanHppGenerator", line, elements, required, optional );
 }
 
 void VulkanHppGenerator::checkEnumCorrectness() const
@@ -1013,6 +1029,16 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
       }
     }
   }
+}
+
+inline void VulkanHppGenerator::checkForError( bool condition, int line, std::string const & message ) const
+{
+  ::checkForError( "VulkanHppGenerator", condition, line, message );
+}
+
+void VulkanHppGenerator::checkForWarning( bool condition, int line, std::string const & message ) const
+{
+  ::checkForWarning( "VulkanHppGenerator", condition, line, message );
 }
 
 void VulkanHppGenerator::checkFuncPointerCorrectness() const
@@ -1952,8 +1978,10 @@ void VulkanHppGenerator::distributeEnumExtends()
       {
         typeIt->second.requiredBy.insert( requiredBy );
       }
-      enumIt->second.addEnumAlias(
-        eed.xmlLine, eed.name, eed.alias, getProtectFromPlatform( eed.platform ), ( eed.api.empty() || ( eed.api == m_api ) ) && eed.supported );
+      checkForError( enumIt->second.addEnumAlias(
+                       eed.xmlLine, eed.name, eed.alias, getProtectFromPlatform( eed.platform ), ( eed.api.empty() || ( eed.api == m_api ) ) && eed.supported ),
+                     eed.xmlLine,
+                     "enum value alias <" + eed.name + "> already listed with different properties" );
     }
   }
   m_enumExtends.clear();
@@ -13780,6 +13808,11 @@ void VulkanHppGenerator::readCommands( tinyxml2::XMLElement const * element )
   }
 }
 
+std::string VulkanHppGenerator::readComment( tinyxml2::XMLElement const * element ) const
+{
+  return ::readComment( "VulkanHppGenerator", element );
+}
+
 void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
 {
   const int                          line       = element->GetLineNum();
@@ -13937,7 +13970,8 @@ void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, st
 
     if ( api.empty() || ( api == m_api ) )
     {
-      enumIt->second.addEnumAlias( line, name, alias, "", true );
+      checkForError(
+        enumIt->second.addEnumAlias( line, name, alias, "", true ), line, "enum value alias <" + name + "> already listed with different properties" );
     }
   }
   else
@@ -13966,7 +14000,9 @@ void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, st
     checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
 
     checkForError( bitpos.empty() ^ value.empty(), line, "both or none of \"bitpos\" and \"value\" are set for enum <" + name + "> which is invalid" );
-    enumIt->second.addEnumValue( line, name, "", bitpos, value, true, deprecated );
+    checkForError( enumIt->second.addEnumValue( line, name, "", bitpos, value, true, deprecated ),
+                   line,
+                   "enum value <" + name + "> already listed with different properties" );
   }
 }
 
@@ -14319,6 +14355,10 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     else if ( attribute.first == "number" )
     {
       extensionData.number = attribute.second;
+      checkForError( isNumber( extensionData.number ), line, "extension number <" + extensionData.number + "> is not a number" );
+      checkForError( std::ranges::none_of( m_extensions, [&extensionData]( auto const & extension ) { return extension.number == extensionData.number; } ),
+                     line,
+                     "extension number <" + extensionData.number + "> already encountered" );
     }
     else if ( attribute.first == "obsoletedby" )
     {
@@ -14701,6 +14741,11 @@ void VulkanHppGenerator::readFormatSPIRVImageFormat( tinyxml2::XMLElement const 
 
   checkForError( formatData.spirvImageFormat.empty(), line, "spirvimageformat <" + name + "> already specified" );
   formatData.spirvImageFormat = name;
+}
+
+std::pair<std::vector<std::string>, std::string> VulkanHppGenerator::readModifiers( tinyxml2::XMLNode const * node ) const
+{
+  return ::readModifiers( "VulkanHppGenerator", node );
 }
 
 std::string VulkanHppGenerator::readName( tinyxml2::XMLElement const * element )
@@ -15093,13 +15138,15 @@ void VulkanHppGenerator::readRequireEnum(
       auto enumIt = findByNameOrAlias( m_enums, extends );
       assert( enumIt != m_enums.end() );
 
-      enumIt->second.addEnumValue( line,
-                                   name,
-                                   protect.empty() ? getProtectFromPlatform( platform ) : protect,
-                                   bitpos + offset,
-                                   value,
-                                   ( api.empty() || ( api == m_api ) ) && supported,
-                                   deprecated );
+      checkForError( enumIt->second.addEnumValue( line,
+                                                  name,
+                                                  protect.empty() ? getProtectFromPlatform( platform ) : protect,
+                                                  bitpos + offset,
+                                                  value,
+                                                  ( api.empty() || ( api == m_api ) ) && supported,
+                                                  deprecated ),
+                     line,
+                     "enum value <" + name + "> already listed with different properties" );
     }
   }
 }
@@ -16891,34 +16938,29 @@ VulkanHppGenerator::MemberData const & VulkanHppGenerator::vectorMemberByStructu
   return structIt->second.members.back();
 }
 
-void VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & protect, bool supported )
+bool VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & protect, bool supported )
 {
   auto aliasIt = findByName( valueAliases, name );
-  if ( aliasIt == valueAliases.end() )
+  bool ok      = ( aliasIt == valueAliases.end() );
+  if ( ok )
   {
     valueAliases.push_back( { alias, name, protect, supported, line } );
   }
-  else
-  {
-    checkForError( ( alias == aliasIt->alias ) && ( protect == aliasIt->protect ) && ( supported == aliasIt->supported ),
-                   line,
-                   "enum value alias <" + name + "> already listed with different properties" );
-  }
+  return ok;
 }
 
-void VulkanHppGenerator::EnumData::addEnumValue(
+bool VulkanHppGenerator::EnumData::addEnumValue(
   int line, std::string const & name, std::string const & protect, std::string const & bitpos, std::string const & value, bool supported, bool deprecated )
 {
   auto valueIt = findByName( values, name );
-  if ( valueIt == values.end() )
+  bool ok      = ( valueIt == values.end() );
+  if ( ok )
   {
     values.push_back( { {}, bitpos, deprecated, name, protect, supported, value, line } );
   }
   else if ( supported )  // only for supported enum values, we need to check for consistency!
   {
-    checkForError( ( bitpos == valueIt->bitpos ) && ( protect == valueIt->protect ) && ( value == valueIt->value ),
-                   line,
-                   "enum value <" + name + "> already listed with different properties" );
+    ok = ( bitpos == valueIt->bitpos ) && ( protect == valueIt->protect ) && ( value == valueIt->value );
     // if a previous version was not supported, make it supported now
     if ( !valueIt->supported )
     {
@@ -16926,6 +16968,7 @@ void VulkanHppGenerator::EnumData::addEnumValue(
       valueIt->xmlLine   = line;
     }
   }
+  return ok || !supported;
 }
 
 //

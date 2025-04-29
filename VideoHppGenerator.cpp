@@ -123,6 +123,14 @@ std::vector<std::string>::iterator VideoHppGenerator::addImplicitlyRequiredTypes
   return reqIt;
 }
 
+void VideoHppGenerator::checkAttributes( int                                                  line,
+                                         std::map<std::string, std::string> const &           attributes,
+                                         std::map<std::string, std::set<std::string>> const & required,
+                                         std::map<std::string, std::set<std::string>> const & optional ) const
+{
+  ::checkAttributes( "VideoHppGenerator", line, attributes, required, optional );
+}
+
 void VideoHppGenerator::checkCorrectness() const
 {
   // only structs to check here!
@@ -174,6 +182,24 @@ void VideoHppGenerator::checkCorrectness() const
       }
     }
   }
+}
+
+void VideoHppGenerator::checkElements( int                                               line,
+                                       std::vector<tinyxml2::XMLElement const *> const & elements,
+                                       std::map<std::string, bool> const &               required,
+                                       std::set<std::string> const &                     optional ) const
+{
+  ::checkElements( "VideoHppGenerator", line, elements, required, optional );
+}
+
+void VideoHppGenerator::checkForError( bool condition, int line, std::string const & message ) const
+{
+  ::checkForError( "VideoHppGenerator", condition, line, message );
+}
+
+void VideoHppGenerator::checkForWarning( bool condition, int line, std::string const & message ) const
+{
+  ::checkForWarning( "VideoHppGenerator", condition, line, message );
 }
 
 std::string VideoHppGenerator::generateEnum( std::pair<std::string, EnumData> const & enumData ) const
@@ -428,6 +454,11 @@ bool VideoHppGenerator::isExtension( std::string const & name ) const
   return std::ranges::any_of( m_extensions, [&name]( ExtensionData const & ed ) { return ed.name == name; } );
 }
 
+std::string VideoHppGenerator::readComment( tinyxml2::XMLElement const * element ) const
+{
+  return ::readComment( "VideoHppGenerator", element );
+}
+
 void VideoHppGenerator::readEnums( tinyxml2::XMLElement const * element )
 {
   int                                line       = element->GetLineNum();
@@ -532,7 +563,7 @@ void VideoHppGenerator::readExtension( tinyxml2::XMLElement const * element )
   std::map<std::string, std::string>        attributes = getAttributes( element );
   std::vector<tinyxml2::XMLElement const *> children   = getChildElements( element );
 
-  checkAttributes( line, attributes, { { "name", {} }, { "comment", {} }, { "supported", { "vulkan" } } }, {} );
+  checkAttributes( line, attributes, { { "name", {} }, { "comment", {} }, { "number", {} }, { "supported", { "vulkan" } } }, {} );
   checkElements( line, children, { { "require", false } } );
 
   ExtensionData extensionData{ .xmlLine = line };
@@ -543,6 +574,14 @@ void VideoHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     {
       extensionData.name = attribute.second;
       checkForError( !isExtension( extensionData.name ), line, "already encountered extension <" + extensionData.name + ">" );
+    }
+    else if ( attribute.first == "number" )
+    {
+      extensionData.number = attribute.second;
+      checkForError( isNumber( extensionData.number ), line, "extension number <" + extensionData.number + "> is not a number" );
+      checkForError( std::ranges::none_of( m_extensions, [&extensionData]( auto const & extension ) { return extension.number == extensionData.number; } ),
+                     line,
+                     "extension number <" + extensionData.number + "> already encountered" );
     }
     else if ( attribute.first == "supported" )
     {
@@ -599,6 +638,11 @@ void VideoHppGenerator::readExtensions( tinyxml2::XMLElement const * element )
     assert( value == "extension" );
     readExtension( child );
   }
+}
+
+std::pair<std::vector<std::string>, std::string> VideoHppGenerator::readModifiers( tinyxml2::XMLNode const * node ) const
+{
+  return ::readModifiers( "VulkanHppGenerator", node );
 }
 
 void VideoHppGenerator::readRegistry( tinyxml2::XMLElement const * element )

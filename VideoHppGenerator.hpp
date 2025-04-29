@@ -65,6 +65,7 @@ private:
   {
     std::string depends     = {};
     std::string name        = {};
+    std::string number      = {};
     RequireData requireData = {};
     int         xmlLine     = 0;
   };
@@ -88,33 +89,45 @@ private:
   void addImplicitlyRequiredTypes();
   std::vector<std::string>::iterator
        addImplicitlyRequiredTypes( std::map<std::string, TypeData>::iterator typeIt, ExtensionData & extensionData, std::vector<std::string>::iterator reqIt );
+  void checkAttributes( int                                                  line,
+                        std::map<std::string, std::string> const &           attributes,
+                        std::map<std::string, std::set<std::string>> const & required,
+                        std::map<std::string, std::set<std::string>> const & optional = {} ) const;
   void checkCorrectness() const;
-  std::string generateEnum( std::pair<std::string, EnumData> const & enumData ) const;
-  std::string generateEnums() const;
-  std::string generateEnums( RequireData const & requireData, std::string const & title ) const;
-  std::string generateStruct( std::pair<std::string, StructureData> const & structData ) const;
-  std::string generateStructCompareOperators( std::pair<std::string, StructureData> const & structData ) const;
-  std::string generateStructMembers( std::pair<std::string, StructureData> const & structData ) const;
-  std::string generateStructs() const;
-  std::string generateStructs( RequireData const & requireData, std::string const & title ) const;
-  bool        isExtension( std::string const & name ) const;
-  void        readEnums( tinyxml2::XMLElement const * element );
-  void        readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt );
-  void        readExtension( tinyxml2::XMLElement const * element );
-  void        readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData );
-  void        readExtensions( tinyxml2::XMLElement const * element );
-  void        readRegistry( tinyxml2::XMLElement const * element );
-  void        readRequireEnum( tinyxml2::XMLElement const * element, std::map<std::string, ConstantData> & constants );
-  void        readRequireType( tinyxml2::XMLElement const * element, ExtensionData & extensionData );
-  void        readStructMember( tinyxml2::XMLElement const * element, std::vector<MemberData> & members );
-  void        readTypeDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-  void        readTypeEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-  void        readTypeInclude( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-  void        readTypeRequires( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-  void        readTypes( tinyxml2::XMLElement const * element );
-  void        readTypeStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-  void        readTypesType( tinyxml2::XMLElement const * element );
-  void        sortStructs();
+  void checkElements( int                                               line,
+                      std::vector<tinyxml2::XMLElement const *> const & elements,
+                      std::map<std::string, bool> const &               required,
+                      std::set<std::string> const &                     optional = {} ) const;
+  void checkForError( bool condition, int line, std::string const & message ) const;
+  void checkForWarning( bool condition, int line, std::string const & message ) const;
+  std::string                                      generateEnum( std::pair<std::string, EnumData> const & enumData ) const;
+  std::string                                      generateEnums() const;
+  std::string                                      generateEnums( RequireData const & requireData, std::string const & title ) const;
+  std::string                                      generateStruct( std::pair<std::string, StructureData> const & structData ) const;
+  std::string                                      generateStructCompareOperators( std::pair<std::string, StructureData> const & structData ) const;
+  std::string                                      generateStructMembers( std::pair<std::string, StructureData> const & structData ) const;
+  std::string                                      generateStructs() const;
+  std::string                                      generateStructs( RequireData const & requireData, std::string const & title ) const;
+  bool                                             isExtension( std::string const & name ) const;
+  std::string                                      readComment( tinyxml2::XMLElement const * element ) const;
+  void                                             readEnums( tinyxml2::XMLElement const * element );
+  void                                             readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt );
+  void                                             readExtension( tinyxml2::XMLElement const * element );
+  void                                             readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData );
+  void                                             readExtensions( tinyxml2::XMLElement const * element );
+  std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node ) const;
+  void                                             readRegistry( tinyxml2::XMLElement const * element );
+  void                                             readRequireEnum( tinyxml2::XMLElement const * element, std::map<std::string, ConstantData> & constants );
+  void                                             readRequireType( tinyxml2::XMLElement const * element, ExtensionData & extensionData );
+  void                                             readStructMember( tinyxml2::XMLElement const * element, std::vector<MemberData> & members );
+  void readTypeDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+  void readTypeEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+  void readTypeInclude( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+  void readTypeRequires( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+  void readTypes( tinyxml2::XMLElement const * element );
+  void readTypeStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+  void readTypesType( tinyxml2::XMLElement const * element );
+  void sortStructs();
 
 private:
   std::string                             m_copyrightMessage;

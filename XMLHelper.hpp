@@ -28,23 +28,25 @@
 
 struct TypeInfo;
 
-void                               checkAttributes( int                                                  line,
+void                               checkAttributes( std::string const &                                  intro,
+                                                    int                                                  line,
                                                     std::map<std::string, std::string> const &           attributes,
                                                     std::map<std::string, std::set<std::string>> const & required,
                                                     std::map<std::string, std::set<std::string>> const & optional );
-void                               checkElements( int                                               line,
+void                               checkElements( std::string const &                               intro,
+                                                  int                                               line,
                                                   std::vector<tinyxml2::XMLElement const *> const & elements,
                                                   std::map<std::string, bool> const &               required,
                                                   std::set<std::string> const &                     optional = {} );
-void                               checkForError( bool condition, int line, std::string const & message );
-void                               checkForWarning( bool condition, int line, std::string const & message );
+void                               checkForError( std::string const & intro, bool condition, int line, std::string const & message );
+void                               checkForWarning( std::string const & intro, bool condition, int line, std::string const & message );
 std::string                        generateCopyrightMessage( std::string const & comment );
 std::string                        generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes );
 std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element );
 template <typename ElementContainer>
 std::vector<tinyxml2::XMLElement const *>        getChildElements( ElementContainer const * element );
-std::string                                      readComment( tinyxml2::XMLElement const * element );
-std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node );
+std::string                                      readComment( std::string const & intro, tinyxml2::XMLElement const * element );
+std::pair<std::vector<std::string>, std::string> readModifiers( std::string const & intro, tinyxml2::XMLNode const * node );
 TypeInfo                                         readTypeInfo( tinyxml2::XMLElement const * element );
 std::string                                      replaceWithMap( std::string const & input, std::map<std::string, std::string> replacements );
 std::string                                      stripPostfix( std::string const & value, std::string const & postfix );
@@ -157,11 +159,13 @@ struct TypeData
 };
 
 // check the validity of an attributes map
+// intro      : an intro to any warning or error message
 // line       : the line in the xml file where the attributes are listed
 // attributes : the map of name/value pairs of the encountered attributes
 // required   : the required attributes, with a set of allowed values per attribute
 // optional   : the optional attributes, with a set of allowed values per attribute
-inline void checkAttributes( int                                                  line,
+inline void checkAttributes( std::string const &                                  intro,
+                             int                                                  line,
                              std::map<std::string, std::string> const &           attributes,
                              std::map<std::string, std::set<std::string>> const & required,
                              std::map<std::string, std::set<std::string>> const & optional )
@@ -171,13 +175,13 @@ inline void checkAttributes( int                                                
   for ( auto const & r : required )
   {
     auto attributesIt = attributes.find( r.first );
-    checkForError( attributesIt != attributes.end(), line, "missing attribute <" + r.first + ">" );
+    checkForError( intro, attributesIt != attributes.end(), line, "missing attribute <" + r.first + ">" );
     if ( !r.second.empty() )
     {
       std::vector<std::string> values = tokenize( attributesIt->second, "," );
       for ( auto const & v : values )
       {
-        checkForError( r.second.find( v ) != r.second.end(), line, "unexpected attribute value <" + v + "> in attribute <" + attributesIt->first + ">" );
+        checkForError( intro, r.second.find( v ) != r.second.end(), line, "unexpected attribute value <" + v + "> in attribute <" + attributesIt->first + ">" );
       }
     }
   }
@@ -190,7 +194,7 @@ inline void checkAttributes( int                                                
       auto optionalIt = optional.find( a.first );
       if ( optionalIt == optional.end() )
       {
-        checkForWarning( false, line, "unknown attribute <" + a.first + ">" );
+        checkForWarning( intro, false, line, "unknown attribute <" + a.first + ">" );
         continue;
       }
       else if ( !optionalIt->second.empty() )
@@ -199,14 +203,15 @@ inline void checkAttributes( int                                                
         for ( auto const & v : values )
         {
           checkForWarning(
-            optionalIt->second.find( v ) != optionalIt->second.end(), line, "unexpected attribute value <" + v + "> in attribute <" + a.first + ">" );
+            intro, optionalIt->second.find( v ) != optionalIt->second.end(), line, "unexpected attribute value <" + v + "> in attribute <" + a.first + ">" );
         }
       }
     }
   }
 }
 
-inline void checkElements( int                                               line,
+inline void checkElements( std::string const &                               intro,
+                           int                                               line,
                            std::vector<tinyxml2::XMLElement const *> const & elements,
                            std::map<std::string, bool> const &               required,
                            std::set<std::string> const &                     optional )
@@ -217,33 +222,34 @@ inline void checkElements( int                                               lin
     std::string value = e->Value();
     encountered[value]++;
     checkForWarning(
-      ( required.find( value ) != required.end() ) || ( optional.find( value ) != optional.end() ), e->GetLineNum(), "unknown element <" + value + ">" );
+      intro, ( required.find( value ) != required.end() ) || ( optional.find( value ) != optional.end() ), e->GetLineNum(), "unknown element <" + value + ">" );
   }
   for ( auto const & r : required )
   {
     auto encounteredIt = encountered.find( r.first );
-    checkForError( encounteredIt != encountered.end(), line, "missing required element <" + r.first + ">" );
+    checkForError( intro, encounteredIt != encountered.end(), line, "missing required element <" + r.first + ">" );
     // check: r.second (means: required excactly once) => (encouteredIt->second == 1)
-    checkForError( !r.second || ( encounteredIt->second == 1 ),
+    checkForError( intro,
+                   !r.second || ( encounteredIt->second == 1 ),
                    line,
                    "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " + std::to_string( encounteredIt->second ) +
                      " times" );
   }
 }
 
-inline void checkForError( bool condition, int line, std::string const & message )
+inline void checkForError( std::string const & intro, bool condition, int line, std::string const & message )
 {
   if ( !condition )
   {
-    throw std::runtime_error( "VulkanHppGenerator: Spec error on line " + std::to_string( line ) + ": " + message );
+    throw std::runtime_error( intro + ": Spec error on line " + std::to_string( line ) + ": " + message );
   }
 }
 
-inline void checkForWarning( bool condition, int line, std::string const & message )
+inline void checkForWarning( std::string const & intro, bool condition, int line, std::string const & message )
 {
   if ( !condition )
   {
-    std::cerr << "VulkanHppGenerator: Spec warning on line " << std::to_string( line ) << ": " << message << "!" << std::endl;
+    std::cerr << intro << ": Spec warning on line " << std::to_string( line ) << ": " << message << "!" << std::endl;
   }
 }
 
@@ -308,15 +314,15 @@ inline bool isNumber( std::string const & name ) noexcept
   return name.find_first_not_of( "0123456789" ) == std::string::npos;
 }
 
-inline std::string readComment( tinyxml2::XMLElement const * element )
+inline std::string readComment( std::string const & intro, tinyxml2::XMLElement const * element )
 {
   const int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, {} );
-  checkElements( line, getChildElements( element ), {} );
+  checkAttributes( intro, line, getAttributes( element ), {}, {} );
+  checkElements( intro, line, getChildElements( element ), {} );
   return element->GetText();
 }
 
-inline std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node )
+inline std::pair<std::vector<std::string>, std::string> readModifiers( std::string const & intro, tinyxml2::XMLNode const * node )
 {
   std::vector<std::string> arraySizes;
   std::string              bitCount;
@@ -331,10 +337,10 @@ inline std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2:
       while ( endPos + 1 != value.length() )
       {
         const std::string::size_type startPos = value.find( '[', endPos );
-        checkForError( startPos != std::string::npos, node->GetLineNum(), "could not find '[' in <" + value + ">" );
+        checkForError( intro, startPos != std::string::npos, node->GetLineNum(), "could not find '[' in <" + value + ">" );
         endPos = value.find( ']', startPos );
-        checkForError( endPos != std::string::npos, node->GetLineNum(), "could not find ']' in <" + value + ">" );
-        checkForError( startPos + 2 <= endPos, node->GetLineNum(), "missing content between '[' and ']' in <" + value + ">" );
+        checkForError( intro, endPos != std::string::npos, node->GetLineNum(), "could not find ']' in <" + value + ">" );
+        checkForError( intro, startPos + 2 <= endPos, node->GetLineNum(), "missing content between '[' and ']' in <" + value + ">" );
         arraySizes.push_back( value.substr( startPos + 1, endPos - startPos - 1 ) );
       }
     }
@@ -344,7 +350,7 @@ inline std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2:
     }
     else
     {
-      checkForError( ( value[0] == ';' ) || ( value[0] == ')' ), node->GetLineNum(), "unknown modifier <" + value + ">" );
+      checkForError( intro, ( value[0] == ';' ) || ( value[0] == ')' ), node->GetLineNum(), "unknown modifier <" + value + ">" );
     }
   }
   return { arraySizes, bitCount };
@@ -483,25 +489,25 @@ inline std::string toString( tinyxml2::XMLError error )
 {
   switch ( error )
   {
-    case tinyxml2::XML_SUCCESS: return "XML_SUCCESS";
-    case tinyxml2::XML_NO_ATTRIBUTE: return "XML_NO_ATTRIBUTE";
-    case tinyxml2::XML_WRONG_ATTRIBUTE_TYPE: return "XML_WRONG_ATTRIBUTE_TYPE";
-    case tinyxml2::XML_ERROR_FILE_NOT_FOUND: return "XML_ERROR_FILE_NOT_FOUND";
+    case tinyxml2::XML_SUCCESS                       : return "XML_SUCCESS";
+    case tinyxml2::XML_NO_ATTRIBUTE                  : return "XML_NO_ATTRIBUTE";
+    case tinyxml2::XML_WRONG_ATTRIBUTE_TYPE          : return "XML_WRONG_ATTRIBUTE_TYPE";
+    case tinyxml2::XML_ERROR_FILE_NOT_FOUND          : return "XML_ERROR_FILE_NOT_FOUND";
     case tinyxml2::XML_ERROR_FILE_COULD_NOT_BE_OPENED: return "XML_ERROR_FILE_COULD_NOT_BE_OPENED";
-    case tinyxml2::XML_ERROR_FILE_READ_ERROR: return "XML_ERROR_FILE_READ_ERROR";
-    case tinyxml2::XML_ERROR_PARSING_ELEMENT: return "XML_ERROR_PARSING_ELEMENT";
-    case tinyxml2::XML_ERROR_PARSING_ATTRIBUTE: return "XML_ERROR_PARSING_ATTRIBUTE";
-    case tinyxml2::XML_ERROR_PARSING_TEXT: return "XML_ERROR_PARSING_TEXT";
-    case tinyxml2::XML_ERROR_PARSING_CDATA: return "XML_ERROR_PARSING_CDATA";
-    case tinyxml2::XML_ERROR_PARSING_COMMENT: return "XML_ERROR_PARSING_COMMENT";
-    case tinyxml2::XML_ERROR_PARSING_DECLARATION: return "XML_ERROR_PARSING_DECLARATION";
-    case tinyxml2::XML_ERROR_PARSING_UNKNOWN: return "XML_ERROR_PARSING_UNKNOWN";
-    case tinyxml2::XML_ERROR_EMPTY_DOCUMENT: return "XML_ERROR_EMPTY_DOCUMENT";
-    case tinyxml2::XML_ERROR_MISMATCHED_ELEMENT: return "XML_ERROR_MISMATCHED_ELEMENT";
-    case tinyxml2::XML_ERROR_PARSING: return "XML_ERROR_PARSING";
-    case tinyxml2::XML_CAN_NOT_CONVERT_TEXT: return "XML_CAN_NOT_CONVERT_TEXT";
-    case tinyxml2::XML_NO_TEXT_NODE: return "XML_NO_TEXT_NODE";
-    default: return "unknown error code <" + std::to_string( error ) + ">";
+    case tinyxml2::XML_ERROR_FILE_READ_ERROR         : return "XML_ERROR_FILE_READ_ERROR";
+    case tinyxml2::XML_ERROR_PARSING_ELEMENT         : return "XML_ERROR_PARSING_ELEMENT";
+    case tinyxml2::XML_ERROR_PARSING_ATTRIBUTE       : return "XML_ERROR_PARSING_ATTRIBUTE";
+    case tinyxml2::XML_ERROR_PARSING_TEXT            : return "XML_ERROR_PARSING_TEXT";
+    case tinyxml2::XML_ERROR_PARSING_CDATA           : return "XML_ERROR_PARSING_CDATA";
+    case tinyxml2::XML_ERROR_PARSING_COMMENT         : return "XML_ERROR_PARSING_COMMENT";
+    case tinyxml2::XML_ERROR_PARSING_DECLARATION     : return "XML_ERROR_PARSING_DECLARATION";
+    case tinyxml2::XML_ERROR_PARSING_UNKNOWN         : return "XML_ERROR_PARSING_UNKNOWN";
+    case tinyxml2::XML_ERROR_EMPTY_DOCUMENT          : return "XML_ERROR_EMPTY_DOCUMENT";
+    case tinyxml2::XML_ERROR_MISMATCHED_ELEMENT      : return "XML_ERROR_MISMATCHED_ELEMENT";
+    case tinyxml2::XML_ERROR_PARSING                 : return "XML_ERROR_PARSING";
+    case tinyxml2::XML_CAN_NOT_CONVERT_TEXT          : return "XML_CAN_NOT_CONVERT_TEXT";
+    case tinyxml2::XML_NO_TEXT_NODE                  : return "XML_NO_TEXT_NODE";
+    default                                          : return "unknown error code <" + std::to_string( error ) + ">";
   }
 }
 

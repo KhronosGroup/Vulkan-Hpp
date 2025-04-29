@@ -8789,7 +8789,7 @@ std::string VulkanHppGenerator::generateRAIIFactoryReturnStatements( std::vector
                                                                      std::string const &              returnVariable,
                                                                      bool                             singular ) const
 {
-  auto handleIt = findByNameOrAlias(m_handles, vkType );
+  auto handleIt = findByNameOrAlias( m_handles, vkType );
   assert( handleIt != m_handles.end() );
 
   std::string successCodePassToElement = ( enumerating ? ( successCodes.size() <= 2 ) : ( successCodes.size() <= 1 ) ) ? "" : ", result";
@@ -10303,10 +10303,11 @@ std::string VulkanHppGenerator::generateRAIIHandleForwardDeclarations( std::vect
   {
     for ( auto const & type : require.types )
     {
-      auto handleIt = m_handles.find( type.name );
+      auto handleIt = findByNameOrAlias( m_handles, type.name );
       if ( handleIt != m_handles.end() )
       {
-        str += "  class " + stripPrefix( handleIt->first, "Vk" ) + ";\n";
+        str += ( handleIt->first == type.name ) ? ( "  class " + stripPrefix( handleIt->first, "Vk" ) + ";\n" )
+                                                : ( "  using " + stripPrefix( type.name, "Vk" ) + " = " + stripPrefix( handleIt->first, "Vk" ) + ";\n" );
       }
     }
   }

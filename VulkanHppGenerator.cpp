@@ -8789,7 +8789,7 @@ std::string VulkanHppGenerator::generateRAIIFactoryReturnStatements( std::vector
                                                                      std::string const &              returnVariable,
                                                                      bool                             singular ) const
 {
-  auto handleIt = m_handles.find( vkType );
+  auto handleIt = findByNameOrAlias(m_handles, vkType );
   assert( handleIt != m_handles.end() );
 
   std::string successCodePassToElement = ( enumerating ? ( successCodes.size() <= 2 ) : ( successCodes.size() <= 1 ) ) ? "" : ", result";

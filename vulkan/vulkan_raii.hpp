@@ -2885,11 +2885,17 @@ namespace VULKAN_HPP_NAMESPACE
     class CuModuleNVX;
     class CuFunctionNVX;
 
+    //=== VK_KHR_descriptor_update_template ===
+    using DescriptorUpdateTemplateKHR = DescriptorUpdateTemplate;
+
     //=== VK_EXT_debug_utils ===
     class DebugUtilsMessengerEXT;
 
     //=== VK_KHR_acceleration_structure ===
     class AccelerationStructureKHR;
+
+    //=== VK_KHR_sampler_ycbcr_conversion ===
+    using SamplerYcbcrConversionKHR = SamplerYcbcrConversion;
 
     //=== VK_EXT_validation_cache ===
     class ValidationCacheEXT;
@@ -2905,6 +2911,9 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_NV_device_generated_commands ===
     class IndirectCommandsLayoutNV;
+
+    //=== VK_EXT_private_data ===
+    using PrivateDataSlotEXT = PrivateDataSlot;
 
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_NV_cuda_kernel_launch ===

@@ -9326,13 +9326,22 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
   if ( ( vectorParams.size() == 1 ) && vectorParams.begin()->second.byStructure )
   {
     assert( vectorParams.begin()->first == returnParams.back() );
-    handleType = vectorMemberByStructure( commandData.params.back().type.type ).type.compose( "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE" );
+    handleType = vectorMemberByStructure( commandData.params.back().type.type ).type.type;
   }
   else
   {
-    handleType = commandData.params[returnParams.back()].type.compose( "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE" );
+    handleType = commandData.params[returnParams.back()].type.type;
   }
-  handleType                 = stripPostfix( handleType, " *" );
+  auto handleIt = findByNameOrAlias( m_handles, handleType );
+  assert( handleIt != m_handles.end() );
+
+  // in case the handle to create is an alias of an other handle, use the other handle
+  if ( handleIt->first != handleType )
+  {
+    handleType = handleIt->first;
+  }
+
+  handleType                 = "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::" + stripPrefix( handleType, "Vk" );
   std::string noexceptString = enumerating ? "" : "VULKAN_HPP_RAII_CREATE_NOEXCEPT";
   std::string returnType     = handleType;
   if ( vectorParams.contains( returnParams.back() ) && !singular )

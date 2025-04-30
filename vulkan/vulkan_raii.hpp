@@ -3099,7 +3099,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::Instance const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::Instance const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_instance;
+      }
+
+      VULKAN_HPP_NAMESPACE::Instance operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_instance;
       }
@@ -3424,7 +3429,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::PhysicalDevice const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::PhysicalDevice const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_physicalDevice;
+      }
+
+      VULKAN_HPP_NAMESPACE::PhysicalDevice operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_physicalDevice;
       }
@@ -4090,7 +4100,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::Device const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::Device const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_device;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_device;
       }
@@ -5666,7 +5681,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::AccelerationStructureKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::AccelerationStructureKHR const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_accelerationStructureKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::AccelerationStructureKHR operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_accelerationStructureKHR;
       }
@@ -5793,7 +5813,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::AccelerationStructureNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::AccelerationStructureNV const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_accelerationStructureNV;
+      }
+
+      VULKAN_HPP_NAMESPACE::AccelerationStructureNV operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_accelerationStructureNV;
       }
@@ -5932,7 +5957,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::Buffer const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::Buffer const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_buffer;
+      }
+
+      VULKAN_HPP_NAMESPACE::Buffer operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_buffer;
       }
@@ -6068,7 +6098,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_bufferCollectionFUCHSIA;
+      }
+
+      VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_bufferCollectionFUCHSIA;
       }
@@ -6211,7 +6246,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::BufferView const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::BufferView const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_bufferView;
+      }
+
+      VULKAN_HPP_NAMESPACE::BufferView operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_bufferView;
       }
@@ -6337,7 +6377,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::CommandPool const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::CommandPool const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_commandPool;
+      }
+
+      VULKAN_HPP_NAMESPACE::CommandPool operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_commandPool;
       }
@@ -6464,7 +6509,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::CommandBuffer const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::CommandBuffer const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_commandBuffer;
+      }
+
+      VULKAN_HPP_NAMESPACE::CommandBuffer operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_commandBuffer;
       }
@@ -8030,7 +8080,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::CuFunctionNVX const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::CuFunctionNVX const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_cuFunctionNVX;
+      }
+
+      VULKAN_HPP_NAMESPACE::CuFunctionNVX operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_cuFunctionNVX;
       }
@@ -8157,7 +8212,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::CuModuleNVX const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::CuModuleNVX const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_cuModuleNVX;
+      }
+
+      VULKAN_HPP_NAMESPACE::CuModuleNVX operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_cuModuleNVX;
       }
@@ -8284,7 +8344,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::CudaFunctionNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::CudaFunctionNV const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_cudaFunctionNV;
+      }
+
+      VULKAN_HPP_NAMESPACE::CudaFunctionNV operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_cudaFunctionNV;
       }
@@ -8414,7 +8479,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::CudaModuleNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::CudaModuleNV const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_cudaModuleNV;
+      }
+
+      VULKAN_HPP_NAMESPACE::CudaModuleNV operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_cudaModuleNV;
       }
@@ -8547,7 +8617,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_debugReportCallbackEXT;
+      }
+
+      VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_debugReportCallbackEXT;
       }
@@ -8674,7 +8749,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_debugUtilsMessengerEXT;
+      }
+
+      VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_debugUtilsMessengerEXT;
       }
@@ -8800,7 +8880,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::DeferredOperationKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::DeferredOperationKHR const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_deferredOperationKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::DeferredOperationKHR operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_deferredOperationKHR;
       }
@@ -8940,7 +9025,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::DescriptorPool const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::DescriptorPool const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorPool;
+      }
+
+      VULKAN_HPP_NAMESPACE::DescriptorPool operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_descriptorPool;
       }
@@ -9058,7 +9148,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::DescriptorSet const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::DescriptorSet const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorSet;
+      }
+
+      VULKAN_HPP_NAMESPACE::DescriptorSet operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_descriptorSet;
       }
@@ -9232,7 +9327,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::DescriptorSetLayout const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::DescriptorSetLayout const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorSetLayout;
+      }
+
+      VULKAN_HPP_NAMESPACE::DescriptorSetLayout operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_descriptorSetLayout;
       }
@@ -9369,7 +9469,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorUpdateTemplate;
+      }
+
+      VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_descriptorUpdateTemplate;
       }
@@ -9496,7 +9601,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::DeviceMemory const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::DeviceMemory const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_deviceMemory;
+      }
+
+      VULKAN_HPP_NAMESPACE::DeviceMemory operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_deviceMemory;
       }
@@ -9658,7 +9768,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::DisplayKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::DisplayKHR const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_displayKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::DisplayKHR operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_displayKHR;
       }
@@ -9833,7 +9948,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::DisplayModeKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::DisplayModeKHR const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_displayModeKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::DisplayModeKHR operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_displayModeKHR;
       }
@@ -9951,7 +10071,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::Event const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::Event const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_event;
+      }
+
+      VULKAN_HPP_NAMESPACE::Event operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_event;
       }
@@ -10088,7 +10213,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_externalComputeQueueNV;
+      }
+
+      VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_externalComputeQueueNV;
       }
@@ -10241,7 +10371,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::Fence const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::Fence const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_fence;
+      }
+
+      VULKAN_HPP_NAMESPACE::Fence operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_fence;
       }
@@ -10372,7 +10507,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::Framebuffer const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::Framebuffer const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_framebuffer;
+      }
+
+      VULKAN_HPP_NAMESPACE::Framebuffer operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_framebuffer;
       }
@@ -10504,7 +10644,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::Image const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::Image const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_image;
+      }
+
+      VULKAN_HPP_NAMESPACE::Image operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_image;
       }
@@ -10693,7 +10838,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::ImageView const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::ImageView const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_imageView;
+      }
+
+      VULKAN_HPP_NAMESPACE::ImageView operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_imageView;
       }
@@ -10824,7 +10974,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_indirectCommandsLayoutEXT;
+      }
+
+      VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_indirectCommandsLayoutEXT;
       }
@@ -10951,7 +11106,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_indirectCommandsLayoutNV;
+      }
+
+      VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_indirectCommandsLayoutNV;
       }
@@ -11078,7 +11238,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_indirectExecutionSetEXT;
+      }
+
+      VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_indirectExecutionSetEXT;
       }
@@ -11217,7 +11382,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::MicromapEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::MicromapEXT const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_micromapEXT;
+      }
+
+      VULKAN_HPP_NAMESPACE::MicromapEXT operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_micromapEXT;
       }
@@ -11343,7 +11513,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_opticalFlowSessionNV;
+      }
+
+      VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_opticalFlowSessionNV;
       }
@@ -11471,7 +11646,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_performanceConfigurationINTEL;
+      }
+
+      VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_performanceConfigurationINTEL;
       }
@@ -11593,7 +11773,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::PipelineCache const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::PipelineCache const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipelineCache;
+      }
+
+      VULKAN_HPP_NAMESPACE::PipelineCache operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_pipelineCache;
       }
@@ -11776,7 +11961,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::Pipeline const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::Pipeline const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipeline;
+      }
+
+      VULKAN_HPP_NAMESPACE::Pipeline operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_pipeline;
       }
@@ -12038,7 +12228,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::PipelineBinaryKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::PipelineBinaryKHR const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipelineBinaryKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::PipelineBinaryKHR operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_pipelineBinaryKHR;
       }
@@ -12201,7 +12396,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::PipelineLayout const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::PipelineLayout const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipelineLayout;
+      }
+
+      VULKAN_HPP_NAMESPACE::PipelineLayout operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_pipelineLayout;
       }
@@ -12328,7 +12528,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::PrivateDataSlot const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::PrivateDataSlot const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_privateDataSlot;
+      }
+
+      VULKAN_HPP_NAMESPACE::PrivateDataSlot operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_privateDataSlot;
       }
@@ -12455,7 +12660,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::QueryPool const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::QueryPool const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_queryPool;
+      }
+
+      VULKAN_HPP_NAMESPACE::QueryPool operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_queryPool;
       }
@@ -12611,7 +12821,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::Queue const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::Queue const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_queue;
+      }
+
+      VULKAN_HPP_NAMESPACE::Queue operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_queue;
       }
@@ -12792,7 +13007,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::RenderPass const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::RenderPass const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_renderPass;
+      }
+
+      VULKAN_HPP_NAMESPACE::RenderPass operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_renderPass;
       }
@@ -12929,7 +13149,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::Sampler const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::Sampler const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_sampler;
+      }
+
+      VULKAN_HPP_NAMESPACE::Sampler operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_sampler;
       }
@@ -13055,7 +13280,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_samplerYcbcrConversion;
+      }
+
+      VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_samplerYcbcrConversion;
       }
@@ -13182,7 +13412,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::Semaphore const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::Semaphore const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_semaphore;
+      }
+
+      VULKAN_HPP_NAMESPACE::Semaphore operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_semaphore;
       }
@@ -13323,7 +13558,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::ShaderEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::ShaderEXT const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_shaderEXT;
+      }
+
+      VULKAN_HPP_NAMESPACE::ShaderEXT operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_shaderEXT;
       }
@@ -13490,7 +13730,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::ShaderModule const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::ShaderModule const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_shaderModule;
+      }
+
+      VULKAN_HPP_NAMESPACE::ShaderModule operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_shaderModule;
       }
@@ -13774,7 +14019,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::SurfaceKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::SurfaceKHR const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_surfaceKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::SurfaceKHR operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_surfaceKHR;
       }
@@ -13900,7 +14150,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::SwapchainKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::SwapchainKHR const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_swapchainKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::SwapchainKHR operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_swapchainKHR;
       }
@@ -14120,7 +14375,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::ValidationCacheEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::ValidationCacheEXT const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_validationCacheEXT;
+      }
+
+      VULKAN_HPP_NAMESPACE::ValidationCacheEXT operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_validationCacheEXT;
       }
@@ -14256,7 +14516,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::VideoSessionKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::VideoSessionKHR const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_videoSessionKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::VideoSessionKHR operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_videoSessionKHR;
       }
@@ -14393,7 +14658,12 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_videoSessionParametersKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR operator*() const && VULKAN_HPP_NOEXCEPT
       {
         return m_videoSessionParametersKHR;
       }

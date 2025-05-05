@@ -15938,7 +15938,6 @@ void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, s
     }
     else if ( attribute.first == "deprecated" )
     {
-      assert( attribute.second == "true" );
       deprecated = true;
     }
     else if ( attribute.first == "name" )

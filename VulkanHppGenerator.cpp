@@ -7691,228 +7691,250 @@ std::string VulkanHppGenerator::generateFormatTraits() const
   assert( formatIt != m_enums.end() );
   assert( formatIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
 
-  std::string blockSizeCases, blockExtentCases, classCases, componentBitsCases, componentCountCases, componentNameCases, componentNumericFormatCases,
-    componentPlaneIndexCases, componentsAreCompressedCases, compressionSchemeCases, depthCases, depthFormats, depthStencilFormats, packedCases,
-    planeCompatibleCases, planeCountCases, planeHeightDivisorCases, planeWidthDivisorCases, stencilCases, stencilFormats, texelsPerBlockCases;
-  for ( auto formatValuesIt = std::next( formatIt->second.values.begin() ); formatValuesIt != formatIt->second.values.end(); ++formatValuesIt )
+  auto noPredicate = []( auto const & ) { return true; };
+  auto generateComponentCases =
+    [this]( auto const & formatData, std::function<std::string( ComponentData const & componentData )> generator, std::string const & defaultReturn )
   {
-    if ( formatValuesIt->supported )
+    return generateFormatTraitsSubCases<ComponentData>(
+      formatData,
+      []( FormatData const & formatData ) -> std::vector<ComponentData> const & { return formatData.components; },
+      "component",
+      generator,
+      defaultReturn );
+  };
+  auto generatePlaneCases =
+    [this]( auto const & formatData, std::function<std::string( PlaneData const & PlaneData )> generator, std::string const & defaultReturn )
+  {
+    return generateFormatTraitsSubCases<PlaneData>(
+      formatData, []( FormatData const & formatData ) -> std::vector<PlaneData> const & { return formatData.planes; }, "plane", generator, defaultReturn );
+  };
+
+  auto generateBlockExtentCases = [this]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData ) { return !formatData.blockExtent.empty(); },
+      []( FormatData const & formatData ) { return "return {{ " + formatData.blockExtent + " }};"; } );
+  };
+  auto generateBlockSizeCases = [&]( auto const formatIt ) {
+    return generateFormatTraitsCases( formatIt->second, noPredicate, []( FormatData const & formatData ) { return "return " + formatData.blockSize + ";"; } );
+  };
+  auto generateClassCases = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second, noPredicate, []( FormatData const & formatData ) { return "return \"" + formatData.classAttribute + "\";"; } );
+  };
+  auto generateComponentBitsCases = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData ) { return formatData.components.front().bits != "compressed"; },
+      [&]( FormatData const & formatData )
+      { return generateComponentCases( formatData, []( ComponentData const & componentData ) { return componentData.bits; }, "0" ); } );
+  };
+  auto generateComponentCountCases = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second, noPredicate, []( FormatData const & formatData ) { return "return " + std::to_string( formatData.components.size() ) + ";"; } );
+  };
+  auto generateComponentNameCases = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      noPredicate,
+      [&]( FormatData const & formatData )
+      { return generateComponentCases( formatData, []( ComponentData const & componentData ) { return "\"" + componentData.name + "\""; }, "\"\"" ); } );
+  };
+  auto generateComponentNumericFormatCases = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsCases( formatIt->second,
+                                      noPredicate,
+                                      [&]( FormatData const & formatData ) {
+                                        return generateComponentCases(
+                                          formatData, []( ComponentData const & componentData ) { return "\"" + componentData.numericFormat + "\""; }, "\"\"" );
+                                      } );
+  };
+  auto generateComponentPlaneIndexCases = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData ) { return !formatData.components.front().planeIndex.empty(); },
+      [&]( FormatData const & formatData )
+      { return generateComponentCases( formatData, []( ComponentData const & componentData ) { return componentData.planeIndex; }, "0" ); } );
+  };
+  auto generateComponentsAreCompressedCases = [this]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData ) { return formatData.components.front().bits == "compressed"; },
+      []( FormatData const & ) { return ""; } );
+  };
+  auto generateCompressionSchemeCases = [this]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData ) { return !formatData.compressed.empty(); },
+      []( FormatData const & formatData ) { return " return \"" + formatData.compressed + "\";"; } );
+  };
+  auto generateDepthCases = [this]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData )
+      { return std::ranges::find_if( formatData.components, []( auto const & component ) { return component.name == "D"; } ) != formatData.components.end(); },
+      []( FormatData const & ) { return ""; } );
+  };
+  auto generateDepthFormatsList = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsList( formatIt->second,
+                                     []( FormatData const & formatData ) {
+                                       return std::ranges::find_if( formatData.components, []( auto const & component ) { return component.name == "D"; } ) !=
+                                              formatData.components.end();
+                                     } );
+  };
+  auto generateDepthStencilFormatsList = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsList( formatIt->second,
+                                     []( FormatData const & formatData )
+                                     {
+                                       return ( std::ranges::find_if( formatData.components, []( auto const & component ) { return component.name == "D"; } ) !=
+                                                formatData.components.end() ) &&
+                                              ( std::ranges::find_if( formatData.components, []( auto const & component ) { return component.name == "S"; } ) !=
+                                                formatData.components.end() );
+                                     } );
+  };
+  auto generatePackedCases = [this]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData ) { return !formatData.packed.empty(); },
+      []( FormatData const & formatData ) { return " return " + formatData.packed + ";"; } );
+  };
+  auto generatePlaneCompatibleCases = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData ) { return !formatData.planes.empty(); },
+      [&]( FormatData const & formatData )
+      {
+        return generatePlaneCases(
+          formatData,
+          [&]( PlaneData const & planeData ) { return "VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", planeData.compatible, false ); },
+          "VULKAN_HPP_NAMESPACE::Format::eUndefined" );
+      } );
+  };
+  auto generatePlaneCountCases = [this]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData ) { return !formatData.planes.empty(); },
+      []( FormatData const & formatData ) { return " return " + std::to_string( formatData.planes.size() ) + ";"; } );
+  };
+  auto generatePlaneHeightDivisorCases = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData ) { return !formatData.planes.empty(); },
+      [&]( FormatData const & formatData )
+      { return generatePlaneCases( formatData, [&]( PlaneData const & planeData ) { return planeData.heightDivisor; }, "1" ); } );
+  };
+  auto generatePlaneWidthDivisorCases = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData ) { return !formatData.planes.empty(); },
+      [&]( FormatData const & formatData )
+      { return generatePlaneCases( formatData, [&]( PlaneData const & planeData ) { return planeData.widthDivisor; }, "1" ); } );
+  };
+  auto generateStencilCases = [this]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData )
+      { return std::ranges::find_if( formatData.components, []( auto const & component ) { return component.name == "S"; } ) != formatData.components.end(); },
+      []( FormatData const & ) { return ""; } );
+  };
+  auto generateStencilFormatsList = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsList( formatIt->second,
+                                     []( FormatData const & formatData ) {
+                                       return std::ranges::find_if( formatData.components, []( auto const & component ) { return component.name == "S"; } ) !=
+                                              formatData.components.end();
+                                     } );
+  };
+  auto generateTexelsPerBlockCases = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second, noPredicate, []( FormatData const & formatData ) { return "return " + formatData.texelsPerBlock + ";"; } );
+  };
+
+  return replaceWithMap( readSnippet( "FormatTraits.hpp" ),
+                         { { "blockExtentCases", generateBlockExtentCases( formatIt ) },
+                           { "blockSizeCases", generateBlockSizeCases( formatIt ) },
+                           { "classCases", generateClassCases( formatIt ) },
+                           { "componentBitsCases", generateComponentBitsCases( formatIt ) },
+                           { "componentCountCases", generateComponentCountCases( formatIt ) },
+                           { "componentNameCases", generateComponentNameCases( formatIt ) },
+                           { "componentNumericFormatCases", generateComponentNumericFormatCases( formatIt ) },
+                           { "componentPlaneIndexCases", generateComponentPlaneIndexCases( formatIt ) },
+                           { "componentsAreCompressedCases", generateComponentsAreCompressedCases( formatIt ) },
+                           { "compressionSchemeCases", generateCompressionSchemeCases( formatIt ) },
+                           { "depthCases", generateDepthCases( formatIt ) },
+                           { "depthFormats", generateDepthFormatsList( formatIt ) },
+                           { "depthStencilFormats", generateDepthStencilFormatsList( formatIt ) },
+                           { "packedCases", generatePackedCases( formatIt ) },
+                           { "planeCompatibleCases", generatePlaneCompatibleCases( formatIt ) },
+                           { "planeCountCases", generatePlaneCountCases( formatIt ) },
+                           { "planeHeightDivisorCases", generatePlaneHeightDivisorCases( formatIt ) },
+                           { "planeWidthDivisorCases", generatePlaneWidthDivisorCases( formatIt ) },
+                           { "stencilCases", generateStencilCases( formatIt ) },
+                           { "stencilFormats", generateStencilFormatsList( formatIt ) },
+                           { "texelsPerBlockCases", generateTexelsPerBlockCases( formatIt ) } } );
+}
+
+std::string VulkanHppGenerator::generateFormatTraitsCases( EnumData const &                                 enumData,
+                                                           std::function<bool( FormatData const & )>        predicate,
+                                                           std::function<std::string( FormatData const & )> generator ) const
+{
+  std::string cases;
+  for ( auto enumValueIt = std::next( enumData.values.begin() ); enumValueIt != enumData.values.end(); ++enumValueIt )
+  {
+    if ( enumValueIt->supported )
     {
-      auto traitIt = m_formats.find( formatValuesIt->name );
-      assert( traitIt != m_formats.end() );
-      std::string formatName = "VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", traitIt->first, false );
+      auto formatIt = m_formats.find( enumValueIt->name );
+      assert( formatIt != m_formats.end() );
 
-      std::string caseString = "      case " + formatName + ":";
-
-      blockSizeCases += caseString + " return " + traitIt->second.blockSize + ";\n";
-
-      if ( !traitIt->second.blockExtent.empty() )
+      if ( predicate( formatIt->second ) )
       {
-        std::vector<std::string> blockExtent = tokenize( traitIt->second.blockExtent, "," );
-        assert( blockExtent.size() == 3 );
-        blockExtentCases += caseString + " return {{ " + blockExtent[0] + ", " + blockExtent[1] + ", " + blockExtent[2] + " }};\n";
-      }
-
-      classCases += caseString + " return \"" + traitIt->second.classAttribute + "\";\n";
-
-      if ( traitIt->second.components.front().bits != "compressed" )
-      {
-        const std::string componentBitsCaseTemplate = R"(${caseString}
-        switch( component )
-        {
-${componentCases}
-          default: VULKAN_HPP_ASSERT( false ); return 0;
-        }
-)";
-
-        std::string componentCases;
-        for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
-        {
-          componentCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.components[i].bits + ";\n";
-        }
-        componentCases.pop_back();
-        componentBitsCases += replaceWithMap( componentBitsCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
-      }
-
-      componentCountCases += caseString + " return " + std::to_string( traitIt->second.components.size() ) + ";\n";
-
-      {
-        const std::string componentNameCaseTemplate = R"(${caseString}
-        switch( component )
-        {
-${componentCases}
-          default: VULKAN_HPP_ASSERT( false ); return "";
-        }
-)";
-
-        std::string componentCases;
-        for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
-        {
-          componentCases += "          case " + std::to_string( i ) + ": return \"" + traitIt->second.components[i].name + "\";\n";
-        }
-        componentCases.pop_back();
-        componentNameCases += replaceWithMap( componentNameCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
-      }
-
-      {
-        const std::string componentNumericFormatCaseTemplate = R"(${caseString}
-        switch( component )
-        {
-${componentCases}
-          default: VULKAN_HPP_ASSERT( false ); return "";
-        }
-)";
-
-        std::string componentCases;
-        for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
-        {
-          componentCases += "          case " + std::to_string( i ) + ": return \"" + traitIt->second.components[i].numericFormat + "\";\n";
-        }
-        componentCases.pop_back();
-        componentNumericFormatCases +=
-          replaceWithMap( componentNumericFormatCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
-      }
-
-      if ( !traitIt->second.components.front().planeIndex.empty() )
-      {
-        const std::string componentPlaneIndexCaseTemplate = R"(${caseString}
-        switch( component )
-        {
-${componentCases}
-          default: VULKAN_HPP_ASSERT( false ); return 0;
-        }
-)";
-
-        std::string componentCases;
-        for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
-        {
-          componentCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.components[i].planeIndex + ";\n";
-        }
-        componentCases.pop_back();
-        componentPlaneIndexCases += replaceWithMap( componentPlaneIndexCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
-      }
-
-      if ( traitIt->second.components.front().bits == "compressed" )
-      {
-        componentsAreCompressedCases += caseString + "\n";
-      }
-
-      if ( !traitIt->second.compressed.empty() )
-      {
-        compressionSchemeCases += caseString + " return \"" + traitIt->second.compressed + "\";\n";
-      }
-
-      if ( !traitIt->second.packed.empty() )
-      {
-        packedCases += caseString + " return " + traitIt->second.packed + ";\n";
-      }
-
-      if ( !traitIt->second.planes.empty() )
-      {
-        const std::string planeCompatibleCaseTemplate = R"(${caseString}
-        switch( plane )
-        {
-${compatibleCases}
-          default: VULKAN_HPP_ASSERT( false ); return VULKAN_HPP_NAMESPACE::Format::eUndefined;
-        }
-)";
-
-        const std::string planeHeightDivisorCaseTemplate = R"(${caseString}
-        switch( plane )
-        {
-${heightDivisorCases}
-          default: VULKAN_HPP_ASSERT( false ); return 1;
-        }
-)";
-
-        const std::string planeWidthDivisorCaseTemplate = R"(${caseString}
-        switch( plane )
-        {
-${widthDivisorCases}
-          default: VULKAN_HPP_ASSERT( false ); return 1;
-        }
-)";
-
-        std::string compatibleCases, heightDivisorCases, widthDivisorCases;
-        for ( size_t i = 0; i < traitIt->second.planes.size(); ++i )
-        {
-          compatibleCases += "          case " + std::to_string( i ) +
-                             ": return VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", traitIt->second.planes[i].compatible, false ) +
-                             ";\n";
-          heightDivisorCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.planes[i].heightDivisor + ";\n";
-          widthDivisorCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.planes[i].widthDivisor + ";\n";
-        }
-        compatibleCases.pop_back();
-        heightDivisorCases.pop_back();
-        widthDivisorCases.pop_back();
-
-        planeCompatibleCases += replaceWithMap( planeCompatibleCaseTemplate, { { "caseString", caseString }, { "compatibleCases", compatibleCases } } );
-
-        planeCountCases += caseString + " return " + std::to_string( traitIt->second.planes.size() ) + ";\n";
-
-        planeHeightDivisorCases +=
-          replaceWithMap( planeHeightDivisorCaseTemplate, { { "caseString", caseString }, { "heightDivisorCases", heightDivisorCases } } );
-
-        planeWidthDivisorCases += replaceWithMap( planeWidthDivisorCaseTemplate, { { "caseString", caseString }, { "widthDivisorCases", widthDivisorCases } } );
-      }
-
-      texelsPerBlockCases += caseString + " return " + traitIt->second.texelsPerBlock + ";\n";
-
-      if ( std::ranges::find_if( traitIt->second.components, []( auto const & component ) { return component.name == "D"; } ) !=
-           traitIt->second.components.end() )
-      {
-        depthCases += caseString + "\n";
-        depthFormats += formatName + ", ";
-
-        if ( std::ranges::find_if( traitIt->second.components, []( auto const & component ) { return component.name == "S"; } ) !=
-             traitIt->second.components.end() )
-        {
-          depthStencilFormats += formatName + ", ";
-        }
-      }
-
-      if ( std::ranges::find_if( traitIt->second.components, []( auto const & component ) { return component.name == "S"; } ) !=
-           traitIt->second.components.end() )
-      {
-        stencilCases += caseString + "\n";
-        stencilFormats += formatName + ", ";
+        cases += "      case VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", formatIt->first, false ) + ": " +
+                 generator( formatIt->second ) + "\n";
       }
     }
   }
+  return cases;
+}
 
-  assert( depthCases.ends_with( ":\n" ) );
-  depthCases += "        return true;\n";
-  assert( depthFormats.ends_with( ", " ) );
-  depthFormats = depthFormats.substr( 0, depthFormats.length() - 2 );
-  assert( depthStencilFormats.ends_with( ", " ) );
-  depthStencilFormats = depthStencilFormats.substr( 0, depthStencilFormats.length() - 2 );
-  assert( stencilCases.ends_with( ":\n" ) );
-  stencilCases += "        return true;\n";
-  assert( stencilFormats.ends_with( ", " ) );
-  stencilFormats = stencilFormats.substr( 0, stencilFormats.length() - 2 );
+std::string VulkanHppGenerator::generateFormatTraitsList( EnumData const & enumData, std::function<bool( FormatData const & )> predicate ) const
+{
+  std::string list;
+  for ( auto enumValueIt = std::next( enumData.values.begin() ); enumValueIt != enumData.values.end(); ++enumValueIt )
+  {
+    if ( enumValueIt->supported )
+    {
+      auto formatIt = m_formats.find( enumValueIt->name );
+      assert( formatIt != m_formats.end() );
 
-  return replaceWithMap( readSnippet( "FormatTraits.hpp" ),
-                         { { "blockExtentCases", blockExtentCases },
-                           { "blockSizeCases", blockSizeCases },
-                           { "classCases", classCases },
-                           { "componentBitsCases", componentBitsCases },
-                           { "componentCountCases", componentCountCases },
-                           { "componentNameCases", componentNameCases },
-                           { "componentNumericFormatCases", componentNumericFormatCases },
-                           { "componentPlaneIndexCases", componentPlaneIndexCases },
-                           { "componentsAreCompressedCases", componentsAreCompressedCases },
-                           { "compressionSchemeCases", compressionSchemeCases },
-                           { "depthCases", depthCases },
-                           { "depthFormats", depthFormats },
-                           { "depthStencilFormats", depthStencilFormats },
-                           { "packedCases", packedCases },
-                           { "planeCompatibleCases", planeCompatibleCases },
-                           { "planeCountCases", planeCountCases },
-                           { "planeHeightDivisorCases", planeHeightDivisorCases },
-                           { "planeWidthDivisorCases", planeWidthDivisorCases },
-                           { "stencilCases", stencilCases },
-                           { "stencilFormats", stencilFormats },
-                           { "texelsPerBlockCases", texelsPerBlockCases } } );
+      if ( predicate( formatIt->second ) )
+      {
+        if ( !list.empty() )
+        {
+          list += ", ";
+        }
+        list += "VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", formatIt->first, false );
+      }
+    }
+  }
+  return list;
 }
 
 std::string VulkanHppGenerator::generateFuncPointer( std::pair<std::string, FuncPointerData> const & funcPointer, std::set<std::string> & listedStructs ) const

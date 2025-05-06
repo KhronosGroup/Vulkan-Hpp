@@ -4717,8 +4717,6 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceDeviceMemoryReportFeaturesEXT          : return "PhysicalDeviceDeviceMemoryReportFeaturesEXT";
       case StructureType::eDeviceDeviceMemoryReportCreateInfoEXT                : return "DeviceDeviceMemoryReportCreateInfoEXT";
       case StructureType::eDeviceMemoryReportCallbackDataEXT                    : return "DeviceMemoryReportCallbackDataEXT";
-      case StructureType::ePhysicalDeviceRobustness2FeaturesEXT                 : return "PhysicalDeviceRobustness2FeaturesEXT";
-      case StructureType::ePhysicalDeviceRobustness2PropertiesEXT               : return "PhysicalDeviceRobustness2PropertiesEXT";
       case StructureType::eSamplerCustomBorderColorCreateInfoEXT                : return "SamplerCustomBorderColorCreateInfoEXT";
       case StructureType::ePhysicalDeviceCustomBorderColorPropertiesEXT         : return "PhysicalDeviceCustomBorderColorPropertiesEXT";
       case StructureType::ePhysicalDeviceCustomBorderColorFeaturesEXT           : return "PhysicalDeviceCustomBorderColorFeaturesEXT";
@@ -5130,6 +5128,8 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
       case StructureType::ePhysicalDeviceDepthClampZeroOneFeaturesKHR        : return "PhysicalDeviceDepthClampZeroOneFeaturesKHR";
       case StructureType::ePhysicalDeviceVertexAttributeRobustnessFeaturesEXT: return "PhysicalDeviceVertexAttributeRobustnessFeaturesEXT";
+      case StructureType::ePhysicalDeviceRobustness2FeaturesKHR              : return "PhysicalDeviceRobustness2FeaturesKHR";
+      case StructureType::ePhysicalDeviceRobustness2PropertiesKHR            : return "PhysicalDeviceRobustness2PropertiesKHR";
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       case StructureType::eSetPresentConfigNV                     : return "SetPresentConfigNV";
       case StructureType::ePhysicalDevicePresentMeteringFeaturesNV: return "PhysicalDevicePresentMeteringFeaturesNV";

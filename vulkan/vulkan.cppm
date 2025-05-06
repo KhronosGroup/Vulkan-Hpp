@@ -2753,6 +2753,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTVertexAttributeRobustnessExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTVertexAttributeRobustnessSpecVersion;
 
+  //=== VK_KHR_robustness2 ===
+  using VULKAN_HPP_NAMESPACE::KHRRobustness2ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRRobustness2SpecVersion;
+
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_NV_present_metering ===
   using VULKAN_HPP_NAMESPACE::NVPresentMeteringExtensionName;
@@ -4106,10 +4110,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::DeviceMemoryReportCallbackDataEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDeviceMemoryReportFeaturesEXT;
 
-  //=== VK_EXT_robustness2 ===
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2FeaturesEXT;
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2PropertiesEXT;
-
   //=== VK_EXT_custom_border_color ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceCustomBorderColorFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceCustomBorderColorPropertiesEXT;
@@ -4861,6 +4861,12 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_vertex_attribute_robustness ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;
+
+  //=== VK_KHR_robustness2 ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2FeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2FeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2PropertiesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2PropertiesKHR;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_NV_present_metering ===
@@ -7401,12 +7407,6 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::DeviceMemoryReportCallbackDataEXT>;
 
-  //=== VK_EXT_robustness2 ===
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2FeaturesEXT>;
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2PropertiesEXT>;
-
   //=== VK_EXT_custom_border_color ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::SamplerCustomBorderColorCreateInfoEXT>;
@@ -8606,6 +8606,12 @@ export namespace std
   //=== VK_EXT_vertex_attribute_robustness ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT>;
+
+  //=== VK_KHR_robustness2 ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2FeaturesKHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2PropertiesKHR>;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_NV_present_metering ===

@@ -274,6 +274,14 @@ private:
     int                                xmlLine       = {};
   };
 
+  struct DeprecateData
+  {
+    std::string              explanationLink = {};
+    std::vector<std::string> commands        = {};
+    std::vector<std::string> types           = {};
+    int                      xmlLine         = 0;
+  };
+
   struct ExtensionData
   {
     std::string                                               deprecatedBy           = {};
@@ -285,6 +293,7 @@ private:
     std::string                                               promotedTo             = {};
     std::map<std::string, std::vector<std::set<std::string>>> depends                = {};
     std::vector<std::string>                                  ratified               = {};
+    std::vector<DeprecateData>                                deprecateData          = {};
     std::vector<RemoveData>                                   removeData             = {};
     std::vector<RequireData>                                  requireData            = {};
     std::vector<std::string>                                  supported              = {};
@@ -295,11 +304,12 @@ private:
 
   struct FeatureData
   {
-    std::string              name        = {};
-    std::string              number      = {};
-    std::vector<RemoveData>  removeData  = {};
-    std::vector<RequireData> requireData = {};
-    int                      xmlLine     = {};
+    std::string                name          = {};
+    std::string                number        = {};
+    std::vector<DeprecateData> deprecateData = {};
+    std::vector<RemoveData>    removeData    = {};
+    std::vector<RequireData>   requireData   = {};
+    int                        xmlLine       = 0;
   };
 
   struct ExternalTypeData
@@ -1103,6 +1113,7 @@ private:
   std::pair<std::string, std::string>                    readCommandProto( tinyxml2::XMLElement const * element );
   void                                                   readCommands( tinyxml2::XMLElement const * element );
   std::string                                            readComment( tinyxml2::XMLElement const * element ) const;
+  DeprecateData                                          readDeprecateData( tinyxml2::XMLElement const * element ) const;
   void                                                   readEnums( tinyxml2::XMLElement const * element );
   void                                                   readEnumsConstants( tinyxml2::XMLElement const * element );
   void readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt );
@@ -1117,7 +1128,7 @@ private:
   void readFormats( tinyxml2::XMLElement const * element );
   void readFormatSPIRVImageFormat( tinyxml2::XMLElement const * element, FormatData & formatData );
   std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node ) const;
-  std::string                                      readName( tinyxml2::XMLElement const * elements );
+  std::string                                      readName( tinyxml2::XMLElement const * elements ) const;
   std::pair<NameData, TypeInfo>                    readNameAndType( tinyxml2::XMLElement const * elements );
   void                                             readPlatform( tinyxml2::XMLElement const * element );
   void                                             readPlatforms( tinyxml2::XMLElement const * element );

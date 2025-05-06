@@ -13827,6 +13827,44 @@ std::string VulkanHppGenerator::readComment( tinyxml2::XMLElement const * elemen
   return ::readComment( "VulkanHppGenerator", element );
 }
 
+VulkanHppGenerator::DeprecateData VulkanHppGenerator::readDeprecateData( tinyxml2::XMLElement const * element ) const
+{
+  const int                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "explanationlink", {} } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, {}, { "command", "type" } );
+
+  DeprecateData deprecateData;
+  deprecateData.xmlLine = line;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "explanationlink" )
+    {
+      deprecateData.explanationLink = attribute.second;
+    }
+  }
+
+  for ( auto child : children )
+  {
+    const int   childLine = child->GetLineNum();
+    std::string value     = child->Value();
+    if ( value == "command" )
+    {
+      deprecateData.commands.push_back( readName( child ) );
+      checkForError( m_commands.contains( deprecateData.commands.back() ),
+                     childLine,
+                     "deprecated command <" + deprecateData.commands.back() + "> is not listed as command" );
+    }
+    else if ( value == "type" )
+    {
+      deprecateData.types.push_back( readName( child ) );
+      checkForError( m_types.contains( deprecateData.types.back() ), childLine, "deprecated type <" + deprecateData.types.back() + "> is not listed as type" );
+    }
+  }
+  return deprecateData;
+}
+
 void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
 {
   const int                          line       = element->GetLineNum();
@@ -14294,7 +14332,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
                      { "sortorder", { "1" } },
                      { "specialuse", { "cadsupport", "d3demulation", "debugging", "devtools", "glemulation" } },
                      { "type", { "device", "instance" } } } );
-  checkElements( line, children, { { "require", false } }, { "remove" } );
+  checkElements( line, children, { { "require", false } }, { "deprecate", "remove" } );
 
   // some special handling for two extensions
   std::string name = attributes.find( "name" )->second;
@@ -14420,7 +14458,11 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
   for ( auto child : children )
   {
     std::string value = child->Value();
-    if ( value == "remove" )
+    if ( value == "deprecate" )
+    {
+      extensionData.deprecateData.push_back( readDeprecateData( child ) );
+    }
+    else if ( value == "remove" )
     {
       extensionData.removeData.push_back( readRemoveData( child ) );
     }
@@ -14458,7 +14500,7 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "name", {} }, { "number", {} } }, { { "depends", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "require", false } }, { "remove" } );
+  checkElements( line, children, { { "require", false } }, { "deprecate", "remove" } );
 
   FeatureData featureData;
   featureData.xmlLine = line;
@@ -14486,7 +14528,11 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
   for ( auto child : children )
   {
     std::string value = child->Value();
-    if ( value == "remove" )
+    if ( value == "deprecate" )
+    {
+      featureData.deprecateData.push_back( readDeprecateData( child ) );
+    }
+    else if ( value == "remove" )
     {
       featureData.removeData.push_back( readRemoveData( child ) );
     }
@@ -14762,7 +14808,7 @@ std::pair<std::vector<std::string>, std::string> VulkanHppGenerator::readModifie
   return ::readModifiers( "VulkanHppGenerator", node );
 }
 
-std::string VulkanHppGenerator::readName( tinyxml2::XMLElement const * element )
+std::string VulkanHppGenerator::readName( tinyxml2::XMLElement const * element ) const
 {
   const int                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );

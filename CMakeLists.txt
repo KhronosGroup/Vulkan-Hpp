@@ -536,6 +536,7 @@ if( VULKAN_HPP_SAMPLES_BUILD OR VULKAN_HPP_TESTS_BUILD )
 	set( GLFW_BUILD_EXAMPLES OFF )
 	set( GLFW_BUILD_TESTS OFF )
 	add_subdirectory( glfw )
+	set( ENABLE_OPT OFF ) # could use ALLOW_EXTERNAL_SPIRV_TOOLS=ON instead
 	add_subdirectory( glslang )
 
 	add_subdirectory( samples/utils )

@@ -1303,10 +1303,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct DeviceDeviceMemoryReportCreateInfoEXT;
   struct DeviceMemoryReportCallbackDataEXT;
 
-  //=== VK_EXT_robustness2 ===
-  struct PhysicalDeviceRobustness2FeaturesEXT;
-  struct PhysicalDeviceRobustness2PropertiesEXT;
-
   //=== VK_EXT_custom_border_color ===
   struct SamplerCustomBorderColorCreateInfoEXT;
   struct PhysicalDeviceCustomBorderColorPropertiesEXT;
@@ -2058,6 +2054,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_vertex_attribute_robustness ===
   struct PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;
+
+  //=== VK_KHR_robustness2 ===
+  struct PhysicalDeviceRobustness2FeaturesKHR;
+  using PhysicalDeviceRobustness2FeaturesEXT = PhysicalDeviceRobustness2FeaturesKHR;
+  struct PhysicalDeviceRobustness2PropertiesKHR;
+  using PhysicalDeviceRobustness2PropertiesEXT = PhysicalDeviceRobustness2PropertiesKHR;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_NV_present_metering ===

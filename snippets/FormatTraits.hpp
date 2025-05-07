@@ -201,6 +201,7 @@ ${compressionSchemeCases}
     switch( format )
     {
 ${depthCases}
+        return true;
       default: return false;
     }
   }
@@ -211,6 +212,7 @@ ${depthCases}
     switch( format )
     {
 ${stencilCases}
+        return true;
       default: return false;
     }
   }

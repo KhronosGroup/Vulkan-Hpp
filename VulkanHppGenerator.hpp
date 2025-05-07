@@ -16,6 +16,7 @@
 
 #include "XMLHelper.hpp"
 
+#include <functional>
 #include <iostream>
 #include <map>
 #include <set>
@@ -873,6 +874,16 @@ private:
   std::string generateExtensionsList( std::string const & type ) const;
   std::string generateExtensionTypeTest( std::string const & type ) const;
   std::string generateFormatTraits() const;
+  std::string generateFormatTraitsCases( EnumData const &                                 enumData,
+                                         std::function<bool( FormatData const & )>        predicate,
+                                         std::function<std::string( FormatData const & )> generator ) const;
+  std::string generateFormatTraitsList( EnumData const & enumData, std::function<bool( FormatData const & )> predicate ) const;
+  template <typename T>
+  std::string generateFormatTraitsSubCases( FormatData const &                                          formatData,
+                                            std::function<std::vector<T> const &( FormatData const & )> accessor,
+                                            std::string const &                                         subCaseName,
+                                            std::function<std::string( T const & subCaseData )>         generator,
+                                            std::string const &                                         defaultReturn ) const;
   std::string generateFuncPointer( std::pair<std::string, FuncPointerData> const & funcPointer, std::set<std::string> & listedStructs ) const;
   std::string generateFuncPointerReturns() const;
   std::string generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy, bool raii ) const;
@@ -1224,3 +1235,27 @@ private:
   std::vector<VideoCodec>                       m_videoCodecs;
   std::string                                   m_vulkanLicenseHeader;
 };
+
+template <typename T>
+std::string VulkanHppGenerator::generateFormatTraitsSubCases( FormatData const &                                          formatData,
+                                                              std::function<std::vector<T> const &( FormatData const & )> accessor,
+                                                              std::string const &                                         subCaseName,
+                                                              std::function<std::string( T const & subCaseData )>         generator,
+                                                              std::string const &                                         defaultReturn ) const
+{
+  const std::string subCasesTemplate = R"(
+        switch( ${subCaseName} )
+        {
+${subCases}
+          default: VULKAN_HPP_ASSERT( false ); return ${defaultReturn};
+        })";
+
+  std::string subCases;
+  for ( size_t i = 0; i < accessor( formatData ).size(); ++i )
+  {
+    subCases += "          case " + std::to_string( i ) + ": return " + generator( accessor( formatData )[i] ) + ";\n";
+  }
+  subCases.pop_back();
+
+  return replaceWithMap( subCasesTemplate, { { "defaultReturn", defaultReturn }, { "subCaseName", subCaseName }, { "subCases", subCases } } );
+}

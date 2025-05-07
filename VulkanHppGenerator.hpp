@@ -507,7 +507,7 @@ private:
                                                    std::string &                    initialCommandAssignments,
                                                    std::string &                    instanceCommandAssignments,
                                                    std::string &                    deviceCommandAssignments ) const;
-  void        appendCppModulePFNCommands( std::vector<RequireData> const & requireData,
+  void        appendCppModuleCommands( std::vector<RequireData> const & requireData,
                                           std::set<std::string> &          listedCommands,
                                           std::string const &              title,
                                           std::string &                    commandMembers ) const;

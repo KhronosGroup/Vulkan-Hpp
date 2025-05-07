@@ -719,7 +719,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<Requir
   }
 }
 
-void VulkanHppGenerator::appendCppModulePFNCommands( std::vector<RequireData> const & requireData,
+void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireData> const & requireData,
                                                      std::set<std::string> &          listedCommands,
                                                      std::string const &              title,
                                                      std::string &                    commandMembers ) const
@@ -731,9 +731,6 @@ void VulkanHppGenerator::appendCppModulePFNCommands( std::vector<RequireData> co
     {
       if ( listedCommands.insert( command.name ).second )
       {
-        auto commandIt = findByNameOrAlias( m_commands, command.name );
-        assert( commandIt != m_commands.end() );
-
         members += "using ::PFN_" + command.name + ";\n";
       }
     }

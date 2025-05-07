@@ -719,6 +719,34 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<Requir
   }
 }
 
+void VulkanHppGenerator::appendCppModulePFNCommands( std::vector<RequireData> const & requireData,
+                                                     std::set<std::string> &          listedCommands,
+                                                     std::string const &              title,
+                                                     std::string &                    commandMembers ) const
+{
+  std::string members;
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & command : require.commands )
+    {
+      if ( listedCommands.insert( command.name ).second )
+      {
+        auto commandIt = findByNameOrAlias( m_commands, command.name );
+        assert( commandIt != m_commands.end() );
+
+        members += "using ::PFN_" + command.name + ";\n";
+      }
+    }
+  }
+  const auto [enter, leave] = generateProtection( getProtectFromTitle( title ) );
+  std::string header        = "\n" + enter + "  //=== " + title + " ===\n";
+  if ( !members.empty() )
+  {
+    commandMembers += header + members;
+    commandMembers += leave;
+  }
+}
+
 void VulkanHppGenerator::appendRAIIDispatcherCommands( std::vector<RequireData> const & requireData,
                                                        std::set<std::string> &          listedCommands,
                                                        std::string const &              title,
@@ -5775,6 +5803,23 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
     }
   }
   usings += baseTypes;
+
+  // generate PFN_* functions
+  auto pfnTypes = std::string{ R"(
+    //==================
+    //=== PFN TYPEs ===
+    //==================
+  )" };
+  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
+  for ( auto const & feature : m_features )
+  {
+    appendCppModulePFNCommands(feature.requireData, listedCommands, feature.name, pfnTypes);
+  }
+  for ( auto const & extension : m_extensions )
+  {
+    appendCppModulePFNCommands(extension.requireData, listedCommands, extension.name, pfnTypes);
+  }
+  usings += pfnTypes;
 
   // generate Enums
   usings += generateCppModuleEnumUsings();

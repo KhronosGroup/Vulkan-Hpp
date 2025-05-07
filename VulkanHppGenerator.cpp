@@ -5810,11 +5810,11 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
   for ( auto const & feature : m_features )
   {
-    appendCppModulePFNCommands(feature.requireData, listedCommands, feature.name, pfnTypes);
+    appendCppModuleCommands(feature.requireData, listedCommands, feature.name, pfnTypes);
   }
   for ( auto const & extension : m_extensions )
   {
-    appendCppModulePFNCommands(extension.requireData, listedCommands, extension.name, pfnTypes);
+    appendCppModuleCommands(extension.requireData, listedCommands, extension.name, pfnTypes);
   }
   usings += pfnTypes;
 

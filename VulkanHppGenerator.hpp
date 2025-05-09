@@ -518,6 +518,10 @@ private:
                                                    std::string &                    initialCommandAssignments,
                                                    std::string &                    instanceCommandAssignments,
                                                    std::string &                    deviceCommandAssignments ) const;
+  void        appendCppModuleCommands( std::vector<RequireData> const & requireData,
+                                          std::set<std::string> &          listedCommands,
+                                          std::string const &              title,
+                                          std::string &                    commandMembers ) const;
   void        appendRAIIDispatcherCommands( std::vector<RequireData> const & requireData,
                                             std::set<std::string> &          listedCommands,
                                             std::string const &              title,
@@ -784,6 +788,7 @@ private:
   std::string generateCppModuleFormatTraitsUsings() const;
   std::string generateCppModuleExtensionInspectionUsings() const;
   std::string generateCppModuleUsings() const;
+  std::string generateCppModuleCommands() const;
   std::string generateCppModuleRaiiUsings() const;
   std::string generateCppModuleSharedHandleUsings() const;
   std::string generateCppModuleHandleHashSpecializations() const;

@@ -777,6 +777,7 @@ private:
   std::string generateCppModuleFormatTraitsUsings() const;
   std::string generateCppModuleExtensionInspectionUsings() const;
   std::string generateCppModuleUsings() const;
+  std::string generateCppModuleCommands() const;
   std::string generateCppModuleRaiiUsings() const;
   std::string generateCppModuleSharedHandleUsings() const;
   std::string generateCppModuleHandleHashSpecializations() const;

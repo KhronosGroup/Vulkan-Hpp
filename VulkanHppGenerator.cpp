@@ -524,7 +524,8 @@ void VulkanHppGenerator::generateCppModuleFile() const
                                      { "hashSpecializations", generateCppModuleHashSpecializations() },
                                      { "licenseHeader", m_vulkanLicenseHeader },
                                      { "raiiUsings", generateCppModuleRaiiUsings() },
-                                     { "usings", generateCppModuleUsings() } } );
+                                     { "usings", generateCppModuleUsings() },
+                                     { "pfnCommands", generateCppModuleCommands() } } );
 
   writeToFile( str, vulkan_cppm );
 }
@@ -731,7 +732,7 @@ void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireData> const
     {
       if ( listedCommands.insert( command.name ).second )
       {
-        members += "using ::PFN_" + command.name + ";\n";
+        members += "export using ::PFN_" + command.name + ";\n";
       }
     }
   }
@@ -5801,23 +5802,6 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   }
   usings += baseTypes;
 
-  // generate PFN_* functions
-  auto pfnTypes = std::string{ R"(
-    //==================
-    //=== PFN TYPEs ===
-    //==================
-  )" };
-  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
-  for ( auto const & feature : m_features )
-  {
-    appendCppModuleCommands(feature.requireData, listedCommands, feature.name, pfnTypes);
-  }
-  for ( auto const & extension : m_extensions )
-  {
-    appendCppModuleCommands(extension.requireData, listedCommands, extension.name, pfnTypes);
-  }
-  usings += pfnTypes;
-
   // generate Enums
   usings += generateCppModuleEnumUsings();
 
@@ -5908,6 +5892,26 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   usings += generateCppModuleExtensionInspectionUsings();
 
   return usings;
+}
+
+std::string VulkanHppGenerator::generateCppModuleCommands() const
+{
+  // generate PFN_* functions
+  auto pfnCommands = std::string{ R"(
+  //==================
+  //=== PFN TYPEs ===
+  //==================
+)" };
+  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
+  for ( auto const & feature : m_features )
+  {
+    appendCppModuleCommands(feature.requireData, listedCommands, feature.name, pfnCommands);
+  }
+  for ( auto const & extension : m_extensions )
+  {
+    appendCppModuleCommands(extension.requireData, listedCommands, extension.name, pfnCommands);
+  }
+  return pfnCommands;
 }
 
 std::string VulkanHppGenerator::generateCppModuleRaiiUsings() const

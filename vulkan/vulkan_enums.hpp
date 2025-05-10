@@ -1611,7 +1611,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM,
     eRenderPassFragmentDensityMapOffsetEndInfoEXT         = VK_STRUCTURE_TYPE_RENDER_PASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_EXT,
     eSubpassFragmentDensityMapOffsetEndInfoQCOM           = VK_STRUCTURE_TYPE_SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM,
-    eRenderingEndInfoEXT                                  = VK_STRUCTURE_TYPE_RENDERING_END_INFO_EXT
+    eRenderingEndInfoEXT                                  = VK_STRUCTURE_TYPE_RENDERING_END_INFO_EXT,
+    ePhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT  = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ZERO_INITIALIZE_DEVICE_MEMORY_FEATURES_EXT
   };
 
   // wrapper class for enum VkPipelineCacheHeaderVersion, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineCacheHeaderVersion.html
@@ -2177,7 +2178,7 @@ namespace VULKAN_HPP_NAMESPACE
     eInvocationMaskHUAWEI               = VK_IMAGE_USAGE_INVOCATION_MASK_BIT_HUAWEI,
     eSampleWeightQCOM                   = VK_IMAGE_USAGE_SAMPLE_WEIGHT_BIT_QCOM,
     eSampleBlockMatchQCOM               = VK_IMAGE_USAGE_SAMPLE_BLOCK_MATCH_BIT_QCOM,
-    eTileMemoryQCOM                     = VK_IMAGE_USAGE_TILE_MEMORY_QCOM,
+    eTileMemoryQCOM                     = VK_IMAGE_USAGE_TILE_MEMORY_BIT_QCOM,
     eVideoEncodeQuantizationDeltaMapKHR = VK_IMAGE_USAGE_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR,
     eVideoEncodeEmphasisMapKHR          = VK_IMAGE_USAGE_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR
   };
@@ -2732,7 +2733,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePushDescriptorsDescriptorBufferEXT         = VK_BUFFER_USAGE_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT,
     eMicromapBuildInputReadOnlyEXT              = VK_BUFFER_USAGE_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT,
     eMicromapStorageEXT                         = VK_BUFFER_USAGE_MICROMAP_STORAGE_BIT_EXT,
-    eTileMemoryQCOM                             = VK_BUFFER_USAGE_TILE_MEMORY_QCOM
+    eTileMemoryQCOM                             = VK_BUFFER_USAGE_TILE_MEMORY_BIT_QCOM
   };
 
   // wrapper using for bitmask VkBufferUsageFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkBufferUsageFlags.html
@@ -2822,7 +2823,8 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoEncodeSrcKHR                        = VK_IMAGE_LAYOUT_VIDEO_ENCODE_SRC_KHR,
     eVideoEncodeDpbKHR                        = VK_IMAGE_LAYOUT_VIDEO_ENCODE_DPB_KHR,
     eAttachmentFeedbackLoopOptimalEXT         = VK_IMAGE_LAYOUT_ATTACHMENT_FEEDBACK_LOOP_OPTIMAL_EXT,
-    eVideoEncodeQuantizationMapKHR            = VK_IMAGE_LAYOUT_VIDEO_ENCODE_QUANTIZATION_MAP_KHR
+    eVideoEncodeQuantizationMapKHR            = VK_IMAGE_LAYOUT_VIDEO_ENCODE_QUANTIZATION_MAP_KHR,
+    eZeroInitializedEXT                       = VK_IMAGE_LAYOUT_ZERO_INITIALIZED_EXT
   };
 
   // wrapper class for enum VkComponentSwizzle, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkComponentSwizzle.html
@@ -4128,7 +4130,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     eDeviceMask                 = VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT,
     eDeviceAddress              = VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT,
-    eDeviceAddressCaptureReplay = VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT
+    eDeviceAddressCaptureReplay = VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT,
+    eZeroInitializeEXT          = VK_MEMORY_ALLOCATE_ZERO_INITIALIZE_BIT_EXT
   };
 
   using MemoryAllocateFlagBitsKHR = MemoryAllocateFlagBits;
@@ -4142,8 +4145,9 @@ namespace VULKAN_HPP_NAMESPACE
   {
     using WrappedType                                                  = VkMemoryAllocateFlagBits;
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR MemoryAllocateFlags allFlags =
-      MemoryAllocateFlagBits::eDeviceMask | MemoryAllocateFlagBits::eDeviceAddress | MemoryAllocateFlagBits::eDeviceAddressCaptureReplay;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR MemoryAllocateFlags allFlags  = MemoryAllocateFlagBits::eDeviceMask | MemoryAllocateFlagBits::eDeviceAddress |
+                                                                        MemoryAllocateFlagBits::eDeviceAddressCaptureReplay |
+                                                                        MemoryAllocateFlagBits::eZeroInitializeEXT;
   };
 
   enum class CommandPoolTrimFlagBits : VkCommandPoolTrimFlags
@@ -5152,7 +5156,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePushDescriptorsDescriptorBufferEXT         = VK_BUFFER_USAGE_2_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT,
     eMicromapBuildInputReadOnlyEXT              = VK_BUFFER_USAGE_2_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT,
     eMicromapStorageEXT                         = VK_BUFFER_USAGE_2_MICROMAP_STORAGE_BIT_EXT,
-    eTileMemoryQCOM                             = VK_BUFFER_USAGE_2_TILE_MEMORY_QCOM,
+    eTileMemoryQCOM                             = VK_BUFFER_USAGE_2_TILE_MEMORY_BIT_QCOM,
     ePreprocessBufferEXT                        = VK_BUFFER_USAGE_2_PREPROCESS_BUFFER_BIT_EXT
   };
 

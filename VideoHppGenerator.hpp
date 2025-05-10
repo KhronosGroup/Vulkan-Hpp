@@ -26,6 +26,7 @@ public:
   VideoHppGenerator( tinyxml2::XMLDocument const & document );
 
   void generateHppFile() const;
+  void generateCppModuleFile() const;
 
 private:
   struct ConstantData
@@ -108,6 +109,9 @@ private:
   std::string                                      generateStructMembers( std::pair<std::string, StructureData> const & structData ) const;
   std::string                                      generateStructs() const;
   std::string                                      generateStructs( RequireData const & requireData, std::string const & title ) const;
+  std::string                                      generateCppModuleEnumUsings() const;
+  std::string                                      generateCppModuleStructUsings() const;
+  std::string                                      generateCppModuleUsings() const;
   bool                                             isExtension( std::string const & name ) const;
   std::string                                      readComment( tinyxml2::XMLElement const * element ) const;
   void                                             readEnums( tinyxml2::XMLElement const * element );

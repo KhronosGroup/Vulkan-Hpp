@@ -81,6 +81,42 @@ ${structs}
   writeToFile( str, video_hpp );
 }
 
+void VideoHppGenerator::generateCppModuleFile() const
+{
+  std::string const vulkan_video_cppm = std::string( BASE_PATH ) + "/vulkan/vulkan_video.cppm";
+  messager.message( "VideoHppGenerator: Generating " + vulkan_video_cppm + " ...\n" );
+
+  std::string const videoCppmTemplate = R"(${copyrightMessage}
+
+// Note: This module is still in an experimental state.
+// Any feedback is welcome on https://github.com/KhronosGroup/Vulkan-Hpp/issues.
+
+module;
+
+#include <vulkan/vulkan_hpp_macros.hpp>
+
+#if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_ENABLE_STD_MODULE )
+#define VULKAN_HPP_ENABLE_STD_MODULE
+#endif
+
+#include <vulkan/vulkan_video.hpp>
+
+export module vulkan_video_hpp;
+
+export namespace VULKAN_HPP_NAMESPACE
+{
+namespace VULKAN_HPP_VIDEO_NAMESPACE
+{
+${usings}
+}   // namespace VULKAN_HPP_VIDEO_NAMESPACE
+}   // namespace VULKAN_HPP_NAMESPACE
+)";
+
+  std::string str = replaceWithMap( videoCppmTemplate, { { "copyrightMessage", m_copyrightMessage }, { "usings", generateCppModuleUsings() } } );
+
+  writeToFile( str, vulkan_video_cppm );
+}
+
 void VideoHppGenerator::addImplicitlyRequiredTypes()
 {
   for ( auto & ext : m_extensions )
@@ -280,6 +316,37 @@ std::string VideoHppGenerator::generateEnums( RequireData const & requireData, s
   return str;
 }
 
+std::string VideoHppGenerator::generateCppModuleEnumUsings() const
+{
+  auto const usingTemplate = std::string{
+    R"(  using VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::${enumName};
+)"
+  };
+
+  const std::string enumsTemplate = R"(
+  //=============
+  //=== ENUMs ===
+  //=============
+
+${enums}
+)";
+
+  std::string enums;
+  for ( auto const & extension : m_extensions )
+  {
+    for ( auto const & type : extension.requireData.types )
+    {
+      auto enumIt = m_enums.find( type );
+      if ( enumIt != m_enums.end() )
+      {
+        enums += replaceWithMap( usingTemplate, { { "enumName", stripPrefix( enumIt->first, "StdVideo" ) } } );
+      }
+    }
+  }
+
+  return replaceWithMap( enumsTemplate, { { "enums", enums } } );
+}
+
 std::string VideoHppGenerator::generateStruct( std::pair<std::string, StructureData> const & structData ) const
 {
   static const std::string structureTemplate = R"(  struct ${structureType}
@@ -447,6 +514,42 @@ std::string VideoHppGenerator::generateStructs( RequireData const & requireData,
     str = "\n    //=== " + title + " ===\n" + str;
   }
   return str;
+}
+
+std::string VideoHppGenerator::generateCppModuleStructUsings() const
+{
+  auto const usingTemplate = std::string{
+    R"(  using VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::${structName};
+)"
+  };
+
+  const std::string structsTemplate = R"(
+  //===============
+  //=== STRUCTS ===
+  //===============
+
+${structs}
+)";
+
+  std::string structs;
+  for ( auto const & extension : m_extensions )
+  {
+    for ( auto const & type : extension.requireData.types )
+    {
+      auto structIt = m_structs.find( type );
+      if ( structIt != m_structs.end() )
+      {
+        structs += replaceWithMap( usingTemplate, { { "structName", stripPrefix( structIt->first, "StdVideo" ) } } );
+      }
+    }
+  }
+
+  return replaceWithMap( structsTemplate, { { "structs", structs } } );
+}
+
+std::string VideoHppGenerator::generateCppModuleUsings() const
+{
+  return generateCppModuleEnumUsings() + generateCppModuleStructUsings();
 }
 
 bool VideoHppGenerator::isExtension( std::string const & name ) const
@@ -1059,6 +1162,7 @@ int main( int argc, char ** argv )
     VideoHppGenerator generator( doc );
 
     generator.generateHppFile();
+    generator.generateCppModuleFile();
 
 #if !defined( CLANG_FORMAT_EXECUTABLE )
     std::cout << "VideoHppGenerator: could not find clang-format. The generated files will not be formatted accordingly.\n";

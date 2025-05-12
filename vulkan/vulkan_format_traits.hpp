@@ -48,6 +48,9 @@ namespace VULKAN_HPP_NAMESPACE
   // A textual description of the compression scheme, or an empty string if it is not compressed
   VULKAN_HPP_CONSTEXPR_14 char const * compressionScheme( VULKAN_HPP_NAMESPACE::Format format );
 
+  // Get all color with a color component
+  std::vector<VULKAN_HPP_NAMESPACE::Format> const & getColorFormats();
+
   // Get all formats with a depth component
   std::vector<VULKAN_HPP_NAMESPACE::Format> const & getDepthFormats();
 
@@ -57,8 +60,20 @@ namespace VULKAN_HPP_NAMESPACE
   // Get all formats with a stencil component
   std::vector<VULKAN_HPP_NAMESPACE::Format> const & getStencilFormats();
 
+  // True, if this format has an alpha component
+  VULKAN_HPP_CONSTEXPR_14 bool hasAlphaComponent( VULKAN_HPP_NAMESPACE::Format format );
+
+  // True, if this format has a blue component
+  VULKAN_HPP_CONSTEXPR_14 bool hasBlueComponent( VULKAN_HPP_NAMESPACE::Format format );
+
   // True, if this format has a depth component
   VULKAN_HPP_CONSTEXPR_14 bool hasDepthComponent( VULKAN_HPP_NAMESPACE::Format format );
+
+  // True, if this format has a green component
+  VULKAN_HPP_CONSTEXPR_14 bool hasGreenComponent( VULKAN_HPP_NAMESPACE::Format format );
+
+  // True, if this format has a red component
+  VULKAN_HPP_CONSTEXPR_14 bool hasRedComponent( VULKAN_HPP_NAMESPACE::Format format );
 
   // True, if this format has a stencil component
   VULKAN_HPP_CONSTEXPR_14 bool hasStencilComponent( VULKAN_HPP_NAMESPACE::Format format );
@@ -6800,6 +6815,254 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  // Get all formats with a color component
+  VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::Format> const & getColorFormats()
+  {
+    static std::vetor<VULKAN_HPP_NAMESPACE::Format> colorFormats = { VULKAN_HPP_NAMESPACE::Format::eR4G4UnormPack8,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR4G4B4A4UnormPack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB4G4R4A4UnormPack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR5G6B5UnormPack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB5G6R5UnormPack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR5G5B5A1UnormPack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB5G5R5A1UnormPack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA1R5G5B5UnormPack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8Snorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8Uscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8Sscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8Srgb,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8Snorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8Uscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8Sscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8Srgb,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8Snorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8Uscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8Sscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8Srgb,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8Snorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8Uscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8Sscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8Srgb,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Snorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Uscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Sscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Srgb,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Snorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Uscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Sscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Srgb,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UnormPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SnormPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UscaledPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SscaledPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UintPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SintPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SrgbPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UnormPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SnormPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UscaledPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SscaledPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UintPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SintPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UnormPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SnormPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UscaledPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SscaledPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UintPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SintPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16Snorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16Uscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16Sscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16Sfloat,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16Snorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16Uscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16Sscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16Sfloat,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16Snorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16Uscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16Sscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16Sfloat,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Snorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Uscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sscaled,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sfloat,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR32Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR32Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR32Sfloat,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR32G32Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR32G32Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR32G32Sfloat,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR32G32B32Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR32G32B32Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR32G32B32Sfloat,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Sfloat,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR64Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR64Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR64Sfloat,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR64G64Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR64G64Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR64G64Sfloat,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR64G64B64Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR64G64B64Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR64G64B64Sfloat,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Uint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Sint,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Sfloat,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB10G11R11UfloatPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eE5B9G9R9UfloatPack32,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc1RgbUnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc1RgbSrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc1RgbaUnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc1RgbaSrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc2UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc2SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc3UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc3SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc4UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc4SnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc5UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc5SnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc6HUfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc6HSfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc7UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eBc7SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A1UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A1SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A8UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A8SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eEacR11UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eEacR11SnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eEacR11G11UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eEacR11G11SnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc4x4UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc4x4SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc5x4UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc5x4SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc5x5UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc5x5SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc6x5UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc6x5SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc6x6UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc6x6SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc8x5UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc8x5SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc8x6UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc8x6SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc8x8UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc8x8SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc10x5UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc10x5SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc10x6UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc10x6SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc10x8UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc10x8SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc10x10UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc10x10SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc12x10UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc12x10SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc12x12UnormBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc12x12SrgbBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG8B8G8R8422Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB8G8R8G8422Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG8B8R83Plane420Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG8B8R82Plane420Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG8B8R83Plane422Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG8B8R82Plane422Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG8B8R83Plane444Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR10X6UnormPack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR10X6G10X6Unorm2Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR10X6G10X6B10X6A10X6Unorm4Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6G10X6R10X6422Unorm4Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB10X6G10X6R10X6G10X6422Unorm4Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane420Unorm3Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X62Plane420Unorm3Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane422Unorm3Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X62Plane422Unorm3Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane444Unorm3Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR12X4UnormPack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR12X4G12X4Unorm2Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR12X4G12X4B12X4A12X4Unorm4Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4G12X4R12X4422Unorm4Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB12X4G12X4R12X4G12X4422Unorm4Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X43Plane420Unorm3Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X42Plane420Unorm3Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X43Plane422Unorm3Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X42Plane422Unorm3Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X43Plane444Unorm3Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG16B16G16R16422Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eB16G16R16G16422Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG16B16R163Plane420Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG16B16R162Plane420Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG16B16R163Plane422Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG16B16R162Plane422Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG16B16R163Plane444Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG8B8R82Plane444Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X62Plane444Unorm3Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X42Plane444Unorm3Pack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eG16B16R162Plane444Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA4R4G4B4UnormPack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA4B4G4R4UnormPack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc4x4SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc5x4SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc5x5SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc6x5SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc6x6SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc8x5SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc8x6SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc8x8SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc10x5SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc10x6SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc10x8SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc10x10SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc12x10SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eAstc12x12SfloatBlock,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA1B5G5R5UnormPack16,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eA8Unorm,
+                                                                     VULKAN_HPP_NAMESPACE::Format::ePvrtc12BppUnormBlockIMG,
+                                                                     VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppUnormBlockIMG,
+                                                                     VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppUnormBlockIMG,
+                                                                     VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppUnormBlockIMG,
+                                                                     VULKAN_HPP_NAMESPACE::Format::ePvrtc12BppSrgbBlockIMG,
+                                                                     VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppSrgbBlockIMG,
+                                                                     VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppSrgbBlockIMG,
+                                                                     VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppSrgbBlockIMG,
+                                                                     VULKAN_HPP_NAMESPACE::Format::eR16G16Sfixed5NV };
+    return colorFormats;
+  }
+
   // Get all formats with a depth component
   VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::Format> const & getDepthFormats()
   {
@@ -6829,6 +7092,330 @@ namespace VULKAN_HPP_NAMESPACE
     return stencilFormats;
   }
 
+  // True, if this format has an alpha component
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool hasAlphaComponent( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch ( format )
+    {
+      case VULKAN_HPP_NAMESPACE::Format::eR4G4B4A4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB4G4R4A4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR5G5B5A1UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB5G5R5A1UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eA1R5G5B5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SrgbPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbaUnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbaSrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc2UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc2SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc3UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc3SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc7UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc7SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A1UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A1SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc4x4UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc4x4SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x4UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x4SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x6UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x6SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x6UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x6SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x6UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x6SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x10UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x10SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x10UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x10SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x12UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x12SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eR10X6G10X6B10X6A10X6Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR12X4G12X4B12X4A12X4Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eA4R4G4B4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eA4B4G4R4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc4x4SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x4SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x6SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x6SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x8SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x6SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x8SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x10SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x10SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x12SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eA1B5G5R5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eA8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc12BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc12BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppSrgbBlockIMG          : return true;
+      default                                                             : return false;
+    }
+  }
+
+  // True, if this format has a blue component
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool hasBlueComponent( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch ( format )
+    {
+      case VULKAN_HPP_NAMESPACE::Format::eR4G4B4A4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB4G4R4A4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR5G6B5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB5G6R5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR5G5B5A1UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB5G5R5A1UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eA1R5G5B5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SrgbPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eB10G11R11UfloatPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eE5B9G9R9UfloatPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbUnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbSrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbaUnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbaSrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc2UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc2SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc3UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc3SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc6HUfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc6HSfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc7UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc7SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A1UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A1SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc4x4UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc4x4SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x4UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x4SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x6UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x6SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x6UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x6SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x6UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x6SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x10UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x10SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x10UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x10SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x12UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x12SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8G8R8422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8G8422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R83Plane420Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R82Plane420Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R83Plane422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R82Plane422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R83Plane444Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR10X6G10X6B10X6A10X6Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6G10X6R10X6422Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB10X6G10X6R10X6G10X6422Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane420Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X62Plane420Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane422Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X62Plane422Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane444Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR12X4G12X4B12X4A12X4Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4G12X4R12X4422Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB12X4G12X4R12X4G12X4422Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X43Plane420Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X42Plane420Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X43Plane422Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X42Plane422Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X43Plane444Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16G16R16422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB16G16R16G16422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R163Plane420Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R162Plane420Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R163Plane422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R162Plane422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R163Plane444Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R82Plane444Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X62Plane444Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X42Plane444Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R162Plane444Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eA4R4G4B4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eA4B4G4R4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc4x4SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x4SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x6SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x6SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x8SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x6SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x8SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x10SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x10SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x12SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eA1B5G5R5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc12BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc12BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppSrgbBlockIMG              : return true;
+      default                                                                 : return false;
+    }
+  }
+
   // True, if this format has a depth component
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool hasDepthComponent( VULKAN_HPP_NAMESPACE::Format format )
   {
@@ -6841,6 +7428,480 @@ namespace VULKAN_HPP_NAMESPACE
       case VULKAN_HPP_NAMESPACE::Format::eD24UnormS8Uint:
       case VULKAN_HPP_NAMESPACE::Format::eD32SfloatS8Uint : return true;
       default                                             : return false;
+    }
+  }
+
+  // True, if this format has a green component
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool hasGreenComponent( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch ( format )
+    {
+      case VULKAN_HPP_NAMESPACE::Format::eR4G4UnormPack8:
+      case VULKAN_HPP_NAMESPACE::Format::eR4G4B4A4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB4G4R4A4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR5G6B5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB5G6R5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR5G5B5A1UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB5G5R5A1UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eA1R5G5B5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SrgbPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eB10G11R11UfloatPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eE5B9G9R9UfloatPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbUnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbSrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbaUnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbaSrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc2UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc2SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc3UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc3SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc5SnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc6HUfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc6HSfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc7UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc7SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A1UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A1SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEacR11G11UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEacR11G11SnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc4x4UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc4x4SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x4UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x4SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x6UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x6SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x6UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x6SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x6UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x6SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x10UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x10SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x10UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x10SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x12UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x12SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8G8R8422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8G8422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R83Plane420Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R82Plane420Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R83Plane422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R82Plane422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R83Plane444Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR10X6G10X6Unorm2Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR10X6G10X6B10X6A10X6Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6G10X6R10X6422Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB10X6G10X6R10X6G10X6422Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane420Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X62Plane420Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane422Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X62Plane422Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane444Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR12X4G12X4Unorm2Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR12X4G12X4B12X4A12X4Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4G12X4R12X4422Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB12X4G12X4R12X4G12X4422Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X43Plane420Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X42Plane420Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X43Plane422Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X42Plane422Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X43Plane444Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16G16R16422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB16G16R16G16422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R163Plane420Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R162Plane420Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R163Plane422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R162Plane422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R163Plane444Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R82Plane444Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X62Plane444Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X42Plane444Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R162Plane444Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eA4R4G4B4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eA4B4G4R4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc4x4SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x4SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x6SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x6SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x8SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x6SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x8SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x10SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x10SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x12SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eA1B5G5R5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc12BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc12BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Sfixed5NV                     : return true;
+      default                                                                 : return false;
+    }
+  }
+
+  // True, if this format has a red component
+  VULKAN_HPP_CONSTEXPR_14 bool hasRedComponent( VULKAN_HPP_NAMESPACE::Format format );
+  {
+    switch ( format )
+    {
+      case VULKAN_HPP_NAMESPACE::Format::eR4G4UnormPack8:
+      case VULKAN_HPP_NAMESPACE::Format::eR4G4B4A4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB4G4R4A4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR5G6B5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB5G6R5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR5G5B5A1UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB5G5R5A1UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eA1R5G5B5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR8G8B8A8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8A8Srgb:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8UintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA8B8G8R8SrgbPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10UintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2R10G10B10SintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SnormPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SscaledPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10UintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eA2B10G10R10SintPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eR16Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Snorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Uscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sscaled:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16B16A16Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR32Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR32G32B32A32Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR64Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Uint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Sint:
+      case VULKAN_HPP_NAMESPACE::Format::eR64G64B64A64Sfloat:
+      case VULKAN_HPP_NAMESPACE::Format::eB10G11R11UfloatPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eE5B9G9R9UfloatPack32:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbUnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbSrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbaUnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc1RgbaSrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc2UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc2SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc3UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc3SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc4UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc4SnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc5SnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc6HUfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc6HSfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc7UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eBc7SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A1UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A1SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEtc2R8G8B8A8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEacR11UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEacR11SnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEacR11G11UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eEacR11G11SnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc4x4UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc4x4SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x4UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x4SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x6UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x6SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x6UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x6SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x5UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x5SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x6UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x6SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x8UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x8SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x10UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x10SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x10UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x10SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x12UnormBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x12SrgbBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8G8R8422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB8G8R8G8422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R83Plane420Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R82Plane420Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R83Plane422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R82Plane422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R83Plane444Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eR10X6UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR10X6G10X6Unorm2Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR10X6G10X6B10X6A10X6Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6G10X6R10X6422Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB10X6G10X6R10X6G10X6422Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane420Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X62Plane420Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane422Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X62Plane422Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane444Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR12X4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR12X4G12X4Unorm2Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eR12X4G12X4B12X4A12X4Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4G12X4R12X4422Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eB12X4G12X4R12X4G12X4422Unorm4Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X43Plane420Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X42Plane420Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X43Plane422Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X42Plane422Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X43Plane444Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16G16R16422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eB16G16R16G16422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R163Plane420Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R162Plane420Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R163Plane422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R162Plane422Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R163Plane444Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG8B8R82Plane444Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X62Plane444Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG12X4B12X4R12X42Plane444Unorm3Pack16:
+      case VULKAN_HPP_NAMESPACE::Format::eG16B16R162Plane444Unorm:
+      case VULKAN_HPP_NAMESPACE::Format::eA4R4G4B4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eA4B4G4R4UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc4x4SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x4SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc5x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc6x6SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x6SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc8x8SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x5SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x6SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x8SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc10x10SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x10SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eAstc12x12SfloatBlock:
+      case VULKAN_HPP_NAMESPACE::Format::eA1B5G5R5UnormPack16:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc12BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppUnormBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc12BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppSrgbBlockIMG:
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16Sfixed5NV                     : return true;
+      default                                                                 : return false;
     }
   }
 

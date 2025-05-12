@@ -34,6 +34,9 @@
   // A textual description of the compression scheme, or an empty string if it is not compressed
   VULKAN_HPP_CONSTEXPR_14 char const * compressionScheme( VULKAN_HPP_NAMESPACE::Format format );
 
+  // Get all color with a color component
+  std::vector<VULKAN_HPP_NAMESPACE::Format> const & getColorFormats();
+
   // Get all formats with a depth component
   std::vector<VULKAN_HPP_NAMESPACE::Format> const & getDepthFormats();
 
@@ -43,8 +46,20 @@
   // Get all formats with a stencil component
   std::vector<VULKAN_HPP_NAMESPACE::Format> const & getStencilFormats();
 
+  // True, if this format has an alpha component
+  VULKAN_HPP_CONSTEXPR_14 bool hasAlphaComponent( VULKAN_HPP_NAMESPACE::Format format );
+
+  // True, if this format has a blue component
+  VULKAN_HPP_CONSTEXPR_14 bool hasBlueComponent( VULKAN_HPP_NAMESPACE::Format format );
+
   // True, if this format has a depth component
   VULKAN_HPP_CONSTEXPR_14 bool hasDepthComponent( VULKAN_HPP_NAMESPACE::Format format );
+
+  // True, if this format has a green component
+  VULKAN_HPP_CONSTEXPR_14 bool hasGreenComponent( VULKAN_HPP_NAMESPACE::Format format );
+
+  // True, if this format has a red component
+  VULKAN_HPP_CONSTEXPR_14 bool hasRedComponent( VULKAN_HPP_NAMESPACE::Format format );
 
   // True, if this format has a stencil component
   VULKAN_HPP_CONSTEXPR_14 bool hasStencilComponent( VULKAN_HPP_NAMESPACE::Format format );
@@ -173,6 +188,13 @@ ${compressionSchemeCases}
       default: return "";
     }
   }
+  
+  // Get all formats with a color component
+  VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::Format> const & getColorFormats()
+  {
+    static std::vector<VULKAN_HPP_NAMESPACE::Format> colorFormats = { ${colorFormats} };
+	return colorFormats;
+  }
 
   // Get all formats with a depth component
   VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::Format> const & getDepthFormats()
@@ -195,12 +217,56 @@ ${compressionSchemeCases}
     return stencilFormats;
   }
 
+  // True, if this format has an alpha component
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool hasAlphaComponent( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${alphaCases}
+        return true;
+      default: return false;
+    }
+  }
+
+  // True, if this format has a blue component
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool hasBlueComponent( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${blueCases}
+        return true;
+      default: return false;
+    }
+  }
+
   // True, if this format has a depth component
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool hasDepthComponent( VULKAN_HPP_NAMESPACE::Format format )
   {
     switch( format )
     {
 ${depthCases}
+        return true;
+      default: return false;
+    }
+  }
+
+  // True, if this format has a green component
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool hasGreenComponent( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${greenCases}
+        return true;
+      default: return false;
+    }
+  }
+
+  // True, if this format has a red component
+  VULKAN_HPP_CONSTEXPR_14 bool hasRedComponent( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${redCases}
         return true;
       default: return false;
     }

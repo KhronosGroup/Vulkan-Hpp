@@ -1136,8 +1136,7 @@ void VulkanHppGenerator::checkRequireDependenciesCorrectness( RequireData const 
       std::string member    = depends.substr( separatorPos + 2 );
       auto        structIt  = m_structs.find( structure );
       checkForError( structIt != m_structs.end(), require.xmlLine, section + " <" + name + "> requires member of an unknown struct <" + structure + ">" );
-      checkForError( std::ranges::find_if( structIt->second.members, [&member]( auto const & md ) { return md.name == member; } ) !=
-                       structIt->second.members.end(),
+      checkForError( std::ranges::any_of( structIt->second.members, [&member]( auto const & md ) { return md.name == member; } ),
                      require.xmlLine,
                      section + " <" + name + "> requires unknown member <" + member + "> as part of the struct <" + structure + ">" );
     }
@@ -1213,8 +1212,7 @@ void VulkanHppGenerator::checkSpirVCapabilityCorrectness() const
 
       for ( auto const & member : enable.second )
       {
-        auto memberIt = std::ranges::find_if( structIt->second.members, [&member]( auto const & md ) { return md.name == member.first; } );
-        checkForError( memberIt != structIt->second.members.end(),
+        checkForError( std::ranges::any_of( structIt->second.members, [&member]( auto const & md ) { return md.name == member.first; } ),
                        member.second,
                        "unknown member <" + member.first + "> in struct <" + enable.first + "> specified for SPIR-V capability <" + capability.first + ">" );
       }
@@ -7691,7 +7689,15 @@ std::string VulkanHppGenerator::generateFormatTraits() const
   assert( formatIt != m_enums.end() );
   assert( formatIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
 
-  auto noPredicate = []( auto const & ) { return true; };
+  auto noPredicate        = []( auto const & ) { return true; };
+  auto generateAlphaCases = [this]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData )
+      { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "A"; } ); },
+      []( FormatData const & ) { return ""; } );
+  };
   auto generateComponentCases =
     [this]( auto const & formatData, std::function<std::string( ComponentData const & componentData )> generator, std::string const & defaultReturn )
   {
@@ -7719,10 +7725,30 @@ std::string VulkanHppGenerator::generateFormatTraits() const
   auto generateBlockSizeCases = [&]( auto const formatIt ) {
     return generateFormatTraitsCases( formatIt->second, noPredicate, []( FormatData const & formatData ) { return "return " + formatData.blockSize + ";"; } );
   };
+  auto generateBlueCases = [this]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData )
+      { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "B"; } ); },
+      []( FormatData const & ) { return ""; } );
+  };
   auto generateClassCases = [&]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second, noPredicate, []( FormatData const & formatData ) { return "return \"" + formatData.classAttribute + "\";"; } );
+  };
+  auto generateColorFormatsList = [&]( auto const formatIt )
+  {
+    return generateFormatTraitsList( formatIt->second,
+                                     []( FormatData const & formatData )
+                                     {
+                                       return std::ranges::any_of( formatData.components,
+                                                                   []( auto const & component ) {
+                                                                     return ( component.name == "R" ) || ( component.name == "G" ) ||
+                                                                            ( component.name == "B" ) || ( component.name == "A" );
+                                                                   } );
+                                     } );
   };
   auto generateComponentBitsCases = [&]( auto const formatIt )
   {
@@ -7781,27 +7807,31 @@ std::string VulkanHppGenerator::generateFormatTraits() const
     return generateFormatTraitsCases(
       formatIt->second,
       []( FormatData const & formatData )
-      { return std::ranges::find_if( formatData.components, []( auto const & component ) { return component.name == "D"; } ) != formatData.components.end(); },
+      { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "D"; } ); },
       []( FormatData const & ) { return ""; } );
   };
   auto generateDepthFormatsList = [&]( auto const formatIt )
   {
     return generateFormatTraitsList( formatIt->second,
-                                     []( FormatData const & formatData ) {
-                                       return std::ranges::find_if( formatData.components, []( auto const & component ) { return component.name == "D"; } ) !=
-                                              formatData.components.end();
-                                     } );
+                                     []( FormatData const & formatData )
+                                     { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "D"; } ); } );
   };
   auto generateDepthStencilFormatsList = [&]( auto const formatIt )
   {
     return generateFormatTraitsList( formatIt->second,
                                      []( FormatData const & formatData )
                                      {
-                                       return ( std::ranges::find_if( formatData.components, []( auto const & component ) { return component.name == "D"; } ) !=
-                                                formatData.components.end() ) &&
-                                              ( std::ranges::find_if( formatData.components, []( auto const & component ) { return component.name == "S"; } ) !=
-                                                formatData.components.end() );
+                                       return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "D"; } ) &&
+                                              std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "S"; } );
                                      } );
+  };
+  auto generateGreenCases = [this]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData )
+      { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "G"; } ); },
+      []( FormatData const & ) { return ""; } );
   };
   auto generatePackedCases = [this]( auto const formatIt )
   {
@@ -7846,21 +7876,27 @@ std::string VulkanHppGenerator::generateFormatTraits() const
       [&]( FormatData const & formatData )
       { return generatePlaneCases( formatData, [&]( PlaneData const & planeData ) { return planeData.widthDivisor; }, "1" ); } );
   };
+  auto generateRedCases = [this]( auto const formatIt )
+  {
+    return generateFormatTraitsCases(
+      formatIt->second,
+      []( FormatData const & formatData )
+      { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "R"; } ); },
+      []( FormatData const & ) { return ""; } );
+  };
   auto generateStencilCases = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
       []( FormatData const & formatData )
-      { return std::ranges::find_if( formatData.components, []( auto const & component ) { return component.name == "S"; } ) != formatData.components.end(); },
+      { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "S"; } ); },
       []( FormatData const & ) { return ""; } );
   };
   auto generateStencilFormatsList = [&]( auto const formatIt )
   {
     return generateFormatTraitsList( formatIt->second,
-                                     []( FormatData const & formatData ) {
-                                       return std::ranges::find_if( formatData.components, []( auto const & component ) { return component.name == "S"; } ) !=
-                                              formatData.components.end();
-                                     } );
+                                     []( FormatData const & formatData )
+                                     { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "S"; } ); } );
   };
   auto generateTexelsPerBlockCases = [&]( auto const formatIt )
   {
@@ -7869,9 +7905,12 @@ std::string VulkanHppGenerator::generateFormatTraits() const
   };
 
   return replaceWithMap( readSnippet( "FormatTraits.hpp" ),
-                         { { "blockExtentCases", generateBlockExtentCases( formatIt ) },
+                         { { "alphaCases", generateAlphaCases( formatIt ) },
+                           { "blockExtentCases", generateBlockExtentCases( formatIt ) },
                            { "blockSizeCases", generateBlockSizeCases( formatIt ) },
+                           { "blueCases", generateBlueCases( formatIt ) },
                            { "classCases", generateClassCases( formatIt ) },
+                           { "colorFormats", generateColorFormatsList( formatIt ) },
                            { "componentBitsCases", generateComponentBitsCases( formatIt ) },
                            { "componentCountCases", generateComponentCountCases( formatIt ) },
                            { "componentNameCases", generateComponentNameCases( formatIt ) },
@@ -7882,11 +7921,13 @@ std::string VulkanHppGenerator::generateFormatTraits() const
                            { "depthCases", generateDepthCases( formatIt ) },
                            { "depthFormats", generateDepthFormatsList( formatIt ) },
                            { "depthStencilFormats", generateDepthStencilFormatsList( formatIt ) },
+                           { "greenCases", generateGreenCases( formatIt ) },
                            { "packedCases", generatePackedCases( formatIt ) },
                            { "planeCompatibleCases", generatePlaneCompatibleCases( formatIt ) },
                            { "planeCountCases", generatePlaneCountCases( formatIt ) },
                            { "planeHeightDivisorCases", generatePlaneHeightDivisorCases( formatIt ) },
                            { "planeWidthDivisorCases", generatePlaneWidthDivisorCases( formatIt ) },
+                           { "redCases", generateRedCases( formatIt ) },
                            { "stencilCases", generateStencilCases( formatIt ) },
                            { "stencilFormats", generateStencilFormatsList( formatIt ) },
                            { "texelsPerBlockCases", generateTexelsPerBlockCases( formatIt ) } } );

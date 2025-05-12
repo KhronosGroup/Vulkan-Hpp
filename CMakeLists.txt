@@ -306,7 +306,7 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 		FILE_SET vulkan_module_file
 		BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
 		TYPE CXX_MODULES
-		FILES vulkan/vulkan.cppm )
+		FILES vulkan/vulkan.cppm vulkan/vulkan_video.cppm )
 	target_link_libraries( VulkanHppModule PUBLIC Vulkan::Hpp )
 endif()
 

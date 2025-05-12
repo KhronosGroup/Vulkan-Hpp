@@ -1,11 +1,13 @@
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 #if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
+#  include <cassert>
 #  include <string.h>
 import VULKAN_HPP_STD_MODULE;
 #else
 #  include <algorithm>
 #  include <array>  // ArrayWrapperND
+#  include <cassert>
 #  include <string.h>  // strnlen
 #  include <string>    // std::string
 #  include <utility>   // std::exchange
@@ -26,7 +28,6 @@ import VULKAN_HPP_STD_MODULE;
 #    include <span>
 #  endif
 #endif
-#include <cassert>
 #include <vulkan/${vulkan_h}>
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1

@@ -1341,6 +1341,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " DeviceAddress |";
     if ( value & MemoryAllocateFlagBits::eDeviceAddressCaptureReplay )
       result += " DeviceAddressCaptureReplay |";
+    if ( value & MemoryAllocateFlagBits::eZeroInitializeEXT )
+      result += " ZeroInitializeEXT |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -5138,6 +5140,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceFragmentDensityMapOffsetPropertiesEXT: return "PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT";
       case StructureType::eRenderPassFragmentDensityMapOffsetEndInfoEXT       : return "RenderPassFragmentDensityMapOffsetEndInfoEXT";
       case StructureType::eRenderingEndInfoEXT                                : return "RenderingEndInfoEXT";
+      case StructureType::ePhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT: return "PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT";
       default                                                                 : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6004,6 +6007,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageLayout::eVideoEncodeDpbKHR                      : return "VideoEncodeDpbKHR";
       case ImageLayout::eAttachmentFeedbackLoopOptimalEXT       : return "AttachmentFeedbackLoopOptimalEXT";
       case ImageLayout::eVideoEncodeQuantizationMapKHR          : return "VideoEncodeQuantizationMapKHR";
+      case ImageLayout::eZeroInitializedEXT                     : return "ZeroInitializedEXT";
       default                                                   : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6889,6 +6893,7 @@ namespace VULKAN_HPP_NAMESPACE
       case MemoryAllocateFlagBits::eDeviceMask                : return "DeviceMask";
       case MemoryAllocateFlagBits::eDeviceAddress             : return "DeviceAddress";
       case MemoryAllocateFlagBits::eDeviceAddressCaptureReplay: return "DeviceAddressCaptureReplay";
+      case MemoryAllocateFlagBits::eZeroInitializeEXT         : return "ZeroInitializeEXT";
       default                                                 : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

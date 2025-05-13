@@ -2076,6 +2076,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct RenderPassFragmentDensityMapOffsetEndInfoEXT;
   using SubpassFragmentDensityMapOffsetEndInfoQCOM = RenderPassFragmentDensityMapOffsetEndInfoEXT;
 
+  //=== VK_EXT_zero_initialize_device_memory ===
+  struct PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT;
+
   //===================================
   //=== HANDLE forward declarations ===
   //===================================

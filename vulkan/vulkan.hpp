@@ -55,7 +55,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-static_assert( VK_HEADER_VERSION == 314, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 315, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -9045,6 +9045,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_fragment_density_map_offset ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTFragmentDensityMapOffsetExtensionName = VK_EXT_FRAGMENT_DENSITY_MAP_OFFSET_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTFragmentDensityMapOffsetSpecVersion   = VK_EXT_FRAGMENT_DENSITY_MAP_OFFSET_SPEC_VERSION;
+
+  //=== VK_EXT_zero_initialize_device_memory ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTZeroInitializeDeviceMemoryExtensionName = VK_EXT_ZERO_INITIALIZE_DEVICE_MEMORY_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTZeroInitializeDeviceMemorySpecVersion   = VK_EXT_ZERO_INITIALIZE_DEVICE_MEMORY_SPEC_VERSION;
 
 }  // namespace VULKAN_HPP_NAMESPACE
 
@@ -18253,6 +18257,25 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<RenderPassFragmentDensityMapOffsetEndInfoEXT, RenderingEndInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_zero_initialize_device_memory ===
+  template <>
+  struct StructExtends<PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT, DeviceCreateInfo>
   {
     enum
     {

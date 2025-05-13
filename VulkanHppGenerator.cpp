@@ -721,9 +721,9 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<Requir
 }
 
 void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireData> const & requireData,
-                                                     std::set<std::string> &          listedCommands,
-                                                     std::string const &              title,
-                                                     std::string &                    commandMembers ) const
+                                                  std::set<std::string> &          listedCommands,
+                                                  std::string const &              title,
+                                                  std::string &                    commandMembers ) const
 {
   std::string members;
   for ( auto const & require : requireData )
@@ -5895,7 +5895,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 std::string VulkanHppGenerator::generateCppModuleCommands() const
 {
   // generate PFN_* functions
-  auto pfnCommands = std::string{ R"(
+  auto                  pfnCommands = std::string{ R"(
   //==================
   //=== PFN TYPEs ===
   //==================
@@ -5903,11 +5903,11 @@ std::string VulkanHppGenerator::generateCppModuleCommands() const
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
   for ( auto const & feature : m_features )
   {
-    appendCppModuleCommands(feature.requireData, listedCommands, feature.name, pfnCommands);
+    appendCppModuleCommands( feature.requireData, listedCommands, feature.name, pfnCommands );
   }
   for ( auto const & extension : m_extensions )
   {
-    appendCppModuleCommands(extension.requireData, listedCommands, extension.name, pfnCommands);
+    appendCppModuleCommands( extension.requireData, listedCommands, extension.name, pfnCommands );
   }
   return pfnCommands;
 }
@@ -7735,8 +7735,10 @@ std::string VulkanHppGenerator::generateFormatTraits() const
   assert( formatIt != m_enums.end() );
   assert( formatIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
 
-  auto noPredicate        = []( auto const & ) { return true; };
-  auto generateAlphaCases = [this]( auto const formatIt )
+  auto noPredicate = []( auto const & ) { return true; };
+
+  auto generateAllFormatsList = [&]( auto const formatIt ) { return generateFormatTraitsList( formatIt->second, noPredicate ); };
+  auto generateAlphaCases      = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
@@ -7951,7 +7953,8 @@ std::string VulkanHppGenerator::generateFormatTraits() const
   };
 
   return replaceWithMap( readSnippet( "FormatTraits.hpp" ),
-                         { { "alphaCases", generateAlphaCases( formatIt ) },
+                         { { "allFormats", generateAllFormatsList( formatIt ) },
+                           { "alphaCases", generateAlphaCases( formatIt ) },
                            { "blockExtentCases", generateBlockExtentCases( formatIt ) },
                            { "blockSizeCases", generateBlockSizeCases( formatIt ) },
                            { "blueCases", generateBlueCases( formatIt ) },

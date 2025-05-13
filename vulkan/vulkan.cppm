@@ -2767,6 +2767,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTFragmentDensityMapOffsetExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTFragmentDensityMapOffsetSpecVersion;
 
+  //=== VK_EXT_zero_initialize_device_memory ===
+  using VULKAN_HPP_NAMESPACE::EXTZeroInitializeDeviceMemoryExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTZeroInitializeDeviceMemorySpecVersion;
+
   //========================
   //=== CONSTEXPR VALUEs ===
   //========================
@@ -4882,6 +4886,9 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::RenderingEndInfoEXT;
   using VULKAN_HPP_NAMESPACE::RenderPassFragmentDensityMapOffsetEndInfoEXT;
   using VULKAN_HPP_NAMESPACE::SubpassFragmentDensityMapOffsetEndInfoQCOM;
+
+  //=== VK_EXT_zero_initialize_device_memory ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT;
 
   //===============
   //=== HANDLEs ===
@@ -8630,6 +8637,10 @@ export namespace std
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetPropertiesEXT>;
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::RenderPassFragmentDensityMapOffsetEndInfoEXT>;
+
+  //=== VK_EXT_zero_initialize_device_memory ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT>;
 
   //=================================================================
   //=== Required exports for VULKAN_HPP_NAMESPACE::StructureChain ===

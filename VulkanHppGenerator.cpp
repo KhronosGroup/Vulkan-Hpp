@@ -524,7 +524,8 @@ void VulkanHppGenerator::generateCppModuleFile() const
                                      { "hashSpecializations", generateCppModuleHashSpecializations() },
                                      { "licenseHeader", m_vulkanLicenseHeader },
                                      { "raiiUsings", generateCppModuleRaiiUsings() },
-                                     { "usings", generateCppModuleUsings() } } );
+                                     { "usings", generateCppModuleUsings() },
+                                     { "pfnCommands", generateCppModuleCommands() } } );
 
   writeToFile( str, vulkan_cppm );
 }
@@ -716,6 +717,31 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<Requir
   if ( !device.empty() )
   {
     deviceCommandAssignments += header + device + leave;
+  }
+}
+
+void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireData> const & requireData,
+                                                     std::set<std::string> &          listedCommands,
+                                                     std::string const &              title,
+                                                     std::string &                    commandMembers ) const
+{
+  std::string members;
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & command : require.commands )
+    {
+      if ( listedCommands.insert( command.name ).second )
+      {
+        members += "export using ::PFN_" + command.name + ";\n";
+      }
+    }
+  }
+  const auto [enter, leave] = generateProtection( getProtectFromTitle( title ) );
+  std::string header        = "\n" + enter + "  //=== " + title + " ===\n";
+  if ( !members.empty() )
+  {
+    commandMembers += header + members;
+    commandMembers += leave;
   }
 }
 
@@ -5864,6 +5890,26 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   usings += generateCppModuleExtensionInspectionUsings();
 
   return usings;
+}
+
+std::string VulkanHppGenerator::generateCppModuleCommands() const
+{
+  // generate PFN_* functions
+  auto pfnCommands = std::string{ R"(
+  //==================
+  //=== PFN TYPEs ===
+  //==================
+)" };
+  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
+  for ( auto const & feature : m_features )
+  {
+    appendCppModuleCommands(feature.requireData, listedCommands, feature.name, pfnCommands);
+  }
+  for ( auto const & extension : m_extensions )
+  {
+    appendCppModuleCommands(extension.requireData, listedCommands, extension.name, pfnCommands);
+  }
+  return pfnCommands;
 }
 
 std::string VulkanHppGenerator::generateCppModuleRaiiUsings() const

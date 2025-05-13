@@ -289,25 +289,38 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 		message( FATAL_ERROR "Vulkan-Hpp: C++20 modules require CMake 3.28 or later" )
 	endif()
 
-	# create a target to provide VulkanHpp as C++20 module
+	# create a target to provide VulkanHpp and VulkanVideoHpp as C++20 modules
 	add_library( VulkanHppModule )
 	add_library( Vulkan::HppModule ALIAS VulkanHppModule )
+
+	add_library( VulkanVideoHppModule )
+	add_library( Vulkan::VideoHppModule ALIAS VulkanVideoHppModule )
 	# Clang 16's module support can be broken with extensions enabled
 	if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "16.0" )
 		set_target_properties( VulkanHppModule PROPERTIES CXX_EXTENSIONS OFF )
+		set_target_properties( VulkanVideoHppModule PROPERTIES CXX_EXTENSIONS OFF )
 	endif()
 	if( VULKAN_HPP_ENABLE_STD_MODULE )
 		target_compile_features( VulkanHppModule PUBLIC cxx_std_23 )
 		set_target_properties( VulkanHppModule PROPERTIES CXX_MODULE_STD ON )
+		target_compile_features( VulkanVideoHppModule PUBLIC cxx_std_23 )
+		set_target_properties( VulkanVideoHppModule PROPERTIES CXX_MODULE_STD ON )
 	else()
 		target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
+		target_compile_features( VulkanVideoHppModule PUBLIC cxx_std_20 )
 	endif()
 	target_sources( VulkanHppModule PUBLIC
 		FILE_SET vulkan_module_file
 		BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
 		TYPE CXX_MODULES
-		FILES vulkan/vulkan.cppm vulkan/vulkan_video.cppm )
+		FILES vulkan/vulkan.cppm )
+	target_sources( VulkanVideoHppModule PUBLIC
+		FILE_SET vulkan_video_module_file
+		BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
+		TYPE CXX_MODULES
+		FILES vulkan/vulkan_video.cppm )
 	target_link_libraries( VulkanHppModule PUBLIC Vulkan::Hpp )
+	target_link_libraries( VulkanVideoHppModule PUBLIC Vulkan::Hpp )
 endif()
 
 function( vulkan_hpp__setup_platform )

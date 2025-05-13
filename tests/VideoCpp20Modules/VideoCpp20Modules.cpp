@@ -25,7 +25,6 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
-import vulkan_hpp;
 import vulkan_video_hpp;
 
 int main( int /*argc*/, char ** /*argv*/ )

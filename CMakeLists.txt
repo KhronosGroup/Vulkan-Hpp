@@ -283,44 +283,66 @@ endif()
 
 # Build Vulkan-Hpp as a module
 if( VULKAN_HPP_ENABLE_CPP20_MODULES )
-	if( VULKAN_HPP_ENABLE_STD_MODULE AND CMAKE_VERSION VERSION_LESS "3.30" )
-		message( FATAL_ERROR "Vulkan-Hpp: C++20 modules with import std require CMake 3.30 or later" )
-	elseif ( CMAKE_VERSION VERSION_LESS "3.28" )
-		message( FATAL_ERROR "Vulkan-Hpp: C++20 modules require CMake 3.28 or later" )
-	endif()
+	function ( vulkan_hpp__setup_module )
+		set( options )
+		set( oneValueArgs NAME )
+		set( multiValueArgs FILE_SET ALIAS )
+		cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}" )
 
-	# create a target to provide VulkanHpp and VulkanVideoHpp as C++20 modules
-	add_library( VulkanHppModule )
-	add_library( Vulkan::HppModule ALIAS VulkanHppModule )
+		if ( NOT TARGET_NAME )
+			message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_module" )
+		endif()
 
-	add_library( VulkanVideoHppModule )
-	add_library( Vulkan::VideoHppModule ALIAS VulkanVideoHppModule )
-	# Clang 16's module support can be broken with extensions enabled
-	if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "16.0" )
-		set_target_properties( VulkanHppModule PROPERTIES CXX_EXTENSIONS OFF )
-		set_target_properties( VulkanVideoHppModule PROPERTIES CXX_EXTENSIONS OFF )
-	endif()
-	if( VULKAN_HPP_ENABLE_STD_MODULE )
-		target_compile_features( VulkanHppModule PUBLIC cxx_std_23 )
-		set_target_properties( VulkanHppModule PROPERTIES CXX_MODULE_STD ON )
-		target_compile_features( VulkanVideoHppModule PUBLIC cxx_std_23 )
-		set_target_properties( VulkanVideoHppModule PROPERTIES CXX_MODULE_STD ON )
-	else()
-		target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
-		target_compile_features( VulkanVideoHppModule PUBLIC cxx_std_20 )
-	endif()
-	target_sources( VulkanHppModule PUBLIC
-		FILE_SET vulkan_module_file
-		BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
-		TYPE CXX_MODULES
-		FILES vulkan/vulkan.cppm )
-	target_sources( VulkanVideoHppModule PUBLIC
-		FILE_SET vulkan_video_module_file
-		BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
-		TYPE CXX_MODULES
-		FILES vulkan/vulkan_video.cppm )
-	target_link_libraries( VulkanHppModule PUBLIC Vulkan::Hpp )
-	target_link_libraries( VulkanVideoHppModule PUBLIC Vulkan::Hpp )
+		if ( VULKAN_HPP_ENABLE_STD_MODULE AND CMAKE_VERSION VERSION_LESS "3.30" )
+			message( FATAL_ERROR "Vulkan-Hpp: C++20 modules with import std require CMake 3.30 or later" )
+		elseif ( CMAKE_VERSION VERSION_LESS "3.28" )
+			message( FATAL_ERROR "Vulkan-Hpp: C++20 modules require CMake 3.28 or later" )
+		endif()
+
+		add_library( ${TARGET_NAME} )
+		foreach( TARGET_ALIAS_NAME IN LISTS TARGET_ALIAS )
+			add_library(${TARGET_ALIAS_NAME} ALIAS ${TARGET_NAME})
+		endforeach()
+
+		# Clang 16's module support can be broken with extensions enabled
+		if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "16.0" )
+			set_target_properties( ${TARGET_NAME} PROPERTIES CXX_EXTENSIONS OFF )
+		endif()
+
+		if ( VULKAN_HPP_ENABLE_STD_MODULE )
+			target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_23 )
+			set_target_properties( ${TARGET_NAME} PROPERTIES CXX_MODULE_STD ON )
+		else()
+			target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_20 )
+		endif()
+
+		if ( NOT TARGET_FILE_SET )
+			message( FATAL_ERROR "FILE_SET must be defined in vulkan_hpp__setup_module" )
+		endif()
+
+		list(LENGTH TARGET_FILE_SET TARGET_FILE_SET_LENGTH)
+		if ( TARGET_FILE_SET_LENGTH LESS 2 )
+			message(FATAL_ERROR "FILE_SET in vulkan_hpp__setup_module must contain the file set name and at least one source file")
+		endif()
+
+		list( GET TARGET_FILE_SET 0 TARGET_FILE_SET_NAME )
+		list( SUBLIST TARGET_FILE_SET 1 -1 TARGET_FILE_SET_SOURCES )
+
+		target_sources( ${TARGET_NAME} PUBLIC
+			FILE_SET ${TARGET_FILE_SET_NAME}
+			BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
+			TYPE CXX_MODULES
+			FILES ${TARGET_FILE_SET_SOURCES} )
+		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
+	endfunction()
+
+	# create targets providing VulkanHpp and VulkanVideoHpp as C++20 modules
+	vulkan_hpp__setup_module( NAME VulkanHppModule
+		FILE_SET vulkan_module_file vulkan/vulkan.cppm
+		ALIAS Vulkan::HppModule )
+	vulkan_hpp__setup_module( NAME VulkanVideoHppModule
+		FILE_SET vulkan_video_module_file vulkan/vulkan_video.cppm
+		ALIAS Vulkan::VideoHppModule )
 endif()
 
 function( vulkan_hpp__setup_platform )

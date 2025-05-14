@@ -38,6 +38,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( instance != instance2 );
     assert( !( instance == instance2 ) );
 
+    assert( instance2 < instance );
+
     instance2 = vk::createInstance( {} );
     assert( instance != instance2 );
 

@@ -61,8 +61,28 @@ int main( int /*argc*/, char ** /*argv*/ )
 #endif
 
   assert( awc1 == awc2 );
+  assert( !( awc1 != awc2 ) );
+  assert( awc1 <= awc2 );
+  assert( !( awc1 < awc2 ) );
+  assert( awc1 >= awc2 );
+  assert( !( awc1 > awc2 ) );
+
   assert( awc3 == awc4 );
-  assert( foobah == awc2 );
+
+  assert( foobah == awc1 );
+  assert( !( foobah != awc1 ) );
+  assert( foobah <= awc1 );
+  assert( !( foobah < awc1 ) );
+  assert( foobah >= awc1 );
+  assert( !( foobah > awc1 ) );
+
+  assert( awc1 == foobah );
+  assert( !( awc1 != foobah ) );
+  assert( awc1 <= foobah );
+  assert( !( awc1 < foobah ) );
+  assert( awc1 >= foobah );
+  assert( !( awc1 > foobah ) );
+
   assert( foobah > awc4 );
 
   return 0;

@@ -34,6 +34,9 @@
   // A textual description of the compression scheme, or an empty string if it is not compressed
   VULKAN_HPP_CONSTEXPR_14 char const * compressionScheme( VULKAN_HPP_NAMESPACE::Format format );
 
+  // Get all formats
+  std::vector<VULKAN_HPP_NAMESPACE::Format> const & getAllFormats();
+
   // Get all color with a color component
   std::vector<VULKAN_HPP_NAMESPACE::Format> const & getColorFormats();
 
@@ -63,6 +66,9 @@
 
   // True, if this format has a stencil component
   VULKAN_HPP_CONSTEXPR_14 bool hasStencilComponent( VULKAN_HPP_NAMESPACE::Format format );
+
+  // True, if the format is a color
+  VULKAN_HPP_CONSTEXPR_14 bool isColor( VULKAN_HPP_NAMESPACE::Format format );
 
   // True, if this format is a compressed one.
   VULKAN_HPP_CONSTEXPR_14 bool isCompressed( VULKAN_HPP_NAMESPACE::Format format );
@@ -189,6 +195,13 @@ ${compressionSchemeCases}
     }
   }
   
+  // Get all formats
+  VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::Format> const & getAllFormats()
+  {
+    static std::vector<VULKAN_HPP_NAMESPACE::Format> allFormats = { ${allFormats} };
+	return allFormats;
+  }
+
   // Get all formats with a color component
   VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::Format> const & getColorFormats()
   {
@@ -281,6 +294,12 @@ ${stencilCases}
         return true;
       default: return false;
     }
+  }
+
+  // True, if this format is a color.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool isColor( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    return hasRedComponent( format ) || hasGreenComponent( format ) || hasBlueComponent( format ) || hasAlphaComponent( format );
   }
 
   // True, if this format is a compressed one.

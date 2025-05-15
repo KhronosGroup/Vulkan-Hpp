@@ -14472,6 +14472,13 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  else
     template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    bool operator<( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
+    {
+      return *a < *b;
+    }
+#  endif
+
+    template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
     bool operator==( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
     {
       return *a == *b;
@@ -14482,13 +14489,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return *a != *b;
     }
-
-    template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
-    bool operator<( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
-    {
-      return *a < *b;
-    }
-#  endif
 
     template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
     bool operator==( const T & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT

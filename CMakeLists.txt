@@ -283,20 +283,20 @@ endif()
 
 # Build Vulkan-Hpp as a module
 if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+	if ( VULKAN_HPP_ENABLE_STD_MODULE AND CMAKE_VERSION VERSION_LESS "3.30" )
+		message( FATAL_ERROR "Vulkan-Hpp: C++20 modules with import std require CMake 3.30 or later" )
+	elseif ( CMAKE_VERSION VERSION_LESS "3.28" )
+		message( FATAL_ERROR "Vulkan-Hpp: C++20 modules require CMake 3.28 or later" )
+	endif()
+
 	function ( vulkan_hpp__setup_module )
 		set( options )
-		set( oneValueArgs NAME )
+		set( oneValueArgs NAME FILE_SET_NAME )
 		set( multiValueArgs FILE_SET ALIAS )
-		cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}" )
+		cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 		if ( NOT TARGET_NAME )
 			message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_module" )
-		endif()
-
-		if ( VULKAN_HPP_ENABLE_STD_MODULE AND CMAKE_VERSION VERSION_LESS "3.30" )
-			message( FATAL_ERROR "Vulkan-Hpp: C++20 modules with import std require CMake 3.30 or later" )
-		elseif ( CMAKE_VERSION VERSION_LESS "3.28" )
-			message( FATAL_ERROR "Vulkan-Hpp: C++20 modules require CMake 3.28 or later" )
 		endif()
 
 		add_library( ${TARGET_NAME} )
@@ -321,27 +321,26 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 		endif()
 
 		list(LENGTH TARGET_FILE_SET TARGET_FILE_SET_LENGTH)
-		if ( TARGET_FILE_SET_LENGTH LESS 2 )
-			message(FATAL_ERROR "FILE_SET in vulkan_hpp__setup_module must contain the file set name and at least one source file")
+		if ( TARGET_FILE_SET_LENGTH LESS 1 )
+			message(FATAL_ERROR "FILE_SET in vulkan_hpp__setup_module must at least one source file")
 		endif()
-
-		list( GET TARGET_FILE_SET 0 TARGET_FILE_SET_NAME )
-		list( SUBLIST TARGET_FILE_SET 1 -1 TARGET_FILE_SET_SOURCES )
 
 		target_sources( ${TARGET_NAME} PUBLIC
 			FILE_SET ${TARGET_FILE_SET_NAME}
 			BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
 			TYPE CXX_MODULES
-			FILES ${TARGET_FILE_SET_SOURCES} )
+			FILES ${TARGET_FILE_SET} )
 		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
 	endfunction()
 
 	# create targets providing VulkanHpp and VulkanVideoHpp as C++20 modules
 	vulkan_hpp__setup_module( NAME VulkanHppModule
-		FILE_SET vulkan_module_file vulkan/vulkan.cppm
+		FILE_SET_NAME vulkan_module_file
+		FILE_SET vulkan/vulkan.cppm
 		ALIAS Vulkan::HppModule )
 	vulkan_hpp__setup_module( NAME VulkanVideoHppModule
-		FILE_SET vulkan_video_module_file vulkan/vulkan_video.cppm
+		FILE_SET_NAME vulkan_video_module_file
+		FILE_SET vulkan/vulkan_video.cppm
 		ALIAS Vulkan::VideoHppModule )
 endif()
 
@@ -604,6 +603,7 @@ if( ${VULKAN_HPP_INSTALL} )
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_to_string.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_video.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.cppm
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_video.cppm
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp
 	)
 	install( FILES ${VK_GENERATED_VULKAN_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vulkan )

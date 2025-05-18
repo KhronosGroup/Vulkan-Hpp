@@ -5159,6 +5159,9 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_swapchain ===
   using VULKAN_HPP_NAMESPACE::SharedSwapchainKHR;
 
+  //=== SharedImage SwapchainOwns enum
+  using VULKAN_HPP_NAMESPACE::SwapchainOwns;
+
   //=== VK_KHR_display ===
   using VULKAN_HPP_NAMESPACE::SharedDisplayKHR;
   using VULKAN_HPP_NAMESPACE::SharedDisplayModeKHR;

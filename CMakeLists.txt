@@ -39,6 +39,7 @@ endif()
 # all the options for this project
 option( VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sample builds" ON )
 option( VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF )
+option( VULKAN_HPP_INSTALL "Install generated Vulkan headers" OFF )
 option( VULKAN_HPP_GENERATOR_BUILD "Build the HPP generator" ${PROJECT_IS_TOP_LEVEL} )
 option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
 option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
@@ -587,7 +588,7 @@ if( VULKAN_HPP_TESTS_BUILD )
 	add_subdirectory( tests )
 endif()
 
-if( ${VULKAN_HPP_INSTALL} )
+if( VULKAN_HPP_RUN_GENERATOR AND VULKAN_HPP_INSTALL )
 	include( GNUInstallDirs )
 
 	set( VK_GENERATED_VULKAN_HEADERS

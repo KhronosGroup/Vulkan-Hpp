@@ -2753,6 +2753,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTVertexAttributeRobustnessExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTVertexAttributeRobustnessSpecVersion;
 
+  //=== VK_ARM_format_pack ===
+  using VULKAN_HPP_NAMESPACE::ARMFormatPackExtensionName;
+  using VULKAN_HPP_NAMESPACE::ARMFormatPackSpecVersion;
+
   //=== VK_KHR_robustness2 ===
   using VULKAN_HPP_NAMESPACE::KHRRobustness2ExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRRobustness2SpecVersion;
@@ -4865,6 +4869,9 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_vertex_attribute_robustness ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;
+
+  //=== VK_ARM_format_pack ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceFormatPackFeaturesARM;
 
   //=== VK_KHR_robustness2 ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2FeaturesEXT;
@@ -8613,6 +8620,10 @@ export namespace std
   //=== VK_EXT_vertex_attribute_robustness ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT>;
+
+  //=== VK_ARM_format_pack ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceFormatPackFeaturesARM>;
 
   //=== VK_KHR_robustness2 ===
   template <>

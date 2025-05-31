@@ -475,6 +475,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
                                                             "VK_KHR_depth_clamp_zero_one",
                                                             "VK_EXT_vertex_attribute_robustness",
+                                                            "VK_ARM_format_pack",
                                                             "VK_KHR_robustness2",
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
                                                             "VK_NV_present_metering",
@@ -3504,7 +3505,8 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_METAL_EXT )
         || ( extension == "VK_EXT_external_memory_metal" )
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
-        || ( extension == "VK_KHR_depth_clamp_zero_one" ) || ( extension == "VK_EXT_vertex_attribute_robustness" ) || ( extension == "VK_KHR_robustness2" )
+        || ( extension == "VK_KHR_depth_clamp_zero_one" ) || ( extension == "VK_EXT_vertex_attribute_robustness" ) || ( extension == "VK_ARM_format_pack" ) ||
+           ( extension == "VK_KHR_robustness2" )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         || ( extension == "VK_NV_present_metering" )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/

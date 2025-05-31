@@ -24934,11 +24934,27 @@ namespace VULKAN_HPP_NAMESPACE
 
   // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::dispatchTileQCOM( Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void CommandBuffer::dispatchTileQCOM( const VULKAN_HPP_NAMESPACE::DispatchTileInfoQCOM * pDispatchTileInfo,
+                                                          Dispatch const &                                   d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    d.vkCmdDispatchTileQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ) );
+    d.vkCmdDispatchTileQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<const VkDispatchTileInfoQCOM *>( pDispatchTileInfo ) );
   }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::dispatchTileQCOM( const VULKAN_HPP_NAMESPACE::DispatchTileInfoQCOM & dispatchTileInfo,
+                                                          Dispatch const &                                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdDispatchTileQCOM && "Function <vkCmdDispatchTileQCOM> requires <VK_QCOM_tile_shading>" );
+#  endif
+
+    d.vkCmdDispatchTileQCOM( m_commandBuffer, reinterpret_cast<const VkDispatchTileInfoQCOM *>( &dispatchTileInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   // wrapper function for command vkCmdBeginPerTileExecutionQCOM, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginPerTileExecutionQCOM.html

@@ -7461,7 +7461,7 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_QCOM_tile_shading ===
 
       // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
-      void dispatchTileQCOM() const VULKAN_HPP_NOEXCEPT;
+      void dispatchTileQCOM( const VULKAN_HPP_NAMESPACE::DispatchTileInfoQCOM & dispatchTileInfo ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkCmdBeginPerTileExecutionQCOM, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginPerTileExecutionQCOM.html
@@ -24476,11 +24476,12 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_QCOM_tile_shading ===
 
     // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
-    VULKAN_HPP_INLINE void CommandBuffer::dispatchTileQCOM() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_INLINE void CommandBuffer::dispatchTileQCOM( const VULKAN_HPP_NAMESPACE::DispatchTileInfoQCOM & dispatchTileInfo ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDispatchTileQCOM && "Function <vkCmdDispatchTileQCOM> requires <VK_QCOM_tile_shading>" );
 
-      getDispatcher()->vkCmdDispatchTileQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ) );
+      getDispatcher()->vkCmdDispatchTileQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                              reinterpret_cast<const VkDispatchTileInfoQCOM *>( &dispatchTileInfo ) );
     }
 
     // wrapper function for command vkCmdBeginPerTileExecutionQCOM, see

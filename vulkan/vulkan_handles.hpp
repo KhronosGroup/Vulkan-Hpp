@@ -2055,6 +2055,9 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_vertex_attribute_robustness ===
   struct PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;
 
+  //=== VK_ARM_format_pack ===
+  struct PhysicalDeviceFormatPackFeaturesARM;
+
   //=== VK_KHR_robustness2 ===
   struct PhysicalDeviceRobustness2FeaturesKHR;
   using PhysicalDeviceRobustness2FeaturesEXT = PhysicalDeviceRobustness2FeaturesKHR;
@@ -6908,7 +6911,14 @@ namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void dispatchTileQCOM( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    void dispatchTileQCOM( const VULKAN_HPP_NAMESPACE::DispatchTileInfoQCOM * pDispatchTileInfo,
+                           Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void dispatchTileQCOM( const VULKAN_HPP_NAMESPACE::DispatchTileInfoQCOM & dispatchTileInfo,
+                           Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkCmdBeginPerTileExecutionQCOM, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginPerTileExecutionQCOM.html

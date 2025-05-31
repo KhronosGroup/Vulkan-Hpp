@@ -56,7 +56,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-static_assert( VK_HEADER_VERSION == 315, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 316, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -4946,9 +4946,9 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_QCOM_tile_shading ===
 
-      void vkCmdDispatchTileQCOM( VkCommandBuffer commandBuffer ) const VULKAN_HPP_NOEXCEPT
+      void vkCmdDispatchTileQCOM( VkCommandBuffer commandBuffer, const VkDispatchTileInfoQCOM * pDispatchTileInfo ) const VULKAN_HPP_NOEXCEPT
       {
-        return ::vkCmdDispatchTileQCOM( commandBuffer );
+        return ::vkCmdDispatchTileQCOM( commandBuffer, pDispatchTileInfo );
       }
 
       void vkCmdBeginPerTileExecutionQCOM( VkCommandBuffer commandBuffer, const VkPerTileBeginInfoQCOM * pPerTileBeginInfo ) const VULKAN_HPP_NOEXCEPT
@@ -9032,6 +9032,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_vertex_attribute_robustness ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTVertexAttributeRobustnessExtensionName = VK_EXT_VERTEX_ATTRIBUTE_ROBUSTNESS_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTVertexAttributeRobustnessSpecVersion   = VK_EXT_VERTEX_ATTRIBUTE_ROBUSTNESS_SPEC_VERSION;
+
+  //=== VK_ARM_format_pack ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto ARMFormatPackExtensionName = VK_ARM_FORMAT_PACK_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto ARMFormatPackSpecVersion   = VK_ARM_FORMAT_PACK_SPEC_VERSION;
 
   //=== VK_KHR_robustness2 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRRobustness2ExtensionName = VK_KHR_ROBUSTNESS_2_EXTENSION_NAME;
@@ -18154,6 +18158,25 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceVertexAttributeRobustnessFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_ARM_format_pack ===
+  template <>
+  struct StructExtends<PhysicalDeviceFormatPackFeaturesARM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceFormatPackFeaturesARM, DeviceCreateInfo>
   {
     enum
     {

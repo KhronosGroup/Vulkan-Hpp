@@ -8607,6 +8607,15 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT>::value,
                           "PhysicalDeviceVertexAttributeRobustnessFeaturesEXT is not nothrow_move_constructible!" );
 
+//=== VK_ARM_format_pack ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceFormatPackFeaturesARM ) == sizeof( VkPhysicalDeviceFormatPackFeaturesARM ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceFormatPackFeaturesARM>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceFormatPackFeaturesARM>::value,
+                          "PhysicalDeviceFormatPackFeaturesARM is not nothrow_move_constructible!" );
+
 //=== VK_KHR_robustness2 ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2FeaturesKHR ) == sizeof( VkPhysicalDeviceRobustness2FeaturesKHR ),

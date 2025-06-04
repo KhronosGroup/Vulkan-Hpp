@@ -14724,7 +14724,7 @@ void VulkanHppGenerator::readFormat( tinyxml2::XMLElement const * element )
   checkAttributes(
     line,
     attributes,
-    { { "blockSize", { "1", "2", "3", "4", "5", "6", "8", "12", "16", "24", "27", "32", "36", "48", "64", "80", "100", "125", "150", "180", "216" } },
+    { { "blockSize", { "1", "2", "3", "4", "5", "6", "8", "10", "12", "16", "24", "27", "32", "36", "48", "64", "80", "100", "125", "150", "180", "216" } },
       { "class", {} },
       { "name", {} },
       { "texelsPerBlock", { "1", "16", "20", "25", "27", "30", "36", "40", "48", "50", "60", "64", "80", "100", "120", "125", "144", "150", "180", "216" } } },
@@ -14821,7 +14821,7 @@ void VulkanHppGenerator::readFormatComponent( tinyxml2::XMLElement const * eleme
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line,
                    attributes,
-                   { { "bits", { "1", "2", "4", "5", "6", "8", "9", "10", "11", "12", "14", "16", "24", "32", "64", "compressed" } },
+                   { { "bits", { "1", "2", "4", "5", "6", "8", "9", "10", "11", "12", "14", "16", "24", "32", "64", "80", "compressed" } },
                      { "name", {} },
                      { "numericFormat", { "BOOL", "SFLOAT", "SINT", "SNORM", "SRGB", "SFIXED5", "SSCALED", "UFLOAT", "UINT", "UNORM", "USCALED" } } },
                    { { "planeIndex", { "0", "1", "2" } } } );
@@ -16488,6 +16488,8 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
                                                         "VkSubmitInfo",
                                                         "VkSubpassDescription",
                                                         "VkSubpassDescription2",
+                                                        "VkTensorCopyARM",
+                                                        "VkTensorDescriptionARM",
                                                         "VkVideoDecodeAV1PictureInfoKHR",
                                                         "VkWin32KeyedMutexAcquireReleaseInfoKHR",
                                                         "VkWin32KeyedMutexAcquireReleaseInfoNV" };

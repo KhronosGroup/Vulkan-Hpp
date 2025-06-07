@@ -948,6 +948,27 @@ namespace VULKAN_HPP_NAMESPACE
 
   using SharedMicromapEXT = SharedHandle<MicromapEXT>;
 
+  //=== VK_ARM_tensors ===
+  template <>
+  class SharedHandleTraits<TensorARM>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = detail::ObjectDestroyShared<TensorARM>;
+  };
+
+  using SharedTensorARM = SharedHandle<TensorARM>;
+
+  template <>
+  class SharedHandleTraits<TensorViewARM>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = detail::ObjectDestroyShared<TensorViewARM>;
+  };
+
+  using SharedTensorViewARM = SharedHandle<TensorViewARM>;
+
   //=== VK_NV_optical_flow ===
   template <>
   class SharedHandleTraits<OpticalFlowSessionNV>

@@ -371,6 +371,10 @@ namespace VULKAN_HPP_NAMESPACE
             PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceScreenPresentationSupportQNX" ) );
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
+          //=== VK_ARM_tensors ===
+          vkGetPhysicalDeviceExternalTensorPropertiesARM =
+            PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceExternalTensorPropertiesARM" ) );
+
           //=== VK_NV_optical_flow ===
           vkGetPhysicalDeviceOpticalFlowImageFormatsNV =
             PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceOpticalFlowImageFormatsNV" ) );
@@ -658,6 +662,9 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_dummy vkCreateScreenSurfaceQNX_placeholder                        = 0;
         PFN_dummy vkGetPhysicalDeviceScreenPresentationSupportQNX_placeholder = 0;
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+        //=== VK_ARM_tensors ===
+        PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM vkGetPhysicalDeviceExternalTensorPropertiesARM = 0;
 
         //=== VK_NV_optical_flow ===
         PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV vkGetPhysicalDeviceOpticalFlowImageFormatsNV = 0;
@@ -1722,6 +1729,21 @@ namespace VULKAN_HPP_NAMESPACE
             PFN_vkCmdSetRepresentativeFragmentTestEnableNV( vkGetDeviceProcAddr( device, "vkCmdSetRepresentativeFragmentTestEnableNV" ) );
           vkCmdSetCoverageReductionModeNV = PFN_vkCmdSetCoverageReductionModeNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageReductionModeNV" ) );
 
+          //=== VK_ARM_tensors ===
+          vkCreateTensorARM                = PFN_vkCreateTensorARM( vkGetDeviceProcAddr( device, "vkCreateTensorARM" ) );
+          vkDestroyTensorARM               = PFN_vkDestroyTensorARM( vkGetDeviceProcAddr( device, "vkDestroyTensorARM" ) );
+          vkCreateTensorViewARM            = PFN_vkCreateTensorViewARM( vkGetDeviceProcAddr( device, "vkCreateTensorViewARM" ) );
+          vkDestroyTensorViewARM           = PFN_vkDestroyTensorViewARM( vkGetDeviceProcAddr( device, "vkDestroyTensorViewARM" ) );
+          vkGetTensorMemoryRequirementsARM = PFN_vkGetTensorMemoryRequirementsARM( vkGetDeviceProcAddr( device, "vkGetTensorMemoryRequirementsARM" ) );
+          vkBindTensorMemoryARM            = PFN_vkBindTensorMemoryARM( vkGetDeviceProcAddr( device, "vkBindTensorMemoryARM" ) );
+          vkGetDeviceTensorMemoryRequirementsARM =
+            PFN_vkGetDeviceTensorMemoryRequirementsARM( vkGetDeviceProcAddr( device, "vkGetDeviceTensorMemoryRequirementsARM" ) );
+          vkCmdCopyTensorARM = PFN_vkCmdCopyTensorARM( vkGetDeviceProcAddr( device, "vkCmdCopyTensorARM" ) );
+          vkGetTensorOpaqueCaptureDescriptorDataARM =
+            PFN_vkGetTensorOpaqueCaptureDescriptorDataARM( vkGetDeviceProcAddr( device, "vkGetTensorOpaqueCaptureDescriptorDataARM" ) );
+          vkGetTensorViewOpaqueCaptureDescriptorDataARM =
+            PFN_vkGetTensorViewOpaqueCaptureDescriptorDataARM( vkGetDeviceProcAddr( device, "vkGetTensorViewOpaqueCaptureDescriptorDataARM" ) );
+
           //=== VK_EXT_shader_module_identifier ===
           vkGetShaderModuleIdentifierEXT = PFN_vkGetShaderModuleIdentifierEXT( vkGetDeviceProcAddr( device, "vkGetShaderModuleIdentifierEXT" ) );
           vkGetShaderModuleCreateInfoIdentifierEXT =
@@ -1750,6 +1772,9 @@ namespace VULKAN_HPP_NAMESPACE
 
           //=== VK_AMD_anti_lag ===
           vkAntiLagUpdateAMD = PFN_vkAntiLagUpdateAMD( vkGetDeviceProcAddr( device, "vkAntiLagUpdateAMD" ) );
+
+          //=== VK_KHR_present_wait2 ===
+          vkWaitForPresent2KHR = PFN_vkWaitForPresent2KHR( vkGetDeviceProcAddr( device, "vkWaitForPresent2KHR" ) );
 
           //=== VK_EXT_shader_object ===
           vkCreateShadersEXT         = PFN_vkCreateShadersEXT( vkGetDeviceProcAddr( device, "vkCreateShadersEXT" ) );
@@ -2712,6 +2737,18 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkCmdSetRepresentativeFragmentTestEnableNV  vkCmdSetRepresentativeFragmentTestEnableNV  = 0;
         PFN_vkCmdSetCoverageReductionModeNV             vkCmdSetCoverageReductionModeNV             = 0;
 
+        //=== VK_ARM_tensors ===
+        PFN_vkCreateTensorARM                             vkCreateTensorARM                             = 0;
+        PFN_vkDestroyTensorARM                            vkDestroyTensorARM                            = 0;
+        PFN_vkCreateTensorViewARM                         vkCreateTensorViewARM                         = 0;
+        PFN_vkDestroyTensorViewARM                        vkDestroyTensorViewARM                        = 0;
+        PFN_vkGetTensorMemoryRequirementsARM              vkGetTensorMemoryRequirementsARM              = 0;
+        PFN_vkBindTensorMemoryARM                         vkBindTensorMemoryARM                         = 0;
+        PFN_vkGetDeviceTensorMemoryRequirementsARM        vkGetDeviceTensorMemoryRequirementsARM        = 0;
+        PFN_vkCmdCopyTensorARM                            vkCmdCopyTensorARM                            = 0;
+        PFN_vkGetTensorOpaqueCaptureDescriptorDataARM     vkGetTensorOpaqueCaptureDescriptorDataARM     = 0;
+        PFN_vkGetTensorViewOpaqueCaptureDescriptorDataARM vkGetTensorViewOpaqueCaptureDescriptorDataARM = 0;
+
         //=== VK_EXT_shader_module_identifier ===
         PFN_vkGetShaderModuleIdentifierEXT           vkGetShaderModuleIdentifierEXT           = 0;
         PFN_vkGetShaderModuleCreateInfoIdentifierEXT vkGetShaderModuleCreateInfoIdentifierEXT = 0;
@@ -2730,6 +2767,9 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_AMD_anti_lag ===
         PFN_vkAntiLagUpdateAMD vkAntiLagUpdateAMD = 0;
+
+        //=== VK_KHR_present_wait2 ===
+        PFN_vkWaitForPresent2KHR vkWaitForPresent2KHR = 0;
 
         //=== VK_EXT_shader_object ===
         PFN_vkCreateShadersEXT         vkCreateShadersEXT         = 0;
@@ -2928,6 +2968,10 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_EXT_opacity_micromap ===
     class MicromapEXT;
+
+    //=== VK_ARM_tensors ===
+    class TensorARM;
+    class TensorViewARM;
 
     //=== VK_NV_optical_flow ===
     class OpticalFlowSessionNV;
@@ -3961,6 +4005,13 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Bool32 getScreenPresentationSupportQNX( uint32_t                queueFamilyIndex,
                                                                                          struct _screen_window & window ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+      //=== VK_ARM_tensors ===
+
+      // wrapper function for command vkGetPhysicalDeviceExternalTensorPropertiesARM, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceExternalTensorPropertiesARM.html
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ExternalTensorPropertiesARM
+        getExternalTensorPropertiesARM( const VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalTensorInfoARM & externalTensorInfo ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_NV_optical_flow ===
 
@@ -5407,6 +5458,58 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPipelineIndirectDeviceAddressNV.html
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DeviceAddress
                            getPipelineIndirectAddressNV( const VULKAN_HPP_NAMESPACE::PipelineIndirectDeviceAddressInfoNV & info ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_ARM_tensors ===
+
+      // wrapper function for command vkCreateTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateTensorARM.html
+      VULKAN_HPP_NODISCARD
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::TensorARM>::Type
+        createTensorARM( VULKAN_HPP_NAMESPACE::TensorCreateInfoARM const &                               createInfo,
+                         VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const
+        VULKAN_HPP_RAII_CREATE_NOEXCEPT;
+
+      // wrapper function for command vkCreateTensorViewARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateTensorViewARM.html
+      VULKAN_HPP_NODISCARD
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::TensorViewARM>::Type
+        createTensorViewARM( VULKAN_HPP_NAMESPACE::TensorViewCreateInfoARM const &                           createInfo,
+                             VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const
+        VULKAN_HPP_RAII_CREATE_NOEXCEPT;
+
+      // wrapper function for command vkGetTensorMemoryRequirementsARM, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorMemoryRequirementsARM.html
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2
+                           getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::TensorMemoryRequirementsInfoARM & info ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkGetTensorMemoryRequirementsARM, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorMemoryRequirementsARM.html
+      template <typename X, typename Y, typename... Z>
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
+                           getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::TensorMemoryRequirementsInfoARM & info ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkBindTensorMemoryARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkBindTensorMemoryARM.html
+      void bindTensorMemoryARM( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::BindTensorMemoryInfoARM> const & bindInfos ) const;
+
+      // wrapper function for command vkGetDeviceTensorMemoryRequirementsARM, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceTensorMemoryRequirementsARM.html
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2
+                           getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::DeviceTensorMemoryRequirementsARM & info ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkGetDeviceTensorMemoryRequirementsARM, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceTensorMemoryRequirementsARM.html
+      template <typename X, typename Y, typename... Z>
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
+                           getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::DeviceTensorMemoryRequirementsARM & info ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkGetTensorOpaqueCaptureDescriptorDataARM, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDescriptorDataARM.html
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD DataType getTensorOpaqueCaptureDescriptorDataARM( const VULKAN_HPP_NAMESPACE::TensorCaptureDescriptorDataInfoARM & info ) const;
+
+      // wrapper function for command vkGetTensorViewOpaqueCaptureDescriptorDataARM, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorViewOpaqueCaptureDescriptorDataARM.html
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD DataType
+        getTensorViewOpaqueCaptureDescriptorDataARM( const VULKAN_HPP_NAMESPACE::TensorViewCaptureDescriptorDataInfoARM & info ) const;
 
       //=== VK_EXT_shader_module_identifier ===
 
@@ -7461,7 +7564,7 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_QCOM_tile_shading ===
 
       // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
-      void dispatchTileQCOM() const VULKAN_HPP_NOEXCEPT;
+      void dispatchTileQCOM( const VULKAN_HPP_NAMESPACE::DispatchTileInfoQCOM & dispatchTileInfo ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkCmdBeginPerTileExecutionQCOM, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginPerTileExecutionQCOM.html
@@ -7818,6 +7921,11 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkCmdSetCoverageReductionModeNV, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetCoverageReductionModeNV.html
       void setCoverageReductionModeNV( VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_ARM_tensors ===
+
+      // wrapper function for command vkCmdCopyTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyTensorARM.html
+      void copyTensorARM( const VULKAN_HPP_NAMESPACE::CopyTensorInfoARM & copyTensorInfo ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_NV_optical_flow ===
 
@@ -14003,6 +14111,11 @@ namespace VULKAN_HPP_NAMESPACE
       void releaseFullScreenExclusiveModeEXT() const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
+      //=== VK_KHR_present_wait2 ===
+
+      // wrapper function for command vkWaitForPresent2KHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkWaitForPresent2KHR.html
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result waitForPresent2( const VULKAN_HPP_NAMESPACE::PresentWait2InfoKHR & presentWait2Info ) const;
+
       //=== VK_NV_low_latency2 ===
 
       // wrapper function for command vkSetLatencySleepModeNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetLatencySleepModeNV.html
@@ -14055,6 +14168,259 @@ namespace VULKAN_HPP_NAMESPACE
       {
         std::swap( *this, rhs );
       }
+    };
+
+    // wrapper class for handle VkTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkTensorARM.html
+    class TensorARM
+    {
+    public:
+      using CType   = VkTensorARM;
+      using CppType = VULKAN_HPP_NAMESPACE::TensorARM;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eTensorARM;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+    public:
+#  if !defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+      TensorARM( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                 VULKAN_HPP_NAMESPACE::TensorCreateInfoARM const &                               createInfo,
+                 VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+      {
+        *this = device.createTensorARM( createInfo, allocator );
+      }
+#  endif
+
+      TensorARM( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                 VkTensorARM                                                                     tensor,
+                 VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( device )
+        , m_tensorARM( tensor )
+        , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+      }
+
+      TensorARM( std::nullptr_t ) {}
+
+      ~TensorARM()
+      {
+        clear();
+      }
+
+      TensorARM()                    = delete;
+      TensorARM( TensorARM const & ) = delete;
+
+      TensorARM( TensorARM && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_device( VULKAN_HPP_NAMESPACE::exchange( rhs.m_device, {} ) )
+        , m_tensorARM( VULKAN_HPP_NAMESPACE::exchange( rhs.m_tensorARM, {} ) )
+        , m_allocator( VULKAN_HPP_NAMESPACE::exchange( rhs.m_allocator, {} ) )
+        , m_dispatcher( VULKAN_HPP_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )
+      {
+      }
+
+      TensorARM & operator=( TensorARM const & ) = delete;
+
+      TensorARM & operator=( TensorARM && rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        if ( this != &rhs )
+        {
+          std::swap( m_device, rhs.m_device );
+          std::swap( m_tensorARM, rhs.m_tensorARM );
+          std::swap( m_allocator, rhs.m_allocator );
+          std::swap( m_dispatcher, rhs.m_dispatcher );
+        }
+        return *this;
+      }
+
+      VULKAN_HPP_NAMESPACE::TensorARM const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_tensorARM;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::TensorARM() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_tensorARM;
+      }
+
+      void clear() VULKAN_HPP_NOEXCEPT
+      {
+        if ( m_tensorARM )
+        {
+          getDispatcher()->vkDestroyTensorARM(
+            static_cast<VkDevice>( m_device ), static_cast<VkTensorARM>( m_tensorARM ), reinterpret_cast<const VkAllocationCallbacks *>( m_allocator ) );
+        }
+        m_device     = nullptr;
+        m_tensorARM  = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::TensorARM release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::exchange( m_tensorARM, nullptr );
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const
+      {
+        return m_device;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * getDispatcher() const
+      {
+        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
+        return m_dispatcher;
+      }
+
+      void swap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::TensorARM & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        std::swap( m_device, rhs.m_device );
+        std::swap( m_tensorARM, rhs.m_tensorARM );
+        std::swap( m_allocator, rhs.m_allocator );
+        std::swap( m_dispatcher, rhs.m_dispatcher );
+      }
+
+    private:
+      VULKAN_HPP_NAMESPACE::Device                                                      m_device     = {};
+      VULKAN_HPP_NAMESPACE::TensorARM                                                   m_tensorARM  = {};
+      const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::TensorARM>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
+    // wrapper class for handle VkTensorViewARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkTensorViewARM.html
+    class TensorViewARM
+    {
+    public:
+      using CType   = VkTensorViewARM;
+      using CppType = VULKAN_HPP_NAMESPACE::TensorViewARM;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eTensorViewARM;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+    public:
+#  if !defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+      TensorViewARM( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                     VULKAN_HPP_NAMESPACE::TensorViewCreateInfoARM const &                           createInfo,
+                     VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+      {
+        *this = device.createTensorViewARM( createInfo, allocator );
+      }
+#  endif
+
+      TensorViewARM( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                     VkTensorViewARM                                                                 tensorView,
+                     VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( device )
+        , m_tensorViewARM( tensorView )
+        , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+      }
+
+      TensorViewARM( std::nullptr_t ) {}
+
+      ~TensorViewARM()
+      {
+        clear();
+      }
+
+      TensorViewARM()                        = delete;
+      TensorViewARM( TensorViewARM const & ) = delete;
+
+      TensorViewARM( TensorViewARM && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_device( VULKAN_HPP_NAMESPACE::exchange( rhs.m_device, {} ) )
+        , m_tensorViewARM( VULKAN_HPP_NAMESPACE::exchange( rhs.m_tensorViewARM, {} ) )
+        , m_allocator( VULKAN_HPP_NAMESPACE::exchange( rhs.m_allocator, {} ) )
+        , m_dispatcher( VULKAN_HPP_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )
+      {
+      }
+
+      TensorViewARM & operator=( TensorViewARM const & ) = delete;
+
+      TensorViewARM & operator=( TensorViewARM && rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        if ( this != &rhs )
+        {
+          std::swap( m_device, rhs.m_device );
+          std::swap( m_tensorViewARM, rhs.m_tensorViewARM );
+          std::swap( m_allocator, rhs.m_allocator );
+          std::swap( m_dispatcher, rhs.m_dispatcher );
+        }
+        return *this;
+      }
+
+      VULKAN_HPP_NAMESPACE::TensorViewARM const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_tensorViewARM;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::TensorViewARM() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_tensorViewARM;
+      }
+
+      void clear() VULKAN_HPP_NOEXCEPT
+      {
+        if ( m_tensorViewARM )
+        {
+          getDispatcher()->vkDestroyTensorViewARM( static_cast<VkDevice>( m_device ),
+                                                   static_cast<VkTensorViewARM>( m_tensorViewARM ),
+                                                   reinterpret_cast<const VkAllocationCallbacks *>( m_allocator ) );
+        }
+        m_device        = nullptr;
+        m_tensorViewARM = nullptr;
+        m_allocator     = nullptr;
+        m_dispatcher    = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::TensorViewARM release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::exchange( m_tensorViewARM, nullptr );
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const
+      {
+        return m_device;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * getDispatcher() const
+      {
+        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
+        return m_dispatcher;
+      }
+
+      void swap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::TensorViewARM & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        std::swap( m_device, rhs.m_device );
+        std::swap( m_tensorViewARM, rhs.m_tensorViewARM );
+        std::swap( m_allocator, rhs.m_allocator );
+        std::swap( m_dispatcher, rhs.m_dispatcher );
+      }
+
+    private:
+      VULKAN_HPP_NAMESPACE::Device                                                      m_device        = {};
+      VULKAN_HPP_NAMESPACE::TensorViewARM                                               m_tensorViewARM = {};
+      const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator     = {};
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher    = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::TensorViewARM>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     // wrapper class for handle VkValidationCacheEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkValidationCacheEXT.html
@@ -24476,11 +24842,12 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_QCOM_tile_shading ===
 
     // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
-    VULKAN_HPP_INLINE void CommandBuffer::dispatchTileQCOM() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_INLINE void CommandBuffer::dispatchTileQCOM( const VULKAN_HPP_NAMESPACE::DispatchTileInfoQCOM & dispatchTileInfo ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDispatchTileQCOM && "Function <vkCmdDispatchTileQCOM> requires <VK_QCOM_tile_shading>" );
 
-      getDispatcher()->vkCmdDispatchTileQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ) );
+      getDispatcher()->vkCmdDispatchTileQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                              reinterpret_cast<const VkDispatchTileInfoQCOM *>( &dispatchTileInfo ) );
     }
 
     // wrapper function for command vkCmdBeginPerTileExecutionQCOM, see
@@ -26277,6 +26644,192 @@ namespace VULKAN_HPP_NAMESPACE
                                                         static_cast<VkCoverageReductionModeNV>( coverageReductionMode ) );
     }
 
+    //=== VK_ARM_tensors ===
+
+    // wrapper function for command vkCreateTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateTensorARM.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::TensorARM>::Type
+      Device::createTensorARM( VULKAN_HPP_NAMESPACE::TensorCreateInfoARM const &                               createInfo,
+                               VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const VULKAN_HPP_RAII_CREATE_NOEXCEPT
+    {
+      VULKAN_HPP_NAMESPACE::TensorARM tensor;
+      VULKAN_HPP_NAMESPACE::Result    result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkCreateTensorARM(
+        static_cast<VkDevice>( m_device ),
+        reinterpret_cast<const VkTensorCreateInfoARM *>( &createInfo ),
+        reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+        reinterpret_cast<VkTensorARM *>( &tensor ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+#  if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+        return VULKAN_HPP_UNEXPECTED( result );
+#  else
+        VULKAN_HPP_NAMESPACE::detail::throwResultException( result, "Device::createTensorARM" );
+#  endif
+      }
+
+      return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::TensorARM( *this, *reinterpret_cast<VkTensorARM *>( &tensor ), allocator );
+    }
+
+    // wrapper function for command vkCreateTensorViewARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateTensorViewARM.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::TensorViewARM>::Type
+      Device::createTensorViewARM( VULKAN_HPP_NAMESPACE::TensorViewCreateInfoARM const &                           createInfo,
+                                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+      VULKAN_HPP_RAII_CREATE_NOEXCEPT
+    {
+      VULKAN_HPP_NAMESPACE::TensorViewARM view;
+      VULKAN_HPP_NAMESPACE::Result        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkCreateTensorViewARM(
+        static_cast<VkDevice>( m_device ),
+        reinterpret_cast<const VkTensorViewCreateInfoARM *>( &createInfo ),
+        reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+        reinterpret_cast<VkTensorViewARM *>( &view ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+#  if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+        return VULKAN_HPP_UNEXPECTED( result );
+#  else
+        VULKAN_HPP_NAMESPACE::detail::throwResultException( result, "Device::createTensorViewARM" );
+#  endif
+      }
+
+      return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::TensorViewARM( *this, *reinterpret_cast<VkTensorViewARM *>( &view ), allocator );
+    }
+
+    // wrapper function for command vkGetTensorMemoryRequirementsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorMemoryRequirementsARM.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2
+      Device::getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::TensorMemoryRequirementsInfoARM & info ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetTensorMemoryRequirementsARM && "Function <vkGetTensorMemoryRequirementsARM> requires <VK_ARM_tensors>" );
+
+      VULKAN_HPP_NAMESPACE::MemoryRequirements2 memoryRequirements;
+      getDispatcher()->vkGetTensorMemoryRequirementsARM( static_cast<VkDevice>( m_device ),
+                                                         reinterpret_cast<const VkTensorMemoryRequirementsInfoARM *>( &info ),
+                                                         reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
+      return memoryRequirements;
+    }
+
+    // wrapper function for command vkGetTensorMemoryRequirementsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorMemoryRequirementsARM.html
+    template <typename X, typename Y, typename... Z>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
+      Device::getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::TensorMemoryRequirementsInfoARM & info ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetTensorMemoryRequirementsARM && "Function <vkGetTensorMemoryRequirementsARM> requires <VK_ARM_tensors>" );
+
+      VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...> structureChain;
+      VULKAN_HPP_NAMESPACE::MemoryRequirements2 &      memoryRequirements = structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
+      getDispatcher()->vkGetTensorMemoryRequirementsARM( static_cast<VkDevice>( m_device ),
+                                                         reinterpret_cast<const VkTensorMemoryRequirementsInfoARM *>( &info ),
+                                                         reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
+      return structureChain;
+    }
+
+    // wrapper function for command vkBindTensorMemoryARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkBindTensorMemoryARM.html
+    VULKAN_HPP_INLINE void
+      Device::bindTensorMemoryARM( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::BindTensorMemoryInfoARM> const & bindInfos ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkBindTensorMemoryARM && "Function <vkBindTensorMemoryARM> requires <VK_ARM_tensors>" );
+
+      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkBindTensorMemoryARM(
+        static_cast<VkDevice>( m_device ), bindInfos.size(), reinterpret_cast<const VkBindTensorMemoryInfoARM *>( bindInfos.data() ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::bindTensorMemoryARM" );
+    }
+
+    // wrapper function for command vkGetDeviceTensorMemoryRequirementsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceTensorMemoryRequirementsARM.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2
+      Device::getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::DeviceTensorMemoryRequirementsARM & info ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeviceTensorMemoryRequirementsARM &&
+                         "Function <vkGetDeviceTensorMemoryRequirementsARM> requires <VK_ARM_tensors>" );
+
+      VULKAN_HPP_NAMESPACE::MemoryRequirements2 memoryRequirements;
+      getDispatcher()->vkGetDeviceTensorMemoryRequirementsARM( static_cast<VkDevice>( m_device ),
+                                                               reinterpret_cast<const VkDeviceTensorMemoryRequirementsARM *>( &info ),
+                                                               reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
+      return memoryRequirements;
+    }
+
+    // wrapper function for command vkGetDeviceTensorMemoryRequirementsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceTensorMemoryRequirementsARM.html
+    template <typename X, typename Y, typename... Z>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
+      Device::getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::DeviceTensorMemoryRequirementsARM & info ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeviceTensorMemoryRequirementsARM &&
+                         "Function <vkGetDeviceTensorMemoryRequirementsARM> requires <VK_ARM_tensors>" );
+
+      VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...> structureChain;
+      VULKAN_HPP_NAMESPACE::MemoryRequirements2 &      memoryRequirements = structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
+      getDispatcher()->vkGetDeviceTensorMemoryRequirementsARM( static_cast<VkDevice>( m_device ),
+                                                               reinterpret_cast<const VkDeviceTensorMemoryRequirementsARM *>( &info ),
+                                                               reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
+      return structureChain;
+    }
+
+    // wrapper function for command vkCmdCopyTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyTensorARM.html
+    VULKAN_HPP_INLINE void CommandBuffer::copyTensorARM( const VULKAN_HPP_NAMESPACE::CopyTensorInfoARM & copyTensorInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdCopyTensorARM && "Function <vkCmdCopyTensorARM> requires <VK_ARM_tensors>" );
+
+      getDispatcher()->vkCmdCopyTensorARM( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<const VkCopyTensorInfoARM *>( &copyTensorInfo ) );
+    }
+
+    // wrapper function for command vkGetPhysicalDeviceExternalTensorPropertiesARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceExternalTensorPropertiesARM.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ExternalTensorPropertiesARM PhysicalDevice::getExternalTensorPropertiesARM(
+      const VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalTensorInfoARM & externalTensorInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceExternalTensorPropertiesARM &&
+                         "Function <vkGetPhysicalDeviceExternalTensorPropertiesARM> requires <VK_ARM_tensors>" );
+
+      VULKAN_HPP_NAMESPACE::ExternalTensorPropertiesARM externalTensorProperties;
+      getDispatcher()->vkGetPhysicalDeviceExternalTensorPropertiesARM( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                       reinterpret_cast<const VkPhysicalDeviceExternalTensorInfoARM *>( &externalTensorInfo ),
+                                                                       reinterpret_cast<VkExternalTensorPropertiesARM *>( &externalTensorProperties ) );
+
+      return externalTensorProperties;
+    }
+
+    // wrapper function for command vkGetTensorOpaqueCaptureDescriptorDataARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDescriptorDataARM.html
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE DataType
+      Device::getTensorOpaqueCaptureDescriptorDataARM( const VULKAN_HPP_NAMESPACE::TensorCaptureDescriptorDataInfoARM & info ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetTensorOpaqueCaptureDescriptorDataARM &&
+                         "Function <vkGetTensorOpaqueCaptureDescriptorDataARM> requires <VK_ARM_tensors>" );
+
+      DataType                     data;
+      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetTensorOpaqueCaptureDescriptorDataARM(
+        static_cast<VkDevice>( m_device ), reinterpret_cast<const VkTensorCaptureDescriptorDataInfoARM *>( &info ), &data ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getTensorOpaqueCaptureDescriptorDataARM" );
+
+      return data;
+    }
+
+    // wrapper function for command vkGetTensorViewOpaqueCaptureDescriptorDataARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorViewOpaqueCaptureDescriptorDataARM.html
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE DataType
+      Device::getTensorViewOpaqueCaptureDescriptorDataARM( const VULKAN_HPP_NAMESPACE::TensorViewCaptureDescriptorDataInfoARM & info ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetTensorViewOpaqueCaptureDescriptorDataARM &&
+                         "Function <vkGetTensorViewOpaqueCaptureDescriptorDataARM> requires <VK_ARM_tensors>" );
+
+      DataType                     data;
+      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetTensorViewOpaqueCaptureDescriptorDataARM(
+        static_cast<VkDevice>( m_device ), reinterpret_cast<const VkTensorViewCaptureDescriptorDataInfoARM *>( &info ), &data ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getTensorViewOpaqueCaptureDescriptorDataARM" );
+
+      return data;
+    }
+
     //=== VK_EXT_shader_module_identifier ===
 
     // wrapper function for command vkGetShaderModuleIdentifierEXT, see
@@ -26516,6 +27069,26 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkAntiLagUpdateAMD && "Function <vkAntiLagUpdateAMD> requires <VK_AMD_anti_lag>" );
 
       getDispatcher()->vkAntiLagUpdateAMD( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkAntiLagDataAMD *>( &data ) );
+    }
+
+    //=== VK_KHR_present_wait2 ===
+
+    // wrapper function for command vkWaitForPresent2KHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkWaitForPresent2KHR.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result
+                                           SwapchainKHR::waitForPresent2( const VULKAN_HPP_NAMESPACE::PresentWait2InfoKHR & presentWait2Info ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkWaitForPresent2KHR && "Function <vkWaitForPresent2KHR> requires <VK_KHR_present_wait2>" );
+
+      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+        getDispatcher()->vkWaitForPresent2KHR( static_cast<VkDevice>( m_device ),
+                                               static_cast<VkSwapchainKHR>( m_swapchainKHR ),
+                                               reinterpret_cast<const VkPresentWait2InfoKHR *>( &presentWait2Info ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck(
+        result,
+        VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::waitForPresent2",
+        { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eTimeout, VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
+
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     //=== VK_EXT_shader_object ===

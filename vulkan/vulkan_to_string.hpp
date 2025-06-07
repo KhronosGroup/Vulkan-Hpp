@@ -207,6 +207,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " SampleWeightQCOM |";
     if ( value & ImageUsageFlagBits::eSampleBlockMatchQCOM )
       result += " SampleBlockMatchQCOM |";
+    if ( value & ImageUsageFlagBits::eTensorAliasingARM )
+      result += " TensorAliasingARM |";
     if ( value & ImageUsageFlagBits::eTileMemoryQCOM )
       result += " TileMemoryQCOM |";
     if ( value & ImageUsageFlagBits::eVideoEncodeQuantizationDeltaMapKHR )
@@ -559,9 +561,17 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueryPoolCreateFlags )
+  VULKAN_HPP_INLINE std::string to_string( QueryPoolCreateFlags value )
   {
-    return "{}";
+    std::string result = "{";
+    if ( value & QueryPoolCreateFlagBits::eResetKHR )
+      result += " ResetKHR |";
+
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else
+      result = "{}";
+    return result;
   }
 
   VULKAN_HPP_INLINE std::string to_string( QueryResultFlags value )
@@ -1127,6 +1137,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " FeedbackLoopEXT |";
     if ( value & DependencyFlagBits::eQueueFamilyOwnershipTransferUseAllStagesKHR )
       result += " QueueFamilyOwnershipTransferUseAllStagesKHR |";
+    if ( value & DependencyFlagBits::eAsymmetricEventKHR )
+      result += " AsymmetricEventKHR |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -1950,6 +1962,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += " BlockMatchingQCOM |";
     if ( value & FormatFeatureFlagBits2::eBoxFilterSampledQCOM )
       result += " BoxFilterSampledQCOM |";
+    if ( value & FormatFeatureFlagBits2::eTensorShaderARM )
+      result += " TensorShaderARM |";
+    if ( value & FormatFeatureFlagBits2::eTensorImageAliasingARM )
+      result += " TensorImageAliasingARM |";
     if ( value & FormatFeatureFlagBits2::eOpticalFlowImageNV )
       result += " OpticalFlowImageNV |";
     if ( value & FormatFeatureFlagBits2::eOpticalFlowVectorNV )
@@ -2186,6 +2202,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += " MutableFormat |";
     if ( value & SwapchainCreateFlagBitsKHR::eDeferredMemoryAllocationEXT )
       result += " DeferredMemoryAllocationEXT |";
+    if ( value & SwapchainCreateFlagBitsKHR::ePresentId2 )
+      result += " PresentId2 |";
+    if ( value & SwapchainCreateFlagBitsKHR::ePresentWait2 )
+      result += " PresentWait2 |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -2358,6 +2378,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " DecodeAv1 |";
     if ( value & VideoCodecOperationFlagBitsKHR::eEncodeAv1 )
       result += " EncodeAv1 |";
+    if ( value & VideoCodecOperationFlagBitsKHR::eDecodeVp9 )
+      result += " DecodeVp9 |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -3665,6 +3687,57 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
+  //=== VK_ARM_tensors ===
+
+  VULKAN_HPP_INLINE std::string to_string( TensorCreateFlagsARM value )
+  {
+    std::string result = "{";
+    if ( value & TensorCreateFlagBitsARM::eMutableFormat )
+      result += " MutableFormat |";
+    if ( value & TensorCreateFlagBitsARM::eProtected )
+      result += " Protected |";
+    if ( value & TensorCreateFlagBitsARM::eDescriptorBufferCaptureReplay )
+      result += " DescriptorBufferCaptureReplay |";
+
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else
+      result = "{}";
+    return result;
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( TensorViewCreateFlagsARM value )
+  {
+    std::string result = "{";
+    if ( value & TensorViewCreateFlagBitsARM::eDescriptorBufferCaptureReplay )
+      result += " DescriptorBufferCaptureReplay |";
+
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else
+      result = "{}";
+    return result;
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( TensorUsageFlagsARM value )
+  {
+    std::string result = "{";
+    if ( value & TensorUsageFlagBitsARM::eShader )
+      result += " Shader |";
+    if ( value & TensorUsageFlagBitsARM::eTransferSrc )
+      result += " TransferSrc |";
+    if ( value & TensorUsageFlagBitsARM::eTransferDst )
+      result += " TransferDst |";
+    if ( value & TensorUsageFlagBitsARM::eImageAliasing )
+      result += " ImageAliasing |";
+
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else
+      result = "{}";
+    return result;
+  }
+
   //=== VK_NV_optical_flow ===
 
   VULKAN_HPP_INLINE std::string to_string( OpticalFlowUsageFlagsNV value )
@@ -4932,6 +5005,30 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eRenderPassSubpassFeedbackCreateInfoEXT                     : return "RenderPassSubpassFeedbackCreateInfoEXT";
       case StructureType::eDirectDriverLoadingInfoLUNARG                              : return "DirectDriverLoadingInfoLUNARG";
       case StructureType::eDirectDriverLoadingListLUNARG                              : return "DirectDriverLoadingListLUNARG";
+      case StructureType::eTensorCreateInfoARM                                        : return "TensorCreateInfoARM";
+      case StructureType::eTensorViewCreateInfoARM                                    : return "TensorViewCreateInfoARM";
+      case StructureType::eBindTensorMemoryInfoARM                                    : return "BindTensorMemoryInfoARM";
+      case StructureType::eWriteDescriptorSetTensorARM                                : return "WriteDescriptorSetTensorARM";
+      case StructureType::ePhysicalDeviceTensorPropertiesARM                          : return "PhysicalDeviceTensorPropertiesARM";
+      case StructureType::eTensorFormatPropertiesARM                                  : return "TensorFormatPropertiesARM";
+      case StructureType::eTensorDescriptionARM                                       : return "TensorDescriptionARM";
+      case StructureType::eTensorMemoryRequirementsInfoARM                            : return "TensorMemoryRequirementsInfoARM";
+      case StructureType::eTensorMemoryBarrierARM                                     : return "TensorMemoryBarrierARM";
+      case StructureType::ePhysicalDeviceTensorFeaturesARM                            : return "PhysicalDeviceTensorFeaturesARM";
+      case StructureType::eDeviceTensorMemoryRequirementsARM                          : return "DeviceTensorMemoryRequirementsARM";
+      case StructureType::eCopyTensorInfoARM                                          : return "CopyTensorInfoARM";
+      case StructureType::eTensorCopyARM                                              : return "TensorCopyARM";
+      case StructureType::eTensorDependencyInfoARM                                    : return "TensorDependencyInfoARM";
+      case StructureType::eMemoryDedicatedAllocateInfoTensorARM                       : return "MemoryDedicatedAllocateInfoTensorARM";
+      case StructureType::ePhysicalDeviceExternalTensorInfoARM                        : return "PhysicalDeviceExternalTensorInfoARM";
+      case StructureType::eExternalTensorPropertiesARM                                : return "ExternalTensorPropertiesARM";
+      case StructureType::eExternalMemoryTensorCreateInfoARM                          : return "ExternalMemoryTensorCreateInfoARM";
+      case StructureType::ePhysicalDeviceDescriptorBufferTensorFeaturesARM            : return "PhysicalDeviceDescriptorBufferTensorFeaturesARM";
+      case StructureType::ePhysicalDeviceDescriptorBufferTensorPropertiesARM          : return "PhysicalDeviceDescriptorBufferTensorPropertiesARM";
+      case StructureType::eDescriptorGetTensorInfoARM                                 : return "DescriptorGetTensorInfoARM";
+      case StructureType::eTensorCaptureDescriptorDataInfoARM                         : return "TensorCaptureDescriptorDataInfoARM";
+      case StructureType::eTensorViewCaptureDescriptorDataInfoARM                     : return "TensorViewCaptureDescriptorDataInfoARM";
+      case StructureType::eFrameBoundaryTensorsARM                                    : return "FrameBoundaryTensorsARM";
       case StructureType::ePhysicalDeviceShaderModuleIdentifierFeaturesEXT            : return "PhysicalDeviceShaderModuleIdentifierFeaturesEXT";
       case StructureType::ePhysicalDeviceShaderModuleIdentifierPropertiesEXT          : return "PhysicalDeviceShaderModuleIdentifierPropertiesEXT";
       case StructureType::ePipelineShaderStageModuleIdentifierCreateInfoEXT           : return "PipelineShaderStageModuleIdentifierCreateInfoEXT";
@@ -4953,6 +5050,12 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceAntiLagFeaturesAMD                           : return "PhysicalDeviceAntiLagFeaturesAMD";
       case StructureType::eAntiLagDataAMD                                             : return "AntiLagDataAMD";
       case StructureType::eAntiLagPresentationInfoAMD                                 : return "AntiLagPresentationInfoAMD";
+      case StructureType::eSurfaceCapabilitiesPresentId2KHR                           : return "SurfaceCapabilitiesPresentId2KHR";
+      case StructureType::ePresentId2KHR                                              : return "PresentId2KHR";
+      case StructureType::ePhysicalDevicePresentId2FeaturesKHR                        : return "PhysicalDevicePresentId2FeaturesKHR";
+      case StructureType::eSurfaceCapabilitiesPresentWait2KHR                         : return "SurfaceCapabilitiesPresentWait2KHR";
+      case StructureType::ePhysicalDevicePresentWait2FeaturesKHR                      : return "PhysicalDevicePresentWait2FeaturesKHR";
+      case StructureType::ePresentWait2InfoKHR                                        : return "PresentWait2InfoKHR";
       case StructureType::ePhysicalDeviceRayTracingPositionFetchFeaturesKHR           : return "PhysicalDeviceRayTracingPositionFetchFeaturesKHR";
       case StructureType::ePhysicalDeviceShaderObjectFeaturesEXT                      : return "PhysicalDeviceShaderObjectFeaturesEXT";
       case StructureType::ePhysicalDeviceShaderObjectPropertiesEXT                    : return "PhysicalDeviceShaderObjectPropertiesEXT";
@@ -5021,6 +5124,10 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eVideoEncodeAv1QualityLevelPropertiesKHR                    : return "VideoEncodeAv1QualityLevelPropertiesKHR";
       case StructureType::eVideoEncodeAv1SessionCreateInfoKHR                         : return "VideoEncodeAv1SessionCreateInfoKHR";
       case StructureType::eVideoEncodeAv1GopRemainingFrameInfoKHR                     : return "VideoEncodeAv1GopRemainingFrameInfoKHR";
+      case StructureType::ePhysicalDeviceVideoDecodeVp9FeaturesKHR                    : return "PhysicalDeviceVideoDecodeVp9FeaturesKHR";
+      case StructureType::eVideoDecodeVp9CapabilitiesKHR                              : return "VideoDecodeVp9CapabilitiesKHR";
+      case StructureType::eVideoDecodeVp9PictureInfoKHR                               : return "VideoDecodeVp9PictureInfoKHR";
+      case StructureType::eVideoDecodeVp9ProfileInfoKHR                               : return "VideoDecodeVp9ProfileInfoKHR";
       case StructureType::ePhysicalDeviceVideoMaintenance1FeaturesKHR                 : return "PhysicalDeviceVideoMaintenance1FeaturesKHR";
       case StructureType::eVideoInlineQueryInfoKHR                                    : return "VideoInlineQueryInfoKHR";
       case StructureType::ePhysicalDevicePerStageDescriptorSetFeaturesNV              : return "PhysicalDevicePerStageDescriptorSetFeaturesNV";
@@ -5034,6 +5141,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM           : return "SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM";
       case StructureType::ePhysicalDeviceCubicClampFeaturesQCOM                       : return "PhysicalDeviceCubicClampFeaturesQCOM";
       case StructureType::ePhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT: return "PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT";
+      case StructureType::ePhysicalDeviceUnifiedImageLayoutsFeaturesKHR               : return "PhysicalDeviceUnifiedImageLayoutsFeaturesKHR";
+      case StructureType::eAttachmentFeedbackLoopInfoEXT                              : return "AttachmentFeedbackLoopInfoEXT";
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
       case StructureType::eScreenBufferPropertiesQNX                          : return "ScreenBufferPropertiesQNX";
       case StructureType::eScreenBufferFormatPropertiesQNX                    : return "ScreenBufferFormatPropertiesQNX";
@@ -5077,6 +5186,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceLayeredApiVulkanPropertiesKHR               : return "PhysicalDeviceLayeredApiVulkanPropertiesKHR";
       case StructureType::ePhysicalDeviceShaderAtomicFloat16VectorFeaturesNV         : return "PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV";
       case StructureType::ePhysicalDeviceShaderReplicatedCompositesFeaturesEXT       : return "PhysicalDeviceShaderReplicatedCompositesFeaturesEXT";
+      case StructureType::ePhysicalDeviceShaderFloat8FeaturesEXT                     : return "PhysicalDeviceShaderFloat8FeaturesEXT";
       case StructureType::ePhysicalDeviceRayTracingValidationFeaturesNV              : return "PhysicalDeviceRayTracingValidationFeaturesNV";
       case StructureType::ePhysicalDeviceClusterAccelerationStructureFeaturesNV      : return "PhysicalDeviceClusterAccelerationStructureFeaturesNV";
       case StructureType::ePhysicalDeviceClusterAccelerationStructurePropertiesNV    : return "PhysicalDeviceClusterAccelerationStructurePropertiesNV";
@@ -5113,6 +5223,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eImageAlignmentControlCreateInfoMESA                       : return "ImageAlignmentControlCreateInfoMESA";
       case StructureType::ePhysicalDeviceDepthClampControlFeaturesEXT                : return "PhysicalDeviceDepthClampControlFeaturesEXT";
       case StructureType::ePipelineViewportDepthClampControlCreateInfoEXT            : return "PipelineViewportDepthClampControlCreateInfoEXT";
+      case StructureType::ePhysicalDeviceMaintenance9FeaturesKHR                     : return "PhysicalDeviceMaintenance9FeaturesKHR";
+      case StructureType::ePhysicalDeviceMaintenance9PropertiesKHR                   : return "PhysicalDeviceMaintenance9PropertiesKHR";
+      case StructureType::eQueueFamilyOwnershipTransferPropertiesKHR                 : return "QueueFamilyOwnershipTransferPropertiesKHR";
       case StructureType::ePhysicalDeviceVideoMaintenance2FeaturesKHR                : return "PhysicalDeviceVideoMaintenance2FeaturesKHR";
       case StructureType::eVideoDecodeH264InlineSessionParametersInfoKHR             : return "VideoDecodeH264InlineSessionParametersInfoKHR";
       case StructureType::eVideoDecodeH265InlineSessionParametersInfoKHR             : return "VideoDecodeH265InlineSessionParametersInfoKHR";
@@ -5130,6 +5243,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
       case StructureType::ePhysicalDeviceDepthClampZeroOneFeaturesKHR        : return "PhysicalDeviceDepthClampZeroOneFeaturesKHR";
       case StructureType::ePhysicalDeviceVertexAttributeRobustnessFeaturesEXT: return "PhysicalDeviceVertexAttributeRobustnessFeaturesEXT";
+      case StructureType::ePhysicalDeviceFormatPackFeaturesARM               : return "PhysicalDeviceFormatPackFeaturesARM";
       case StructureType::ePhysicalDeviceRobustness2FeaturesKHR              : return "PhysicalDeviceRobustness2FeaturesKHR";
       case StructureType::ePhysicalDeviceRobustness2PropertiesKHR            : return "PhysicalDeviceRobustness2PropertiesKHR";
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -5211,6 +5325,8 @@ namespace VULKAN_HPP_NAMESPACE
       case ObjectType::eBufferCollectionFUCHSIA: return "BufferCollectionFUCHSIA";
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
       case ObjectType::eMicromapEXT              : return "MicromapEXT";
+      case ObjectType::eTensorARM                : return "TensorARM";
+      case ObjectType::eTensorViewARM            : return "TensorViewARM";
       case ObjectType::eOpticalFlowSessionNV     : return "OpticalFlowSessionNV";
       case ObjectType::eShaderEXT                : return "ShaderEXT";
       case ObjectType::ePipelineBinaryKHR        : return "PipelineBinaryKHR";
@@ -5241,257 +5357,272 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( value )
     {
-      case Format::eUndefined                           : return "Undefined";
-      case Format::eR4G4UnormPack8                      : return "R4G4UnormPack8";
-      case Format::eR4G4B4A4UnormPack16                 : return "R4G4B4A4UnormPack16";
-      case Format::eB4G4R4A4UnormPack16                 : return "B4G4R4A4UnormPack16";
-      case Format::eR5G6B5UnormPack16                   : return "R5G6B5UnormPack16";
-      case Format::eB5G6R5UnormPack16                   : return "B5G6R5UnormPack16";
-      case Format::eR5G5B5A1UnormPack16                 : return "R5G5B5A1UnormPack16";
-      case Format::eB5G5R5A1UnormPack16                 : return "B5G5R5A1UnormPack16";
-      case Format::eA1R5G5B5UnormPack16                 : return "A1R5G5B5UnormPack16";
-      case Format::eR8Unorm                             : return "R8Unorm";
-      case Format::eR8Snorm                             : return "R8Snorm";
-      case Format::eR8Uscaled                           : return "R8Uscaled";
-      case Format::eR8Sscaled                           : return "R8Sscaled";
-      case Format::eR8Uint                              : return "R8Uint";
-      case Format::eR8Sint                              : return "R8Sint";
-      case Format::eR8Srgb                              : return "R8Srgb";
-      case Format::eR8G8Unorm                           : return "R8G8Unorm";
-      case Format::eR8G8Snorm                           : return "R8G8Snorm";
-      case Format::eR8G8Uscaled                         : return "R8G8Uscaled";
-      case Format::eR8G8Sscaled                         : return "R8G8Sscaled";
-      case Format::eR8G8Uint                            : return "R8G8Uint";
-      case Format::eR8G8Sint                            : return "R8G8Sint";
-      case Format::eR8G8Srgb                            : return "R8G8Srgb";
-      case Format::eR8G8B8Unorm                         : return "R8G8B8Unorm";
-      case Format::eR8G8B8Snorm                         : return "R8G8B8Snorm";
-      case Format::eR8G8B8Uscaled                       : return "R8G8B8Uscaled";
-      case Format::eR8G8B8Sscaled                       : return "R8G8B8Sscaled";
-      case Format::eR8G8B8Uint                          : return "R8G8B8Uint";
-      case Format::eR8G8B8Sint                          : return "R8G8B8Sint";
-      case Format::eR8G8B8Srgb                          : return "R8G8B8Srgb";
-      case Format::eB8G8R8Unorm                         : return "B8G8R8Unorm";
-      case Format::eB8G8R8Snorm                         : return "B8G8R8Snorm";
-      case Format::eB8G8R8Uscaled                       : return "B8G8R8Uscaled";
-      case Format::eB8G8R8Sscaled                       : return "B8G8R8Sscaled";
-      case Format::eB8G8R8Uint                          : return "B8G8R8Uint";
-      case Format::eB8G8R8Sint                          : return "B8G8R8Sint";
-      case Format::eB8G8R8Srgb                          : return "B8G8R8Srgb";
-      case Format::eR8G8B8A8Unorm                       : return "R8G8B8A8Unorm";
-      case Format::eR8G8B8A8Snorm                       : return "R8G8B8A8Snorm";
-      case Format::eR8G8B8A8Uscaled                     : return "R8G8B8A8Uscaled";
-      case Format::eR8G8B8A8Sscaled                     : return "R8G8B8A8Sscaled";
-      case Format::eR8G8B8A8Uint                        : return "R8G8B8A8Uint";
-      case Format::eR8G8B8A8Sint                        : return "R8G8B8A8Sint";
-      case Format::eR8G8B8A8Srgb                        : return "R8G8B8A8Srgb";
-      case Format::eB8G8R8A8Unorm                       : return "B8G8R8A8Unorm";
-      case Format::eB8G8R8A8Snorm                       : return "B8G8R8A8Snorm";
-      case Format::eB8G8R8A8Uscaled                     : return "B8G8R8A8Uscaled";
-      case Format::eB8G8R8A8Sscaled                     : return "B8G8R8A8Sscaled";
-      case Format::eB8G8R8A8Uint                        : return "B8G8R8A8Uint";
-      case Format::eB8G8R8A8Sint                        : return "B8G8R8A8Sint";
-      case Format::eB8G8R8A8Srgb                        : return "B8G8R8A8Srgb";
-      case Format::eA8B8G8R8UnormPack32                 : return "A8B8G8R8UnormPack32";
-      case Format::eA8B8G8R8SnormPack32                 : return "A8B8G8R8SnormPack32";
-      case Format::eA8B8G8R8UscaledPack32               : return "A8B8G8R8UscaledPack32";
-      case Format::eA8B8G8R8SscaledPack32               : return "A8B8G8R8SscaledPack32";
-      case Format::eA8B8G8R8UintPack32                  : return "A8B8G8R8UintPack32";
-      case Format::eA8B8G8R8SintPack32                  : return "A8B8G8R8SintPack32";
-      case Format::eA8B8G8R8SrgbPack32                  : return "A8B8G8R8SrgbPack32";
-      case Format::eA2R10G10B10UnormPack32              : return "A2R10G10B10UnormPack32";
-      case Format::eA2R10G10B10SnormPack32              : return "A2R10G10B10SnormPack32";
-      case Format::eA2R10G10B10UscaledPack32            : return "A2R10G10B10UscaledPack32";
-      case Format::eA2R10G10B10SscaledPack32            : return "A2R10G10B10SscaledPack32";
-      case Format::eA2R10G10B10UintPack32               : return "A2R10G10B10UintPack32";
-      case Format::eA2R10G10B10SintPack32               : return "A2R10G10B10SintPack32";
-      case Format::eA2B10G10R10UnormPack32              : return "A2B10G10R10UnormPack32";
-      case Format::eA2B10G10R10SnormPack32              : return "A2B10G10R10SnormPack32";
-      case Format::eA2B10G10R10UscaledPack32            : return "A2B10G10R10UscaledPack32";
-      case Format::eA2B10G10R10SscaledPack32            : return "A2B10G10R10SscaledPack32";
-      case Format::eA2B10G10R10UintPack32               : return "A2B10G10R10UintPack32";
-      case Format::eA2B10G10R10SintPack32               : return "A2B10G10R10SintPack32";
-      case Format::eR16Unorm                            : return "R16Unorm";
-      case Format::eR16Snorm                            : return "R16Snorm";
-      case Format::eR16Uscaled                          : return "R16Uscaled";
-      case Format::eR16Sscaled                          : return "R16Sscaled";
-      case Format::eR16Uint                             : return "R16Uint";
-      case Format::eR16Sint                             : return "R16Sint";
-      case Format::eR16Sfloat                           : return "R16Sfloat";
-      case Format::eR16G16Unorm                         : return "R16G16Unorm";
-      case Format::eR16G16Snorm                         : return "R16G16Snorm";
-      case Format::eR16G16Uscaled                       : return "R16G16Uscaled";
-      case Format::eR16G16Sscaled                       : return "R16G16Sscaled";
-      case Format::eR16G16Uint                          : return "R16G16Uint";
-      case Format::eR16G16Sint                          : return "R16G16Sint";
-      case Format::eR16G16Sfloat                        : return "R16G16Sfloat";
-      case Format::eR16G16B16Unorm                      : return "R16G16B16Unorm";
-      case Format::eR16G16B16Snorm                      : return "R16G16B16Snorm";
-      case Format::eR16G16B16Uscaled                    : return "R16G16B16Uscaled";
-      case Format::eR16G16B16Sscaled                    : return "R16G16B16Sscaled";
-      case Format::eR16G16B16Uint                       : return "R16G16B16Uint";
-      case Format::eR16G16B16Sint                       : return "R16G16B16Sint";
-      case Format::eR16G16B16Sfloat                     : return "R16G16B16Sfloat";
-      case Format::eR16G16B16A16Unorm                   : return "R16G16B16A16Unorm";
-      case Format::eR16G16B16A16Snorm                   : return "R16G16B16A16Snorm";
-      case Format::eR16G16B16A16Uscaled                 : return "R16G16B16A16Uscaled";
-      case Format::eR16G16B16A16Sscaled                 : return "R16G16B16A16Sscaled";
-      case Format::eR16G16B16A16Uint                    : return "R16G16B16A16Uint";
-      case Format::eR16G16B16A16Sint                    : return "R16G16B16A16Sint";
-      case Format::eR16G16B16A16Sfloat                  : return "R16G16B16A16Sfloat";
-      case Format::eR32Uint                             : return "R32Uint";
-      case Format::eR32Sint                             : return "R32Sint";
-      case Format::eR32Sfloat                           : return "R32Sfloat";
-      case Format::eR32G32Uint                          : return "R32G32Uint";
-      case Format::eR32G32Sint                          : return "R32G32Sint";
-      case Format::eR32G32Sfloat                        : return "R32G32Sfloat";
-      case Format::eR32G32B32Uint                       : return "R32G32B32Uint";
-      case Format::eR32G32B32Sint                       : return "R32G32B32Sint";
-      case Format::eR32G32B32Sfloat                     : return "R32G32B32Sfloat";
-      case Format::eR32G32B32A32Uint                    : return "R32G32B32A32Uint";
-      case Format::eR32G32B32A32Sint                    : return "R32G32B32A32Sint";
-      case Format::eR32G32B32A32Sfloat                  : return "R32G32B32A32Sfloat";
-      case Format::eR64Uint                             : return "R64Uint";
-      case Format::eR64Sint                             : return "R64Sint";
-      case Format::eR64Sfloat                           : return "R64Sfloat";
-      case Format::eR64G64Uint                          : return "R64G64Uint";
-      case Format::eR64G64Sint                          : return "R64G64Sint";
-      case Format::eR64G64Sfloat                        : return "R64G64Sfloat";
-      case Format::eR64G64B64Uint                       : return "R64G64B64Uint";
-      case Format::eR64G64B64Sint                       : return "R64G64B64Sint";
-      case Format::eR64G64B64Sfloat                     : return "R64G64B64Sfloat";
-      case Format::eR64G64B64A64Uint                    : return "R64G64B64A64Uint";
-      case Format::eR64G64B64A64Sint                    : return "R64G64B64A64Sint";
-      case Format::eR64G64B64A64Sfloat                  : return "R64G64B64A64Sfloat";
-      case Format::eB10G11R11UfloatPack32               : return "B10G11R11UfloatPack32";
-      case Format::eE5B9G9R9UfloatPack32                : return "E5B9G9R9UfloatPack32";
-      case Format::eD16Unorm                            : return "D16Unorm";
-      case Format::eX8D24UnormPack32                    : return "X8D24UnormPack32";
-      case Format::eD32Sfloat                           : return "D32Sfloat";
-      case Format::eS8Uint                              : return "S8Uint";
-      case Format::eD16UnormS8Uint                      : return "D16UnormS8Uint";
-      case Format::eD24UnormS8Uint                      : return "D24UnormS8Uint";
-      case Format::eD32SfloatS8Uint                     : return "D32SfloatS8Uint";
-      case Format::eBc1RgbUnormBlock                    : return "Bc1RgbUnormBlock";
-      case Format::eBc1RgbSrgbBlock                     : return "Bc1RgbSrgbBlock";
-      case Format::eBc1RgbaUnormBlock                   : return "Bc1RgbaUnormBlock";
-      case Format::eBc1RgbaSrgbBlock                    : return "Bc1RgbaSrgbBlock";
-      case Format::eBc2UnormBlock                       : return "Bc2UnormBlock";
-      case Format::eBc2SrgbBlock                        : return "Bc2SrgbBlock";
-      case Format::eBc3UnormBlock                       : return "Bc3UnormBlock";
-      case Format::eBc3SrgbBlock                        : return "Bc3SrgbBlock";
-      case Format::eBc4UnormBlock                       : return "Bc4UnormBlock";
-      case Format::eBc4SnormBlock                       : return "Bc4SnormBlock";
-      case Format::eBc5UnormBlock                       : return "Bc5UnormBlock";
-      case Format::eBc5SnormBlock                       : return "Bc5SnormBlock";
-      case Format::eBc6HUfloatBlock                     : return "Bc6HUfloatBlock";
-      case Format::eBc6HSfloatBlock                     : return "Bc6HSfloatBlock";
-      case Format::eBc7UnormBlock                       : return "Bc7UnormBlock";
-      case Format::eBc7SrgbBlock                        : return "Bc7SrgbBlock";
-      case Format::eEtc2R8G8B8UnormBlock                : return "Etc2R8G8B8UnormBlock";
-      case Format::eEtc2R8G8B8SrgbBlock                 : return "Etc2R8G8B8SrgbBlock";
-      case Format::eEtc2R8G8B8A1UnormBlock              : return "Etc2R8G8B8A1UnormBlock";
-      case Format::eEtc2R8G8B8A1SrgbBlock               : return "Etc2R8G8B8A1SrgbBlock";
-      case Format::eEtc2R8G8B8A8UnormBlock              : return "Etc2R8G8B8A8UnormBlock";
-      case Format::eEtc2R8G8B8A8SrgbBlock               : return "Etc2R8G8B8A8SrgbBlock";
-      case Format::eEacR11UnormBlock                    : return "EacR11UnormBlock";
-      case Format::eEacR11SnormBlock                    : return "EacR11SnormBlock";
-      case Format::eEacR11G11UnormBlock                 : return "EacR11G11UnormBlock";
-      case Format::eEacR11G11SnormBlock                 : return "EacR11G11SnormBlock";
-      case Format::eAstc4x4UnormBlock                   : return "Astc4x4UnormBlock";
-      case Format::eAstc4x4SrgbBlock                    : return "Astc4x4SrgbBlock";
-      case Format::eAstc5x4UnormBlock                   : return "Astc5x4UnormBlock";
-      case Format::eAstc5x4SrgbBlock                    : return "Astc5x4SrgbBlock";
-      case Format::eAstc5x5UnormBlock                   : return "Astc5x5UnormBlock";
-      case Format::eAstc5x5SrgbBlock                    : return "Astc5x5SrgbBlock";
-      case Format::eAstc6x5UnormBlock                   : return "Astc6x5UnormBlock";
-      case Format::eAstc6x5SrgbBlock                    : return "Astc6x5SrgbBlock";
-      case Format::eAstc6x6UnormBlock                   : return "Astc6x6UnormBlock";
-      case Format::eAstc6x6SrgbBlock                    : return "Astc6x6SrgbBlock";
-      case Format::eAstc8x5UnormBlock                   : return "Astc8x5UnormBlock";
-      case Format::eAstc8x5SrgbBlock                    : return "Astc8x5SrgbBlock";
-      case Format::eAstc8x6UnormBlock                   : return "Astc8x6UnormBlock";
-      case Format::eAstc8x6SrgbBlock                    : return "Astc8x6SrgbBlock";
-      case Format::eAstc8x8UnormBlock                   : return "Astc8x8UnormBlock";
-      case Format::eAstc8x8SrgbBlock                    : return "Astc8x8SrgbBlock";
-      case Format::eAstc10x5UnormBlock                  : return "Astc10x5UnormBlock";
-      case Format::eAstc10x5SrgbBlock                   : return "Astc10x5SrgbBlock";
-      case Format::eAstc10x6UnormBlock                  : return "Astc10x6UnormBlock";
-      case Format::eAstc10x6SrgbBlock                   : return "Astc10x6SrgbBlock";
-      case Format::eAstc10x8UnormBlock                  : return "Astc10x8UnormBlock";
-      case Format::eAstc10x8SrgbBlock                   : return "Astc10x8SrgbBlock";
-      case Format::eAstc10x10UnormBlock                 : return "Astc10x10UnormBlock";
-      case Format::eAstc10x10SrgbBlock                  : return "Astc10x10SrgbBlock";
-      case Format::eAstc12x10UnormBlock                 : return "Astc12x10UnormBlock";
-      case Format::eAstc12x10SrgbBlock                  : return "Astc12x10SrgbBlock";
-      case Format::eAstc12x12UnormBlock                 : return "Astc12x12UnormBlock";
-      case Format::eAstc12x12SrgbBlock                  : return "Astc12x12SrgbBlock";
-      case Format::eG8B8G8R8422Unorm                    : return "G8B8G8R8422Unorm";
-      case Format::eB8G8R8G8422Unorm                    : return "B8G8R8G8422Unorm";
-      case Format::eG8B8R83Plane420Unorm                : return "G8B8R83Plane420Unorm";
-      case Format::eG8B8R82Plane420Unorm                : return "G8B8R82Plane420Unorm";
-      case Format::eG8B8R83Plane422Unorm                : return "G8B8R83Plane422Unorm";
-      case Format::eG8B8R82Plane422Unorm                : return "G8B8R82Plane422Unorm";
-      case Format::eG8B8R83Plane444Unorm                : return "G8B8R83Plane444Unorm";
-      case Format::eR10X6UnormPack16                    : return "R10X6UnormPack16";
-      case Format::eR10X6G10X6Unorm2Pack16              : return "R10X6G10X6Unorm2Pack16";
-      case Format::eR10X6G10X6B10X6A10X6Unorm4Pack16    : return "R10X6G10X6B10X6A10X6Unorm4Pack16";
-      case Format::eG10X6B10X6G10X6R10X6422Unorm4Pack16 : return "G10X6B10X6G10X6R10X6422Unorm4Pack16";
-      case Format::eB10X6G10X6R10X6G10X6422Unorm4Pack16 : return "B10X6G10X6R10X6G10X6422Unorm4Pack16";
-      case Format::eG10X6B10X6R10X63Plane420Unorm3Pack16: return "G10X6B10X6R10X63Plane420Unorm3Pack16";
-      case Format::eG10X6B10X6R10X62Plane420Unorm3Pack16: return "G10X6B10X6R10X62Plane420Unorm3Pack16";
-      case Format::eG10X6B10X6R10X63Plane422Unorm3Pack16: return "G10X6B10X6R10X63Plane422Unorm3Pack16";
-      case Format::eG10X6B10X6R10X62Plane422Unorm3Pack16: return "G10X6B10X6R10X62Plane422Unorm3Pack16";
-      case Format::eG10X6B10X6R10X63Plane444Unorm3Pack16: return "G10X6B10X6R10X63Plane444Unorm3Pack16";
-      case Format::eR12X4UnormPack16                    : return "R12X4UnormPack16";
-      case Format::eR12X4G12X4Unorm2Pack16              : return "R12X4G12X4Unorm2Pack16";
-      case Format::eR12X4G12X4B12X4A12X4Unorm4Pack16    : return "R12X4G12X4B12X4A12X4Unorm4Pack16";
-      case Format::eG12X4B12X4G12X4R12X4422Unorm4Pack16 : return "G12X4B12X4G12X4R12X4422Unorm4Pack16";
-      case Format::eB12X4G12X4R12X4G12X4422Unorm4Pack16 : return "B12X4G12X4R12X4G12X4422Unorm4Pack16";
-      case Format::eG12X4B12X4R12X43Plane420Unorm3Pack16: return "G12X4B12X4R12X43Plane420Unorm3Pack16";
-      case Format::eG12X4B12X4R12X42Plane420Unorm3Pack16: return "G12X4B12X4R12X42Plane420Unorm3Pack16";
-      case Format::eG12X4B12X4R12X43Plane422Unorm3Pack16: return "G12X4B12X4R12X43Plane422Unorm3Pack16";
-      case Format::eG12X4B12X4R12X42Plane422Unorm3Pack16: return "G12X4B12X4R12X42Plane422Unorm3Pack16";
-      case Format::eG12X4B12X4R12X43Plane444Unorm3Pack16: return "G12X4B12X4R12X43Plane444Unorm3Pack16";
-      case Format::eG16B16G16R16422Unorm                : return "G16B16G16R16422Unorm";
-      case Format::eB16G16R16G16422Unorm                : return "B16G16R16G16422Unorm";
-      case Format::eG16B16R163Plane420Unorm             : return "G16B16R163Plane420Unorm";
-      case Format::eG16B16R162Plane420Unorm             : return "G16B16R162Plane420Unorm";
-      case Format::eG16B16R163Plane422Unorm             : return "G16B16R163Plane422Unorm";
-      case Format::eG16B16R162Plane422Unorm             : return "G16B16R162Plane422Unorm";
-      case Format::eG16B16R163Plane444Unorm             : return "G16B16R163Plane444Unorm";
-      case Format::eG8B8R82Plane444Unorm                : return "G8B8R82Plane444Unorm";
-      case Format::eG10X6B10X6R10X62Plane444Unorm3Pack16: return "G10X6B10X6R10X62Plane444Unorm3Pack16";
-      case Format::eG12X4B12X4R12X42Plane444Unorm3Pack16: return "G12X4B12X4R12X42Plane444Unorm3Pack16";
-      case Format::eG16B16R162Plane444Unorm             : return "G16B16R162Plane444Unorm";
-      case Format::eA4R4G4B4UnormPack16                 : return "A4R4G4B4UnormPack16";
-      case Format::eA4B4G4R4UnormPack16                 : return "A4B4G4R4UnormPack16";
-      case Format::eAstc4x4SfloatBlock                  : return "Astc4x4SfloatBlock";
-      case Format::eAstc5x4SfloatBlock                  : return "Astc5x4SfloatBlock";
-      case Format::eAstc5x5SfloatBlock                  : return "Astc5x5SfloatBlock";
-      case Format::eAstc6x5SfloatBlock                  : return "Astc6x5SfloatBlock";
-      case Format::eAstc6x6SfloatBlock                  : return "Astc6x6SfloatBlock";
-      case Format::eAstc8x5SfloatBlock                  : return "Astc8x5SfloatBlock";
-      case Format::eAstc8x6SfloatBlock                  : return "Astc8x6SfloatBlock";
-      case Format::eAstc8x8SfloatBlock                  : return "Astc8x8SfloatBlock";
-      case Format::eAstc10x5SfloatBlock                 : return "Astc10x5SfloatBlock";
-      case Format::eAstc10x6SfloatBlock                 : return "Astc10x6SfloatBlock";
-      case Format::eAstc10x8SfloatBlock                 : return "Astc10x8SfloatBlock";
-      case Format::eAstc10x10SfloatBlock                : return "Astc10x10SfloatBlock";
-      case Format::eAstc12x10SfloatBlock                : return "Astc12x10SfloatBlock";
-      case Format::eAstc12x12SfloatBlock                : return "Astc12x12SfloatBlock";
-      case Format::eA1B5G5R5UnormPack16                 : return "A1B5G5R5UnormPack16";
-      case Format::eA8Unorm                             : return "A8Unorm";
-      case Format::ePvrtc12BppUnormBlockIMG             : return "Pvrtc12BppUnormBlockIMG";
-      case Format::ePvrtc14BppUnormBlockIMG             : return "Pvrtc14BppUnormBlockIMG";
-      case Format::ePvrtc22BppUnormBlockIMG             : return "Pvrtc22BppUnormBlockIMG";
-      case Format::ePvrtc24BppUnormBlockIMG             : return "Pvrtc24BppUnormBlockIMG";
-      case Format::ePvrtc12BppSrgbBlockIMG              : return "Pvrtc12BppSrgbBlockIMG";
-      case Format::ePvrtc14BppSrgbBlockIMG              : return "Pvrtc14BppSrgbBlockIMG";
-      case Format::ePvrtc22BppSrgbBlockIMG              : return "Pvrtc22BppSrgbBlockIMG";
-      case Format::ePvrtc24BppSrgbBlockIMG              : return "Pvrtc24BppSrgbBlockIMG";
-      case Format::eR16G16Sfixed5NV                     : return "R16G16Sfixed5NV";
-      default                                           : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+      case Format::eUndefined                              : return "Undefined";
+      case Format::eR4G4UnormPack8                         : return "R4G4UnormPack8";
+      case Format::eR4G4B4A4UnormPack16                    : return "R4G4B4A4UnormPack16";
+      case Format::eB4G4R4A4UnormPack16                    : return "B4G4R4A4UnormPack16";
+      case Format::eR5G6B5UnormPack16                      : return "R5G6B5UnormPack16";
+      case Format::eB5G6R5UnormPack16                      : return "B5G6R5UnormPack16";
+      case Format::eR5G5B5A1UnormPack16                    : return "R5G5B5A1UnormPack16";
+      case Format::eB5G5R5A1UnormPack16                    : return "B5G5R5A1UnormPack16";
+      case Format::eA1R5G5B5UnormPack16                    : return "A1R5G5B5UnormPack16";
+      case Format::eR8Unorm                                : return "R8Unorm";
+      case Format::eR8Snorm                                : return "R8Snorm";
+      case Format::eR8Uscaled                              : return "R8Uscaled";
+      case Format::eR8Sscaled                              : return "R8Sscaled";
+      case Format::eR8Uint                                 : return "R8Uint";
+      case Format::eR8Sint                                 : return "R8Sint";
+      case Format::eR8Srgb                                 : return "R8Srgb";
+      case Format::eR8G8Unorm                              : return "R8G8Unorm";
+      case Format::eR8G8Snorm                              : return "R8G8Snorm";
+      case Format::eR8G8Uscaled                            : return "R8G8Uscaled";
+      case Format::eR8G8Sscaled                            : return "R8G8Sscaled";
+      case Format::eR8G8Uint                               : return "R8G8Uint";
+      case Format::eR8G8Sint                               : return "R8G8Sint";
+      case Format::eR8G8Srgb                               : return "R8G8Srgb";
+      case Format::eR8G8B8Unorm                            : return "R8G8B8Unorm";
+      case Format::eR8G8B8Snorm                            : return "R8G8B8Snorm";
+      case Format::eR8G8B8Uscaled                          : return "R8G8B8Uscaled";
+      case Format::eR8G8B8Sscaled                          : return "R8G8B8Sscaled";
+      case Format::eR8G8B8Uint                             : return "R8G8B8Uint";
+      case Format::eR8G8B8Sint                             : return "R8G8B8Sint";
+      case Format::eR8G8B8Srgb                             : return "R8G8B8Srgb";
+      case Format::eB8G8R8Unorm                            : return "B8G8R8Unorm";
+      case Format::eB8G8R8Snorm                            : return "B8G8R8Snorm";
+      case Format::eB8G8R8Uscaled                          : return "B8G8R8Uscaled";
+      case Format::eB8G8R8Sscaled                          : return "B8G8R8Sscaled";
+      case Format::eB8G8R8Uint                             : return "B8G8R8Uint";
+      case Format::eB8G8R8Sint                             : return "B8G8R8Sint";
+      case Format::eB8G8R8Srgb                             : return "B8G8R8Srgb";
+      case Format::eR8G8B8A8Unorm                          : return "R8G8B8A8Unorm";
+      case Format::eR8G8B8A8Snorm                          : return "R8G8B8A8Snorm";
+      case Format::eR8G8B8A8Uscaled                        : return "R8G8B8A8Uscaled";
+      case Format::eR8G8B8A8Sscaled                        : return "R8G8B8A8Sscaled";
+      case Format::eR8G8B8A8Uint                           : return "R8G8B8A8Uint";
+      case Format::eR8G8B8A8Sint                           : return "R8G8B8A8Sint";
+      case Format::eR8G8B8A8Srgb                           : return "R8G8B8A8Srgb";
+      case Format::eB8G8R8A8Unorm                          : return "B8G8R8A8Unorm";
+      case Format::eB8G8R8A8Snorm                          : return "B8G8R8A8Snorm";
+      case Format::eB8G8R8A8Uscaled                        : return "B8G8R8A8Uscaled";
+      case Format::eB8G8R8A8Sscaled                        : return "B8G8R8A8Sscaled";
+      case Format::eB8G8R8A8Uint                           : return "B8G8R8A8Uint";
+      case Format::eB8G8R8A8Sint                           : return "B8G8R8A8Sint";
+      case Format::eB8G8R8A8Srgb                           : return "B8G8R8A8Srgb";
+      case Format::eA8B8G8R8UnormPack32                    : return "A8B8G8R8UnormPack32";
+      case Format::eA8B8G8R8SnormPack32                    : return "A8B8G8R8SnormPack32";
+      case Format::eA8B8G8R8UscaledPack32                  : return "A8B8G8R8UscaledPack32";
+      case Format::eA8B8G8R8SscaledPack32                  : return "A8B8G8R8SscaledPack32";
+      case Format::eA8B8G8R8UintPack32                     : return "A8B8G8R8UintPack32";
+      case Format::eA8B8G8R8SintPack32                     : return "A8B8G8R8SintPack32";
+      case Format::eA8B8G8R8SrgbPack32                     : return "A8B8G8R8SrgbPack32";
+      case Format::eA2R10G10B10UnormPack32                 : return "A2R10G10B10UnormPack32";
+      case Format::eA2R10G10B10SnormPack32                 : return "A2R10G10B10SnormPack32";
+      case Format::eA2R10G10B10UscaledPack32               : return "A2R10G10B10UscaledPack32";
+      case Format::eA2R10G10B10SscaledPack32               : return "A2R10G10B10SscaledPack32";
+      case Format::eA2R10G10B10UintPack32                  : return "A2R10G10B10UintPack32";
+      case Format::eA2R10G10B10SintPack32                  : return "A2R10G10B10SintPack32";
+      case Format::eA2B10G10R10UnormPack32                 : return "A2B10G10R10UnormPack32";
+      case Format::eA2B10G10R10SnormPack32                 : return "A2B10G10R10SnormPack32";
+      case Format::eA2B10G10R10UscaledPack32               : return "A2B10G10R10UscaledPack32";
+      case Format::eA2B10G10R10SscaledPack32               : return "A2B10G10R10SscaledPack32";
+      case Format::eA2B10G10R10UintPack32                  : return "A2B10G10R10UintPack32";
+      case Format::eA2B10G10R10SintPack32                  : return "A2B10G10R10SintPack32";
+      case Format::eR16Unorm                               : return "R16Unorm";
+      case Format::eR16Snorm                               : return "R16Snorm";
+      case Format::eR16Uscaled                             : return "R16Uscaled";
+      case Format::eR16Sscaled                             : return "R16Sscaled";
+      case Format::eR16Uint                                : return "R16Uint";
+      case Format::eR16Sint                                : return "R16Sint";
+      case Format::eR16Sfloat                              : return "R16Sfloat";
+      case Format::eR16G16Unorm                            : return "R16G16Unorm";
+      case Format::eR16G16Snorm                            : return "R16G16Snorm";
+      case Format::eR16G16Uscaled                          : return "R16G16Uscaled";
+      case Format::eR16G16Sscaled                          : return "R16G16Sscaled";
+      case Format::eR16G16Uint                             : return "R16G16Uint";
+      case Format::eR16G16Sint                             : return "R16G16Sint";
+      case Format::eR16G16Sfloat                           : return "R16G16Sfloat";
+      case Format::eR16G16B16Unorm                         : return "R16G16B16Unorm";
+      case Format::eR16G16B16Snorm                         : return "R16G16B16Snorm";
+      case Format::eR16G16B16Uscaled                       : return "R16G16B16Uscaled";
+      case Format::eR16G16B16Sscaled                       : return "R16G16B16Sscaled";
+      case Format::eR16G16B16Uint                          : return "R16G16B16Uint";
+      case Format::eR16G16B16Sint                          : return "R16G16B16Sint";
+      case Format::eR16G16B16Sfloat                        : return "R16G16B16Sfloat";
+      case Format::eR16G16B16A16Unorm                      : return "R16G16B16A16Unorm";
+      case Format::eR16G16B16A16Snorm                      : return "R16G16B16A16Snorm";
+      case Format::eR16G16B16A16Uscaled                    : return "R16G16B16A16Uscaled";
+      case Format::eR16G16B16A16Sscaled                    : return "R16G16B16A16Sscaled";
+      case Format::eR16G16B16A16Uint                       : return "R16G16B16A16Uint";
+      case Format::eR16G16B16A16Sint                       : return "R16G16B16A16Sint";
+      case Format::eR16G16B16A16Sfloat                     : return "R16G16B16A16Sfloat";
+      case Format::eR32Uint                                : return "R32Uint";
+      case Format::eR32Sint                                : return "R32Sint";
+      case Format::eR32Sfloat                              : return "R32Sfloat";
+      case Format::eR32G32Uint                             : return "R32G32Uint";
+      case Format::eR32G32Sint                             : return "R32G32Sint";
+      case Format::eR32G32Sfloat                           : return "R32G32Sfloat";
+      case Format::eR32G32B32Uint                          : return "R32G32B32Uint";
+      case Format::eR32G32B32Sint                          : return "R32G32B32Sint";
+      case Format::eR32G32B32Sfloat                        : return "R32G32B32Sfloat";
+      case Format::eR32G32B32A32Uint                       : return "R32G32B32A32Uint";
+      case Format::eR32G32B32A32Sint                       : return "R32G32B32A32Sint";
+      case Format::eR32G32B32A32Sfloat                     : return "R32G32B32A32Sfloat";
+      case Format::eR64Uint                                : return "R64Uint";
+      case Format::eR64Sint                                : return "R64Sint";
+      case Format::eR64Sfloat                              : return "R64Sfloat";
+      case Format::eR64G64Uint                             : return "R64G64Uint";
+      case Format::eR64G64Sint                             : return "R64G64Sint";
+      case Format::eR64G64Sfloat                           : return "R64G64Sfloat";
+      case Format::eR64G64B64Uint                          : return "R64G64B64Uint";
+      case Format::eR64G64B64Sint                          : return "R64G64B64Sint";
+      case Format::eR64G64B64Sfloat                        : return "R64G64B64Sfloat";
+      case Format::eR64G64B64A64Uint                       : return "R64G64B64A64Uint";
+      case Format::eR64G64B64A64Sint                       : return "R64G64B64A64Sint";
+      case Format::eR64G64B64A64Sfloat                     : return "R64G64B64A64Sfloat";
+      case Format::eB10G11R11UfloatPack32                  : return "B10G11R11UfloatPack32";
+      case Format::eE5B9G9R9UfloatPack32                   : return "E5B9G9R9UfloatPack32";
+      case Format::eD16Unorm                               : return "D16Unorm";
+      case Format::eX8D24UnormPack32                       : return "X8D24UnormPack32";
+      case Format::eD32Sfloat                              : return "D32Sfloat";
+      case Format::eS8Uint                                 : return "S8Uint";
+      case Format::eD16UnormS8Uint                         : return "D16UnormS8Uint";
+      case Format::eD24UnormS8Uint                         : return "D24UnormS8Uint";
+      case Format::eD32SfloatS8Uint                        : return "D32SfloatS8Uint";
+      case Format::eBc1RgbUnormBlock                       : return "Bc1RgbUnormBlock";
+      case Format::eBc1RgbSrgbBlock                        : return "Bc1RgbSrgbBlock";
+      case Format::eBc1RgbaUnormBlock                      : return "Bc1RgbaUnormBlock";
+      case Format::eBc1RgbaSrgbBlock                       : return "Bc1RgbaSrgbBlock";
+      case Format::eBc2UnormBlock                          : return "Bc2UnormBlock";
+      case Format::eBc2SrgbBlock                           : return "Bc2SrgbBlock";
+      case Format::eBc3UnormBlock                          : return "Bc3UnormBlock";
+      case Format::eBc3SrgbBlock                           : return "Bc3SrgbBlock";
+      case Format::eBc4UnormBlock                          : return "Bc4UnormBlock";
+      case Format::eBc4SnormBlock                          : return "Bc4SnormBlock";
+      case Format::eBc5UnormBlock                          : return "Bc5UnormBlock";
+      case Format::eBc5SnormBlock                          : return "Bc5SnormBlock";
+      case Format::eBc6HUfloatBlock                        : return "Bc6HUfloatBlock";
+      case Format::eBc6HSfloatBlock                        : return "Bc6HSfloatBlock";
+      case Format::eBc7UnormBlock                          : return "Bc7UnormBlock";
+      case Format::eBc7SrgbBlock                           : return "Bc7SrgbBlock";
+      case Format::eEtc2R8G8B8UnormBlock                   : return "Etc2R8G8B8UnormBlock";
+      case Format::eEtc2R8G8B8SrgbBlock                    : return "Etc2R8G8B8SrgbBlock";
+      case Format::eEtc2R8G8B8A1UnormBlock                 : return "Etc2R8G8B8A1UnormBlock";
+      case Format::eEtc2R8G8B8A1SrgbBlock                  : return "Etc2R8G8B8A1SrgbBlock";
+      case Format::eEtc2R8G8B8A8UnormBlock                 : return "Etc2R8G8B8A8UnormBlock";
+      case Format::eEtc2R8G8B8A8SrgbBlock                  : return "Etc2R8G8B8A8SrgbBlock";
+      case Format::eEacR11UnormBlock                       : return "EacR11UnormBlock";
+      case Format::eEacR11SnormBlock                       : return "EacR11SnormBlock";
+      case Format::eEacR11G11UnormBlock                    : return "EacR11G11UnormBlock";
+      case Format::eEacR11G11SnormBlock                    : return "EacR11G11SnormBlock";
+      case Format::eAstc4x4UnormBlock                      : return "Astc4x4UnormBlock";
+      case Format::eAstc4x4SrgbBlock                       : return "Astc4x4SrgbBlock";
+      case Format::eAstc5x4UnormBlock                      : return "Astc5x4UnormBlock";
+      case Format::eAstc5x4SrgbBlock                       : return "Astc5x4SrgbBlock";
+      case Format::eAstc5x5UnormBlock                      : return "Astc5x5UnormBlock";
+      case Format::eAstc5x5SrgbBlock                       : return "Astc5x5SrgbBlock";
+      case Format::eAstc6x5UnormBlock                      : return "Astc6x5UnormBlock";
+      case Format::eAstc6x5SrgbBlock                       : return "Astc6x5SrgbBlock";
+      case Format::eAstc6x6UnormBlock                      : return "Astc6x6UnormBlock";
+      case Format::eAstc6x6SrgbBlock                       : return "Astc6x6SrgbBlock";
+      case Format::eAstc8x5UnormBlock                      : return "Astc8x5UnormBlock";
+      case Format::eAstc8x5SrgbBlock                       : return "Astc8x5SrgbBlock";
+      case Format::eAstc8x6UnormBlock                      : return "Astc8x6UnormBlock";
+      case Format::eAstc8x6SrgbBlock                       : return "Astc8x6SrgbBlock";
+      case Format::eAstc8x8UnormBlock                      : return "Astc8x8UnormBlock";
+      case Format::eAstc8x8SrgbBlock                       : return "Astc8x8SrgbBlock";
+      case Format::eAstc10x5UnormBlock                     : return "Astc10x5UnormBlock";
+      case Format::eAstc10x5SrgbBlock                      : return "Astc10x5SrgbBlock";
+      case Format::eAstc10x6UnormBlock                     : return "Astc10x6UnormBlock";
+      case Format::eAstc10x6SrgbBlock                      : return "Astc10x6SrgbBlock";
+      case Format::eAstc10x8UnormBlock                     : return "Astc10x8UnormBlock";
+      case Format::eAstc10x8SrgbBlock                      : return "Astc10x8SrgbBlock";
+      case Format::eAstc10x10UnormBlock                    : return "Astc10x10UnormBlock";
+      case Format::eAstc10x10SrgbBlock                     : return "Astc10x10SrgbBlock";
+      case Format::eAstc12x10UnormBlock                    : return "Astc12x10UnormBlock";
+      case Format::eAstc12x10SrgbBlock                     : return "Astc12x10SrgbBlock";
+      case Format::eAstc12x12UnormBlock                    : return "Astc12x12UnormBlock";
+      case Format::eAstc12x12SrgbBlock                     : return "Astc12x12SrgbBlock";
+      case Format::eG8B8G8R8422Unorm                       : return "G8B8G8R8422Unorm";
+      case Format::eB8G8R8G8422Unorm                       : return "B8G8R8G8422Unorm";
+      case Format::eG8B8R83Plane420Unorm                   : return "G8B8R83Plane420Unorm";
+      case Format::eG8B8R82Plane420Unorm                   : return "G8B8R82Plane420Unorm";
+      case Format::eG8B8R83Plane422Unorm                   : return "G8B8R83Plane422Unorm";
+      case Format::eG8B8R82Plane422Unorm                   : return "G8B8R82Plane422Unorm";
+      case Format::eG8B8R83Plane444Unorm                   : return "G8B8R83Plane444Unorm";
+      case Format::eR10X6UnormPack16                       : return "R10X6UnormPack16";
+      case Format::eR10X6G10X6Unorm2Pack16                 : return "R10X6G10X6Unorm2Pack16";
+      case Format::eR10X6G10X6B10X6A10X6Unorm4Pack16       : return "R10X6G10X6B10X6A10X6Unorm4Pack16";
+      case Format::eG10X6B10X6G10X6R10X6422Unorm4Pack16    : return "G10X6B10X6G10X6R10X6422Unorm4Pack16";
+      case Format::eB10X6G10X6R10X6G10X6422Unorm4Pack16    : return "B10X6G10X6R10X6G10X6422Unorm4Pack16";
+      case Format::eG10X6B10X6R10X63Plane420Unorm3Pack16   : return "G10X6B10X6R10X63Plane420Unorm3Pack16";
+      case Format::eG10X6B10X6R10X62Plane420Unorm3Pack16   : return "G10X6B10X6R10X62Plane420Unorm3Pack16";
+      case Format::eG10X6B10X6R10X63Plane422Unorm3Pack16   : return "G10X6B10X6R10X63Plane422Unorm3Pack16";
+      case Format::eG10X6B10X6R10X62Plane422Unorm3Pack16   : return "G10X6B10X6R10X62Plane422Unorm3Pack16";
+      case Format::eG10X6B10X6R10X63Plane444Unorm3Pack16   : return "G10X6B10X6R10X63Plane444Unorm3Pack16";
+      case Format::eR12X4UnormPack16                       : return "R12X4UnormPack16";
+      case Format::eR12X4G12X4Unorm2Pack16                 : return "R12X4G12X4Unorm2Pack16";
+      case Format::eR12X4G12X4B12X4A12X4Unorm4Pack16       : return "R12X4G12X4B12X4A12X4Unorm4Pack16";
+      case Format::eG12X4B12X4G12X4R12X4422Unorm4Pack16    : return "G12X4B12X4G12X4R12X4422Unorm4Pack16";
+      case Format::eB12X4G12X4R12X4G12X4422Unorm4Pack16    : return "B12X4G12X4R12X4G12X4422Unorm4Pack16";
+      case Format::eG12X4B12X4R12X43Plane420Unorm3Pack16   : return "G12X4B12X4R12X43Plane420Unorm3Pack16";
+      case Format::eG12X4B12X4R12X42Plane420Unorm3Pack16   : return "G12X4B12X4R12X42Plane420Unorm3Pack16";
+      case Format::eG12X4B12X4R12X43Plane422Unorm3Pack16   : return "G12X4B12X4R12X43Plane422Unorm3Pack16";
+      case Format::eG12X4B12X4R12X42Plane422Unorm3Pack16   : return "G12X4B12X4R12X42Plane422Unorm3Pack16";
+      case Format::eG12X4B12X4R12X43Plane444Unorm3Pack16   : return "G12X4B12X4R12X43Plane444Unorm3Pack16";
+      case Format::eG16B16G16R16422Unorm                   : return "G16B16G16R16422Unorm";
+      case Format::eB16G16R16G16422Unorm                   : return "B16G16R16G16422Unorm";
+      case Format::eG16B16R163Plane420Unorm                : return "G16B16R163Plane420Unorm";
+      case Format::eG16B16R162Plane420Unorm                : return "G16B16R162Plane420Unorm";
+      case Format::eG16B16R163Plane422Unorm                : return "G16B16R163Plane422Unorm";
+      case Format::eG16B16R162Plane422Unorm                : return "G16B16R162Plane422Unorm";
+      case Format::eG16B16R163Plane444Unorm                : return "G16B16R163Plane444Unorm";
+      case Format::eG8B8R82Plane444Unorm                   : return "G8B8R82Plane444Unorm";
+      case Format::eG10X6B10X6R10X62Plane444Unorm3Pack16   : return "G10X6B10X6R10X62Plane444Unorm3Pack16";
+      case Format::eG12X4B12X4R12X42Plane444Unorm3Pack16   : return "G12X4B12X4R12X42Plane444Unorm3Pack16";
+      case Format::eG16B16R162Plane444Unorm                : return "G16B16R162Plane444Unorm";
+      case Format::eA4R4G4B4UnormPack16                    : return "A4R4G4B4UnormPack16";
+      case Format::eA4B4G4R4UnormPack16                    : return "A4B4G4R4UnormPack16";
+      case Format::eAstc4x4SfloatBlock                     : return "Astc4x4SfloatBlock";
+      case Format::eAstc5x4SfloatBlock                     : return "Astc5x4SfloatBlock";
+      case Format::eAstc5x5SfloatBlock                     : return "Astc5x5SfloatBlock";
+      case Format::eAstc6x5SfloatBlock                     : return "Astc6x5SfloatBlock";
+      case Format::eAstc6x6SfloatBlock                     : return "Astc6x6SfloatBlock";
+      case Format::eAstc8x5SfloatBlock                     : return "Astc8x5SfloatBlock";
+      case Format::eAstc8x6SfloatBlock                     : return "Astc8x6SfloatBlock";
+      case Format::eAstc8x8SfloatBlock                     : return "Astc8x8SfloatBlock";
+      case Format::eAstc10x5SfloatBlock                    : return "Astc10x5SfloatBlock";
+      case Format::eAstc10x6SfloatBlock                    : return "Astc10x6SfloatBlock";
+      case Format::eAstc10x8SfloatBlock                    : return "Astc10x8SfloatBlock";
+      case Format::eAstc10x10SfloatBlock                   : return "Astc10x10SfloatBlock";
+      case Format::eAstc12x10SfloatBlock                   : return "Astc12x10SfloatBlock";
+      case Format::eAstc12x12SfloatBlock                   : return "Astc12x12SfloatBlock";
+      case Format::eA1B5G5R5UnormPack16                    : return "A1B5G5R5UnormPack16";
+      case Format::eA8Unorm                                : return "A8Unorm";
+      case Format::ePvrtc12BppUnormBlockIMG                : return "Pvrtc12BppUnormBlockIMG";
+      case Format::ePvrtc14BppUnormBlockIMG                : return "Pvrtc14BppUnormBlockIMG";
+      case Format::ePvrtc22BppUnormBlockIMG                : return "Pvrtc22BppUnormBlockIMG";
+      case Format::ePvrtc24BppUnormBlockIMG                : return "Pvrtc24BppUnormBlockIMG";
+      case Format::ePvrtc12BppSrgbBlockIMG                 : return "Pvrtc12BppSrgbBlockIMG";
+      case Format::ePvrtc14BppSrgbBlockIMG                 : return "Pvrtc14BppSrgbBlockIMG";
+      case Format::ePvrtc22BppSrgbBlockIMG                 : return "Pvrtc22BppSrgbBlockIMG";
+      case Format::ePvrtc24BppSrgbBlockIMG                 : return "Pvrtc24BppSrgbBlockIMG";
+      case Format::eR8BoolARM                              : return "R8BoolARM";
+      case Format::eR16G16Sfixed5NV                        : return "R16G16Sfixed5NV";
+      case Format::eR10X6UintPack16ARM                     : return "R10X6UintPack16ARM";
+      case Format::eR10X6G10X6Uint2Pack16ARM               : return "R10X6G10X6Uint2Pack16ARM";
+      case Format::eR10X6G10X6B10X6A10X6Uint4Pack16ARM     : return "R10X6G10X6B10X6A10X6Uint4Pack16ARM";
+      case Format::eR12X4UintPack16ARM                     : return "R12X4UintPack16ARM";
+      case Format::eR12X4G12X4Uint2Pack16ARM               : return "R12X4G12X4Uint2Pack16ARM";
+      case Format::eR12X4G12X4B12X4A12X4Uint4Pack16ARM     : return "R12X4G12X4B12X4A12X4Uint4Pack16ARM";
+      case Format::eR14X2UintPack16ARM                     : return "R14X2UintPack16ARM";
+      case Format::eR14X2G14X2Uint2Pack16ARM               : return "R14X2G14X2Uint2Pack16ARM";
+      case Format::eR14X2G14X2B14X2A14X2Uint4Pack16ARM     : return "R14X2G14X2B14X2A14X2Uint4Pack16ARM";
+      case Format::eR14X2UnormPack16ARM                    : return "R14X2UnormPack16ARM";
+      case Format::eR14X2G14X2Unorm2Pack16ARM              : return "R14X2G14X2Unorm2Pack16ARM";
+      case Format::eR14X2G14X2B14X2A14X2Unorm4Pack16ARM    : return "R14X2G14X2B14X2A14X2Unorm4Pack16ARM";
+      case Format::eG14X2B14X2R14X22Plane420Unorm3Pack16ARM: return "G14X2B14X2R14X22Plane420Unorm3Pack16ARM";
+      case Format::eG14X2B14X2R14X22Plane422Unorm3Pack16ARM: return "G14X2B14X2R14X22Plane422Unorm3Pack16ARM";
+      default                                              : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -5610,6 +5741,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageUsageFlagBits::eInvocationMaskHUAWEI              : return "InvocationMaskHUAWEI";
       case ImageUsageFlagBits::eSampleWeightQCOM                  : return "SampleWeightQCOM";
       case ImageUsageFlagBits::eSampleBlockMatchQCOM              : return "SampleBlockMatchQCOM";
+      case ImageUsageFlagBits::eTensorAliasingARM                 : return "TensorAliasingARM";
       case ImageUsageFlagBits::eTileMemoryQCOM                    : return "TileMemoryQCOM";
       case ImageUsageFlagBits::eVideoEncodeQuantizationDeltaMapKHR: return "VideoEncodeQuantizationDeltaMapKHR";
       case ImageUsageFlagBits::eVideoEncodeEmphasisMapKHR         : return "VideoEncodeEmphasisMapKHR";
@@ -5863,6 +5995,15 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueryPoolCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case QueryPoolCreateFlagBits::eResetKHR: return "ResetKHR";
+      default                                : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueryResultFlagBits value )
   {
     switch ( value )
@@ -5899,11 +6040,6 @@ namespace VULKAN_HPP_NAMESPACE
       case QueryType::eMicromapCompactedSizeEXT                                : return "MicromapCompactedSizeEXT";
       default                                                                  : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( QueryPoolCreateFlagBits )
-  {
-    return "(void)";
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BufferCreateFlagBits value )
@@ -6006,6 +6142,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageLayout::eVideoEncodeSrcKHR                      : return "VideoEncodeSrcKHR";
       case ImageLayout::eVideoEncodeDpbKHR                      : return "VideoEncodeDpbKHR";
       case ImageLayout::eAttachmentFeedbackLoopOptimalEXT       : return "AttachmentFeedbackLoopOptimalEXT";
+      case ImageLayout::eTensorAliasingARM                      : return "TensorAliasingARM";
       case ImageLayout::eVideoEncodeQuantizationMapKHR          : return "VideoEncodeQuantizationMapKHR";
       case ImageLayout::eZeroInitializedEXT                     : return "ZeroInitializedEXT";
       default                                                   : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
@@ -6617,6 +6754,7 @@ namespace VULKAN_HPP_NAMESPACE
       case DescriptorType::eAccelerationStructureNV           : return "AccelerationStructureNV";
       case DescriptorType::eSampleWeightImageQCOM             : return "SampleWeightImageQCOM";
       case DescriptorType::eBlockMatchImageQCOM               : return "BlockMatchImageQCOM";
+      case DescriptorType::eTensorARM                         : return "TensorARM";
       case DescriptorType::eMutableEXT                        : return "MutableEXT";
       case DescriptorType::ePartitionedAccelerationStructureNV: return "PartitionedAccelerationStructureNV";
       default                                                 : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
@@ -6706,6 +6844,7 @@ namespace VULKAN_HPP_NAMESPACE
       case DependencyFlagBits::eViewLocal                                  : return "ViewLocal";
       case DependencyFlagBits::eFeedbackLoopEXT                            : return "FeedbackLoopEXT";
       case DependencyFlagBits::eQueueFamilyOwnershipTransferUseAllStagesKHR: return "QueueFamilyOwnershipTransferUseAllStagesKHR";
+      case DependencyFlagBits::eAsymmetricEventKHR                         : return "AsymmetricEventKHR";
       default                                                              : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7393,6 +7532,8 @@ namespace VULKAN_HPP_NAMESPACE
       case FormatFeatureFlagBits2::eWeightSampledImageQCOM              : return "WeightSampledImageQCOM";
       case FormatFeatureFlagBits2::eBlockMatchingQCOM                   : return "BlockMatchingQCOM";
       case FormatFeatureFlagBits2::eBoxFilterSampledQCOM                : return "BoxFilterSampledQCOM";
+      case FormatFeatureFlagBits2::eTensorShaderARM                     : return "TensorShaderARM";
+      case FormatFeatureFlagBits2::eTensorImageAliasingARM              : return "TensorImageAliasingARM";
       case FormatFeatureFlagBits2::eOpticalFlowImageNV                  : return "OpticalFlowImageNV";
       case FormatFeatureFlagBits2::eOpticalFlowVectorNV                 : return "OpticalFlowVectorNV";
       case FormatFeatureFlagBits2::eOpticalFlowCostNV                   : return "OpticalFlowCostNV";
@@ -7635,6 +7776,8 @@ namespace VULKAN_HPP_NAMESPACE
       case SwapchainCreateFlagBitsKHR::eProtected                  : return "Protected";
       case SwapchainCreateFlagBitsKHR::eMutableFormat              : return "MutableFormat";
       case SwapchainCreateFlagBitsKHR::eDeferredMemoryAllocationEXT: return "DeferredMemoryAllocationEXT";
+      case SwapchainCreateFlagBitsKHR::ePresentId2                 : return "PresentId2";
+      case SwapchainCreateFlagBitsKHR::ePresentWait2               : return "PresentWait2";
       default                                                      : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7813,6 +7956,7 @@ namespace VULKAN_HPP_NAMESPACE
       case VideoCodecOperationFlagBitsKHR::eDecodeH265: return "DecodeH265";
       case VideoCodecOperationFlagBitsKHR::eDecodeAv1 : return "DecodeAv1";
       case VideoCodecOperationFlagBitsKHR::eEncodeAv1 : return "EncodeAv1";
+      case VideoCodecOperationFlagBitsKHR::eDecodeVp9 : return "DecodeVp9";
       default                                         : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -9491,6 +9635,50 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
+  //=== VK_ARM_tensors ===
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( TensorCreateFlagBitsARM value )
+  {
+    switch ( value )
+    {
+      case TensorCreateFlagBitsARM::eMutableFormat                : return "MutableFormat";
+      case TensorCreateFlagBitsARM::eProtected                    : return "Protected";
+      case TensorCreateFlagBitsARM::eDescriptorBufferCaptureReplay: return "DescriptorBufferCaptureReplay";
+      default                                                     : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( TensorViewCreateFlagBitsARM value )
+  {
+    switch ( value )
+    {
+      case TensorViewCreateFlagBitsARM::eDescriptorBufferCaptureReplay: return "DescriptorBufferCaptureReplay";
+      default                                                         : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( TensorUsageFlagBitsARM value )
+  {
+    switch ( value )
+    {
+      case TensorUsageFlagBitsARM::eShader       : return "Shader";
+      case TensorUsageFlagBitsARM::eTransferSrc  : return "TransferSrc";
+      case TensorUsageFlagBitsARM::eTransferDst  : return "TransferDst";
+      case TensorUsageFlagBitsARM::eImageAliasing: return "ImageAliasing";
+      default                                    : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( TensorTilingARM value )
+  {
+    switch ( value )
+    {
+      case TensorTilingARM::eOptimal: return "Optimal";
+      case TensorTilingARM::eLinear : return "Linear";
+      default                       : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
   //=== VK_NV_optical_flow ===
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( OpticalFlowUsageFlagBitsNV value )
@@ -9668,6 +9856,8 @@ namespace VULKAN_HPP_NAMESPACE
       case ComponentTypeKHR::eUint8PackedNV: return "Uint8PackedNV";
       case ComponentTypeKHR::eFloatE4M3NV  : return "FloatE4M3NV";
       case ComponentTypeKHR::eFloatE5M2NV  : return "FloatE5M2NV";
+      case ComponentTypeKHR::eFloat8E4M3EXT: return "Float8E4M3EXT";
+      case ComponentTypeKHR::eFloat8E5M2EXT: return "Float8E5M2EXT";
       default                              : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -10072,6 +10262,18 @@ namespace VULKAN_HPP_NAMESPACE
       case DepthClampModeEXT::eViewportRange   : return "ViewportRange";
       case DepthClampModeEXT::eUserDefinedRange: return "UserDefinedRange";
       default                                  : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_KHR_maintenance9 ===
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DefaultVertexAttributeValueKHR value )
+  {
+    switch ( value )
+    {
+      case DefaultVertexAttributeValueKHR::eZeroZeroZeroZero: return "ZeroZeroZeroZero";
+      case DefaultVertexAttributeValueKHR::eZeroZeroZeroOne : return "ZeroZeroZeroOne";
+      default                                               : return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 

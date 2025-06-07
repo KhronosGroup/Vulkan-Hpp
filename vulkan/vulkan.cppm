@@ -858,6 +858,15 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::DirectDriverLoadingFlagsLUNARG;
   using VULKAN_HPP_NAMESPACE::DirectDriverLoadingModeLUNARG;
 
+  //=== VK_ARM_tensors ===
+  using VULKAN_HPP_NAMESPACE::TensorCreateFlagBitsARM;
+  using VULKAN_HPP_NAMESPACE::TensorCreateFlagsARM;
+  using VULKAN_HPP_NAMESPACE::TensorTilingARM;
+  using VULKAN_HPP_NAMESPACE::TensorUsageFlagBitsARM;
+  using VULKAN_HPP_NAMESPACE::TensorUsageFlagsARM;
+  using VULKAN_HPP_NAMESPACE::TensorViewCreateFlagBitsARM;
+  using VULKAN_HPP_NAMESPACE::TensorViewCreateFlagsARM;
+
   //=== VK_NV_optical_flow ===
   using VULKAN_HPP_NAMESPACE::OpticalFlowExecuteFlagBitsNV;
   using VULKAN_HPP_NAMESPACE::OpticalFlowExecuteFlagsNV;
@@ -961,6 +970,9 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_depth_clamp_control ===
   using VULKAN_HPP_NAMESPACE::DepthClampModeEXT;
+
+  //=== VK_KHR_maintenance9 ===
+  using VULKAN_HPP_NAMESPACE::DefaultVertexAttributeValueKHR;
 
   //=========================
   //=== Index Type Traits ===
@@ -2459,6 +2471,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::LUNARGDirectDriverLoadingExtensionName;
   using VULKAN_HPP_NAMESPACE::LUNARGDirectDriverLoadingSpecVersion;
 
+  //=== VK_ARM_tensors ===
+  using VULKAN_HPP_NAMESPACE::ARMTensorsExtensionName;
+  using VULKAN_HPP_NAMESPACE::ARMTensorsSpecVersion;
+
   //=== VK_EXT_shader_module_identifier ===
   using VULKAN_HPP_NAMESPACE::EXTShaderModuleIdentifierExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTShaderModuleIdentifierSpecVersion;
@@ -2493,6 +2509,14 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_AMD_anti_lag ===
   using VULKAN_HPP_NAMESPACE::AMDAntiLagExtensionName;
   using VULKAN_HPP_NAMESPACE::AMDAntiLagSpecVersion;
+
+  //=== VK_KHR_present_id2 ===
+  using VULKAN_HPP_NAMESPACE::KHRPresentId2ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRPresentId2SpecVersion;
+
+  //=== VK_KHR_present_wait2 ===
+  using VULKAN_HPP_NAMESPACE::KHRPresentWait2ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRPresentWait2SpecVersion;
 
   //=== VK_KHR_ray_tracing_position_fetch ===
   using VULKAN_HPP_NAMESPACE::KHRRayTracingPositionFetchExtensionName;
@@ -2580,6 +2604,11 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::KHRVideoEncodeAv1ExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRVideoEncodeAv1SpecVersion;
 
+  //=== VK_KHR_video_decode_vp9 ===
+  using VULKAN_HPP_NAMESPACE::KHRVideoDecodeVp9ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRVideoDecodeVp9SpecVersion;
+  using VULKAN_HPP_NAMESPACE::MaxVideoVp9ReferencesPerFrameKHR;
+
   //=== VK_KHR_video_maintenance1 ===
   using VULKAN_HPP_NAMESPACE::KHRVideoMaintenance1ExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRVideoMaintenance1SpecVersion;
@@ -2615,6 +2644,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_load_store_op_none ===
   using VULKAN_HPP_NAMESPACE::KHRLoadStoreOpNoneExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRLoadStoreOpNoneSpecVersion;
+
+  //=== VK_KHR_unified_image_layouts ===
+  using VULKAN_HPP_NAMESPACE::KHRUnifiedImageLayoutsExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRUnifiedImageLayoutsSpecVersion;
 
   //=== VK_KHR_shader_float_controls2 ===
   using VULKAN_HPP_NAMESPACE::KHRShaderFloatControls2ExtensionName;
@@ -2694,6 +2727,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTShaderReplicatedCompositesExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTShaderReplicatedCompositesSpecVersion;
 
+  //=== VK_EXT_shader_float8 ===
+  using VULKAN_HPP_NAMESPACE::EXTShaderFloat8ExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTShaderFloat8SpecVersion;
+
   //=== VK_NV_ray_tracing_validation ===
   using VULKAN_HPP_NAMESPACE::NVRayTracingValidationExtensionName;
   using VULKAN_HPP_NAMESPACE::NVRayTracingValidationSpecVersion;
@@ -2722,6 +2759,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_depth_clamp_control ===
   using VULKAN_HPP_NAMESPACE::EXTDepthClampControlExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTDepthClampControlSpecVersion;
+
+  //=== VK_KHR_maintenance9 ===
+  using VULKAN_HPP_NAMESPACE::KHRMaintenance9ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRMaintenance9SpecVersion;
 
   //=== VK_KHR_video_maintenance2 ===
   using VULKAN_HPP_NAMESPACE::KHRVideoMaintenance2ExtensionName;
@@ -2752,6 +2793,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_vertex_attribute_robustness ===
   using VULKAN_HPP_NAMESPACE::EXTVertexAttributeRobustnessExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTVertexAttributeRobustnessSpecVersion;
+
+  //=== VK_ARM_format_pack ===
+  using VULKAN_HPP_NAMESPACE::ARMFormatPackExtensionName;
+  using VULKAN_HPP_NAMESPACE::ARMFormatPackSpecVersion;
 
   //=== VK_KHR_robustness2 ===
   using VULKAN_HPP_NAMESPACE::KHRRobustness2ExtensionName;
@@ -4507,6 +4552,32 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::DirectDriverLoadingInfoLUNARG;
   using VULKAN_HPP_NAMESPACE::DirectDriverLoadingListLUNARG;
 
+  //=== VK_ARM_tensors ===
+  using VULKAN_HPP_NAMESPACE::BindTensorMemoryInfoARM;
+  using VULKAN_HPP_NAMESPACE::CopyTensorInfoARM;
+  using VULKAN_HPP_NAMESPACE::DescriptorGetTensorInfoARM;
+  using VULKAN_HPP_NAMESPACE::DeviceTensorMemoryRequirementsARM;
+  using VULKAN_HPP_NAMESPACE::ExternalMemoryTensorCreateInfoARM;
+  using VULKAN_HPP_NAMESPACE::ExternalTensorPropertiesARM;
+  using VULKAN_HPP_NAMESPACE::FrameBoundaryTensorsARM;
+  using VULKAN_HPP_NAMESPACE::MemoryDedicatedAllocateInfoTensorARM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDescriptorBufferTensorFeaturesARM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDescriptorBufferTensorPropertiesARM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalTensorInfoARM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceTensorFeaturesARM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceTensorPropertiesARM;
+  using VULKAN_HPP_NAMESPACE::TensorCaptureDescriptorDataInfoARM;
+  using VULKAN_HPP_NAMESPACE::TensorCopyARM;
+  using VULKAN_HPP_NAMESPACE::TensorCreateInfoARM;
+  using VULKAN_HPP_NAMESPACE::TensorDependencyInfoARM;
+  using VULKAN_HPP_NAMESPACE::TensorDescriptionARM;
+  using VULKAN_HPP_NAMESPACE::TensorFormatPropertiesARM;
+  using VULKAN_HPP_NAMESPACE::TensorMemoryBarrierARM;
+  using VULKAN_HPP_NAMESPACE::TensorMemoryRequirementsInfoARM;
+  using VULKAN_HPP_NAMESPACE::TensorViewCaptureDescriptorDataInfoARM;
+  using VULKAN_HPP_NAMESPACE::TensorViewCreateInfoARM;
+  using VULKAN_HPP_NAMESPACE::WriteDescriptorSetTensorARM;
+
   //=== VK_EXT_shader_module_identifier ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderModuleIdentifierFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderModuleIdentifierPropertiesEXT;
@@ -4540,6 +4611,16 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::AntiLagDataAMD;
   using VULKAN_HPP_NAMESPACE::AntiLagPresentationInfoAMD;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceAntiLagFeaturesAMD;
+
+  //=== VK_KHR_present_id2 ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDevicePresentId2FeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::PresentId2KHR;
+  using VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesPresentId2KHR;
+
+  //=== VK_KHR_present_wait2 ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDevicePresentWait2FeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::PresentWait2InfoKHR;
+  using VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesPresentWait2KHR;
 
   //=== VK_KHR_ray_tracing_position_fetch ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingPositionFetchFeaturesKHR;
@@ -4661,6 +4742,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::VideoEncodeAV1SessionCreateInfoKHR;
   using VULKAN_HPP_NAMESPACE::VideoEncodeAV1SessionParametersCreateInfoKHR;
 
+  //=== VK_KHR_video_decode_vp9 ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoDecodeVP9FeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::VideoDecodeVP9CapabilitiesKHR;
+  using VULKAN_HPP_NAMESPACE::VideoDecodeVP9PictureInfoKHR;
+  using VULKAN_HPP_NAMESPACE::VideoDecodeVP9ProfileInfoKHR;
+
   //=== VK_KHR_video_maintenance1 ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoMaintenance1FeaturesKHR;
   using VULKAN_HPP_NAMESPACE::VideoInlineQueryInfoKHR;
@@ -4687,6 +4774,10 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT;
+
+  //=== VK_KHR_unified_image_layouts ===
+  using VULKAN_HPP_NAMESPACE::AttachmentFeedbackLoopInfoEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceUnifiedImageLayoutsFeaturesKHR;
 
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_external_memory_screen_buffer ===
@@ -4762,6 +4853,9 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_replicated_composites ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderReplicatedCompositesFeaturesEXT;
 
+  //=== VK_EXT_shader_float8 ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderFloat8FeaturesEXT;
+
   //=== VK_NV_ray_tracing_validation ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingValidationFeaturesNV;
 
@@ -4834,6 +4928,11 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampControlFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PipelineViewportDepthClampControlCreateInfoEXT;
 
+  //=== VK_KHR_maintenance9 ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance9FeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance9PropertiesKHR;
+  using VULKAN_HPP_NAMESPACE::QueueFamilyOwnershipTransferPropertiesKHR;
+
   //=== VK_KHR_video_maintenance2 ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoMaintenance2FeaturesKHR;
   using VULKAN_HPP_NAMESPACE::VideoDecodeAV1InlineSessionParametersInfoKHR;
@@ -4865,6 +4964,9 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_vertex_attribute_robustness ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;
+
+  //=== VK_ARM_format_pack ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceFormatPackFeaturesARM;
 
   //=== VK_KHR_robustness2 ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRobustness2FeaturesEXT;
@@ -4986,6 +5088,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_opacity_micromap ===
   using VULKAN_HPP_NAMESPACE::MicromapEXT;
 
+  //=== VK_ARM_tensors ===
+  using VULKAN_HPP_NAMESPACE::TensorARM;
+  using VULKAN_HPP_NAMESPACE::TensorViewARM;
+
   //=== VK_NV_optical_flow ===
   using VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV;
 
@@ -5094,6 +5200,10 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_opacity_micromap ===
   using VULKAN_HPP_NAMESPACE::UniqueMicromapEXT;
+
+  //=== VK_ARM_tensors ===
+  using VULKAN_HPP_NAMESPACE::UniqueTensorARM;
+  using VULKAN_HPP_NAMESPACE::UniqueTensorViewARM;
 
   //=== VK_NV_optical_flow ===
   using VULKAN_HPP_NAMESPACE::UniqueOpticalFlowSessionNV;
@@ -5208,6 +5318,10 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_opacity_micromap ===
   using VULKAN_HPP_NAMESPACE::SharedMicromapEXT;
+
+  //=== VK_ARM_tensors ===
+  using VULKAN_HPP_NAMESPACE::SharedTensorARM;
+  using VULKAN_HPP_NAMESPACE::SharedTensorViewARM;
 
   //=== VK_NV_optical_flow ===
   using VULKAN_HPP_NAMESPACE::SharedOpticalFlowSessionNV;
@@ -5410,6 +5524,10 @@ export namespace VULKAN_HPP_NAMESPACE
     //=== VK_EXT_opacity_micromap ===
     using VULKAN_HPP_RAII_NAMESPACE::MicromapEXT;
 
+    //=== VK_ARM_tensors ===
+    using VULKAN_HPP_RAII_NAMESPACE::TensorARM;
+    using VULKAN_HPP_RAII_NAMESPACE::TensorViewARM;
+
     //=== VK_NV_optical_flow ===
     using VULKAN_HPP_RAII_NAMESPACE::OpticalFlowSessionNV;
 
@@ -5583,6 +5701,12 @@ export namespace std
   //=== VK_EXT_opacity_micromap ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::MicromapEXT>;
+
+  //=== VK_ARM_tensors ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TensorARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TensorViewARM>;
 
   //=== VK_NV_optical_flow ===
   template <>
@@ -8030,6 +8154,56 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::DirectDriverLoadingListLUNARG>;
 
+  //=== VK_ARM_tensors ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TensorDescriptionARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TensorCreateInfoARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TensorViewCreateInfoARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TensorMemoryRequirementsInfoARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::BindTensorMemoryInfoARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::WriteDescriptorSetTensorARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TensorFormatPropertiesARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceTensorPropertiesARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TensorMemoryBarrierARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TensorDependencyInfoARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceTensorFeaturesARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DeviceTensorMemoryRequirementsARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::CopyTensorInfoARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TensorCopyARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::MemoryDedicatedAllocateInfoTensorARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalTensorInfoARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ExternalTensorPropertiesARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ExternalMemoryTensorCreateInfoARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDescriptorBufferTensorFeaturesARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDescriptorBufferTensorPropertiesARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DescriptorGetTensorInfoARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TensorCaptureDescriptorDataInfoARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::TensorViewCaptureDescriptorDataInfoARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::FrameBoundaryTensorsARM>;
+
   //=== VK_EXT_shader_module_identifier ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderModuleIdentifierFeaturesEXT>;
@@ -8081,6 +8255,22 @@ export namespace std
   struct hash<VULKAN_HPP_NAMESPACE::AntiLagDataAMD>;
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::AntiLagPresentationInfoAMD>;
+
+  //=== VK_KHR_present_id2 ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesPresentId2KHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PresentId2KHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePresentId2FeaturesKHR>;
+
+  //=== VK_KHR_present_wait2 ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesPresentWait2KHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePresentWait2FeaturesKHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PresentWait2InfoKHR>;
 
   //=== VK_KHR_ray_tracing_position_fetch ===
   template <>
@@ -8284,6 +8474,16 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeAV1RateControlLayerInfoKHR>;
 
+  //=== VK_KHR_video_decode_vp9 ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoDecodeVP9FeaturesKHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoDecodeVP9ProfileInfoKHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoDecodeVP9CapabilitiesKHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoDecodeVP9PictureInfoKHR>;
+
   //=== VK_KHR_video_maintenance1 ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoMaintenance1FeaturesKHR>;
@@ -8323,6 +8523,12 @@ export namespace std
   //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT>;
+
+  //=== VK_KHR_unified_image_layouts ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceUnifiedImageLayoutsFeaturesKHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::AttachmentFeedbackLoopInfoEXT>;
 
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_external_memory_screen_buffer ===
@@ -8437,6 +8643,10 @@ export namespace std
   //=== VK_EXT_shader_replicated_composites ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderReplicatedCompositesFeaturesEXT>;
+
+  //=== VK_EXT_shader_float8 ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderFloat8FeaturesEXT>;
 
   //=== VK_NV_ray_tracing_validation ===
   template <>
@@ -8568,6 +8778,14 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::DepthClampRangeEXT>;
 
+  //=== VK_KHR_maintenance9 ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance9FeaturesKHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance9PropertiesKHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::QueueFamilyOwnershipTransferPropertiesKHR>;
+
   //=== VK_KHR_video_maintenance2 ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoMaintenance2FeaturesKHR>;
@@ -8613,6 +8831,10 @@ export namespace std
   //=== VK_EXT_vertex_attribute_robustness ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT>;
+
+  //=== VK_ARM_format_pack ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceFormatPackFeaturesARM>;
 
   //=== VK_KHR_robustness2 ===
   template <>
@@ -9665,6 +9887,19 @@ export using ::PFN_vkCmdSetShadingRateImageEnableNV;
 export using ::PFN_vkCmdSetRepresentativeFragmentTestEnableNV;
 export using ::PFN_vkCmdSetCoverageReductionModeNV;
 
+//=== VK_ARM_tensors ===
+export using ::PFN_vkCreateTensorARM;
+export using ::PFN_vkDestroyTensorARM;
+export using ::PFN_vkCreateTensorViewARM;
+export using ::PFN_vkDestroyTensorViewARM;
+export using ::PFN_vkGetTensorMemoryRequirementsARM;
+export using ::PFN_vkBindTensorMemoryARM;
+export using ::PFN_vkGetDeviceTensorMemoryRequirementsARM;
+export using ::PFN_vkCmdCopyTensorARM;
+export using ::PFN_vkGetPhysicalDeviceExternalTensorPropertiesARM;
+export using ::PFN_vkGetTensorOpaqueCaptureDescriptorDataARM;
+export using ::PFN_vkGetTensorViewOpaqueCaptureDescriptorDataARM;
+
 //=== VK_EXT_shader_module_identifier ===
 export using ::PFN_vkGetShaderModuleIdentifierEXT;
 export using ::PFN_vkGetShaderModuleCreateInfoIdentifierEXT;
@@ -9684,6 +9919,9 @@ export using ::PFN_vkGetImageSubresourceLayout2KHR;
 
 //=== VK_AMD_anti_lag ===
 export using ::PFN_vkAntiLagUpdateAMD;
+
+//=== VK_KHR_present_wait2 ===
+export using ::PFN_vkWaitForPresent2KHR;
 
 //=== VK_EXT_shader_object ===
 export using ::PFN_vkCreateShadersEXT;

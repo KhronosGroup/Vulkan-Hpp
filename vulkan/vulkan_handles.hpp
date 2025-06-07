@@ -1696,6 +1696,32 @@ namespace VULKAN_HPP_NAMESPACE
   struct DirectDriverLoadingInfoLUNARG;
   struct DirectDriverLoadingListLUNARG;
 
+  //=== VK_ARM_tensors ===
+  struct TensorDescriptionARM;
+  struct TensorCreateInfoARM;
+  struct TensorViewCreateInfoARM;
+  struct TensorMemoryRequirementsInfoARM;
+  struct BindTensorMemoryInfoARM;
+  struct WriteDescriptorSetTensorARM;
+  struct TensorFormatPropertiesARM;
+  struct PhysicalDeviceTensorPropertiesARM;
+  struct TensorMemoryBarrierARM;
+  struct TensorDependencyInfoARM;
+  struct PhysicalDeviceTensorFeaturesARM;
+  struct DeviceTensorMemoryRequirementsARM;
+  struct CopyTensorInfoARM;
+  struct TensorCopyARM;
+  struct MemoryDedicatedAllocateInfoTensorARM;
+  struct PhysicalDeviceExternalTensorInfoARM;
+  struct ExternalTensorPropertiesARM;
+  struct ExternalMemoryTensorCreateInfoARM;
+  struct PhysicalDeviceDescriptorBufferTensorFeaturesARM;
+  struct PhysicalDeviceDescriptorBufferTensorPropertiesARM;
+  struct DescriptorGetTensorInfoARM;
+  struct TensorCaptureDescriptorDataInfoARM;
+  struct TensorViewCaptureDescriptorDataInfoARM;
+  struct FrameBoundaryTensorsARM;
+
   //=== VK_EXT_shader_module_identifier ===
   struct PhysicalDeviceShaderModuleIdentifierFeaturesEXT;
   struct PhysicalDeviceShaderModuleIdentifierPropertiesEXT;
@@ -1729,6 +1755,16 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceAntiLagFeaturesAMD;
   struct AntiLagDataAMD;
   struct AntiLagPresentationInfoAMD;
+
+  //=== VK_KHR_present_id2 ===
+  struct SurfaceCapabilitiesPresentId2KHR;
+  struct PresentId2KHR;
+  struct PhysicalDevicePresentId2FeaturesKHR;
+
+  //=== VK_KHR_present_wait2 ===
+  struct SurfaceCapabilitiesPresentWait2KHR;
+  struct PhysicalDevicePresentWait2FeaturesKHR;
+  struct PresentWait2InfoKHR;
 
   //=== VK_KHR_ray_tracing_position_fetch ===
   struct PhysicalDeviceRayTracingPositionFetchFeaturesKHR;
@@ -1850,6 +1886,12 @@ namespace VULKAN_HPP_NAMESPACE
   struct VideoEncodeAV1RateControlInfoKHR;
   struct VideoEncodeAV1RateControlLayerInfoKHR;
 
+  //=== VK_KHR_video_decode_vp9 ===
+  struct PhysicalDeviceVideoDecodeVP9FeaturesKHR;
+  struct VideoDecodeVP9ProfileInfoKHR;
+  struct VideoDecodeVP9CapabilitiesKHR;
+  struct VideoDecodeVP9PictureInfoKHR;
+
   //=== VK_KHR_video_maintenance1 ===
   struct PhysicalDeviceVideoMaintenance1FeaturesKHR;
   struct VideoInlineQueryInfoKHR;
@@ -1876,6 +1918,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
   struct PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT;
+
+  //=== VK_KHR_unified_image_layouts ===
+  struct PhysicalDeviceUnifiedImageLayoutsFeaturesKHR;
+  struct AttachmentFeedbackLoopInfoEXT;
 
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_external_memory_screen_buffer ===
@@ -1951,6 +1997,9 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_replicated_composites ===
   struct PhysicalDeviceShaderReplicatedCompositesFeaturesEXT;
 
+  //=== VK_EXT_shader_float8 ===
+  struct PhysicalDeviceShaderFloat8FeaturesEXT;
+
   //=== VK_NV_ray_tracing_validation ===
   struct PhysicalDeviceRayTracingValidationFeaturesNV;
 
@@ -2023,6 +2072,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineViewportDepthClampControlCreateInfoEXT;
   struct DepthClampRangeEXT;
 
+  //=== VK_KHR_maintenance9 ===
+  struct PhysicalDeviceMaintenance9FeaturesKHR;
+  struct PhysicalDeviceMaintenance9PropertiesKHR;
+  struct QueueFamilyOwnershipTransferPropertiesKHR;
+
   //=== VK_KHR_video_maintenance2 ===
   struct PhysicalDeviceVideoMaintenance2FeaturesKHR;
   struct VideoDecodeH264InlineSessionParametersInfoKHR;
@@ -2054,6 +2108,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_vertex_attribute_robustness ===
   struct PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;
+
+  //=== VK_ARM_format_pack ===
+  struct PhysicalDeviceFormatPackFeaturesARM;
 
   //=== VK_KHR_robustness2 ===
   struct PhysicalDeviceRobustness2FeaturesKHR;
@@ -2172,6 +2229,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_opacity_micromap ===
   class MicromapEXT;
+
+  //=== VK_ARM_tensors ===
+  class TensorARM;
+  class TensorViewARM;
 
   //=== VK_NV_optical_flow ===
   class OpticalFlowSessionNV;
@@ -2626,6 +2687,25 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   using UniqueMicromapEXT = UniqueHandle<MicromapEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_ARM_tensors ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<TensorARM, Dispatch>
+  {
+  public:
+    using deleter = detail::ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueTensorARM = UniqueHandle<TensorARM, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<TensorViewARM, Dispatch>
+  {
+  public:
+    using deleter = detail::ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueTensorViewARM = UniqueHandle<TensorViewARM, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
   //=== VK_NV_optical_flow ===
   template <typename Dispatch>
@@ -6908,7 +6988,14 @@ namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void dispatchTileQCOM( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    void dispatchTileQCOM( const VULKAN_HPP_NAMESPACE::DispatchTileInfoQCOM * pDispatchTileInfo,
+                           Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdDispatchTileQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDispatchTileQCOM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void dispatchTileQCOM( const VULKAN_HPP_NAMESPACE::DispatchTileInfoQCOM & dispatchTileInfo,
+                           Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkCmdBeginPerTileExecutionQCOM, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginPerTileExecutionQCOM.html
@@ -7650,6 +7737,19 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void setCoverageReductionModeNV( VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode,
                                      Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    //=== VK_ARM_tensors ===
+
+    // wrapper function for command vkCmdCopyTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyTensorARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void copyTensorARM( const VULKAN_HPP_NAMESPACE::CopyTensorInfoARM * pCopyTensorInfo,
+                        Dispatch const & d                              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdCopyTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyTensorARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void copyTensorARM( const VULKAN_HPP_NAMESPACE::CopyTensorInfoARM & copyTensorInfo,
+                        Dispatch const & d                              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_optical_flow ===
 
@@ -10108,6 +10208,180 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::ShaderModule>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+  };
+
+  // wrapper class for handle VkTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkTensorARM.html
+  class TensorARM
+  {
+  public:
+    using CType      = VkTensorARM;
+    using NativeType = VkTensorARM;
+
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eTensorARM;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+      VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+  public:
+    TensorARM() VULKAN_HPP_NOEXCEPT {}  // = default; - try to workaround a compiler issue
+
+    TensorARM( TensorARM const & rhs )             = default;
+    TensorARM & operator=( TensorARM const & rhs ) = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    TensorARM( TensorARM && rhs )             = default;
+    TensorARM & operator=( TensorARM && rhs ) = default;
+#else
+    TensorARM( TensorARM && rhs ) VULKAN_HPP_NOEXCEPT : m_tensorARM( VULKAN_HPP_NAMESPACE::exchange( rhs.m_tensorARM, {} ) ) {}
+
+    TensorARM & operator=( TensorARM && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_tensorARM = VULKAN_HPP_NAMESPACE::exchange( rhs.m_tensorARM, {} );
+      return *this;
+    }
+#endif
+
+    VULKAN_HPP_CONSTEXPR TensorARM( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT TensorARM( VkTensorARM tensorARM ) VULKAN_HPP_NOEXCEPT : m_tensorARM( tensorARM ) {}
+
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
+    TensorARM & operator=( VkTensorARM tensorARM ) VULKAN_HPP_NOEXCEPT
+    {
+      m_tensorARM = tensorARM;
+      return *this;
+    }
+#endif
+
+    TensorARM & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+    {
+      m_tensorARM = {};
+      return *this;
+    }
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkTensorARM() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_tensorARM;
+    }
+
+    explicit operator bool() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_tensorARM != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_tensorARM == VK_NULL_HANDLE;
+    }
+
+  private:
+    VkTensorARM m_tensorARM = {};
+  };
+
+  template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eTensorARM>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::TensorARM;
+  };
+
+#if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
+  template <>
+  struct CppType<VkTensorARM, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::TensorARM;
+  };
+#endif
+
+  template <>
+  struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::TensorARM>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+  };
+
+  // wrapper class for handle VkTensorViewARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkTensorViewARM.html
+  class TensorViewARM
+  {
+  public:
+    using CType      = VkTensorViewARM;
+    using NativeType = VkTensorViewARM;
+
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eTensorViewARM;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+      VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+  public:
+    TensorViewARM() VULKAN_HPP_NOEXCEPT {}  // = default; - try to workaround a compiler issue
+
+    TensorViewARM( TensorViewARM const & rhs )             = default;
+    TensorViewARM & operator=( TensorViewARM const & rhs ) = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    TensorViewARM( TensorViewARM && rhs )             = default;
+    TensorViewARM & operator=( TensorViewARM && rhs ) = default;
+#else
+    TensorViewARM( TensorViewARM && rhs ) VULKAN_HPP_NOEXCEPT : m_tensorViewARM( VULKAN_HPP_NAMESPACE::exchange( rhs.m_tensorViewARM, {} ) ) {}
+
+    TensorViewARM & operator=( TensorViewARM && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_tensorViewARM = VULKAN_HPP_NAMESPACE::exchange( rhs.m_tensorViewARM, {} );
+      return *this;
+    }
+#endif
+
+    VULKAN_HPP_CONSTEXPR TensorViewARM( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT TensorViewARM( VkTensorViewARM tensorViewARM ) VULKAN_HPP_NOEXCEPT : m_tensorViewARM( tensorViewARM ) {}
+
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
+    TensorViewARM & operator=( VkTensorViewARM tensorViewARM ) VULKAN_HPP_NOEXCEPT
+    {
+      m_tensorViewARM = tensorViewARM;
+      return *this;
+    }
+#endif
+
+    TensorViewARM & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+    {
+      m_tensorViewARM = {};
+      return *this;
+    }
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkTensorViewARM() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_tensorViewARM;
+    }
+
+    explicit operator bool() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_tensorViewARM != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_tensorViewARM == VK_NULL_HANDLE;
+    }
+
+  private:
+    VkTensorViewARM m_tensorViewARM = {};
+  };
+
+  template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eTensorViewARM>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::TensorViewARM;
+  };
+
+#if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
+  template <>
+  struct CppType<VkTensorViewARM, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::TensorViewARM;
+  };
+#endif
+
+  template <>
+  struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::TensorViewARM>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
@@ -16751,6 +17025,193 @@ namespace VULKAN_HPP_NAMESPACE
                                                                       Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+    //=== VK_ARM_tensors ===
+
+    // wrapper function for command vkCreateTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateTensorARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result createTensorARM( const VULKAN_HPP_NAMESPACE::TensorCreateInfoARM * pCreateInfo,
+                                                 const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                                 VULKAN_HPP_NAMESPACE::TensorARM *                 pTensor,
+                                                 Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCreateTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateTensorARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<VULKAN_HPP_NAMESPACE::TensorARM>::type
+      createTensorARM( const VULKAN_HPP_NAMESPACE::TensorCreateInfoARM &                   createInfo,
+                       Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                       Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
+    // wrapper function for command vkCreateTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateTensorARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::TensorARM, Dispatch>>::type
+      createTensorARMUnique( const VULKAN_HPP_NAMESPACE::TensorCreateInfoARM &                   createInfo,
+                             Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                             Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /* VULKAN_HPP_NO_SMART_HANDLE */
+#endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkDestroyTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyTensorARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void destroyTensorARM( VULKAN_HPP_NAMESPACE::TensorARM                   tensor,
+                           const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                           Dispatch const & d                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkDestroyTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyTensorARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void destroyTensorARM( VULKAN_HPP_NAMESPACE::TensorARM tensor                              VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT,
+                           Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkDestroyTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyTensorARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void destroy( VULKAN_HPP_NAMESPACE::TensorARM                   tensor,
+                  const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                  Dispatch const & d                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkDestroyTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyTensorARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void destroy( VULKAN_HPP_NAMESPACE::TensorARM                                     tensor,
+                  Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                  Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkCreateTensorViewARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateTensorViewARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result createTensorViewARM( const VULKAN_HPP_NAMESPACE::TensorViewCreateInfoARM * pCreateInfo,
+                                                     const VULKAN_HPP_NAMESPACE::AllocationCallbacks *     pAllocator,
+                                                     VULKAN_HPP_NAMESPACE::TensorViewARM *                 pView,
+                                                     Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCreateTensorViewARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateTensorViewARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<VULKAN_HPP_NAMESPACE::TensorViewARM>::type
+      createTensorViewARM( const VULKAN_HPP_NAMESPACE::TensorViewCreateInfoARM &               createInfo,
+                           Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                           Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
+    // wrapper function for command vkCreateTensorViewARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateTensorViewARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::TensorViewARM, Dispatch>>::type
+      createTensorViewARMUnique( const VULKAN_HPP_NAMESPACE::TensorViewCreateInfoARM &               createInfo,
+                                 Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                                 Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /* VULKAN_HPP_NO_SMART_HANDLE */
+#endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkDestroyTensorViewARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyTensorViewARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void destroyTensorViewARM( VULKAN_HPP_NAMESPACE::TensorViewARM               tensorView,
+                               const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                               Dispatch const & d                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkDestroyTensorViewARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyTensorViewARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void destroyTensorViewARM( VULKAN_HPP_NAMESPACE::TensorViewARM tensorView                      VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT,
+                               Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkDestroyTensorViewARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyTensorViewARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void destroy( VULKAN_HPP_NAMESPACE::TensorViewARM               tensorView,
+                  const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                  Dispatch const & d                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkDestroyTensorViewARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyTensorViewARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void destroy( VULKAN_HPP_NAMESPACE::TensorViewARM                                 tensorView,
+                  Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                  Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkGetTensorMemoryRequirementsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorMemoryRequirementsARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::TensorMemoryRequirementsInfoARM * pInfo,
+                                         VULKAN_HPP_NAMESPACE::MemoryRequirements2 *                   pMemoryRequirements,
+                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetTensorMemoryRequirementsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorMemoryRequirementsARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2
+                         getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::TensorMemoryRequirementsInfoARM & info,
+                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    // wrapper function for command vkGetTensorMemoryRequirementsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorMemoryRequirementsARM.html
+    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
+                         getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::TensorMemoryRequirementsInfoARM & info,
+                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkBindTensorMemoryARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkBindTensorMemoryARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result bindTensorMemoryARM( uint32_t                                              bindInfoCount,
+                                                     const VULKAN_HPP_NAMESPACE::BindTensorMemoryInfoARM * pBindInfos,
+                                                     Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkBindTensorMemoryARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkBindTensorMemoryARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      bindTensorMemoryARM( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::BindTensorMemoryInfoARM> const & bindInfos,
+                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkGetDeviceTensorMemoryRequirementsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceTensorMemoryRequirementsARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::DeviceTensorMemoryRequirementsARM * pInfo,
+                                         VULKAN_HPP_NAMESPACE::MemoryRequirements2 *                     pMemoryRequirements,
+                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetDeviceTensorMemoryRequirementsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceTensorMemoryRequirementsARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2
+                         getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::DeviceTensorMemoryRequirementsARM & info,
+                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    // wrapper function for command vkGetDeviceTensorMemoryRequirementsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceTensorMemoryRequirementsARM.html
+    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
+                         getTensorMemoryRequirementsARM( const VULKAN_HPP_NAMESPACE::DeviceTensorMemoryRequirementsARM & info,
+                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkGetTensorOpaqueCaptureDescriptorDataARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDescriptorDataARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result
+      getTensorOpaqueCaptureDescriptorDataARM( const VULKAN_HPP_NAMESPACE::TensorCaptureDescriptorDataInfoARM * pInfo,
+                                               void *                                                           pData,
+                                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetTensorOpaqueCaptureDescriptorDataARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDescriptorDataARM.html
+    template <typename DataType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<DataType>::type
+      getTensorOpaqueCaptureDescriptorDataARM( const VULKAN_HPP_NAMESPACE::TensorCaptureDescriptorDataInfoARM & info,
+                                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkGetTensorViewOpaqueCaptureDescriptorDataARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorViewOpaqueCaptureDescriptorDataARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result
+      getTensorViewOpaqueCaptureDescriptorDataARM( const VULKAN_HPP_NAMESPACE::TensorViewCaptureDescriptorDataInfoARM * pInfo,
+                                                   void *                                                               pData,
+                                                   Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetTensorViewOpaqueCaptureDescriptorDataARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorViewOpaqueCaptureDescriptorDataARM.html
+    template <typename DataType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<DataType>::type
+      getTensorViewOpaqueCaptureDescriptorDataARM( const VULKAN_HPP_NAMESPACE::TensorViewCaptureDescriptorDataInfoARM & info,
+                                                   Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
     //=== VK_EXT_shader_module_identifier ===
 
     // wrapper function for command vkGetShaderModuleIdentifierEXT, see
@@ -16935,6 +17396,21 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void antiLagUpdateAMD( const VULKAN_HPP_NAMESPACE::AntiLagDataAMD & data,
                            Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_KHR_present_wait2 ===
+
+    // wrapper function for command vkWaitForPresent2KHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkWaitForPresent2KHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result waitForPresent2KHR( VULKAN_HPP_NAMESPACE::SwapchainKHR                swapchain,
+                                                    const VULKAN_HPP_NAMESPACE::PresentWait2InfoKHR * pPresentWait2Info,
+                                                    Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkWaitForPresent2KHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkWaitForPresent2KHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result waitForPresent2KHR( VULKAN_HPP_NAMESPACE::SwapchainKHR                swapchain,
+                                                                          const VULKAN_HPP_NAMESPACE::PresentWait2InfoKHR & presentWait2Info,
+                                                                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_EXT_shader_object ===
@@ -19601,6 +20077,23 @@ namespace VULKAN_HPP_NAMESPACE
                                                                   Dispatch const & d      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+    //=== VK_ARM_tensors ===
+
+    // wrapper function for command vkGetPhysicalDeviceExternalTensorPropertiesARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceExternalTensorPropertiesARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getExternalTensorPropertiesARM( const VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalTensorInfoARM * pExternalTensorInfo,
+                                         VULKAN_HPP_NAMESPACE::ExternalTensorPropertiesARM *               pExternalTensorProperties,
+                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetPhysicalDeviceExternalTensorPropertiesARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceExternalTensorPropertiesARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ExternalTensorPropertiesARM
+                         getExternalTensorPropertiesARM( const VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalTensorInfoARM & externalTensorInfo,
+                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_optical_flow ===
 

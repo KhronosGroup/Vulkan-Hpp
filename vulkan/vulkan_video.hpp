@@ -274,6 +274,75 @@ namespace VULKAN_HPP_NAMESPACE
       eInvalid     = STD_VIDEO_H265_ASPECT_RATIO_IDC_INVALID
     };
 
+    //=== vulkan_video_codec_vp9std ===
+
+    enum class VP9Profile
+    {
+      e0       = STD_VIDEO_VP9_PROFILE_0,
+      e1       = STD_VIDEO_VP9_PROFILE_1,
+      e2       = STD_VIDEO_VP9_PROFILE_2,
+      e3       = STD_VIDEO_VP9_PROFILE_3,
+      eInvalid = STD_VIDEO_VP9_PROFILE_INVALID
+    };
+
+    enum class VP9Level
+    {
+      e1_0     = STD_VIDEO_VP9_LEVEL_1_0,
+      e1_1     = STD_VIDEO_VP9_LEVEL_1_1,
+      e2_0     = STD_VIDEO_VP9_LEVEL_2_0,
+      e2_1     = STD_VIDEO_VP9_LEVEL_2_1,
+      e3_0     = STD_VIDEO_VP9_LEVEL_3_0,
+      e3_1     = STD_VIDEO_VP9_LEVEL_3_1,
+      e4_0     = STD_VIDEO_VP9_LEVEL_4_0,
+      e4_1     = STD_VIDEO_VP9_LEVEL_4_1,
+      e5_0     = STD_VIDEO_VP9_LEVEL_5_0,
+      e5_1     = STD_VIDEO_VP9_LEVEL_5_1,
+      e5_2     = STD_VIDEO_VP9_LEVEL_5_2,
+      e6_0     = STD_VIDEO_VP9_LEVEL_6_0,
+      e6_1     = STD_VIDEO_VP9_LEVEL_6_1,
+      e6_2     = STD_VIDEO_VP9_LEVEL_6_2,
+      eInvalid = STD_VIDEO_VP9_LEVEL_INVALID
+    };
+
+    enum class VP9FrameType
+    {
+      eKey     = STD_VIDEO_VP9_FRAME_TYPE_KEY,
+      eNonKey  = STD_VIDEO_VP9_FRAME_TYPE_NON_KEY,
+      eInvalid = STD_VIDEO_VP9_FRAME_TYPE_INVALID
+    };
+
+    enum class VP9ReferenceName
+    {
+      eIntraFrame  = STD_VIDEO_VP9_REFERENCE_NAME_INTRA_FRAME,
+      eLastFrame   = STD_VIDEO_VP9_REFERENCE_NAME_LAST_FRAME,
+      eGoldenFrame = STD_VIDEO_VP9_REFERENCE_NAME_GOLDEN_FRAME,
+      eAltrefFrame = STD_VIDEO_VP9_REFERENCE_NAME_ALTREF_FRAME,
+      eInvalid     = STD_VIDEO_VP9_REFERENCE_NAME_INVALID
+    };
+
+    enum class VP9InterpolationFilter
+    {
+      eEighttap       = STD_VIDEO_VP9_INTERPOLATION_FILTER_EIGHTTAP,
+      eEighttapSmooth = STD_VIDEO_VP9_INTERPOLATION_FILTER_EIGHTTAP_SMOOTH,
+      eEighttapSharp  = STD_VIDEO_VP9_INTERPOLATION_FILTER_EIGHTTAP_SHARP,
+      eBilinear       = STD_VIDEO_VP9_INTERPOLATION_FILTER_BILINEAR,
+      eSwitchable     = STD_VIDEO_VP9_INTERPOLATION_FILTER_SWITCHABLE,
+      eInvalid        = STD_VIDEO_VP9_INTERPOLATION_FILTER_INVALID
+    };
+
+    enum class VP9ColorSpace
+    {
+      eUnknown  = STD_VIDEO_VP9_COLOR_SPACE_UNKNOWN,
+      eBt601    = STD_VIDEO_VP9_COLOR_SPACE_BT_601,
+      eBt709    = STD_VIDEO_VP9_COLOR_SPACE_BT_709,
+      eSmpte170 = STD_VIDEO_VP9_COLOR_SPACE_SMPTE_170,
+      eSmpte240 = STD_VIDEO_VP9_COLOR_SPACE_SMPTE_240,
+      eBt2020   = STD_VIDEO_VP9_COLOR_SPACE_BT_2020,
+      eReserved = STD_VIDEO_VP9_COLOR_SPACE_RESERVED,
+      eRgb      = STD_VIDEO_VP9_COLOR_SPACE_RGB,
+      eInvalid  = STD_VIDEO_VP9_COLOR_SPACE_INVALID
+    };
+
     //=== vulkan_video_codec_av1std ===
 
     enum class AV1Profile
@@ -3443,6 +3512,378 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::H265PictureType pic_type       = VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::H265PictureType::eP;
       int32_t                                                           PicOrderCntVal = {};
       uint8_t                                                           TemporalId     = {};
+    };
+
+    //=== vulkan_video_codec_vp9std ===
+
+    struct VP9ColorConfigFlags
+    {
+      using NativeType = StdVideoVP9ColorConfigFlags;
+
+      operator StdVideoVP9ColorConfigFlags const &() const VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<const StdVideoVP9ColorConfigFlags *>( this );
+      }
+
+      operator StdVideoVP9ColorConfigFlags &() VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<StdVideoVP9ColorConfigFlags *>( this );
+      }
+
+      operator StdVideoVP9ColorConfigFlags const *() const VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<const StdVideoVP9ColorConfigFlags *>( this );
+      }
+
+      operator StdVideoVP9ColorConfigFlags *() VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<StdVideoVP9ColorConfigFlags *>( this );
+      }
+
+      bool operator==( VP9ColorConfigFlags const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ( color_range == rhs.color_range ) && ( reserved == rhs.reserved );
+      }
+
+      bool operator!=( VP9ColorConfigFlags const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return !operator==( rhs );
+      }
+
+    public:
+      uint32_t color_range : 1;
+      uint32_t reserved    : 31;
+    };
+
+    struct VP9ColorConfig
+    {
+      using NativeType = StdVideoVP9ColorConfig;
+
+      operator StdVideoVP9ColorConfig const &() const VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<const StdVideoVP9ColorConfig *>( this );
+      }
+
+      operator StdVideoVP9ColorConfig &() VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<StdVideoVP9ColorConfig *>( this );
+      }
+
+      operator StdVideoVP9ColorConfig const *() const VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<const StdVideoVP9ColorConfig *>( this );
+      }
+
+      operator StdVideoVP9ColorConfig *() VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<StdVideoVP9ColorConfig *>( this );
+      }
+
+      bool operator==( VP9ColorConfig const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ( flags == rhs.flags ) && ( BitDepth == rhs.BitDepth ) && ( subsampling_x == rhs.subsampling_x ) && ( subsampling_y == rhs.subsampling_y ) &&
+               ( reserved1 == rhs.reserved1 ) && ( color_space == rhs.color_space );
+      }
+
+      bool operator!=( VP9ColorConfig const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return !operator==( rhs );
+      }
+
+    public:
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9ColorConfigFlags flags         = {};
+      uint8_t                                                               BitDepth      = {};
+      uint8_t                                                               subsampling_x = {};
+      uint8_t                                                               subsampling_y = {};
+      uint8_t                                                               reserved1     = {};
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9ColorSpace color_space = VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9ColorSpace::eUnknown;
+    };
+
+    struct VP9LoopFilterFlags
+    {
+      using NativeType = StdVideoVP9LoopFilterFlags;
+
+      operator StdVideoVP9LoopFilterFlags const &() const VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<const StdVideoVP9LoopFilterFlags *>( this );
+      }
+
+      operator StdVideoVP9LoopFilterFlags &() VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<StdVideoVP9LoopFilterFlags *>( this );
+      }
+
+      operator StdVideoVP9LoopFilterFlags const *() const VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<const StdVideoVP9LoopFilterFlags *>( this );
+      }
+
+      operator StdVideoVP9LoopFilterFlags *() VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<StdVideoVP9LoopFilterFlags *>( this );
+      }
+
+      bool operator==( VP9LoopFilterFlags const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ( loop_filter_delta_enabled == rhs.loop_filter_delta_enabled ) && ( loop_filter_delta_update == rhs.loop_filter_delta_update ) &&
+               ( reserved == rhs.reserved );
+      }
+
+      bool operator!=( VP9LoopFilterFlags const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return !operator==( rhs );
+      }
+
+    public:
+      uint32_t loop_filter_delta_enabled : 1;
+      uint32_t loop_filter_delta_update  : 1;
+      uint32_t reserved                  : 30;
+    };
+
+    struct VP9LoopFilter
+    {
+      using NativeType = StdVideoVP9LoopFilter;
+
+      operator StdVideoVP9LoopFilter const &() const VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<const StdVideoVP9LoopFilter *>( this );
+      }
+
+      operator StdVideoVP9LoopFilter &() VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<StdVideoVP9LoopFilter *>( this );
+      }
+
+      operator StdVideoVP9LoopFilter const *() const VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<const StdVideoVP9LoopFilter *>( this );
+      }
+
+      operator StdVideoVP9LoopFilter *() VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<StdVideoVP9LoopFilter *>( this );
+      }
+
+      bool operator==( VP9LoopFilter const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ( flags == rhs.flags ) && ( loop_filter_level == rhs.loop_filter_level ) && ( loop_filter_sharpness == rhs.loop_filter_sharpness ) &&
+               ( update_ref_delta == rhs.update_ref_delta ) && ( loop_filter_ref_deltas == rhs.loop_filter_ref_deltas ) &&
+               ( update_mode_delta == rhs.update_mode_delta ) && ( loop_filter_mode_deltas == rhs.loop_filter_mode_deltas );
+      }
+
+      bool operator!=( VP9LoopFilter const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return !operator==( rhs );
+      }
+
+    public:
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9LoopFilterFlags                flags                   = {};
+      uint8_t                                                                             loop_filter_level       = {};
+      uint8_t                                                                             loop_filter_sharpness   = {};
+      uint8_t                                                                             update_ref_delta        = {};
+      VULKAN_HPP_NAMESPACE::ArrayWrapper1D<int8_t, STD_VIDEO_VP9_MAX_REF_FRAMES>          loop_filter_ref_deltas  = {};
+      uint8_t                                                                             update_mode_delta       = {};
+      VULKAN_HPP_NAMESPACE::ArrayWrapper1D<int8_t, STD_VIDEO_VP9_LOOP_FILTER_ADJUSTMENTS> loop_filter_mode_deltas = {};
+    };
+
+    struct VP9SegmentationFlags
+    {
+      using NativeType = StdVideoVP9SegmentationFlags;
+
+      operator StdVideoVP9SegmentationFlags const &() const VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<const StdVideoVP9SegmentationFlags *>( this );
+      }
+
+      operator StdVideoVP9SegmentationFlags &() VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<StdVideoVP9SegmentationFlags *>( this );
+      }
+
+      operator StdVideoVP9SegmentationFlags const *() const VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<const StdVideoVP9SegmentationFlags *>( this );
+      }
+
+      operator StdVideoVP9SegmentationFlags *() VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<StdVideoVP9SegmentationFlags *>( this );
+      }
+
+      bool operator==( VP9SegmentationFlags const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ( segmentation_update_map == rhs.segmentation_update_map ) && ( segmentation_temporal_update == rhs.segmentation_temporal_update ) &&
+               ( segmentation_update_data == rhs.segmentation_update_data ) && ( segmentation_abs_or_delta_update == rhs.segmentation_abs_or_delta_update ) &&
+               ( reserved == rhs.reserved );
+      }
+
+      bool operator!=( VP9SegmentationFlags const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return !operator==( rhs );
+      }
+
+    public:
+      uint32_t segmentation_update_map          : 1;
+      uint32_t segmentation_temporal_update     : 1;
+      uint32_t segmentation_update_data         : 1;
+      uint32_t segmentation_abs_or_delta_update : 1;
+      uint32_t reserved                         : 28;
+    };
+
+    struct VP9Segmentation
+    {
+      using NativeType = StdVideoVP9Segmentation;
+
+      operator StdVideoVP9Segmentation const &() const VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<const StdVideoVP9Segmentation *>( this );
+      }
+
+      operator StdVideoVP9Segmentation &() VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<StdVideoVP9Segmentation *>( this );
+      }
+
+      operator StdVideoVP9Segmentation const *() const VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<const StdVideoVP9Segmentation *>( this );
+      }
+
+      operator StdVideoVP9Segmentation *() VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<StdVideoVP9Segmentation *>( this );
+      }
+
+      bool operator==( VP9Segmentation const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ( flags == rhs.flags ) && ( segmentation_tree_probs == rhs.segmentation_tree_probs ) &&
+               ( segmentation_pred_prob == rhs.segmentation_pred_prob ) && ( FeatureEnabled == rhs.FeatureEnabled ) && ( FeatureData == rhs.FeatureData );
+      }
+
+      bool operator!=( VP9Segmentation const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return !operator==( rhs );
+      }
+
+    public:
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9SegmentationFlags                               flags                   = {};
+      VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, STD_VIDEO_VP9_MAX_SEGMENTATION_TREE_PROBS>             segmentation_tree_probs = {};
+      VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, STD_VIDEO_VP9_MAX_SEGMENTATION_PRED_PROB>              segmentation_pred_prob  = {};
+      VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, STD_VIDEO_VP9_MAX_SEGMENTS>                            FeatureEnabled          = {};
+      VULKAN_HPP_NAMESPACE::ArrayWrapper2D<int16_t, STD_VIDEO_VP9_MAX_SEGMENTS, STD_VIDEO_VP9_SEG_LVL_MAX> FeatureData             = {};
+    };
+
+    //=== vulkan_video_codec_vp9std_decode ===
+
+    struct DecodeVP9PictureInfoFlags
+    {
+      using NativeType = StdVideoDecodeVP9PictureInfoFlags;
+
+      operator StdVideoDecodeVP9PictureInfoFlags const &() const VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<const StdVideoDecodeVP9PictureInfoFlags *>( this );
+      }
+
+      operator StdVideoDecodeVP9PictureInfoFlags &() VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<StdVideoDecodeVP9PictureInfoFlags *>( this );
+      }
+
+      operator StdVideoDecodeVP9PictureInfoFlags const *() const VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<const StdVideoDecodeVP9PictureInfoFlags *>( this );
+      }
+
+      operator StdVideoDecodeVP9PictureInfoFlags *() VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<StdVideoDecodeVP9PictureInfoFlags *>( this );
+      }
+
+      bool operator==( DecodeVP9PictureInfoFlags const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ( error_resilient_mode == rhs.error_resilient_mode ) && ( intra_only == rhs.intra_only ) &&
+               ( allow_high_precision_mv == rhs.allow_high_precision_mv ) && ( refresh_frame_context == rhs.refresh_frame_context ) &&
+               ( frame_parallel_decoding_mode == rhs.frame_parallel_decoding_mode ) && ( segmentation_enabled == rhs.segmentation_enabled ) &&
+               ( show_frame == rhs.show_frame ) && ( UsePrevFrameMvs == rhs.UsePrevFrameMvs ) && ( reserved == rhs.reserved );
+      }
+
+      bool operator!=( DecodeVP9PictureInfoFlags const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return !operator==( rhs );
+      }
+
+    public:
+      uint32_t error_resilient_mode         : 1;
+      uint32_t intra_only                   : 1;
+      uint32_t allow_high_precision_mv      : 1;
+      uint32_t refresh_frame_context        : 1;
+      uint32_t frame_parallel_decoding_mode : 1;
+      uint32_t segmentation_enabled         : 1;
+      uint32_t show_frame                   : 1;
+      uint32_t UsePrevFrameMvs              : 1;
+      uint32_t reserved                     : 24;
+    };
+
+    struct DecodeVP9PictureInfo
+    {
+      using NativeType = StdVideoDecodeVP9PictureInfo;
+
+      operator StdVideoDecodeVP9PictureInfo const &() const VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<const StdVideoDecodeVP9PictureInfo *>( this );
+      }
+
+      operator StdVideoDecodeVP9PictureInfo &() VULKAN_HPP_NOEXCEPT
+      {
+        return *reinterpret_cast<StdVideoDecodeVP9PictureInfo *>( this );
+      }
+
+      operator StdVideoDecodeVP9PictureInfo const *() const VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<const StdVideoDecodeVP9PictureInfo *>( this );
+      }
+
+      operator StdVideoDecodeVP9PictureInfo *() VULKAN_HPP_NOEXCEPT
+      {
+        return reinterpret_cast<StdVideoDecodeVP9PictureInfo *>( this );
+      }
+
+      bool operator==( DecodeVP9PictureInfo const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ( flags == rhs.flags ) && ( profile == rhs.profile ) && ( frame_type == rhs.frame_type ) && ( frame_context_idx == rhs.frame_context_idx ) &&
+               ( reset_frame_context == rhs.reset_frame_context ) && ( refresh_frame_flags == rhs.refresh_frame_flags ) &&
+               ( ref_frame_sign_bias_mask == rhs.ref_frame_sign_bias_mask ) && ( interpolation_filter == rhs.interpolation_filter ) &&
+               ( base_q_idx == rhs.base_q_idx ) && ( delta_q_y_dc == rhs.delta_q_y_dc ) && ( delta_q_uv_dc == rhs.delta_q_uv_dc ) &&
+               ( delta_q_uv_ac == rhs.delta_q_uv_ac ) && ( tile_cols_log2 == rhs.tile_cols_log2 ) && ( tile_rows_log2 == rhs.tile_rows_log2 ) &&
+               ( reserved1 == rhs.reserved1 ) && ( pColorConfig == rhs.pColorConfig ) && ( pLoopFilter == rhs.pLoopFilter ) &&
+               ( pSegmentation == rhs.pSegmentation );
+      }
+
+      bool operator!=( DecodeVP9PictureInfo const & rhs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return !operator==( rhs );
+      }
+
+    public:
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::DecodeVP9PictureInfoFlags flags   = {};
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9Profile                profile = VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9Profile::e0;
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9FrameType frame_type          = VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9FrameType::eKey;
+      uint8_t                                                        frame_context_idx   = {};
+      uint8_t                                                        reset_frame_context = {};
+      uint8_t                                                        refresh_frame_flags = {};
+      uint8_t                                                        ref_frame_sign_bias_mask = {};
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9InterpolationFilter interpolation_filter =
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9InterpolationFilter::eEighttap;
+      uint8_t                                                                   base_q_idx     = {};
+      int8_t                                                                    delta_q_y_dc   = {};
+      int8_t                                                                    delta_q_uv_dc  = {};
+      int8_t                                                                    delta_q_uv_ac  = {};
+      uint8_t                                                                   tile_cols_log2 = {};
+      uint8_t                                                                   tile_rows_log2 = {};
+      VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint16_t, 3>                         reserved1      = {};
+      const VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9ColorConfig *  pColorConfig   = {};
+      const VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9LoopFilter *   pLoopFilter    = {};
+      const VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9Segmentation * pSegmentation  = {};
     };
 
     //=== vulkan_video_codec_av1std ===

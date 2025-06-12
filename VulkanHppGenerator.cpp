@@ -2002,8 +2002,7 @@ void VulkanHppGenerator::distributeEnumExtends()
       {
         typeIt->second.requiredBy.insert( requiredBy );
       }
-      checkForError( enumIt->second.addEnumAlias(
-                       eed.xmlLine, eed.name, eed.alias, getProtectFromPlatform( eed.platform ), ( eed.api.empty() || ( eed.api == m_api ) ) && eed.supported ),
+      checkForError( enumIt->second.addEnumAlias( eed.xmlLine, eed.name, eed.alias, eed.protect, ( eed.api.empty() || ( eed.api == m_api ) ) && eed.supported ),
                      eed.xmlLine,
                      "enum value alias <" + eed.name + "> already listed with different properties" );
     }
@@ -7738,7 +7737,7 @@ std::string VulkanHppGenerator::generateFormatTraits() const
   auto noPredicate = []( auto const & ) { return true; };
 
   auto generateAllFormatsList = [&]( auto const formatIt ) { return generateFormatTraitsList( formatIt->second, noPredicate ); };
-  auto generateAlphaCases      = [this]( auto const formatIt )
+  auto generateAlphaCases     = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
@@ -13719,7 +13718,8 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
     checkAttributes( line,
                      attributes,
                      {},
-                     { { "api", { "vulkan", "vulkansc" } },
+                     { { "allownoqueues", { "true" } },
+                       { "api", { "vulkan", "vulkansc" } },
                        { "cmdbufferlevel", { "primary", "secondary" } },
                        { "comment", {} },
                        { "errorcodes", {} },
@@ -15152,9 +15152,13 @@ void VulkanHppGenerator::readRequireEnum(
     checkAttributes( line,
                      attributes,
                      { { "alias", {} }, { "name", {} } },
-                     { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "deprecated", { "aliased" } }, { "extends", {} } } );
+                     { { "api", { "vulkan", "vulkansc" } },
+                       { "comment", {} },
+                       { "deprecated", { "aliased" } },
+                       { "extends", {} },
+                       { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } } } );
 
-    std::string alias, api, extends, name;
+    std::string alias, api, extends, name, protect;
     for ( auto const & attribute : attributes )
     {
       if ( attribute.first == "alias" )
@@ -15173,10 +15177,16 @@ void VulkanHppGenerator::readRequireEnum(
       {
         name = attribute.second;
       }
+      else if ( attribute.first == "protect" )
+      {
+        protect = attribute.second;
+      }
     }
 
     if ( extends.empty() )
     {
+      checkForError( protect.empty(), line, "protect <" + protect + "> of enum alias <" + alias + "> with empty <extends> is not expected" );
+
       // enum aliases that don't extend something are listed as constants
       auto typeIt = m_types.find( alias );
       checkForError( typeIt != m_types.end(), line, "enum alias <" + name + "> is an alias of an unknown enum <" + alias + ">" );
@@ -15195,15 +15205,20 @@ void VulkanHppGenerator::readRequireEnum(
     }
     else
     {
+      if ( protect.empty() )
+      {
+        protect = getProtectFromPlatform( platform );
+      }
+
       auto extendIt = m_enumExtends.insert( { extends, {} } ).first;
       auto eedIt    = std::ranges::find_if( extendIt->second, [&name]( auto const & eed ) { return eed.name == name; } );
       if ( eedIt == extendIt->second.end() )
       {
-        extendIt->second.push_back( { alias, api, name, platform, { requiredBy }, supported, line } );
+        extendIt->second.push_back( { alias, api, name, protect, { requiredBy }, supported, line } );
       }
       else
       {
-        checkForError( ( eedIt->alias == alias ) && ( eedIt->api == api ) && ( eedIt->platform == platform ) && ( eedIt->supported == supported ),
+        checkForError( ( eedIt->alias == alias ) && ( eedIt->api == api ) && ( eedIt->protect == protect ) && ( eedIt->supported == supported ),
                        line,
                        "extending enum <" + extends + "> with already listed value <" + name + "> but different properties" );
         eedIt->requiredBy.insert( requiredBy );
@@ -15271,6 +15286,8 @@ void VulkanHppGenerator::readRequireEnum(
 
     if ( extends.empty() )
     {
+      checkForError( protect.empty(), line, "protect <" + protect + "> of required enum <" + name + "> with empty <extends> is not expected" );
+
       if ( value.empty() )
       {
         auto typeIt = m_types.find( name );

@@ -186,7 +186,7 @@ private:
     std::string           alias      = {};
     std::string           api        = {};
     std::string           name       = {};
-    std::string           platform   = {};
+    std::string           protect    = {};
     std::set<std::string> requiredBy = {};
     bool                  supported  = {};
     int                   xmlLine    = {};

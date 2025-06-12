@@ -8760,7 +8760,7 @@ ${objectTypeCases}
   }
 )" };
 
-  auto const generateObjectTypeCases = [this]( std::vector<RequireData> const & requireData, std::string const & title )
+  auto const generateObjectTypeCases = [this]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedTypes )
   {
     static const std::string objectTypeCaseTemplate =
       "      case VULKAN_HPP_NAMESPACE::ObjectType::${objectType} : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};\n";
@@ -8770,12 +8770,15 @@ ${objectTypeCases}
     {
       for ( auto const & type : require.types )
       {
-        auto handleIt = m_handles.find( type.name );
-        if ( handleIt != m_handles.end() )
+        if ( listedTypes.insert( type.name ).second )  // only handle yet unlisted types
         {
-          objectTypeCases += replaceWithMap( objectTypeCaseTemplate,
-                                             { { "debugReportObjectType", generateDebugReportObjectType( handleIt->second.objTypeEnum ) },
-                                               { "objectType", generateEnumValueName( "VkObjectType", handleIt->second.objTypeEnum, false ) } } );
+          auto handleIt = m_handles.find( type.name );
+          if ( handleIt != m_handles.end() )
+          {
+            objectTypeCases += replaceWithMap( objectTypeCaseTemplate,
+                                               { { "debugReportObjectType", generateDebugReportObjectType( handleIt->second.objTypeEnum ) },
+                                                 { "objectType", generateEnumValueName( "VkObjectType", handleIt->second.objTypeEnum, false ) } } );
+          }
         }
       }
     }
@@ -8783,13 +8786,14 @@ ${objectTypeCases}
   };
 
   std::string objectTypeCases;
+  std::set<std::string> listedTypes;
   for ( auto const & feature : m_features )
   {
-    objectTypeCases += generateObjectTypeCases( feature.requireData, feature.name );
+    objectTypeCases += generateObjectTypeCases( feature.requireData, feature.name, listedTypes );
   }
   for ( auto const & extension : m_extensions )
   {
-    objectTypeCases += generateObjectTypeCases( extension.requireData, extension.name );
+    objectTypeCases += generateObjectTypeCases( extension.requireData, extension.name, listedTypes );
   }
 
   return replaceWithMap( objectTypeToDebugReportObjectTypeTemplate, { { "objectTypeCases", objectTypeCases } } );

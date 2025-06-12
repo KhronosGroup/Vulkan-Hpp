@@ -1,0 +1,54 @@
+
+name: CI Ubuntu 24
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    defaults:
+      run:
+        shell: bash
+
+    strategy:
+      matrix:
+        compiler: [clang++-16, clang++-17, clang++-18, g++-12, g++-13, g++-14]
+        cpp_standard: [11, 14, 17, 20, 23]
+        build_type: [Debug, Release]
+        exclude:
+          - cpp_standard: 23
+            compiler: clang++-17    # clang++-17 gives some strange errors in std::tuple !
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install libraries
+      run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
+
+    - name: Install Ninja
+      uses: ashutoshvarma/setup-ninja@master
+      with:
+        version: 1.11.0
+
+    - name: Build
+      run: |
+        modules_flag=${{(contains(fromJSON('["clang++-16", "g++-12", "g++-13", "g++-14"]'), matrix.compiler) || matrix.cpp_standard < 20) && 'OFF' || 'ON'}}
+        cmake -B build/${{matrix.cpp_standard}}/${{matrix.build_type}} -GNinja \
+          -DVULKAN_HPP_SAMPLES_BUILD=ON                                        \
+          -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON                           \
+          -DVULKAN_HPP_TESTS_BUILD=ON                                          \
+          -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON                             \
+          -DVULKAN_HPP_ENABLE_CPP20_MODULES=$modules_flag                      \
+          -DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                              \
+          -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON                          \
+          -DVULKAN_HPP_PRECOMPILE=OFF                                          \
+          -DVULKAN_HPP_RUN_GENERATOR=ON                                        \
+          -DCMAKE_CXX_COMPILER=${{matrix.compiler}}                            \
+          -DCMAKE_CXX_STANDARD=${{matrix.cpp_standard}}                        \
+          -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
+        cmake --build build/${{matrix.cpp_standard}}/${{matrix.build_type}} --parallel

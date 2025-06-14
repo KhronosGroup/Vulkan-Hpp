@@ -391,6 +391,11 @@ namespace VULKAN_HPP_NAMESPACE
           vkGetPhysicalDeviceCalibrateableTimeDomainsKHR =
             PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCalibrateableTimeDomainsKHR" ) );
 
+#  if defined( VK_USE_PLATFORM_OHOS )
+          //=== VK_OHOS_surface ===
+          vkCreateSurfaceOHOS = PFN_vkCreateSurfaceOHOS( vkGetInstanceProcAddr( instance, "vkCreateSurfaceOHOS" ) );
+#  endif /*VK_USE_PLATFORM_OHOS*/
+
           //=== VK_NV_cooperative_matrix2 ===
           vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(
             vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV" ) );
@@ -677,6 +682,13 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_KHR_calibrated_timestamps ===
         PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR vkGetPhysicalDeviceCalibrateableTimeDomainsKHR = 0;
+
+#  if defined( VK_USE_PLATFORM_OHOS )
+        //=== VK_OHOS_surface ===
+        PFN_vkCreateSurfaceOHOS vkCreateSurfaceOHOS = 0;
+#  else
+        PFN_dummy vkCreateSurfaceOHOS_placeholder = 0;
+#  endif /*VK_USE_PLATFORM_OHOS*/
 
         //=== VK_NV_cooperative_matrix2 ===
         PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = 0;
@@ -3404,6 +3416,17 @@ namespace VULKAN_HPP_NAMESPACE
                                 VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const
         VULKAN_HPP_RAII_CREATE_NOEXCEPT;
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+#  if defined( VK_USE_PLATFORM_OHOS )
+      //=== VK_OHOS_surface ===
+
+      // wrapper function for command vkCreateSurfaceOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateSurfaceOHOS.html
+      VULKAN_HPP_NODISCARD
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR>::Type
+        createSurfaceOHOS( VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS const &                             createInfo,
+                           VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const
+        VULKAN_HPP_RAII_CREATE_NOEXCEPT;
+#  endif /*VK_USE_PLATFORM_OHOS*/
 
     private:
       VULKAN_HPP_NAMESPACE::Instance                                                               m_instance  = {};
@@ -13783,6 +13806,17 @@ namespace VULKAN_HPP_NAMESPACE
         *this = instance.createStreamDescriptorSurfaceGGP( createInfo, allocator );
       }
 #    endif /*VK_USE_PLATFORM_GGP*/
+#  endif
+
+#  if !defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+#    if defined( VK_USE_PLATFORM_OHOS )
+      SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
+                  VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS const &                             createInfo,
+                  VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+      {
+        *this = instance.createSurfaceOHOS( createInfo, allocator );
+      }
+#    endif /*VK_USE_PLATFORM_OHOS*/
 #  endif
 
 #  if !defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
@@ -28010,6 +28044,35 @@ namespace VULKAN_HPP_NAMESPACE
                                                               executionSetWrites.size(),
                                                               reinterpret_cast<const VkWriteIndirectExecutionSetShaderEXT *>( executionSetWrites.data() ) );
     }
+
+#  if defined( VK_USE_PLATFORM_OHOS )
+    //=== VK_OHOS_surface ===
+
+    // wrapper function for command vkCreateSurfaceOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateSurfaceOHOS.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR>::Type
+      Instance::createSurfaceOHOS( VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS const &                             createInfo,
+                                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+      VULKAN_HPP_RAII_CREATE_NOEXCEPT
+    {
+      VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
+      VULKAN_HPP_NAMESPACE::Result     result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkCreateSurfaceOHOS(
+        static_cast<VkInstance>( m_instance ),
+        reinterpret_cast<const VkSurfaceCreateInfoOHOS *>( &createInfo ),
+        reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+        reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+#    if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+        return VULKAN_HPP_UNEXPECTED( result );
+#    else
+        VULKAN_HPP_NAMESPACE::detail::throwResultException( result, "Instance::createSurfaceOHOS" );
+#    endif
+      }
+
+      return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, *reinterpret_cast<VkSurfaceKHR *>( &surface ), allocator );
+    }
+#  endif /*VK_USE_PLATFORM_OHOS*/
 
     //=== VK_NV_cooperative_matrix2 ===
 

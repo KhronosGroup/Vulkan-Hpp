@@ -32121,6 +32121,75 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+#if defined( VK_USE_PLATFORM_OHOS )
+  //=== VK_OHOS_surface ===
+
+  // wrapper function for command vkCreateSurfaceOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateSurfaceOHOS.html
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Instance::createSurfaceOHOS( const VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS * pCreateInfo,
+                                                                             const VULKAN_HPP_NAMESPACE::AllocationCallbacks *   pAllocator,
+                                                                             VULKAN_HPP_NAMESPACE::SurfaceKHR *                  pSurface,
+                                                                             Dispatch const &                                    d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkCreateSurfaceOHOS( static_cast<VkInstance>( m_instance ),
+                                                       reinterpret_cast<const VkSurfaceCreateInfoOHOS *>( pCreateInfo ),
+                                                       reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ),
+                                                       reinterpret_cast<VkSurfaceKHR *>( pSurface ) ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCreateSurfaceOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateSurfaceOHOS.html
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::SurfaceKHR>::type
+                       Instance::createSurfaceOHOS( const VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS &       createInfo,
+                                 Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                 Dispatch const &                                          d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCreateSurfaceOHOS && "Function <vkCreateSurfaceOHOS> requires <VK_OHOS_surface>" );
+#    endif
+
+    VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
+    VULKAN_HPP_NAMESPACE::Result     result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+      d.vkCreateSurfaceOHOS( m_instance,
+                             reinterpret_cast<const VkSurfaceCreateInfoOHOS *>( &createInfo ),
+                             reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+                             reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
+    VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Instance::createSurfaceOHOS" );
+
+    return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( surface ) );
+  }
+
+#    ifndef VULKAN_HPP_NO_SMART_HANDLE
+  // wrapper function for command vkCreateSurfaceOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateSurfaceOHOS.html
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>>::type
+                       Instance::createSurfaceOHOSUnique( const VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS &       createInfo,
+                                       Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                       Dispatch const &                                          d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#      if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCreateSurfaceOHOS && "Function <vkCreateSurfaceOHOS> requires <VK_OHOS_surface>" );
+#      endif
+
+    VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
+    VULKAN_HPP_NAMESPACE::Result     result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+      d.vkCreateSurfaceOHOS( m_instance,
+                             reinterpret_cast<const VkSurfaceCreateInfoOHOS *>( &createInfo ),
+                             reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+                             reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
+    VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Instance::createSurfaceOHOSUnique" );
+
+    return VULKAN_HPP_NAMESPACE::detail::createResultValueType(
+      result, UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, detail::ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
+  }
+#    endif /* VULKAN_HPP_NO_SMART_HANDLE */
+#  endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif     /*VK_USE_PLATFORM_OHOS*/
+
   //=== VK_NV_cooperative_matrix2 ===
 
   // wrapper function for command vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV, see

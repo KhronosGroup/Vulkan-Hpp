@@ -2083,6 +2083,12 @@ namespace VULKAN_HPP_NAMESPACE
   struct VideoDecodeH265InlineSessionParametersInfoKHR;
   struct VideoDecodeAV1InlineSessionParametersInfoKHR;
 
+#if defined( VK_USE_PLATFORM_OHOS )
+  //=== VK_OHOS_surface ===
+  struct OHSurfaceCreateInfoOHOS;
+  using SurfaceCreateInfoOHOS = OHSurfaceCreateInfoOHOS;
+#endif /*VK_USE_PLATFORM_OHOS*/
+
   //=== VK_HUAWEI_hdr_vivid ===
   struct PhysicalDeviceHdrVividFeaturesHUAWEI;
   struct HdrVividDynamicMetadataHUAWEI;
@@ -2111,6 +2117,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_ARM_format_pack ===
   struct PhysicalDeviceFormatPackFeaturesARM;
+
+  //=== VK_VALVE_fragment_density_map_layered ===
+  struct PhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE;
+  struct PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE;
+  struct PipelineFragmentDensityMapLayeredCreateInfoVALVE;
 
   //=== VK_KHR_robustness2 ===
   struct PhysicalDeviceRobustness2FeaturesKHR;
@@ -21046,6 +21057,33 @@ namespace VULKAN_HPP_NAMESPACE
 #    endif /* VULKAN_HPP_NO_SMART_HANDLE */
 #  endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif     /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+#if defined( VK_USE_PLATFORM_OHOS )
+    //=== VK_OHOS_surface ===
+
+    // wrapper function for command vkCreateSurfaceOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateSurfaceOHOS.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result createSurfaceOHOS( const VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS * pCreateInfo,
+                                                   const VULKAN_HPP_NAMESPACE::AllocationCallbacks *   pAllocator,
+                                                   VULKAN_HPP_NAMESPACE::SurfaceKHR *                  pSurface,
+                                                   Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCreateSurfaceOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateSurfaceOHOS.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<VULKAN_HPP_NAMESPACE::SurfaceKHR>::type
+      createSurfaceOHOS( const VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS &                 createInfo,
+                         Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                         Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#    ifndef VULKAN_HPP_NO_SMART_HANDLE
+    // wrapper function for command vkCreateSurfaceOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateSurfaceOHOS.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>>::type
+      createSurfaceOHOSUnique( const VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS &                 createInfo,
+                               Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                               Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#    endif /* VULKAN_HPP_NO_SMART_HANDLE */
+#  endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif     /*VK_USE_PLATFORM_OHOS*/
 
     operator VkInstance() const VULKAN_HPP_NOEXCEPT
     {

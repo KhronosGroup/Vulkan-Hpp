@@ -10501,7 +10501,8 @@ ${raiiHandles}
   {
     return *a <=> *b;
   }
-#else
+#endif
+
   template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   bool operator==( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
   {
@@ -10519,7 +10520,6 @@ ${raiiHandles}
   {
     return *a < *b;
   }
-#endif
 
   template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   bool operator==( const T & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT

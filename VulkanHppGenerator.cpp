@@ -8785,7 +8785,7 @@ ${objectTypeCases}
     return addTitleAndProtection( title, objectTypeCases );
   };
 
-  std::string objectTypeCases;
+  std::string           objectTypeCases;
   std::set<std::string> listedTypes;
   for ( auto const & feature : m_features )
   {
@@ -12820,7 +12820,9 @@ ${aliasHandle})";
   return "";
 }
 
-std::string VulkanHppGenerator::generateUniqueHandle( std::vector<RequireData> const & requireData, std::string const & title ) const
+std::string VulkanHppGenerator::generateUniqueHandle( std::vector<RequireData> const & requireData,
+                                                      std::string const &              title,
+                                                      std::set<std::string> &          listedHandles ) const
 {
   std::string str;
   for ( auto const & require : requireData )
@@ -12828,7 +12830,7 @@ std::string VulkanHppGenerator::generateUniqueHandle( std::vector<RequireData> c
     for ( auto const & type : require.types )
     {
       auto handleIt = m_handles.find( type.name );
-      if ( handleIt != m_handles.end() )
+      if ( ( handleIt != m_handles.end() ) && listedHandles.insert( handleIt->first ).second )
       {
         str += generateUniqueHandle( *handleIt );
       }
@@ -12849,14 +12851,15 @@ ${uniqueHandles}
 #endif  /*VULKAN_HPP_NO_SMART_HANDLE*/
 )";
 
-  std::string uniqueHandles;
+  std::string           uniqueHandles;
+  std::set<std::string> listedHandles;
   for ( auto const & feature : m_features )
   {
-    uniqueHandles += generateUniqueHandle( feature.requireData, feature.name );
+    uniqueHandles += generateUniqueHandle( feature.requireData, feature.name, listedHandles );
   }
   for ( auto const & extension : m_extensions )
   {
-    uniqueHandles += generateUniqueHandle( extension.requireData, extension.name );
+    uniqueHandles += generateUniqueHandle( extension.requireData, extension.name, listedHandles );
   }
   if ( uniqueHandles.back() == '\n' )
   {

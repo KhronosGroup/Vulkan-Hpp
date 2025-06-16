@@ -519,9 +519,9 @@ private:
                                                    std::string &                    instanceCommandAssignments,
                                                    std::string &                    deviceCommandAssignments ) const;
   void        appendCppModuleCommands( std::vector<RequireData> const & requireData,
-                                          std::set<std::string> &          listedCommands,
-                                          std::string const &              title,
-                                          std::string &                    commandMembers ) const;
+                                       std::set<std::string> &          listedCommands,
+                                       std::string const &              title,
+                                       std::string &                    commandMembers ) const;
   void        appendRAIIDispatcherCommands( std::vector<RequireData> const & requireData,
                                             std::set<std::string> &          listedCommands,
                                             std::string const &              title,
@@ -1048,34 +1048,34 @@ private:
   std::string
     generateStructForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedStructs ) const;
   std::tuple<std::string, std::string, std::string, std::string> generateStructMembers( std::pair<std::string, StructureData> const & structData ) const;
-  std::string                         generateStructSetter( std::string const & structureName, std::vector<MemberData> const & memberData, size_t index ) const;
-  std::string                         generateStructSubConstructor( std::pair<std::string, StructureData> const & structData ) const;
-  std::string                         generateSuccessCheck( std::vector<std::string> const & successCodes ) const;
-  std::string                         generateSuccessCode( std::string const & code ) const;
-  std::string                         generateSuccessCodeList( std::vector<std::string> const & successCodes, bool enumerating ) const;
-  std::string                         generateThrowResultException() const;
-  std::string                         generateTypenameCheck( std::vector<size_t> const &               returnParams,
-                                                             std::map<size_t, VectorParamData> const & vectorParams,
-                                                             std::vector<size_t> const &               chainedReturnParams,
-                                                             bool                                      definition,
-                                                             std::vector<std::string> const &          dataTypes,
-                                                             CommandFlavourFlags                       flavourFlags ) const;
-  std::string                         generateUnion( std::pair<std::string, StructureData> const & structure ) const;
-  std::string                         generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const;
-  std::string                         generateUniqueHandle( std::vector<RequireData> const & requireData, std::string const & title ) const;
-  std::string                         generateUniqueHandles() const;
-  std::string                         generateSharedHandle( std::pair<std::string, HandleData> const & handleData ) const;
-  std::string                         generateSharedHandle( std::vector<RequireData> const & requireData, std::string const & title ) const;
-  std::string                         generateSharedHandleNoDestroy( std::pair<std::string, HandleData> const & handleData ) const;
-  std::string                         generateSharedHandleNoDestroy( std::vector<RequireData> const & requireData, std::string const & title ) const;
-  std::string                         generateSharedHandles() const;
-  std::string                         generateSharedHandlesNoDestroy() const;
-  std::string                         generateVectorSizeCheck( std::string const &                           name,
-                                                               CommandData const &                           commandData,
-                                                               size_t                                        initialSkipCount,
-                                                               std::map<size_t, std::vector<size_t>> const & countToVectorMap,
-                                                               std::set<size_t> const &                      skippedParams,
-                                                               bool                                          onlyThrows ) const;
+  std::string generateStructSetter( std::string const & structureName, std::vector<MemberData> const & memberData, size_t index ) const;
+  std::string generateStructSubConstructor( std::pair<std::string, StructureData> const & structData ) const;
+  std::string generateSuccessCheck( std::vector<std::string> const & successCodes ) const;
+  std::string generateSuccessCode( std::string const & code ) const;
+  std::string generateSuccessCodeList( std::vector<std::string> const & successCodes, bool enumerating ) const;
+  std::string generateThrowResultException() const;
+  std::string generateTypenameCheck( std::vector<size_t> const &               returnParams,
+                                     std::map<size_t, VectorParamData> const & vectorParams,
+                                     std::vector<size_t> const &               chainedReturnParams,
+                                     bool                                      definition,
+                                     std::vector<std::string> const &          dataTypes,
+                                     CommandFlavourFlags                       flavourFlags ) const;
+  std::string generateUnion( std::pair<std::string, StructureData> const & structure ) const;
+  std::string generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const;
+  std::string generateUniqueHandle( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedHandles ) const;
+  std::string generateUniqueHandles() const;
+  std::string generateSharedHandle( std::pair<std::string, HandleData> const & handleData ) const;
+  std::string generateSharedHandle( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string generateSharedHandleNoDestroy( std::pair<std::string, HandleData> const & handleData ) const;
+  std::string generateSharedHandleNoDestroy( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string generateSharedHandles() const;
+  std::string generateSharedHandlesNoDestroy() const;
+  std::string generateVectorSizeCheck( std::string const &                           name,
+                                       CommandData const &                           commandData,
+                                       size_t                                        initialSkipCount,
+                                       std::map<size_t, std::vector<size_t>> const & countToVectorMap,
+                                       std::set<size_t> const &                      skippedParams,
+                                       bool                                          onlyThrows ) const;
   std::pair<std::string, std::string> getParentTypeAndName( std::pair<std::string, HandleData> const & handle ) const;
   std::string                         getPlatform( std::string const & title ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;

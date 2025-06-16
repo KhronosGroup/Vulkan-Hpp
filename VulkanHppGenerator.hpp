@@ -1066,7 +1066,7 @@ private:
   std::string generateUniqueHandle( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedHandles ) const;
   std::string generateUniqueHandles() const;
   std::string generateSharedHandle( std::pair<std::string, HandleData> const & handleData ) const;
-  std::string generateSharedHandle( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string generateSharedHandle( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedHandles ) const;
   std::string generateSharedHandleNoDestroy( std::pair<std::string, HandleData> const & handleData ) const;
   std::string generateSharedHandleNoDestroy( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string generateSharedHandles() const;

@@ -12940,7 +12940,9 @@ ${aliasHandle})";
   return "";
 }
 
-std::string VulkanHppGenerator::generateSharedHandle( std::vector<RequireData> const & requireData, std::string const & title ) const
+std::string VulkanHppGenerator::generateSharedHandle( std::vector<RequireData> const & requireData,
+                                                      std::string const &              title,
+                                                      std::set<std::string> &          listedHandles ) const
 {
   std::string str;
   for ( auto const & require : requireData )
@@ -12948,7 +12950,7 @@ std::string VulkanHppGenerator::generateSharedHandle( std::vector<RequireData> c
     for ( auto const & type : require.types )
     {
       auto handleIt = m_handles.find( type.name );
-      if ( handleIt != m_handles.end() )
+      if ( handleIt != m_handles.end() && listedHandles.insert( handleIt->first ).second )
       {
         str += generateSharedHandle( *handleIt );
       }
@@ -13000,14 +13002,15 @@ std::string VulkanHppGenerator::generateSharedHandles() const
 ${sharedHandles}
 )";
 
-  std::string sharedHandles;
+  std::string           sharedHandles;
+  std::set<std::string> listedHandles;
   for ( auto const & feature : m_features )
   {
-    sharedHandles += generateSharedHandle( feature.requireData, feature.name );
+    sharedHandles += generateSharedHandle( feature.requireData, feature.name, listedHandles );
   }
   for ( auto const & extension : m_extensions )
   {
-    sharedHandles += generateSharedHandle( extension.requireData, extension.name );
+    sharedHandles += generateSharedHandle( extension.requireData, extension.name, listedHandles );
   }
   if ( sharedHandles.back() == '\n' )
   {

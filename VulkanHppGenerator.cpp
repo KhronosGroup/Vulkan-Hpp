@@ -8409,7 +8409,9 @@ std::string VulkanHppGenerator::generateHandleForwardDeclarations( std::vector<R
   return addTitleAndProtection( title, str );
 }
 
-std::string VulkanHppGenerator::generateHandleHashStructures( std::vector<RequireData> const & requireData, std::string const & title ) const
+std::string VulkanHppGenerator::generateHandleHashStructures( std::vector<RequireData> const & requireData,
+                                                              std::string const &              title,
+                                                              std::set<std::string> &          listedHandles ) const
 {
   const std::string hashTemplate = R"(
   template <> struct hash<VULKAN_HPP_NAMESPACE::${type}>
@@ -8427,7 +8429,7 @@ std::string VulkanHppGenerator::generateHandleHashStructures( std::vector<Requir
     for ( auto const & type : require.types )
     {
       auto handleIt = m_handles.find( type.name );
-      if ( handleIt != m_handles.end() )
+      if ( handleIt != m_handles.end() && listedHandles.insert( handleIt->first ).second )
       {
         std::string handleType = stripPrefix( handleIt->first, "Vk" );
         std::string handleName = startLowerCase( handleType );
@@ -8448,14 +8450,15 @@ std::string VulkanHppGenerator::generateHandleHashStructures() const
 ${hashes}
 )";
 
-  std::string hashes;
+  std::string           hashes;
+  std::set<std::string> listedHandles;  // some handles are listed with more than one extension !
   for ( auto const & feature : m_features )
   {
-    hashes += generateHandleHashStructures( feature.requireData, feature.name );
+    hashes += generateHandleHashStructures( feature.requireData, feature.name, listedHandles );
   }
   for ( auto const & extension : m_extensions )
   {
-    hashes += generateHandleHashStructures( extension.requireData, extension.name );
+    hashes += generateHandleHashStructures( extension.requireData, extension.name, listedHandles );
   }
   return replaceWithMap( hashesTemplate, { { "hashes", hashes } } );
 }

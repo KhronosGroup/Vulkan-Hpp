@@ -898,7 +898,8 @@ private:
   std::string generateHandleEmpty( HandleData const & handleData ) const;
   std::string generateHandleForwardDeclarations() const;
   std::string generateHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const;
-  std::string generateHandleHashStructures( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string
+    generateHandleHashStructures( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedHandles ) const;
   std::string generateHandleHashStructures() const;
   std::string generateHandles() const;
   std::string generateIndexTypeTraits( std::pair<std::string, EnumData> const & enumData ) const;

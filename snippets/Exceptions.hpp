@@ -7,7 +7,7 @@
 #if defined( VULKAN_HPP_NO_TO_STRING )
       return std::to_string( ev );
 #else
-      return VULKAN_HPP_NAMESPACE::to_string(static_cast<VULKAN_HPP_NAMESPACE::Result>(ev));
+      return to_string(static_cast<Result>(ev));
 #endif
     }
   };

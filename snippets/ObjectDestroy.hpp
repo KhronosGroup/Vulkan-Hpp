@@ -4,9 +4,9 @@ class ObjectDestroy
 public:
   ObjectDestroy() = default;
 
-  ObjectDestroy( OwnerType                                                                     owner,
-                 Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                 Dispatch const & dispatch                                                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+  ObjectDestroy( OwnerType                           owner,
+                 Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                 Dispatch const & dispatch           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
     : m_owner( owner )
     , m_allocationCallbacks( allocationCallbacks )
     , m_dispatch( &dispatch )
@@ -18,7 +18,7 @@ public:
     return m_owner;
   }
 
-  Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+  Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
   {
     return m_allocationCallbacks;
   }
@@ -37,9 +37,9 @@ protected:
   }
 
 private:
-  OwnerType                                                 m_owner               = {};
-  Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> m_allocationCallbacks = nullptr;
-  Dispatch const *                                          m_dispatch            = nullptr;
+  OwnerType                           m_owner               = {};
+  Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+  Dispatch const *                    m_dispatch            = nullptr;
 };
 
 class NoParent;
@@ -50,14 +50,14 @@ class ObjectDestroy<NoParent, Dispatch>
 public:
   ObjectDestroy() = default;
 
-  ObjectDestroy( Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocationCallbacks,
-                 Dispatch const & dispatch                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+  ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks,
+                 Dispatch const & dispatch           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
     : m_allocationCallbacks( allocationCallbacks )
     , m_dispatch( &dispatch )
   {
   }
 
-  Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+  Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
   {
     return m_allocationCallbacks;
   }
@@ -76,6 +76,6 @@ protected:
   }
 
 private:
-  Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> m_allocationCallbacks = nullptr;
-  Dispatch const *                                          m_dispatch            = nullptr;
+  Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+  Dispatch const *                    m_dispatch            = nullptr;
 };

@@ -6987,33 +6987,33 @@ ${initialCommandAssignments}
     {
       VULKAN_HPP_ASSERT(instance && getInstanceProcAddr);
       vkGetInstanceProcAddr = getInstanceProcAddr;
-      init( VULKAN_HPP_NAMESPACE::Instance(instance) );
+      init( Instance(instance) );
       if (device)
       {
-        init( VULKAN_HPP_NAMESPACE::Device(device) );
+        init( Device(device) );
       }
     }
 
-    void init( VULKAN_HPP_NAMESPACE::Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
+    void init( Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
     {
-      VkInstance instance = static_cast<VkInstance>(instanceCpp);
+      VkInstance instance = static_cast<VkInstance>( instanceCpp );
 
 ${instanceCommandAssignments}
     }
 
-    void init( VULKAN_HPP_NAMESPACE::Device deviceCpp ) VULKAN_HPP_NOEXCEPT
+    void init( Device deviceCpp ) VULKAN_HPP_NOEXCEPT
     {
-      VkDevice device = static_cast<VkDevice>(deviceCpp);
+      VkDevice device = static_cast<VkDevice>( deviceCpp );
 
 ${deviceCommandAssignments}
     }
 
     template <typename DynamicLoader>
-    void init(VULKAN_HPP_NAMESPACE::Instance const & instance, VULKAN_HPP_NAMESPACE::Device const & device, DynamicLoader const & dl) VULKAN_HPP_NOEXCEPT
+    void init( Instance const & instance, Device const & device, DynamicLoader const & dl ) VULKAN_HPP_NOEXCEPT
     {
-      PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.template getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
-      PFN_vkGetDeviceProcAddr getDeviceProcAddr = dl.template getProcAddress<PFN_vkGetDeviceProcAddr>("vkGetDeviceProcAddr");
-      init(static_cast<VkInstance>(instance), getInstanceProcAddr, static_cast<VkDevice>(device), device ? getDeviceProcAddr : nullptr);
+      PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.template getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
+      PFN_vkGetDeviceProcAddr getDeviceProcAddr = dl.template getProcAddress<PFN_vkGetDeviceProcAddr>( "vkGetDeviceProcAddr" );
+      init( static_cast<VkInstance>( instance ), getInstanceProcAddr, static_cast<VkDevice>( device ), device ? getDeviceProcAddr : nullptr );
     }
 
     template <typename DynamicLoader
@@ -7021,7 +7021,7 @@ ${deviceCommandAssignments}
       = VULKAN_HPP_NAMESPACE::detail::DynamicLoader
 #endif
     >
-    void init(VULKAN_HPP_NAMESPACE::Instance const & instance, VULKAN_HPP_NAMESPACE::Device const & device) VULKAN_HPP_NOEXCEPT
+    void init( Instance const & instance, Device const & device ) VULKAN_HPP_NOEXCEPT
     {
       static DynamicLoader dl;
       init(instance, device, dl);

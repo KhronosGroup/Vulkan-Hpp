@@ -112,33 +112,33 @@
     {
     }
 
-    VULKAN_HPP_INLINE typename VULKAN_HPP_NAMESPACE::ResultValueType<void>::type createResultValueType( VULKAN_HPP_NAMESPACE::Result result )
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type createResultValueType( Result result )
     {
-#ifdef VULKAN_HPP_NO_EXCEPTIONS
+#if defined( VULKAN_HPP_NO_EXCEPTIONS )
       return result;
 #else
-      VULKAN_HPP_NAMESPACE::detail::ignore( result );
+      ignore( result );
 #endif
     }
 
     template <typename T>
-    VULKAN_HPP_INLINE typename VULKAN_HPP_NAMESPACE::ResultValueType<T>::type createResultValueType( VULKAN_HPP_NAMESPACE::Result result, T & data )
+    VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValueType( Result result, T & data )
     {
-#ifdef VULKAN_HPP_NO_EXCEPTIONS
+#if defined( VULKAN_HPP_NO_EXCEPTIONS )
       return ResultValue<T>( result, data );
 #else
-      VULKAN_HPP_NAMESPACE::detail::ignore( result );
+      ignore( result );
       return data;
 #endif
     }
 
     template <typename T>
-    VULKAN_HPP_INLINE typename VULKAN_HPP_NAMESPACE::ResultValueType<T>::type createResultValueType( VULKAN_HPP_NAMESPACE::Result result, T && data )
+    VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValueType( Result result, T && data )
     {
-#ifdef VULKAN_HPP_NO_EXCEPTIONS
+#if defined( VULKAN_HPP_NO_EXCEPTIONS )
       return ResultValue<T>( result, std::move( data ) );
 #else
-      VULKAN_HPP_NAMESPACE::detail::ignore( result );
+      ignore( result );
       return std::move( data );
 #endif
     }

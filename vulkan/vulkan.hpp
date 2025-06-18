@@ -6391,9 +6391,9 @@ namespace VULKAN_HPP_NAMESPACE
     public:
       ObjectDestroy() = default;
 
-      ObjectDestroy( OwnerType                                                                     owner,
-                     Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                     Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+      ObjectDestroy( OwnerType                                               owner,
+                     Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                     Dispatch const & dispatch                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
         : m_owner( owner )
         , m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
@@ -6405,7 +6405,7 @@ namespace VULKAN_HPP_NAMESPACE
         return m_owner;
       }
 
-      Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+      Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
       {
         return m_allocationCallbacks;
       }
@@ -6424,9 +6424,9 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
     private:
-      OwnerType                                                 m_owner               = {};
-      Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> m_allocationCallbacks = nullptr;
-      Dispatch const *                                          m_dispatch            = nullptr;
+      OwnerType                           m_owner               = {};
+      Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+      Dispatch const *                    m_dispatch            = nullptr;
     };
 
     class NoParent;
@@ -6437,14 +6437,14 @@ namespace VULKAN_HPP_NAMESPACE
     public:
       ObjectDestroy() = default;
 
-      ObjectDestroy( Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocationCallbacks,
-                     Dispatch const & dispatch                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+      ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks,
+                     Dispatch const & dispatch           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
         : m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
       {
       }
 
-      Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+      Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
       {
         return m_allocationCallbacks;
       }
@@ -6463,8 +6463,8 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
     private:
-      Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> m_allocationCallbacks = nullptr;
-      Dispatch const *                                          m_dispatch            = nullptr;
+      Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+      Dispatch const *                    m_dispatch            = nullptr;
     };
 
     template <typename OwnerType, typename Dispatch>
@@ -6637,7 +6637,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_NO_TO_STRING )
       return std::to_string( ev );
 #  else
-      return VULKAN_HPP_NAMESPACE::to_string( static_cast<VULKAN_HPP_NAMESPACE::Result>( ev ) );
+      return to_string( static_cast<Result>( ev ) );
 #  endif
     }
   };
@@ -7185,33 +7185,33 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-    VULKAN_HPP_INLINE typename VULKAN_HPP_NAMESPACE::ResultValueType<void>::type createResultValueType( VULKAN_HPP_NAMESPACE::Result result )
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type createResultValueType( Result result )
     {
-#ifdef VULKAN_HPP_NO_EXCEPTIONS
+#if defined( VULKAN_HPP_NO_EXCEPTIONS )
       return result;
 #else
-      VULKAN_HPP_NAMESPACE::detail::ignore( result );
+      ignore( result );
 #endif
     }
 
     template <typename T>
-    VULKAN_HPP_INLINE typename VULKAN_HPP_NAMESPACE::ResultValueType<T>::type createResultValueType( VULKAN_HPP_NAMESPACE::Result result, T & data )
+    VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValueType( Result result, T & data )
     {
-#ifdef VULKAN_HPP_NO_EXCEPTIONS
+#if defined( VULKAN_HPP_NO_EXCEPTIONS )
       return ResultValue<T>( result, data );
 #else
-      VULKAN_HPP_NAMESPACE::detail::ignore( result );
+      ignore( result );
       return data;
 #endif
     }
 
     template <typename T>
-    VULKAN_HPP_INLINE typename VULKAN_HPP_NAMESPACE::ResultValueType<T>::type createResultValueType( VULKAN_HPP_NAMESPACE::Result result, T && data )
+    VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValueType( Result result, T && data )
     {
-#ifdef VULKAN_HPP_NO_EXCEPTIONS
+#if defined( VULKAN_HPP_NO_EXCEPTIONS )
       return ResultValue<T>( result, std::move( data ) );
 #else
-      VULKAN_HPP_NAMESPACE::detail::ignore( result );
+      ignore( result );
       return std::move( data );
 #endif
     }
@@ -7222,13 +7222,13 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_INLINE void resultCheck( Result result, char const * message )
     {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_NAMESPACE::detail::ignore( result );  // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
-      VULKAN_HPP_NAMESPACE::detail::ignore( message );
+      ignore( result );  // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
+      ignore( message );
       VULKAN_HPP_ASSERT_ON_RESULT( result == Result::eSuccess );
 #else
       if ( result != Result::eSuccess )
       {
-        VULKAN_HPP_NAMESPACE::detail::throwResultException( result, message );
+        throwResultException( result, message );
       }
 #endif
     }
@@ -7236,14 +7236,14 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_INLINE void resultCheck( Result result, char const * message, std::initializer_list<Result> successCodes )
     {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_NAMESPACE::detail::ignore( result );  // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
-      VULKAN_HPP_NAMESPACE::detail::ignore( message );
-      VULKAN_HPP_NAMESPACE::detail::ignore( successCodes );  // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
+      ignore( result );  // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
+      ignore( message );
+      ignore( successCodes );  // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
       VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
       if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
       {
-        VULKAN_HPP_NAMESPACE::detail::throwResultException( result, message );
+        throwResultException( result, message );
       }
 #endif
     }
@@ -20282,14 +20282,14 @@ namespace VULKAN_HPP_NAMESPACE
       {
         VULKAN_HPP_ASSERT( instance && getInstanceProcAddr );
         vkGetInstanceProcAddr = getInstanceProcAddr;
-        init( VULKAN_HPP_NAMESPACE::Instance( instance ) );
+        init( Instance( instance ) );
         if ( device )
         {
-          init( VULKAN_HPP_NAMESPACE::Device( device ) );
+          init( Device( device ) );
         }
       }
 
-      void init( VULKAN_HPP_NAMESPACE::Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
+      void init( Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
       {
         VkInstance instance = static_cast<VkInstance>( instanceCpp );
 
@@ -21807,7 +21807,7 @@ namespace VULKAN_HPP_NAMESPACE
         vkCmdEndRendering2EXT = PFN_vkCmdEndRendering2EXT( vkGetInstanceProcAddr( instance, "vkCmdEndRendering2EXT" ) );
       }
 
-      void init( VULKAN_HPP_NAMESPACE::Device deviceCpp ) VULKAN_HPP_NOEXCEPT
+      void init( Device deviceCpp ) VULKAN_HPP_NOEXCEPT
       {
         VkDevice device = static_cast<VkDevice>( deviceCpp );
 
@@ -23009,7 +23009,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       template <typename DynamicLoader>
-      void init( VULKAN_HPP_NAMESPACE::Instance const & instance, VULKAN_HPP_NAMESPACE::Device const & device, DynamicLoader const & dl ) VULKAN_HPP_NOEXCEPT
+      void init( Instance const & instance, Device const & device, DynamicLoader const & dl ) VULKAN_HPP_NOEXCEPT
       {
         PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.template getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
         PFN_vkGetDeviceProcAddr   getDeviceProcAddr   = dl.template getProcAddress<PFN_vkGetDeviceProcAddr>( "vkGetDeviceProcAddr" );
@@ -23021,7 +23021,7 @@ namespace VULKAN_HPP_NAMESPACE
                 = VULKAN_HPP_NAMESPACE::detail::DynamicLoader
 #endif
                 >
-      void init( VULKAN_HPP_NAMESPACE::Instance const & instance, VULKAN_HPP_NAMESPACE::Device const & device ) VULKAN_HPP_NOEXCEPT
+      void init( Instance const & instance, Device const & device ) VULKAN_HPP_NOEXCEPT
       {
         static DynamicLoader dl;
         init( instance, device, dl );

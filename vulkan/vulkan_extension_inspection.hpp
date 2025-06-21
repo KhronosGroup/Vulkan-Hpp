@@ -429,6 +429,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_EXT_dynamic_rendering_unused_attachments",
                                                             "VK_NV_low_latency2",
                                                             "VK_KHR_cooperative_matrix",
+                                                            "VK_ARM_data_graph",
                                                             "VK_QCOM_multiview_per_view_render_areas",
                                                             "VK_KHR_compute_shader_derivatives",
                                                             "VK_KHR_video_decode_av1",
@@ -2397,6 +2398,12 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
+      { "VK_ARM_data_graph",
+        { { "VK_VERSION_1_3",
+            { {
+              "VK_KHR_deferred_host_operations",
+              "VK_KHR_maintenance5",
+            } } } } },
       { "VK_KHR_compute_shader_derivatives",
         { { "VK_VERSION_1_0",
             { {
@@ -3553,7 +3560,7 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_mutable_descriptor_type" ) || ( extension == "VK_EXT_legacy_vertex_attributes" ) ||
            ( extension == "VK_ARM_shader_core_builtins" ) || ( extension == "VK_EXT_pipeline_library_group_handles" ) ||
            ( extension == "VK_EXT_dynamic_rendering_unused_attachments" ) || ( extension == "VK_NV_low_latency2" ) ||
-           ( extension == "VK_KHR_cooperative_matrix" ) || ( extension == "VK_QCOM_multiview_per_view_render_areas" ) ||
+           ( extension == "VK_KHR_cooperative_matrix" ) || ( extension == "VK_ARM_data_graph" ) || ( extension == "VK_QCOM_multiview_per_view_render_areas" ) ||
            ( extension == "VK_KHR_compute_shader_derivatives" ) || ( extension == "VK_KHR_video_decode_av1" ) || ( extension == "VK_KHR_video_encode_av1" ) ||
            ( extension == "VK_KHR_video_decode_vp9" ) || ( extension == "VK_KHR_video_maintenance1" ) || ( extension == "VK_NV_per_stage_descriptor_set" ) ||
            ( extension == "VK_QCOM_image_processing2" ) || ( extension == "VK_QCOM_filter_cubic_weights" ) || ( extension == "VK_QCOM_ycbcr_degamma" ) ||

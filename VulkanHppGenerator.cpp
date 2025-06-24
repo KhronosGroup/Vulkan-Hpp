@@ -8232,6 +8232,10 @@ ${typesafeConversionConditionalEnd}
       return m_${memberName} == VK_NULL_HANDLE;
     }
 
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( ${className} const & ) const = default;
+#endif
+
   private:
     Vk${className} m_${memberName} = {};
   };
@@ -10506,6 +10510,13 @@ ${raiiHandles}
   }
 #else
   template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  bool operator<(T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
+  {
+    return *a < *b;
+  }
+#endif
+
+  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   bool operator==( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
   {
     return *a == *b;
@@ -10516,13 +10527,6 @@ ${raiiHandles}
   {
     return *a != *b;
   }
-
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
-  bool operator<(T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
-  {
-    return *a < *b;
-  }
-#endif
 
   template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   bool operator==( const T & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT

@@ -159,3 +159,47 @@ bool operator!=( std::string const & lhs, ArrayWrapper1D<char, N> const & rhs ) 
 {
   return lhs != rhs.data();
 }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+template <size_t N>
+std::strong_ordering operator<=>( ArrayWrapper1D<char, N> const & lhs, std::string const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return lhs.data() <=> rhs;
+}
+#else
+template <size_t N>
+bool operator<( ArrayWrapper1D<char, N> const & lhs, std::string const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return lhs.data() < rhs;
+}
+
+template <size_t N>
+bool operator<=( ArrayWrapper1D<char, N> const & lhs, std::string const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return lhs.data() <= rhs;
+}
+
+template <size_t N>
+bool operator>( ArrayWrapper1D<char, N> const & lhs, std::string const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return lhs.data() > rhs;
+}
+
+template <size_t N>
+bool operator>=( ArrayWrapper1D<char, N> const & lhs, std::string const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return lhs.data() >= rhs;
+}
+#endif
+
+template <size_t N>
+bool operator==( ArrayWrapper1D<char, N> const & lhs, std::string const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return lhs.data() == rhs;
+}
+
+template <size_t N>
+bool operator!=( ArrayWrapper1D<char, N> const & lhs, std::string const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return lhs.data() != rhs;
+}

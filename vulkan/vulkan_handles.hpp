@@ -4551,6 +4551,10 @@ namespace VULKAN_HPP_NAMESPACE
       return m_dataGraphPipelineSessionARM == VK_NULL_HANDLE;
     }
 
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( DataGraphPipelineSessionARM const & ) const = default;
+#endif
+
   private:
     VkDataGraphPipelineSessionARM m_dataGraphPipelineSessionARM = {};
   };
@@ -10616,6 +10620,10 @@ namespace VULKAN_HPP_NAMESPACE
       return m_tensorARM == VK_NULL_HANDLE;
     }
 
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( TensorARM const & ) const = default;
+#endif
+
   private:
     VkTensorARM m_tensorARM = {};
   };
@@ -10702,6 +10710,10 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_tensorViewARM == VK_NULL_HANDLE;
     }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( TensorViewARM const & ) const = default;
+#endif
 
   private:
     VkTensorViewARM m_tensorViewARM = {};

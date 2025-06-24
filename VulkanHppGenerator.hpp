@@ -214,6 +214,7 @@ private:
   {
     std::map<std::string, int> aliases      = {};
     std::vector<std::string>   errorCodes   = {};
+    std::vector<std::string>   exports      = {};
     std::string                handle       = {};
     std::vector<ParamData>     params       = {};
     std::set<std::string>      requiredBy   = {};
@@ -305,6 +306,7 @@ private:
 
   struct FeatureData
   {
+    std::vector<std::string>   api           = {};
     std::string                name          = {};
     std::string                number        = {};
     std::vector<DeprecateData> deprecateData = {};

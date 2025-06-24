@@ -13742,6 +13742,7 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
                        { "cmdbufferlevel", { "primary", "secondary" } },
                        { "comment", {} },
                        { "errorcodes", {} },
+                       { "export", { "vulkan", "vulkansc" } },
                        { "queues", {} },
                        { "renderpass", { "both", "inside", "outside" } },
                        { "successcodes", {} },
@@ -13764,6 +13765,10 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
       {
         commandData.errorCodes = tokenize( attribute.second, "," );
         // errorCodes are checked in checkCorrectness after complete reading
+      }
+      else if ( attribute.first == "export" )
+      {
+        commandData.exports = tokenize( attribute.second, "," );
       }
       else if ( attribute.first == "queues" )
       {
@@ -13793,6 +13798,10 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
         std::tie( name, commandData.returnType ) = readCommandProto( child );
       }
     }
+
+    checkForError( api.empty() || commandData.exports.empty() || ( ( commandData.exports.size() == 1 ) && ( api == commandData.exports.front() ) ),
+                   line,
+                   "command <" + name + "> has non-empty but different attributes <api> and <export>" );
 
     for ( auto & param : commandData.params )
     {
@@ -14223,6 +14232,21 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
     if ( value == "command" )
     {
       requireData.commands.push_back( readRequireCommand( child ) );
+      auto commandIt = m_commands.find( requireData.commands.back().name );
+      if (commandIt != m_commands.end())
+      {
+        checkForError( commandIt->second.exports.empty(),
+                       commandIt->second.xmlLine,
+                       "command <" + commandIt->first + "> is required by extension <" + extensionData.name +
+                         "> but is specified to be exported by some feature" );
+      }
+      else
+      {
+        commandIt = findByNameOrAlias( m_commands, requireData.commands.back().name );
+        checkForError( commandIt != m_commands.end(),
+                       requireData.commands.back().xmlLine,
+                       "extension <" + extensionData.name + "> requires unknown command <" + requireData.commands.back().name + ">" );
+      }
     }
     else if ( value == "enum" )
     {
@@ -14635,13 +14659,12 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
 
   FeatureData featureData;
   featureData.xmlLine = line;
-  std::vector<std::string> api;
-  std::string              modifiedNumber;
+  std::string modifiedNumber;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "api" )
     {
-      api = tokenize( attribute.second, "," );
+      featureData.api = tokenize( attribute.second, "," );
     }
     else if ( attribute.first == "name" )
     {
@@ -14655,7 +14678,7 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
     }
   }
 
-  const bool featureSupported = std::ranges::any_of( api, [this]( std::string const & a ) { return a == m_api; } );
+  const bool featureSupported = std::ranges::any_of( featureData.api, [this]( std::string const & a ) { return a == m_api; } );
   for ( auto child : children )
   {
     std::string value = child->Value();
@@ -14674,7 +14697,8 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
   }
 
   checkForError( featureData.name ==
-                   ( std::ranges::any_of( api, []( std::string const & a ) { return a == "vulkan"; } ) ? "VK_VERSION_" : "VKSC_VERSION_" ) + modifiedNumber,
+                   ( std::ranges::any_of( featureData.api, []( std::string const & a ) { return a == "vulkan"; } ) ? "VK_VERSION_" : "VKSC_VERSION_" ) +
+                     modifiedNumber,
                  line,
                  "unexpected formatting of name <" + featureData.name + ">" );
   checkForError( !isFeature( featureData.name ), line, "feature <" + featureData.name + "> already specified" );
@@ -14720,6 +14744,16 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * elemen
     if ( value == "command" )
     {
       requireData.commands.push_back( readRequireCommand( child ) );
+      auto commandIt = m_commands.find( requireData.commands.back().name );
+      checkForError( commandIt != m_commands.end(),
+                     requireData.commands.back().xmlLine,
+                     "feature <" + featureData.name + "> requires unknown command <" + requireData.commands.back().name + ">" );
+      checkForError( !commandIt->second.exports.empty(),
+                     commandIt->second.xmlLine,
+                     "command <" + commandIt->first + "> is required by feature <" + featureData.name + "> but is not marked as exported" );
+      checkForError( std::ranges::includes( featureData.api, commandIt->second.exports ),
+                     commandIt->second.xmlLine,
+                     "command <" + commandIt->first + "> is required by feature <" + featureData.name + "> but is not exported for the feature's api" );
     }
     else if ( value == "enum" )
     {
@@ -15624,7 +15658,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
                    { { "altlen", {} },
                      { "api", { "vulkan", "vulkansc" } },
                      { "deprecated", { "ignored" } },
-                     { "externsync", { "true" } },
+                     { "externsync", { "maybe", "true" } },
                      { "featurelink", {} },
                      { "len", {} },
                      { "limittype", { "bitmask", "bits", "exact", "max", "min", "mul", "noauto", "not", "pot", "range", "struct" } },

@@ -8566,7 +8566,7 @@ std::string VulkanHppGenerator::generateLayerSettingTypeTraits() const
   template <>
   struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eBool32>
   {
-    using Type = VULKAN_HPP_NAMESPACE::Bool32;
+    using Type = Bool32;
   };
 
   template <>
@@ -8616,7 +8616,7 @@ std::string VulkanHppGenerator::generateLayerSettingTypeTraits() const
   {
     switch ( layerSettingType )
     {
-      case LayerSettingTypeEXT::eBool32: return std::is_same<T, VULKAN_HPP_NAMESPACE::Bool32>::value;
+      case LayerSettingTypeEXT::eBool32: return std::is_same<T, Bool32>::value;
       case LayerSettingTypeEXT::eInt32: return std::is_same<T, int32_t>::value;
       case LayerSettingTypeEXT::eInt64: return std::is_same<T, int64_t>::value;
       case LayerSettingTypeEXT::eUint32: return std::is_same<T, uint32_t>::value;
@@ -8755,14 +8755,14 @@ std::string VulkanHppGenerator::generateObjectTypeToDebugReportObjectType() cons
   //=== Mapping from ObjectType to DebugReportObjectTypeEXT ===
   //===========================================================
 
-  VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType( VULKAN_HPP_NAMESPACE::ObjectType objectType )
+  VULKAN_HPP_INLINE DebugReportObjectTypeEXT debugReportObjectType( ObjectType objectType )
   {
     switch( objectType )
     {
 ${objectTypeCases}
       default:
         VULKAN_HPP_ASSERT( false && "unknown ObjectType" );
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+        return DebugReportObjectTypeEXT::eUnknown;
     }
   }
 )" };
@@ -8770,7 +8770,7 @@ ${objectTypeCases}
   auto const generateObjectTypeCases = [this]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedTypes )
   {
     static const std::string objectTypeCaseTemplate =
-      "      case VULKAN_HPP_NAMESPACE::ObjectType::${objectType} : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};\n";
+      "      case ObjectType::${objectType} : return DebugReportObjectTypeEXT::${debugReportObjectType};\n";
 
     std::string objectTypeCases;
     for ( auto const & require : requireData )

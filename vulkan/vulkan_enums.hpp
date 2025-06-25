@@ -8472,7 +8472,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <>
   struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eBool32>
   {
-    using Type = VULKAN_HPP_NAMESPACE::Bool32;
+    using Type = Bool32;
   };
 
   template <>
@@ -8522,7 +8522,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( layerSettingType )
     {
-      case LayerSettingTypeEXT::eBool32 : return std::is_same<T, VULKAN_HPP_NAMESPACE::Bool32>::value;
+      case LayerSettingTypeEXT::eBool32 : return std::is_same<T, Bool32>::value;
       case LayerSettingTypeEXT::eInt32  : return std::is_same<T, int32_t>::value;
       case LayerSettingTypeEXT::eInt64  : return std::is_same<T, int64_t>::value;
       case LayerSettingTypeEXT::eUint32 : return std::is_same<T, uint32_t>::value;
@@ -9124,146 +9124,146 @@ namespace VULKAN_HPP_NAMESPACE
   //=== Mapping from ObjectType to DebugReportObjectTypeEXT ===
   //===========================================================
 
-  VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType( VULKAN_HPP_NAMESPACE::ObjectType objectType )
+  VULKAN_HPP_INLINE DebugReportObjectTypeEXT debugReportObjectType( ObjectType objectType )
   {
     switch ( objectType )
     {
         //=== VK_VERSION_1_0 ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eInstance           : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eInstance;
-      case VULKAN_HPP_NAMESPACE::ObjectType::ePhysicalDevice     : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePhysicalDevice;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDevice             : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDevice;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eQueue              : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eQueue;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDeviceMemory       : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDeviceMemory;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eFence              : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eFence;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eSemaphore          : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSemaphore;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eEvent              : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eEvent;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eQueryPool          : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eQueryPool;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eBuffer             : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBuffer;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eBufferView         : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBufferView;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eImage              : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eImage;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eImageView          : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eImageView;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eShaderModule       : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eShaderModule;
-      case VULKAN_HPP_NAMESPACE::ObjectType::ePipelineCache      : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipelineCache;
-      case VULKAN_HPP_NAMESPACE::ObjectType::ePipeline           : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipeline;
-      case VULKAN_HPP_NAMESPACE::ObjectType::ePipelineLayout     : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipelineLayout;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eSampler            : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSampler;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorPool     : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorPool;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorSet      : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorSet;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorSetLayout: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorSetLayout;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eFramebuffer        : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eFramebuffer;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eRenderPass         : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eRenderPass;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eCommandPool        : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCommandPool;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eCommandBuffer:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCommandBuffer;
+      case ObjectType::eInstance           : return DebugReportObjectTypeEXT::eInstance;
+      case ObjectType::ePhysicalDevice     : return DebugReportObjectTypeEXT::ePhysicalDevice;
+      case ObjectType::eDevice             : return DebugReportObjectTypeEXT::eDevice;
+      case ObjectType::eQueue              : return DebugReportObjectTypeEXT::eQueue;
+      case ObjectType::eDeviceMemory       : return DebugReportObjectTypeEXT::eDeviceMemory;
+      case ObjectType::eFence              : return DebugReportObjectTypeEXT::eFence;
+      case ObjectType::eSemaphore          : return DebugReportObjectTypeEXT::eSemaphore;
+      case ObjectType::eEvent              : return DebugReportObjectTypeEXT::eEvent;
+      case ObjectType::eQueryPool          : return DebugReportObjectTypeEXT::eQueryPool;
+      case ObjectType::eBuffer             : return DebugReportObjectTypeEXT::eBuffer;
+      case ObjectType::eBufferView         : return DebugReportObjectTypeEXT::eBufferView;
+      case ObjectType::eImage              : return DebugReportObjectTypeEXT::eImage;
+      case ObjectType::eImageView          : return DebugReportObjectTypeEXT::eImageView;
+      case ObjectType::eShaderModule       : return DebugReportObjectTypeEXT::eShaderModule;
+      case ObjectType::ePipelineCache      : return DebugReportObjectTypeEXT::ePipelineCache;
+      case ObjectType::ePipeline           : return DebugReportObjectTypeEXT::ePipeline;
+      case ObjectType::ePipelineLayout     : return DebugReportObjectTypeEXT::ePipelineLayout;
+      case ObjectType::eSampler            : return DebugReportObjectTypeEXT::eSampler;
+      case ObjectType::eDescriptorPool     : return DebugReportObjectTypeEXT::eDescriptorPool;
+      case ObjectType::eDescriptorSet      : return DebugReportObjectTypeEXT::eDescriptorSet;
+      case ObjectType::eDescriptorSetLayout: return DebugReportObjectTypeEXT::eDescriptorSetLayout;
+      case ObjectType::eFramebuffer        : return DebugReportObjectTypeEXT::eFramebuffer;
+      case ObjectType::eRenderPass         : return DebugReportObjectTypeEXT::eRenderPass;
+      case ObjectType::eCommandPool        : return DebugReportObjectTypeEXT::eCommandPool;
+      case ObjectType::eCommandBuffer:
+        return DebugReportObjectTypeEXT::eCommandBuffer;
 
         //=== VK_VERSION_1_1 ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eSamplerYcbcrConversion: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSamplerYcbcrConversion;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorUpdateTemplate:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorUpdateTemplate;
+      case ObjectType::eSamplerYcbcrConversion: return DebugReportObjectTypeEXT::eSamplerYcbcrConversion;
+      case ObjectType::eDescriptorUpdateTemplate:
+        return DebugReportObjectTypeEXT::eDescriptorUpdateTemplate;
 
         //=== VK_VERSION_1_3 ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::ePrivateDataSlot:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::ePrivateDataSlot:
+        return DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_KHR_surface ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eSurfaceKHR:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSurfaceKHR;
+      case ObjectType::eSurfaceKHR:
+        return DebugReportObjectTypeEXT::eSurfaceKHR;
 
         //=== VK_KHR_swapchain ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eSwapchainKHR:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSwapchainKHR;
+      case ObjectType::eSwapchainKHR:
+        return DebugReportObjectTypeEXT::eSwapchainKHR;
 
         //=== VK_KHR_display ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDisplayKHR: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayKHR;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDisplayModeKHR:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayModeKHR;
+      case ObjectType::eDisplayKHR: return DebugReportObjectTypeEXT::eDisplayKHR;
+      case ObjectType::eDisplayModeKHR:
+        return DebugReportObjectTypeEXT::eDisplayModeKHR;
 
         //=== VK_EXT_debug_report ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDebugReportCallbackEXT:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDebugReportCallbackEXT;
+      case ObjectType::eDebugReportCallbackEXT:
+        return DebugReportObjectTypeEXT::eDebugReportCallbackEXT;
 
         //=== VK_KHR_video_queue ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eVideoSessionKHR: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eVideoSessionParametersKHR:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eVideoSessionKHR: return DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eVideoSessionParametersKHR:
+        return DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_NVX_binary_import ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eCuModuleNVX: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCuModuleNVX;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eCuFunctionNVX:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCuFunctionNVX;
+      case ObjectType::eCuModuleNVX: return DebugReportObjectTypeEXT::eCuModuleNVX;
+      case ObjectType::eCuFunctionNVX:
+        return DebugReportObjectTypeEXT::eCuFunctionNVX;
 
         //=== VK_EXT_debug_utils ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDebugUtilsMessengerEXT:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eDebugUtilsMessengerEXT:
+        return DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_KHR_acceleration_structure ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eAccelerationStructureKHR:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eAccelerationStructureKHR;
+      case ObjectType::eAccelerationStructureKHR:
+        return DebugReportObjectTypeEXT::eAccelerationStructureKHR;
 
         //=== VK_EXT_validation_cache ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eValidationCacheEXT:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eValidationCacheEXT;
+      case ObjectType::eValidationCacheEXT:
+        return DebugReportObjectTypeEXT::eValidationCacheEXT;
 
         //=== VK_NV_ray_tracing ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eAccelerationStructureNV:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eAccelerationStructureNV;
+      case ObjectType::eAccelerationStructureNV:
+        return DebugReportObjectTypeEXT::eAccelerationStructureNV;
 
         //=== VK_INTEL_performance_query ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::ePerformanceConfigurationINTEL:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::ePerformanceConfigurationINTEL:
+        return DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_KHR_deferred_host_operations ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDeferredOperationKHR:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eDeferredOperationKHR:
+        return DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_NV_device_generated_commands ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eIndirectCommandsLayoutNV: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eIndirectCommandsLayoutNV: return DebugReportObjectTypeEXT::eUnknown;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         //=== VK_NV_cuda_kernel_launch ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eCudaModuleNV  : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCudaModuleNV;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eCudaFunctionNV: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCudaFunctionNV;
+      case ObjectType::eCudaModuleNV  : return DebugReportObjectTypeEXT::eCudaModuleNV;
+      case ObjectType::eCudaFunctionNV: return DebugReportObjectTypeEXT::eCudaFunctionNV;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
         //=== VK_FUCHSIA_buffer_collection ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eBufferCollectionFUCHSIA: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBufferCollectionFUCHSIA;
+      case ObjectType::eBufferCollectionFUCHSIA: return DebugReportObjectTypeEXT::eBufferCollectionFUCHSIA;
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
         //=== VK_EXT_opacity_micromap ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eMicromapEXT:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eMicromapEXT:
+        return DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_ARM_tensors ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eTensorARM: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eTensorViewARM:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eTensorARM: return DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eTensorViewARM:
+        return DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_NV_optical_flow ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eOpticalFlowSessionNV:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eOpticalFlowSessionNV:
+        return DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_EXT_shader_object ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eShaderEXT:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eShaderEXT:
+        return DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_KHR_pipeline_binary ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::ePipelineBinaryKHR:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::ePipelineBinaryKHR:
+        return DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_ARM_data_graph ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eDataGraphPipelineSessionARM:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eDataGraphPipelineSessionARM:
+        return DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_NV_external_compute_queue ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eExternalComputeQueueNV:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eExternalComputeQueueNV:
+        return DebugReportObjectTypeEXT::eUnknown;
 
         //=== VK_EXT_device_generated_commands ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eIndirectCommandsLayoutEXT: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eIndirectExecutionSetEXT  : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eIndirectCommandsLayoutEXT: return DebugReportObjectTypeEXT::eUnknown;
+      case ObjectType::eIndirectExecutionSetEXT  : return DebugReportObjectTypeEXT::eUnknown;
 
-      default: VULKAN_HPP_ASSERT( false && "unknown ObjectType" ); return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      default: VULKAN_HPP_ASSERT( false && "unknown ObjectType" ); return DebugReportObjectTypeEXT::eUnknown;
     }
   }
 

@@ -47,18 +47,7 @@ void VideoHppGenerator::generateHppFile() const
 #include <vulkan/vulkan.hpp>
 // clang-format on
 
-#include <vk_video/vulkan_video_codec_av1std.h>
-#include <vk_video/vulkan_video_codec_av1std_decode.h>
-#include <vk_video/vulkan_video_codec_av1std_encode.h>
-#include <vk_video/vulkan_video_codec_h264std.h>
-#include <vk_video/vulkan_video_codec_h264std_decode.h>
-#include <vk_video/vulkan_video_codec_h264std_encode.h>
-#include <vk_video/vulkan_video_codec_h265std.h>
-#include <vk_video/vulkan_video_codec_h265std_decode.h>
-#include <vk_video/vulkan_video_codec_h265std_encode.h>
-#include <vk_video/vulkan_video_codec_vp9std.h>
-#include <vk_video/vulkan_video_codec_vp9std_decode.h>
-#include <vk_video/vulkan_video_codecs_common.h>
+${includes}
 
 #if !defined( VULKAN_HPP_VIDEO_NAMESPACE )
 #  define VULKAN_HPP_VIDEO_NAMESPACE video
@@ -75,8 +64,9 @@ ${structs}
 #endif
 )";
 
-  std::string str =
-    replaceWithMap( videoHppTemplate, { { "copyrightMessage", m_copyrightMessage }, { "enums", generateEnums() }, { "structs", generateStructs() } } );
+  std::string str = replaceWithMap(
+    videoHppTemplate,
+    { { "copyrightMessage", m_copyrightMessage }, { "enums", generateEnums() }, { "includes", generateIncludes() }, { "structs", generateStructs() } } );
 
   writeToFile( str, video_hpp );
 }
@@ -291,17 +281,17 @@ ${enums}
     std::string enums;
     for ( auto const & extension : m_extensions )
     {
-      enums += generateEnums( extension.requireData, extension.name );
+      enums += generateEnums( extension );
     }
 
     return replaceWithMap( enumsTemplate, { { "enums", enums } } );
   }
 }
 
-std::string VideoHppGenerator::generateEnums( RequireData const & requireData, std::string const & title ) const
+std::string VideoHppGenerator::generateEnums( ExtensionData const & extensionData ) const
 {
   std::string str;
-  for ( auto const & type : requireData.types )
+  for ( auto const & type : extensionData.requireData.types )
   {
     auto enumIt = m_enums.find( type );
     if ( enumIt != m_enums.end() )
@@ -311,9 +301,20 @@ std::string VideoHppGenerator::generateEnums( RequireData const & requireData, s
   }
   if ( !str.empty() )
   {
-    str = "\n    //=== " + title + " ===\n" + str;
+    str = "\n#if defined( " + extensionData.protect + " )\n  //=== " + extensionData.name + " ===\n" + str + "#endif\n";
   }
   return str;
+}
+
+std::string VideoHppGenerator::generateIncludes() const
+{
+  std::string includes;
+  for ( auto const & extension : m_extensions )
+  {
+    includes += "#include <vk_video/" + extension.name + ".h>\n";
+  }
+
+  return includes;
 }
 
 std::string VideoHppGenerator::generateCppModuleEnumUsings() const
@@ -493,15 +494,15 @@ ${structs}
   std::string structs;
   for ( auto const & extension : m_extensions )
   {
-    structs += generateStructs( extension.requireData, extension.name );
+    structs += generateStructs( extension );
   }
   return replaceWithMap( structsTemplate, { { "structs", structs } } );
 }
 
-std::string VideoHppGenerator::generateStructs( RequireData const & requireData, std::string const & title ) const
+std::string VideoHppGenerator::generateStructs( ExtensionData const & extensionData ) const
 {
   std::string str;
-  for ( auto const & type : requireData.types )
+  for ( auto const & type : extensionData.requireData.types )
   {
     auto structIt = m_structs.find( type );
     if ( structIt != m_structs.end() )
@@ -511,7 +512,7 @@ std::string VideoHppGenerator::generateStructs( RequireData const & requireData,
   }
   if ( !str.empty() )
   {
-    str = "\n    //=== " + title + " ===\n" + str;
+    str = "\n#if defined( " + extensionData.protect + " )\n  //=== " + extensionData.name + " ===\n" + str + "#endif\n";
   }
   return str;
 }
@@ -673,7 +674,13 @@ void VideoHppGenerator::readExtension( tinyxml2::XMLElement const * element )
   std::string   supported;
   for ( auto const & attribute : attributes )
   {
-    if ( attribute.first == "name" )
+    if ( attribute.first == "comment" )
+    {
+      checkForError(
+        attribute.second.starts_with( "protect with VULKAN_VIDEO_CODEC" ), line, "unexpected content of attribute <comment>: \"" + attribute.second + "\"" );
+      extensionData.protect = attribute.second.substr( strlen( "protect with " ) );
+    }
+    else if ( attribute.first == "name" )
     {
       extensionData.name = attribute.second;
       checkForError( !isExtension( extensionData.name ), line, "already encountered extension <" + extensionData.name + ">" );

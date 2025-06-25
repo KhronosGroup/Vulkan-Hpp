@@ -67,6 +67,7 @@ private:
     std::string depends     = {};
     std::string name        = {};
     std::string number      = {};
+    std::string protect     = {};
     RequireData requireData = {};
     int         xmlLine     = 0;
   };
@@ -103,12 +104,13 @@ private:
   void checkForWarning( bool condition, int line, std::string const & message ) const;
   std::string                                      generateEnum( std::pair<std::string, EnumData> const & enumData ) const;
   std::string                                      generateEnums() const;
-  std::string                                      generateEnums( RequireData const & requireData, std::string const & title ) const;
+  std::string                                      generateEnums( ExtensionData const & extensionData ) const;
+  std::string                                      generateIncludes() const;
   std::string                                      generateStruct( std::pair<std::string, StructureData> const & structData ) const;
   std::string                                      generateStructCompareOperators( std::pair<std::string, StructureData> const & structData ) const;
   std::string                                      generateStructMembers( std::pair<std::string, StructureData> const & structData ) const;
   std::string                                      generateStructs() const;
-  std::string                                      generateStructs( RequireData const & requireData, std::string const & title ) const;
+  std::string                                      generateStructs( ExtensionData const & extensionData ) const;
   std::string                                      generateCppModuleEnumUsings() const;
   std::string                                      generateCppModuleStructUsings() const;
   std::string                                      generateCppModuleUsings() const;

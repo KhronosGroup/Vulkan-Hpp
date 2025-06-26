@@ -7898,8 +7898,8 @@ std::string VulkanHppGenerator::generateFormatTraits() const
       {
         return generatePlaneCases(
           formatData,
-          [&]( PlaneData const & planeData ) { return "VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", planeData.compatible, false ); },
-          "VULKAN_HPP_NAMESPACE::Format::eUndefined" );
+          [&]( PlaneData const & planeData ) { return "Format::" + generateEnumValueName( "VkFormat", planeData.compatible, false ); },
+          "Format::eUndefined" );
       } );
   };
   auto generatePlaneCountCases = [this]( auto const formatIt )
@@ -7997,8 +7997,7 @@ std::string VulkanHppGenerator::generateFormatTraitsCases( EnumData const &     
 
       if ( predicate( formatIt->second ) )
       {
-        cases += "      case VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", formatIt->first, false ) + ": " +
-                 generator( formatIt->second ) + "\n";
+        cases += "      case Format::" + generateEnumValueName( "VkFormat", formatIt->first, false ) + ": " + generator( formatIt->second ) + "\n";
       }
     }
   }
@@ -8021,7 +8020,7 @@ std::string VulkanHppGenerator::generateFormatTraitsList( EnumData const & enumD
         {
           list += ", ";
         }
-        list += "VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", formatIt->first, false );
+        list += "Format::" + generateEnumValueName( "VkFormat", formatIt->first, false );
       }
     }
   }

@@ -108,8 +108,9 @@
   namespace detail
   {
     template <typename T>
-    void ignore( T const & ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool ignore( T const & ) VULKAN_HPP_NOEXCEPT
     {
+      return true;
     }
 
     VULKAN_HPP_INLINE typename ResultValueType<void>::type createResultValueType( Result result )

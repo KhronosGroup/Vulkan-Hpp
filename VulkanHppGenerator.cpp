@@ -8769,8 +8769,7 @@ ${objectTypeCases}
 
   auto const generateObjectTypeCases = [this]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedTypes )
   {
-    static const std::string objectTypeCaseTemplate =
-      "      case ObjectType::${objectType} : return DebugReportObjectTypeEXT::${debugReportObjectType};\n";
+    static const std::string objectTypeCaseTemplate = "      case ObjectType::${objectType} : return DebugReportObjectTypeEXT::${debugReportObjectType};\n";
 
     std::string objectTypeCases;
     for ( auto const & require : requireData )
@@ -14233,7 +14232,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
     {
       requireData.commands.push_back( readRequireCommand( child ) );
       auto commandIt = m_commands.find( requireData.commands.back().name );
-      if (commandIt != m_commands.end())
+      if ( commandIt != m_commands.end() )
       {
         checkForError( commandIt->second.exports.empty(),
                        commandIt->second.xmlLine,
@@ -14748,7 +14747,7 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * elemen
       checkForError( commandIt != m_commands.end(),
                      requireData.commands.back().xmlLine,
                      "feature <" + featureData.name + "> requires unknown command <" + requireData.commands.back().name + ">" );
-      checkForError( !commandIt->second.exports.empty(),
+      checkForError( ( 319 <= std::stoi( m_version ) ) && !commandIt->second.exports.empty(),
                      commandIt->second.xmlLine,
                      "command <" + commandIt->first + "> is required by feature <" + featureData.name + "> but is not marked as exported" );
       checkForError( std::ranges::includes( featureData.api, commandIt->second.exports ),

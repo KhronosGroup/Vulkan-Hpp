@@ -37,6 +37,7 @@ namespace VULKAN_HPP_NAMESPACE
     //=== ENUMs ===
     //=============
 
+#if defined( VULKAN_VIDEO_CODEC_H264STD_H_ )
     //=== vulkan_video_codec_h264std ===
 
     enum class H264ChromaFormatIdc
@@ -185,7 +186,9 @@ namespace VULKAN_HPP_NAMESPACE
       ePrecoded      = STD_VIDEO_H264_NON_VCL_NALU_TYPE_PRECODED,
       eInvalid       = STD_VIDEO_H264_NON_VCL_NALU_TYPE_INVALID
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_H264STD_DECODE_H_ )
     //=== vulkan_video_codec_h264std_decode ===
 
     enum class DecodeH264FieldOrderCount
@@ -194,7 +197,9 @@ namespace VULKAN_HPP_NAMESPACE
       eBottom  = STD_VIDEO_DECODE_H264_FIELD_ORDER_COUNT_BOTTOM,
       eInvalid = STD_VIDEO_DECODE_H264_FIELD_ORDER_COUNT_INVALID
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_H265STD_H_ )
     //=== vulkan_video_codec_h265std ===
 
     enum class H265ChromaFormatIdc
@@ -273,7 +278,9 @@ namespace VULKAN_HPP_NAMESPACE
       eExtendedSar = STD_VIDEO_H265_ASPECT_RATIO_IDC_EXTENDED_SAR,
       eInvalid     = STD_VIDEO_H265_ASPECT_RATIO_IDC_INVALID
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_VP9STD_H_ )
     //=== vulkan_video_codec_vp9std ===
 
     enum class VP9Profile
@@ -342,7 +349,9 @@ namespace VULKAN_HPP_NAMESPACE
       eRgb      = STD_VIDEO_VP9_COLOR_SPACE_RGB,
       eInvalid  = STD_VIDEO_VP9_COLOR_SPACE_INVALID
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_AV1STD_H_ )
     //=== vulkan_video_codec_av1std ===
 
     enum class AV1Profile
@@ -502,11 +511,13 @@ namespace VULKAN_HPP_NAMESPACE
       eReserved  = STD_VIDEO_AV1_CHROMA_SAMPLE_POSITION_RESERVED,
       eInvalid   = STD_VIDEO_AV1_CHROMA_SAMPLE_POSITION_INVALID
     };
+#endif
 
     //===============
     //=== STRUCTS ===
     //===============
 
+#if defined( VULKAN_VIDEO_CODEC_H264STD_H_ )
     //=== vulkan_video_codec_h264std ===
 
     struct H264SpsVuiFlags
@@ -960,7 +971,9 @@ namespace VULKAN_HPP_NAMESPACE
       int8_t                                                                     second_chroma_qp_index_offset = {};
       const VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::H264ScalingLists * pScalingLists                 = {};
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_H264STD_DECODE_H_ )
     //=== vulkan_video_codec_h264std_decode ===
 
     struct DecodeH264PictureInfoFlags
@@ -1137,7 +1150,9 @@ namespace VULKAN_HPP_NAMESPACE
       uint16_t                                                                                         reserved    = {};
       VULKAN_HPP_NAMESPACE::ArrayWrapper1D<int32_t, STD_VIDEO_DECODE_H264_FIELD_ORDER_COUNT_LIST_SIZE> PicOrderCnt = {};
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_H264STD_ENCODE_H_ )
     //=== vulkan_video_codec_h264std_encode ===
 
     struct EncodeH264WeightTableFlags
@@ -1688,7 +1703,9 @@ namespace VULKAN_HPP_NAMESPACE
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::H264DisableDeblockingFilterIdc::eDisabled;
       const VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::EncodeH264WeightTable * pWeightTable = {};
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_H265STD_H_ )
     //=== vulkan_video_codec_h265std ===
 
     struct H265DecPicBufMgr
@@ -2805,7 +2822,9 @@ namespace VULKAN_HPP_NAMESPACE
       const VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::H265ScalingLists *                          pScalingLists                             = {};
       const VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::H265PredictorPaletteEntries *               pPredictorPaletteEntries                  = {};
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_H265STD_DECODE_H_ )
     //=== vulkan_video_codec_h265std_decode ===
 
     struct DecodeH265PictureInfoFlags
@@ -2980,7 +2999,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::DecodeH265ReferenceInfoFlags flags          = {};
       int32_t                                                                        PicOrderCntVal = {};
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_H265STD_ENCODE_H_ )
     //=== vulkan_video_codec_h265std_encode ===
 
     struct EncodeH265WeightTableFlags
@@ -3513,7 +3534,9 @@ namespace VULKAN_HPP_NAMESPACE
       int32_t                                                           PicOrderCntVal = {};
       uint8_t                                                           TemporalId     = {};
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_VP9STD_H_ )
     //=== vulkan_video_codec_vp9std ===
 
     struct VP9ColorConfigFlags
@@ -3772,7 +3795,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, STD_VIDEO_VP9_MAX_SEGMENTS>                            FeatureEnabled          = {};
       VULKAN_HPP_NAMESPACE::ArrayWrapper2D<int16_t, STD_VIDEO_VP9_MAX_SEGMENTS, STD_VIDEO_VP9_SEG_LVL_MAX> FeatureData             = {};
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_VP9STD_DECODE_H_ )
     //=== vulkan_video_codec_vp9std_decode ===
 
     struct DecodeVP9PictureInfoFlags
@@ -3885,7 +3910,9 @@ namespace VULKAN_HPP_NAMESPACE
       const VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9LoopFilter *   pLoopFilter    = {};
       const VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::VP9Segmentation * pSegmentation  = {};
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_AV1STD_H_ )
     //=== vulkan_video_codec_av1std ===
 
     struct AV1ColorConfigFlags
@@ -4725,7 +4752,9 @@ namespace VULKAN_HPP_NAMESPACE
       const VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::AV1ColorConfig * pColorConfig           = {};
       const VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::AV1TimingInfo *  pTimingInfo            = {};
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_AV1STD_DECODE_H_ )
     //=== vulkan_video_codec_av1std_decode ===
 
     struct DecodeAV1PictureInfoFlags
@@ -4959,7 +4988,9 @@ namespace VULKAN_HPP_NAMESPACE
       uint8_t                                                                       OrderHint        = {};
       VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, STD_VIDEO_AV1_NUM_REF_FRAMES>   SavedOrderHints  = {};
     };
+#endif
 
+#if defined( VULKAN_VIDEO_CODEC_AV1STD_ENCODE_H_ )
     //=== vulkan_video_codec_av1std_encode ===
 
     struct EncodeAV1DecoderModelInfo
@@ -5372,6 +5403,7 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::ArrayWrapper1D<uint8_t, 3>               reserved1  = {};
       const VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::EncodeAV1ExtensionHeader * pExtensionHeader = {};
     };
+#endif
 
   }  // namespace VULKAN_HPP_VIDEO_NAMESPACE
 }  // namespace VULKAN_HPP_NAMESPACE

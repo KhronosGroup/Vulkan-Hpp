@@ -14747,7 +14747,7 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * elemen
       checkForError( commandIt != m_commands.end(),
                      requireData.commands.back().xmlLine,
                      "feature <" + featureData.name + "> requires unknown command <" + requireData.commands.back().name + ">" );
-      checkForError( ( 319 <= std::stoi( m_version ) ) && !commandIt->second.exports.empty(),
+      checkForError( ( std::stoi( m_version ) < 319 ) || !commandIt->second.exports.empty(),
                      commandIt->second.xmlLine,
                      "command <" + commandIt->first + "> is required by feature <" + featureData.name + "> but is not marked as exported" );
       checkForError( std::ranges::includes( featureData.api, commandIt->second.exports ),

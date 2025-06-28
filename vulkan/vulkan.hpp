@@ -56,7 +56,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-static_assert( VK_HEADER_VERSION == 319, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 320, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -7513,28 +7513,24 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
-  VULKAN_HPP_DEPRECATED( "This define is deprecated. VK_MAKE_API_VERSION should be used instead." )
   VULKAN_HPP_CONSTEXPR uint32_t makeVersion( T const major, T const minor, T const patch )
   {
     return ( ( ( (uint32_t)( major ) ) << 22U ) | ( ( (uint32_t)( minor ) ) << 12U ) | ( (uint32_t)( patch ) ) );
   }
 
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
-  VULKAN_HPP_DEPRECATED( "This define is deprecated. VK_API_VERSION_MAJOR should be used instead." )
   VULKAN_HPP_CONSTEXPR uint32_t versionMajor( T const version )
   {
     return ( (uint32_t)( version ) >> 22U );
   }
 
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
-  VULKAN_HPP_DEPRECATED( "This define is deprecated. VK_API_VERSION_MINOR should be used instead." )
   VULKAN_HPP_CONSTEXPR uint32_t versionMinor( T const version )
   {
     return ( ( (uint32_t)( version ) >> 12U ) & 0x3FFU );
   }
 
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
-  VULKAN_HPP_DEPRECATED( "This define is deprecated. VK_API_VERSION_PATCH should be used instead." )
   VULKAN_HPP_CONSTEXPR uint32_t versionPatch( T const version )
   {
     return ( (uint32_t)( version ) & 0xFFFU );

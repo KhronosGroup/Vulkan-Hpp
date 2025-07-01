@@ -14,11 +14,6 @@
 
 vulkan_hpp__setup_sample_raii(
     NAME RayTracing
-    INCLUDE_DIRS
-        ${CMAKE_SOURCE_DIR}/samples/RayTracing/common
-        ${CMAKE_SOURCE_DIR}/samples/RayTracing/vulkannv 
-        ${CMAKE_SOURCE_DIR}/stb
-        ${CMAKE_SOURCE_DIR}/tinyobjloader
     HEADERS
         CameraManipulator.hpp
     SOURCES

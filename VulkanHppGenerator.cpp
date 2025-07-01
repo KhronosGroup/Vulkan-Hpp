@@ -1637,7 +1637,8 @@ std::vector<size_t> VulkanHppGenerator::determineConstPointerParams( std::vector
 std::vector<std::string> VulkanHppGenerator::determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
                                                                  std::map<size_t, VectorParamData> const &          vectorParams,
                                                                  std::vector<size_t> const &                        returnParams,
-                                                                 std::set<size_t> const &                           templatedParams ) const
+                                                                 std::set<size_t> const &                           templatedParams,
+                                                                 bool                                               raii ) const
 {
   std::vector<std::string> dataTypes;
   for ( auto rp : returnParams )
@@ -1659,11 +1660,12 @@ std::vector<std::string> VulkanHppGenerator::determineDataTypes( std::vector<Vul
     }
     else if ( ( vectorParamIt != vectorParams.end() ) && vectorParamIt->second.byStructure )
     {
-      dataTypes.push_back( trimEnd( stripPostfix( vectorMemberByStructure( params[rp].type.type ).type.compose( "VULKAN_HPP_NAMESPACE" ), "*" ) ) );
+      dataTypes.push_back(
+        trimEnd( stripPostfix( vectorMemberByStructure( params[rp].type.type ).type.compose2( raii ? "VULKAN_HPP_NAMESPACE::" : "" ), "*" ) ) );
     }
     else
     {
-      dataTypes.push_back( trimEnd( stripPostfix( params[rp].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" ) ) );
+      dataTypes.push_back( trimEnd( stripPostfix( params[rp].type.compose2( raii ? "VULKAN_HPP_NAMESPACE::" : "" ), "*" ) ) );
     }
   }
   return dataTypes;
@@ -2255,6 +2257,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
                                                               std::set<size_t> const &                  singularParams,
                                                               std::set<size_t> const &                  templatedParams,
                                                               std::vector<size_t> const &               chainedReturnParams,
+                                                              bool                                      raii,
                                                               bool                                      definition,
                                                               CommandFlavourFlags                       flavourFlags,
                                                               bool                                      withDispatcher ) const
@@ -2269,7 +2272,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
     {
       bool hasDefaultAssignment = false;
 
-      std::string composedType = params[i].type.compose( "VULKAN_HPP_NAMESPACE" );
+      std::string composedType = params[i].type.compose2( raii ? "VULKAN_HPP_NAMESPACE::" : "" );
 
       if ( singularParams.contains( i ) )
       {
@@ -2332,8 +2335,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
             {
               type.replace( pos, 4, stripPrefix( params[i].name, "p" ) + "Type" );
             }
-            arguments.push_back( std::string( "VULKAN_HPP_NAMESPACE::" ) + ( params[i].strideParam.first.empty() ? "" : "Strided" ) + "ArrayProxy<" + type +
-                                 "> const & " + name );
+            arguments.push_back( std::string( params[i].strideParam.first.empty() ? "" : "Strided" ) + "ArrayProxy<" + type + "> const & " + name );
             if ( params[i].optional && !definition )
             {
               assert( params[i].strideParam.first.empty() );
@@ -2428,7 +2430,7 @@ std::string VulkanHppGenerator::generateArgumentListStandard( std::vector<ParamD
     {
       // parameters named "objectType" collide with the member variable -> append an _ to here
       std::string paramName = ( definition && ( params[i].name == "objectType" ) ) ? "objectType_" : params[i].name;
-      argumentList += params[i].type.compose( "VULKAN_HPP_NAMESPACE" ) + " " + paramName + generateCArraySizes( params[i].arraySizes ) + ", ";
+      argumentList += params[i].type.compose2( "" ) + " " + paramName + generateCArraySizes( params[i].arraySizes ) + ", ";
     }
   }
   if ( withDispatcher )
@@ -2836,7 +2838,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedConstPointer( ParamD
     }
     else if ( param.optional )
     {
-      argument = "static_cast<" + param.type.compose( "VULKAN_HPP_NAMESPACE" ) + ">( " + name + " )";
+      argument = name + ".get()";
     }
     else
     {
@@ -3064,24 +3066,24 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
             std::ranges::any_of( structIt->second.members, []( MemberData const & md ) { return md.name == "pPipelineBinaries"; } ) );
 #endif
 
-    const std::string callSequenceTemplate = R"(    VULKAN_HPP_NAMESPACE::Result result;
+    const std::string callSequenceTemplate = R"(    Result result;
     if ( createInfo.pKeysAndDataInfo )
     {
       VULKAN_HPP_ASSERT( !createInfo.pipeline && !createInfo.pPipelineCreateInfo );
       pipelineBinaries.resize( createInfo.pKeysAndDataInfo->binaryCount );
       binaries.pipelineBinaryCount = createInfo.pKeysAndDataInfo->binaryCount;
       binaries.pPipelineBinaries = pipelineBinaries.data();
-      result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${callArguments} ) );
+      result = static_cast<Result>( ${dispatcher}${vkCommand}( ${callArguments} ) );
     }
     else
     {
       VULKAN_HPP_ASSERT( !createInfo.pipeline ^ !createInfo.pPipelineCreateInfo );
-      result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${callArguments} ) );
-      if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      result = static_cast<Result>( ${dispatcher}${vkCommand}( ${callArguments} ) );
+      if ( result == Result::eSuccess )
       {
         pipelineBinaries.resize( binaries.pipelineBinaryCount );
         binaries.pPipelineBinaries = pipelineBinaries.data();
-        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${callArguments} ) );
+        result = static_cast<Result>( ${dispatcher}${vkCommand}( ${callArguments} ) );
       }
     }
 )";
@@ -3125,15 +3127,15 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
     {
       assert( vectorParams.size() == 1 );
       // chained data needs some more handling!!
-      std::string vectorElementType = stripPostfix( commandData.params[vectorParamIt->first].type.compose( "VULKAN_HPP_NAMESPACE" ), " *" );
+      std::string vectorElementType = stripPostfix( commandData.params[vectorParamIt->first].type.compose2( "" ), " *" );
 
       if ( commandData.returnType == "VkResult" )
       {
-        const std::string callSequenceTemplate = R"(VULKAN_HPP_NAMESPACE::Result result;
+        const std::string callSequenceTemplate = R"(Result result;
     do
     {
-      result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${firstCallArguments} ) );
-      if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ${counterName} )
+      result = static_cast<Result>( ${dispatcher}${vkCommand}( ${firstCallArguments} ) );
+      if ( ( result == Result::eSuccess ) && ${counterName} )
       {
         structureChains.resize( ${counterName} );
         ${vectorName}.resize( ${counterName} );
@@ -3141,9 +3143,9 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
         {
           ${vectorName}[i].pNext = structureChains[i].template get<${vectorElementType}>().pNext;
         }
-        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${secondCallArguments} ) );
+        result = static_cast<Result>( ${dispatcher}${vkCommand}( ${secondCallArguments} ) );
       }
-    } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );)";
+    } while ( result == Result::eIncomplete );)";
 
         return replaceWithMap( callSequenceTemplate,
                                { { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIt->second.lenParam].name, "p" ) ) },
@@ -3211,11 +3213,11 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
           else
           {
             std::string const callSequenceTemplate =
-              R"(VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${firstCallArguments} ) );
-      if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+              R"(Result result = static_cast<Result>( ${dispatcher}${vkCommand}( ${firstCallArguments} ) );
+      if ( result == Result::eSuccess )
       {
         ${resizes}
-        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${secondCallArguments} ) );
+        result = static_cast<Result>( ${dispatcher}${vkCommand}( ${secondCallArguments} ) );
       }
 )";
 
@@ -3230,16 +3232,16 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
         case 3:
           {
             assert( ( commandData.successCodes[0] == "VK_SUCCESS" ) && ( commandData.successCodes[1] == "VK_INCOMPLETE" ) );
-            std::string const callSequenceTemplate = R"(VULKAN_HPP_NAMESPACE::Result result;
+            std::string const callSequenceTemplate = R"(Result result;
     do
     {
-      result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${firstCallArguments} ) );
-      if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ${counterName} )
+      result = static_cast<Result>( ${dispatcher}${vkCommand}( ${firstCallArguments} ) );
+      if ( ( result == Result::eSuccess ) && ${counterName} )
       {
         ${resizes}
-        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${secondCallArguments} ) );
+        result = static_cast<Result>( ${dispatcher}${vkCommand}( ${secondCallArguments} ) );
       }
-    } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );)";
+    } while ( result == Result::eIncomplete );)";
 
             return replaceWithMap( callSequenceTemplate,
                                    { { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIt->second.lenParam].name, "p" ) ) },
@@ -3288,8 +3290,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
   }
   else if ( ( commandData.returnType == "VkResult" ) && ( ( 1 < commandData.successCodes.size() ) || !commandData.errorCodes.empty() ) )
   {
-    std::string const callSequenceTemplate =
-      R"(VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${callArguments} ) );)";
+    std::string const callSequenceTemplate = R"(Result result = static_cast<Result>( ${dispatcher}${vkCommand}( ${callArguments} ) );)";
 
     std::string callArguments =
       generateCallArgumentsEnhanced( commandData, initialSkipCount, false, singularParams, templatedParams, raii, raiiFactory, flavourFlags );
@@ -3475,7 +3476,7 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
     needsVectorSizeCheck( commandData.params, vectorParams, returnParams, singularParams, skippedParams );
   const bool enumerating = determineEnumeration( vectorParams, returnParams );
 
-  std::vector<std::string> dataTypes = determineDataTypes( commandData.params, vectorParams, returnParams, templatedParams );
+  std::vector<std::string> dataTypes = determineDataTypes( commandData.params, vectorParams, returnParams, templatedParams, false );
   std::string              dataType  = combineDataTypes( vectorParams, returnParams, enumerating, dataTypes, flavourFlags, false );
 
   std::string argumentTemplates = generateArgumentTemplates( commandData.params, returnParams, vectorParams, templatedParams, chainedReturnParams, false );
@@ -3488,10 +3489,19 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
   std::string className           = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "";
   std::string classSeparator      = commandData.handle.empty() ? "" : "::";
   std::string commandName         = generateCommandName( name, commandData.params, initialSkipCount, flavourFlags );
-  std::string argumentList        = generateArgumentListEnhanced(
-    commandData.params, returnParams, vectorParams, skippedParams, singularParams, templatedParams, chainedReturnParams, definition, flavourFlags, true );
-  std::string constString    = commandData.handle.empty() ? "" : " const";
-  std::string noexceptString = generateNoExcept( commandData.errorCodes, returnParams, vectorParams, flavourFlags, vectorSizeCheck.first, false );
+  std::string argumentList        = generateArgumentListEnhanced( commandData.params,
+                                                           returnParams,
+                                                           vectorParams,
+                                                           skippedParams,
+                                                           singularParams,
+                                                           templatedParams,
+                                                           chainedReturnParams,
+                                                           false,
+                                                           definition,
+                                                           flavourFlags,
+                                                           true );
+  std::string constString         = commandData.handle.empty() ? "" : " const";
+  std::string noexceptString      = generateNoExcept( commandData.errorCodes, returnParams, vectorParams, flavourFlags, vectorSizeCheck.first, false );
 
   if ( definition )
   {
@@ -3505,7 +3515,7 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
     std::string dataSizeChecks = generateDataSizeChecks( commandData, returnParams, dataTypes, vectorParams, templatedParams, singular );
     std::string callSequence   = generateCallSequence(
       name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, templatedParams, chainedReturnParams, flavourFlags, false, false );
-    std::string resultCheck     = generateResultCheck( commandData, className, classSeparator, commandName, enumerating );
+    std::string resultCheck     = generateResultCheck( commandData, className, classSeparator, commandName, enumerating, false );
     std::string returnStatement = generateReturnStatement( name,
                                                            commandData,
                                                            returnVariable,
@@ -6083,7 +6093,7 @@ std::string VulkanHppGenerator::generateDataDeclarations( CommandData const &   
     case 0: return "";  // no returnParams -> no data declarations
     case 1:
       return generateDataDeclarations1Return(
-        commandData, returnParams, vectorParams, templatedParams, flavourFlags, dataTypes, dataType, returnType, returnVariable );
+        commandData, returnParams, vectorParams, templatedParams, flavourFlags, raii, dataTypes, dataType, returnType, returnVariable );
     case 2:
       assert( !( flavourFlags & CommandFlavourFlagBits::unique ) );
       return generateDataDeclarations2Returns( commandData, returnParams, vectorParams, flavourFlags, raii, dataTypes, dataType, returnVariable );
@@ -6099,6 +6109,7 @@ std::string VulkanHppGenerator::generateDataDeclarations1Return( CommandData con
                                                                  std::map<size_t, VectorParamData> const & vectorParams,
                                                                  std::set<size_t> const &                  templatedParams,
                                                                  CommandFlavourFlags                       flavourFlags,
+                                                                 bool                                      raii,
                                                                  std::vector<std::string> const &          dataTypes,
                                                                  std::string const &                       dataType,
                                                                  std::string const &                       returnType,
@@ -6109,14 +6120,19 @@ std::string VulkanHppGenerator::generateDataDeclarations1Return( CommandData con
   {
     if ( ( vectorParamIt == vectorParams.end() ) || ( flavourFlags & CommandFlavourFlagBits::singular ) )
     {
-      std::string const dataDeclarationsTemplate = R"(${returnType} ${returnVariable};)";
-      if ( dataType.starts_with( "VULKAN_HPP_NAMESPACE" ) )
+      std::string const dataDeclarationsTemplate = R"(${dataType} ${dataVariable};)";
+      if ( dataType.starts_with( "VULKAN_HPP_NAMESPACE::" ) )
       {
-        return replaceWithMap( dataDeclarationsTemplate, { { "returnType", dataType }, { "returnVariable", returnVariable } } );
+        return replaceWithMap( dataDeclarationsTemplate, { { "dataType", dataType }, { "dataVariable", returnVariable } } );
+      }
+      else if ( m_types.contains( "Vk" + dataType ) )
+      {
+        return replaceWithMap( dataDeclarationsTemplate,
+                               { { "dataType", ( raii ? "VULKAN_HPP_NAMESPACE::" : "" ) + dataType }, { "dataVariable", returnVariable } } );
       }
       else
       {
-        return replaceWithMap( dataDeclarationsTemplate, { { "returnType", returnType }, { "returnVariable", returnVariable } } );
+        return replaceWithMap( dataDeclarationsTemplate, { { "dataType", returnType }, { "dataVariable", returnVariable } } );
       }
     }
     else
@@ -6134,7 +6150,7 @@ std::string VulkanHppGenerator::generateDataDeclarations1Return( CommandData con
         return replaceWithMap( dataDeclarationTemplate,
                                { { "dataType", dataType },
                                  { "returnVariable", returnVariable },
-                                 { "structType", stripPostfix( commandData.params[vectorParamIt->first].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" ) },
+                                 { "structType", stripPostfix( commandData.params[vectorParamIt->first].type.compose2( "" ), "*" ) },
                                  { "structVariable", startLowerCase( stripPrefix( commandData.params[vectorParamIt->first].name, "p" ) ) },
                                  { "vectorAllocator", stripPrefix( vectorAllocator, "," ) } } );
       }
@@ -6335,7 +6351,7 @@ std::string VulkanHppGenerator::generateDataDeclarations3Returns( CommandData co
         }
 
         std::string const chainedDataDeclarationsTemplate =
-          R"(std::pair<VULKAN_HPP_NAMESPACE::StructureChain<X,Y,Z...>,std::vector<${vectorElementType}${vectorAllocatorType}>> data_${pairConstructor};
+          R"(std::pair<StructureChain<X,Y,Z...>,std::vector<${vectorElementType}${vectorAllocatorType}>> data_${pairConstructor};
     ${valueType} & ${valueVariable} = data_.first.template get<${valueType}>();
     std::vector<${vectorElementType}${vectorAllocatorType}> & ${vectorVariable} = data_.second;
     ${counterType} ${counterVariable};)";
@@ -6427,7 +6443,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
       assert( !vectorParams.contains( returnParams[0] ) );
       assert( ( vectorParamIt != vectorParams.end() ) && ( vectorParamIt->second.lenParam == returnParams[0] ) );
 
-      std::string vectorElementType = stripPostfix( commandData.params[vectorParamIt->first].type.compose( "VULKAN_HPP_NAMESPACE" ), " *" );
+      std::string vectorElementType = stripPostfix( commandData.params[vectorParamIt->first].type.compose2( "" ), " *" );
 
       if ( enumerating )
       {
@@ -6537,7 +6553,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
     std::string uniqueVectorName = "unique" + startUpperCase( vectorName );
 
     std::string const dataPreparationTemplate =
-      R"(std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::${handleType}, Dispatch>, ${handleType}Allocator> ${uniqueVectorName}${vectorAllocator};
+      R"(std::vector<UniqueHandle<${handleType}, Dispatch>, ${handleType}Allocator> ${uniqueVectorName}${vectorAllocator};
     ${uniqueVectorName}.reserve( ${vectorSize} );
     ${deleterDefinition};
     for ( auto const & ${elementName} : ${vectorName} )
@@ -6611,18 +6627,18 @@ std::string VulkanHppGenerator::generateDecoratedReturnType( CommandData const &
   if ( ( 1 < commandData.successCodes.size() ) && returnParams.empty() && !chained )
   {
     assert( ( commandData.returnType == "VkResult" ) && !unique );
-    decoratedReturnType = "VULKAN_HPP_NAMESPACE::Result";
+    decoratedReturnType = "Result";
   }
   else if ( ( commandData.returnType != "VkResult" ) && ( commandData.returnType != "void" ) )
   {
     assert( returnParams.empty() && !chained && !unique );
     if ( commandData.returnType.starts_with( "Vk" ) )
     {
-      decoratedReturnType = generateNamespacedType( commandData.returnType );
+      decoratedReturnType = stripPrefix( commandData.returnType, "Vk" );
     }
     else if ( commandData.returnType.starts_with( "PFN_vk" ) )
     {
-      decoratedReturnType = "VULKAN_HPP_NAMESPACE::PFN_" + stripPrefix( commandData.returnType, "PFN_vk" );
+      decoratedReturnType = "PFN_" + stripPrefix( commandData.returnType, "PFN_vk" );
     }
     else
     {
@@ -6651,7 +6667,7 @@ std::string VulkanHppGenerator::generateDecoratedReturnType( CommandData const &
                                                                               ( commandData.successCodes[1] == "VK_INCOMPLETE" ) ) ) ) ||
                 ( ( returnParams.size() == 3 ) && vectorParams.empty() ) ) )
     {
-      decoratedReturnType = ( raii ? "std::pair<VULKAN_HPP_NAMESPACE::Result, " : "ResultValue<" ) + returnType + ">";
+      decoratedReturnType = ( raii ? "std::pair<Result, " : "ResultValue<" ) + returnType + ">";
     }
     else
     {
@@ -9327,14 +9343,23 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandEnhanced( std::string c
   assert( chainedReturnParams.size() <= 1 );
 
   const bool               enumerating = determineEnumeration( vectorParams, returnParams );
-  std::vector<std::string> dataTypes   = determineDataTypes( commandData.params, vectorParams, returnParams, templatedParams );
+  std::vector<std::string> dataTypes   = determineDataTypes( commandData.params, vectorParams, returnParams, templatedParams, true );
   std::string              dataType    = combineDataTypes( vectorParams, returnParams, enumerating, dataTypes, flavourFlags, true );
 
   std::string argumentTemplates = generateArgumentTemplates( commandData.params, returnParams, vectorParams, templatedParams, chainedReturnParams, true );
-  std::string argumentList      = generateArgumentListEnhanced(
-    commandData.params, returnParams, vectorParams, skippedParams, singularParams, templatedParams, chainedReturnParams, definition, flavourFlags, false );
-  std::string commandName = generateCommandName( name, commandData.params, initialSkipCount, flavourFlags );
-  std::string nodiscard   = generateNoDiscard(
+  std::string argumentList      = generateArgumentListEnhanced( commandData.params,
+                                                           returnParams,
+                                                           vectorParams,
+                                                           skippedParams,
+                                                           singularParams,
+                                                           templatedParams,
+                                                           chainedReturnParams,
+                                                           true,
+                                                           definition,
+                                                           flavourFlags,
+                                                           false );
+  std::string commandName       = generateCommandName( name, commandData.params, initialSkipCount, flavourFlags );
+  std::string nodiscard         = generateNoDiscard(
     !returnParams.empty() || ( ( commandData.returnType != "VkResult" ) && ( commandData.returnType != "void" ) ), 1 < commandData.successCodes.size(), false );
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck =
     needsVectorSizeCheck( commandData.params, vectorParams, returnParams, singularParams, skippedParams );
@@ -9369,7 +9394,7 @@ ${vectorSizeCheck}
     std::string dataPreparation =
       generateDataPreparation( commandData, initialSkipCount, returnParams, vectorParams, templatedParams, flavourFlags, enumerating, dataTypes );
     std::string dataSizeChecks  = generateDataSizeChecks( commandData, returnParams, dataTypes, vectorParams, templatedParams, singular );
-    std::string resultCheck     = generateResultCheck( commandData, className, "::", commandName, enumerating );
+    std::string resultCheck     = generateResultCheck( commandData, className, "::", commandName, enumerating, true );
     std::string returnStatement = generateReturnStatement( name,
                                                            commandData,
                                                            returnVariable,
@@ -9476,7 +9501,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
   if ( definition )
   {
     std::string              className      = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "Context";
-    std::vector<std::string> dataTypes      = determineDataTypes( commandData.params, vectorParams, returnParams, {} );
+    std::vector<std::string> dataTypes      = determineDataTypes( commandData.params, vectorParams, returnParams, {}, true );
     std::string              dataType       = combineDataTypes( vectorParams, returnParams, enumerating, dataTypes, flavourFlags, true );
     std::string              returnVariable = generateReturnVariable( commandData, returnParams, vectorParams, flavourFlags );
     std::string              vulkanType;
@@ -10144,7 +10169,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorTakeOwnership( std:
       assert( 1 < handle.second.constructorIts[i]->second.successCodes.size() );
     }
 #endif
-    constructorArguments += ", VULKAN_HPP_NAMESPACE::Result successCode = VULKAN_HPP_NAMESPACE::Result::eSuccess";
+    constructorArguments += ", Result successCode = Result::eSuccess";
     if ( isMultiSuccessCodeConstructor( handle.second.constructorIts ) )
     {
       initializationList += ", m_constructorSuccessCode( successCode )";
@@ -10328,7 +10353,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
   if ( multiSuccessCodeContructor )
   {
     getConstructorSuccessCode = R"(
-    VULKAN_HPP_NAMESPACE::Result getConstructorSuccessCode() const
+    Result getConstructorSuccessCode() const
     {
       return m_constructorSuccessCode;
     }
@@ -10417,12 +10442,12 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
 
   if ( multiSuccessCodeContructor )
   {
-    clearMembers += "\n        m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;";
-    memberVariables += "\n    VULKAN_HPP_NAMESPACE::Result m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;";
+    clearMembers += "\n        m_constructorSuccessCode = Result::eErrorUnknown;";
+    memberVariables += "\n    Result m_constructorSuccessCode = Result::eErrorUnknown;";
     swapMembers += "\n      std::swap( m_constructorSuccessCode, rhs.m_constructorSuccessCode );";
     moveConstructorInitializerList += "m_constructorSuccessCode( VULKAN_HPP_NAMESPACE::exchange( rhs.m_constructorSuccessCode, {} ) ), ";
     moveAssignmentInstructions += "\n          std::swap( m_constructorSuccessCode, rhs.m_constructorSuccessCode );";
-    releaseMembers += "\n        m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;";
+    releaseMembers += "\n        m_constructorSuccessCode = Result::eErrorUnknown;";
   }
 
   if ( handle.first == "VkInstance" )
@@ -10677,8 +10702,12 @@ std::string VulkanHppGenerator::generateResultAssignment( CommandData const & co
   return resultAssignment;
 }
 
-std::string VulkanHppGenerator::generateResultCheck(
-  CommandData const & commandData, std::string const & className, std::string const & classSeparator, std::string commandName, bool enumerating ) const
+std::string VulkanHppGenerator::generateResultCheck( CommandData const & commandData,
+                                                     std::string const & className,
+                                                     std::string const & classSeparator,
+                                                     std::string         commandName,
+                                                     bool                enumerating,
+                                                     bool                raii ) const
 {
   std::string resultCheck;
   if ( !commandData.errorCodes.empty() )
@@ -10686,11 +10715,14 @@ std::string VulkanHppGenerator::generateResultCheck(
     std::string successCodeList = generateSuccessCodeList( commandData.successCodes, enumerating );
 
     std::string const resultCheckTemplate =
-      R"(VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );)";
+      R"(${namespace}detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );)";
 
-    resultCheck = replaceWithMap(
-      resultCheckTemplate,
-      { { "className", className }, { "classSeparator", classSeparator }, { "commandName", commandName }, { "successCodeList", successCodeList } } );
+    resultCheck = replaceWithMap( resultCheckTemplate,
+                                  { { "className", className },
+                                    { "classSeparator", classSeparator },
+                                    { "commandName", commandName },
+                                    { "namespace", raii ? "VULKAN_HPP_NAMESPACE::" : "" },
+                                    { "successCodeList", successCodeList } } );
   }
   return resultCheck;
 }
@@ -10792,19 +10824,22 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
         if ( returnVariable.empty() )
         {
           assert( !unique );
-          returnStatement = "return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result );";
+          returnStatement = "return detail::createResultValueType( result );";
         }
         else if ( unique )
         {
           assert( returnParam != INVALID_INDEX );
-          returnStatement = "return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, ";
+          returnStatement = "return detail::createResultValueType( result, ";
           if ( dataType.starts_with( "std::" ) )
           {
             returnStatement += "std::move( unique" + startUpperCase( returnVariable ) + " )";
           }
           else
           {
-            assert( dataType.starts_with( "VULKAN_HPP_NAMESPACE::" ) );
+#if !defined( NDEBUG )
+            auto typeIt = m_types.find( "Vk" + dataType );
+            assert( ( typeIt != m_types.end() ) && ( typeIt->second.category == TypeCategory::Handle ) );
+#endif
             returnStatement +=
               returnType + "( " + returnVariable + ", " + generateObjectDeleter( commandName, commandData, initialSkipCount, returnParam ) + " )";
           }
@@ -10812,7 +10847,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
         }
         else
         {
-          returnStatement = "return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( " + returnVariable + " ) );";
+          returnStatement = "return detail::createResultValueType( result, std::move( " + returnVariable + " ) );";
         }
       }
     }
@@ -10821,7 +10856,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
       if ( returnVariable.empty() )
       {
         assert( !unique );
-        returnStatement = "return static_cast<VULKAN_HPP_NAMESPACE::" + stripPrefix( commandData.returnType, "Vk" ) + ">( result );";
+        returnStatement = "return static_cast<" + stripPrefix( commandData.returnType, "Vk" ) + ">( result );";
       }
       else if ( unique )
       {
@@ -10841,7 +10876,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
       }
       else
       {
-        assert( decoratedReturnType.starts_with( raii ? "std::pair<VULKAN_HPP_NAMESPACE::Result, " : "ResultValue<" ) && decoratedReturnType.ends_with( ">" ) );
+        assert( decoratedReturnType.starts_with( raii ? "std::pair<Result, " : "ResultValue<" ) && decoratedReturnType.ends_with( ">" ) );
         returnStatement = "return " + ( raii ? "std::make_pair" : decoratedReturnType ) + "( result, std::move( " + returnVariable + " ) );";
       }
     }
@@ -10884,7 +10919,7 @@ std::string VulkanHppGenerator::generateReturnType( std::vector<size_t> const & 
       if ( chained )
       {
         assert( vectorParams.empty() );
-        returnType = "VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>";
+        returnType = "StructureChain<X, Y, Z...>";
       }
       else if ( unique )
       {
@@ -10967,7 +11002,7 @@ std::string VulkanHppGenerator::generateReturnType( std::vector<size_t> const & 
         assert( ( vectorIt != vectorParams.end() ) && ( vectorIt->second.lenParam == returnParams[1] ) );
         assert( !vectorParams.contains( returnParams[0] ) );
 #endif
-        returnType = "std::pair<VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>, std::vector<" + dataTypes[2] +
+        returnType = "std::pair<StructureChain<X, Y, Z...>, std::vector<" + dataTypes[2] +
                      ( raii ? "" : ( ", " + startUpperCase( dataTypes[2] ) + "Allocator" ) ) + ">>";
       }
       else
@@ -12555,9 +12590,9 @@ std::string VulkanHppGenerator::generateSuccessCheck( std::vector<std::string> c
 std::string VulkanHppGenerator::generateSuccessCode( std::string const & code ) const
 {
   std::string tag = findTag( code );
-  // on each success code: prepend 'VULKAN_HPP_NAMESPACE::Result::e', strip "VK_" and a tag, convert it to camel
+  // on each success code: prepend 'Result::e', strip "VK_" and a tag, convert it to camel
   // case, and add the tag again
-  return "VULKAN_HPP_NAMESPACE::Result::e" + toCamelCase( stripPostfix( stripPrefix( code, "VK_" ), tag ) ) + tag;
+  return "Result::e" + toCamelCase( stripPostfix( stripPrefix( code, "VK_" ), tag ) ) + tag;
 }
 
 std::string VulkanHppGenerator::generateSuccessCodeList( std::vector<std::string> const & successCodes, bool enumerating ) const

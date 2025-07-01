@@ -19,10 +19,17 @@
     {
       return m_ptr;
     }
+	
     RefType const * operator->() const VULKAN_HPP_NOEXCEPT
     {
       return m_ptr;
     }
+	
+    RefType const* get() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_ptr;
+    }
+	
     explicit operator bool() const VULKAN_HPP_NOEXCEPT
     {
       return !!m_ptr;

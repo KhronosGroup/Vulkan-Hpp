@@ -580,7 +580,8 @@ private:
   std::vector<std::string> determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
                                                std::map<size_t, VectorParamData> const &          vectorParams,
                                                std::vector<size_t> const &                        returnParams,
-                                               std::set<size_t> const &                           templatedParams ) const;
+                                               std::set<size_t> const &                           templatedParams,
+                                               bool                                               raii ) const;
   size_t                   determineDefaultStartIndex( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams ) const;
   bool                     determineEnumeration( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & returnParams ) const;
   size_t                   determineInitialSkipCount( std::string const & command ) const;
@@ -625,6 +626,7 @@ private:
                                                                                 std::set<size_t> const &                  singularParams,
                                                                                 std::set<size_t> const &                  templatedParams,
                                                                                 std::vector<size_t> const &               chainedReturnParams,
+                                                                                bool                                      raii,
                                                                                 bool                                      definition,
                                                                                 CommandFlavourFlags                       flavourFlags,
                                                                                 bool                                      withDispatcher ) const;
@@ -811,6 +813,7 @@ private:
                                                std::map<size_t, VectorParamData> const & vectorParams,
                                                std::set<size_t> const &                  templatedParams,
                                                CommandFlavourFlags                       flavourFlags,
+                                               bool                                      raii,
                                                std::vector<std::string> const &          dataTypes,
                                                std::string const &                       dataType,
                                                std::string const &                       returnType,
@@ -1005,8 +1008,12 @@ private:
   template <class Predicate, class Extraction>
   std::string generateReplacedExtensionsList( Predicate p, Extraction e ) const;
   std::string generateResultAssignment( CommandData const & commandData ) const;
-  std::string generateResultCheck(
-    CommandData const & commandData, std::string const & className, std::string const & classSeparator, std::string commandName, bool enumerating ) const;
+  std::string generateResultCheck( CommandData const & commandData,
+                                   std::string const & className,
+                                   std::string const & classSeparator,
+                                   std::string         commandName,
+                                   bool                enumerating,
+                                   bool                raii ) const;
   std::string
     generateResultCheckExpected( std::vector<std::string> const & successCodes, std::string const & className, std::string const & commandName ) const;
   std::string generateResultExceptions() const;

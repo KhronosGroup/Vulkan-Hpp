@@ -84,6 +84,12 @@ struct TypeInfo
            ( postfix.empty() ? "" : " " ) + postfix;
   }
 
+  std::string compose2( std::string prefixToAdd ) const
+  {
+    return prefix + ( prefix.empty() ? "" : " " ) + ( type.starts_with( "Vk" ) ? prefixToAdd : "" ) + stripPrefix( type, "Vk" ) +
+           ( postfix.empty() ? "" : " " ) + postfix;
+  }
+
   bool operator==( TypeInfo const & rhs ) const noexcept
   {
     return ( prefix == rhs.prefix ) && ( type == rhs.type ) && ( postfix == rhs.postfix );

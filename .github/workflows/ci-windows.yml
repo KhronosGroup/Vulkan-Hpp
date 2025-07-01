@@ -15,7 +15,7 @@ jobs:
     
     strategy:
       matrix:
-        os: [windows-2019, windows-2022]
+        os: [windows-2022, windows-2025]
         architecture: [x86, x64]
         cpp_standard: [11, 14, 17, 20, 23]
         build_type: [Debug, Release]

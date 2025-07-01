@@ -422,7 +422,7 @@ endfunction()
 function( vulkan_hpp__setup_sample )
 	set( options )
 	set( oneValueArgs FOLDER NAME PCH_REUSE )
-	set( multiValueArgs HEADERS INCLUDE_DIRS LIBS PCH SOURCES )
+	set( multiValueArgs HEADERS LIBS PCH SOURCES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 	if( NOT (VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC AND VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP) )
@@ -441,10 +441,6 @@ function( vulkan_hpp__setup_sample )
 
 	if( TARGET_FOLDER )
 		set_target_properties( ${TARGET_NAME} PROPERTIES FOLDER "${TARGET_FOLDER}" )
-	endif()
-
-	if( TARGET_INCLUDE_DIRS )
-		target_include_directories( ${TARGET_NAME} PUBLIC ${TARGET_INCLUDE_DIRS} )
 	endif()
 
 	if( TARGET_LIBS )
@@ -487,7 +483,7 @@ endfunction()
 function( vulkan_hpp__setup_sample_dynamic )
 	set( options )
 	set( oneValueArgs NAME )
-	set( multiValueArgs HEADERS INCLUDE_DIRS SOURCES )
+	set( multiValueArgs HEADERS SOURCES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 	if( NOT TARGET_NAME )
@@ -501,7 +497,6 @@ function( vulkan_hpp__setup_sample_dynamic )
 		NAME         ${TARGET_NAME}
 		FOLDER       Samples
 		PCH_REUSE    utils
-		INCLUDE_DIRS ${TARGET_INCLUDE_DIRS}
 		HEADERS      ${TARGET_HEADERS}
 		SOURCES      ${TARGET_SOURCES}
 		LIBS         utils )
@@ -510,7 +505,7 @@ endfunction()
 function( vulkan_hpp__setup_sample_raii )
 	set( options )
 	set( oneValueArgs NAME )
-	set( multiValueArgs HEADERS INCLUDE_DIRS SOURCES )
+	set( multiValueArgs HEADERS SOURCES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 	if( NOT TARGET_NAME )
@@ -524,7 +519,6 @@ function( vulkan_hpp__setup_sample_raii )
 		NAME         RAII_${TARGET_NAME}
 		FOLDER       RAII_Samples
 		PCH_REUSE    utils
-		INCLUDE_DIRS ${TARGET_INCLUDE_DIRS}
 		HEADERS      ${TARGET_HEADERS}
 		SOURCES      ${TARGET_SOURCES}
 		LIBS         utils )

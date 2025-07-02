@@ -8158,9 +8158,9 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
     {
       static const std::string cppTypeFromDebugReportObjectTypeEXTTemplate = R"(
   template <>
-  struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::e${className}>
+  struct CppType<DebugReportObjectTypeEXT, DebugReportObjectTypeEXT::e${className}>
   {
-    using Type = VULKAN_HPP_NAMESPACE::${className};
+    using Type = ${className};
   };
 )";
       cppType = replaceWithMap( cppTypeFromDebugReportObjectTypeEXTTemplate, { { "className", className } } );
@@ -8191,8 +8191,8 @@ ${enter}  class ${className}
     using CType = Vk${className};
     using NativeType = Vk${className};
 
-    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum};
-    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};
+    static VULKAN_HPP_CONST_OR_CONSTEXPR ObjectType objectType = ObjectType::${objTypeEnum};
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DebugReportObjectTypeEXT debugReportObjectType = DebugReportObjectTypeEXT::${debugReportObjectType};
 
   public:
     ${className}() VULKAN_HPP_NOEXCEPT {}    // = default; - try to workaround a compiler issue
@@ -8204,11 +8204,11 @@ ${enter}  class ${className}
     ${className} & operator=( ${className} && rhs ) = default;
 #else
     ${className}( ${className} && rhs ) VULKAN_HPP_NOEXCEPT
-      : m_${memberName}( VULKAN_HPP_NAMESPACE::exchange( rhs.m_${memberName}, {} ) )
+      : m_${memberName}( exchange( rhs.m_${memberName}, {} ) )
     {}
     ${className} & operator=( ${className} && rhs ) VULKAN_HPP_NOEXCEPT
     {
-      m_${memberName} = VULKAN_HPP_NAMESPACE::exchange( rhs.m_${memberName}, {} );
+      m_${memberName} = exchange( rhs.m_${memberName}, {} );
       return *this;
     }
 #endif
@@ -8256,9 +8256,9 @@ ${typesafeConversionConditionalEnd}
   };
 
   template <>
-  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum}>
+  struct CppType<ObjectType, ObjectType::${objTypeEnum}>
   {
-    using Type = VULKAN_HPP_NAMESPACE::${className};
+    using Type = ${className};
   };
 
 ${CppType}
@@ -8267,12 +8267,12 @@ ${CppType}
   template <>
   struct CppType<Vk${className}, VK_NULL_HANDLE>
   {
-    using Type = VULKAN_HPP_NAMESPACE::${className};
+    using Type = ${className};
   };
 #endif
 
   template <>
-  struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::${className}>
+  struct isVulkanHandleType<${className}>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };

@@ -9108,9 +9108,14 @@ ${moveAssignmentInstructions}
       return *this;
     }
 
-    VULKAN_HPP_NAMESPACE::${handleType} const & operator*() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NAMESPACE::${handleType} const & operator*() const & VULKAN_HPP_NOEXCEPT
     {
       return m_${handleName};
+    }
+
+    VULKAN_HPP_NAMESPACE::${handleType} const && operator*() const && VULKAN_HPP_NOEXCEPT
+    {
+      return std::move(m_${handleName});
     }
 
     operator VULKAN_HPP_NAMESPACE::${handleType}() const VULKAN_HPP_NOEXCEPT

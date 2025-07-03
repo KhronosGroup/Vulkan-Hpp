@@ -8830,9 +8830,14 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::DataGraphPipelineSessionARM const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::DataGraphPipelineSessionARM const & operator*() const & VULKAN_HPP_NOEXCEPT
       {
         return m_dataGraphPipelineSessionARM;
+      }
+
+      VULKAN_HPP_NAMESPACE::DataGraphPipelineSessionARM const && operator*() const && VULKAN_HPP_NOEXCEPT
+      {
+        return std::move( m_dataGraphPipelineSessionARM );
       }
 
       operator VULKAN_HPP_NAMESPACE::DataGraphPipelineSessionARM() const VULKAN_HPP_NOEXCEPT
@@ -14749,9 +14754,14 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::TensorARM const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::TensorARM const & operator*() const & VULKAN_HPP_NOEXCEPT
       {
         return m_tensorARM;
+      }
+
+      VULKAN_HPP_NAMESPACE::TensorARM const && operator*() const && VULKAN_HPP_NOEXCEPT
+      {
+        return std::move( m_tensorARM );
       }
 
       operator VULKAN_HPP_NAMESPACE::TensorARM() const VULKAN_HPP_NOEXCEPT
@@ -14875,9 +14885,14 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::TensorViewARM const & operator*() const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::TensorViewARM const & operator*() const & VULKAN_HPP_NOEXCEPT
       {
         return m_tensorViewARM;
+      }
+
+      VULKAN_HPP_NAMESPACE::TensorViewARM const && operator*() const && VULKAN_HPP_NOEXCEPT
+      {
+        return std::move( m_tensorViewARM );
       }
 
       operator VULKAN_HPP_NAMESPACE::TensorViewARM() const VULKAN_HPP_NOEXCEPT

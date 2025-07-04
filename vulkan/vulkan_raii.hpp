@@ -1466,6 +1466,8 @@ namespace VULKAN_HPP_NAMESPACE
 
           //=== VK_EXT_swapchain_maintenance1 ===
           vkReleaseSwapchainImagesEXT = PFN_vkReleaseSwapchainImagesEXT( vkGetDeviceProcAddr( device, "vkReleaseSwapchainImagesEXT" ) );
+          if ( !vkReleaseSwapchainImagesKHR )
+            vkReleaseSwapchainImagesKHR = vkReleaseSwapchainImagesEXT;
 
           //=== VK_NV_device_generated_commands ===
           vkGetGeneratedCommandsMemoryRequirementsNV =
@@ -1816,6 +1818,9 @@ namespace VULKAN_HPP_NAMESPACE
           vkGetFramebufferTilePropertiesQCOM = PFN_vkGetFramebufferTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetFramebufferTilePropertiesQCOM" ) );
           vkGetDynamicRenderingTilePropertiesQCOM =
             PFN_vkGetDynamicRenderingTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetDynamicRenderingTilePropertiesQCOM" ) );
+
+          //=== VK_KHR_swapchain_maintenance1 ===
+          vkReleaseSwapchainImagesKHR = PFN_vkReleaseSwapchainImagesKHR( vkGetDeviceProcAddr( device, "vkReleaseSwapchainImagesKHR" ) );
 
           //=== VK_NV_cooperative_vector ===
           vkConvertCooperativeVectorMatrixNV = PFN_vkConvertCooperativeVectorMatrixNV( vkGetDeviceProcAddr( device, "vkConvertCooperativeVectorMatrixNV" ) );
@@ -2826,6 +2831,9 @@ namespace VULKAN_HPP_NAMESPACE
         //=== VK_QCOM_tile_properties ===
         PFN_vkGetFramebufferTilePropertiesQCOM      vkGetFramebufferTilePropertiesQCOM      = 0;
         PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM = 0;
+
+        //=== VK_KHR_swapchain_maintenance1 ===
+        PFN_vkReleaseSwapchainImagesKHR vkReleaseSwapchainImagesKHR = 0;
 
         //=== VK_NV_cooperative_vector ===
         PFN_vkConvertCooperativeVectorMatrixNV    vkConvertCooperativeVectorMatrixNV    = 0;
@@ -5250,7 +5258,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkReleaseSwapchainImagesEXT, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesEXT.html
-      void releaseSwapchainImagesEXT( const VULKAN_HPP_NAMESPACE::ReleaseSwapchainImagesInfoEXT & releaseInfo ) const;
+      void releaseSwapchainImagesEXT( const VULKAN_HPP_NAMESPACE::ReleaseSwapchainImagesInfoKHR & releaseInfo ) const;
 
       //=== VK_NV_device_generated_commands ===
 
@@ -5668,6 +5676,12 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDynamicRenderingTilePropertiesQCOM.html
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::TilePropertiesQCOM
                            getDynamicRenderingTilePropertiesQCOM( const VULKAN_HPP_NAMESPACE::RenderingInfo & renderingInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_KHR_swapchain_maintenance1 ===
+
+      // wrapper function for command vkReleaseSwapchainImagesKHR, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesKHR.html
+      void releaseSwapchainImagesKHR( const VULKAN_HPP_NAMESPACE::ReleaseSwapchainImagesInfoKHR & releaseInfo ) const;
 
       //=== VK_NV_cooperative_vector ===
 
@@ -24818,12 +24832,13 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_EXT_swapchain_maintenance1 ===
 
     // wrapper function for command vkReleaseSwapchainImagesEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesEXT.html
-    VULKAN_HPP_INLINE void Device::releaseSwapchainImagesEXT( const VULKAN_HPP_NAMESPACE::ReleaseSwapchainImagesInfoEXT & releaseInfo ) const
+    VULKAN_HPP_INLINE void Device::releaseSwapchainImagesEXT( const VULKAN_HPP_NAMESPACE::ReleaseSwapchainImagesInfoKHR & releaseInfo ) const
     {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkReleaseSwapchainImagesEXT && "Function <vkReleaseSwapchainImagesEXT> requires <VK_EXT_swapchain_maintenance1>" );
+      VULKAN_HPP_ASSERT( getDispatcher()->vkReleaseSwapchainImagesEXT &&
+                         "Function <vkReleaseSwapchainImagesEXT> requires <VK_EXT_swapchain_maintenance1> or <VK_KHR_swapchain_maintenance1>" );
 
       Result result = static_cast<Result>( getDispatcher()->vkReleaseSwapchainImagesEXT(
-        static_cast<VkDevice>( m_device ), reinterpret_cast<const VkReleaseSwapchainImagesInfoEXT *>( &releaseInfo ) ) );
+        static_cast<VkDevice>( m_device ), reinterpret_cast<const VkReleaseSwapchainImagesInfoKHR *>( &releaseInfo ) ) );
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::releaseSwapchainImagesEXT" );
     }
 
@@ -27741,6 +27756,19 @@ namespace VULKAN_HPP_NAMESPACE
                                                                 reinterpret_cast<VkTilePropertiesQCOM *>( &properties ) );
 
       return properties;
+    }
+
+    //=== VK_KHR_swapchain_maintenance1 ===
+
+    // wrapper function for command vkReleaseSwapchainImagesKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesKHR.html
+    VULKAN_HPP_INLINE void Device::releaseSwapchainImagesKHR( const VULKAN_HPP_NAMESPACE::ReleaseSwapchainImagesInfoKHR & releaseInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkReleaseSwapchainImagesKHR &&
+                         "Function <vkReleaseSwapchainImagesKHR> requires <VK_EXT_swapchain_maintenance1> or <VK_KHR_swapchain_maintenance1>" );
+
+      Result result = static_cast<Result>( getDispatcher()->vkReleaseSwapchainImagesKHR(
+        static_cast<VkDevice>( m_device ), reinterpret_cast<const VkReleaseSwapchainImagesInfoKHR *>( &releaseInfo ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::releaseSwapchainImagesKHR" );
     }
 
     //=== VK_NV_cooperative_vector ===

@@ -1254,19 +1254,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_atomic_float2 ===
   struct PhysicalDeviceShaderAtomicFloat2FeaturesEXT;
 
-  //=== VK_EXT_surface_maintenance1 ===
-  struct SurfacePresentModeEXT;
-  struct SurfacePresentScalingCapabilitiesEXT;
-  struct SurfacePresentModeCompatibilityEXT;
-
-  //=== VK_EXT_swapchain_maintenance1 ===
-  struct PhysicalDeviceSwapchainMaintenance1FeaturesEXT;
-  struct SwapchainPresentFenceInfoEXT;
-  struct SwapchainPresentModesCreateInfoEXT;
-  struct SwapchainPresentModeInfoEXT;
-  struct SwapchainPresentScalingCreateInfoEXT;
-  struct ReleaseSwapchainImagesInfoEXT;
-
   //=== VK_NV_device_generated_commands ===
   struct PhysicalDeviceDeviceGeneratedCommandsPropertiesNV;
   struct PhysicalDeviceDeviceGeneratedCommandsFeaturesNV;
@@ -1483,9 +1470,6 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_primitive_topology_list_restart ===
   struct PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT;
-
-  //=== VK_EXT_present_mode_fifo_latest_ready ===
-  struct PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT;
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_external_memory ===
@@ -1796,6 +1780,28 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceAmigoProfilingFeaturesSEC;
   struct AmigoProfilingSubmitInfoSEC;
 
+  //=== VK_KHR_surface_maintenance1 ===
+  struct SurfacePresentModeKHR;
+  using SurfacePresentModeEXT = SurfacePresentModeKHR;
+  struct SurfacePresentScalingCapabilitiesKHR;
+  using SurfacePresentScalingCapabilitiesEXT = SurfacePresentScalingCapabilitiesKHR;
+  struct SurfacePresentModeCompatibilityKHR;
+  using SurfacePresentModeCompatibilityEXT = SurfacePresentModeCompatibilityKHR;
+
+  //=== VK_KHR_swapchain_maintenance1 ===
+  struct PhysicalDeviceSwapchainMaintenance1FeaturesKHR;
+  using PhysicalDeviceSwapchainMaintenance1FeaturesEXT = PhysicalDeviceSwapchainMaintenance1FeaturesKHR;
+  struct SwapchainPresentFenceInfoKHR;
+  using SwapchainPresentFenceInfoEXT = SwapchainPresentFenceInfoKHR;
+  struct SwapchainPresentModesCreateInfoKHR;
+  using SwapchainPresentModesCreateInfoEXT = SwapchainPresentModesCreateInfoKHR;
+  struct SwapchainPresentModeInfoKHR;
+  using SwapchainPresentModeInfoEXT = SwapchainPresentModeInfoKHR;
+  struct SwapchainPresentScalingCreateInfoKHR;
+  using SwapchainPresentScalingCreateInfoEXT = SwapchainPresentScalingCreateInfoKHR;
+  struct ReleaseSwapchainImagesInfoKHR;
+  using ReleaseSwapchainImagesInfoEXT = ReleaseSwapchainImagesInfoKHR;
+
   //=== VK_QCOM_multiview_per_view_viewports ===
   struct PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM;
 
@@ -1980,6 +1986,13 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_display_stereo ===
   struct DisplaySurfaceStereoCreateInfoNV;
   struct DisplayModeStereoPropertiesNV;
+
+  //=== VK_KHR_video_encode_intra_refresh ===
+  struct VideoEncodeIntraRefreshCapabilitiesKHR;
+  struct VideoEncodeSessionIntraRefreshCreateInfoKHR;
+  struct VideoEncodeIntraRefreshInfoKHR;
+  struct VideoReferenceIntraRefreshInfoKHR;
+  struct PhysicalDeviceVideoEncodeIntraRefreshFeaturesKHR;
 
   //=== VK_KHR_video_encode_quantization_map ===
   struct VideoEncodeQuantizationMapCapabilitiesKHR;
@@ -2171,6 +2184,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_zero_initialize_device_memory ===
   struct PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT;
+
+  //=== VK_KHR_present_mode_fifo_latest_ready ===
+  struct PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR;
+  using PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT = PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR;
+
+  //=== VK_SEC_pipeline_cache_incremental_mode ===
+  struct PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC;
 
   //===================================
   //=== HANDLE forward declarations ===
@@ -15980,12 +16000,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkReleaseSwapchainImagesEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesEXT.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD Result releaseSwapchainImagesEXT( const ReleaseSwapchainImagesInfoEXT * pReleaseInfo,
+    VULKAN_HPP_NODISCARD Result releaseSwapchainImagesEXT( const ReleaseSwapchainImagesInfoKHR * pReleaseInfo,
                                                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     // wrapper function for command vkReleaseSwapchainImagesEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesEXT.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<void>::type releaseSwapchainImagesEXT( const ReleaseSwapchainImagesInfoEXT & releaseInfo,
+    typename ResultValueType<void>::type releaseSwapchainImagesEXT( const ReleaseSwapchainImagesInfoKHR & releaseInfo,
                                                                     Dispatch const & d                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -17628,6 +17648,19 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NODISCARD TilePropertiesQCOM getDynamicRenderingTilePropertiesQCOM(
       const RenderingInfo & renderingInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_KHR_swapchain_maintenance1 ===
+
+    // wrapper function for command vkReleaseSwapchainImagesKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesKHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result releaseSwapchainImagesKHR( const ReleaseSwapchainImagesInfoKHR * pReleaseInfo,
+                                                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkReleaseSwapchainImagesKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesKHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    typename ResultValueType<void>::type releaseSwapchainImagesKHR( const ReleaseSwapchainImagesInfoKHR & releaseInfo,
+                                                                    Dispatch const & d                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_cooperative_vector ===

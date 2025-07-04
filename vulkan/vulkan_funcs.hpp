@@ -22261,26 +22261,27 @@ namespace VULKAN_HPP_NAMESPACE
 
   // wrapper function for command vkReleaseSwapchainImagesEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesEXT.html
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::releaseSwapchainImagesEXT( const ReleaseSwapchainImagesInfoEXT * pReleaseInfo,
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::releaseSwapchainImagesEXT( const ReleaseSwapchainImagesInfoKHR * pReleaseInfo,
                                                                                    Dispatch const &                      d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>(
-      d.vkReleaseSwapchainImagesEXT( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkReleaseSwapchainImagesInfoEXT *>( pReleaseInfo ) ) );
+      d.vkReleaseSwapchainImagesEXT( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkReleaseSwapchainImagesInfoKHR *>( pReleaseInfo ) ) );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkReleaseSwapchainImagesEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesEXT.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::releaseSwapchainImagesEXT( const ReleaseSwapchainImagesInfoEXT & releaseInfo,
+  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::releaseSwapchainImagesEXT( const ReleaseSwapchainImagesInfoKHR & releaseInfo,
                                                                                             Dispatch const &                      d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    VULKAN_HPP_ASSERT( d.vkReleaseSwapchainImagesEXT && "Function <vkReleaseSwapchainImagesEXT> requires <VK_EXT_swapchain_maintenance1>" );
+    VULKAN_HPP_ASSERT( d.vkReleaseSwapchainImagesEXT &&
+                       "Function <vkReleaseSwapchainImagesEXT> requires <VK_EXT_swapchain_maintenance1> or <VK_KHR_swapchain_maintenance1>" );
 #  endif
 
-    Result result = static_cast<Result>( d.vkReleaseSwapchainImagesEXT( m_device, reinterpret_cast<const VkReleaseSwapchainImagesInfoEXT *>( &releaseInfo ) ) );
+    Result result = static_cast<Result>( d.vkReleaseSwapchainImagesEXT( m_device, reinterpret_cast<const VkReleaseSwapchainImagesInfoKHR *>( &releaseInfo ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::releaseSwapchainImagesEXT" );
 
     return detail::createResultValueType( result );
@@ -28624,6 +28625,37 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, reinterpret_cast<const VkRenderingInfo *>( &renderingInfo ), reinterpret_cast<VkTilePropertiesQCOM *>( &properties ) );
 
     return properties;
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  //=== VK_KHR_swapchain_maintenance1 ===
+
+  // wrapper function for command vkReleaseSwapchainImagesKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesKHR.html
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::releaseSwapchainImagesKHR( const ReleaseSwapchainImagesInfoKHR * pReleaseInfo,
+                                                                                   Dispatch const &                      d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkReleaseSwapchainImagesKHR( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkReleaseSwapchainImagesInfoKHR *>( pReleaseInfo ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkReleaseSwapchainImagesKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesKHR.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::releaseSwapchainImagesKHR( const ReleaseSwapchainImagesInfoKHR & releaseInfo,
+                                                                                            Dispatch const &                      d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkReleaseSwapchainImagesKHR &&
+                       "Function <vkReleaseSwapchainImagesKHR> requires <VK_EXT_swapchain_maintenance1> or <VK_KHR_swapchain_maintenance1>" );
+#  endif
+
+    Result result = static_cast<Result>( d.vkReleaseSwapchainImagesKHR( m_device, reinterpret_cast<const VkReleaseSwapchainImagesInfoKHR *>( &releaseInfo ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::releaseSwapchainImagesKHR" );
+
+    return detail::createResultValueType( result );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

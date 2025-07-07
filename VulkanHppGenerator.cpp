@@ -6699,11 +6699,11 @@ std::string VulkanHppGenerator::generateDeprecatedConstructors( std::string cons
                          PFN_vkInternalAllocationNotification pfnInternalAllocation_ = {},
                          PFN_vkInternalFreeNotification       pfnInternalFree_       = {} ) VULKAN_HPP_NOEXCEPT
       : AllocationCallbacks( pUserData_,
-                             reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_AllocationFunction>( pfnAllocation_ ),
-                             reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_ReallocationFunction>( pfnReallocation_ ),
-                             reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_FreeFunction>( pfnFree_ ),
-                             reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_InternalAllocationNotification>( pfnInternalAllocation_ ),
-                             reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_InternalFreeNotification>( pfnInternalFree_ ) )
+                             reinterpret_cast<PFN_AllocationFunction>( pfnAllocation_ ),
+                             reinterpret_cast<PFN_ReallocationFunction>( pfnReallocation_ ),
+                             reinterpret_cast<PFN_FreeFunction>( pfnFree_ ),
+                             reinterpret_cast<PFN_InternalAllocationNotification>( pfnInternalAllocation_ ),
+                             reinterpret_cast<PFN_InternalFreeNotification>( pfnInternalFree_ ) )
     {
     }
 #if defined( __clang__ ) || defined( __GNUC__ )
@@ -6723,11 +6723,11 @@ std::string VulkanHppGenerator::generateDeprecatedConstructors( std::string cons
 #  pragma GCC diagnostic ignored "-Wcast-function-type"
 #endif
     VULKAN_HPP_DEPRECATED( "This constructor is deprecated. Use the one taking function pointer types from the vk-namespace instead." )
-    DebugReportCallbackCreateInfoEXT( VULKAN_HPP_NAMESPACE::DebugReportFlagsEXT flags_,
-                                      PFN_vkDebugReportCallbackEXT              pfnCallback_,
-                                      void *                                    pUserData_   = {},
-                                      const void *                              pNext_       = nullptr ) VULKAN_HPP_NOEXCEPT
-      : DebugReportCallbackCreateInfoEXT( flags_, reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_DebugReportCallbackEXT>( pfnCallback_ ), pUserData_, pNext_ )
+    DebugReportCallbackCreateInfoEXT( DebugReportFlagsEXT           flags_,
+                                      PFN_vkDebugReportCallbackEXT  pfnCallback_,
+                                      void *                        pUserData_   = {},
+                                      const void *                  pNext_       = nullptr ) VULKAN_HPP_NOEXCEPT
+      : DebugReportCallbackCreateInfoEXT( flags_, reinterpret_cast<PFN_DebugReportCallbackEXT>( pfnCallback_ ), pUserData_, pNext_ )
     {
     }
 #if defined( __clang__ ) || defined( __GNUC__ )
@@ -6747,13 +6747,14 @@ std::string VulkanHppGenerator::generateDeprecatedConstructors( std::string cons
 #  pragma GCC diagnostic ignored "-Wcast-function-type"
 #endif
     VULKAN_HPP_DEPRECATED( "This constructor is deprecated. Use the one taking function pointer types from the vk-namespace instead." )
-    DebugUtilsMessengerCreateInfoEXT( VULKAN_HPP_NAMESPACE::DebugUtilsMessengerCreateFlagsEXT flags_,
-                                      VULKAN_HPP_NAMESPACE::DebugUtilsMessageSeverityFlagsEXT messageSeverity_,
-                                      VULKAN_HPP_NAMESPACE::DebugUtilsMessageTypeFlagsEXT     messageType_,
-                                      PFN_vkDebugUtilsMessengerCallbackEXT                    pfnUserCallback_,
-                                      void *                                                  pUserData_       = {},
-                                      const void *                                            pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
-      : DebugUtilsMessengerCreateInfoEXT( flags_, messageSeverity_, messageType_, reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_DebugUtilsMessengerCallbackEXT>( pfnUserCallback_ ), pUserData_, pNext_ )
+    DebugUtilsMessengerCreateInfoEXT( DebugUtilsMessengerCreateFlagsEXT    flags_,
+                                      DebugUtilsMessageSeverityFlagsEXT    messageSeverity_,
+                                      DebugUtilsMessageTypeFlagsEXT        messageType_,
+                                      PFN_vkDebugUtilsMessengerCallbackEXT pfnUserCallback_,
+                                      void *                               pUserData_       = {},
+                                      const void *                         pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
+      : DebugUtilsMessengerCreateInfoEXT(
+          flags_, messageSeverity_, messageType_, reinterpret_cast<PFN_DebugUtilsMessengerCallbackEXT>( pfnUserCallback_ ), pUserData_, pNext_ )
     {
     }
 #if defined( __clang__ ) || defined( __GNUC__ )
@@ -6773,11 +6774,11 @@ std::string VulkanHppGenerator::generateDeprecatedConstructors( std::string cons
 #  pragma GCC diagnostic ignored "-Wcast-function-type"
 #endif
     VULKAN_HPP_DEPRECATED( "This constructor is deprecated. Use the one taking function pointer types from the vk-namespace instead." )
-    DeviceDeviceMemoryReportCreateInfoEXT( VULKAN_HPP_NAMESPACE::DeviceMemoryReportFlagsEXT flags_,
-                                           PFN_vkDeviceMemoryReportCallbackEXT              pfnUserCallback_,
-                                           void *                                           pUserData_       = {},
-                                           const void *                                     pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
-      : DeviceDeviceMemoryReportCreateInfoEXT( flags_, reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_DeviceMemoryReportCallbackEXT>( pfnUserCallback_ ), pUserData_, pNext_ )
+    DeviceDeviceMemoryReportCreateInfoEXT( DeviceMemoryReportFlagsEXT          flags_,
+                                           PFN_vkDeviceMemoryReportCallbackEXT pfnUserCallback_,
+                                           void *                              pUserData_       = {},
+                                           const void *                        pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
+      : DeviceDeviceMemoryReportCreateInfoEXT( flags_, reinterpret_cast<PFN_DeviceMemoryReportCallbackEXT>( pfnUserCallback_ ), pUserData_, pNext_ )
     {
     }
 #if defined( __clang__ ) || defined( __GNUC__ )
@@ -6828,25 +6829,25 @@ std::string VulkanHppGenerator::generateDeprecatedStructSetters( std::string con
     VULKAN_HPP_DEPRECATED( "This setter is deprecated. Use the one taking a function pointer type from the vk-namespace instead." )
     AllocationCallbacks & setPfnAllocation( PFN_vkAllocationFunction pfnAllocation_ ) VULKAN_HPP_NOEXCEPT
     {
-      return setPfnAllocation( reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_AllocationFunction>( pfnAllocation_ ) );
+      return setPfnAllocation( reinterpret_cast<PFN_AllocationFunction>( pfnAllocation_ ) );
     }
 
     VULKAN_HPP_DEPRECATED( "This setter is deprecated. Use the one taking a function pointer type from the vk-namespace instead." )
     AllocationCallbacks & setPfnReallocation( PFN_vkReallocationFunction pfnReallocation_ ) VULKAN_HPP_NOEXCEPT
     {
-      return setPfnReallocation( reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_ReallocationFunction>( pfnReallocation_ ) );
+      return setPfnReallocation( reinterpret_cast<PFN_ReallocationFunction>( pfnReallocation_ ) );
     }
 
     VULKAN_HPP_DEPRECATED( "This setter is deprecated. Use the one taking a function pointer type from the vk-namespace instead." )
     AllocationCallbacks & setPfnInternalAllocation( PFN_vkInternalAllocationNotification pfnInternalAllocation_ ) VULKAN_HPP_NOEXCEPT
     {
-      return setPfnInternalAllocation( reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_InternalAllocationNotification>( pfnInternalAllocation_ ) );
+      return setPfnInternalAllocation( reinterpret_cast<PFN_InternalAllocationNotification>( pfnInternalAllocation_ ) );
     }
 
     VULKAN_HPP_DEPRECATED( "This setter is deprecated. Use the one taking a function pointer type from the vk-namespace instead." )
     AllocationCallbacks & setPfnInternalFree( PFN_vkInternalFreeNotification pfnInternalFree_ ) VULKAN_HPP_NOEXCEPT
     {
-      return setPfnInternalFree( reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_InternalFreeNotification>( pfnInternalFree_ ) );
+      return setPfnInternalFree( reinterpret_cast<PFN_InternalFreeNotification>( pfnInternalFree_ ) );
     }
 #if defined( __clang__ ) || defined( __GNUC__ )
 #  pragma GCC diagnostic pop
@@ -6867,7 +6868,7 @@ std::string VulkanHppGenerator::generateDeprecatedStructSetters( std::string con
     VULKAN_HPP_DEPRECATED( "This setter is deprecated. Use the one taking a function pointer type from the vk-namespace instead." )
     DebugReportCallbackCreateInfoEXT & setPfnCallback( PFN_vkDebugReportCallbackEXT pfnCallback_ ) VULKAN_HPP_NOEXCEPT
     {
-      return setPfnCallback( reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_DebugReportCallbackEXT>( pfnCallback_ ) );
+      return setPfnCallback( reinterpret_cast<PFN_DebugReportCallbackEXT>( pfnCallback_ ) );
     }
 #if defined( __clang__ ) || defined( __GNUC__ )
 #  pragma GCC diagnostic pop
@@ -6888,7 +6889,7 @@ std::string VulkanHppGenerator::generateDeprecatedStructSetters( std::string con
     VULKAN_HPP_DEPRECATED( "This setter is deprecated. Use the one taking a function pointer type from the vk-namespace instead." )
     DebugUtilsMessengerCreateInfoEXT & setPfnUserCallback( PFN_vkDebugUtilsMessengerCallbackEXT pfnUserCallback_ ) VULKAN_HPP_NOEXCEPT
     {
-      return setPfnUserCallback( reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_DebugUtilsMessengerCallbackEXT>( pfnUserCallback_ ) );
+      return setPfnUserCallback( reinterpret_cast<PFN_DebugUtilsMessengerCallbackEXT>( pfnUserCallback_ ) );
     }
 #if defined( __clang__ ) || defined( __GNUC__ )
 #  pragma GCC diagnostic pop
@@ -6909,7 +6910,7 @@ std::string VulkanHppGenerator::generateDeprecatedStructSetters( std::string con
     VULKAN_HPP_DEPRECATED( "This setter is deprecated. Use the one taking a function pointer type from the vk-namespace instead." )
     DeviceDeviceMemoryReportCreateInfoEXT & setPfnUserCallback( PFN_vkDeviceMemoryReportCallbackEXT pfnUserCallback_ ) VULKAN_HPP_NOEXCEPT
     {
-      return setPfnUserCallback( reinterpret_cast<VULKAN_HPP_NAMESPACE::PFN_DeviceMemoryReportCallbackEXT>( pfnUserCallback_ ) );
+      return setPfnUserCallback( reinterpret_cast<PFN_DeviceMemoryReportCallbackEXT>( pfnUserCallback_ ) );
     }
 #if defined( __clang__ ) || defined( __GNUC__ )
 #  pragma GCC diagnostic pop
@@ -7451,7 +7452,7 @@ std::string VulkanHppGenerator::generateEnumInitializer( TypeInfo const &       
   // enum arguments might need special initialization
   assert( type.prefix.empty() && !values.empty() );
   std::string valueName = generateEnumValueName( type.type, values.front().name, bitmask );
-  std::string value     = generateNamespacedType( type.type ) + "::" + valueName;
+  std::string value     = stripPrefix( type.type, "Vk" ) + "::" + valueName;
   std::string str;
   if ( arraySizes.empty() )
   {
@@ -8072,7 +8073,7 @@ std::string VulkanHppGenerator::generateFuncPointer( std::pair<std::string, Func
   {
     for ( auto const & argument : funcPointer.second.arguments )
     {
-      funcPointerArguments += argument.type.compose( "VULKAN_HPP_NAMESPACE" ) + " " + argument.name + ", ";
+      funcPointerArguments += argument.type.compose2( "" ) + " " + argument.name + ", ";
     }
     assert( !funcPointerArguments.empty() );
     funcPointerArguments.pop_back();
@@ -8087,7 +8088,7 @@ std::string VulkanHppGenerator::generateFuncPointer( std::pair<std::string, Func
          replaceWithMap( funcPointerTemplate,
                          { { "funcPointerArguments", funcPointerArguments },
                            { "funcPointerName", stripPrefix( funcPointer.first, "PFN_vk" ) },
-                           { "returnType", funcPointer.second.returnType.compose( "VULKAN_HPP_NAMESPACE" ) } } ) +
+                           { "returnType", funcPointer.second.returnType.compose2( "" ) } } ) +
          leave;
 
   listedStructs.insert( funcPointer.first );
@@ -11007,8 +11008,8 @@ std::string VulkanHppGenerator::generateReturnType( std::vector<size_t> const & 
         assert( ( vectorIt != vectorParams.end() ) && ( vectorIt->second.lenParam == returnParams[1] ) );
         assert( !vectorParams.contains( returnParams[0] ) );
 #endif
-        returnType = "std::pair<StructureChain<X, Y, Z...>, std::vector<" + dataTypes[2] +
-                     ( raii ? "" : ( ", " + startUpperCase( dataTypes[2] ) + "Allocator" ) ) + ">>";
+        returnType =
+          "std::pair<StructureChain<X, Y, Z...>, std::vector<" + dataTypes[2] + ( raii ? "" : ( ", " + startUpperCase( dataTypes[2] ) + "Allocator" ) ) + ">>";
       }
       else
       {
@@ -11367,7 +11368,7 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
       assert( ( member.arraySizes.size() == 1 ) && ( member.lenExpressions.size() == 1 ) );
       assert( std::ranges::any_of( structData.second.members, [&member]( MemberData const & m ) { return m.name == member.lenExpressions[0]; } ) );
 
-      std::string type = member.type.type.starts_with( "Vk" ) ? member.type.compose( "VULKAN_HPP_NAMESPACE" ) : member.type.type;
+      std::string type = member.type.compose2( "" );
 
       static const std::string compareMemberTemplate = R"(( memcmp( ${name}, rhs.${name}, ${count} * sizeof( ${type} ) ) == 0 ))";
       compareMembers += intro + replaceWithMap( compareMemberTemplate, { { "count", member.lenExpressions[0] }, { "name", member.name }, { "type", type } } );
@@ -11488,7 +11489,7 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
   if ( pNextIt != structData.second.members.end() )
   {
     // add pNext as a last optional argument to the constructor
-    arguments.push_back( pNextIt->type.compose( "VULKAN_HPP_NAMESPACE" ) + " pNext_ = nullptr" );
+    arguments.push_back( pNextIt->type.compose2( "" ) + " pNext_ = nullptr" );
   }
 
   std::string str = replaceWithMap( constructors,
@@ -11514,19 +11515,19 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
             ( structData.second.members[3].name == "valueCount" ) && ( structData.second.members[4].name == "pValues" ) );
 
     static const std::string byTypeTemplate =
-      R"(    LayerSettingEXT( char const * pLayerName_, char const * pSettingName_, VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT type_, VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const ${type}> const & values_ )
+      R"(    LayerSettingEXT( char const * pLayerName_, char const * pSettingName_, LayerSettingTypeEXT type_, ArrayProxyNoTemporaries<const ${type}> const & values_ )
       : pLayerName( pLayerName_ )
       , pSettingName( pSettingName_ )
       , type( type_ )
       , valueCount( static_cast<uint32_t>( values_.size() ) )
       , pValues( values_.data() )
     {
-      VULKAN_HPP_ASSERT( VULKAN_HPP_NAMESPACE::isSameType<${type}>(type) );
+      VULKAN_HPP_ASSERT( isSameType<${type}>(type) );
     })";
 
     static const std::string constructorTemplate = R"(
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-// NOTE: you need to provide the type because VULKAN_HPP_NAMESPACE::Bool32 and uint32_t are indistinguishable!
+// NOTE: you need to provide the type because Bool32 and uint32_t are indistinguishable!
 ${byInt32}
 ${byInt64}
 ${byUint32}
@@ -11588,7 +11589,7 @@ ${byString}
           assert( mit->type.isPointer() || !mit->arraySizes.empty() );
           std::string argumentName = ( mit->type.isPointer() ? startLowerCase( stripPrefix( mit->name, "p" ) ) : mit->name ) + "_";
 
-          std::string argumentType = mit->type.compose( "VULKAN_HPP_NAMESPACE" );
+          std::string argumentType = mit->type.compose2( "" );
           if ( mit->type.isPointer() )
           {
             argumentType = trimEnd( stripPostfix( argumentType, "*" ) );
@@ -11611,7 +11612,7 @@ ${byString}
           }
           else if ( mit->arraySizes.empty() )
           {
-            arguments.push_back( "VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<" + argumentType + "> const & " + argumentName );
+            arguments.push_back( "ArrayProxyNoTemporaries<" + argumentType + "> const & " + argumentName );
           }
           else
           {
@@ -11708,15 +11709,15 @@ std::string VulkanHppGenerator::generateStructConstructorArgument( MemberData co
   {
     if ( memberData.type.type.starts_with( "PFN_vk" ) )
     {
-      str += "VULKAN_HPP_NAMESPACE::PFN_" + stripPrefix( memberData.type.type, "PFN_vk" ) + " ";
+      str += "PFN_" + stripPrefix( memberData.type.type, "PFN_vk" ) + " ";
     }
     else if ( memberData.arraySizes.empty() )
     {
-      str += memberData.type.compose( "VULKAN_HPP_NAMESPACE" ) + " ";
+      str += memberData.type.compose2( "" ) + " ";
     }
     else
     {
-      str += generateStandardArray( memberData.type.compose( "VULKAN_HPP_NAMESPACE" ), memberData.arraySizes ) + " const & ";
+      str += generateStandardArray( memberData.type.compose2( "" ), memberData.arraySizes ) + " const & ";
     }
     str += memberData.name + "_";
 
@@ -11737,7 +11738,7 @@ std::string VulkanHppGenerator::generateStructConstructorArgument( MemberData co
       {
         assert( memberData.defaultValue.starts_with( "VK_" ) );
         std::string tag = findTag( memberData.defaultValue );
-        str += "VULKAN_HPP_NAMESPACE::" + toCamelCase( stripPostfix( stripPrefix( memberData.defaultValue, "VK_" ), tag ) ) + tag;
+        str += toCamelCase( stripPostfix( stripPrefix( memberData.defaultValue, "VK_" ), tag ) ) + tag;
       }
     }
   }
@@ -11910,8 +11911,8 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
     constructorsAndSetters += R"(
 #if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
     VULKAN_HPP_CONSTEXPR_14 DeviceFaultInfoEXT( std::array<char, VK_MAX_DESCRIPTION_SIZE> const & description_       = {},
-                                                VULKAN_HPP_NAMESPACE::DeviceFaultAddressInfoEXT * pAddressInfos_     = {},
-                                                VULKAN_HPP_NAMESPACE::DeviceFaultVendorInfoEXT *  pVendorInfos_      = {},
+                                                DeviceFaultAddressInfoEXT *                       pAddressInfos_     = {},
+                                                DeviceFaultVendorInfoEXT *                        pVendorInfos_      = {},
                                                 void *                                            pVendorBinaryData_ = {},
                                                 void *                                            pNext_             = nullptr ) VULKAN_HPP_NOEXCEPT
       : pNext{ pNext_ }
@@ -11990,7 +11991,7 @@ ${deprecatedConstructors}
 
     ${structName} & operator=( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::${structName} const *>( &rhs );
+      *this = *reinterpret_cast<${structName} const *>( &rhs );
       return *this;
     }
 )";
@@ -12248,16 +12249,16 @@ std::tuple<std::string, std::string, std::string, std::string>
     else if ( member.type.type.starts_with( "PFN_vk" ) )
     {
       assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encounterd a different case
-      type = "VULKAN_HPP_NAMESPACE::PFN_" + stripPrefix( member.type.type, "PFN_vk" );
+      type = "PFN_" + stripPrefix( member.type.type, "PFN_vk" );
     }
     else if ( member.arraySizes.empty() )
     {
-      type = member.type.compose( "VULKAN_HPP_NAMESPACE" );
+      type = member.type.compose2( "" );
     }
     else
     {
       assert( member.type.prefix.empty() && member.type.postfix.empty() );
-      type = generateStandardArrayWrapper( member.type.compose( "VULKAN_HPP_NAMESPACE" ), member.arraySizes );
+      type = generateStandardArrayWrapper( member.type.compose2( "" ), member.arraySizes );
     }
     members += type + " " + member.name;
     if ( !member.value.empty() )
@@ -12306,7 +12307,7 @@ std::tuple<std::string, std::string, std::string, std::string>
         {
           assert( member.defaultValue.starts_with( "VK_" ) );
           std::string tag = findTag( member.defaultValue );
-          members += "VULKAN_HPP_NAMESPACE::" + toCamelCase( stripPostfix( stripPrefix( member.defaultValue, "VK_" ), tag ) ) + tag;
+          members += toCamelCase( stripPostfix( stripPrefix( member.defaultValue, "VK_" ), tag ) ) + tag;
         }
       }
     }
@@ -12332,10 +12333,10 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
     }
 )";
 
-    std::string memberType         = member.type.type.starts_with( "PFN_vk" )
-                                     ? "VULKAN_HPP_NAMESPACE::PFN_" + stripPrefix( member.type.type, "PFN_vk" )
-                                     : ( member.arraySizes.empty() ? member.type.compose( "VULKAN_HPP_NAMESPACE" )
-                                                                   : generateStandardArray( member.type.compose( "VULKAN_HPP_NAMESPACE" ), member.arraySizes ) );
+    std::string memberType =
+      member.type.type.starts_with( "PFN_vk" )
+        ? "PFN_" + stripPrefix( member.type.type, "PFN_vk" )
+        : ( member.arraySizes.empty() ? member.type.compose2( "" ) : generateStandardArray( member.type.compose2( "" ), member.arraySizes ) );
     const bool  isReinterpretation = !member.bitCount.empty() && member.type.type.starts_with( "Vk" );
     std::string assignment;
     if ( isReinterpretation )
@@ -12391,7 +12392,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
         // VkLayerSettingEXT::pValues needs some special handling!
         assert( member.name == "pValues" );
         static const std::string byTypeTemplate =
-          R"(    LayerSettingEXT & setValues( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const ${type}> const & values_ ) VULKAN_HPP_NOEXCEPT
+          R"(    LayerSettingEXT & setValues( ArrayProxyNoTemporaries<const ${type}> const & values_ ) VULKAN_HPP_NOEXCEPT
     {
       valueCount = static_cast<uint32_t>( values_.size() );
       pValues    = values_.data();
@@ -12472,7 +12473,7 @@ ${byString}
         {
           static const std::string setArrayTemplate = R"(
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    ${templateHeader}${structureName} & set${ArrayName}( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<${memberType}> const & ${arrayName}_ ) VULKAN_HPP_NOEXCEPT
+    ${templateHeader}${structureName} & set${ArrayName}( ArrayProxyNoTemporaries<${memberType}> const & ${arrayName}_ ) VULKAN_HPP_NOEXCEPT
     {
       ${lenName} = ${lenValue};
       ${memberName} = ${arrayName}_.data();
@@ -12711,7 +12712,7 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
       const bool multipleType = std::any_of(
         std::next( memberIt ), structure.second.members.end(), [memberIt]( MemberData const & member ) noexcept { return member.type == memberIt->type; } );
       std::string memberType = ( memberIt->arraySizes.empty() )
-                               ? memberIt->type.compose( "VULKAN_HPP_NAMESPACE" )
+                               ? memberIt->type.compose2( "" )
                                : ( "const " + generateStandardArray( memberIt->type.compose( "VULKAN_HPP_NAMESPACE" ), memberIt->arraySizes ) + "&" );
 
       // In a majority of cases this can be constexpr in C++11 as well, however, determining when exactly
@@ -12783,7 +12784,7 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
       replaceWithMap( memberTemplate,
                       { { "memberName", member.name },
                         { "memberType",
-                          member.arraySizes.empty() ? member.type.compose( "VULKAN_HPP_NAMESPACE" )
+                          member.arraySizes.empty() ? member.type.compose2( "" )
                                                     : generateStandardArrayWrapper( member.type.compose( "VULKAN_HPP_NAMESPACE" ), member.arraySizes ) } } );
   }
   if ( needsUnrestrictedUnions )

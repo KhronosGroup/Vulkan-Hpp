@@ -278,7 +278,7 @@ inline std::string generateCopyrightMessage( std::string const & comment )
 
 inline std::string generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes )
 {
-  std::string arrayString = "VULKAN_HPP_NAMESPACE::ArrayWrapper" + std::to_string( sizes.size() ) + "D<" + type;
+  std::string arrayString = "ArrayWrapper" + std::to_string( sizes.size() ) + "D<" + type;
   for ( auto const & size : sizes )
   {
     arrayString += ", " + size;

@@ -7511,7 +7511,7 @@ std::string VulkanHppGenerator::generateEnumToString( std::pair<std::string, Enu
     const std::string functionBodyTemplate =
       R"x(    switch ( value )
     {
-${cases}      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+${cases}      default: return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
 )x";
 

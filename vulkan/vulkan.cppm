@@ -42,10 +42,8 @@ export namespace VULKAN_HPP_NAMESPACE
   {
     using VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase;
     using VULKAN_HPP_NAMESPACE::detail::DispatchLoaderDynamic;
-#if !defined( VULKAN_HPP_DEFAULT_DISPATCHER )
-#  if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
     using VULKAN_HPP_NAMESPACE::detail::defaultDispatchLoaderDynamic;
-#  endif
 #endif
 #if !defined( VK_NO_PROTOTYPES )
     using VULKAN_HPP_NAMESPACE::detail::DispatchLoaderStatic;

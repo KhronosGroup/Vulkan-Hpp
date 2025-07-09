@@ -20,7 +20,7 @@ namespace VULKAN_HPP_NAMESPACE
       {
         public:
 #if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
-          using Type = VULKAN_HPP_EXPECTED<T, VULKAN_HPP_NAMESPACE::Result>;
+          using Type = VULKAN_HPP_EXPECTED<T, Result>;
 #else
           using Type = T;
 #endif

@@ -1665,7 +1665,8 @@ std::vector<std::string> VulkanHppGenerator::determineDataTypes( std::vector<Vul
     }
     else
     {
-      dataTypes.push_back( trimEnd( stripPostfix( params[rp].type.compose2( raii ? "VULKAN_HPP_NAMESPACE::" : "" ), "*" ) ) );
+      dataTypes.push_back(
+        trimEnd( stripPostfix( params[rp].type.compose2( ( raii && m_handles.contains( params[rp].type.type ) ) ? "VULKAN_HPP_NAMESPACE::" : "" ), "*" ) ) );
     }
   }
   return dataTypes;
@@ -2272,7 +2273,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
     {
       bool hasDefaultAssignment = false;
 
-      std::string composedType = params[i].type.compose2( raii ? "VULKAN_HPP_NAMESPACE::" : "" );
+      std::string composedType = params[i].type.compose2( ( raii && m_handles.contains( params[i].type.type ) ) ? "VULKAN_HPP_NAMESPACE::" : "" );
 
       if ( singularParams.contains( i ) )
       {
@@ -6091,7 +6092,7 @@ std::string VulkanHppGenerator::generateDataDeclarations( CommandData const &   
     case 0: return "";  // no returnParams -> no data declarations
     case 1:
       return generateDataDeclarations1Return(
-        commandData, returnParams, vectorParams, templatedParams, flavourFlags, raii, dataTypes, dataType, returnType, returnVariable );
+        commandData, returnParams, vectorParams, templatedParams, flavourFlags, dataTypes, dataType, returnType, returnVariable );
     case 2:
       assert( !( flavourFlags & CommandFlavourFlagBits::unique ) );
       return generateDataDeclarations2Returns( commandData, returnParams, vectorParams, flavourFlags, raii, dataTypes, dataType, returnVariable );
@@ -6107,7 +6108,6 @@ std::string VulkanHppGenerator::generateDataDeclarations1Return( CommandData con
                                                                  std::map<size_t, VectorParamData> const & vectorParams,
                                                                  std::set<size_t> const &                  templatedParams,
                                                                  CommandFlavourFlags                       flavourFlags,
-                                                                 bool                                      raii,
                                                                  std::vector<std::string> const &          dataTypes,
                                                                  std::string const &                       dataType,
                                                                  std::string const &                       returnType,
@@ -6119,14 +6119,9 @@ std::string VulkanHppGenerator::generateDataDeclarations1Return( CommandData con
     if ( ( vectorParamIt == vectorParams.end() ) || ( flavourFlags & CommandFlavourFlagBits::singular ) )
     {
       std::string const dataDeclarationsTemplate = R"(${dataType} ${dataVariable};)";
-      if ( dataType.starts_with( "VULKAN_HPP_NAMESPACE::" ) )
+      if ( dataType.starts_with( "VULKAN_HPP_NAMESPACE::" ) || m_types.contains( "Vk" + dataType ) )
       {
         return replaceWithMap( dataDeclarationsTemplate, { { "dataType", dataType }, { "dataVariable", returnVariable } } );
-      }
-      else if ( m_types.contains( "Vk" + dataType ) )
-      {
-        return replaceWithMap( dataDeclarationsTemplate,
-                               { { "dataType", ( raii ? "VULKAN_HPP_NAMESPACE::" : "" ) + dataType }, { "dataVariable", returnVariable } } );
       }
       else
       {
@@ -9033,8 +9028,8 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
     std::string debugReportObjectType = contains( enumIt->second.values, valueName ) ? generateEnumValueName( enumIt->first, valueName, false ) : "eUnknown";
 
     std::string dispatcherType = ( ( handle.first == "VkDevice" ) || ( handle.second.constructorIts.front()->second.params.front().type.type == "VkDevice" ) )
-                                 ? "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher"
-                                 : "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher";
+                                 ? "detail::DeviceDispatcher"
+                                 : "detail::InstanceDispatcher";
 
     std::string getParent;
     if ( ( handle.first != "VkInstance" ) && ( handle.first != "VkDevice" ) && ( handle.second.destructorIt != m_commands.end() ) )
@@ -9080,8 +9075,8 @@ ${enter}  class ${handleType}
     using CType = Vk${handleType};
     using CppType = VULKAN_HPP_NAMESPACE::${handleType};
 
-    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum};
-    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};
+    static VULKAN_HPP_CONST_OR_CONSTEXPR ObjectType objectType = ObjectType::${objTypeEnum};
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DebugReportObjectTypeEXT debugReportObjectType = DebugReportObjectTypeEXT::${debugReportObjectType};
 
   public:
 ${singularConstructors}
@@ -9140,7 +9135,7 @@ ${getParent}
       return ${getDispatcherReturn}m_dispatcher;
     }
 
-    void swap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::${handleType} & rhs ) VULKAN_HPP_NOEXCEPT
+    void swap( ${handleType} & rhs ) VULKAN_HPP_NOEXCEPT
     {
       ${swapMembers}
     }
@@ -9152,7 +9147,7 @@ ${getParent}
   };
 
   template <>
-  struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::${handleType}>
+  struct isVulkanRAIIHandleType<${handleType}>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
@@ -9185,7 +9180,7 @@ ${leave})";
     {
       // it's a handle class with a friendly handles class
       const std::string handlesTemplate = R"(
-${enter}  class ${handleType}s : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::${handleType}>
+${enter}  class ${handleType}s : public std::vector<${handleType}>
   {
   public:
     ${arrayConstructors}
@@ -9198,10 +9193,10 @@ ${enter}  class ${handleType}s : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN
     ${handleType}s & operator=( ${handleType}s && rhs ) = default;
 
   private:
-    ${handleType}s( std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::${handleType}> && rhs )
-      {
-        std::swap( *this, rhs );
-      }
+    ${handleType}s( std::vector<${handleType}> && rhs )
+    {
+      std::swap( *this, rhs );
+    }
   };
 ${leave}
 )";
@@ -9492,7 +9487,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
     handleType = handleIt->first;
   }
 
-  handleType                 = "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::" + stripPrefix( handleType, "Vk" );
+  handleType                 = stripPrefix( handleType, "Vk" );
   std::string noexceptString = enumerating ? "" : "VULKAN_HPP_RAII_CREATE_NOEXCEPT";
   std::string returnType     = handleType;
   if ( vectorParams.contains( returnParams.back() ) && !singular )
@@ -9530,7 +9525,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
     std::string const definitionTemplate =
       R"(
   // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<${returnType}>::Type ${className}::${commandName}( ${argumentList} ) const ${noexcept}
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE detail::CreateReturnType<${returnType}>::Type ${className}::${commandName}( ${argumentList} ) const ${noexcept}
   {
     ${dataDeclarations}
     ${callSequence}
@@ -9556,7 +9551,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
     std::string const declarationTemplate =
       R"(
   // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
-  VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<${returnType}>::Type ${commandName}( ${argumentList} ) const ${noexcept};
+  VULKAN_HPP_NODISCARD detail::CreateReturnType<${returnType}>::Type ${commandName}( ${argumentList} ) const ${noexcept};
 )";
 
     return replaceWithMap( declarationTemplate,
@@ -9593,8 +9588,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandStandard( std::string c
   std::string      argumentList  = generateArgumentListStandard( commandData.params, skippedParams, definition, false );
   std::string      commandName   = generateCommandName( name, commandData.params, initialSkipCount );
   std::string      nodiscard     = ( commandData.returnType != "void" ) ? "VULKAN_HPP_NODISCARD" : "";
-  std::string      returnType =
-    commandData.returnType.starts_with( "Vk" ) ? "VULKAN_HPP_NAMESPACE::" + stripPrefix( commandData.returnType, "Vk" ) : commandData.returnType;
+  std::string      returnType    = stripPrefix( commandData.returnType, "Vk" );
 
   if ( definition )
   {
@@ -9728,11 +9722,11 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArgument( ParamData
     assert( param.type.type.starts_with( "Vk" ) );
     assert( param.name.starts_with( "p" ) );
     std::string argumentName = startLowerCase( stripPrefix( param.name, "p" ) );
-    std::string argumentType = generateNamespacedType( param.type.type );
+    std::string argumentType = stripPrefix( param.type.type, "Vk" );
     if ( param.optional )
     {
       assert( param.lenExpression.empty() );
-      argument = "VULKAN_HPP_NAMESPACE::Optional<const " + argumentType + "> " + argumentName + ( definition ? "" : " = nullptr" );
+      argument = "Optional<const " + argumentType + "> " + argumentName + ( definition ? "" : " = nullptr" );
     }
     else if ( param.lenExpression.empty() )
     {
@@ -9744,7 +9738,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArgument( ParamData
     }
     else
     {
-      argument = "VULKAN_HPP_NAMESPACE::ArrayProxy<" + argumentType + "> const & " + argumentName;
+      argument = "ArrayProxy<" + argumentType + "> const & " + argumentName;
     }
   }
   else if ( specialPointerTypes.contains( param.type.type ) )
@@ -9762,10 +9756,10 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArgument( ParamData
     }
     else
     {
-      argument = "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::" + stripPrefix( param.type.type, "Vk" );
+      argument = stripPrefix( param.type.type, "Vk" );
       if ( param.optional )
       {
-        argument = "VULKAN_HPP_NAMESPACE::Optional<const " + argument + ">";
+        argument = "Optional<const " + argument + ">";
       }
       argument += " const & " + param.name;
     }
@@ -9793,7 +9787,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArguments( std::pai
 {
   auto [parentType, parentName] = getParentTypeAndName( handle );
 
-  std::string arguments = "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::" + parentType + " const & " + parentName;
+  std::string arguments = parentType + " const & " + parentName;
   if ( takesOwnership )
   {
     arguments += ", " + handle.first + " " + generateRAIIHandleConstructorParamName( handle.first, handle.second.destructorIt );
@@ -9870,7 +9864,7 @@ std::string
       {
         assert( destructorParam.type.isConstPointer() && destructorParam.arraySizes.empty() && destructorParam.lenExpression.empty() &&
                 destructorParam.optional );
-        initializationList += "m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ), ";
+        initializationList += "m_allocator( static_cast<const AllocationCallbacks *>( allocator ) ), ";
       }
       else if ( isHandleType( destructorParam.type.type ) )
       {
@@ -10193,8 +10187,8 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorTakeOwnership( std:
   std::string dispatcherInit;
   if ( ( handle.first == "VkDevice" ) || ( handle.first == "VkInstance" ) )
   {
-    dispatcherInit = "\n        m_dispatcher.reset( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::" + handleType + "Dispatcher( " + parentName +
-                     ".getDispatcher()->vkGet" + handleType + "ProcAddr, static_cast<" + handle.first + ">( m_" + startLowerCase( handleType ) + " ) ) );";
+    dispatcherInit = "\n        m_dispatcher.reset( new detail::" + handleType + "Dispatcher( " + parentName + ".getDispatcher()->vkGet" + handleType +
+                     "ProcAddr, static_cast<" + handle.first + ">( m_" + startLowerCase( handleType ) + " ) ) );";
   }
 
   const std::string constructorTemplate =
@@ -10239,12 +10233,9 @@ std::string VulkanHppGenerator::generateRAIIHandleContext( std::pair<std::string
     {
     public:
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
-      Context()
-        : m_dispatcher( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::ContextDispatcher(
-            m_dynamicLoader.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" ) ) )
+      Context() : m_dispatcher( new detail::ContextDispatcher( m_dynamicLoader.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" ) ) )
 #else
-      Context( PFN_vkGetInstanceProcAddr getInstanceProcAddr )
-        : m_dispatcher( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::ContextDispatcher( getInstanceProcAddr ) )
+      Context( PFN_vkGetInstanceProcAddr getInstanceProcAddr ) : m_dispatcher( new detail::ContextDispatcher( getInstanceProcAddr ) )
 #endif
       {}
 
@@ -10272,13 +10263,13 @@ std::string VulkanHppGenerator::generateRAIIHandleContext( std::pair<std::string
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::ContextDispatcher const * getDispatcher() const
+      detail::ContextDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return &*m_dispatcher;
       }
 
-      void swap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Context & rhs )
+      void swap( Context & rhs )
       {
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
         std::swap( m_dynamicLoader, rhs.m_dynamicLoader );
@@ -10292,7 +10283,7 @@ ${memberFunctionDeclarations}
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
       VULKAN_HPP_NAMESPACE::detail::DynamicLoader m_dynamicLoader;
 #endif
-      std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::ContextDispatcher> m_dispatcher;
+      std::unique_ptr<detail::ContextDispatcher> m_dispatcher;
     };
 
 )";
@@ -10399,12 +10390,12 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
           name = startLowerCase( stripPrefix( name, "p" ) );
         }
         memberName = name;
-        memberType = destructorParam.type.compose( "VULKAN_HPP_NAMESPACE" );
+        memberType = destructorParam.type.compose2( m_handles.contains( destructorParam.type.type ) ? "VULKAN_HPP_NAMESPACE::" : "" );
       }
       if ( !memberName.empty() )
       {
         clearMembers += "\n      m_" + memberName + " = nullptr;";
-        moveConstructorInitializerList += "m_" + memberName + "( VULKAN_HPP_NAMESPACE::exchange( rhs.m_" + memberName + ", {} ) ), ";
+        moveConstructorInitializerList += "m_" + memberName + "( exchange( rhs.m_" + memberName + ", {} ) ), ";
         moveAssignmentInstructions += "\n          std::swap( m_" + memberName + ", rhs.m_" + memberName + " );";
         memberVariables += "\n    " + memberType + " m_" + memberName + " = {};";
         swapMembers += "\n      std::swap( m_" + memberName + ", rhs.m_" + memberName + " );";
@@ -10431,14 +10422,14 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
       std::string frontName = handle.second.constructorIts.front()->second.params.front().name;
 
       clearMembers += "\n        m_" + frontName + " = nullptr;";
-      moveConstructorInitializerList = "m_" + frontName + "( VULKAN_HPP_NAMESPACE::exchange( rhs.m_" + frontName + ", {} ) ), ";
+      moveConstructorInitializerList = "m_" + frontName + "( exchange( rhs.m_" + frontName + ", {} ) ), ";
       moveAssignmentInstructions     = "\n          std::swap( m_" + frontName + ", rhs.m_" + frontName + " );";
       memberVariables                = "\n    VULKAN_HPP_NAMESPACE::" + stripPrefix( frontType, "Vk" ) + " m_" + frontName + " = {};";
       swapMembers                    = "\n      std::swap( m_" + frontName + ", rhs.m_" + frontName + " );";
       releaseMembers += "\n        m_" + frontName + " = nullptr;";
     }
     clearMembers += "\n        m_" + handleName + " = nullptr;";
-    moveConstructorInitializerList += "m_" + handleName + "( VULKAN_HPP_NAMESPACE::exchange( rhs.m_" + handleName + ", {} ) ), ";
+    moveConstructorInitializerList += "m_" + handleName + "( exchange( rhs.m_" + handleName + ", {} ) ), ";
     moveAssignmentInstructions += "\n          std::swap( m_" + handleName + ", rhs.m_" + handleName + " );";
     memberVariables += "\n    " + generateNamespacedType( handle.first ) + " m_" + handleName + " = {};";
     swapMembers += "\n      std::swap( m_" + handleName + ", rhs.m_" + handleName + " );";
@@ -10449,31 +10440,31 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
     clearMembers += "\n        m_constructorSuccessCode = Result::eErrorUnknown;";
     memberVariables += "\n    Result m_constructorSuccessCode = Result::eErrorUnknown;";
     swapMembers += "\n      std::swap( m_constructorSuccessCode, rhs.m_constructorSuccessCode );";
-    moveConstructorInitializerList += "m_constructorSuccessCode( VULKAN_HPP_NAMESPACE::exchange( rhs.m_constructorSuccessCode, {} ) ), ";
+    moveConstructorInitializerList += "m_constructorSuccessCode( exchange( rhs.m_constructorSuccessCode, {} ) ), ";
     moveAssignmentInstructions += "\n          std::swap( m_constructorSuccessCode, rhs.m_constructorSuccessCode );";
     releaseMembers += "\n        m_constructorSuccessCode = Result::eErrorUnknown;";
   }
 
   if ( handle.first == "VkInstance" )
   {
-    memberVariables += "\n      std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher> m_dispatcher;";
+    memberVariables += "\n      std::unique_ptr<detail::InstanceDispatcher> m_dispatcher;";
   }
   else if ( handle.first == "VkDevice" )
   {
-    memberVariables += "\n      std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher> m_dispatcher;";
+    memberVariables += "\n      std::unique_ptr<detail::DeviceDispatcher> m_dispatcher;";
   }
   else if ( handle.second.constructorIts.front()->second.params.front().type.type == "VkDevice" )
   {
-    memberVariables += "\n      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;";
+    memberVariables += "\n      detail::DeviceDispatcher const * m_dispatcher = nullptr;";
   }
   else
   {
-    memberVariables += "\n      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher const * m_dispatcher = nullptr;";
+    memberVariables += "\n      detail::InstanceDispatcher const * m_dispatcher = nullptr;";
   }
   clearMembers += "\n        m_dispatcher = nullptr;";
   swapMembers += "\n      std::swap( m_dispatcher, rhs.m_dispatcher );";
   releaseMembers += "\n        m_dispatcher = nullptr;";
-  releaseMembers += "\n        return VULKAN_HPP_NAMESPACE::exchange( m_" + handleName + ", nullptr );";
+  releaseMembers += "\n        return exchange( m_" + handleName + ", nullptr );";
 
   if ( ( handle.first == "VkInstance" ) || ( handle.first == "VkDevice" ) )
   {
@@ -10481,7 +10472,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
   }
   else
   {
-    moveConstructorInitializerList += "m_dispatcher( VULKAN_HPP_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )";
+    moveConstructorInitializerList += "m_dispatcher( exchange( rhs.m_dispatcher, nullptr ) )";
   }
   moveAssignmentInstructions += "\n        std::swap( m_dispatcher, rhs.m_dispatcher );";
 
@@ -10530,50 +10521,50 @@ ${raiiHandles}
 
   // operators to compare VULKAN_HPP_NAMESPACE::raii-handles
 #if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   auto operator<=>( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
   {
     return *a <=> *b;
   }
 #else
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   bool operator<(T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
   {
     return *a < *b;
   }
 #endif
 
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   bool operator==( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
   {
     return *a == *b;
   }
 
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   bool operator!=(T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
   {
     return *a != *b;
   }
 
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   bool operator==( const T & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT
   {
     return !*v;
   }
 
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   bool operator==( std::nullptr_t, const T & v ) VULKAN_HPP_NOEXCEPT
   {
     return !*v;
   }
 
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   bool operator!=( const T & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT
   {
     return *v;
   }
 
-  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value,bool>::type = 0>
   bool operator!=( std::nullptr_t, const T & v ) VULKAN_HPP_NOEXCEPT
   {
     return *v;

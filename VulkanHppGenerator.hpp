@@ -813,7 +813,6 @@ private:
                                                std::map<size_t, VectorParamData> const & vectorParams,
                                                std::set<size_t> const &                  templatedParams,
                                                CommandFlavourFlags                       flavourFlags,
-                                               bool                                      raii,
                                                std::vector<std::string> const &          dataTypes,
                                                std::string const &                       dataType,
                                                std::string const &                       returnType,

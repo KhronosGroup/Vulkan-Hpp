@@ -208,7 +208,7 @@ inline void checkAttributes( std::string const &                                
         std::vector<std::string> values = tokenize( a.second, "," );
         for ( auto const & v : values )
         {
-          checkForWarning(
+          checkForError(
             intro, optionalIt->second.find( v ) != optionalIt->second.end(), line, "unexpected attribute value <" + v + "> in attribute <" + a.first + ">" );
         }
       }

@@ -13775,7 +13775,7 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
                      attributes,
                      {},
                      { { "allownoqueues", { "true" } },
-                       { "api", { "vulkan", "vulkansc" } },
+                       { "api", { "vulkan", "vulkanbase", "vulkansc" } },
                        { "cmdbufferlevel", { "primary", "secondary" } },
                        { "comment", {} },
                        { "errorcodes", {} },
@@ -13791,12 +13791,12 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
 
     CommandData commandData;
     commandData.xmlLine = line;
-    std::string api;
+    std::vector<std::string> api;
     for ( auto const & attribute : attributes )
     {
       if ( attribute.first == "api" )
       {
-        api = attribute.second;
+        api = tokenize( attribute.second, "," );
       }
       else if ( attribute.first == "errorcodes" )
       {
@@ -13836,7 +13836,8 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
       }
     }
 
-    checkForError( api.empty() || commandData.exports.empty() || ( ( commandData.exports.size() == 1 ) && ( api == commandData.exports.front() ) ),
+    checkForError( api.empty() || commandData.exports.empty() ||
+                     ( ( commandData.exports.size() == 1 ) && ( std::ranges::find( api, commandData.exports.front() ) != api.end() ) ),
                    line,
                    "command <" + name + "> has non-empty but different attributes <api> and <export>" );
 
@@ -13868,7 +13869,7 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
                    line,
                    "command <" + name + "> does not return a VkResult but specifies successcodes" );
 
-    if ( api.empty() || ( api == m_api ) )
+    if ( api.empty() || ( std::ranges::find( api, m_api ) != api.end() ) )
     {
       checkForError( !m_commands.contains( name ), line, "command <" + name + "> already specified" );
       addCommand( name, commandData );
@@ -14690,7 +14691,8 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
 {
   const int                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "name", {} }, { "number", {} } }, { { "depends", {} } } );
+  checkAttributes(
+    line, attributes, { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "comment", {} }, { "name", {} }, { "number", {} } }, { { "depends", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, { { "require", false } }, { "deprecate", "remove" } );
 
@@ -14733,11 +14735,28 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
     }
   }
 
-  checkForError( featureData.name ==
-                   ( std::ranges::any_of( featureData.api, []( std::string const & a ) { return a == "vulkan"; } ) ? "VK_VERSION_" : "VKSC_VERSION_" ) +
-                     modifiedNumber,
-                 line,
-                 "unexpected formatting of name <" + featureData.name + ">" );
+  if ( std::ranges::find( featureData.api, "vulkan" ) != featureData.api.end() )
+  {
+    checkForError( featureData.name == "VK_VERSION_" + modifiedNumber,
+                   line,
+                   "unexpected formatting of name <" + featureData.name + ">, expected <VK_VERSION_" + modifiedNumber + ">" );
+  }
+  else if ( std::ranges::find( featureData.api, "vulkanbase" ) != featureData.api.end() )
+  {
+    checkForError( featureData.api.size() == 1, line, "feature <" + featureData.name + "> with api <vulkanbase> must not be combined with other apis" );
+    std::string const & name = featureData.name;
+    checkForError( ( name == "VK_BASE_VERSION_" + modifiedNumber ) || ( name == "VK_COMPUTE_VERSION_" + modifiedNumber ) ||
+                     ( name == "VK_GRAPHICS_VERSION_" + modifiedNumber ),
+                   line,
+                   "unexpected formatting of name <" + featureData.name + ">" );
+  }
+  else
+  {
+    checkForError( featureData.name == "VKSC_VERSION_" + modifiedNumber,
+                   line,
+                   "unexpected formatting of name <" + featureData.name + ">, expected <VKSC_VERSION_" + modifiedNumber + ">" );
+  }
+
   checkForError( !isFeature( featureData.name ), line, "feature <" + featureData.name + "> already specified" );
   if ( featureSupported )
   {
@@ -15308,9 +15327,14 @@ void VulkanHppGenerator::readRequireEnum(
       }
       else
       {
-        checkForError( ( eedIt->alias == alias ) && ( eedIt->api == api ) && ( eedIt->protect == protect ) && ( eedIt->supported == supported ),
+        checkForError( ( eedIt->alias == alias ) && ( eedIt->api == api ) && ( eedIt->protect == protect ),
                        line,
                        "extending enum <" + extends + "> with already listed value <" + name + "> but different properties" );
+        // if a previous version was not supported, make it supported now
+        if ( !eedIt->supported && supported )
+        {
+          eedIt->supported = supported;
+        }
         eedIt->requiredBy.insert( requiredBy );
       }
     }
@@ -15693,7 +15717,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
                    attributes,
                    {},
                    { { "altlen", {} },
-                     { "api", { "vulkan", "vulkansc" } },
+                     { "api", { "vulkan", "vulkanbase", "vulkansc" } },
                      { "deprecated", { "ignored" } },
                      { "externsync", { "maybe", "true" } },
                      { "featurelink", {} },
@@ -15711,12 +15735,12 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
   MemberData memberData;
   memberData.xmlLine = line;
 
-  std::string api;
+  std::vector<std::string> api;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "api" )
     {
-      api = attribute.second;
+      api = tokenize( attribute.second, "," );
     }
     else if ( attribute.first == "altlen" )
     {
@@ -15816,7 +15840,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
   checkForError( ( memberData.type.postfix.length() < 3 ) || !memberData.type.postfix.starts_with( "[" ) || !memberData.type.postfix.ends_with( "]" ),
                  line,
                  "struct member <" + name + "> has its array size <" + memberData.type.postfix + "> at the wrong position" );
-  if ( api.empty() || ( api == m_api ) )
+  if ( api.empty() || ( std::ranges::find( api, m_api ) != api.end() ) )
   {
     checkForError(
       std::ranges::none_of( members, [&name]( MemberData const & md ) { return md.name == name; } ), line, "struct member name <" + name + "> already used" );
@@ -16099,14 +16123,16 @@ void VulkanHppGenerator::readTypeBitmask( tinyxml2::XMLElement const * element, 
   }
   else
   {
-    checkAttributes( line, attributes, { { "category", { "bitmask" } } }, { { "api", { "vulkan", "vulkansc" } }, { "bitvalues", {} }, { "requires", {} } } );
+    checkAttributes(
+      line, attributes, { { "category", { "bitmask" } } }, { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "bitvalues", {} }, { "requires", {} } } );
 
-    std::string api, bitvalues, require;
+    std::vector<std::string> api;
+    std::string bitvalues, require;
     for ( auto const & attribute : attributes )
     {
       if ( attribute.first == "api" )
       {
-        api = attribute.second;
+        api = tokenize( attribute.second, "," );
       }
       else if ( attribute.first == "bitvalues" )
       {
@@ -16135,7 +16161,7 @@ void VulkanHppGenerator::readTypeBitmask( tinyxml2::XMLElement const * element, 
       require = bitvalues;
     }
 
-    if ( api.empty() || ( api == m_api ) )
+    if ( api.empty() || ( std::ranges::find( api, m_api ) != api.end() ) )
     {
       checkForError(
         m_types.insert( { nameData.name, TypeData{ TypeCategory::Bitmask, {}, line } } ).second, line, "bitmask <" + nameData.name + "> already specified" );
@@ -16191,15 +16217,16 @@ void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, s
   checkAttributes( line,
                    attributes,
                    { { "category", { "define" } } },
-                   { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "deprecated", { "true" } }, { "name", {} }, { "requires", {} } } );
+                   { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "comment", {} }, { "deprecated", { "true" } }, { "name", {} }, { "requires", {} } } );
 
-  std::string api, name, require;
-  bool        deprecated = false;
+  std::vector<std::string> api;
+  std::string              name, require;
+  bool                     deprecated = false;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "api" )
     {
-      api = attribute.second;
+      api = tokenize( attribute.second, "," );
     }
     else if ( attribute.first == "deprecated" )
     {
@@ -16241,7 +16268,7 @@ void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, s
                      line,
                      "unknown formatting of type category define" );
       name = trim( child->GetText() );
-      if ( ( name == "VK_HEADER_VERSION" ) && ( api.empty() || ( api == m_api ) ) )
+      if ( ( name == "VK_HEADER_VERSION" ) && ( api.empty() || ( std::ranges::find( api, m_api ) != api.end() ) ) )
       {
         m_version = trimEnd( element->LastChild()->ToText()->Value() );
       }
@@ -16255,7 +16282,7 @@ void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, s
   }
   assert( !name.empty() );
 
-  if ( api.empty() || ( api == m_api ) )
+  if ( api.empty() || ( std::ranges::find( api, m_api ) != api.end() ) )
   {
     MacroVisitor definesVisitor{};
     element->Accept( &definesVisitor );

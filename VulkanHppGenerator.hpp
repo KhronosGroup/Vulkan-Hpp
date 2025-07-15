@@ -1107,6 +1107,7 @@ private:
   bool isConstructorCandidate( std::pair<std::string, VulkanHppGenerator::CommandData> const & command, std::string const & handleType ) const;
   bool isConstructorCandidate( ParamData const & paramData, std::string const & handleType ) const;
   bool isDeviceCommand( CommandData const & commandData ) const;
+  bool isEnumerated( std::string const & type ) const;
   bool isExtension( std::string const & name ) const;
   bool isFeature( std::string const & name ) const;
   bool isHandleType( std::string const & type ) const;

@@ -1837,7 +1837,7 @@ std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator VulkanHpp
         }
         else
         {
-          assert( ( handleType == "VkDisplayModeKHR" ) || ( handleType == "VkPhysicalDevice" ) || ( handleType == "VkQueue" ) );
+          assert( isEnumerated( handleType ) || ( handleType == "VkDisplayModeKHR" ) || ( handleType == "VkQueue" ) );
         }
       }
     }
@@ -13493,6 +13493,22 @@ bool VulkanHppGenerator::isDeviceCommand( CommandData const & commandData ) cons
 {
   return !commandData.handle.empty() && !commandData.params.empty() && m_handles.contains( commandData.params[0].type.type ) &&
          ( commandData.params[0].type.type != "VkInstance" ) && ( commandData.params[0].type.type != "VkPhysicalDevice" );
+}
+
+bool VulkanHppGenerator::isEnumerated( std::string const & type ) const
+{
+  std::string tag      = findTag( type );
+  std::string untagged = stripPostfix( type, tag );
+  assert( !untagged.ends_with( "s" ) );
+  if ( untagged.ends_with( "y" ) )
+  {
+    untagged.pop_back();
+    untagged += "ie";
+  }
+  std::string pluralType = stripPrefix( untagged, "Vk" ) + "s" + tag;
+
+  return std::ranges::any_of(
+    m_commands, [&pluralType]( auto const & command ) { return command.first.starts_with( "vkEnumerate" ) && command.first.ends_with( pluralType ); } );
 }
 
 bool VulkanHppGenerator::isExtension( std::string const & name ) const

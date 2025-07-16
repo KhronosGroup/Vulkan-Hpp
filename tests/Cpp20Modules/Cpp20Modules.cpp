@@ -15,18 +15,19 @@
 // VulkanHpp Test : Cpp20Module
 //                  Compile test on using c++20 modules
 
-import vulkan_hpp;
-
 #include <memory>   // std::unique_ptr (seems to be needed on Windows)
 #include <string>   // std::string
 #include <iostream> // std::cout
-#include <vulkan/vulkan_hpp_macros.hpp>
+
+import vulkan_hpp;
 
 static std::string AppName    = "Cpp20Modules";
 static std::string EngineName = "Vulkan.cppm";
 
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+namespace vk::detail {
+  DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+}
 #endif
 
 int main( int /*argc*/, char ** /*argv*/ )
@@ -38,7 +39,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     // initialize minimal set of function pointers
-    VULKAN_HPP_DEFAULT_DISPATCHER.init();
+    vk::detail::defaultDispatchLoaderDynamic.init();
 #endif
 
     // initialize the vk::ApplicationInfo structure
@@ -52,7 +53,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     // initialize function pointers for instance
-    VULKAN_HPP_DEFAULT_DISPATCHER.init( instance );
+    vk::detail::defaultDispatchLoaderDynamic.init( instance );
 #endif
 
     // destroy it again

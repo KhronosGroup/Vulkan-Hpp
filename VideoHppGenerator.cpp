@@ -43,6 +43,12 @@ void VideoHppGenerator::generateHppFile() const
 #ifndef VULKAN_VIDEO_HPP
 #define VULKAN_VIDEO_HPP
 
+// here, we consider include files to be available when __has_include is not defined
+#if !defined( __has_include )
+#  define __has_include( x ) true
+#  define has_include_was_not_defined
+#endif
+
 // clang-format off
 #include <vulkan/vulkan.hpp>
 // clang-format on
@@ -61,6 +67,12 @@ ${enums}
 ${structs}
 }   // namespace VULKAN_HPP_VIDEO_NAMESPACE
 }   // namespace VULKAN_HPP_NAMESPACE
+
+#if defined( has_include_was_not_defined )
+#  undef has_include_was_not_defined
+#  undef __has_include
+#endif
+
 #endif
 )";
 
@@ -311,7 +323,10 @@ std::string VideoHppGenerator::generateIncludes() const
   std::string includes;
   for ( auto const & extension : m_extensions )
   {
-    includes += "#include <vk_video/" + extension.name + ".h>\n";
+    std::string include = "<vk_video/" + extension.name + ".h>";
+    includes += "#if __has_include( " + include + " )\n";
+    includes += "#  include <vk_video/" + extension.name + ".h>\n";
+    includes += "#endif\n";
   }
 
   return includes;

@@ -7,22 +7,52 @@
 #ifndef VULKAN_VIDEO_HPP
 #define VULKAN_VIDEO_HPP
 
+// here, we consider include files to be available when __has_include is not defined
+#if !defined( __has_include )
+#  define __has_include( x ) true
+#  define has_include_was_not_defined
+#endif
+
 // clang-format off
 #include <vulkan/vulkan.hpp>
 // clang-format on
 
-#include <vk_video/vulkan_video_codec_av1std.h>
-#include <vk_video/vulkan_video_codec_av1std_decode.h>
-#include <vk_video/vulkan_video_codec_av1std_encode.h>
-#include <vk_video/vulkan_video_codec_h264std.h>
-#include <vk_video/vulkan_video_codec_h264std_decode.h>
-#include <vk_video/vulkan_video_codec_h264std_encode.h>
-#include <vk_video/vulkan_video_codec_h265std.h>
-#include <vk_video/vulkan_video_codec_h265std_decode.h>
-#include <vk_video/vulkan_video_codec_h265std_encode.h>
-#include <vk_video/vulkan_video_codec_vp9std.h>
-#include <vk_video/vulkan_video_codec_vp9std_decode.h>
-#include <vk_video/vulkan_video_codecs_common.h>
+#if __has_include( <vk_video/vulkan_video_codecs_common.h> )
+#  include <vk_video/vulkan_video_codecs_common.h>
+#endif
+#if __has_include( <vk_video/vulkan_video_codec_h264std.h> )
+#  include <vk_video/vulkan_video_codec_h264std.h>
+#endif
+#if __has_include( <vk_video/vulkan_video_codec_h264std_decode.h> )
+#  include <vk_video/vulkan_video_codec_h264std_decode.h>
+#endif
+#if __has_include( <vk_video/vulkan_video_codec_h264std_encode.h> )
+#  include <vk_video/vulkan_video_codec_h264std_encode.h>
+#endif
+#if __has_include( <vk_video/vulkan_video_codec_h265std.h> )
+#  include <vk_video/vulkan_video_codec_h265std.h>
+#endif
+#if __has_include( <vk_video/vulkan_video_codec_h265std_decode.h> )
+#  include <vk_video/vulkan_video_codec_h265std_decode.h>
+#endif
+#if __has_include( <vk_video/vulkan_video_codec_h265std_encode.h> )
+#  include <vk_video/vulkan_video_codec_h265std_encode.h>
+#endif
+#if __has_include( <vk_video/vulkan_video_codec_vp9std.h> )
+#  include <vk_video/vulkan_video_codec_vp9std.h>
+#endif
+#if __has_include( <vk_video/vulkan_video_codec_vp9std_decode.h> )
+#  include <vk_video/vulkan_video_codec_vp9std_decode.h>
+#endif
+#if __has_include( <vk_video/vulkan_video_codec_av1std.h> )
+#  include <vk_video/vulkan_video_codec_av1std.h>
+#endif
+#if __has_include( <vk_video/vulkan_video_codec_av1std_decode.h> )
+#  include <vk_video/vulkan_video_codec_av1std_decode.h>
+#endif
+#if __has_include( <vk_video/vulkan_video_codec_av1std_encode.h> )
+#  include <vk_video/vulkan_video_codec_av1std_encode.h>
+#endif
 
 #if !defined( VULKAN_HPP_VIDEO_NAMESPACE )
 #  define VULKAN_HPP_VIDEO_NAMESPACE video
@@ -5400,4 +5430,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   }  // namespace VULKAN_HPP_VIDEO_NAMESPACE
 }  // namespace VULKAN_HPP_NAMESPACE
+
+#if defined( has_include_was_not_defined )
+#  undef has_include_was_not_defined
+#  undef __has_include
+#endif
+
 #endif

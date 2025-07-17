@@ -457,12 +457,12 @@ std::string VideoHppGenerator::generateStructMembers( std::pair<std::string, Str
     }
     else if ( member.arraySizes.empty() )
     {
-      type = member.type.compose( "VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE", "StdVideo" );
+      type = member.type.compose( "StdVideo", "VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE" );
     }
     else
     {
       assert( member.type.prefix.empty() && member.type.postfix.empty() );
-      type = generateStandardArrayWrapper( member.type.compose( "VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE" ), member.arraySizes );
+      type = generateStandardArrayWrapper( member.type.compose( "" ), member.arraySizes );
     }
     members += type + " " + member.name;
 

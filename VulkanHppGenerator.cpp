@@ -41,7 +41,6 @@ namespace
   typename std::vector<T>::iterator findByNameOrAlias( std::vector<T> & values, std::string const & name );
   std::string                       generateCArraySizes( std::vector<std::string> const & sizes );
   std::string                       generateList( std::vector<std::string> const & elements, std::string const & prefix, std::string const & separator );
-  std::string                       generateNamespacedType( std::string const & type );
   std::string                       generateNoDiscard( bool returnsSomething, bool multiSuccessCodes, bool multiErrorCodes );
   std::string                       generateStandardArray( std::string const & type, std::vector<std::string> const & sizes );
   bool                              isAllUpper( std::string const & name );
@@ -1661,12 +1660,12 @@ std::vector<std::string> VulkanHppGenerator::determineDataTypes( std::vector<Vul
     else if ( ( vectorParamIt != vectorParams.end() ) && vectorParamIt->second.byStructure )
     {
       dataTypes.push_back(
-        trimEnd( stripPostfix( vectorMemberByStructure( params[rp].type.type ).type.compose2( raii ? "VULKAN_HPP_NAMESPACE::" : "" ), "*" ) ) );
+        trimEnd( stripPostfix( vectorMemberByStructure( params[rp].type.type ).type.compose( "Vk", raii ? "VULKAN_HPP_NAMESPACE" : "" ), "*" ) ) );
     }
     else
     {
-      dataTypes.push_back(
-        trimEnd( stripPostfix( params[rp].type.compose2( ( raii && m_handles.contains( params[rp].type.type ) ) ? "VULKAN_HPP_NAMESPACE::" : "" ), "*" ) ) );
+      dataTypes.push_back( trimEnd(
+        stripPostfix( params[rp].type.compose( "Vk", ( raii && m_handles.contains( params[rp].type.type ) ) ? "VULKAN_HPP_NAMESPACE" : "" ), "*" ) ) );
     }
   }
   return dataTypes;
@@ -2273,7 +2272,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
     {
       bool hasDefaultAssignment = false;
 
-      std::string composedType = params[i].type.compose2( ( raii && m_handles.contains( params[i].type.type ) ) ? "VULKAN_HPP_NAMESPACE::" : "" );
+      std::string composedType = params[i].type.compose( "Vk", ( raii && m_handles.contains( params[i].type.type ) ) ? "VULKAN_HPP_NAMESPACE" : "" );
 
       if ( singularParams.contains( i ) )
       {
@@ -2431,7 +2430,7 @@ std::string VulkanHppGenerator::generateArgumentListStandard( std::vector<ParamD
     {
       // parameters named "objectType" collide with the member variable -> append an _ to here
       std::string paramName = ( definition && ( params[i].name == "objectType" ) ) ? "objectType_" : params[i].name;
-      argumentList += params[i].type.compose2( "" ) + " " + paramName + generateCArraySizes( params[i].arraySizes ) + ", ";
+      argumentList += params[i].type.compose( "Vk" ) + " " + paramName + generateCArraySizes( params[i].arraySizes ) + ", ";
     }
   }
   if ( withDispatcher )
@@ -2499,7 +2498,7 @@ ${basetypes}
     // filter out VkFlags and VkFlags64, as they are mapped to our own Flags class, and basetypes without any type information
     if ( ( baseType.first != "VkFlags" ) && ( baseType.first != "VkFlags64" ) && !baseType.second.typeInfo.type.empty() )
     {
-      basetypes += "  using " + stripPrefix( baseType.first, "Vk" ) + " = " + baseType.second.typeInfo.compose( "VULKAN_HPP_NAMESPACE" ) + ";\n";
+      basetypes += "  using " + stripPrefix( baseType.first, "Vk" ) + " = " + baseType.second.typeInfo.compose( "Vk", "VULKAN_HPP_NAMESPACE" ) + ";\n";
     }
   }
 
@@ -2835,7 +2834,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedConstPointer( ParamD
     if ( param.type.type == "void" )
     {
       argument =
-        templatedParams.contains( paramIndex ) ? "reinterpret_cast<" + param.type.compose( "VULKAN_HPP_NAMESPACE" ) + ">( &" + name + " )" : param.name;
+        templatedParams.contains( paramIndex ) ? "reinterpret_cast<" + param.type.compose( "Vk", "VULKAN_HPP_NAMESPACE" ) + ">( &" + name + " )" : param.name;
     }
     else if ( param.optional )
     {
@@ -3128,7 +3127,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
     {
       assert( vectorParams.size() == 1 );
       // chained data needs some more handling!!
-      std::string vectorElementType = stripPostfix( commandData.params[vectorParamIt->first].type.compose2( "" ), " *" );
+      std::string vectorElementType = stripPostfix( commandData.params[vectorParamIt->first].type.compose( "Vk" ), " *" );
 
       if ( commandData.returnType == "VkResult" )
       {
@@ -6143,7 +6142,7 @@ std::string VulkanHppGenerator::generateDataDeclarations1Return( CommandData con
         return replaceWithMap( dataDeclarationTemplate,
                                { { "dataType", dataType },
                                  { "returnVariable", returnVariable },
-                                 { "structType", stripPostfix( commandData.params[vectorParamIt->first].type.compose2( "" ), "*" ) },
+                                 { "structType", stripPostfix( commandData.params[vectorParamIt->first].type.compose( "Vk" ), "*" ) },
                                  { "structVariable", startLowerCase( stripPrefix( commandData.params[vectorParamIt->first].name, "p" ) ) },
                                  { "vectorAllocator", stripPrefix( vectorAllocator, "," ) } } );
       }
@@ -6436,7 +6435,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
       assert( !vectorParams.contains( returnParams[0] ) );
       assert( ( vectorParamIt != vectorParams.end() ) && ( vectorParamIt->second.lenParam == returnParams[0] ) );
 
-      std::string vectorElementType = stripPostfix( commandData.params[vectorParamIt->first].type.compose2( "" ), " *" );
+      std::string vectorElementType = stripPostfix( commandData.params[vectorParamIt->first].type.compose( "Vk" ), " *" );
 
       if ( enumerating )
       {
@@ -8066,7 +8065,7 @@ std::string VulkanHppGenerator::generateFuncPointer( std::pair<std::string, Func
   {
     for ( auto const & argument : funcPointer.second.arguments )
     {
-      funcPointerArguments += argument.type.compose2( "" ) + " " + argument.name + ", ";
+      funcPointerArguments += argument.type.compose( "Vk" ) + " " + argument.name + ", ";
     }
     assert( !funcPointerArguments.empty() );
     funcPointerArguments.pop_back();
@@ -8081,7 +8080,7 @@ std::string VulkanHppGenerator::generateFuncPointer( std::pair<std::string, Func
          replaceWithMap( funcPointerTemplate,
                          { { "funcPointerArguments", funcPointerArguments },
                            { "funcPointerName", stripPrefix( funcPointer.first, "PFN_vk" ) },
-                           { "returnType", funcPointer.second.returnType.compose2( "" ) } } ) +
+                           { "returnType", funcPointer.second.returnType.compose( "Vk" ) } } ) +
          leave;
 
   listedStructs.insert( funcPointer.first );
@@ -9769,11 +9768,11 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArgument( ParamData
     assert( !param.optional );
     if ( param.arraySizes.empty() )
     {
-      argument = param.type.compose( "VULKAN_HPP_NAMESPACE" ) + " ";
+      argument = param.type.compose( "Vk", "VULKAN_HPP_NAMESPACE" ) + " ";
     }
     else
     {
-      argument = generateStandardArray( param.type.compose( "VULKAN_HPP_NAMESPACE" ), param.arraySizes ) + " const & ";
+      argument = generateStandardArray( param.type.compose( "Vk", "VULKAN_HPP_NAMESPACE" ), param.arraySizes ) + " const & ";
     }
     argument += param.name;
   }
@@ -10378,8 +10377,9 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
       }
       else if ( destructorParam.type.type == handle.first )
       {
+        assert( handle.first.starts_with( "Vk" ) );
         memberName = handleName;
-        memberType = generateNamespacedType( handle.first );
+        memberType = "VULKAN_HPP_NAMESPACE::" + stripPrefix( handle.first, "Vk" );
       }
       else if ( std::ranges::none_of( handle.second.destructorIt->second.params,
                                       [&destructorParam]( ParamData const & pd ) { return pd.lenExpression == destructorParam.name; } ) )
@@ -10390,7 +10390,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
           name = startLowerCase( stripPrefix( name, "p" ) );
         }
         memberName = name;
-        memberType = destructorParam.type.compose2( m_handles.contains( destructorParam.type.type ) ? "VULKAN_HPP_NAMESPACE::" : "" );
+        memberType = destructorParam.type.compose( "Vk", m_handles.contains( destructorParam.type.type ) ? "VULKAN_HPP_NAMESPACE" : "" );
       }
       if ( !memberName.empty() )
       {
@@ -10431,7 +10431,8 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
     clearMembers += "\n        m_" + handleName + " = nullptr;";
     moveConstructorInitializerList += "m_" + handleName + "( exchange( rhs.m_" + handleName + ", {} ) ), ";
     moveAssignmentInstructions += "\n          std::swap( m_" + handleName + ", rhs.m_" + handleName + " );";
-    memberVariables += "\n    " + generateNamespacedType( handle.first ) + " m_" + handleName + " = {};";
+    assert( handle.first.starts_with( "Vk" ) );
+    memberVariables += "\n    VULKAN_HPP_NAMESPACE::" + stripPrefix( handle.first, "Vk" ) + " m_" + handleName + " = {};";
     swapMembers += "\n      std::swap( m_" + handleName + ", rhs.m_" + handleName + " );";
   }
 
@@ -11357,7 +11358,7 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
       assert( ( member.arraySizes.size() == 1 ) && ( member.lenExpressions.size() == 1 ) );
       assert( std::ranges::any_of( structData.second.members, [&member]( MemberData const & m ) { return m.name == member.lenExpressions[0]; } ) );
 
-      std::string type = member.type.compose2( "" );
+      std::string type = member.type.compose( "Vk" );
 
       static const std::string compareMemberTemplate = R"(( memcmp( ${name}, rhs.${name}, ${count} * sizeof( ${type} ) ) == 0 ))";
       compareMembers += intro + replaceWithMap( compareMemberTemplate, { { "count", member.lenExpressions[0] }, { "name", member.name }, { "type", type } } );
@@ -11478,7 +11479,7 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
   if ( pNextIt != structData.second.members.end() )
   {
     // add pNext as a last optional argument to the constructor
-    arguments.push_back( pNextIt->type.compose2( "" ) + " pNext_ = nullptr" );
+    arguments.push_back( pNextIt->type.compose( "Vk" ) + " pNext_ = nullptr" );
   }
 
   std::string str = replaceWithMap( constructors,
@@ -11578,7 +11579,7 @@ ${byString}
           assert( mit->type.isPointer() || !mit->arraySizes.empty() );
           std::string argumentName = ( mit->type.isPointer() ? startLowerCase( stripPrefix( mit->name, "p" ) ) : mit->name ) + "_";
 
-          std::string argumentType = mit->type.compose2( "" );
+          std::string argumentType = mit->type.compose( "Vk" );
           if ( mit->type.isPointer() )
           {
             argumentType = trimEnd( stripPostfix( argumentType, "*" ) );
@@ -11668,7 +11669,7 @@ ${byString}
     if ( pNextIt != structData.second.members.end() )
     {
       // add pNext as a last optional argument to the constructor
-      arguments.push_back( pNextIt->type.compose( "VULKAN_HPP_NAMESPACE" ) + " pNext_ = nullptr" );
+      arguments.push_back( pNextIt->type.compose( "Vk", "VULKAN_HPP_NAMESPACE" ) + " pNext_ = nullptr" );
     }
 
     static const std::string constructorTemplate = R"(
@@ -11702,11 +11703,11 @@ std::string VulkanHppGenerator::generateStructConstructorArgument( MemberData co
     }
     else if ( memberData.arraySizes.empty() )
     {
-      str += memberData.type.compose2( "" ) + " ";
+      str += memberData.type.compose( "Vk" ) + " ";
     }
     else
     {
-      str += generateStandardArray( memberData.type.compose2( "" ), memberData.arraySizes ) + " const & ";
+      str += generateStandardArray( memberData.type.compose( "Vk" ), memberData.arraySizes ) + " const & ";
     }
     str += memberData.name + "_";
 
@@ -12242,12 +12243,12 @@ std::tuple<std::string, std::string, std::string, std::string>
     }
     else if ( member.arraySizes.empty() )
     {
-      type = member.type.compose2( "" );
+      type = member.type.compose( "Vk" );
     }
     else
     {
       assert( member.type.prefix.empty() && member.type.postfix.empty() );
-      type = generateStandardArrayWrapper( member.type.compose2( "" ), member.arraySizes );
+      type = generateStandardArrayWrapper( member.type.compose( "Vk" ), member.arraySizes );
     }
     members += type + " " + member.name;
     if ( !member.value.empty() )
@@ -12325,7 +12326,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
     std::string memberType =
       member.type.type.starts_with( "PFN_vk" )
         ? "PFN_" + stripPrefix( member.type.type, "PFN_vk" )
-        : ( member.arraySizes.empty() ? member.type.compose2( "" ) : generateStandardArray( member.type.compose2( "" ), member.arraySizes ) );
+        : ( member.arraySizes.empty() ? member.type.compose( "Vk" ) : generateStandardArray( member.type.compose( "Vk" ), member.arraySizes ) );
     const bool  isReinterpretation = !member.bitCount.empty() && member.type.type.starts_with( "Vk" );
     std::string assignment;
     if ( isReinterpretation )
@@ -12503,7 +12504,7 @@ ${byString}
                                    { "arraySize", member.arraySizes[0] },
                                    { "lenName", lenName },
                                    { "lenValue", lenValue },
-                                   { "memberType", member.type.compose( "VULKAN_HPP_NAMESPACE" ) },
+                                   { "memberType", member.type.compose( "Vk", "VULKAN_HPP_NAMESPACE" ) },
                                    { "structureName", structureName },
                                    { "templateHeader", templateHeader } } );
         }
@@ -12701,8 +12702,8 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
       const bool multipleType = std::any_of(
         std::next( memberIt ), structure.second.members.end(), [memberIt]( MemberData const & member ) noexcept { return member.type == memberIt->type; } );
       std::string memberType = ( memberIt->arraySizes.empty() )
-                               ? memberIt->type.compose2( "" )
-                               : ( "const " + generateStandardArray( memberIt->type.compose( "VULKAN_HPP_NAMESPACE" ), memberIt->arraySizes ) + "&" );
+                               ? memberIt->type.compose( "Vk" )
+                               : ( "const " + generateStandardArray( memberIt->type.compose( "Vk", "VULKAN_HPP_NAMESPACE" ), memberIt->arraySizes ) + "&" );
 
       // In a majority of cases this can be constexpr in C++11 as well, however, determining when exactly
       // that is the case is a lot more involved and probably not worth it.
@@ -12769,12 +12770,12 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
   {
     static const std::string memberTemplate = R"(    ${memberType} ${memberName};
 )";
-    members +=
-      replaceWithMap( memberTemplate,
-                      { { "memberName", member.name },
-                        { "memberType",
-                          member.arraySizes.empty() ? member.type.compose2( "" )
-                                                    : generateStandardArrayWrapper( member.type.compose( "VULKAN_HPP_NAMESPACE" ), member.arraySizes ) } } );
+    members += replaceWithMap(
+      memberTemplate,
+      { { "memberName", member.name },
+        { "memberType",
+          member.arraySizes.empty() ? member.type.compose( "Vk" )
+                                    : generateStandardArrayWrapper( member.type.compose( "Vk", "VULKAN_HPP_NAMESPACE" ), member.arraySizes ) } } );
   }
   if ( needsUnrestrictedUnions )
   {
@@ -17345,11 +17346,6 @@ namespace
       }
     }
     return list;
-  }
-
-  std::string generateNamespacedType( std::string const & type )
-  {
-    return type.starts_with( "Vk" ) ? ( "VULKAN_HPP_NAMESPACE::" + stripPrefix( type, "Vk" ) ) : type;
   }
 
   std::string generateNoDiscard( bool returnsSomething, bool multiSuccessCodes, bool multiErrorCodes )

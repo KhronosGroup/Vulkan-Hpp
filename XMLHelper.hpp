@@ -77,16 +77,12 @@ SyncedMessageHandler messager;
 
 struct TypeInfo
 {
-  std::string compose( std::string const & nameSpace, std::string const & prefix_ = "Vk" ) const
+  std::string compose( std::string const & prefixToStrip, std::string const & nameSpace = "" ) const
   {
     return prefix + ( prefix.empty() ? "" : " " ) +
-           ( nameSpace.empty() ? type : ( ( ( type.starts_with( prefix_ ) ) ? ( nameSpace + "::" ) : "" ) + stripPrefix( type, prefix_ ) ) ) +
-           ( postfix.empty() ? "" : " " ) + postfix;
-  }
-
-  std::string compose2( std::string prefixToAdd ) const
-  {
-    return prefix + ( prefix.empty() ? "" : " " ) + ( type.starts_with( "Vk" ) ? prefixToAdd : "" ) + stripPrefix( type, "Vk" ) +
+           ( prefixToStrip.empty()
+               ? type
+               : ( ( ( type.starts_with( prefixToStrip ) && !nameSpace.empty() ) ? ( nameSpace + "::" ) : "" ) + stripPrefix( type, prefixToStrip ) ) ) +
            ( postfix.empty() ? "" : " " ) + postfix;
   }
 

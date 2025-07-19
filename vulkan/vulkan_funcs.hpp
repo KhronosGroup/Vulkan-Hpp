@@ -1665,7 +1665,8 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkResetFences, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetFences.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::resetFences( ArrayProxy<const Fence> const & fences, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::resetFences( ArrayProxy<const Fence> const & fences,
+                                                                                                                      Dispatch const &                d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -2002,7 +2003,7 @@ namespace VULKAN_HPP_NAMESPACE
 #else
   // wrapper function for command vkResetEvent, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetEvent.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::resetEvent( Event event, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::resetEvent( Event event, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -3847,9 +3848,9 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkResetDescriptorPool, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetDescriptorPool.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::resetDescriptorPool( DescriptorPool           descriptorPool,
-                                                        DescriptorPoolResetFlags flags,
-                                                        Dispatch const &         d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::resetDescriptorPool( DescriptorPool           descriptorPool,
+                                                                             DescriptorPoolResetFlags flags,
+                                                                             Dispatch const &         d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkResetDescriptorPool(
@@ -3858,15 +3859,19 @@ namespace VULKAN_HPP_NAMESPACE
 #else
   // wrapper function for command vkResetDescriptorPool, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetDescriptorPool.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void
-    Device::resetDescriptorPool( DescriptorPool descriptorPool, DescriptorPoolResetFlags flags, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+                                          Device::resetDescriptorPool( DescriptorPool descriptorPool, DescriptorPoolResetFlags flags, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     VULKAN_HPP_ASSERT( d.vkResetDescriptorPool && "Function <vkResetDescriptorPool> requires <VK_VERSION_1_0>" );
 #  endif
 
-    d.vkResetDescriptorPool( m_device, static_cast<VkDescriptorPool>( descriptorPool ), static_cast<VkDescriptorPoolResetFlags>( flags ) );
+    Result result = static_cast<Result>(
+      d.vkResetDescriptorPool( m_device, static_cast<VkDescriptorPool>( descriptorPool ), static_cast<VkDescriptorPoolResetFlags>( flags ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::resetDescriptorPool" );
+
+    return detail::createResultValueType( result );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -3982,10 +3987,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   // wrapper function for command vkFreeDescriptorSets, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkFreeDescriptorSets.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::freeDescriptorSets( DescriptorPool        descriptorPool,
-                                                       uint32_t              descriptorSetCount,
-                                                       const DescriptorSet * pDescriptorSets,
-                                                       Dispatch const &      d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::freeDescriptorSets( DescriptorPool        descriptorPool,
+                                                                            uint32_t              descriptorSetCount,
+                                                                            const DescriptorSet * pDescriptorSets,
+                                                                            Dispatch const &      d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkFreeDescriptorSets( static_cast<VkDevice>( m_device ),
@@ -3997,26 +4002,28 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkFreeDescriptorSets, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkFreeDescriptorSets.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void Device::freeDescriptorSets( DescriptorPool                          descriptorPool,
-                                                     ArrayProxy<const DescriptorSet> const & descriptorSets,
-                                                     Dispatch const &                        d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+    Device::freeDescriptorSets( DescriptorPool descriptorPool, ArrayProxy<const DescriptorSet> const & descriptorSets, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     VULKAN_HPP_ASSERT( d.vkFreeDescriptorSets && "Function <vkFreeDescriptorSets> requires <VK_VERSION_1_0>" );
 #  endif
 
-    d.vkFreeDescriptorSets(
-      m_device, static_cast<VkDescriptorPool>( descriptorPool ), descriptorSets.size(), reinterpret_cast<const VkDescriptorSet *>( descriptorSets.data() ) );
+    Result result = static_cast<Result>( d.vkFreeDescriptorSets(
+      m_device, static_cast<VkDescriptorPool>( descriptorPool ), descriptorSets.size(), reinterpret_cast<const VkDescriptorSet *>( descriptorSets.data() ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::freeDescriptorSets" );
+
+    return detail::createResultValueType( result );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   // wrapper function for command vkFreeDescriptorSets, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkFreeDescriptorSets.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE Result( Device::free )( DescriptorPool        descriptorPool,
-                                            uint32_t              descriptorSetCount,
-                                            const DescriptorSet * pDescriptorSets,
-                                            Dispatch const &      d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result( Device::free )( DescriptorPool        descriptorPool,
+                                                                 uint32_t              descriptorSetCount,
+                                                                 const DescriptorSet * pDescriptorSets,
+                                                                 Dispatch const &      d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkFreeDescriptorSets( static_cast<VkDevice>( m_device ),
@@ -4028,17 +4035,21 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkFreeDescriptorSets, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkFreeDescriptorSets.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void( Device::free )( DescriptorPool                          descriptorPool,
-                                          ArrayProxy<const DescriptorSet> const & descriptorSets,
-                                          Dispatch const &                        d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
+    typename ResultValueType<void>::type( Device::free )( DescriptorPool                          descriptorPool,
+                                                          ArrayProxy<const DescriptorSet> const & descriptorSets,
+                                                          Dispatch const &                        d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     VULKAN_HPP_ASSERT( d.vkFreeDescriptorSets && "Function <vkFreeDescriptorSets> requires <VK_VERSION_1_0>" );
 #  endif
 
-    d.vkFreeDescriptorSets(
-      m_device, static_cast<VkDescriptorPool>( descriptorPool ), descriptorSets.size(), reinterpret_cast<const VkDescriptorSet *>( descriptorSets.data() ) );
+    Result result = static_cast<Result>( d.vkFreeDescriptorSets(
+      m_device, static_cast<VkDescriptorPool>( descriptorPool ), descriptorSets.size(), reinterpret_cast<const VkDescriptorSet *>( descriptorSets.data() ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::( Device::free )" );
+
+    return detail::createResultValueType( result );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -4438,8 +4449,8 @@ namespace VULKAN_HPP_NAMESPACE
 #else
   // wrapper function for command vkResetCommandPool, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetCommandPool.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type
-    Device::resetCommandPool( CommandPool commandPool, CommandPoolResetFlags flags, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+                                          Device::resetCommandPool( CommandPool commandPool, CommandPoolResetFlags flags, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -4688,7 +4699,8 @@ namespace VULKAN_HPP_NAMESPACE
 #else
   // wrapper function for command vkResetCommandBuffer, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetCommandBuffer.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type CommandBuffer::reset( CommandBufferResetFlags flags, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type CommandBuffer::reset( CommandBufferResetFlags flags,
+                                                                                                                       Dispatch const &        d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -7638,7 +7650,7 @@ namespace VULKAN_HPP_NAMESPACE
 #else
   // wrapper function for command vkSetPrivateData, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetPrivateData.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
     Device::setPrivateData( ObjectType objectType_, uint64_t objectHandle, PrivateDataSlot privateDataSlot, uint64_t data, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -8438,7 +8450,8 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkUnmapMemory2, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkUnmapMemory2.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::unmapMemory2( const MemoryUnmapInfo & memoryUnmapInfo, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::unmapMemory2( const MemoryUnmapInfo & memoryUnmapInfo,
+                                                                                                                       Dispatch const &        d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -11479,13 +11492,13 @@ namespace VULKAN_HPP_NAMESPACE
                                                     reinterpret_cast<VkVideoSessionMemoryRequirementsKHR *>( memoryRequirements.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getVideoSessionMemoryRequirementsKHR" );
     VULKAN_HPP_ASSERT( memoryRequirementsCount <= memoryRequirements.size() );
     if ( memoryRequirementsCount < memoryRequirements.size() )
     {
       memoryRequirements.resize( memoryRequirementsCount );
     }
-    return memoryRequirements;
+    return detail::createResultValueType( result, std::move( memoryRequirements ) );
   }
 
   // wrapper function for command vkGetVideoSessionMemoryRequirementsKHR, see
@@ -11522,13 +11535,13 @@ namespace VULKAN_HPP_NAMESPACE
                                                     reinterpret_cast<VkVideoSessionMemoryRequirementsKHR *>( memoryRequirements.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getVideoSessionMemoryRequirementsKHR" );
     VULKAN_HPP_ASSERT( memoryRequirementsCount <= memoryRequirements.size() );
     if ( memoryRequirementsCount < memoryRequirements.size() )
     {
       memoryRequirements.resize( memoryRequirementsCount );
     }
-    return memoryRequirements;
+    return detail::createResultValueType( result, std::move( memoryRequirements ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -14019,7 +14032,7 @@ namespace VULKAN_HPP_NAMESPACE
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkReleaseDisplayEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseDisplayEXT.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE Result PhysicalDevice::releaseDisplayEXT( DisplayKHR display, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::releaseDisplayEXT( DisplayKHR display, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkReleaseDisplayEXT( static_cast<VkPhysicalDevice>( m_physicalDevice ), static_cast<VkDisplayKHR>( display ) ) );
@@ -14027,14 +14040,18 @@ namespace VULKAN_HPP_NAMESPACE
 #else
   // wrapper function for command vkReleaseDisplayEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseDisplayEXT.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void PhysicalDevice::releaseDisplayEXT( DisplayKHR display, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type PhysicalDevice::releaseDisplayEXT( DisplayKHR       display,
+                                                                                                                                    Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     VULKAN_HPP_ASSERT( d.vkReleaseDisplayEXT && "Function <vkReleaseDisplayEXT> requires <VK_EXT_direct_mode_display>" );
 #  endif
 
-    d.vkReleaseDisplayEXT( m_physicalDevice, static_cast<VkDisplayKHR>( display ) );
+    Result result = static_cast<Result>( d.vkReleaseDisplayEXT( m_physicalDevice, static_cast<VkDisplayKHR>( display ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::releaseDisplayEXT" );
+
+    return detail::createResultValueType( result );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -14171,7 +14188,7 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkDisplayPowerControlEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDisplayPowerControlEXT.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
     Device::displayPowerControlEXT( DisplayKHR display, const DisplayPowerInfoEXT & displayPowerInfo, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -21672,8 +21689,7 @@ namespace VULKAN_HPP_NAMESPACE
   // wrapper function for command vkGetDeferredOperationResultKHR, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeferredOperationResultKHR.html
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getDeferredOperationResultKHR( DeferredOperationKHR operation,
-                                                                                       Dispatch const &     d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getDeferredOperationResultKHR( DeferredOperationKHR operation, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -21681,6 +21697,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
 
     Result result = static_cast<Result>( d.vkGetDeferredOperationResultKHR( m_device, static_cast<VkDeferredOperationKHR>( operation ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getDeferredOperationResultKHR", { Result::eSuccess, Result::eNotReady } );
 
     return static_cast<Result>( result );
   }
@@ -22243,7 +22260,8 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkUnmapMemory2KHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkUnmapMemory2KHR.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::unmapMemory2KHR( const MemoryUnmapInfo & memoryUnmapInfo, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+                                          Device::unmapMemory2KHR( const MemoryUnmapInfo & memoryUnmapInfo, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -22272,8 +22290,8 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkReleaseSwapchainImagesEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesEXT.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::releaseSwapchainImagesEXT( const ReleaseSwapchainImagesInfoKHR & releaseInfo,
-                                                                                            Dispatch const &                      d ) const
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+                                          Device::releaseSwapchainImagesEXT( const ReleaseSwapchainImagesInfoKHR & releaseInfo, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -22581,7 +22599,8 @@ namespace VULKAN_HPP_NAMESPACE
 #else
   // wrapper function for command vkAcquireDrmDisplayEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkAcquireDrmDisplayEXT.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type PhysicalDevice::acquireDrmDisplayEXT( int32_t drmFd, DisplayKHR display, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+                                          PhysicalDevice::acquireDrmDisplayEXT( int32_t drmFd, DisplayKHR display, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -22744,7 +22763,7 @@ namespace VULKAN_HPP_NAMESPACE
 #else
   // wrapper function for command vkSetPrivateDataEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetPrivateDataEXT.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
     Device::setPrivateDataEXT( ObjectType objectType_, uint64_t objectHandle, PrivateDataSlot privateDataSlot, uint64_t data, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -28478,9 +28497,9 @@ namespace VULKAN_HPP_NAMESPACE
   // wrapper function for command vkReleaseCapturedPipelineDataKHR, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseCapturedPipelineDataKHR.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::releaseCapturedPipelineDataKHR( const ReleaseCapturedPipelineDataInfoKHR * pInfo,
-                                                                   const AllocationCallbacks *                pAllocator,
-                                                                   Dispatch const &                           d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::releaseCapturedPipelineDataKHR( const ReleaseCapturedPipelineDataInfoKHR * pInfo,
+                                                                                        const AllocationCallbacks *                pAllocator,
+                                                                                        Dispatch const &                           d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkReleaseCapturedPipelineDataKHR( static_cast<VkDevice>( m_device ),
@@ -28492,17 +28511,19 @@ namespace VULKAN_HPP_NAMESPACE
   // wrapper function for command vkReleaseCapturedPipelineDataKHR, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseCapturedPipelineDataKHR.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void Device::releaseCapturedPipelineDataKHR( const ReleaseCapturedPipelineDataInfoKHR & info,
-                                                                 Optional<const AllocationCallbacks>        allocator,
-                                                                 Dispatch const &                           d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::releaseCapturedPipelineDataKHR(
+    const ReleaseCapturedPipelineDataInfoKHR & info, Optional<const AllocationCallbacks> allocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     VULKAN_HPP_ASSERT( d.vkReleaseCapturedPipelineDataKHR && "Function <vkReleaseCapturedPipelineDataKHR> requires <VK_KHR_pipeline_binary>" );
 #  endif
 
-    d.vkReleaseCapturedPipelineDataKHR(
-      m_device, reinterpret_cast<const VkReleaseCapturedPipelineDataInfoKHR *>( &info ), reinterpret_cast<const VkAllocationCallbacks *>( allocator.get() ) );
+    Result result = static_cast<Result>( d.vkReleaseCapturedPipelineDataKHR(
+      m_device, reinterpret_cast<const VkReleaseCapturedPipelineDataInfoKHR *>( &info ), reinterpret_cast<const VkAllocationCallbacks *>( allocator.get() ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::releaseCapturedPipelineDataKHR" );
+
+    return detail::createResultValueType( result );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -28550,13 +28571,13 @@ namespace VULKAN_HPP_NAMESPACE
           m_device, static_cast<VkFramebuffer>( framebuffer ), &propertiesCount, reinterpret_cast<VkTilePropertiesQCOM *>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getFramebufferTilePropertiesQCOM" );
     VULKAN_HPP_ASSERT( propertiesCount <= properties.size() );
     if ( propertiesCount < properties.size() )
     {
       properties.resize( propertiesCount );
     }
-    return properties;
+    return detail::createResultValueType( result, std::move( properties ) );
   }
 
   // wrapper function for command vkGetFramebufferTilePropertiesQCOM, see
@@ -28585,22 +28606,22 @@ namespace VULKAN_HPP_NAMESPACE
           m_device, static_cast<VkFramebuffer>( framebuffer ), &propertiesCount, reinterpret_cast<VkTilePropertiesQCOM *>( properties.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
-
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getFramebufferTilePropertiesQCOM" );
     VULKAN_HPP_ASSERT( propertiesCount <= properties.size() );
     if ( propertiesCount < properties.size() )
     {
       properties.resize( propertiesCount );
     }
-    return properties;
+    return detail::createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   // wrapper function for command vkGetDynamicRenderingTilePropertiesQCOM, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDynamicRenderingTilePropertiesQCOM.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::getDynamicRenderingTilePropertiesQCOM( const RenderingInfo * pRenderingInfo,
-                                                                          TilePropertiesQCOM *  pProperties,
-                                                                          Dispatch const &      d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getDynamicRenderingTilePropertiesQCOM( const RenderingInfo * pRenderingInfo,
+                                                                                               TilePropertiesQCOM *  pProperties,
+                                                                                               Dispatch const &      d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkGetDynamicRenderingTilePropertiesQCOM( static_cast<VkDevice>( m_device ),
@@ -28612,8 +28633,8 @@ namespace VULKAN_HPP_NAMESPACE
   // wrapper function for command vkGetDynamicRenderingTilePropertiesQCOM, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDynamicRenderingTilePropertiesQCOM.html
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE TilePropertiesQCOM Device::getDynamicRenderingTilePropertiesQCOM( const RenderingInfo & renderingInfo,
-                                                                                                           Dispatch const &      d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<TilePropertiesQCOM>::type
+                       Device::getDynamicRenderingTilePropertiesQCOM( const RenderingInfo & renderingInfo, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -28621,10 +28642,11 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
 
     TilePropertiesQCOM properties;
-    d.vkGetDynamicRenderingTilePropertiesQCOM(
-      m_device, reinterpret_cast<const VkRenderingInfo *>( &renderingInfo ), reinterpret_cast<VkTilePropertiesQCOM *>( &properties ) );
+    Result             result = static_cast<Result>( d.vkGetDynamicRenderingTilePropertiesQCOM(
+      m_device, reinterpret_cast<const VkRenderingInfo *>( &renderingInfo ), reinterpret_cast<VkTilePropertiesQCOM *>( &properties ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getDynamicRenderingTilePropertiesQCOM" );
 
-    return properties;
+    return detail::createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -28643,8 +28665,8 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkReleaseSwapchainImagesKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseSwapchainImagesKHR.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::releaseSwapchainImagesKHR( const ReleaseSwapchainImagesInfoKHR & releaseInfo,
-                                                                                            Dispatch const &                      d ) const
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+                                          Device::releaseSwapchainImagesKHR( const ReleaseSwapchainImagesInfoKHR & releaseInfo, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -28823,7 +28845,7 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkSetLatencySleepModeNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetLatencySleepModeNV.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
     Device::setLatencySleepModeNV( SwapchainKHR swapchain, const LatencySleepModeInfoNV & sleepModeInfo, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -28841,7 +28863,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   // wrapper function for command vkLatencySleepNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkLatencySleepNV.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::latencySleepNV( SwapchainKHR swapchain, const LatencySleepInfoNV * pSleepInfo, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::latencySleepNV( SwapchainKHR               swapchain,
+                                                                        const LatencySleepInfoNV * pSleepInfo,
+                                                                        Dispatch const &           d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkLatencySleepNV(
@@ -28851,14 +28875,19 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkLatencySleepNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkLatencySleepNV.html
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void Device::latencySleepNV( SwapchainKHR swapchain, const LatencySleepInfoNV & sleepInfo, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+                                          Device::latencySleepNV( SwapchainKHR swapchain, const LatencySleepInfoNV & sleepInfo, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     VULKAN_HPP_ASSERT( d.vkLatencySleepNV && "Function <vkLatencySleepNV> requires <VK_NV_low_latency2>" );
 #  endif
 
-    d.vkLatencySleepNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkLatencySleepInfoNV *>( &sleepInfo ) );
+    Result result = static_cast<Result>(
+      d.vkLatencySleepNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkLatencySleepInfoNV *>( &sleepInfo ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::latencySleepNV" );
+
+    return detail::createResultValueType( result );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

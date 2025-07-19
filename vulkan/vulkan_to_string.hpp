@@ -3115,6 +3115,8 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & BuildAccelerationStructureFlagBitsKHR::eAllowDataAccess )
       result += " AllowDataAccess |";
+    if ( value & BuildAccelerationStructureFlagBitsKHR::eAllowClusterOpacityMicromapsNV )
+      result += " AllowClusterOpacityMicromapsNV |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -4171,6 +4173,7 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eErrorFormatNotSupported                    : return "ErrorFormatNotSupported";
       case Result::eErrorFragmentedPool                        : return "ErrorFragmentedPool";
       case Result::eErrorUnknown                               : return "ErrorUnknown";
+      case Result::eErrorValidationFailed                      : return "ErrorValidationFailed";
       case Result::eErrorOutOfPoolMemory                       : return "ErrorOutOfPoolMemory";
       case Result::eErrorInvalidExternalHandle                 : return "ErrorInvalidExternalHandle";
       case Result::eErrorFragmentation                         : return "ErrorFragmentation";
@@ -4182,7 +4185,6 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eSuboptimalKHR                              : return "SuboptimalKHR";
       case Result::eErrorOutOfDateKHR                          : return "ErrorOutOfDateKHR";
       case Result::eErrorIncompatibleDisplayKHR                : return "ErrorIncompatibleDisplayKHR";
-      case Result::eErrorValidationFailedEXT                   : return "ErrorValidationFailedEXT";
       case Result::eErrorInvalidShaderNV                       : return "ErrorInvalidShaderNV";
       case Result::eErrorImageUsageNotSupportedKHR             : return "ErrorImageUsageNotSupportedKHR";
       case Result::eErrorVideoPictureLayoutNotSupportedKHR     : return "ErrorVideoPictureLayoutNotSupportedKHR";
@@ -8756,8 +8758,9 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       case BuildAccelerationStructureFlagBitsKHR::eAllowDisplacementMicromapUpdateNV: return "AllowDisplacementMicromapUpdateNV";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      case BuildAccelerationStructureFlagBitsKHR::eAllowDataAccess: return "AllowDataAccess";
-      default                                                     : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+      case BuildAccelerationStructureFlagBitsKHR::eAllowDataAccess               : return "AllowDataAccess";
+      case BuildAccelerationStructureFlagBitsKHR::eAllowClusterOpacityMicromapsNV: return "AllowClusterOpacityMicromapsNV";
+      default                                                                    : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 

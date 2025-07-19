@@ -5390,15 +5390,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkReleaseCapturedPipelineDataKHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseCapturedPipelineDataKHR.html
-      void releaseCapturedPipelineDataKHR( const ReleaseCapturedPipelineDataInfoKHR & info,
-                                           Optional<const AllocationCallbacks> allocator
-                                             VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+      void releaseCapturedPipelineDataKHR( const ReleaseCapturedPipelineDataInfoKHR &    info,
+                                           Optional<const AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const;
 
       //=== VK_QCOM_tile_properties ===
 
       // wrapper function for command vkGetDynamicRenderingTilePropertiesQCOM, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDynamicRenderingTilePropertiesQCOM.html
-      VULKAN_HPP_NODISCARD TilePropertiesQCOM getDynamicRenderingTilePropertiesQCOM( const RenderingInfo & renderingInfo ) const VULKAN_HPP_NOEXCEPT;
+      VULKAN_HPP_NODISCARD TilePropertiesQCOM getDynamicRenderingTilePropertiesQCOM( const RenderingInfo & renderingInfo ) const;
 
       //=== VK_KHR_swapchain_maintenance1 ===
 
@@ -8859,7 +8858,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkGetDeferredOperationResultKHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeferredOperationResultKHR.html
-      VULKAN_HPP_NODISCARD Result getResult() const VULKAN_HPP_NOEXCEPT;
+      VULKAN_HPP_NODISCARD Result getResult() const;
 
       // wrapper function for command vkDeferredOperationJoinKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDeferredOperationJoinKHR.html
       VULKAN_HPP_NODISCARD Result join() const;
@@ -8994,7 +8993,7 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_VERSION_1_0 ===
 
       // wrapper function for command vkResetDescriptorPool, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetDescriptorPool.html
-      void reset( DescriptorPoolResetFlags flags VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+      void reset( DescriptorPoolResetFlags flags VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const;
 
     private:
       VULKAN_HPP_NAMESPACE::Device         m_device         = {};
@@ -14005,7 +14004,7 @@ namespace VULKAN_HPP_NAMESPACE
       void setLatencySleepModeNV( const LatencySleepModeInfoNV & sleepModeInfo ) const;
 
       // wrapper function for command vkLatencySleepNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkLatencySleepNV.html
-      void latencySleepNV( const LatencySleepInfoNV & sleepInfo ) const VULKAN_HPP_NOEXCEPT;
+      void latencySleepNV( const LatencySleepInfoNV & sleepInfo ) const;
 
       // wrapper function for command vkSetLatencyMarkerNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetLatencyMarkerNV.html
       void setLatencyMarkerNV( const SetLatencyMarkerInfoNV & latencyMarkerInfo ) const VULKAN_HPP_NOEXCEPT;
@@ -15896,12 +15895,13 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     // wrapper function for command vkResetDescriptorPool, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetDescriptorPool.html
-    VULKAN_HPP_INLINE void DescriptorPool::reset( DescriptorPoolResetFlags flags ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_INLINE void DescriptorPool::reset( DescriptorPoolResetFlags flags ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkResetDescriptorPool && "Function <vkResetDescriptorPool> requires <VK_VERSION_1_0>" );
 
-      getDispatcher()->vkResetDescriptorPool(
-        static_cast<VkDevice>( m_device ), static_cast<VkDescriptorPool>( m_descriptorPool ), static_cast<VkDescriptorPoolResetFlags>( flags ) );
+      Result result = static_cast<Result>( getDispatcher()->vkResetDescriptorPool(
+        static_cast<VkDevice>( m_device ), static_cast<VkDescriptorPool>( m_descriptorPool ), static_cast<VkDescriptorPoolResetFlags>( flags ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::DescriptorPool::reset" );
     }
 
     // wrapper function for command vkAllocateDescriptorSets, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkAllocateDescriptorSets.html
@@ -19135,7 +19135,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                      reinterpret_cast<VkVideoSessionMemoryRequirementsKHR *>( memoryRequirements.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
-
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::VideoSessionKHR::getMemoryRequirements" );
       VULKAN_HPP_ASSERT( memoryRequirementsCount <= memoryRequirements.size() );
       if ( memoryRequirementsCount < memoryRequirements.size() )
       {
@@ -23640,13 +23640,15 @@ namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkGetDeferredOperationResultKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeferredOperationResultKHR.html
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result DeferredOperationKHR::getResult() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result DeferredOperationKHR::getResult() const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeferredOperationResultKHR &&
                          "Function <vkGetDeferredOperationResultKHR> requires <VK_KHR_deferred_host_operations>" );
 
       Result result = static_cast<Result>(
         getDispatcher()->vkGetDeferredOperationResultKHR( static_cast<VkDevice>( m_device ), static_cast<VkDeferredOperationKHR>( m_deferredOperationKHR ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck(
+        result, VULKAN_HPP_NAMESPACE_STRING "::DeferredOperationKHR::getResult", { Result::eSuccess, Result::eNotReady } );
 
       return static_cast<Result>( result );
     }
@@ -26670,13 +26672,15 @@ namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkReleaseCapturedPipelineDataKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseCapturedPipelineDataKHR.html
     VULKAN_HPP_INLINE void Device::releaseCapturedPipelineDataKHR( const ReleaseCapturedPipelineDataInfoKHR & info,
-                                                                   Optional<const AllocationCallbacks>        allocator ) const VULKAN_HPP_NOEXCEPT
+                                                                   Optional<const AllocationCallbacks>        allocator ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkReleaseCapturedPipelineDataKHR && "Function <vkReleaseCapturedPipelineDataKHR> requires <VK_KHR_pipeline_binary>" );
 
-      getDispatcher()->vkReleaseCapturedPipelineDataKHR( static_cast<VkDevice>( m_device ),
-                                                         reinterpret_cast<const VkReleaseCapturedPipelineDataInfoKHR *>( &info ),
-                                                         reinterpret_cast<const VkAllocationCallbacks *>( allocator.get() ) );
+      Result result =
+        static_cast<Result>( getDispatcher()->vkReleaseCapturedPipelineDataKHR( static_cast<VkDevice>( m_device ),
+                                                                                reinterpret_cast<const VkReleaseCapturedPipelineDataInfoKHR *>( &info ),
+                                                                                reinterpret_cast<const VkAllocationCallbacks *>( allocator.get() ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::releaseCapturedPipelineDataKHR" );
     }
 
     //=== VK_QCOM_tile_properties ===
@@ -26704,7 +26708,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                              reinterpret_cast<VkTilePropertiesQCOM *>( properties.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
-
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Framebuffer::getTilePropertiesQCOM" );
       VULKAN_HPP_ASSERT( propertiesCount <= properties.size() );
       if ( propertiesCount < properties.size() )
       {
@@ -26715,16 +26719,17 @@ namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkGetDynamicRenderingTilePropertiesQCOM, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDynamicRenderingTilePropertiesQCOM.html
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE TilePropertiesQCOM
-      Device::getDynamicRenderingTilePropertiesQCOM( const RenderingInfo & renderingInfo ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE TilePropertiesQCOM Device::getDynamicRenderingTilePropertiesQCOM( const RenderingInfo & renderingInfo ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetDynamicRenderingTilePropertiesQCOM &&
                          "Function <vkGetDynamicRenderingTilePropertiesQCOM> requires <VK_QCOM_tile_properties>" );
 
       TilePropertiesQCOM properties;
-      getDispatcher()->vkGetDynamicRenderingTilePropertiesQCOM( static_cast<VkDevice>( m_device ),
-                                                                reinterpret_cast<const VkRenderingInfo *>( &renderingInfo ),
-                                                                reinterpret_cast<VkTilePropertiesQCOM *>( &properties ) );
+      Result             result =
+        static_cast<Result>( getDispatcher()->vkGetDynamicRenderingTilePropertiesQCOM( static_cast<VkDevice>( m_device ),
+                                                                                       reinterpret_cast<const VkRenderingInfo *>( &renderingInfo ),
+                                                                                       reinterpret_cast<VkTilePropertiesQCOM *>( &properties ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getDynamicRenderingTilePropertiesQCOM" );
 
       return properties;
     }
@@ -26815,12 +26820,13 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     // wrapper function for command vkLatencySleepNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkLatencySleepNV.html
-    VULKAN_HPP_INLINE void SwapchainKHR::latencySleepNV( const LatencySleepInfoNV & sleepInfo ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_INLINE void SwapchainKHR::latencySleepNV( const LatencySleepInfoNV & sleepInfo ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkLatencySleepNV && "Function <vkLatencySleepNV> requires <VK_NV_low_latency2>" );
 
-      getDispatcher()->vkLatencySleepNV(
-        static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchainKHR ), reinterpret_cast<const VkLatencySleepInfoNV *>( &sleepInfo ) );
+      Result result = static_cast<Result>( getDispatcher()->vkLatencySleepNV(
+        static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchainKHR ), reinterpret_cast<const VkLatencySleepInfoNV *>( &sleepInfo ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::latencySleepNV" );
     }
 
     // wrapper function for command vkSetLatencyMarkerNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetLatencyMarkerNV.html

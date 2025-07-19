@@ -1046,7 +1046,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::SystemError;
   using VULKAN_HPP_NAMESPACE::TooManyObjectsError;
   using VULKAN_HPP_NAMESPACE::UnknownError;
-  using VULKAN_HPP_NAMESPACE::ValidationFailedEXTError;
+  using VULKAN_HPP_NAMESPACE::ValidationFailedError;
   using VULKAN_HPP_NAMESPACE::VideoPictureLayoutNotSupportedKHRError;
   using VULKAN_HPP_NAMESPACE::VideoProfileCodecNotSupportedKHRError;
   using VULKAN_HPP_NAMESPACE::VideoProfileFormatNotSupportedKHRError;

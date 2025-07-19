@@ -56,7 +56,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-static_assert( VK_HEADER_VERSION == 322, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 323, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -6959,6 +6959,14 @@ namespace VULKAN_HPP_NAMESPACE
     UnknownError( char const * message ) : SystemError( make_error_code( Result::eErrorUnknown ), message ) {}
   };
 
+  class ValidationFailedError : public SystemError
+  {
+  public:
+    ValidationFailedError( std::string const & message ) : SystemError( make_error_code( Result::eErrorValidationFailed ), message ) {}
+
+    ValidationFailedError( char const * message ) : SystemError( make_error_code( Result::eErrorValidationFailed ), message ) {}
+  };
+
   class OutOfPoolMemoryError : public SystemError
   {
   public:
@@ -7029,14 +7037,6 @@ namespace VULKAN_HPP_NAMESPACE
     IncompatibleDisplayKHRError( std::string const & message ) : SystemError( make_error_code( Result::eErrorIncompatibleDisplayKHR ), message ) {}
 
     IncompatibleDisplayKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorIncompatibleDisplayKHR ), message ) {}
-  };
-
-  class ValidationFailedEXTError : public SystemError
-  {
-  public:
-    ValidationFailedEXTError( std::string const & message ) : SystemError( make_error_code( Result::eErrorValidationFailedEXT ), message ) {}
-
-    ValidationFailedEXTError( char const * message ) : SystemError( make_error_code( Result::eErrorValidationFailedEXT ), message ) {}
   };
 
   class InvalidShaderNVError : public SystemError
@@ -7185,6 +7185,7 @@ namespace VULKAN_HPP_NAMESPACE
         case Result::eErrorFormatNotSupported                    : throw FormatNotSupportedError( message );
         case Result::eErrorFragmentedPool                        : throw FragmentedPoolError( message );
         case Result::eErrorUnknown                               : throw UnknownError( message );
+        case Result::eErrorValidationFailed                      : throw ValidationFailedError( message );
         case Result::eErrorOutOfPoolMemory                       : throw OutOfPoolMemoryError( message );
         case Result::eErrorInvalidExternalHandle                 : throw InvalidExternalHandleError( message );
         case Result::eErrorFragmentation                         : throw FragmentationError( message );
@@ -7194,7 +7195,6 @@ namespace VULKAN_HPP_NAMESPACE
         case Result::eErrorNativeWindowInUseKHR                  : throw NativeWindowInUseKHRError( message );
         case Result::eErrorOutOfDateKHR                          : throw OutOfDateKHRError( message );
         case Result::eErrorIncompatibleDisplayKHR                : throw IncompatibleDisplayKHRError( message );
-        case Result::eErrorValidationFailedEXT                   : throw ValidationFailedEXTError( message );
         case Result::eErrorInvalidShaderNV                       : throw InvalidShaderNVError( message );
         case Result::eErrorImageUsageNotSupportedKHR             : throw ImageUsageNotSupportedKHRError( message );
         case Result::eErrorVideoPictureLayoutNotSupportedKHR     : throw VideoPictureLayoutNotSupportedKHRError( message );

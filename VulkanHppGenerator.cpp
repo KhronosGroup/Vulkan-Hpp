@@ -1664,8 +1664,8 @@ std::vector<std::string> VulkanHppGenerator::determineDataTypes( std::vector<Vul
     }
     else
     {
-      dataTypes.push_back( trimEnd(
-        stripPostfix( params[rp].type.compose( "Vk", ( raii && m_handles.contains( params[rp].type.type ) ) ? "VULKAN_HPP_NAMESPACE" : "" ), "*" ) ) );
+      dataTypes.push_back(
+        trimEnd( stripPostfix( params[rp].type.compose( "Vk", ( raii && m_handles.contains( params[rp].type.type ) ) ? "VULKAN_HPP_NAMESPACE" : "" ), "*" ) ) );
     }
   }
   return dataTypes;
@@ -13786,6 +13786,7 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
                        { "api", { "vulkan", "vulkansc" } },
                        { "cmdbufferlevel", { "primary", "secondary" } },
                        { "comment", {} },
+                       { "conditionalrendering", { "false", "true" } },
                        { "errorcodes", {} },
                        { "export", { "vulkan", "vulkansc" } },
                        { "queues", {} },

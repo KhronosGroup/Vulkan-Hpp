@@ -7243,6 +7243,36 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return std::tuple<Result &, T &>( result, value );
     }
+
+    // std::expected-look alike
+    bool has_value() const VULKAN_HPP_NOEXCEPT
+    {
+      return result == vk::Result::eSuccess;
+    }
+
+    T const * operator->() const VULKAN_HPP_NOEXCEPT
+    {
+      assert( has_value() );
+      return &value;
+    }
+
+    T * operator->() VULKAN_HPP_NOEXCEPT
+    {
+      assert( has_value() );
+      return &value;
+    }
+
+    T const & operator*() const VULKAN_HPP_NOEXCEPT
+    {
+      assert( has_value() );
+      return value;
+    }
+
+    T & operator*() VULKAN_HPP_NOEXCEPT
+    {
+      assert( has_value() );
+      return value;
+    }
   };
 
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )

@@ -250,6 +250,8 @@ namespace VULKAN_HPP_NAMESPACE
     eErrorFormatNotSupported                     = VK_ERROR_FORMAT_NOT_SUPPORTED,
     eErrorFragmentedPool                         = VK_ERROR_FRAGMENTED_POOL,
     eErrorUnknown                                = VK_ERROR_UNKNOWN,
+    eErrorValidationFailed                       = VK_ERROR_VALIDATION_FAILED,
+    eErrorValidationFailedEXT                    = VK_ERROR_VALIDATION_FAILED_EXT,
     eErrorOutOfPoolMemory                        = VK_ERROR_OUT_OF_POOL_MEMORY,
     eErrorOutOfPoolMemoryKHR                     = VK_ERROR_OUT_OF_POOL_MEMORY_KHR,
     eErrorInvalidExternalHandle                  = VK_ERROR_INVALID_EXTERNAL_HANDLE,
@@ -270,7 +272,6 @@ namespace VULKAN_HPP_NAMESPACE
     eSuboptimalKHR                               = VK_SUBOPTIMAL_KHR,
     eErrorOutOfDateKHR                           = VK_ERROR_OUT_OF_DATE_KHR,
     eErrorIncompatibleDisplayKHR                 = VK_ERROR_INCOMPATIBLE_DISPLAY_KHR,
-    eErrorValidationFailedEXT                    = VK_ERROR_VALIDATION_FAILED_EXT,
     eErrorInvalidShaderNV                        = VK_ERROR_INVALID_SHADER_NV,
     eErrorImageUsageNotSupportedKHR              = VK_ERROR_IMAGE_USAGE_NOT_SUPPORTED_KHR,
     eErrorVideoPictureLayoutNotSupportedKHR      = VK_ERROR_VIDEO_PICTURE_LAYOUT_NOT_SUPPORTED_KHR,
@@ -6859,7 +6860,8 @@ namespace VULKAN_HPP_NAMESPACE
     eAllowDisplacementMicromapUpdateNV = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DISPLACEMENT_MICROMAP_UPDATE_BIT_NV,
     eAllowDisplacementMicromapUpdate   = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DISPLACEMENT_MICROMAP_UPDATE_NV,
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-    eAllowDataAccess = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DATA_ACCESS_BIT_KHR
+    eAllowDataAccess                = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_DATA_ACCESS_BIT_KHR,
+    eAllowClusterOpacityMicromapsNV = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_CLUSTER_OPACITY_MICROMAPS_BIT_NV
   };
 
   using BuildAccelerationStructureFlagBitsNV = BuildAccelerationStructureFlagBitsKHR;
@@ -6883,7 +6885,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       | BuildAccelerationStructureFlagBitsKHR::eAllowDisplacementMicromapUpdateNV
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      | BuildAccelerationStructureFlagBitsKHR::eAllowDataAccess;
+      | BuildAccelerationStructureFlagBitsKHR::eAllowDataAccess | BuildAccelerationStructureFlagBitsKHR::eAllowClusterOpacityMicromapsNV;
   };
 
   // wrapper class for enum VkCopyAccelerationStructureModeKHR, see

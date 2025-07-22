@@ -18,20 +18,14 @@
 
 #define VULKAN_HPP_NO_EXCEPTIONS
 
-// for this test, we need to include vulkan_hpp_macros.hpp first to determine if VULKAN_HPP_RAII_NO_EXCEPTIONS is defined in this context
-#include <vulkan/vulkan_hpp_macros.hpp>
-
-// only if VULKAN_HPP_RAII_NO_EXCEPTIONS really is defined, this test is meaningfull and needs to compile and run.
-#if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
-#  include <vulkan/vulkan_raii.hpp>
+#include <vulkan/vulkan_raii.hpp>
 
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
-#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
-#if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+#if defined( VULKAN_HPP_NO_EXCEPTIONS )
   vk::raii::Context context;
 
   vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
@@ -40,7 +34,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   auto physicalDevices = instance->enumeratePhysicalDevices();
   assert( physicalDevices.has_value() );
-  auto physicalDevice = std::move( physicalDevices->front() );
+  auto physicalDevice = physicalDevices->front();
 
   // get the QueueFamilyProperties of the first PhysicalDevice
   std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
@@ -67,7 +61,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   auto commandBuffers = device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 1 ) );
   assert( commandBuffers.has_value() );
 
-  auto commandBuffer = std::move( commandBuffers->front() );
+  auto commandBuffer = std::move( commandBuffers.value[0] );
 #endif
 
   return 0;

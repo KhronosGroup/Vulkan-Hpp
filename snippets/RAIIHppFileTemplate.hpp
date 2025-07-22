@@ -15,17 +15,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     namespace detail
     {
-      template <class T>
-      class CreateReturnType
-      {
-        public:
-#if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
-          using Type = VULKAN_HPP_EXPECTED<T, Result>;
-#else
-          using Type = T;
-#endif
-      };
-
       using PFN_dummy = void ( * )();
 
       ${RAIIDispatchers}

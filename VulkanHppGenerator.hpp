@@ -851,7 +851,6 @@ private:
                                            std::map<size_t, VectorParamData> const & vectorParams,
                                            bool                                      enumerating,
                                            CommandFlavourFlags                       flavourFlags,
-                                           bool                                      raii,
                                            std::string const &                       returnType ) const;
   std::string generateDeprecatedConstructors( std::string const & name ) const;
   std::string generateDeprecatedStructSetters( std::string const & name ) const;
@@ -926,13 +925,12 @@ private:
   std::string
     generateRAIICommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;
   std::string generateRAIIDispatchers() const;
-  std::string generateRAIIFactoryReturnStatements( std::vector<ParamData> const &   params,
-                                                   std::vector<std::string> const & successCodes,
-                                                   std::string const &              vkType,
-                                                   bool                             enumerating,
-                                                   std::string const &              returnType,
-                                                   std::string const &              returnVariable,
-                                                   bool                             singular ) const;
+  std::string generateRAIIFactoryReturnStatements( CommandData const & commandData,
+                                                   std::string const & vkType,
+                                                   bool                enumerating,
+                                                   std::string const & returnType,
+                                                   std::string const & returnVariable,
+                                                   bool                singular ) const;
   std::string generateRAIIHandle( std::pair<std::string, HandleData> const & handle,
                                   std::set<std::string> &                    listedHandles,
                                   std::set<std::string> const &              specialFunctions ) const;
@@ -1013,8 +1011,6 @@ private:
                                    std::string         commandName,
                                    bool                enumerating,
                                    bool                raii ) const;
-  std::string
-    generateResultCheckExpected( std::vector<std::string> const & successCodes, std::string const & className, std::string const & commandName ) const;
   std::string generateResultExceptions() const;
   std::string generateReturnStatement( std::string const & commandName,
                                        CommandData const & commandData,

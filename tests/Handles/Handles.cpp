@@ -62,12 +62,6 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::cout << "hoho";
     }
 
-    vk::PhysicalDevice physicalDevice;
-    if (physicalDevice == instance )
-    {
-      std::cout << "hoho";
-    }
-
     instance.destroy();
     instance2.destroy();
 

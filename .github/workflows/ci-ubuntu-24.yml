@@ -42,7 +42,6 @@ jobs:
           -DVULKAN_HPP_SAMPLES_BUILD=ON                                        \
           -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON                           \
           -DVULKAN_HPP_TESTS_BUILD=ON                                          \
-          -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON                             \
           -DVULKAN_HPP_ENABLE_CPP20_MODULES=$modules_flag                      \
           -DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                              \
           -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON                          \

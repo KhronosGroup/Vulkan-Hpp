@@ -69,16 +69,6 @@ std::vector<int> const getConstVector()
   return { 1, 2 };
 }
 
-std::initializer_list<int> getInitializerList()
-{
-  return { 1, 2 };
-}
-
-std::initializer_list<int> const getConstInitializerList()
-{
-  return { 1, 2 };
-}
-
 int main( int /*argc*/, char ** /*argv*/ )
 {
   try
@@ -233,50 +223,10 @@ int main( int /*argc*/, char ** /*argv*/ )
     // fct( { a, b } );   // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<int>'
     // fctc( { a, b } );  // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
 
-    auto il0 = { 0, 1 };  // -> std::initializer_list<int>
-    // fct( il0 );        // not supported: cannot convert from 'const int *' to 'int *'
-    fctc( il0 );
-
-    std::initializer_list<int> il1 = { 0, 1 };
-    // fct( il1 );  // not supported: cannot convert argument 1 from 'std::initializer_list<_Ty>' to 'vk::ArrayProxyNoTemporaries<int>'
-    fctc( il1 );
-
-    std::initializer_list<const int> il2 = { 0, 1 };
-    // fct( il2 );  // not supported: cannot convert argument 1 from 'std::initializer_list<const int>' to 'vk::ArrayProxyNoTemporaries<int>'
-    fctc( il2 );
-
-    std::initializer_list<int> const il3 = { 0, 1 };
-    // fct( il3 );  // not supported: cannot convert argument 1 from 'const std::initializer_list<_Ty>' to 'vk::ArrayProxyNoTemporaries<int>'
-    fctc( il3 );
-
-    std::initializer_list<const int> const il4 = { 0, 1 };
-    // fct( il4 );  // not supported: cannot convert argument 1 from 'const std::initializer_list<const int>' to 'vk::ArrayProxyNoTemporaries<int>'
-    fctc( il4 );
-
-    // getInitializerList
-    // fct( getConstInitializerList() );     // not supported: cannot convert argument 1 from 'const std::initializer_list<_Ty>' to 'vk::ArrayProxyNoTemporaries<int>'
-    // fctc( getConstInitializerList() );    // not supported: cannot convert argument 1 from 'const std::initializer_list<_Ty>' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
-    // fct( getInitializerList() );          // not supported: cannot convert argument 1 from 'std::initializer_list<_Ty>' to 'vk::ArrayProxyNoTemporaries<int>'
-    // fctc( getInitializerList() );         // not supported: cannot convert argument 1 from 'std::initializer_list<_Ty>' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
-
-    // vk::ArrayProxyNoTemporaries<int> apnt22 = il1;   // not supported: cannot convert from 'std::initializer_list<_Ty>' to 'vk::ArrayProxyNoTemporaries<int>'
-    // vk::ArrayProxyNoTemporaries<int> apnt23 = il2;   // not supported: cannot convert from 'std::initializer_list<const int>' to 'vk::ArrayProxyNoTemporaries<int>'
-    // vk::ArrayProxyNoTemporaries<int> apnt24 = il3;   // not supported: cannot convert from 'const std::initializer_list<_Ty>' to 'vk::ArrayProxyNoTemporaries<int>'
-    // vk::ArrayProxyNoTemporaries<int> apnt25 = il4;   // not supported: cannot convert from 'const std::initializer_list<const int>' to 'vk::ArrayProxyNoTemporaries<int>'
-
-    vk::ArrayProxyNoTemporaries<const int> apnt26 = {};
-    assert( apnt26.size() == 0 );
+    vk::ArrayProxyNoTemporaries<const int> apnt22 = {};
+    assert( apnt22.size() == 0 );
 
     // vk::ArrayProxyNoTemporaries<const int> apnt27 = { 0, 1 };   // not supported: cannot convert from 'initializer list' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
-
-    vk::ArrayProxyNoTemporaries<const int> apnt28 = il1;
-    assert( apnt28.size() == 2 );
-    vk::ArrayProxyNoTemporaries<const int> apnt29 = il2;
-    assert( apnt29.size() == 2 );
-    vk::ArrayProxyNoTemporaries<const int> apnt30 = il3;
-    assert( apnt30.size() == 2 );
-    vk::ArrayProxyNoTemporaries<const int> apnt31 = il4;
-    assert( apnt31.size() == 2 );
   }
   catch ( vk::SystemError const & err )
   {

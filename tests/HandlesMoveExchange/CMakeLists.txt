@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if( NOT VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC )
-	find_package( Vulkan REQUIRED )
-
+find_package( Vulkan QUIET )
+if ( Vulkan_FOUND )
 	vulkan_hpp__setup_test( NAME HandlesMoveExchange LIBRARIES ${Vulkan_LIBRARIES} )
 endif()

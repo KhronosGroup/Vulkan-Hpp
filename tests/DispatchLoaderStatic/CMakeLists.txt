@@ -12,12 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if( NOT VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC )
-	find_package( Vulkan REQUIRED )
-
-	vulkan_hpp__setup_test(
-		NAME DispatchLoaderStatic
-		LIBRARIES ${Vulkan_LIBRARIES} )
+find_package( Vulkan QUIET )
+if ( Vulkan_FOUND )
+	vulkan_hpp__setup_test( NAME DispatchLoaderStatic LIBRARIES ${Vulkan_LIBRARIES} )
 
 	if( UNIX )
 		target_link_libraries( DispatchLoaderStatic PRIVATE ${CMAKE_DL_LIBS} )

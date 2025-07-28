@@ -42,7 +42,6 @@ option( VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF )
 option( VULKAN_HPP_GENERATOR_BUILD "Build the HPP generator" ${PROJECT_IS_TOP_LEVEL} )
 option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
 option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
-option( VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic. Required in case the Vulkan SDK is not available" OFF )
 option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
 option( VULKAN_HPP_ENABLE_CPP20_MODULES "Build Vulkan-Hpp as C++20 module; requires minimum CMake version 3.28" OFF )
 option( VULKAN_HPP_ENABLE_STD_MODULE "Build Vulkan-Hpp with import std; requires minimum CMake version 3.30" OFF )
@@ -424,7 +423,7 @@ function( vulkan_hpp__setup_sample )
 	set( multiValueArgs HEADERS LIBS PCH SOURCES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
-	if( NOT (VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC AND VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP) )
+	if( NOT VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
 		find_package( Vulkan REQUIRED )
 	endif()
 
@@ -461,22 +460,20 @@ function( vulkan_hpp__setup_sample_static )
 	set( multiValueArgs )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
-	if( NOT VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC )
-		if( NOT TARGET_NAME )
-			message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_sample_static" )
-		endif()
-
-		find_package( Vulkan REQUIRED )
-
-		vulkan_hpp__setup_sample(
-			NAME         ${TARGET_NAME}
-			FOLDER       Samples
-			PCH          <vulkan/vulkan.hpp>
-			SOURCES      ${TARGET_NAME}.cpp
-			LIBS         ${Vulkan_LIBRARIES} )
-
-		target_compile_definitions( ${TARGET_NAME} PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
+	if( NOT TARGET_NAME )
+		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_sample_static" )
 	endif()
+
+	find_package( Vulkan REQUIRED )
+
+	vulkan_hpp__setup_sample(
+		NAME         ${TARGET_NAME}
+		FOLDER       Samples
+		PCH          <vulkan/vulkan.hpp>
+		SOURCES      ${TARGET_NAME}.cpp
+		LIBS         ${Vulkan_LIBRARIES} )
+
+	target_compile_definitions( ${TARGET_NAME} PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
 endfunction()
 
 function( vulkan_hpp__setup_sample_dynamic )

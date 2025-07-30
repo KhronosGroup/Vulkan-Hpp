@@ -4393,14 +4393,6 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.flags );
       VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.queueCreateInfoCount );
       VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.pQueueCreateInfos );
-      VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.enabledLayerCount );
-      for ( size_t i = 0; i < deviceCreateInfo.enabledLayerCount; ++i )
-      {
-        for ( const char * p = deviceCreateInfo.ppEnabledLayerNames[i]; *p != '\0'; ++p )
-        {
-          VULKAN_HPP_HASH_COMBINE( seed, *p );
-        }
-      }
       VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.enabledExtensionCount );
       for ( size_t i = 0; i < deviceCreateInfo.enabledExtensionCount; ++i )
       {

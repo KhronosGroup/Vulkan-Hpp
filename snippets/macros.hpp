@@ -141,6 +141,11 @@ ${vulkan_64_bit_ptr_defines}
 #  else
 #    define VULKAN_HPP_CONSTEXPR_14
 #  endif
+#  if 201603 <= __cpp_constexpr
+#    define VULKAN_HPP_CONSTEXPR_17 constexpr
+#  else
+#    define VULKAN_HPP_CONSTEXPR_17
+#  endif
 #  if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110400 < GCC_VERSION ) )
 #    define VULKAN_HPP_CONSTEXPR_20 constexpr
 #  else

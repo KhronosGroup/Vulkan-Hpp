@@ -400,6 +400,7 @@ private:
     std::string                                 name           = {};
     std::vector<std::string>                    arraySizes     = {};
     std::string                                 bitCount       = {};
+    std::string                                 deprecated     = {};
     std::vector<std::string>                    lenExpressions = {};
     std::vector<std::pair<std::string, size_t>> lenMembers     = {};
     bool                                        noAutoValidity = {};
@@ -571,6 +572,7 @@ private:
                                              bool                                      raii ) const;
   bool                     contains( std::vector<EnumValueData> const & enumValues, std::string const & name ) const;
   bool                     containsArray( std::string const & type ) const;
+  bool                     containsDeprecated( std::vector<MemberData> const & members ) const;
   bool                     containsFuncPointer( std::string const & type ) const;
   bool                     containsFloatingPoints( std::vector<MemberData> const & members ) const;
   bool                     containsUnion( std::string const & type ) const;
@@ -780,7 +782,7 @@ private:
                                           bool                        definition,
                                           std::vector<size_t> const & returnParamIndices,
                                           bool                        raii ) const;
-  std::string generateConstexprString( std::string const & structName ) const;
+  std::string generateConstexprString( std::pair<std::string, StructureData> const & structData ) const;
   std::string generateConstexprDefines() const;
   std::string generateConstexprUsings() const;
   std::string generateCppModuleFuncpointerUsings() const;
@@ -1037,10 +1039,13 @@ private:
   std::string generateStaticAssertions() const;
   std::string generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedStructs ) const;
   std::string generateStruct( std::pair<std::string, StructureData> const & structure, std::set<std::string> & listedStructs ) const;
+  std::string generateStructCastAssignments( std::pair<std::string, StructureData> const & structData ) const;
   std::string generateStructCompareOperators( std::pair<std::string, StructureData> const & structure ) const;
   std::string generateStructConstructors( std::pair<std::string, StructureData> const & structData ) const;
   std::string generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData ) const;
   std::string generateStructConstructorArgument( MemberData const & memberData, bool withDefault ) const;
+  std::string generateStructCopyAssignment( std::pair<std::string, StructureData> const & structData ) const;
+  std::string generateStructCopyConstructor( std::pair<std::string, StructureData> const & structData ) const;
   std::string generateStructHashStructure( std::pair<std::string, StructureData> const & structure, std::set<std::string> & listedStructs ) const;
   std::string generateStructHashStructures() const;
   std::string generateStructHashSum( std::string const & structName, std::vector<MemberData> const & members ) const;

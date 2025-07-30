@@ -19281,6 +19281,12 @@ namespace VULKAN_HPP_NAMESPACE
           {
             m_library = dlopen( "libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL );
           }
+          // modern versions of macOS don't search /usr/local/lib automatically contrary to what man dlopen says
+          // Vulkan SDK uses this as the system-wide installation location, so we're going to fallback to this if all else fails
+          if ( !m_library && ( getenv( "DYLD_FALLBACK_LIBRARY_PATH" ) == NULL ) )
+          {
+            m_library = dlopen( "/usr/local/lib/libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
+          }
           if ( !m_library )
           {
             m_library = dlopen( "libMoltenVK.dylib", RTLD_NOW | RTLD_LOCAL );
@@ -19294,12 +19300,6 @@ namespace VULKAN_HPP_NAMESPACE
           if ( !m_library )
           {
             m_library = dlopen( "MoltenVK.framework/MoltenVK", RTLD_NOW | RTLD_LOCAL );
-          }
-          // modern versions of macOS don't search /usr/local/lib automatically contrary to what man dlopen says
-          // Vulkan SDK uses this as the system-wide installation location, so we're going to fallback to this if all else fails
-          if ( !m_library && ( getenv( "DYLD_FALLBACK_LIBRARY_PATH" ) == NULL ) )
-          {
-            m_library = dlopen( "/usr/local/lib/libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
           }
 #  elif defined( __unix__ ) || defined( __QNX__ ) || defined( __Fuchsia__ )
           m_library = dlopen( "libvulkan.so", RTLD_NOW | RTLD_LOCAL );

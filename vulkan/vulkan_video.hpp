@@ -63,6 +63,96 @@ namespace VULKAN_HPP_NAMESPACE
   namespace VULKAN_HPP_VIDEO_NAMESPACE
   {
 
+    //=================
+    //=== CONSTANTs ===
+    //=================
+
+#if defined( VULKAN_VIDEO_CODEC_H264STD_H_ )
+    //=== vulkan_video_codec_h264std ===
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H264CpbCntListSize            = 32;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H264MaxChromaPlanes           = 2;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H264MaxNumListRef             = 32;
+    VULKAN_HPP_CONSTEXPR_INLINE uint8_t  H264NoReferencePicture        = 0xFF;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H264ScalingList4X4NumElements = 16;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H264ScalingList4X4NumLists    = 6;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H264ScalingList8X8NumElements = 64;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H264ScalingList8X8NumLists    = 6;
+#endif
+
+#if defined( VULKAN_VIDEO_CODEC_H264STD_DECODE_H_ )
+    //=== vulkan_video_codec_h264std_decode ===
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t DecodeH264FieldOrderCountListSize = 2;
+#endif
+
+#if defined( VULKAN_VIDEO_CODEC_H265STD_H_ )
+    //=== vulkan_video_codec_h265std ===
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265ChromaQpOffsetListSize              = 6;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265ChromaQpOffsetTileColsListSize      = 19;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265ChromaQpOffsetTileRowsListSize      = 21;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265CpbCntListSize                      = 32;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265MaxChromaPlanes                     = 2;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265MaxDeltaPoc                         = 48;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265MaxDpbSize                          = 16;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265MaxLongTermPics                     = 16;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265MaxLongTermRefPicsSps               = 32;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265MaxNumListRef                       = 15;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265MaxShortTermRefPicSets              = 64;
+    VULKAN_HPP_CONSTEXPR_INLINE uint8_t  H265NoReferencePicture                  = 0xFF;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265PredictorPaletteComponentsListSize  = 3;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265PredictorPaletteCompEntriesListSize = 128;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265ScalingList16X16NumElements         = 64;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265ScalingList16X16NumLists            = 6;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265ScalingList32X32NumElements         = 64;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265ScalingList32X32NumLists            = 2;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265ScalingList4X4NumElements           = 16;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265ScalingList4X4NumLists              = 6;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265ScalingList8X8NumElements           = 64;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265ScalingList8X8NumLists              = 6;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t H265SublayersListSize                   = 7;
+#endif
+
+#if defined( VULKAN_VIDEO_CODEC_H265STD_DECODE_H_ )
+    //=== vulkan_video_codec_h265std_decode ===
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t DecodeH265RefPicSetListSize = 8;
+#endif
+
+#if defined( VULKAN_VIDEO_CODEC_VP9STD_H_ )
+    //=== vulkan_video_codec_vp9std ===
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Vp9LoopFilterAdjustments    = 2;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Vp9MaxRefFrames             = 4;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Vp9MaxSegmentationPredProb  = 3;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Vp9MaxSegmentationTreeProbs = 7;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Vp9MaxSegments              = 8;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Vp9NumRefFrames             = 8;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Vp9RefsPerFrame             = 3;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Vp9SegLvlMax                = 4;
+#endif
+
+#if defined( VULKAN_VIDEO_CODEC_AV1STD_H_ )
+    //=== vulkan_video_codec_av1std ===
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1GlobalMotionParams       = 6;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1LoopFilterAdjustments    = 2;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1MaxCdefFilterStrengths   = 8;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1MaxLoopFilterStrengths   = 4;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1MaxNumCbPoints           = 10;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1MaxNumCrPoints           = 10;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1MaxNumPlanes             = 3;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1MaxNumPosChroma          = 25;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1MaxNumPosLuma            = 24;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1MaxNumYPoints            = 14;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1MaxSegments              = 8;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1MaxTileCols              = 64;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1MaxTileRows              = 64;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1NumRefFrames             = 8;
+    VULKAN_HPP_CONSTEXPR_INLINE uint8_t  Av1PrimaryRefNone           = 7;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1RefsPerFrame             = 7;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1SegLvlMax                = 8;
+    VULKAN_HPP_CONSTEXPR_INLINE uint8_t  Av1SelectIntegerMv          = 2;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1SelectScreenContentTools = 2;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1SkipModeFrames           = 2;
+    VULKAN_HPP_CONSTEXPR_INLINE uint32_t Av1TotalRefsPerFrame        = 8;
+#endif
+
     //=============
     //=== ENUMs ===
     //=============

@@ -63,6 +63,7 @@ namespace VULKAN_HPP_NAMESPACE
 {
 namespace VULKAN_HPP_VIDEO_NAMESPACE
 {
+${constants}
 ${enums}
 ${structs}
 }   // namespace VULKAN_HPP_VIDEO_NAMESPACE
@@ -76,9 +77,12 @@ ${structs}
 #endif
 )";
 
-  std::string str = replaceWithMap(
-    videoHppTemplate,
-    { { "copyrightMessage", m_copyrightMessage }, { "enums", generateEnums() }, { "includes", generateIncludes() }, { "structs", generateStructs() } } );
+  std::string str = replaceWithMap( videoHppTemplate,
+                                    { { "constants", generateConstants() },
+                                      { "copyrightMessage", m_copyrightMessage },
+                                      { "enums", generateEnums() },
+                                      { "includes", generateIncludes() },
+                                      { "structs", generateStructs() } } );
 
   writeToFile( str, video_hpp );
 }
@@ -240,6 +244,41 @@ void VideoHppGenerator::checkForWarning( bool condition, int line, std::string c
   ::checkForWarning( "VideoHppGenerator", condition, line, message );
 }
 
+std::string VideoHppGenerator::generateConstants() const
+{
+  {
+    const std::string enumsTemplate = R"(
+  //=================
+  //=== CONSTANTs ===
+  //=================
+
+${constants}
+)";
+
+    std::string constants;
+    for ( auto const & extension : m_extensions )
+    {
+      constants += generateConstants( extension );
+    }
+
+    return replaceWithMap( enumsTemplate, { { "constants", constants } } );
+  }
+}
+
+std::string VideoHppGenerator::generateConstants( ExtensionData const & extensionData ) const
+{
+  std::string str;
+  for ( auto const & constant : extensionData.requireData.constants )
+  {
+    str += "VULKAN_HPP_CONSTEXPR_INLINE " + constant.second.type + " " + toCamelCase( stripPrefix( constant.first, "STD_VIDEO_" ), true ) + " = " + constant.second.value + ";\n";
+  }
+  if ( !str.empty() )
+  {
+    str = "\n#if defined( " + extensionData.protect + " )\n  //=== " + extensionData.name + " ===\n" + str + "#endif\n";
+  }
+  return str;
+}
+
 std::string VideoHppGenerator::generateEnum( std::pair<std::string, EnumData> const & enumData ) const
 {
   std::string enumValues;
@@ -332,6 +371,35 @@ std::string VideoHppGenerator::generateIncludes() const
   return includes;
 }
 
+std::string VideoHppGenerator::generateCppModuleConstantUsings() const
+{
+  const std::string enumsTemplate = R"(
+  //=================
+  //=== CONSTANTs ===
+  //=================
+
+${constants}
+)";
+
+  std::string constants;
+  for ( auto const & extension : m_extensions )
+  {
+    std::string constantsPerExtension;
+    for ( auto const & type : extension.requireData.constants )
+    {
+      constantsPerExtension +=
+        "using VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::" + toCamelCase( stripPrefix( type.first, "STD_VIDEO_" ), true ) + ";\n";
+    }
+    if ( !constantsPerExtension.empty() )
+    {
+      constantsPerExtension = "\n#if defined( " + extension.protect + " )\n  //=== " + extension.name + " ===\n" + constantsPerExtension + "#endif\n";
+    }
+    constants += constantsPerExtension;
+  }
+
+  return replaceWithMap( enumsTemplate, { { "constants", constants } } );
+}
+
 std::string VideoHppGenerator::generateCppModuleEnumUsings() const
 {
   auto const usingTemplate = std::string{
@@ -350,14 +418,20 @@ ${enums}
   std::string enums;
   for ( auto const & extension : m_extensions )
   {
+    std::string enumsPerExtension;
     for ( auto const & type : extension.requireData.types )
     {
       auto enumIt = m_enums.find( type );
       if ( enumIt != m_enums.end() )
       {
-        enums += replaceWithMap( usingTemplate, { { "enumName", stripPrefix( enumIt->first, "StdVideo" ) } } );
+        enumsPerExtension += replaceWithMap( usingTemplate, { { "enumName", stripPrefix( enumIt->first, "StdVideo" ) } } );
       }
     }
+    if ( !enumsPerExtension.empty() )
+    {
+      enumsPerExtension = "\n#if defined( " + extension.protect + " )\n  //=== " + extension.name + " ===\n" + enumsPerExtension + "#endif\n";
+    }
+    enums += enumsPerExtension;
   }
 
   return replaceWithMap( enumsTemplate, { { "enums", enums } } );
@@ -550,14 +624,20 @@ ${structs}
   std::string structs;
   for ( auto const & extension : m_extensions )
   {
+    std::string structsPerExtension;
     for ( auto const & type : extension.requireData.types )
     {
       auto structIt = m_structs.find( type );
       if ( structIt != m_structs.end() )
       {
-        structs += replaceWithMap( usingTemplate, { { "structName", stripPrefix( structIt->first, "StdVideo" ) } } );
+        structsPerExtension += replaceWithMap( usingTemplate, { { "structName", stripPrefix( structIt->first, "StdVideo" ) } } );
       }
     }
+    if ( !structsPerExtension.empty() )
+    {
+      structsPerExtension = "\n#if defined( " + extension.protect + " )\n  //=== " + extension.name + " ===\n" + structsPerExtension + "#endif\n";
+    }
+    structs += structsPerExtension;
   }
 
   return replaceWithMap( structsTemplate, { { "structs", structs } } );
@@ -565,7 +645,7 @@ ${structs}
 
 std::string VideoHppGenerator::generateCppModuleUsings() const
 {
-  return generateCppModuleEnumUsings() + generateCppModuleStructUsings();
+  return generateCppModuleConstantUsings() + generateCppModuleEnumUsings() + generateCppModuleStructUsings();
 }
 
 bool VideoHppGenerator::isExtension( std::string const & name ) const
@@ -810,14 +890,18 @@ void VideoHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, s
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkElements( line, getChildElements( element ), {} );
-  checkAttributes( line, attributes, { { "name", {} }, { "value", {} } }, {} );
+  checkAttributes( line, attributes, { { "name", {} }, { "value", {} } }, { { "type", { "uint32_t", "uint8_t" } } } );
 
-  std::string name, value;
+  std::string name, type, value;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "name" )
     {
       name = attribute.second;
+    }
+    else if ( attribute.first == "type" )
+    {
+      type = attribute.second;
     }
     else if ( attribute.first == "value" )
     {
@@ -827,8 +911,9 @@ void VideoHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, s
 
   if ( !name.ends_with( "_SPEC_VERSION" ) && !name.ends_with( "_EXTENSION_NAME" ) )
   {
+    checkForError( !type.empty(), line, "constant <" + name + "> has no type specified" );
     checkForError( isNumber( value ) || isHexNumber( value ), line, "enum value uses unknown constant <" + value + ">" );
-    checkForError( constants.insert( { name, { value, line } } ).second, line, "required enum <" + name + "> already specified" );
+    checkForError( constants.insert( { name, { type, value, line } } ).second, line, "required enum <" + name + "> already specified" );
   }
 }
 
@@ -860,12 +945,25 @@ void VideoHppGenerator::readStructMember( tinyxml2::XMLElement const * element, 
   (void)members;
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, {} );
+  checkAttributes( line, attributes, {}, { { "len", {} }, { "optional", { "false", "true" } } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, { { "name", true }, { "type", true } }, { "comment", "enum" } );
 
   MemberData memberData;
   memberData.xmlLine = line;
+
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "len" )
+    {
+      memberData.len = attribute.second;
+      // the "len" attribute can be something completely unrelated to this struct!! Can't to a checkForError whatsoever.
+    }
+    else if ( attribute.first == "optional" )
+    {
+      memberData.optional = attribute.second;
+    }
+  }
 
   std::string name;
   for ( auto child : children )

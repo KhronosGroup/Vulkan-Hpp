@@ -31,6 +31,7 @@ public:
 private:
   struct ConstantData
   {
+    std::string type    = {};
     std::string value   = {};
     int         xmlLine = {};
   };
@@ -78,6 +79,8 @@ private:
     std::string              name       = {};
     std::vector<std::string> arraySizes = {};
     std::string              bitCount   = {};
+    std::string              len        = {};
+    std::string              optional   = {};
     int                      xmlLine    = {};
   };
 
@@ -102,6 +105,8 @@ private:
                       std::set<std::string> const &                     optional = {} ) const;
   void checkForError( bool condition, int line, std::string const & message ) const;
   void checkForWarning( bool condition, int line, std::string const & message ) const;
+  std::string                                      generateConstants() const;
+  std::string                                      generateConstants( ExtensionData const & extensionData ) const;
   std::string                                      generateEnum( std::pair<std::string, EnumData> const & enumData ) const;
   std::string                                      generateEnums() const;
   std::string                                      generateEnums( ExtensionData const & extensionData ) const;
@@ -111,6 +116,7 @@ private:
   std::string                                      generateStructMembers( std::pair<std::string, StructureData> const & structData ) const;
   std::string                                      generateStructs() const;
   std::string                                      generateStructs( ExtensionData const & extensionData ) const;
+  std::string                                      generateCppModuleConstantUsings() const;
   std::string                                      generateCppModuleEnumUsings() const;
   std::string                                      generateCppModuleStructUsings() const;
   std::string                                      generateCppModuleUsings() const;

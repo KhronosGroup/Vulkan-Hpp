@@ -11509,17 +11509,14 @@ ${popIgnored}
       arguments.push_back( argument );
     }
 
-    if ( member.deprecated.empty() )
-    {
-      // gather the initializers; skip members with exactly one legal value
-      if ( member.value.empty() )
-      {
-        initializers.push_back( member.name + "{ " + member.name + "_ }" );
-      }
-    }
-    else
+    if ( !member.deprecated.empty() )
     {
       ignores += "detail::ignore( " + member.name + "_ );\n";
+    }
+    // gather the initializers; skip members with exactly one legal value
+    if ( member.value.empty() )
+    {
+      initializers.push_back( member.name + "{ " + member.name + "_ }" );
     }
   }
 

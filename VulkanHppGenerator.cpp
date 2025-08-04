@@ -11484,18 +11484,17 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
 {
   // the constructor with all the elements as arguments, with defaults
   // and the simple copy constructor from the corresponding vulkan structure
-  static const std::string constructors = R"(${pushIgnored}${constexpr}${structName}(${arguments}) VULKAN_HPP_NOEXCEPT
+  static const std::string constructors = R"(${constexpr}${structName}(${arguments}) VULKAN_HPP_NOEXCEPT
     ${initializers}
     {${ignores}}
 
-    ${copyConstructor}
+    ${constexpr}${structName}( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 
     ${structName}( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
       : ${structName}( *reinterpret_cast<${structName} const *>( &rhs ) )
     {}
 
     ${enhancedConstructors}
-${popIgnored}
 )";
 
   std::vector<std::string> arguments, initializers;
@@ -11509,46 +11508,11 @@ ${popIgnored}
       arguments.push_back( argument );
     }
 
-    if ( member.deprecated.empty() )
+    // gather the initializers; skip members with exactly one legal value
+    if ( member.value.empty() )
     {
-      // gather the initializers; skip members with exactly one legal value
-      if ( member.value.empty() )
-      {
-        initializers.push_back( member.name + "{ " + member.name + "_ }" );
-      }
+      initializers.push_back( member.name + "{ " + member.name + "_ }" );
     }
-    else
-    {
-      ignores += "detail::ignore( " + member.name + "_ );\n";
-    }
-  }
-
-  std::string pushIgnored, popIgnored;
-  if ( !ignores.empty() )
-  {
-    pushIgnored = R"(
-#if defined( _MSC_VER )
-// no need to ignore this warning with MSVC
-#elif defined( __clang__ )
-// no need to ignore this warning with clang
-#elif defined( __GNUC__ )
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#else
-// unknown compiler... just ignore the warnings for yourselves ;)
-#endif
-)";
-    popIgnored  = R"(
-#if defined( _MSC_VER )
-// no need to ignore this warning with MSVC
-#elif defined( __clang__ )
-// no need to ignore this warning with clang
-#elif defined( __GNUC__ )
-#  pragma GCC diagnostic pop
-#else
-// unknown compiler... just ignore the warnings for yourselves ;)
-#endif
-)";
   }
 
   auto pNextIt = std::ranges::find_if( structData.second.members, []( MemberData const & md ) { return md.name == "pNext"; } );
@@ -11561,10 +11525,7 @@ ${popIgnored}
   std::string str = replaceWithMap( constructors,
                                     { { "arguments", generateList( arguments, "", ", " ) },
                                       { "constexpr", generateConstexprString( structData ) },
-                                      { "copyConstructor", generateStructCopyConstructor( structData ) },
                                       { "enhancedConstructors", structData.second.returnedOnly ? "" : generateStructConstructorsEnhanced( structData ) },
-                                      { "popIgnored", popIgnored },
-                                      { "pushIgnored", pushIgnored },
                                       { "structName", stripPrefix( structData.first, "Vk" ) },
                                       { "ignores", ignores },
                                       { "initializers", generateList( initializers, ": ", ", " ) },
@@ -11828,77 +11789,6 @@ std::string VulkanHppGenerator::generateStructConstructorArgument( MemberData co
   return str;
 }
 
-std::string VulkanHppGenerator::generateStructCopyAssignment( std::pair<std::string, StructureData> const & structData ) const
-{
-  std::string copyAssignment;
-  if ( containsDeprecated( structData.second.members ) )
-  {
-    static const std::string copyAssignmentTemplate = R"(${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      if ( this != &rhs )
-      {
-        ${initializers}
-      }
-      return *this;
-    })";
-
-    std::vector<std::string> initializers;
-    for ( auto const & member : structData.second.members )
-    {
-      if ( member.deprecated.empty() && ( member.type.type != "VkStructureType" ) )
-      {
-        initializers.push_back( member.name + " = rhs." + member.name + ";" );
-      }
-    }
-    copyAssignment = replaceWithMap( copyAssignmentTemplate,
-                                     { { "initializers", generateList( initializers, "", "\n" ) }, { "structName", stripPrefix( structData.first, "Vk" ) } } );
-  }
-  else
-  {
-    static const std::string copyAssignmentTemplate = R"(
-    ${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT = default;)";
-
-    copyAssignment = replaceWithMap( copyAssignmentTemplate, { { "structName", stripPrefix( structData.first, "Vk" ) } } );
-  }
-  return copyAssignment;
-}
-
-std::string VulkanHppGenerator::generateStructCopyConstructor( std::pair<std::string, StructureData> const & structData ) const
-{
-  std::string copyConstructor;
-  if ( containsDeprecated( structData.second.members ) )
-  {
-    static const std::string copyConstructorTemplate = R"(${constexpr}${structName}( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
-    ${initializers}
-    {})";
-
-    std::vector<std::string> initializers;
-    for ( auto const & member : structData.second.members )
-    {
-      if ( member.deprecated.empty() && ( member.type.type != "VkStructureType" ) )
-      {
-        initializers.push_back( member.name + "{ rhs." + member.name + " }" );
-      }
-    }
-
-    copyConstructor = replaceWithMap( copyConstructorTemplate,
-                                      { { "constexpr", generateConstexprString( structData ) },
-                                        { "initializers", generateList( initializers, ": ", ", " ) },
-                                        { "structName", stripPrefix( structData.first, "Vk" ) } } );
-  }
-  else
-  {
-    static const std::string copyConstructorTemplate = R"(
-    ${constexpr}${structName}( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-)";
-
-    copyConstructor = replaceWithMap( copyConstructorTemplate,
-                                      { { "constexpr", generateConstexprString( structData ) }, { "structName", stripPrefix( structData.first, "Vk" ) } } );
-  }
-
-  return copyConstructor;
-}
-
 std::string VulkanHppGenerator::generateStructHashStructure( std::pair<std::string, StructureData> const & structure,
                                                              std::set<std::string> &                       listedStructs ) const
 {
@@ -12140,10 +12030,10 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
   {
     static const std::string constructorsTemplate = R"(
 #if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
-${constructors}
+${pushIgnored}${constructors}
 ${subConstructors}
 ${deprecatedConstructors}
-${copyAssignment}
+    ${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT = default;${popIgnored}
 #endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
 
     ${structName} & operator=( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
@@ -12153,11 +12043,44 @@ ${copyAssignment}
     }
 )";
 
+    std::string pushIgnored, popIgnored;
+    if ( containsDeprecated( structure.second.members ) )
+    {
+      pushIgnored = R"(
+#if defined( _MSC_VER )
+#  pragma warning( push )
+#  pragma warning( disable : 4996 ) // 'function': was declared deprecated
+#elif defined( __clang__ )
+#  pragma clang diagnostic push
+#  pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined( __GNUC__ )
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#else
+// unknown compiler... just ignore the warnings for yourselves ;)
+#endif
+
+)";
+      popIgnored  = R"(
+
+#if defined( _MSC_VER )
+#  pragma warning( pop )
+#elif defined( __clang__ )
+#  pragma clang diagnostic pop
+#elif defined( __GNUC__ )
+#  pragma GCC diagnostic pop
+#else
+// unknown compiler... just ignore the warnings for yourselves ;)
+#endif
+)";
+    }
+
     constructorsAndSetters = replaceWithMap( constructorsTemplate,
                                              { { "castAssignments", generateStructCastAssignments( structure ) },
                                                { "constructors", generateStructConstructors( structure ) },
-                                               { "copyAssignment", generateStructCopyAssignment( structure ) },
                                                { "deprecatedConstructors", generateDeprecatedConstructors( structure.first ) },
+                                               { "popIgnored", popIgnored },
+                                               { "pushIgnored", pushIgnored },
                                                { "structName", stripPrefix( structure.first, "Vk" ) },
                                                { "subConstructors", generateStructSubConstructor( structure ) } } );
   }

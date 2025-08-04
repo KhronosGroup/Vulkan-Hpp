@@ -1044,8 +1044,6 @@ private:
   std::string generateStructConstructors( std::pair<std::string, StructureData> const & structData ) const;
   std::string generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData ) const;
   std::string generateStructConstructorArgument( MemberData const & memberData, bool withDefault ) const;
-  std::string generateStructCopyAssignment( std::pair<std::string, StructureData> const & structData ) const;
-  std::string generateStructCopyConstructor( std::pair<std::string, StructureData> const & structData ) const;
   std::string generateStructHashStructure( std::pair<std::string, StructureData> const & structure, std::set<std::string> & listedStructs ) const;
   std::string generateStructHashStructures() const;
   std::string generateStructHashSum( std::string const & structName, std::vector<MemberData> const & members ) const;

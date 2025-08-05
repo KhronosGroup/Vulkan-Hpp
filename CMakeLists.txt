@@ -80,7 +80,7 @@ function( vulkan_hpp__setup_warning_level )
 			target_compile_options( ${TARGET_NAME} PRIVATE /permissive- )
 		endif()
 	else()
-		target_compile_options( ${TARGET_NAME} PRIVATE -Wall -Wextra -pedantic -Werror )
+		target_compile_options( ${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror )
 	endif()
 endfunction()
 

@@ -1429,9 +1429,13 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceExternalFormatResolvePropertiesANDROID = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_PROPERTIES_ANDROID,
     eAndroidHardwareBufferFormatResolvePropertiesANDROID  = VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_FORMAT_RESOLVE_PROPERTIES_ANDROID,
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-    ePhysicalDeviceAntiLagFeaturesAMD                             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD,
-    eAntiLagDataAMD                                               = VK_STRUCTURE_TYPE_ANTI_LAG_DATA_AMD,
-    eAntiLagPresentationInfoAMD                                   = VK_STRUCTURE_TYPE_ANTI_LAG_PRESENTATION_INFO_AMD,
+    ePhysicalDeviceAntiLagFeaturesAMD = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD,
+    eAntiLagDataAMD                   = VK_STRUCTURE_TYPE_ANTI_LAG_DATA_AMD,
+    eAntiLagPresentationInfoAMD       = VK_STRUCTURE_TYPE_ANTI_LAG_PRESENTATION_INFO_AMD,
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    ePhysicalDeviceDenseGeometryFormatFeaturesAMDX             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DENSE_GEOMETRY_FORMAT_FEATURES_AMDX,
+    eAccelerationStructureDenseGeometryFormatTrianglesDataAMDX = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DENSE_GEOMETRY_FORMAT_TRIANGLES_DATA_AMDX,
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
     eSurfaceCapabilitiesPresentId2KHR                             = VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_PRESENT_ID_2_KHR,
     ePresentId2KHR                                                = VK_STRUCTURE_TYPE_PRESENT_ID_2_KHR,
     ePhysicalDevicePresentId2FeaturesKHR                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_ID_2_FEATURES_KHR,
@@ -5281,9 +5285,12 @@ namespace VULKAN_HPP_NAMESPACE
     ePushDescriptorsDescriptorBufferEXT         = VK_BUFFER_USAGE_2_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT,
     eMicromapBuildInputReadOnlyEXT              = VK_BUFFER_USAGE_2_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT,
     eMicromapStorageEXT                         = VK_BUFFER_USAGE_2_MICROMAP_STORAGE_BIT_EXT,
-    eDataGraphForeignDescriptorARM              = VK_BUFFER_USAGE_2_DATA_GRAPH_FOREIGN_DESCRIPTOR_BIT_ARM,
-    eTileMemoryQCOM                             = VK_BUFFER_USAGE_2_TILE_MEMORY_BIT_QCOM,
-    ePreprocessBufferEXT                        = VK_BUFFER_USAGE_2_PREPROCESS_BUFFER_BIT_EXT
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    eCompressedDataDgf1AMDX = VK_BUFFER_USAGE_2_COMPRESSED_DATA_DGF1_BIT_AMDX,
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    eDataGraphForeignDescriptorARM = VK_BUFFER_USAGE_2_DATA_GRAPH_FOREIGN_DESCRIPTOR_BIT_ARM,
+    eTileMemoryQCOM                = VK_BUFFER_USAGE_2_TILE_MEMORY_BIT_QCOM,
+    ePreprocessBufferEXT           = VK_BUFFER_USAGE_2_PREPROCESS_BUFFER_BIT_EXT
   };
 
   using BufferUsageFlagBits2KHR = BufferUsageFlagBits2;
@@ -5310,8 +5317,11 @@ namespace VULKAN_HPP_NAMESPACE
       BufferUsageFlagBits2::eVideoEncodeDstKHR | BufferUsageFlagBits2::eVideoEncodeSrcKHR | BufferUsageFlagBits2::eAccelerationStructureBuildInputReadOnlyKHR |
       BufferUsageFlagBits2::eAccelerationStructureStorageKHR | BufferUsageFlagBits2::eSamplerDescriptorBufferEXT |
       BufferUsageFlagBits2::eResourceDescriptorBufferEXT | BufferUsageFlagBits2::ePushDescriptorsDescriptorBufferEXT |
-      BufferUsageFlagBits2::eMicromapBuildInputReadOnlyEXT | BufferUsageFlagBits2::eMicromapStorageEXT | BufferUsageFlagBits2::eDataGraphForeignDescriptorARM |
-      BufferUsageFlagBits2::eTileMemoryQCOM | BufferUsageFlagBits2::ePreprocessBufferEXT;
+      BufferUsageFlagBits2::eMicromapBuildInputReadOnlyEXT | BufferUsageFlagBits2::eMicromapStorageEXT
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      | BufferUsageFlagBits2::eCompressedDataDgf1AMDX
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      | BufferUsageFlagBits2::eDataGraphForeignDescriptorARM | BufferUsageFlagBits2::eTileMemoryQCOM | BufferUsageFlagBits2::ePreprocessBufferEXT;
   };
 
   // wrapper class for enum VkPipelineRobustnessBufferBehavior, see
@@ -6907,7 +6917,10 @@ namespace VULKAN_HPP_NAMESPACE
     eAabbs                = VK_GEOMETRY_TYPE_AABBS_KHR,
     eInstances            = VK_GEOMETRY_TYPE_INSTANCES_KHR,
     eSpheresNV            = VK_GEOMETRY_TYPE_SPHERES_NV,
-    eLinearSweptSpheresNV = VK_GEOMETRY_TYPE_LINEAR_SWEPT_SPHERES_NV
+    eLinearSweptSpheresNV = VK_GEOMETRY_TYPE_LINEAR_SWEPT_SPHERES_NV,
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    eDenseGeometryFormatTrianglesAMDX = VK_GEOMETRY_TYPE_DENSE_GEOMETRY_FORMAT_TRIANGLES_AMDX
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
   };
 
   using GeometryTypeNV = GeometryTypeKHR;
@@ -8348,6 +8361,17 @@ namespace VULKAN_HPP_NAMESPACE
     eInput   = VK_ANTI_LAG_STAGE_INPUT_AMD,
     ePresent = VK_ANTI_LAG_STAGE_PRESENT_AMD
   };
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_dense_geometry_format ===
+
+  // wrapper class for enum VkCompressedTriangleFormatAMDX, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkCompressedTriangleFormatAMDX.html
+  enum class CompressedTriangleFormatAMDX
+  {
+    eDgf1 = VK_COMPRESSED_TRIANGLE_FORMAT_DGF1_AMDX
+  };
+
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_EXT_shader_object ===
 

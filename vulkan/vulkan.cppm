@@ -875,6 +875,11 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::AntiLagModeAMD;
   using VULKAN_HPP_NAMESPACE::AntiLagStageAMD;
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_dense_geometry_format ===
+  using VULKAN_HPP_NAMESPACE::CompressedTriangleFormatAMDX;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_EXT_shader_object ===
   using VULKAN_HPP_NAMESPACE::ShaderCodeTypeEXT;
   using VULKAN_HPP_NAMESPACE::ShaderCreateFlagBitsEXT;
@@ -2532,6 +2537,14 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_AMD_anti_lag ===
   using VULKAN_HPP_NAMESPACE::AMDAntiLagExtensionName;
   using VULKAN_HPP_NAMESPACE::AMDAntiLagSpecVersion;
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_dense_geometry_format ===
+  using VULKAN_HPP_NAMESPACE::AMDXDenseGeometryFormatExtensionName;
+  using VULKAN_HPP_NAMESPACE::AMDXDenseGeometryFormatSpecVersion;
+  using VULKAN_HPP_NAMESPACE::CompressedTriangleFormatDgf1ByteAlignmentAMDX;
+  using VULKAN_HPP_NAMESPACE::CompressedTriangleFormatDgf1ByteStrideAMDX;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_KHR_present_id2 ===
   using VULKAN_HPP_NAMESPACE::KHRPresentId2ExtensionName;
@@ -4653,6 +4666,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::AntiLagDataAMD;
   using VULKAN_HPP_NAMESPACE::AntiLagPresentationInfoAMD;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceAntiLagFeaturesAMD;
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_dense_geometry_format ===
+  using VULKAN_HPP_NAMESPACE::AccelerationStructureDenseGeometryFormatTrianglesDataAMDX;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDenseGeometryFormatFeaturesAMDX;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_KHR_present_id2 ===
   using VULKAN_HPP_NAMESPACE::PhysicalDevicePresentId2FeaturesKHR;
@@ -8360,6 +8379,14 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::AntiLagPresentationInfoAMD>;
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_dense_geometry_format ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDenseGeometryFormatFeaturesAMDX>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::AccelerationStructureDenseGeometryFormatTrianglesDataAMDX>;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_KHR_present_id2 ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesPresentId2KHR>;
@@ -8944,9 +8971,9 @@ export namespace std
 
   //=== VK_KHR_maintenance8 ===
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance8FeaturesKHR>;
-  template <>
   struct hash<VULKAN_HPP_NAMESPACE::MemoryBarrierAccessFlags3KHR>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance8FeaturesKHR>;
 
   //=== VK_MESA_image_alignment_control ===
   template <>

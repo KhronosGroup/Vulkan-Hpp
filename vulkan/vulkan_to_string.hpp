@@ -2159,6 +2159,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += " MicromapBuildInputReadOnlyEXT |";
     if ( value & BufferUsageFlagBits2::eMicromapStorageEXT )
       result += " MicromapStorageEXT |";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    if ( value & BufferUsageFlagBits2::eCompressedDataDgf1AMDX )
+      result += " CompressedDataDgf1AMDX |";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & BufferUsageFlagBits2::eDataGraphForeignDescriptorARM )
       result += " DataGraphForeignDescriptorARM |";
     if ( value & BufferUsageFlagBits2::eTileMemoryQCOM )
@@ -5117,9 +5121,13 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceExternalFormatResolvePropertiesANDROID: return "PhysicalDeviceExternalFormatResolvePropertiesANDROID";
       case StructureType::eAndroidHardwareBufferFormatResolvePropertiesANDROID : return "AndroidHardwareBufferFormatResolvePropertiesANDROID";
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-      case StructureType::ePhysicalDeviceAntiLagFeaturesAMD                            : return "PhysicalDeviceAntiLagFeaturesAMD";
-      case StructureType::eAntiLagDataAMD                                              : return "AntiLagDataAMD";
-      case StructureType::eAntiLagPresentationInfoAMD                                  : return "AntiLagPresentationInfoAMD";
+      case StructureType::ePhysicalDeviceAntiLagFeaturesAMD: return "PhysicalDeviceAntiLagFeaturesAMD";
+      case StructureType::eAntiLagDataAMD                  : return "AntiLagDataAMD";
+      case StructureType::eAntiLagPresentationInfoAMD      : return "AntiLagPresentationInfoAMD";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case StructureType::ePhysicalDeviceDenseGeometryFormatFeaturesAMDX            : return "PhysicalDeviceDenseGeometryFormatFeaturesAMDX";
+      case StructureType::eAccelerationStructureDenseGeometryFormatTrianglesDataAMDX: return "AccelerationStructureDenseGeometryFormatTrianglesDataAMDX";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case StructureType::eSurfaceCapabilitiesPresentId2KHR                            : return "SurfaceCapabilitiesPresentId2KHR";
       case StructureType::ePresentId2KHR                                               : return "PresentId2KHR";
       case StructureType::ePhysicalDevicePresentId2FeaturesKHR                         : return "PhysicalDevicePresentId2FeaturesKHR";
@@ -7779,10 +7787,13 @@ namespace VULKAN_HPP_NAMESPACE
       case BufferUsageFlagBits2::ePushDescriptorsDescriptorBufferEXT        : return "PushDescriptorsDescriptorBufferEXT";
       case BufferUsageFlagBits2::eMicromapBuildInputReadOnlyEXT             : return "MicromapBuildInputReadOnlyEXT";
       case BufferUsageFlagBits2::eMicromapStorageEXT                        : return "MicromapStorageEXT";
-      case BufferUsageFlagBits2::eDataGraphForeignDescriptorARM             : return "DataGraphForeignDescriptorARM";
-      case BufferUsageFlagBits2::eTileMemoryQCOM                            : return "TileMemoryQCOM";
-      case BufferUsageFlagBits2::ePreprocessBufferEXT                       : return "PreprocessBufferEXT";
-      default                                                               : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case BufferUsageFlagBits2::eCompressedDataDgf1AMDX: return "CompressedDataDgf1AMDX";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case BufferUsageFlagBits2::eDataGraphForeignDescriptorARM: return "DataGraphForeignDescriptorARM";
+      case BufferUsageFlagBits2::eTileMemoryQCOM               : return "TileMemoryQCOM";
+      case BufferUsageFlagBits2::ePreprocessBufferEXT          : return "PreprocessBufferEXT";
+      default                                                  : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -8785,7 +8796,10 @@ namespace VULKAN_HPP_NAMESPACE
       case GeometryTypeKHR::eInstances           : return "Instances";
       case GeometryTypeKHR::eSpheresNV           : return "SpheresNV";
       case GeometryTypeKHR::eLinearSweptSpheresNV: return "LinearSweptSpheresNV";
-      default                                    : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case GeometryTypeKHR::eDenseGeometryFormatTrianglesAMDX: return "DenseGeometryFormatTrianglesAMDX";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      default: return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -9885,6 +9899,19 @@ namespace VULKAN_HPP_NAMESPACE
       default                       : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_dense_geometry_format ===
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( CompressedTriangleFormatAMDX value )
+  {
+    switch ( value )
+    {
+      case CompressedTriangleFormatAMDX::eDgf1: return "Dgf1";
+      default                                 : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_EXT_shader_object ===
 

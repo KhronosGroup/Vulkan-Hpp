@@ -411,6 +411,9 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
                                                             "VK_KHR_maintenance5",
                                                             "VK_AMD_anti_lag",
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+                                                            "VK_AMDX_dense_geometry_format",
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
                                                             "VK_KHR_present_id2",
                                                             "VK_KHR_present_wait2",
                                                             "VK_KHR_ray_tracing_position_fetch",
@@ -2286,6 +2289,18 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_dynamic_rendering",
             } } },
           { "VK_VERSION_1_3", { {} } } } },
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      { "VK_AMDX_dense_geometry_format",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_acceleration_structure",
+              "VK_KHR_maintenance5",
+            } } },
+          { "VK_VERSION_1_4",
+            { {
+              "VK_KHR_acceleration_structure",
+            } } } } },
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       { "VK_KHR_present_id2",
         { { "VK_VERSION_1_0",
             { {
@@ -3601,21 +3616,25 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
         || ( extension == "VK_ANDROID_external_format_resolve" )
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-        || ( extension == "VK_KHR_maintenance5" ) || ( extension == "VK_AMD_anti_lag" ) || ( extension == "VK_KHR_present_id2" ) ||
-           ( extension == "VK_KHR_present_wait2" ) || ( extension == "VK_KHR_ray_tracing_position_fetch" ) || ( extension == "VK_EXT_shader_object" ) ||
-           ( extension == "VK_KHR_pipeline_binary" ) || ( extension == "VK_QCOM_tile_properties" ) || ( extension == "VK_SEC_amigo_profiling" ) ||
-           ( extension == "VK_KHR_swapchain_maintenance1" ) || ( extension == "VK_QCOM_multiview_per_view_viewports" ) ||
-           ( extension == "VK_NV_ray_tracing_invocation_reorder" ) || ( extension == "VK_NV_cooperative_vector" ) ||
-           ( extension == "VK_NV_extended_sparse_address_space" ) || ( extension == "VK_EXT_mutable_descriptor_type" ) ||
-           ( extension == "VK_EXT_legacy_vertex_attributes" ) || ( extension == "VK_ARM_shader_core_builtins" ) ||
-           ( extension == "VK_EXT_pipeline_library_group_handles" ) || ( extension == "VK_EXT_dynamic_rendering_unused_attachments" ) ||
-           ( extension == "VK_NV_low_latency2" ) || ( extension == "VK_KHR_cooperative_matrix" ) || ( extension == "VK_ARM_data_graph" ) ||
-           ( extension == "VK_QCOM_multiview_per_view_render_areas" ) || ( extension == "VK_KHR_compute_shader_derivatives" ) ||
-           ( extension == "VK_KHR_video_decode_av1" ) || ( extension == "VK_KHR_video_encode_av1" ) || ( extension == "VK_KHR_video_decode_vp9" ) ||
-           ( extension == "VK_KHR_video_maintenance1" ) || ( extension == "VK_NV_per_stage_descriptor_set" ) || ( extension == "VK_QCOM_image_processing2" ) ||
-           ( extension == "VK_QCOM_filter_cubic_weights" ) || ( extension == "VK_QCOM_ycbcr_degamma" ) || ( extension == "VK_QCOM_filter_cubic_clamp" ) ||
-           ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" ) || ( extension == "VK_KHR_vertex_attribute_divisor" ) ||
-           ( extension == "VK_KHR_load_store_op_none" ) || ( extension == "VK_KHR_unified_image_layouts" ) || ( extension == "VK_KHR_shader_float_controls2" )
+        || ( extension == "VK_KHR_maintenance5" ) || ( extension == "VK_AMD_anti_lag" )
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+        || ( extension == "VK_AMDX_dense_geometry_format" )
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+        || ( extension == "VK_KHR_present_id2" ) || ( extension == "VK_KHR_present_wait2" ) || ( extension == "VK_KHR_ray_tracing_position_fetch" ) ||
+           ( extension == "VK_EXT_shader_object" ) || ( extension == "VK_KHR_pipeline_binary" ) || ( extension == "VK_QCOM_tile_properties" ) ||
+           ( extension == "VK_SEC_amigo_profiling" ) || ( extension == "VK_KHR_swapchain_maintenance1" ) ||
+           ( extension == "VK_QCOM_multiview_per_view_viewports" ) || ( extension == "VK_NV_ray_tracing_invocation_reorder" ) ||
+           ( extension == "VK_NV_cooperative_vector" ) || ( extension == "VK_NV_extended_sparse_address_space" ) ||
+           ( extension == "VK_EXT_mutable_descriptor_type" ) || ( extension == "VK_EXT_legacy_vertex_attributes" ) ||
+           ( extension == "VK_ARM_shader_core_builtins" ) || ( extension == "VK_EXT_pipeline_library_group_handles" ) ||
+           ( extension == "VK_EXT_dynamic_rendering_unused_attachments" ) || ( extension == "VK_NV_low_latency2" ) ||
+           ( extension == "VK_KHR_cooperative_matrix" ) || ( extension == "VK_ARM_data_graph" ) || ( extension == "VK_QCOM_multiview_per_view_render_areas" ) ||
+           ( extension == "VK_KHR_compute_shader_derivatives" ) || ( extension == "VK_KHR_video_decode_av1" ) || ( extension == "VK_KHR_video_encode_av1" ) ||
+           ( extension == "VK_KHR_video_decode_vp9" ) || ( extension == "VK_KHR_video_maintenance1" ) || ( extension == "VK_NV_per_stage_descriptor_set" ) ||
+           ( extension == "VK_QCOM_image_processing2" ) || ( extension == "VK_QCOM_filter_cubic_weights" ) || ( extension == "VK_QCOM_ycbcr_degamma" ) ||
+           ( extension == "VK_QCOM_filter_cubic_clamp" ) || ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" ) ||
+           ( extension == "VK_KHR_vertex_attribute_divisor" ) || ( extension == "VK_KHR_load_store_op_none" ) ||
+           ( extension == "VK_KHR_unified_image_layouts" ) || ( extension == "VK_KHR_shader_float_controls2" )
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
         || ( extension == "VK_QNX_external_memory_screen_buffer" )
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/

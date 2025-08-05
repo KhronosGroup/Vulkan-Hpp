@@ -1740,6 +1740,12 @@ namespace VULKAN_HPP_NAMESPACE
   struct AntiLagDataAMD;
   struct AntiLagPresentationInfoAMD;
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_dense_geometry_format ===
+  struct PhysicalDeviceDenseGeometryFormatFeaturesAMDX;
+  struct AccelerationStructureDenseGeometryFormatTrianglesDataAMDX;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_KHR_present_id2 ===
   struct SurfaceCapabilitiesPresentId2KHR;
   struct PresentId2KHR;
@@ -2097,8 +2103,8 @@ namespace VULKAN_HPP_NAMESPACE
   struct WriteIndirectExecutionSetShaderEXT;
 
   //=== VK_KHR_maintenance8 ===
-  struct PhysicalDeviceMaintenance8FeaturesKHR;
   struct MemoryBarrierAccessFlags3KHR;
+  struct PhysicalDeviceMaintenance8FeaturesKHR;
 
   //=== VK_MESA_image_alignment_control ===
   struct PhysicalDeviceImageAlignmentControlFeaturesMESA;

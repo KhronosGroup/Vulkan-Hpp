@@ -12109,12 +12109,7 @@ ${deprecatedConstructors}
     // use reflection only if VULKAN_HPP_USE_REFLECT is defined
     static const std::string reflectTemplate = R"(
 #if defined( VULKAN_HPP_USE_REFLECT )
-#if 14 <= VULKAN_HPP_CPP_VERSION
-    auto
-#else
-    std::tuple<${memberTypes}>
-#endif
-      reflect() const VULKAN_HPP_NOEXCEPT
+    std::tuple<${memberTypes}> reflect() const VULKAN_HPP_NOEXCEPT
     {
       return std::tie( ${memberNames} );
     }

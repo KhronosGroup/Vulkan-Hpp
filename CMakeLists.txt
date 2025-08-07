@@ -522,7 +522,7 @@ endfunction()
 
 function( vulkan_hpp__setup_test )
 	set( options NO_UTILS )
-	set( oneValueArgs CXX_STANDARD NAME )
+	set( oneValueArgs NAME )
 	set( multiValueArgs LIBRARIES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 

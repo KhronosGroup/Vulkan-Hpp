@@ -339,7 +339,7 @@ function( vulkan_hpp__setup_vulkan_module )
 
 	target_sources( ${TARGET_NAME} PUBLIC
 		FILE_SET ${TARGET_FILE_SET_NAME}
-		BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
+		BASE_DIRS ${CMAKE_CURRENT_FUNCTION_LIST_DIR}
 		TYPE CXX_MODULES
 		FILES ${TARGET_FILE_SET} )
 	vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
@@ -357,7 +357,7 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	vulkan_hpp__setup_vulkan_module( NAME VulkanHppModule
 		FILE_SET_NAME vulkan_module_file
 		FILE_SET vulkan/vulkan.cppm
-		ALIAS Vulkan::HppModule )
+		ALIAS Vulkan::HppModule ) # TODO: respect VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP
 	vulkan_hpp__setup_vulkan_module( NAME VulkanVideoHppModule
 		FILE_SET_NAME vulkan_video_module_file
 		FILE_SET vulkan/vulkan_video.cppm
@@ -521,34 +521,52 @@ function( vulkan_hpp__setup_sample_raii )
 endfunction()
 
 function( vulkan_hpp__setup_test )
-	set( options NO_UTILS )
+	set( options CXX_MODULE UTILS NO_UTILS ) # TODO: remove NO_UTILS
 	set( oneValueArgs CXX_STANDARD NAME )
-	set( multiValueArgs LIBRARIES )
+	set( multiValueArgs LIBRARIES COMPILE_DEFINITIONS )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-
-	if( NOT VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
-		find_package( Vulkan REQUIRED )
-	endif()
 
 	if( NOT TARGET_NAME )
 		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_test" )
 	endif()
-	if( NOT TARGET_CXX_STANDARD )
-		set( TARGET_CXX_STANDARD ${CMAKE_CXX_STANDARD} )
-	endif()
 
 	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
 
-	add_executable( ${TARGET_NAME} ${TARGET_NAME}.cpp )
+	# use an executable variant for the module version
+	if( TARGET_CXX_MODULE )
+		add_executable( ${TARGET_NAME}_module ${TARGET_NAME}.cpp )
+		set( TARGET_NAME ${TARGET_NAME}_module )
+		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
+
+		# set up new vulkan module when custom compile definitions are needed
+		list( LENGTH TARGET_COMPILE_DEFINITIONS COMPILE_DEFINITIONS_LENGTH )
+		if ( COMPILE_DEFINITIONS_LENGTH GREATER 0 )
+			vulkan_hpp__setup_vulkan_module( NAME ${TARGET_NAME}_VulkanHppModule
+				FILE_SET_NAME vulkan_module_file
+				FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm" ) # TODO: respect VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP
+			target_compile_definitions( ${TARGET_NAME}_VulkanHppModule PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
+			target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_NAME}_VulkanHppModule )
+		else()
+			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::HppModule )
+		endif()
+		# set macro to hint usage of the vulkan module, it is up to the test source file to respect this
+		target_compile_definitions( ${TARGET_NAME} PUBLIC VULKAN_HPP_USE_CXX_MODULE )
+	else()
+		add_executable( ${TARGET_NAME} ${TARGET_NAME}.cpp )
+		vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
+		target_compile_definitions( ${TARGET_NAME} PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
+	endif()
 
 	vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
-	vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
 	vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
 
-	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD ${TARGET_CXX_STANDARD} CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
-	target_include_directories( ${TARGET_NAME} PUBLIC ${VulkanHeaders_INCLUDE_DIR} )
-	target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/glm" )
-	if ( NOT ${TARGET_NO_UTILS} )
+	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
+	target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/glm" ) # TODO: make this an optional func param
+	if ( NOT ${TARGET_NO_UTILS} ) # TODO: remove
+		target_link_libraries( ${TARGET_NAME} PRIVATE utils )
+	endif()
+
+	if( TARGET_UTILS )
 		target_link_libraries( ${TARGET_NAME} PRIVATE utils )
 	endif()
 	target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_LIBRARIES} )

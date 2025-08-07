@@ -40,7 +40,6 @@ jobs:
         modules_flag=${{(contains(fromJSON('["clang++-16", "g++-12", "g++-13", "g++-14"]'), matrix.compiler) || matrix.cpp_standard < 20) && 'OFF' || 'ON'}}
         cmake -B build/${{matrix.cpp_standard}}/${{matrix.build_type}} -GNinja \
           -DVULKAN_HPP_SAMPLES_BUILD=ON                                        \
-          -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON                           \
           -DVULKAN_HPP_TESTS_BUILD=ON                                          \
           -DVULKAN_HPP_ENABLE_CPP20_MODULES=$modules_flag                      \
           -DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                              \

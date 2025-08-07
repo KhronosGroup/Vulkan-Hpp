@@ -533,9 +533,6 @@ function( vulkan_hpp__setup_test )
 	if( NOT TARGET_NAME )
 		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_test" )
 	endif()
-	if( NOT TARGET_CXX_STANDARD )
-		set( TARGET_CXX_STANDARD ${CMAKE_CXX_STANDARD} )
-	endif()
 
 	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
 
@@ -545,7 +542,7 @@ function( vulkan_hpp__setup_test )
 	vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
 	vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
 
-	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD ${TARGET_CXX_STANDARD} CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
+	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
 	target_include_directories( ${TARGET_NAME} PUBLIC ${VulkanHeaders_INCLUDE_DIR} )
 	target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/glm" )
 	if ( NOT ${TARGET_NO_UTILS} )

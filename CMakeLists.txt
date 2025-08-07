@@ -279,6 +279,50 @@ if ( VULKAN_HPP_NO_SPACESHIP_OPERATOR )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_SPACESHIP_OPERATOR" )
 endif()
 
+function( vulkan_hpp__setup_vulkan_module )
+	set( options )
+	set( oneValueArgs NAME FILE_SET_NAME )
+	set( multiValueArgs FILE_SET ALIAS )
+	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+
+	if ( NOT TARGET_NAME )
+		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_module" )
+	endif()
+
+	add_library( ${TARGET_NAME} )
+	foreach( TARGET_ALIAS_NAME IN LISTS TARGET_ALIAS )
+		add_library(${TARGET_ALIAS_NAME} ALIAS ${TARGET_NAME})
+	endforeach()
+
+	# Clang 16's module support can be broken with extensions enabled
+	if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "16.0" )
+		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_EXTENSIONS OFF )
+	endif()
+
+	if ( VULKAN_HPP_ENABLE_STD_MODULE )
+		target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_23 )
+		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_MODULE_STD ON )
+	else()
+		target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_20 )
+	endif()
+
+	if ( NOT TARGET_FILE_SET )
+		message( FATAL_ERROR "FILE_SET must be defined in vulkan_hpp__setup_module" )
+	endif()
+
+	list(LENGTH TARGET_FILE_SET TARGET_FILE_SET_LENGTH)
+	if ( TARGET_FILE_SET_LENGTH LESS 1 )
+		message(FATAL_ERROR "FILE_SET in vulkan_hpp__setup_module must at least one source file")
+	endif()
+
+	target_sources( ${TARGET_NAME} PUBLIC
+		FILE_SET ${TARGET_FILE_SET_NAME}
+		BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
+		TYPE CXX_MODULES
+		FILES ${TARGET_FILE_SET} )
+	target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
+endfunction()
+
 # Build Vulkan-Hpp as a module
 if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	if ( VULKAN_HPP_ENABLE_STD_MODULE AND CMAKE_VERSION VERSION_LESS "3.30" )
@@ -287,80 +331,16 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 		message( FATAL_ERROR "Vulkan-Hpp: C++20 modules require CMake 3.28 or later" )
 	endif()
 
-	function ( vulkan_hpp__setup_module )
-		set( options )
-		set( oneValueArgs NAME FILE_SET_NAME )
-		set( multiValueArgs FILE_SET ALIAS )
-		cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-
-		if ( NOT TARGET_NAME )
-			message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_module" )
-		endif()
-
-		add_library( ${TARGET_NAME} )
-		foreach( TARGET_ALIAS_NAME IN LISTS TARGET_ALIAS )
-			add_library(${TARGET_ALIAS_NAME} ALIAS ${TARGET_NAME})
-		endforeach()
-
-		# Clang 16's module support can be broken with extensions enabled
-		if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "16.0" )
-			set_target_properties( ${TARGET_NAME} PROPERTIES CXX_EXTENSIONS OFF )
-		endif()
-
-		if ( VULKAN_HPP_ENABLE_STD_MODULE )
-			target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_23 )
-			set_target_properties( ${TARGET_NAME} PROPERTIES CXX_MODULE_STD ON )
-		else()
-			target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_20 )
-		endif()
-
-		if ( NOT TARGET_FILE_SET )
-			message( FATAL_ERROR "FILE_SET must be defined in vulkan_hpp__setup_module" )
-		endif()
-
-		list(LENGTH TARGET_FILE_SET TARGET_FILE_SET_LENGTH)
-		if ( TARGET_FILE_SET_LENGTH LESS 1 )
-			message(FATAL_ERROR "FILE_SET in vulkan_hpp__setup_module must at least one source file")
-		endif()
-
-		target_sources( ${TARGET_NAME} PUBLIC
-			FILE_SET ${TARGET_FILE_SET_NAME}
-			BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
-			TYPE CXX_MODULES
-			FILES ${TARGET_FILE_SET} )
-		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
-	endfunction()
-
 	# create targets providing VulkanHpp and VulkanVideoHpp as C++20 modules
-	vulkan_hpp__setup_module( NAME VulkanHppModule
+	vulkan_hpp__setup_vulkan_module( NAME VulkanHppModule
 		FILE_SET_NAME vulkan_module_file
 		FILE_SET vulkan/vulkan.cppm
 		ALIAS Vulkan::HppModule )
-	vulkan_hpp__setup_module( NAME VulkanVideoHppModule
+	vulkan_hpp__setup_vulkan_module( NAME VulkanVideoHppModule
 		FILE_SET_NAME vulkan_video_module_file
 		FILE_SET vulkan/vulkan_video.cppm
 		ALIAS Vulkan::VideoHppModule )
 endif()
-
-function( vulkan_hpp__setup_platform )
-	set( options )
-	set( oneValueArgs NAME )
-	set( multiValueArgs )
-	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-
-	if( WIN32 )
-		target_compile_definitions( ${TARGET_NAME} PUBLIC VK_USE_PLATFORM_WIN32_KHR )
-	elseif( APPLE )
-		target_compile_definitions( ${TARGET_NAME} PUBLIC VK_USE_PLATFORM_METAL_EXT )
-	elseif( UNIX )
-		target_compile_definitions( ${TARGET_NAME} PUBLIC VK_USE_PLATFORM_XCB_KHR )
-	else()
-		message( FATAL_ERROR, "Vulkan-Hpp: unhandled platform!" )
-	endif()
-	if( !MSVC )
-		target_compile_options( ${TARGET_NAME} PRIVATE -fno-strict-aliasing )
-	endif()
-endfunction()
 
 function( vulkan_hpp__setup_vulkan_include )
 	set( options )

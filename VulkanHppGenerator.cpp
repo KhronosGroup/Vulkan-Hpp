@@ -8250,10 +8250,6 @@ ${typesafeConversionConditionalEnd}
       return m_${memberName} == VK_NULL_HANDLE;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( ${className} const & ) const = default;
-#endif
-
   private:
     Vk${className} m_${memberName} = {};
   };

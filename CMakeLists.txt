@@ -279,6 +279,28 @@ if ( VULKAN_HPP_NO_SPACESHIP_OPERATOR )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_SPACESHIP_OPERATOR" )
 endif()
 
+function( vulkan_hpp__setup_vulkan_include )
+	set( options )
+	set( oneValueArgs NAME )
+	set( multiValueArgs )
+	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+	
+	if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
+		# Vulkan C++ headers
+		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
+
+		# Vulkan C headers
+		if ( EXISTS "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
+			target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
+		else()
+			message( WARNING "Could not find vulkan C headers locally, pull the Vulkan-Headers submodule or disable VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP" )
+		endif()
+	else()
+		find_package( Vulkan REQUIRED )
+		target_include_directories( ${TARGET_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}" )
+	endif()
+endfunction()
+
 function( vulkan_hpp__setup_vulkan_module )
 	set( options )
 	set( oneValueArgs NAME FILE_SET_NAME )
@@ -320,7 +342,7 @@ function( vulkan_hpp__setup_vulkan_module )
 		BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
 		TYPE CXX_MODULES
 		FILES ${TARGET_FILE_SET} )
-	target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
+	vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
 endfunction()
 
 # Build Vulkan-Hpp as a module
@@ -342,25 +364,23 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 		ALIAS Vulkan::VideoHppModule )
 endif()
 
-function( vulkan_hpp__setup_vulkan_include )
+function( vulkan_hpp__setup_platform )
 	set( options )
 	set( oneValueArgs NAME )
 	set( multiValueArgs )
 	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-	
-	if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
-		# Vulkan C++ headers
-		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
 
-		# Vulkan C headers
-		if ( EXISTS "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
-			target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
-		else()
-			message( WARNING "Could not find vulkan C headers locally, pull the Vulkan-Headers submodule or disable VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP" )
-		endif()
+	if( WIN32 )
+		target_compile_definitions( ${TARGET_NAME} PUBLIC VK_USE_PLATFORM_WIN32_KHR )
+	elseif( APPLE )
+		target_compile_definitions( ${TARGET_NAME} PUBLIC VK_USE_PLATFORM_METAL_EXT )
+	elseif( UNIX )
+		target_compile_definitions( ${TARGET_NAME} PUBLIC VK_USE_PLATFORM_XCB_KHR )
 	else()
-		find_package( Vulkan REQUIRED )
-		target_include_directories( ${TARGET_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}" )
+		message( FATAL_ERROR, "Vulkan-Hpp: unhandled platform!" )
+	endif()
+	if( !MSVC )
+		target_compile_options( ${TARGET_NAME} PRIVATE -fno-strict-aliasing )
 	endif()
 endfunction()
 

@@ -174,7 +174,7 @@ vk::UniqueSwapchainKHR createSwapchainKHRUnique( vk::PhysicalDevice physicalDevi
   vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
   vk::SurfaceFormatKHR       surfaceFormat       = vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( surface ) );
   vk::Extent2D               swapchainExtent;
-  if ( surfaceCapabilities.currentExtent.width == (std::numeric_limits<uint32_t>::max)() )
+  if ( surfaceCapabilities.currentExtent.width == ( std::numeric_limits<uint32_t>::max )() )
   {
     // If the surface size is undefined, the size is set to the size of the images requested.
     swapchainExtent.width  = vk::su::clamp<uint32_t>( 64, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width );
@@ -357,12 +357,13 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::UniquePipeline graphicsPipeline = device->createGraphicsPipelineUnique( *pipelineCache, graphicsPipelineCreateInfo ).value;
 
-    vk::UniquePipeline graphicsPipeline2 =
-      std::move( device->createGraphicsPipelinesUnique<vk::detail::DispatchLoaderDynamic, MyAllocator<vk::UniquePipeline>>( *pipelineCache, graphicsPipelineCreateInfo )
-                   .value[0] );
+    vk::UniquePipeline graphicsPipeline2 = std::move(
+      device
+        ->createGraphicsPipelinesUnique<VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE, MyAllocator<vk::UniquePipeline>>( *pipelineCache, graphicsPipelineCreateInfo )
+        .value[0] );
 
     vk::UniquePipeline graphicsPipeline3 =
-      std::move( device->createGraphicsPipelinesUnique<vk::detail::DispatchLoaderDynamic>( *pipelineCache, graphicsPipelineCreateInfo ).value[0] );
+      std::move( device->createGraphicsPipelinesUnique<VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE>( *pipelineCache, graphicsPipelineCreateInfo ).value[0] );
 
     vk::DescriptorPoolSize   poolSize( vk::DescriptorType::eUniformBuffer, 1 );
     vk::UniqueDescriptorPool descriptorPool = device->createDescriptorPoolUnique( { vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize } );

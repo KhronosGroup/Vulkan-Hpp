@@ -13,4 +13,6 @@
 # limitations under the License.
 
 vulkan_hpp__setup_test( NAME FormatTraits )
-# vulkan_hpp__setup_test( NAME FormatTraits CXX_MODULE ) # module has no access to format traits
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    # vulkan_hpp__setup_test( NAME FormatTraits CXX_MODULE ) # module has no access to format traits
+endif()

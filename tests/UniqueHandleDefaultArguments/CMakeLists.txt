@@ -13,4 +13,6 @@
 # limitations under the License.
 
 vulkan_hpp__setup_test( NAME UniqueHandleDefaultArguments )
-vulkan_hpp__setup_test( NAME UniqueHandleDefaultArguments CXX_MODULE )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    vulkan_hpp__setup_test( NAME UniqueHandleDefaultArguments CXX_MODULE )
+endif()

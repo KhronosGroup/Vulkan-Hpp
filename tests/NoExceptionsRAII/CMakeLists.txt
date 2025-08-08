@@ -13,4 +13,6 @@
 # limitations under the License.
 
 vulkan_hpp__setup_test( NAME NoExceptionsRAII COMPILE_DEFINITIONS VULKAN_HPP_NO_EXCEPTIONS )
-vulkan_hpp__setup_test( NAME NoExceptionsRAII CXX_MODULE COMPILE_DEFINITIONS VULKAN_HPP_NO_EXCEPTIONS )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    vulkan_hpp__setup_test( NAME NoExceptionsRAII CXX_MODULE COMPILE_DEFINITIONS VULKAN_HPP_NO_EXCEPTIONS )
+endif()

@@ -13,4 +13,6 @@
 # limitations under the License.
 
 vulkan_hpp__setup_test( NAME Hash )
-# vulkan_hpp__setup_test( NAME Hash CXX_MODULE ) # module has no access to hash header contents
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    # vulkan_hpp__setup_test( NAME Hash CXX_MODULE ) # module has no access to hash header contents
+endif()

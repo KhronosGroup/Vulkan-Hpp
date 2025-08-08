@@ -13,4 +13,6 @@
 # limitations under the License.
 
 vulkan_hpp__setup_test( NAME HandlesMoveExchange COMPILE_DEFINITIONS VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
-vulkan_hpp__setup_test( NAME HandlesMoveExchange CXX_MODULE COMPILE_DEFINITIONS VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    vulkan_hpp__setup_test( NAME HandlesMoveExchange CXX_MODULE COMPILE_DEFINITIONS VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+endif()

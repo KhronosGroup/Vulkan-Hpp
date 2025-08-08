@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TODO: override the VULKAN_HPP_DISPATCH_LOADER_DYNAMIC flag to 0
-# vulkan_hpp__setup_test( NAME Handles )
-# vulkan_hpp__setup_test( NAME Handles CXX_MODULE ) # errors using equality operator with raii handles
+vulkan_hpp__setup_test( NAME Handles )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    # vulkan_hpp__setup_test( NAME Handles CXX_MODULE ) # errors using equality operator with raii handles
+endif()

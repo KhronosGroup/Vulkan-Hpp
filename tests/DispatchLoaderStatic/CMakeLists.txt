@@ -14,4 +14,6 @@
 
 # TODO: override the VULKAN_HPP_DISPATCH_LOADER_DYNAMIC flag to 0
 # vulkan_hpp__setup_test( NAME DispatchLoaderStatic LIBRARIES ${Vulkan_LIBRARIES} )
-# vulkan_hpp__setup_test( NAME DispatchLoaderStatic CXX_MODULE LIBRARIES ${Vulkan_LIBRARIES} )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    # vulkan_hpp__setup_test( NAME DispatchLoaderStatic CXX_MODULE LIBRARIES ${Vulkan_LIBRARIES} )
+endif()

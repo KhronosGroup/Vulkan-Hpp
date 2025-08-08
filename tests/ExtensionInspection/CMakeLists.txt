@@ -13,4 +13,6 @@
 # limitations under the License.
 
 vulkan_hpp__setup_test( NAME ExtensionInspection )
-# vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE ) # module currently has no way to access the extension inspection symbols
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    # vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE ) # module currently has no way to access the extension inspection symbols
+endif()

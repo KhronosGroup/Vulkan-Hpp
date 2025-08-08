@@ -14,8 +14,6 @@
 //
 // VulkanHpp Test: Compile test for Unique handles
 
-#define VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST
-
 #include "../../samples/utils/geometries.hpp"
 #include "../../samples/utils/shaders.hpp"
 #include "../../samples/utils/utils.hpp"

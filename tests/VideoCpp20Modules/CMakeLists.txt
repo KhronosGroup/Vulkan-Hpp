@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME VideoCpp20Modules LIBRARIES VulkanVideoHppModule NO_UTILS )
+vulkan_hpp__setup_test( NAME VideoCpp20Modules LIBRARIES VulkanVideoHppModule )
 set_target_properties( VideoCpp20Modules PROPERTIES CXX_SCAN_FOR_MODULES ON )

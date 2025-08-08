@@ -217,13 +217,13 @@ if( VULKAN_HPP_RUN_GENERATOR )
 endif()
 
 # set up compile definitions
-if ( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+if( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_DISABLE_ENHANCED_MODE" )
 endif()
-if ( VK_NO_PROTOTYPES )
+if( VK_NO_PROTOTYPES )
 	target_compile_definitions(VulkanHpp INTERFACE "VK_NO_PROTOTYPES" )
 endif()
-if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+if( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC" )
 	if( UNIX )
 		target_link_libraries( VulkanHpp INTERFACE ${CMAKE_DL_LIBS} )
@@ -236,48 +236,114 @@ else()
 		message(WARNING "Could not link to vulkan-1 libraries, consider using VULKAN_HPP_DISPATCH_LOADER_DYNAMIC")
 	endif()
 endif()
-if ( VULKAN_HPP_USE_REFLECT )
+if( VULKAN_HPP_USE_REFLECT )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_USE_REFLECT" )
 endif()
-if ( NOT VULKAN_HPP_TYPESAFE_CONVERSION )
+if( NOT VULKAN_HPP_TYPESAFE_CONVERSION )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_TYPESAFE_CONVERSION=0" )
 endif()
-if ( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+if( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_HANDLES_MOVE_EXCHANGE" )
 endif()
-if ( VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC )
+if( VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC" )
 endif()
-if ( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
+if( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST" )
 endif()
-if ( VULKAN_HPP_NO_SETTERS )
+if( VULKAN_HPP_NO_SETTERS )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_SETTERS" )
 endif()
-if ( VULKAN_HPP_NO_TO_STRING )
+if( VULKAN_HPP_NO_TO_STRING )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_TO_STRING" )
 endif()
-if ( VULKAN_HPP_NO_EXCEPTIONS )
+if( VULKAN_HPP_NO_EXCEPTIONS )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_EXCEPTIONS" )
 endif()
-if ( VULKAN_HPP_NO_CONSTRUCTORS )
+if( VULKAN_HPP_NO_CONSTRUCTORS )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_CONSTRUCTORS" )
 endif()
-if ( VULKAN_HPP_NO_SMART_HANDLE )
+if( VULKAN_HPP_NO_SMART_HANDLE )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_SMART_HANDLE" )
 endif()
-if ( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+if( VULKAN_HPP_RAII_NO_EXCEPTIONS )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_RAII_NO_EXCEPTIONS" )
 endif()
-if ( VULKAN_HPP_NO_WIN32_PROTOTYPES )
+if( VULKAN_HPP_NO_WIN32_PROTOTYPES )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_WIN32_PROTOTYPES" )
 endif()
-if ( VULKAN_HPP_NO_NODISCARD_WARNINGS )
+if( VULKAN_HPP_NO_NODISCARD_WARNINGS )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_NODISCARD_WARNINGS" )
 endif()
-if ( VULKAN_HPP_NO_SPACESHIP_OPERATOR )
+if( VULKAN_HPP_NO_SPACESHIP_OPERATOR )
 	target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_SPACESHIP_OPERATOR" )
 endif()
+
+function( vulkan_hpp__setup_vulkan_include )
+	set( options )
+	set( oneValueArgs NAME )
+	set( multiValueArgs )
+	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+	
+	if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
+		# Vulkan C++ headers
+		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
+
+		# Vulkan C headers
+		if ( EXISTS "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
+			target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
+		else()
+			message( WARNING "Could not find vulkan C headers locally, pull the Vulkan-Headers submodule or disable VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP" )
+		endif()
+	else()
+		find_package( Vulkan REQUIRED )
+		target_include_directories( ${TARGET_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}" )
+	endif()
+endfunction()
+
+function( vulkan_hpp__setup_vulkan_module )
+	set( options )
+	set( oneValueArgs NAME FILE_SET_NAME )
+	set( multiValueArgs FILE_SET ALIAS )
+	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+
+	if ( NOT TARGET_NAME )
+		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_module" )
+	endif()
+
+	add_library( ${TARGET_NAME} )
+	foreach( TARGET_ALIAS_NAME IN LISTS TARGET_ALIAS )
+		add_library(${TARGET_ALIAS_NAME} ALIAS ${TARGET_NAME})
+	endforeach()
+
+	# Clang 16's module support can be broken with extensions enabled
+	if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "16.0" )
+		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_EXTENSIONS OFF )
+	endif()
+
+	if ( VULKAN_HPP_ENABLE_STD_MODULE )
+		target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_23 )
+		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_MODULE_STD ON )
+	else()
+		target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_20 )
+	endif()
+
+	if ( NOT TARGET_FILE_SET )
+		message( FATAL_ERROR "FILE_SET must be defined in vulkan_hpp__setup_module" )
+	endif()
+
+	list(LENGTH TARGET_FILE_SET TARGET_FILE_SET_LENGTH)
+	if ( TARGET_FILE_SET_LENGTH LESS 1 )
+		message(FATAL_ERROR "FILE_SET in vulkan_hpp__setup_module must at least one source file")
+	endif()
+
+	target_sources( ${TARGET_NAME} PUBLIC
+		FILE_SET ${TARGET_FILE_SET_NAME}
+		BASE_DIRS ${CMAKE_CURRENT_FUNCTION_LIST_DIR}
+		TYPE CXX_MODULES
+		FILES ${TARGET_FILE_SET} )
+	vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
+endfunction()
 
 # Build Vulkan-Hpp as a module
 if( VULKAN_HPP_ENABLE_CPP20_MODULES )
@@ -287,56 +353,12 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 		message( FATAL_ERROR "Vulkan-Hpp: C++20 modules require CMake 3.28 or later" )
 	endif()
 
-	function ( vulkan_hpp__setup_module )
-		set( options )
-		set( oneValueArgs NAME FILE_SET_NAME )
-		set( multiValueArgs FILE_SET ALIAS )
-		cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-
-		if ( NOT TARGET_NAME )
-			message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_module" )
-		endif()
-
-		add_library( ${TARGET_NAME} )
-		foreach( TARGET_ALIAS_NAME IN LISTS TARGET_ALIAS )
-			add_library(${TARGET_ALIAS_NAME} ALIAS ${TARGET_NAME})
-		endforeach()
-
-		# Clang 16's module support can be broken with extensions enabled
-		if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "16.0" )
-			set_target_properties( ${TARGET_NAME} PROPERTIES CXX_EXTENSIONS OFF )
-		endif()
-
-		if ( VULKAN_HPP_ENABLE_STD_MODULE )
-			target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_23 )
-			set_target_properties( ${TARGET_NAME} PROPERTIES CXX_MODULE_STD ON )
-		else()
-			target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_20 )
-		endif()
-
-		if ( NOT TARGET_FILE_SET )
-			message( FATAL_ERROR "FILE_SET must be defined in vulkan_hpp__setup_module" )
-		endif()
-
-		list(LENGTH TARGET_FILE_SET TARGET_FILE_SET_LENGTH)
-		if ( TARGET_FILE_SET_LENGTH LESS 1 )
-			message(FATAL_ERROR "FILE_SET in vulkan_hpp__setup_module must at least one source file")
-		endif()
-
-		target_sources( ${TARGET_NAME} PUBLIC
-			FILE_SET ${TARGET_FILE_SET_NAME}
-			BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
-			TYPE CXX_MODULES
-			FILES ${TARGET_FILE_SET} )
-		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
-	endfunction()
-
 	# create targets providing VulkanHpp and VulkanVideoHpp as C++20 modules
-	vulkan_hpp__setup_module( NAME VulkanHppModule
+	vulkan_hpp__setup_vulkan_module( NAME VulkanHppModule
 		FILE_SET_NAME vulkan_module_file
 		FILE_SET vulkan/vulkan.cppm
-		ALIAS Vulkan::HppModule )
-	vulkan_hpp__setup_module( NAME VulkanVideoHppModule
+		ALIAS Vulkan::HppModule ) # TODO: respect VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP
+	vulkan_hpp__setup_vulkan_module( NAME VulkanVideoHppModule
 		FILE_SET_NAME vulkan_video_module_file
 		FILE_SET vulkan/vulkan_video.cppm
 		ALIAS Vulkan::VideoHppModule )
@@ -359,28 +381,6 @@ function( vulkan_hpp__setup_platform )
 	endif()
 	if( !MSVC )
 		target_compile_options( ${TARGET_NAME} PRIVATE -fno-strict-aliasing )
-	endif()
-endfunction()
-
-function( vulkan_hpp__setup_vulkan_include )
-	set( options )
-	set( oneValueArgs NAME )
-	set( multiValueArgs )
-	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-	
-	if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
-		# Vulkan C++ headers
-		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
-
-		# Vulkan C headers
-		if ( EXISTS "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
-			target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
-		else()
-			message( WARNING "Could not find vulkan C headers locally, pull the Vulkan-Headers submodule or disable VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP" )
-		endif()
-	else()
-		find_package( Vulkan REQUIRED )
-		target_include_directories( ${TARGET_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}" )
 	endif()
 endfunction()
 
@@ -521,36 +521,46 @@ function( vulkan_hpp__setup_sample_raii )
 endfunction()
 
 function( vulkan_hpp__setup_test )
-	set( options NO_UTILS )
-	set( oneValueArgs CXX_STANDARD NAME )
-	set( multiValueArgs LIBRARIES )
+	set( options CXX_MODULE )
+	set( oneValueArgs NAME )
+	set( multiValueArgs LIBRARIES COMPILE_DEFINITIONS )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-
-	if( NOT VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
-		find_package( Vulkan REQUIRED )
-	endif()
 
 	if( NOT TARGET_NAME )
 		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_test" )
 	endif()
-	if( NOT TARGET_CXX_STANDARD )
-		set( TARGET_CXX_STANDARD ${CMAKE_CXX_STANDARD} )
-	endif()
 
 	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
 
-	add_executable( ${TARGET_NAME} ${TARGET_NAME}.cpp )
+	# use a variant for the module version
+	if( TARGET_CXX_MODULE )
+		add_executable( ${TARGET_NAME}_module ${TARGET_NAME}.cpp )
+		set( TARGET_NAME ${TARGET_NAME}_module )
+		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
+
+		# set up new vulkan module when custom compile definitions are needed
+		list( LENGTH TARGET_COMPILE_DEFINITIONS COMPILE_DEFINITIONS_LENGTH )
+		if ( COMPILE_DEFINITIONS_LENGTH GREATER 0 )
+			vulkan_hpp__setup_vulkan_module( NAME ${TARGET_NAME}_VulkanHppModule
+				FILE_SET_NAME vulkan_module_file
+				FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm" ) # TODO: respect VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP
+			target_compile_definitions( ${TARGET_NAME}_VulkanHppModule PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
+			target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_NAME}_VulkanHppModule )
+		else()
+			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::HppModule )
+		endif()
+		# set macro to hint usage of the vulkan module, it is up to the test source file to respect this
+		target_compile_definitions( ${TARGET_NAME} PUBLIC VULKAN_HPP_USE_CXX_MODULE )
+	else()
+		add_executable( ${TARGET_NAME} ${TARGET_NAME}.cpp )
+		vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
+		target_compile_definitions( ${TARGET_NAME} PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
+	endif()
 
 	vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
-	vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
 	vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
 
-	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD ${TARGET_CXX_STANDARD} CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
-	target_include_directories( ${TARGET_NAME} PUBLIC ${VulkanHeaders_INCLUDE_DIR} )
-	target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/glm" )
-	if ( NOT ${TARGET_NO_UTILS} )
-		target_link_libraries( ${TARGET_NAME} PRIVATE utils )
-	endif()
+	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
 	target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_LIBRARIES} )
 endfunction()
 

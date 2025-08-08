@@ -15,10 +15,14 @@
 // VulkanHpp Tests : DesignatedInitializers
 //                   Compile test on using designated initializers
 
-#define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS
-
+#include <cstdint>
 #include <iostream>
-#include <vulkan/vulkan.hpp>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+# include <vulkan/vulkan_hpp_macros.hpp>
+  import vulkan_hpp;
+#else
+# include <vulkan/vulkan.hpp>
+#endif
 
 #if defined( __clang__ ) || defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"
@@ -35,16 +39,16 @@ private:
 
 MyVulkanTest::MyVulkanTest()
   : applicationInfo{ .pApplicationName   = "My Application",
-                     .applicationVersion = VK_MAKE_VERSION( 0, 0, 1 ),
+                     .applicationVersion = vk::makeApiVersion( 0, 0, 1, 0 ),
                      .pEngineName        = "My Engine",
-                     .engineVersion      = VK_MAKE_VERSION( 0, 0, 1 ),
-                     .apiVersion         = VK_API_VERSION_1_0 }
+                     .engineVersion      = vk::makeApiVersion( 0, 0, 1, 0 ),
+                     .apiVersion         = vk::ApiVersion10 }
 {
   this->applicationInfo = vk::ApplicationInfo{ .pApplicationName   = "My Application",
-                                               .applicationVersion = VK_MAKE_VERSION( 0, 0, 1 ),
+                                               .applicationVersion = vk::makeApiVersion( 0, 0, 1, 0 ),
                                                .pEngineName        = "My Engine",
-                                               .engineVersion      = VK_MAKE_VERSION( 0, 0, 1 ),
-                                               .apiVersion         = VK_API_VERSION_1_0 };
+                                               .engineVersion      = vk::makeApiVersion( 0, 0, 1, 0 ),
+                                               .apiVersion         = vk::ApiVersion10 };
 }
 
 int main( int /*argc*/, char ** /*argv*/ )
@@ -64,7 +68,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   vk::ApplicationInfo ai2( appName, appVersion );
   vk::ApplicationInfo ai3( appName, appVersion, engineName );
   vk::ApplicationInfo ai4( appName, appVersion, engineName, engineVersion );
-  vk::ApplicationInfo ai5( appName, appVersion, engineName, engineVersion, VK_API_VERSION_1_2 );
+  vk::ApplicationInfo ai5( appName, appVersion, engineName, engineVersion, vk::ApiVersion12 );
 
   // a structure in namespace vk:: can be copied from the corresponding vulkan C-struct
   VkApplicationInfo   vai;
@@ -73,7 +77,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 #else
 
   // aggregate initialization: need to explicitly specify sType and pNext, as well as all the other members !
-  vk::ApplicationInfo ai1{ vk::StructureType::eApplicationInfo, nullptr, appName, appVersion, engineName, engineVersion, VK_API_VERSION_1_2 };
+  vk::ApplicationInfo ai1{ vk::StructureType::eApplicationInfo, nullptr, appName, appVersion, engineName, engineVersion, vk::ApiVersion12 };
 
 #  if ( 20 <= VULKAN_HPP_CPP_VERSION )
   // designated initializers are available with C++20
@@ -86,7 +90,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   vk::ApplicationInfo ai4 = { .applicationVersion = 1, .engineVersion = 2 };
 
   vk::ApplicationInfo ai5{ .pEngineName = engineName };
-  vk::ApplicationInfo ai6{ .pApplicationName = appName, .apiVersion = VK_API_VERSION_1_2 };
+  vk::ApplicationInfo ai6{ .pApplicationName = appName, .apiVersion = vk::ApiVersion12 };
 #  endif
 #endif
 

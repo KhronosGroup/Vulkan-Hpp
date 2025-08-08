@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-find_package( Vulkan QUIET )
-if ( Vulkan_FOUND )
-	vulkan_hpp__setup_test( NAME Handles LIBRARIES ${Vulkan_LIBRARIES} )
+vulkan_hpp__setup_test( NAME Handles )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    # vulkan_hpp__setup_test( NAME Handles CXX_MODULE ) # errors using equality operator with raii handles
 endif()

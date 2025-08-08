@@ -12,4 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME Flags )
+vulkan_hpp__setup_test( NAME Flags COMPILE_DEFINITIONS VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    vulkan_hpp__setup_test( NAME Flags CXX_MODULE COMPILE_DEFINITIONS VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC )
+endif()

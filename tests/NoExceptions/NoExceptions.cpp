@@ -16,24 +16,31 @@
 //                     Compile test with VULKAN_HPP_NO_EXCEPTIONS set
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
-#define VULKAN_HPP_NO_EXCEPTIONS
-#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
-
+#include <vector>
+#include <cstdint>
+#include <cassert>
 #include <iostream>
-#include <vulkan/vulkan.hpp>
+#include <algorithm>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+  import vulkan_hpp;
+#else
+# include "vulkan/vulkan.hpp"
+#endif
 
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
 
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+namespace vk::detail {
+  DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
-  VULKAN_HPP_DEFAULT_DISPATCHER.init();
+  vk::detail::defaultDispatchLoaderDynamic.init();
 
-  vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+  vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, vk::ApiVersion11 );
   vk::UniqueInstance  instance = vk::createInstanceUnique( vk::InstanceCreateInfo( {}, &appInfo ) ).value;
-  VULKAN_HPP_DEFAULT_DISPATCHER.init( *instance );
+  vk::detail::defaultDispatchLoaderDynamic.init( *instance );
 
   std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices().value;
   assert( !physicalDevices.empty() );
@@ -53,7 +60,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   float                     queuePriority = 0.0f;
   vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
   vk::UniqueDevice          device = physicalDevices[0].createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) ).value;
-  VULKAN_HPP_DEFAULT_DISPATCHER.init( *device );
+  vk::detail::defaultDispatchLoaderDynamic.init( *device );
 
   // create a UniqueCommandPool to allocate a CommandBuffer from
   vk::UniqueCommandPool commandPool =

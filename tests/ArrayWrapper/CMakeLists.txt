@@ -13,3 +13,6 @@
 # limitations under the License.
 
 vulkan_hpp__setup_test( NAME ArrayWrapper )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    # vulkan_hpp__setup_test( NAME ArrayWrapper CXX_MODULE ) # error with GCC and Clang
+endif()

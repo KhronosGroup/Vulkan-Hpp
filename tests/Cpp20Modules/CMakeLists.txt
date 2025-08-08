@@ -1,4 +1,4 @@
 cmake_minimum_required( VERSION 3.28 )
 
-vulkan_hpp__setup_test( NAME Cpp20Modules LIBRARIES VulkanHppModule NO_UTILS )
-set_target_properties( Cpp20Modules PROPERTIES CXX_SCAN_FOR_MODULES ON )
+# TODO: use VULKAN_HPP_DISPATCH_LOADER_[DYNAMIC|STATIC]_TYPE (PR #2244)
+vulkan_hpp__setup_test( NAME Cpp20Modules CXX_MODULE )

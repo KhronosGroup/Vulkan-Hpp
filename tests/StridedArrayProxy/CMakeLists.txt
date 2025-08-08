@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME StridedArrayProxy NO_UTILS )
-# vulkan_hpp__setup_test( NAME StridedArrayProxy CXX_MODULE NO_UTILS ) # error with gcc15 about array proxy lifetime extension
+vulkan_hpp__setup_test( NAME StridedArrayProxy )
+# vulkan_hpp__setup_test( NAME StridedArrayProxy CXX_MODULE ) # error with gcc15 about array proxy lifetime extension

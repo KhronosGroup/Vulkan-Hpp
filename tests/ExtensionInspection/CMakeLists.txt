@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME ExtensionInspection NO_UTILS )
-# vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE NO_UTILS ) # module currently has no way to access the extension inspection symbols
+vulkan_hpp__setup_test( NAME ExtensionInspection )
+# vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE ) # module currently has no way to access the extension inspection symbols

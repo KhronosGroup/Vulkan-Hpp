@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME ArrayProxyNoTemporaries NO_UTILS )
-vulkan_hpp__setup_test( NAME ArrayProxyNoTemporaries CXX_MODULE NO_UTILS )
+vulkan_hpp__setup_test( NAME ArrayProxyNoTemporaries )
+vulkan_hpp__setup_test( NAME ArrayProxyNoTemporaries CXX_MODULE )

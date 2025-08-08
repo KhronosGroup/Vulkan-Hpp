@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME UniqueHandle NO_UTILS LIBRARIES utils COMPILE_DEFINITIONS VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
-# vulkan_hpp__setup_test( NAME UniqueHandle CXX_MODULE NO_UTILS LIBRARIES utils COMPILE_DEFINITIONS VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST ) # TODO
+vulkan_hpp__setup_test( NAME UniqueHandle LIBRARIES utils COMPILE_DEFINITIONS VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
+# vulkan_hpp__setup_test( NAME UniqueHandle CXX_MODULE LIBRARIES utils COMPILE_DEFINITIONS VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST ) # TODO

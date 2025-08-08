@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME CppType NO_UTILS )
-vulkan_hpp__setup_test( NAME CppType CXX_MODULE NO_UTILS )
+vulkan_hpp__setup_test( NAME CppType )
+vulkan_hpp__setup_test( NAME CppType CXX_MODULE )

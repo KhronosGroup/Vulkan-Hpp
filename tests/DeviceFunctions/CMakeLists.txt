@@ -13,5 +13,5 @@
 # limitations under the License.
 
 # TODO: override the VULKAN_HPP_DISPATCH_LOADER_DYNAMIC flag to 0
-# vulkan_hpp__setup_test( NAME DeviceFunctions NO_UTILS )
-# vulkan_hpp__setup_test( NAME DeviceFunctions CXX_MODULE NO_UTILS )
+# vulkan_hpp__setup_test( NAME DeviceFunctions )
+# vulkan_hpp__setup_test( NAME DeviceFunctions CXX_MODULE )

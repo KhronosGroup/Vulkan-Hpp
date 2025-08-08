@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME HandlesMoveExchange NO_UTILS COMPILE_DEFINITIONS VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
-vulkan_hpp__setup_test( NAME HandlesMoveExchange CXX_MODULE NO_UTILS COMPILE_DEFINITIONS VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+vulkan_hpp__setup_test( NAME HandlesMoveExchange COMPILE_DEFINITIONS VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+vulkan_hpp__setup_test( NAME HandlesMoveExchange CXX_MODULE COMPILE_DEFINITIONS VULKAN_HPP_HANDLES_MOVE_EXCHANGE )

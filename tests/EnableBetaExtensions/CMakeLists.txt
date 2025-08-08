@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME EnableBetaExtensions NO_UTILS COMPILE_DEFINITIONS VK_ENABLE_BETA_EXTENSIONS )
-vulkan_hpp__setup_test( NAME EnableBetaExtensions CXX_MODULE NO_UTILS COMPILE_DEFINITIONS VK_ENABLE_BETA_EXTENSIONS )
+vulkan_hpp__setup_test( NAME EnableBetaExtensions COMPILE_DEFINITIONS VK_ENABLE_BETA_EXTENSIONS )
+vulkan_hpp__setup_test( NAME EnableBetaExtensions CXX_MODULE COMPILE_DEFINITIONS VK_ENABLE_BETA_EXTENSIONS )

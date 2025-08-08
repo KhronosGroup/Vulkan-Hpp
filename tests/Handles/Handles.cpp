@@ -24,6 +24,12 @@
 # include <vulkan/vulkan_raii.hpp>
 #endif
 
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+namespace vk::detail {
+  DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+}
+#endif
+
 int main( int /*argc*/, char ** /*argv*/ )
 {
   try

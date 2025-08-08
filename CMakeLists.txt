@@ -521,7 +521,7 @@ function( vulkan_hpp__setup_sample_raii )
 endfunction()
 
 function( vulkan_hpp__setup_test )
-	set( options CXX_MODULE NO_UTILS ) # TODO: remove NO_UTILS
+	set( options CXX_MODULE )
 	set( oneValueArgs NAME )
 	set( multiValueArgs LIBRARIES COMPILE_DEFINITIONS )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
@@ -561,9 +561,6 @@ function( vulkan_hpp__setup_test )
 	vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
 
 	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
-	if ( NOT TARGET_NO_UTILS ) # TODO: remove
-		target_link_libraries( ${TARGET_NAME} PRIVATE utils )
-	endif()
 	target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_LIBRARIES} )
 endfunction()
 

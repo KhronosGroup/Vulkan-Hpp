@@ -13,11 +13,5 @@
 # limitations under the License.
 
 # TODO: override the VULKAN_HPP_DISPATCH_LOADER_DYNAMIC flag to 0
-# find_package( Vulkan QUIET )
-# if ( Vulkan_FOUND )
-# 	vulkan_hpp__setup_test( NAME DispatchLoaderStatic LIBRARIES ${Vulkan_LIBRARIES} )
-
-# 	if( UNIX )
-# 		target_link_libraries( DispatchLoaderStatic PRIVATE ${CMAKE_DL_LIBS} )
-# 	endif()
-# endif()
+# vulkan_hpp__setup_test( NAME DispatchLoaderStatic LIBRARIES ${Vulkan_LIBRARIES} )
+# vulkan_hpp__setup_test( NAME DispatchLoaderStatic CXX_MODULE LIBRARIES ${Vulkan_LIBRARIES} )

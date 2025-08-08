@@ -15,10 +15,16 @@
 // VulkanHpp Samples : FormatTraits
 //                     Compile test on using format traits functions
 
-#include <iostream>
 #include <map>
 #include <set>
-#include <vulkan/vulkan_format_traits.hpp>
+#include <cstring>
+#include <cassert>
+#include <iostream>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+  import vulkan_hpp;
+#else
+# include <vulkan/vulkan_format_traits.hpp>
+#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -63,7 +69,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 #endif
   assert( vk::componentCount( constFormat ) == 2 );
 
-  if ( strcmp( vk::componentName( constFormat, 0 ), "R" ) == 0 )
+  if ( std::strcmp( vk::componentName( constFormat, 0 ), "R" ) == 0 )
   {
     format = constFormat;
   }

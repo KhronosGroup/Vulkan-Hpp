@@ -12,4 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME ArrayWrapper )
+vulkan_hpp__setup_test( NAME ArrayWrapper NO_UTILS )
+# vulkan_hpp__setup_test( NAME ArrayWrapper CXX_MODULE ) # error with GCC and Clang

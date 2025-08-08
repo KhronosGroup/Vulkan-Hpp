@@ -12,4 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME FormatTraits )
+vulkan_hpp__setup_test( NAME FormatTraits NO_UTILS )
+# vulkan_hpp__setup_test( NAME FormatTraits CXX_MODULE NO_UTILS ) # module has no access to format traits

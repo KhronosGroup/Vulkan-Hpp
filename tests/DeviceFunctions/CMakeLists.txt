@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-find_package( Vulkan QUIET )
-if ( Vulkan_FOUND )
-	vulkan_hpp__setup_test( NAME DeviceFunctions LIBRARIES ${Vulkan_LIBRARIES} )
-endif()
+# TODO: override the VULKAN_HPP_DISPATCH_LOADER_DYNAMIC flag to 0
+# vulkan_hpp__setup_test( NAME DeviceFunctions NO_UTILS )
+# vulkan_hpp__setup_test( NAME DeviceFunctions CXX_MODULE NO_UTILS )

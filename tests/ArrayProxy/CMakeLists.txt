@@ -12,4 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME ArrayProxy )
+vulkan_hpp__setup_test( NAME ArrayProxy NO_UTILS )
+# vulkan_hpp__setup_test( NAME ArrayProxy CXX_MODULE ) # error with GCC

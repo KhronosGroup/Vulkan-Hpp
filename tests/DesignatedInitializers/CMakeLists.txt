@@ -12,4 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME DesignatedInitializers CXX_STANDARD 20 )
+vulkan_hpp__setup_test( NAME DesignatedInitializers NO_UTILS COMPILE_DEFINITIONS VULKAN_HPP_NO_STRUCT_CONSTRUCTORS)
+vulkan_hpp__setup_test( NAME DesignatedInitializers CXX_MODULE NO_UTILS COMPILE_DEFINITIONS VULKAN_HPP_NO_STRUCT_CONSTRUCTORS)

@@ -15,13 +15,19 @@
 // VulkanHpp Samples : DispatchLoaderDynamic
 //                     Compile test on DispatchLoaderDynamic functions
 
-#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
-
-#include <iostream>
 #include <map>
-#include <vulkan/vulkan.hpp>
+#include <vector>
+#include <cassert>
+#include <iostream>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+  import vulkan_hpp;
+#else
+# include <vulkan/vulkan.hpp>
+#endif
 
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+namespace vk::detail {
+  DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -30,20 +36,20 @@ int main( int /*argc*/, char ** /*argv*/ )
     // three equivalent minimal initializations of the default dispatcher... you just need to use one of them
 
     // initialize minimal set of function pointers
-    VULKAN_HPP_DEFAULT_DISPATCHER.init();
+    vk::detail::defaultDispatchLoaderDynamic.init();
 
     // the same initialization, now with explicitly providing a DynamicLoader
     vk::detail::DynamicLoader dl;
-    VULKAN_HPP_DEFAULT_DISPATCHER.init( dl );
+    vk::detail::defaultDispatchLoaderDynamic.init( dl );
 
     // the same initialization, now with explicitly providing the initial function pointer
     PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
-    VULKAN_HPP_DEFAULT_DISPATCHER.init( getInstanceProcAddr );
+    vk::detail::defaultDispatchLoaderDynamic.init( getInstanceProcAddr );
 
     vk::Instance instance = vk::createInstance( {}, nullptr );
 
     // initialize function pointers for instance
-    VULKAN_HPP_DEFAULT_DISPATCHER.init( instance );
+    vk::detail::defaultDispatchLoaderDynamic.init( instance );
 
     // create a dispatcher, based on additional vkDevice/vkGetDeviceProcAddr
     std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
@@ -52,7 +58,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Device device = physicalDevices[0].createDevice( {}, nullptr );
 
     // optional function pointer specialization for device
-    VULKAN_HPP_DEFAULT_DISPATCHER.init( device );
+    vk::detail::defaultDispatchLoaderDynamic.init( device );
   }
   catch ( vk::SystemError const & err )
   {

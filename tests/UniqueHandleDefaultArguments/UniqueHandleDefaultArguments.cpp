@@ -16,12 +16,18 @@
 
 // Should be used on 64 bit only, as on 32 bit the test is ambiguous.
 
-#define VULKAN_HPP_NO_EXCEPTIONS
-#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+  #include <vulkan/vulkan.h>
+  import vulkan_hpp;
+#else
+# include "vulkan/vulkan.hpp"
+#endif
 
-#include <vulkan/vulkan.hpp>
-
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+namespace vk::detail {
+  DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+}
+#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

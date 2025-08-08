@@ -15,11 +15,14 @@
 // VulkanHpp Samples : ArrayProxy
 //                     Compile test on using vk::ArrayProxy
 
-#undef VULKAN_HPP_DISPATCH_LOADER_DYNAMIC
-#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 0
-
+#include <cassert>
 #include <iostream>
-#include <vulkan/vulkan_raii.hpp>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+  #include <vulkan/vulkan.h>
+  import vulkan_hpp;
+#else
+# include <vulkan/vulkan_raii.hpp>
+#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

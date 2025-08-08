@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME StructureChain )
-
-if( UNIX )
-	target_link_libraries( StructureChain PRIVATE ${CMAKE_DL_LIBS} )
-endif()
+# TODO: use VULKAN_HPP_DISPATCH_LOADER_[DYNAMIC|STATIC]_TYPE (PR #2244)
+vulkan_hpp__setup_test( NAME StructureChain NO_UTILS COMPILE_DEFINITIONS VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+vulkan_hpp__setup_test( NAME StructureChain CXX_MODULE NO_UTILS COMPILE_DEFINITIONS VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )

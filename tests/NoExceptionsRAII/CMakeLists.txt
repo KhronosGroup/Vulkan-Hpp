@@ -12,8 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME NoExceptionsRAII LIBRARIES utils)
-
-if( UNIX )
-	target_link_libraries( NoExceptionsRAII PRIVATE ${CMAKE_DL_LIBS} )
-endif ()
+vulkan_hpp__setup_test( NAME NoExceptionsRAII NO_UTILS COMPILE_DEFINITIONS VULKAN_HPP_NO_EXCEPTIONS )
+vulkan_hpp__setup_test( NAME NoExceptionsRAII CXX_MODULE NO_UTILS COMPILE_DEFINITIONS VULKAN_HPP_NO_EXCEPTIONS )

@@ -25,8 +25,17 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#define VK_ENABLE_BETA_EXTENSIONS
-#include <vulkan/vulkan.hpp>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+  import vulkan_hpp;
+#else
+# include <vulkan/vulkan.hpp>
+#endif
+
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+namespace vk::detail {
+  DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+}
+#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

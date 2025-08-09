@@ -2351,6 +2351,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::KHRRayTracingMaintenance1ExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRRayTracingMaintenance1SpecVersion;
 
+  //=== VK_KHR_shader_untyped_pointers ===
+  using VULKAN_HPP_NAMESPACE::KHRShaderUntypedPointersExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRShaderUntypedPointersSpecVersion;
+
   //=== VK_EXT_global_priority_query ===
   using VULKAN_HPP_NAMESPACE::EXTGlobalPriorityQueryExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTGlobalPriorityQuerySpecVersion;
@@ -4468,6 +4472,9 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_ray_tracing_maintenance1 ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingMaintenance1FeaturesKHR;
   using VULKAN_HPP_NAMESPACE::TraceRaysIndirectCommand2KHR;
+
+  //=== VK_KHR_shader_untyped_pointers ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderUntypedPointersFeaturesKHR;
 
   //=== VK_EXT_image_view_min_lod ===
   using VULKAN_HPP_NAMESPACE::ImageViewMinLodCreateInfoEXT;
@@ -8058,6 +8065,10 @@ export namespace std
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingMaintenance1FeaturesKHR>;
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::TraceRaysIndirectCommand2KHR>;
+
+  //=== VK_KHR_shader_untyped_pointers ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderUntypedPointersFeaturesKHR>;
 
   //=== VK_EXT_image_view_min_lod ===
   template <>

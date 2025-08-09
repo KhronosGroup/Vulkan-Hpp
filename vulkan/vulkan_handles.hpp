@@ -1542,6 +1542,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceRayTracingMaintenance1FeaturesKHR;
   struct TraceRaysIndirectCommand2KHR;
 
+  //=== VK_KHR_shader_untyped_pointers ===
+  struct PhysicalDeviceShaderUntypedPointersFeaturesKHR;
+
   //=== VK_EXT_image_view_min_lod ===
   struct PhysicalDeviceImageViewMinLodFeaturesEXT;
   struct ImageViewMinLodCreateInfoEXT;

@@ -5009,6 +5009,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePipelineColorWriteCreateInfoEXT                  : return "PipelineColorWriteCreateInfoEXT";
       case StructureType::ePhysicalDevicePrimitivesGeneratedQueryFeaturesEXT: return "PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT";
       case StructureType::ePhysicalDeviceRayTracingMaintenance1FeaturesKHR  : return "PhysicalDeviceRayTracingMaintenance1FeaturesKHR";
+      case StructureType::ePhysicalDeviceShaderUntypedPointersFeaturesKHR   : return "PhysicalDeviceShaderUntypedPointersFeaturesKHR";
       case StructureType::ePhysicalDeviceImageViewMinLodFeaturesEXT         : return "PhysicalDeviceImageViewMinLodFeaturesEXT";
       case StructureType::eImageViewMinLodCreateInfoEXT                     : return "ImageViewMinLodCreateInfoEXT";
       case StructureType::ePhysicalDeviceMultiDrawFeaturesEXT               : return "PhysicalDeviceMultiDrawFeaturesEXT";

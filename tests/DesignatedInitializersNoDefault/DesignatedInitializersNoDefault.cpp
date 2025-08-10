@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Tests : DesignatedInitializers
-//                   Compile test on using designated initializers
+// VulkanHpp Tests : DesignatedInitializersNoDefault
+//                   Compile test on init lists without default values
 
 #define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS
 #define VULKAN_HPP_NO_STRUCT_DEFAULT_INIT
@@ -64,17 +64,17 @@ int main( int /*argc*/, char ** /*argv*/ )
 
 #if ( 20 <= VULKAN_HPP_CPP_VERSION )
   // no default initialization: all members except sType have to be specified; the order has to be respected
-  vk::ApplicationInfo ai2 = { .pApplicationName = appName,
+  vk::ApplicationInfo ai2 = { .pApplicationName   = appName,
                               .applicationVersion = appVersion,
-                              .pEngineName = engineName,
-                              .engineVersion = engineVersion,
-                              .apiVersion = apiVersion };
+                              .pEngineName        = engineName,
+                              .engineVersion      = engineVersion,
+                              .apiVersion         = apiVersion };
 
   vk::ApplicationInfo ai3{ .pApplicationName = appName,
                            .applicationVersion = appVersion,
-                           .pEngineName = engineName,
-                           .engineVersion = engineVersion,
-                           .apiVersion = apiVersion };
+                           .pEngineName        = engineName,
+                           .engineVersion      = engineVersion,
+                           .apiVersion         = apiVersion };
 #endif /*VULKAN_HPP_CPP_VERSION*/
 
   return 0;

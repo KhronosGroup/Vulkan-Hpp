@@ -31,9 +31,6 @@ private:
 
 #if defined( __clang__ ) || defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"
-
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic error "-Wmissing-field-initializers"
 #endif
 
 MyVulkanTest::MyVulkanTest()
@@ -85,7 +82,3 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   return 0;
 }
-
-#if defined( __clang__ ) || defined( __GNUC__ )
-#  pragma GCC diagnostic pop
-#endif

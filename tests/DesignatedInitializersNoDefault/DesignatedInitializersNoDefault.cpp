@@ -16,13 +16,9 @@
 //                   Compile test on using designated initializers
 
 #define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS
+#define VULKAN_HPP_NO_STRUCT_DEFAULT_INIT
 
-#include <iostream>
 #include <vulkan/vulkan.hpp>
-
-#if defined( __clang__ ) || defined( __GNUC__ )
-#  pragma GCC diagnostic ignored "-Wunused-variable"
-#endif
 
 class MyVulkanTest
 {
@@ -32,6 +28,11 @@ public:
 private:
   vk::ApplicationInfo applicationInfo;
 };
+
+#if defined( __clang__ ) || defined( __GNUC__ )
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic error "-Wmissing-field-initializers"
+#endif
 
 MyVulkanTest::MyVulkanTest()
   : applicationInfo{ .pApplicationName   = "My Application",
@@ -58,38 +59,27 @@ int main( int /*argc*/, char ** /*argv*/ )
   // default initialization is available in any case
   vk::ApplicationInfo ai0;
 
-#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
-  // due to default initializers, any number of members can be initialized
-  // most IDEs will probably help with the order of the members !
-  vk::ApplicationInfo ai1( appName );
-  vk::ApplicationInfo ai2( appName, appVersion );
-  vk::ApplicationInfo ai3( appName, appVersion, engineName );
-  vk::ApplicationInfo ai4( appName, appVersion, engineName, engineVersion );
-  vk::ApplicationInfo ai5( appName, appVersion, engineName, engineVersion, VK_API_VERSION_1_2 );
-
-  // a structure in namespace vk:: can be copied from the corresponding vulkan C-struct
-  VkApplicationInfo   vai;
-  vk::ApplicationInfo ai6( vai );
-
-#else
-
-  // aggregate initialization: need to explicitly specify sType and pNext, as well as all the other members !
+  // aggregate initialization: need to explicitly specify sType and pNext, as well as all the other members
   vk::ApplicationInfo ai1{ vk::StructureType::eApplicationInfo, nullptr, appName, appVersion, engineName, engineVersion, VK_API_VERSION_1_2 };
 
-#  if ( 20 <= VULKAN_HPP_CPP_VERSION )
-  // designated initializers are available with C++20
+#if ( 20 <= VULKAN_HPP_CPP_VERSION )
+  // no default initialization: all members except sType have to be specified; the order has to be respected
+  vk::ApplicationInfo ai2 = { .pApplicationName = appName,
+                              .applicationVersion = appVersion,
+                              .pEngineName = engineName,
+                              .engineVersion = engineVersion,
+                              .apiVersion = apiVersion };
 
-  // it's allowed, but not recommended to explicitly specify sType
-  vk::ApplicationInfo ai2 = { .sType = vk::StructureType::eApplicationInfo };
-
-  // any number of the members can be specified; the order has to be respected
-  vk::ApplicationInfo ai3 = { .pApplicationName = appName };
-  vk::ApplicationInfo ai4 = { .applicationVersion = 1, .engineVersion = 2 };
-
-  vk::ApplicationInfo ai5{ .pEngineName = engineName };
-  vk::ApplicationInfo ai6{ .pApplicationName = appName, .apiVersion = VK_API_VERSION_1_2 };
-#  endif
-#endif
+  vk::ApplicationInfo ai3{ .pApplicationName = appName,
+                           .applicationVersion = appVersion,
+                           .pEngineName = engineName,
+                           .engineVersion = engineVersion,
+                           .apiVersion = apiVersion };
+#endif /*VULKAN_HPP_CPP_VERSION*/
 
   return 0;
 }
+
+#if defined( __clang__ ) || defined( __GNUC__ )
+#  pragma GCC diagnostic pop
+#endif

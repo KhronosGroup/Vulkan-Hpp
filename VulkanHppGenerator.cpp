@@ -12379,10 +12379,8 @@ std::tuple<std::string, std::string, std::string, std::string>
       if ( !member.bitCount.empty() )
       {
         assert( member.deprecated.empty() );
-        std::string bitCount = " : " + member.bitCount;  // except for bitfield members, where no default member initializatin
-                                                         // is supported (up to C++20)
-        membersWithInit += bitCount;
-        membersNoInit   += bitCount;
+        membersWithInit += " : " + member.bitCount; // except for bitfield members, where no default member initializatin
+        membersNoInit   += " : " + member.bitCount; // is supported (up to C++20)
       }
       else if ( member.deprecated.empty() )
       {
@@ -12397,7 +12395,7 @@ std::tuple<std::string, std::string, std::string, std::string>
           membersWithInit += "{}";
         }
         else
-        { 
+        {
           assert( member.defaultValue.starts_with( "VK_" ) );
           std::string tag = findTag( member.defaultValue );
           membersWithInit += toCamelCase( stripPostfix( stripPrefix( member.defaultValue, "VK_" ), tag ) ) + tag;

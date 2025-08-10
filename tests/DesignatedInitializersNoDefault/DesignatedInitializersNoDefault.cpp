@@ -30,18 +30,22 @@ private:
 };
 
 #if defined( __clang__ ) || defined( __GNUC__ )
+#  pragma GCC diagnostic ignored "-Wunused-variable"
+
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic error "-Wmissing-field-initializers"
 #endif
 
 MyVulkanTest::MyVulkanTest()
-  : applicationInfo{ .pApplicationName   = "My Application",
+  : applicationInfo{ .pNext              = nullptr,
+                     .pApplicationName   = "My Application",
                      .applicationVersion = VK_MAKE_VERSION( 0, 0, 1 ),
                      .pEngineName        = "My Engine",
                      .engineVersion      = VK_MAKE_VERSION( 0, 0, 1 ),
                      .apiVersion         = VK_API_VERSION_1_0 }
 {
-  this->applicationInfo = vk::ApplicationInfo{ .pApplicationName   = "My Application",
+  this->applicationInfo = vk::ApplicationInfo{ .pNext              = nullptr,
+                                               .pApplicationName   = "My Application",
                                                .applicationVersion = VK_MAKE_VERSION( 0, 0, 1 ),
                                                .pEngineName        = "My Engine",
                                                .engineVersion      = VK_MAKE_VERSION( 0, 0, 1 ),
@@ -64,13 +68,15 @@ int main( int /*argc*/, char ** /*argv*/ )
 
 #if ( 20 <= VULKAN_HPP_CPP_VERSION )
   // no default initialization: all members except sType have to be specified; the order has to be respected
-  vk::ApplicationInfo ai2 = { .pApplicationName   = appName,
+  vk::ApplicationInfo ai2 = { .pNext              = nullptr,
+                              .pApplicationName   = appName,
                               .applicationVersion = appVersion,
                               .pEngineName        = engineName,
                               .engineVersion      = engineVersion,
                               .apiVersion         = apiVersion };
 
-  vk::ApplicationInfo ai3{ .pApplicationName = appName,
+  vk::ApplicationInfo ai3{ .pNext              = nullptr,
+                           .pApplicationName   = appName,
                            .applicationVersion = appVersion,
                            .pEngineName        = engineName,
                            .engineVersion      = engineVersion,

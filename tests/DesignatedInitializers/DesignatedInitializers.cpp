@@ -53,7 +53,6 @@ int main( int /*argc*/, char ** /*argv*/ )
   uint32_t     appVersion    = 1;
   char const * engineName    = "Vulkan.hpp";
   uint32_t     engineVersion = 1;
-  uint32_t     apiVersion    = 1;
 
   // default initialization is available in any case
   vk::ApplicationInfo ai0;

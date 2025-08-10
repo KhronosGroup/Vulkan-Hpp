@@ -12,4 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME DesignatedInitializersNoDefault CXX_STANDARD 20)
+vulkan_hpp__setup_test( NAME DesignatedInitializersNoDefault CXX_STANDARD 20 )

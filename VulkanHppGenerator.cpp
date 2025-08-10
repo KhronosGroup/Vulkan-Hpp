@@ -12378,9 +12378,10 @@ std::tuple<std::string, std::string, std::string, std::string>
       assert( member.arraySizes.empty() || member.bitCount.empty() );
       if ( !member.bitCount.empty() )
       {
+        // except for bitfield members, where no default member initialization is supported (up to C++20)
         assert( member.deprecated.empty() );
-        membersWithInit += " : " + member.bitCount;  // except for bitfield members, where no default member initializatin
-        membersNoInit   += " : " + member.bitCount;  // is supported (up to C++20)
+        membersWithInit += " : " + member.bitCount;
+        membersNoInit   += " : " + member.bitCount;
       }
       else if ( member.deprecated.empty() )
       {

@@ -265,6 +265,8 @@ vk::InstanceCreateInfo instanceCreateInfo({}, &applicationInfo);
 Note, that the designator order needs to match the declaration order.
 Note as well, that now you can explicitly set the `sType` member of vk-structures. This is neither neccessary (as they are correctly initialized by default) nor recommended.
 
+To enable warnings for missing fields in designated initializer lists with flags such as `-Wmissing-field-initializers` you can set `#define VULKAN_HPP_NO_STRUCT_DEFAULT_INIT`. This will remove default initialization for all struct members except `sType`.
+
 ### Passing Arrays to Functions using ArrayProxy <a id='passing_arrays'>
 
 The Vulkan API has several places which require (count, pointer) as two function arguments and C++ has a few containers which map perfectly to this pair. To simplify development the Vulkan-Hpp bindings have replaced those argument pairs with the `vk::ArrayProxy` class template which accepts empty arrays and a single value as well as STL containers `std::initializer_list`, `std::array` and `std::vector` as argument for construction. This way a single generated Vulkan version can accept a variety of inputs without having the combinatoric explosion which would occur when creating a function for each container type.

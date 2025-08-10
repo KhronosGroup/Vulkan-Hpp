@@ -12313,15 +12313,18 @@ std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<R
 std::tuple<std::string, std::string, std::string, std::string>
   VulkanHppGenerator::generateStructMembers( std::pair<std::string, StructureData> const & structData ) const
 {
-  std::string members, memberNames, memberTypes, sTypeValue;
+  std::string membersWithInit, membersNoInit, memberNames, memberTypes, sTypeValue;
   for ( auto const & member : structData.second.members )
   {
-    members += "    ";
+    membersWithInit += "    ";
+    membersNoInit   += "    ";
 
     if ( !member.deprecated.empty() )
     {
       assert( member.deprecated == "ignored" );
-      members += "VULKAN_HPP_DEPRECATED( \"" + member.deprecated + "\" ) ";
+      std::string deprecated = "VULKAN_HPP_DEPRECATED( \"" + member.deprecated + "\" ) ";
+      membersWithInit += deprecated;
+      membersNoInit   += deprecated;
     }
 
     std::string type;
@@ -12344,14 +12347,15 @@ std::tuple<std::string, std::string, std::string, std::string>
       assert( member.type.prefix.empty() && member.type.postfix.empty() );
       type = generateStandardArrayWrapper( member.type.compose( "Vk" ), member.arraySizes );
     }
-    members += type + " " + member.name;
+    membersWithInit += type + " " + member.name;
+    membersNoInit   += type + " " + member.name;
     if ( member.deprecated.empty() && !member.value.empty() )
     {
       // special handling for members with legal value: use it as the default
-      members += " = ";
+      membersWithInit += " = ";
       if ( member.type.type == "uint32_t" )
       {
-        members += member.value;
+        membersWithInit += member.value;
       }
       else
       {
@@ -12359,9 +12363,11 @@ std::tuple<std::string, std::string, std::string, std::string>
         assert( enumIt != m_enums.end() );
         assert( contains( enumIt->second.values, member.value ) );
         std::string valueName = generateEnumValueName( enumIt->first, member.value, enumIt->second.isBitmask );
-        members += stripPrefix( member.type.type, "Vk" ) + "::" + valueName;
+        std::string enumValue = stripPrefix( member.type.type, "Vk" ) + "::" + valueName;
+        membersWithInit += enumValue;
         if ( member.name == "sType" )
         {
+          membersNoInit += " = " + enumValue;
           sTypeValue = valueName;
         }
       }
@@ -12373,34 +12379,48 @@ std::tuple<std::string, std::string, std::string, std::string>
       if ( !member.bitCount.empty() )
       {
         assert( member.deprecated.empty() );
-        members += " : " + member.bitCount;  // except for bitfield members, where no default member initializatin
-                                             // is supported (up to C++20)
+        std::string bitCount = " : " + member.bitCount;  // except for bitfield members, where no default member initializatin
+                                                         // is supported (up to C++20)
+        membersWithInit += bitCount;
+        membersNoInit   += bitCount;
       }
       else if ( member.deprecated.empty() )
       {
-        members += " = ";
+        membersWithInit += " = ";
         auto enumIt = m_enums.find( member.type.type );
         if ( member.arraySizes.empty() && ( enumIt != m_enums.end() ) && member.type.postfix.empty() )
         {
-          members += generateEnumInitializer( member.type, member.arraySizes, enumIt->second.values, enumIt->second.isBitmask );
+          membersWithInit += generateEnumInitializer( member.type, member.arraySizes, enumIt->second.values, enumIt->second.isBitmask );
         }
         else if ( member.defaultValue.empty() )
         {
-          members += "{}";
+          membersWithInit += "{}";
         }
         else
-        {
+        { 
           assert( member.defaultValue.starts_with( "VK_" ) );
           std::string tag = findTag( member.defaultValue );
-          members += toCamelCase( stripPostfix( stripPrefix( member.defaultValue, "VK_" ), tag ) ) + tag;
+          membersWithInit += toCamelCase( stripPostfix( stripPrefix( member.defaultValue, "VK_" ), tag ) ) + tag;
         }
       }
     }
-    members += ";\n";
+    membersWithInit += ";\n";
+    membersNoInit   += ";\n";
 
     memberNames += member.name + ", ";
     memberTypes += type + " const &, ";
   }
+
+  static const std::string membersTemplate = R"(
+#if !defined( VULKAN_HPP_NO_STRUCT_DEFAULT_INIT )
+${membersWithInit}
+#else
+${membersNoInit}
+#endif /*VULKAN_HPP_NO_STRUCT_DEFAULT_INIT*/
+)";
+  std::string members = replaceWithMap( membersTemplate,
+                                        { { "membersWithInit", stripPostfix( membersWithInit, "\n" ) },
+                                          { "membersNoInit", stripPostfix( membersNoInit, "\n" ) } } );
   return std::make_tuple( members, stripPostfix( memberNames, ", " ), stripPostfix( memberTypes, ", " ), sTypeValue );
 }
 

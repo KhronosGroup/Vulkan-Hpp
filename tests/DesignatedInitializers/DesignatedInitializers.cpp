@@ -53,6 +53,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   uint32_t     appVersion    = 1;
   char const * engineName    = "Vulkan.hpp";
   uint32_t     engineVersion = 1;
+  uint32_t     apiVersion    = 1;
 
   // default initialization is available in any case
   vk::ApplicationInfo ai0;
@@ -81,12 +82,27 @@ int main( int /*argc*/, char ** /*argv*/ )
   // it's allowed, but not recommended to explicitly specify sType
   vk::ApplicationInfo ai2 = { .sType = vk::StructureType::eApplicationInfo };
 
+#    if !defined ( VULKAN_HPP_NO_STRUCT_DEFAULT_INIT )  
   // any number of the members can be specified; the order has to be respected
   vk::ApplicationInfo ai3 = { .pApplicationName = appName };
   vk::ApplicationInfo ai4 = { .applicationVersion = 1, .engineVersion = 2 };
 
   vk::ApplicationInfo ai5{ .pEngineName = engineName };
   vk::ApplicationInfo ai6{ .pApplicationName = appName, .apiVersion = VK_API_VERSION_1_2 };
+#    else
+  // all members except sType have to be specified; the order has to be respected
+  vk::ApplicationInfo ai7 = { .pApplicationName   = appName,
+                              .applicationVersion = appVersion,
+                              .pEngineName        = engineName,
+                              .engineVersion      = engineVersion,
+                              .apiVersion         = apiVersion };
+
+  vk::ApplicationInfo ai8 { .pApplicationName   = appName,
+                            .applicationVersion = appVersion,
+                            .pEngineName        = engineName,
+                            .engineVersion      = engineVersion,
+                            .apiVersion         = apiVersion };
+#    endif
 #  endif
 #endif
 

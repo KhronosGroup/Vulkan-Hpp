@@ -25,8 +25,10 @@
 # include <vulkan/vulkan.hpp>
 #endif
 
-namespace vk::detail {
-  DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+namespace vk {
+  namespace detail {
+    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+  }
 }
 
 int main( int /*argc*/, char ** /*argv*/ )

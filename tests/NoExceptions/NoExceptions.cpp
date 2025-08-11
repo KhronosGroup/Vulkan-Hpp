@@ -30,8 +30,10 @@
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
 
-namespace vk::detail {
-  DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+namespace vk {
+  namespace detail {
+    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+  }
 }
 
 int main( int /*argc*/, char ** /*argv*/ )

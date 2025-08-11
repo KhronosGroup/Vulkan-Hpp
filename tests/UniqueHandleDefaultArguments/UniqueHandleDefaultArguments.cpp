@@ -24,8 +24,10 @@
 #endif
 
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-namespace vk::detail {
-  DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+namespace vk {
+  namespace detail {
+    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+  }
 }
 #endif
 

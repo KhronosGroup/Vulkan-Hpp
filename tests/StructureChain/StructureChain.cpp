@@ -35,8 +35,10 @@
 static char const * AppName    = "StructureChain";
 static char const * EngineName = "Vulkan.hpp";
 
-namespace vk::detail {
-  DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+namespace vk {
+  namespace detail {
+    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+  }
 }
 
 template <typename T>

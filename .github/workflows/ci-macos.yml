@@ -13,8 +13,6 @@ jobs:
       matrix:
         os: [macos-14, macos-15]
         compiler: [clang++]
-        cpp_standard: [11, 14, 17, 20, 23]
-        build_type: [Debug, Release]
 
     steps:
     - uses: actions/checkout@v4
@@ -29,16 +27,39 @@ jobs:
       uses: ashutoshvarma/setup-ninja@master
       with:
         version: 1.11.0
-      
-    - name: Build
+        
+    - name: Generate headers
       run: |
-        cmake -B build/${{matrix.cpp_standard}}/${{matrix.build_type}} -GNinja \
-          -DVULKAN_HPP_SAMPLES_BUILD=ON                                        \
-          -DVULKAN_HPP_TESTS_BUILD=ON                                          \
-          -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON                          \
-          -DVULKAN_HPP_PRECOMPILE=OFF                                          \
-          -DVULKAN_HPP_RUN_GENERATOR=ON                                        \
-          -DCMAKE_CXX_COMPILER=${{matrix.compiler}}                            \
-          -DCMAKE_CXX_STANDARD=${{matrix.cpp_standard}}                        \
-          -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
-        cmake --build build/${{matrix.cpp_standard}}/${{matrix.build_type}} --parallel
+        cmake -B build -G Ninja                        \
+          -D VULKAN_HPP_GENERATOR_BUILD=ON             \
+          -D VULKAN_HPP_RUN_GENERATOR=ON               \
+          -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
+          -D VULKAN_HPP_TESTS_BUILD=OFF                \
+          -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF       \
+          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
+          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
+          -D VULKAN_HPP_PRECOMPILE=OFF                 \
+          -D CMAKE_CXX_COMPILER=${{matrix.compiler}}   \
+          -D CMAKE_CXX_STANDARD=20                     \
+          -D CMAKE_BUILD_TYPE=Release
+        cmake --build build --parallel
+
+    - name: Build samples and tests
+      run: |
+        for CXX_STANDARD in 11 14 17 20 23; do
+          for BUILD_TYPE in Debug Release; do
+            cmake -B build -G Ninja --fresh                   \
+              -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
+              -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
+              -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
+              -D VULKAN_HPP_TESTS_BUILD=ON                    \
+              -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF          \
+              -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
+              -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
+              -D VULKAN_HPP_PRECOMPILE=OFF                    \
+              -D CMAKE_CXX_COMPILER=${{matrix.compiler}}      \
+              -D CMAKE_CXX_STANDARD=$CXX_STANDARD             \
+              -D CMAKE_BUILD_TYPE=$BUILD_TYPE
+            cmake --build build --parallel --clean-first
+          done
+        done

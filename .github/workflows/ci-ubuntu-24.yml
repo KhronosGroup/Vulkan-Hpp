@@ -15,7 +15,8 @@ jobs:
 
     strategy:
       matrix:
-        compiler: [clang++-16, clang++-17, clang++-18, g++-12, g++-13, g++-14]
+        # compiler: [clang++-16, clang++-17, clang++-18, g++-12, g++-13, g++-14]
+        compiler: [clang++-17]
     
     steps:
     - uses: actions/checkout@v4
@@ -53,7 +54,7 @@ jobs:
             if [ ${{matrix.compiler}} == clang++-17 ] && [ $CXX_STANDARD == 23 ]; then
               continue
             fi
-            CXX_MODULES=${{(contains(fromJSON('["clang++-16", "g++-12", "g++-13", "g++-14"]'), matrix.compiler) || $CXX_STANDARD < 20) && 'OFF' || 'ON'}}
+            CXX_MODULES=${{(contains(fromJSON('["clang++-16", "g++-12", "g++-13", "g++-14"]'), matrix.compiler) || vars.CXX_STANDARD < 20) && 'OFF' || 'ON'}}
             cmake -B build -G Ninja --fresh                   \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \

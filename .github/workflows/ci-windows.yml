@@ -48,7 +48,7 @@ jobs:
       run: |
         for CXX_STANDARD in 11 14 17 20 23; do
           for BUILD_TYPE in Debug Release; do
-            CXX_MODULES=${{(contains(fromJSON('["windows-2019"]'), matrix.os) || $CXX_STANDARD < 20) && 'OFF' || 'ON'}}
+            CXX_MODULES=${{(contains(fromJSON('["windows-2019"]'), matrix.os) || vars.CXX_STANDARD < 20) && 'OFF' || 'ON'}}
             cmake -B build -G Ninja --fresh                   \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \

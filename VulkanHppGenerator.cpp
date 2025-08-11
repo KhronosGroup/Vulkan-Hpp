@@ -11595,7 +11595,7 @@ ${byString}
 
     std::vector<std::string> arguments, initializers;
     bool                     arrayListed = false;
-    std::string              ignores, templateHeader, sizeChecks, copyOps;
+    std::string              templateHeader, sizeChecks, copyOps;
     for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
     {
       // gather the initializers
@@ -11608,12 +11608,9 @@ ${byString}
         auto litit = lenIts.find( mit );
         if ( litit != lenIts.end() )
         {
-          if ( mit->deprecated.empty() )
-          {
-            // len arguments just have an initalizer, from the array size
-            initializers.push_back( mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )" );
-            sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), structData.second.mutualExclusiveLens );
-          }
+          // len arguments just have an initalizer, from the array size
+          initializers.push_back( mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )" );
+          sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), structData.second.mutualExclusiveLens );
         }
         else if ( hasLen( *mit, structData.second.members ) )
         {
@@ -11658,14 +11655,7 @@ ${byString}
 
           if ( mit->type.isPointer() )
           {
-            if ( mit->deprecated.empty() )
-            {
-              initializers.push_back( mit->name + "( " + argumentName + ".data() )" );
-            }
-            else
-            {
-              ignores += "detail::ignore( " + argumentName + " );\n";
-            }
+            initializers.push_back( mit->name + "( " + argumentName + ".data() )" );
           }
           else
           {
@@ -11726,7 +11716,6 @@ ${byString}
 ${templateHeader}    ${structName}( ${arguments} )
     ${initializers}
     {
-      ${ignores}
       ${sizeChecks}
       ${copyOps}
     }
@@ -11736,7 +11725,6 @@ ${templateHeader}    ${structName}( ${arguments} )
     return replaceWithMap( constructorTemplate,
                            { { "arguments", generateList( arguments, "", ", " ) },
                              { "copyOps", copyOps },
-                             { "ignores", ignores },
                              { "initializers", generateList( initializers, ": ", ", " ) },
                              { "sizeChecks", sizeChecks },
                              { "structName", stripPrefix( structData.first, "Vk" ) },

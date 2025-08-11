@@ -53,7 +53,14 @@ jobs:
             if [ ${{matrix.compiler}} == clang++-17 ] && [ $CXX_STANDARD == 23 ]; then
               continue
             fi
-            CXX_MODULES=${{(contains(fromJSON('["clang++-16", "g++-12", "g++-13", "g++-14"]'), matrix.compiler) || vars.CXX_STANDARD < 20) && 'OFF' || 'ON'}}
+
+            CXX_MODULES=ON
+            for compiler in "clang++-16" "g++-12" "g++-13" "g++-14"; do
+              if [ ${{matrix.compiler}} == $compiler ] || [ $CXX_STANDARD -lt 20 ]; then
+                CXX_MODULES=OFF
+              fi
+            done
+            
             cmake -B build -G Ninja --fresh                   \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \

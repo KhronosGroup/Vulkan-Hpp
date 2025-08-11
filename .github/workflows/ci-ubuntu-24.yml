@@ -15,8 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        # compiler: [clang++-16, clang++-17, clang++-18, g++-12, g++-13, g++-14]
-        compiler: [clang++-17]
+        compiler: [clang++-16, clang++-17, clang++-18, g++-12, g++-13, g++-14]
     
     steps:
     - uses: actions/checkout@v4

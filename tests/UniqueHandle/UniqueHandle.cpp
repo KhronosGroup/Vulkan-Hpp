@@ -19,7 +19,7 @@
 #include "../../samples/utils/geometries.hpp"
 #include "../../samples/utils/shaders.hpp"
 #include "../../samples/utils/utils.hpp"
-#include "SPIRV/GlslangToSpv.h"
+#include "glslang/SPIRV/GlslangToSpv.h"
 #include "glslang/Public/ShaderLang.h"
 
 #include <iostream>

@@ -17,7 +17,6 @@
 
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "SPIRV/GlslangToSpv.h"
 #include "glslang/Public/ShaderLang.h"
 
 #include <iostream>

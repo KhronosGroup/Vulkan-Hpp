@@ -55,9 +55,9 @@ jobs:
             fi
 
             echo "================================================================================="
-            echo "Building C++"$cpp_standard" in "$build_type"
+            echo "Building C++"$CXX_STANDARD" in "$BUILD_TYPE"
             echo "================================================================================="
-            
+
             cmake -B build -G Ninja --fresh                \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF            \
               -D VULKAN_HPP_RUN_GENERATOR=OFF              \

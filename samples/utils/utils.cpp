@@ -993,7 +993,7 @@ namespace vk
 
     WindowData::WindowData( GLFWwindow * wnd, std::string const & name, vk::Extent2D const & extent ) : handle{ wnd }, name{ name }, extent{ extent } {}
 
-    WindowData::WindowData( WindowData && other ) : handle{}, name{}, extent{}
+    WindowData::WindowData( WindowData && other ) noexcept : handle{}, name{}, extent{}
     {
       std::swap( handle, other.handle );
       std::swap( name, other.name );

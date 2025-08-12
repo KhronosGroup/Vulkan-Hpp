@@ -566,7 +566,6 @@ if( VULKAN_HPP_SAMPLES_BUILD OR VULKAN_HPP_TESTS_BUILD )
 		set( GLFW_BUILD_EXAMPLES OFF )
 		set( GLFW_BUILD_TESTS OFF )
 		add_subdirectory( glfw )
-		message(FATAL_ERROR "RAAAAH")
 	endif()
 
 	find_package( glslang QUIET )

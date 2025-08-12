@@ -31,7 +31,7 @@ jobs:
     - name: Install glm, glfw and glslang
       run: |
         cd glm 
-        cmake -B build -G Ninja                      \
+        cmake -B build                               \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
           -D CMAKE_CXX_STANDARD=11                   \
           -D CMAKE_BUILD_TYPE=Release                \
@@ -42,7 +42,7 @@ jobs:
         sudo cmake --install build
 
         cd ../glfw
-        cmake -B build -G Ninja                      \
+        cmake -B build                               \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
           -D CMAKE_CXX_STANDARD=11                   \
           -D CMAKE_BUILD_TYPE=Release                \
@@ -54,7 +54,7 @@ jobs:
         sudo cmake --install build
 
         cd ../glslang
-        cmake -B build -G Ninja                      \
+        cmake -B build                               \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
           -D CMAKE_CXX_STANDARD=11                   \
           -D CMAKE_BUILD_TYPE=Release                \
@@ -64,7 +64,7 @@ jobs:
         cmake --build build --parallel
         sudo cmake --install build
         cd ..
-        
+
     - name: Generate headers
       run: |
         cmake -B build                                 \

@@ -77,6 +77,7 @@ namespace vk
     VULKAN_HPP_INLINE uint32_t clampSurfaceImageCount( const uint32_t desiredImageCount, const uint32_t minImageCount, const uint32_t maxImageCount )
     {
       uint32_t imageCount = ( std::max )( desiredImageCount, minImageCount );
+      // Some drivers report maxImageCount as 0, so only clamp to max if it is valid.
       if ( maxImageCount > 0 )
       {
         imageCount = ( std::min )( imageCount, maxImageCount );

@@ -562,7 +562,7 @@ if( VULKAN_HPP_SAMPLES_BUILD OR VULKAN_HPP_TESTS_BUILD )
 	endif()
 
 	find_package( glfw3 QUIET )
-	if( NOT glfw_FOUND )
+	if( NOT glfw3_FOUND )
 		set( GLFW_BUILD_EXAMPLES OFF )
 		set( GLFW_BUILD_TESTS OFF )
 		add_subdirectory( glfw )

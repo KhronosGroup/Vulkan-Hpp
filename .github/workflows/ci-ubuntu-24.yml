@@ -60,6 +60,10 @@ jobs:
                 CXX_MODULES=OFF
               fi
             done
+
+            echo "================================================================================="
+            echo "Building C++"$cpp_standard" in "$build_type"
+            echo "================================================================================="
             
             cmake -B build -G Ninja --fresh                   \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \

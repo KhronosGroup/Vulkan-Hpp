@@ -30,7 +30,7 @@ jobs:
         
     - name: Generate headers
       run: |
-        cmake -B build -G Ninja                        \
+        cmake -B build                                 \
           -D VULKAN_HPP_GENERATOR_BUILD=ON             \
           -D VULKAN_HPP_RUN_GENERATOR=ON               \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
@@ -51,7 +51,12 @@ jobs:
             if [ ${{matrix.compiler}} == "windows-2019" ] || [ $CXX_STANDARD -lt 20 ]; then
               CXX_MODULES=OFF
             fi
-            cmake -B build -G Ninja --fresh                   \
+
+            echo "================================================================================="
+            echo "Building C++"$cpp_standard" in "$build_type" with architecture "${{matrix.architecture}}
+            echo "================================================================================="
+            
+            cmake -B build --fresh                            \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
               -D VULKAN_HPP_SAMPLES_BUILD=ON                  \

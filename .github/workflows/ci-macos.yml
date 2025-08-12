@@ -48,6 +48,10 @@ jobs:
       run: |
         for CXX_STANDARD in 11 14 17 20 23; do
           for BUILD_TYPE in Debug Release; do
+            echo "================================================================================="
+            echo "Building C++"$cpp_standard" in "$build_type"
+            echo "================================================================================="
+
             cmake -B build -G Ninja --fresh                   \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \

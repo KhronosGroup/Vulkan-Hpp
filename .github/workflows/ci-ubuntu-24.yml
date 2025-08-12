@@ -1,5 +1,5 @@
 
-name: CI MacOS
+name: CI Ubuntu 24
 
 on:
   pull_request:
@@ -7,27 +7,29 @@ on:
 
 jobs:
   build:
-    runs-on: ${{matrix.os}}
-    
+    runs-on: ubuntu-24.04
+
+    defaults:
+      run:
+        shell: bash
+
     strategy:
       matrix:
-        os: [macos-14, macos-15]
-        compiler: [clang++]
-
+        compiler: [clang++-16, clang++-17, clang++-18, g++-12, g++-13, g++-14]
+    
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
 
     - name: Install libraries
-      run: |
-        brew install clang-format molten-vk
+      run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
 
     - name: Install Ninja
       uses: ashutoshvarma/setup-ninja@master
       with:
         version: 1.11.0
-        
+
     - name: Generate headers
       run: |
         cmake -B build -G Ninja                        \
@@ -48,16 +50,27 @@ jobs:
       run: |
         for CXX_STANDARD in 11 14 17 20 23; do
           for BUILD_TYPE in Debug Release; do
-            echo "================================================================================="
-            echo "Building C++"$CXX_STANDARD" in "$BUILD_TYPE"
-            echo "================================================================================="
+            if [ ${{matrix.compiler}} == clang++-17 ] && [ $CXX_STANDARD == 23 ]; then
+              continue
+            fi
 
+            CXX_MODULES=ON
+            for compiler in "clang++-16" "g++-12" "g++-13" "g++-14"; do
+              if [ ${{matrix.compiler}} == $compiler ] || [ $CXX_STANDARD -lt 20 ]; then
+                CXX_MODULES=OFF
+              fi
+            done
+
+            echo "================================================================================="
+            echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
+            echo "================================================================================="
+            
             cmake -B build -G Ninja --fresh                   \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
               -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
               -D VULKAN_HPP_TESTS_BUILD=ON                    \
-              -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF          \
+              -D VULKAN_HPP_ENABLE_CPP20_MODULES=$CXX_MODULES \
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
               -D VULKAN_HPP_PRECOMPILE=OFF                    \

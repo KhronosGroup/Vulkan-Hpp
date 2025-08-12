@@ -53,7 +53,7 @@ jobs:
             fi
 
             echo "================================================================================="
-            echo "Building C++"$CXX_STANDARD" in "$BUILD_TYPE" with architecture "${{matrix.architecture}}
+            echo "Building C++$CXX_STANDARD in $BUILD_TYPE with architecture ${{matrix.architecture}}"
             echo "================================================================================="
 
             cmake -B build --fresh                            \

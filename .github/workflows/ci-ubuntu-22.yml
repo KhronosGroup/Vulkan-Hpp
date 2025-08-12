@@ -55,7 +55,7 @@ jobs:
             fi
 
             echo "================================================================================="
-            echo "Building C++"$CXX_STANDARD" in "$BUILD_TYPE"
+            echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
             echo "================================================================================="
 
             cmake -B build -G Ninja --fresh                \

@@ -51,8 +51,6 @@ namespace
   std::vector<std::string>          tokenizeAny( std::string const & tokenString, std::string const & separators );
 }  // namespace
 
-void writeToFile( std::string const & str, std::string const & fileName );
-
 const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window", "VkExportMetalObjectsInfoEXT" };
 
 //

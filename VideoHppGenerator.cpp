@@ -33,94 +33,21 @@ VideoHppGenerator::VideoHppGenerator( tinyxml2::XMLDocument const & document )
   checkCorrectness();
 }
 
-void VideoHppGenerator::generateHppFile() const
+void VideoHppGenerator::generateCppmFile() const
 {
-  std::string const video_hpp = std::string( BASE_PATH ) + "/vulkan/" + "vulkan_video.hpp";
-  std::cout << "VideoHppGenerator: Generating " << video_hpp << " ... " << std::endl;
-
-  std::string const videoHppTemplate = R"(${copyrightMessage}
-
-#ifndef VULKAN_VIDEO_HPP
-#define VULKAN_VIDEO_HPP
-
-// here, we consider include files to be available when __has_include is not defined
-#if !defined( __has_include )
-#  define __has_include( x ) true
-#  define has_include_was_not_defined
-#endif
-
-// clang-format off
-#include <vulkan/vulkan.hpp>
-// clang-format on
-
-${includes}
-
-#if !defined( VULKAN_HPP_VIDEO_NAMESPACE )
-#  define VULKAN_HPP_VIDEO_NAMESPACE video
-#endif
-
-namespace VULKAN_HPP_NAMESPACE
-{
-namespace VULKAN_HPP_VIDEO_NAMESPACE
-{
-${constants}
-${enums}
-${structs}
-}   // namespace VULKAN_HPP_VIDEO_NAMESPACE
-}   // namespace VULKAN_HPP_NAMESPACE
-
-#if defined( has_include_was_not_defined )
-#  undef has_include_was_not_defined
-#  undef __has_include
-#endif
-
-#endif
-)";
-
-  std::string str = replaceWithMap( videoHppTemplate,
-                                    { { "constants", generateConstants() },
-                                      { "copyrightMessage", m_copyrightMessage },
-                                      { "enums", generateEnums() },
-                                      { "includes", generateIncludes() },
-                                      { "structs", generateStructs() } } );
-
-  writeToFile( str, video_hpp );
+  generateFileFromTemplate(
+    "vulkan_video.cppm", "VideoCppmTemplate.hpp", { { "copyrightMessage", m_copyrightMessage }, { "usings", generateCppModuleUsings() } } );
 }
 
-void VideoHppGenerator::generateCppModuleFile() const
+void VideoHppGenerator::generateHppFile() const
 {
-  std::string const vulkan_video_cppm = std::string( BASE_PATH ) + "/vulkan/vulkan_video.cppm";
-  messager.message( "VideoHppGenerator: Generating " + vulkan_video_cppm + " ...\n" );
-
-  std::string const videoCppmTemplate = R"(${copyrightMessage}
-
-// Note: This module is still in an experimental state.
-// Any feedback is welcome on https://github.com/KhronosGroup/Vulkan-Hpp/issues.
-
-module;
-
-#include <vulkan/vulkan_hpp_macros.hpp>
-
-#if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_ENABLE_STD_MODULE )
-#define VULKAN_HPP_ENABLE_STD_MODULE
-#endif
-
-#include <vulkan/vulkan_video.hpp>
-
-export module vulkan_video_hpp;
-
-export namespace VULKAN_HPP_NAMESPACE
-{
-namespace VULKAN_HPP_VIDEO_NAMESPACE
-{
-${usings}
-}   // namespace VULKAN_HPP_VIDEO_NAMESPACE
-}   // namespace VULKAN_HPP_NAMESPACE
-)";
-
-  std::string str = replaceWithMap( videoCppmTemplate, { { "copyrightMessage", m_copyrightMessage }, { "usings", generateCppModuleUsings() } } );
-
-  writeToFile( str, vulkan_video_cppm );
+  generateFileFromTemplate( "vulkan_video.hpp",
+                            "VideoHppTemplate.hpp",
+                            { { "constants", generateConstants() },
+                              { "copyrightMessage", m_copyrightMessage },
+                              { "enums", generateEnums() },
+                              { "includes", generateIncludes() },
+                              { "structs", generateStructs() } } );
 }
 
 void VideoHppGenerator::addImplicitlyRequiredTypes()
@@ -270,7 +197,8 @@ std::string VideoHppGenerator::generateConstants( ExtensionData const & extensio
   std::string str;
   for ( auto const & constant : extensionData.requireData.constants )
   {
-    str += "VULKAN_HPP_CONSTEXPR_INLINE " + constant.second.type + " " + toCamelCase( stripPrefix( constant.first, "STD_VIDEO_" ), true ) + " = " + constant.second.value + ";\n";
+    str += "VULKAN_HPP_CONSTEXPR_INLINE " + constant.second.type + " " + toCamelCase( stripPrefix( constant.first, "STD_VIDEO_" ), true ) + " = " +
+           constant.second.value + ";\n";
   }
   if ( !str.empty() )
   {
@@ -1281,8 +1209,8 @@ int main( int argc, char ** argv )
     std::cout << "VideoHppGenerator: Parsing " << filename << std::endl;
     VideoHppGenerator generator( doc );
 
+    generator.generateCppmFile();
     generator.generateHppFile();
-    generator.generateCppModuleFile();
 
 #if !defined( CLANG_FORMAT_EXECUTABLE )
     std::cout << "VideoHppGenerator: could not find clang-format. The generated files will not be formatted accordingly.\n";

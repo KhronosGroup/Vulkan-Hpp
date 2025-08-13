@@ -68,16 +68,17 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
     vk::UniqueDevice          device = physicalDevice.createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
 
-    uint64_t handle = device->getAccelerationStructureHandleNV<uint8_t>( {}, vk::detail::DispatchLoaderDynamic() );
+    uint64_t handle = device->getAccelerationStructureHandleNV<uint8_t>( {}, VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE() );
 
     std::vector<vk::UniqueCommandBuffer>::allocator_type vectorAllocator;
-    vk::UniqueCommandBuffer commandBuffer = std::move( device->allocateCommandBuffersUnique( {}, vectorAllocator, vk::detail::DispatchLoaderStatic() ).front() );
+    vk::UniqueCommandBuffer                              commandBuffer =
+      std::move( device->allocateCommandBuffersUnique( {}, vectorAllocator, VULKAN_HPP_DISPATCH_LOADER_STATIC_TYPE() ).front() );
 
     commandBuffer->begin( vk::CommandBufferBeginInfo() );
 
-    std::vector<vk::UniqueHandle<vk::CommandBuffer, vk::detail::DispatchLoaderDynamic>>::allocator_type dynamicVectorAllocator;
-    vk::UniqueHandle<vk::CommandBuffer, vk::detail::DispatchLoaderDynamic>                              dynamicCommandBuffer =
-      std::move( device->allocateCommandBuffersUnique( {}, dynamicVectorAllocator, vk::detail::DispatchLoaderDynamic() ).front() );
+    std::vector<vk::UniqueHandle<vk::CommandBuffer, VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE>>::allocator_type dynamicVectorAllocator;
+    vk::UniqueHandle<vk::CommandBuffer, VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE>                              dynamicCommandBuffer =
+      std::move( device->allocateCommandBuffersUnique( {}, dynamicVectorAllocator, VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE() ).front() );
 
     vk::Buffer       buffer       = device->createBuffer( {} );
     vk::UniqueBuffer uniqueBuffer = vk::UniqueBuffer( buffer, *device );

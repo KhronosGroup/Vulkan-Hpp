@@ -25,11 +25,10 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include "../samples/utils/geometries.hpp"
-#include "../samples/utils/math.hpp"
+#include "../../samples/utils/geometries.hpp"
+#include "../../samples/utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "SPIRV/GlslangToSpv.h"
 #include "glslang/Public/ShaderLang.h"
 
 #include <iostream>

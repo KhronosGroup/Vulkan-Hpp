@@ -101,20 +101,20 @@ namespace vk
         switch ( oldImageLayout )
         {
           case vk::ImageLayout::eTransferDstOptimal: sourceAccessMask = vk::AccessFlagBits::eTransferWrite; break;
-          case vk::ImageLayout::ePreinitialized: sourceAccessMask = vk::AccessFlagBits::eHostWrite; break;
-          case vk::ImageLayout::eGeneral:  // sourceAccessMask is empty
-          case vk::ImageLayout::eUndefined: break;
-          default: assert( false ); break;
+          case vk::ImageLayout::ePreinitialized    : sourceAccessMask = vk::AccessFlagBits::eHostWrite; break;
+          case vk::ImageLayout::eGeneral           :  // sourceAccessMask is empty
+          case vk::ImageLayout::eUndefined         : break;
+          default                                  : assert( false ); break;
         }
 
         vk::PipelineStageFlags sourceStage;
         switch ( oldImageLayout )
         {
           case vk::ImageLayout::eGeneral:
-          case vk::ImageLayout::ePreinitialized: sourceStage = vk::PipelineStageFlagBits::eHost; break;
+          case vk::ImageLayout::ePreinitialized    : sourceStage = vk::PipelineStageFlagBits::eHost; break;
           case vk::ImageLayout::eTransferDstOptimal: sourceStage = vk::PipelineStageFlagBits::eTransfer; break;
-          case vk::ImageLayout::eUndefined: sourceStage = vk::PipelineStageFlagBits::eTopOfPipe; break;
-          default: assert( false ); break;
+          case vk::ImageLayout::eUndefined         : sourceStage = vk::PipelineStageFlagBits::eTopOfPipe; break;
+          default                                  : assert( false ); break;
         }
 
         vk::AccessFlags destinationAccessMask;
@@ -125,24 +125,24 @@ namespace vk
             destinationAccessMask = vk::AccessFlagBits::eDepthStencilAttachmentRead | vk::AccessFlagBits::eDepthStencilAttachmentWrite;
             break;
           case vk::ImageLayout::eGeneral:  // empty destinationAccessMask
-          case vk::ImageLayout::ePresentSrcKHR: break;
+          case vk::ImageLayout::ePresentSrcKHR        : break;
           case vk::ImageLayout::eShaderReadOnlyOptimal: destinationAccessMask = vk::AccessFlagBits::eShaderRead; break;
-          case vk::ImageLayout::eTransferSrcOptimal: destinationAccessMask = vk::AccessFlagBits::eTransferRead; break;
-          case vk::ImageLayout::eTransferDstOptimal: destinationAccessMask = vk::AccessFlagBits::eTransferWrite; break;
-          default: assert( false ); break;
+          case vk::ImageLayout::eTransferSrcOptimal   : destinationAccessMask = vk::AccessFlagBits::eTransferRead; break;
+          case vk::ImageLayout::eTransferDstOptimal   : destinationAccessMask = vk::AccessFlagBits::eTransferWrite; break;
+          default                                     : assert( false ); break;
         }
 
         vk::PipelineStageFlags destinationStage;
         switch ( newImageLayout )
         {
-          case vk::ImageLayout::eColorAttachmentOptimal: destinationStage = vk::PipelineStageFlagBits::eColorAttachmentOutput; break;
+          case vk::ImageLayout::eColorAttachmentOptimal       : destinationStage = vk::PipelineStageFlagBits::eColorAttachmentOutput; break;
           case vk::ImageLayout::eDepthStencilAttachmentOptimal: destinationStage = vk::PipelineStageFlagBits::eEarlyFragmentTests; break;
-          case vk::ImageLayout::eGeneral: destinationStage = vk::PipelineStageFlagBits::eHost; break;
-          case vk::ImageLayout::ePresentSrcKHR: destinationStage = vk::PipelineStageFlagBits::eBottomOfPipe; break;
-          case vk::ImageLayout::eShaderReadOnlyOptimal: destinationStage = vk::PipelineStageFlagBits::eFragmentShader; break;
-          case vk::ImageLayout::eTransferDstOptimal:
-          case vk::ImageLayout::eTransferSrcOptimal: destinationStage = vk::PipelineStageFlagBits::eTransfer; break;
-          default: assert( false ); break;
+          case vk::ImageLayout::eGeneral                      : destinationStage = vk::PipelineStageFlagBits::eHost; break;
+          case vk::ImageLayout::ePresentSrcKHR                : destinationStage = vk::PipelineStageFlagBits::eBottomOfPipe; break;
+          case vk::ImageLayout::eShaderReadOnlyOptimal        : destinationStage = vk::PipelineStageFlagBits::eFragmentShader; break;
+          case vk::ImageLayout::eTransferDstOptimal           :
+          case vk::ImageLayout::eTransferSrcOptimal           : destinationStage = vk::PipelineStageFlagBits::eTransfer; break;
+          default                                             : assert( false ); break;
         }
 
         vk::ImageAspectFlags aspectMask;
@@ -246,9 +246,9 @@ namespace vk
         vk::raii::Buffer       buffer       = nullptr;
 #if !defined( NDEBUG )
       private:
-        vk::DeviceSize          m_size;
-        vk::BufferUsageFlags    m_usage;
-        vk::MemoryPropertyFlags m_propertyFlags;
+        vk::DeviceSize          m_size          = 0;
+        vk::BufferUsageFlags    m_usage         = {};
+        vk::MemoryPropertyFlags m_propertyFlags = {};
 #endif
       };
 
@@ -342,7 +342,7 @@ namespace vk
 
           vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
           vk::Extent2D               swapchainExtent;
-          if ( surfaceCapabilities.currentExtent.width == (std::numeric_limits<uint32_t>::max)() )
+          if ( surfaceCapabilities.currentExtent.width == ( std::numeric_limits<uint32_t>::max )() )
           {
             // If the surface size is undefined, the size is set to the size of the images requested.
             swapchainExtent.width  = vk::su::clamp( extent.width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width );
@@ -364,7 +364,7 @@ namespace vk
           vk::PresentModeKHR         presentMode = vk::su::pickPresentMode( physicalDevice.getSurfacePresentModesKHR( surface ) );
           vk::SwapchainCreateInfoKHR swapChainCreateInfo( {},
                                                           surface,
-                                                          vk::su::clamp( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
+                                                          vk::su::clampSurfaceImageCount( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
                                                           colorFormat,
                                                           surfaceFormat.colorSpace,
                                                           swapchainExtent,
@@ -509,7 +509,7 @@ namespace vk
                                                                             vk::raii::SurfaceKHR const &     surface )
       {
         std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-        assert( queueFamilyProperties.size() < (std::numeric_limits<uint32_t>::max)() );
+        assert( queueFamilyProperties.size() < ( std::numeric_limits<uint32_t>::max )() );
 
         uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( queueFamilyProperties );
         if ( physicalDevice.getSurfaceSupportKHR( graphicsQueueFamilyIndex, surface ) )
@@ -896,5 +896,5 @@ namespace vk
       }
 
     }  // namespace su
-  }    // namespace raii
+  }  // namespace raii
 }  // namespace vk

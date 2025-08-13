@@ -556,12 +556,23 @@ endfunction()
 
 if( VULKAN_HPP_SAMPLES_BUILD OR VULKAN_HPP_TESTS_BUILD )
 	# external libraries
-	add_subdirectory( glm )
-	set( GLFW_BUILD_EXAMPLES OFF )
-	set( GLFW_BUILD_TESTS OFF )
-	add_subdirectory( glfw )
-	set( ENABLE_OPT OFF ) # could use ALLOW_EXTERNAL_SPIRV_TOOLS=ON instead
-	add_subdirectory( glslang )
+	find_package( glm QUIET )
+	if( NOT glm_FOUND )
+		add_subdirectory( glm )
+	endif()
+
+	find_package( glfw3 QUIET )
+	if( NOT glfw3_FOUND )
+		set( GLFW_BUILD_EXAMPLES OFF )
+		set( GLFW_BUILD_TESTS OFF )
+		add_subdirectory( glfw )
+	endif()
+
+	find_package( glslang QUIET )
+	if( NOT glslang_FOUND )
+		set( ENABLE_OPT OFF ) # could use ALLOW_EXTERNAL_SPIRV_TOOLS=ON instead
+		add_subdirectory( glslang )
+	endif()
 
 	add_subdirectory( samples/utils )
 	add_subdirectory( RAII_Samples/utils )

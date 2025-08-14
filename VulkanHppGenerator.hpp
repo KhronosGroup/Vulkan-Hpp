@@ -96,6 +96,7 @@ public:
   VulkanHppGenerator & operator=( VulkanHppGenerator && rhs )      = delete;
 
   void distributeSecondLevelCommands();
+  void generateCppmFile() const;
   void generateEnumsHppFile() const;
   void generateExtensionInspectionFile() const;
   void generateFormatTraitsHppFile() const;
@@ -109,7 +110,6 @@ public:
   void generateStaticAssertionsHppFile() const;
   void generateStructsHppFile() const;
   void generateToStringHppFile() const;
-  void generateCppModuleFile() const;
   void prepareRAIIHandles();
 
   struct MacroData

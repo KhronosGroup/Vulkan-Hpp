@@ -57,6 +57,8 @@ The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan
 	- [VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE](#default_dispatch_loader_dynamic_storage)
 	- [VULKAN_HPP_DISABLE_ENHANCED_MODE](#disable_enhanced_mode)
 	- [VULKAN_HPP_DISPATCH_LOADER_DYNAMIC](#dispatch_loader_dynamic)
+	- [VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE](#dispatch_loader_dynamic_type)
+	- [VULKAN_HPP_DISPATCH_LOADER_STATIC_TYPE](#dispatch_loader_static_type)
 	- [VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL](#enable_dynamic_loader_tool)
 	- [VULKAN_HPP_EXPECTED](#expected)
 	- [VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC](#flags_mask_type_as_public)
@@ -956,7 +958,7 @@ You can use your own default dispatcher by setting `VULKAN_HPP_DEFAULT_DISPATCHE
 
 #### VULKAN_HPP_DEFAULT_DISPATCHER_TYPE <a id='default_dispatcher_type'>
 
-This names the default dispatcher type, as specified by `VULKAN_HPP_DEFAULT_DISPATCHER`. Per default, it is `vk::detail::DispatchLoaderDynamic` or `vk::detail::DispatchLoaderStatic`, depending on `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` being `1` or not `1`, respectively. If you explicitly set `VULKAN_HPP_DEFAULT_DISPATCHER`, you need to set `VULKAN_HPP_DEFAULT_DISPATCHER_TYPE` accordingly as well.
+This names the default dispatcher type, as specified by `VULKAN_HPP_DEFAULT_DISPATCHER`. Per default, it is `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE` or `VULKAN_HPP_DISPATCH_LOADER_STATIC_TYPE`, depending on `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` being `1` or not `1`, respectively. If you explicitly set `VULKAN_HPP_DEFAULT_DISPATCHER`, you need to set `VULKAN_HPP_DEFAULT_DISPATCHER_TYPE` accordingly as well.
 
 #### VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE <a id='default_dispatch_loader_dynamic_storage'>
 
@@ -980,6 +982,14 @@ If this is not defined, you additionally get:
 #### VULKAN_HPP_DISPATCH_LOADER_DYNAMIC <a id='dispatch_loader_dynamic'>
 
 This either selects the dynamic (when it's `1`) or the static (when it's not `1`) DispatchLoader as the default one, as long as it's not explicitly specified by `VULKAN_HPP_DEFAULT_DISPATCHER`. By default, this is defined to be `1` if `VK_NO_PROTOTYPES` is defined, otherwise `0`.
+
+#### VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE <a id='dispatch_loader_dynamic_type'>
+
+The type of the dynamic dispatch loader. By default, it's vk::detail::DispatchLoaderDynamic. You can define this before including vulkan.hpp to use your own dynamic dispatcher.
+
+#### VULKAN_HPP_DISPATCH_LOADER_STATIC_TYPE <a id='dispatch_loader_static_type'>
+
+The type of the static dispatch loader. By default, it's vk::detail::DispatchLoaderStatic. You can define this before including vulkan.hpp to use your own static dispatcher.
 
 #### VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL <a id='enable_dynamic_loader_tool'>
 

@@ -17,8 +17,6 @@ jobs:
       matrix:
         os: [windows-2022, windows-2025]
         architecture: [x86, x64]
-        cpp_standard: [11, 14, 17, 20, 23]
-        build_type: [Debug, Release]
 
     steps:
     - uses: actions/checkout@v4
@@ -30,17 +28,92 @@ jobs:
       with:
         arch: ${{matrix.architecture}}
         
-    - name: Build
+    # - name: Install glm, glfw and glslang
+    #   run: |
+    #     cd glm 
+    #     cmake -B build                               \
+    #       -D CMAKE_CXX_STANDARD=11                   \
+    #       -D CMAKE_BUILD_TYPE=Release                \
+    #       -D GLM_BUILD_LIBRARY=ON                    \
+    #       -D GLM_BUILD_INSTALL=ON                    \
+    #       -D GLM_BUILD_TESTS=OFF
+    #     cmake --build build --parallel
+    #     cmake --install build
+
+    #     cd ../glfw
+    #     cmake -B build                               \
+    #       -D CMAKE_CXX_STANDARD=11                   \
+    #       -D CMAKE_BUILD_TYPE=Release                \
+    #       -D GLFW_BUILD_EXAMPLES=OFF                 \
+    #       -D GLFW_BUILD_TESTS=OFF                    \
+    #       -D GLFW_BUILD_DOCS=OFF                     \
+    #       -D GLFW_INSTALL=ON
+    #     cmake --build build --parallel
+    #     cmake --install build
+
+    #     cd ../glslang
+    #     cmake -B build                               \
+    #       -D CMAKE_CXX_STANDARD=11                   \
+    #       -D CMAKE_BUILD_TYPE=Release                \
+    #       -D ENABLE_OPT=OFF                          \
+    #       -D GLSLANG_TESTS_DEFAULT=OFF               \
+    #       -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
+    #     cmake --build build --parallel
+    #     cmake --install build
+    #     cd ..
+
+    - name: Generate headers
       run: |
-        modules_flag=${{(contains(fromJSON('["windows-2019"]'), matrix.os) || matrix.cpp_standard < 20) && 'OFF' || 'ON'}}
-        cmake -B build/${{matrix.cpp_standard}}/${{matrix.build_type}} \
-          -DVULKAN_HPP_SAMPLES_BUILD=ON                                \
-          -DVULKAN_HPP_TESTS_BUILD=ON                                  \
-          -DVULKAN_HPP_ENABLE_CPP20_MODULES=$modules_flag              \
-          -DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                      \
-          -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON                  \
-          -DVULKAN_HPP_PRECOMPILE=OFF                                  \
-          -DVULKAN_HPP_RUN_GENERATOR=ON                                \
-          -DCMAKE_CXX_STANDARD=${{matrix.cpp_standard}}                \
-          -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
-        cmake --build build/${{matrix.cpp_standard}}/${{matrix.build_type}} --parallel
+        cmake -B build                                 \
+          -D VULKAN_HPP_GENERATOR_BUILD=ON             \
+          -D VULKAN_HPP_RUN_GENERATOR=OFF              \
+          -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
+          -D VULKAN_HPP_TESTS_BUILD=OFF                \
+          -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF       \
+          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
+          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
+          -D VULKAN_HPP_PRECOMPILE=OFF                 \
+          -D CMAKE_CXX_STANDARD=20                     \
+          -D CMAKE_BUILD_TYPE=Debug
+        cmake --build build --parallel
+
+        cmake -B build --fresh                         \
+          -D VULKAN_HPP_GENERATOR_BUILD=ON             \
+          -D VULKAN_HPP_RUN_GENERATOR=ON               \
+          -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
+          -D VULKAN_HPP_TESTS_BUILD=OFF                \
+          -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF       \
+          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
+          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
+          -D VULKAN_HPP_PRECOMPILE=OFF                 \
+          -D CMAKE_CXX_STANDARD=20                     \
+          -D CMAKE_BUILD_TYPE=Release
+        cmake --build build --parallel --clean-first
+
+    - name: Build samples and tests
+      run: |
+        for CXX_STANDARD in 11 14 17 20 23; do
+          for BUILD_TYPE in Debug Release; do
+            CXX_MODULES=ON
+            if [ ${{matrix.compiler}} == "windows-2019" ] || [ $CXX_STANDARD -lt 20 ]; then
+              CXX_MODULES=OFF
+            fi
+
+            echo "================================================================================="
+            echo "Building C++$CXX_STANDARD in $BUILD_TYPE with architecture ${{matrix.architecture}}"
+            echo "================================================================================="
+
+            cmake -B build --fresh                            \
+              -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
+              -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
+              -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
+              -D VULKAN_HPP_TESTS_BUILD=ON                    \
+              -D VULKAN_HPP_ENABLE_CPP20_MODULES=$CXX_MODULES \
+              -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
+              -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
+              -D VULKAN_HPP_PRECOMPILE=OFF                    \
+              -D CMAKE_CXX_STANDARD=$CXX_STANDARD             \
+              -D CMAKE_BUILD_TYPE=$BUILD_TYPE
+            cmake --build build --parallel --clean-first
+          done
+        done

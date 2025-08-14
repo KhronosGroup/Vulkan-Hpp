@@ -25,6 +25,7 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include <array>
 #include <vector>
 #include <cassert>
 #include <iostream>

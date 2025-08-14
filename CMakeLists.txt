@@ -530,12 +530,16 @@ function( vulkan_hpp__setup_test )
 		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_test" )
 	endif()
 
+	set( CPP_FILE ${TARGET_NAME}.cpp )
+	if ( TARGET_CXX_MODULE )
+		set( TARGET_NAME ${TARGET_NAME}_module )
+	endif()
+
 	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
+	add_executable( ${TARGET_NAME} ${CPP_FILE} )
 
 	# use a variant for the module version
 	if( TARGET_CXX_MODULE )
-		add_executable( ${TARGET_NAME}_module ${TARGET_NAME}.cpp )
-		set( TARGET_NAME ${TARGET_NAME}_module )
 		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
 
 		# set up new vulkan module when custom compile definitions are needed
@@ -545,6 +549,7 @@ function( vulkan_hpp__setup_test )
 				FILE_SET_NAME vulkan_module_file
 				FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm" ) # TODO: respect VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP
 			target_compile_definitions( ${TARGET_NAME}_VulkanHppModule PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
+			set_target_properties( ${TARGET_NAME}_VulkanHppModule PROPERTIES CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
 			target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_NAME}_VulkanHppModule )
 		else()
 			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::HppModule )
@@ -552,7 +557,6 @@ function( vulkan_hpp__setup_test )
 		# set macro to hint usage of the vulkan module, it is up to the test source file to respect this
 		target_compile_definitions( ${TARGET_NAME} PUBLIC VULKAN_HPP_USE_CXX_MODULE )
 	else()
-		add_executable( ${TARGET_NAME} ${TARGET_NAME}.cpp )
 		vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
 		target_compile_definitions( ${TARGET_NAME} PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
 	endif()

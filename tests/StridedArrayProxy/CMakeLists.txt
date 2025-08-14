@@ -13,3 +13,6 @@
 # limitations under the License.
 
 vulkan_hpp__setup_test( NAME StridedArrayProxy )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    # vulkan_hpp__setup_test( NAME StridedArrayProxy CXX_MODULE ) # error with gcc15 about array proxy lifetime extension
+endif()

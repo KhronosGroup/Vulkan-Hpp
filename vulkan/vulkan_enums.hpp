@@ -12,6 +12,9 @@
 // IWYU pragma: private; include "vulkan.hpp"
 
 #include <type_traits>  // for std::underlying_type
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+#  include <compare>  // for std::partial_ordering (<=> operator)
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {

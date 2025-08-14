@@ -17,7 +17,6 @@
 
 // for test purposes, define this to allow access to Flags::m_mask
 // You should not use that in production code!!
-#define VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC
 
 // in this test, we ignore some warnings
 // You should not do that in production code !!
@@ -27,7 +26,14 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <vulkan/vulkan.hpp>
+#include <cassert>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+# include <compare> // necessary due to MSVC "design": https://developercommunity.visualstudio.com/t/Template-exports-requiring-importing-of-/1425979#T-N1435887
+# include <vulkan/vulkan_core.h>
+  import vulkan_hpp;
+#else
+# include <vulkan/vulkan.hpp>
+#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

@@ -23,11 +23,24 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include "vulkan/vulkan_hash.hpp"
 
 #include <iostream>
 #include <unordered_map>
 #include <unordered_set>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+  #include <vulkan/vulkan_hpp_macros.hpp>
+  import vulkan_hpp;
+#else
+# include "vulkan/vulkan_hash.hpp"
+#endif
+
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+namespace vk {
+  namespace detail {
+    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+  }
+}
+#endif
 
 static char const * AppName    = "Hash";
 static char const * EngineName = "Vulkan.hpp";
@@ -37,7 +50,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   try
   {
     {
-      vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+      vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, vk::ApiVersion11 );
       vk::UniqueInstance  instance = vk::createInstanceUnique( vk::InstanceCreateInfo( {}, &appInfo ) );
 
       auto h1 = std::hash<vk::Instance>{}( *instance );

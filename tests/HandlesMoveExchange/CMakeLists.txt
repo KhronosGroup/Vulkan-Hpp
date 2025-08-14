@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-find_package( Vulkan QUIET )
-if ( Vulkan_FOUND )
-	vulkan_hpp__setup_test( NAME HandlesMoveExchange LIBRARIES ${Vulkan_LIBRARIES} )
+vulkan_hpp__setup_test( NAME HandlesMoveExchange COMPILE_DEFINITIONS VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    vulkan_hpp__setup_test( NAME HandlesMoveExchange CXX_MODULE COMPILE_DEFINITIONS VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
 endif()

@@ -15,9 +15,20 @@
 // VulkanHpp Samples : ArrayWrapper
 //                     Compile test on using vk::ArrayWrapper1D
 
-#include <iostream>
 #include <string>
-#include <vulkan/vulkan.hpp>
+#include <cassert>
+#include <iostream>
+
+#include <vulkan/vulkan_hpp_macros.hpp>
+#if 17 <= VULKAN_HPP_CPP_VERSION
+# include <string_view>
+#endif
+
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+  import vulkan_hpp;
+#else
+# include <vulkan/vulkan.hpp>
+#endif
 
 void f( std::string const & s )
 {

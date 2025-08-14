@@ -12,13 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#undef VULKAN_HPP_DISPATCH_LOADER_DYNAMIC
-#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 0
-
-#define VULKAN_HPP_HANDLES_MOVE_EXCHANGE
-
+#include <cassert>
 #include <iostream>
-#include <vulkan/vulkan.hpp>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+  import vulkan_hpp;
+#else
+# include <vulkan/vulkan.hpp>
+#endif
+
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+namespace vk {
+  namespace detail {
+    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+  }
+}
+#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

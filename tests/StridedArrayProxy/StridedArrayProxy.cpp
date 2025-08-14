@@ -25,10 +25,13 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include <cassert>
 #include <iostream>
-#include <vulkan/vulkan.hpp>
-#if ( 20 <= VULKAN_HPP_CPP_VERSION )
-#  include <span>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+# include <vulkan/vulkan_hpp_macros.hpp>
+  import vulkan_hpp;
+#else
+# include "vulkan/vulkan.hpp"
 #endif
 
 void fct( vk::StridedArrayProxy<int> /*ap*/ ) {}

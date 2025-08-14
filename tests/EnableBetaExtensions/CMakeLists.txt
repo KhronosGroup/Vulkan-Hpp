@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if( NOT VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC )
-	vulkan_hpp__setup_test( NAME EnableBetaExtensions )
+vulkan_hpp__setup_test( NAME EnableBetaExtensions COMPILE_DEFINITIONS VK_ENABLE_BETA_EXTENSIONS )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    vulkan_hpp__setup_test( NAME EnableBetaExtensions CXX_MODULE COMPILE_DEFINITIONS VK_ENABLE_BETA_EXTENSIONS )
 endif()

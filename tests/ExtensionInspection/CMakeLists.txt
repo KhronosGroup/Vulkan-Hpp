@@ -12,4 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME ExtensionInspection CXX_STANDARD 20 )
+vulkan_hpp__setup_test( NAME ExtensionInspection )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+    # vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE ) # module currently has no way to access the extension inspection symbols
+endif()

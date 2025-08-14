@@ -16,9 +16,15 @@
 //                     Compile test with VULKAN_HPP_NO_EXCEPTIONS set and using raii-classes
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
-#define VULKAN_HPP_NO_EXCEPTIONS
-
-#include <vulkan/vulkan_raii.hpp>
+#include <vector>
+#include <cassert>
+#include <cstdint>
+#include <algorithm>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+  import vulkan_hpp;
+#else
+# include "vulkan/vulkan_raii.hpp"
+#endif
 
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
@@ -28,7 +34,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 #if defined( VULKAN_HPP_NO_EXCEPTIONS )
   vk::raii::Context context;
 
-  vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+  vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, vk::ApiVersion11 );
   auto                instance = context.createInstance( { {}, &appInfo } );
   assert( instance.has_value() );
 

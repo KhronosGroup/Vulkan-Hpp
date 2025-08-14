@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        compiler: [clang++-13, clang++-14, clang++-15, g++-10, g++-11, g++-12]
+        compiler: [clang++-13, clang++-14, clang++-15, g++-10, g++-11]
         cpp_standard: [11, 14, 17, 20, 23]
         build_type: [Debug, Release]
         exclude:

@@ -18,9 +18,13 @@
 #include <string>
 #include <cassert>
 #include <iostream>
-#include <string_view>
+
+#include <vulkan/vulkan_hpp_macros.hpp>
+#if 17 <= VULKAN_HPP_CPP_VERSION
+# include <string_view>
+#endif
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-# include <vulkan/vulkan_hpp_macros.hpp>
   import vulkan_hpp;
 #else
 # include <vulkan/vulkan.hpp>

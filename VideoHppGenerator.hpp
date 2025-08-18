@@ -25,8 +25,8 @@ class VideoHppGenerator
 public:
   VideoHppGenerator( tinyxml2::XMLDocument const & document );
 
+  void generateCppmFile() const;
   void generateHppFile() const;
-  void generateCppModuleFile() const;
 
 private:
   struct ConstantData

@@ -22,33 +22,36 @@
 #include <mutex>
 #include <regex>
 #include <set>
+#include <sstream>
 #include <string>
 #include <tinyxml2.h>
 #include <vector>
 
 struct TypeInfo;
 
-void                               checkAttributes( std::string const &                                  intro,
-                                                    int                                                  line,
-                                                    std::map<std::string, std::string> const &           attributes,
-                                                    std::map<std::string, std::set<std::string>> const & required,
-                                                    std::map<std::string, std::set<std::string>> const & optional );
-void                               checkElements( std::string const &                               intro,
-                                                  int                                               line,
-                                                  std::vector<tinyxml2::XMLElement const *> const & elements,
-                                                  std::map<std::string, bool> const &               required,
-                                                  std::set<std::string> const &                     optional = {} );
-void                               checkForError( std::string const & intro, bool condition, int line, std::string const & message );
-void                               checkForWarning( std::string const & intro, bool condition, int line, std::string const & message );
-std::string                        generateCopyrightMessage( std::string const & comment );
-std::string                        generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes );
+void        checkAttributes( std::string const &                                  intro,
+                             int                                                  line,
+                             std::map<std::string, std::string> const &           attributes,
+                             std::map<std::string, std::set<std::string>> const & required,
+                             std::map<std::string, std::set<std::string>> const & optional );
+void        checkElements( std::string const &                               intro,
+                           int                                               line,
+                           std::vector<tinyxml2::XMLElement const *> const & elements,
+                           std::map<std::string, bool> const &               required,
+                           std::set<std::string> const &                     optional = {} );
+void        checkForError( std::string const & intro, bool condition, int line, std::string const & message );
+void        checkForWarning( std::string const & intro, bool condition, int line, std::string const & message );
+std::string generateCopyrightMessage( std::string const & comment );
+void        generateFileFromTemplate( std::string const & fileName, std::string const & snippetFile, std::map<std::string, std::string> const & replacements );
+std::string generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes );
 std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element );
 template <typename ElementContainer>
 std::vector<tinyxml2::XMLElement const *>        getChildElements( ElementContainer const * element );
 std::string                                      readComment( std::string const & intro, tinyxml2::XMLElement const * element );
 std::pair<std::vector<std::string>, std::string> readModifiers( std::string const & intro, tinyxml2::XMLNode const * node );
+std::string                                      readSnippet( std::string const & snippetFile );
 TypeInfo                                         readTypeInfo( tinyxml2::XMLElement const * element );
-std::string                                      replaceWithMap( std::string const & input, std::map<std::string, std::string> replacements );
+std::string                                      replaceWithMap( std::string const & input, std::map<std::string, std::string> const & replacements );
 std::string                                      stripPostfix( std::string const & value, std::string const & postfix );
 std::string                                      stripPrefix( std::string const & value, std::string const & prefix );
 std::string                                      toCamelCase( std::string const & value, bool keepSeparatedNumbersSeparated = false );
@@ -272,6 +275,13 @@ inline std::string generateCopyrightMessage( std::string const & comment )
   return trim( copyrightMessage ) + "\n";
 }
 
+inline void generateFileFromTemplate( std::string const & fileName, std::string const & snippetFile, std::map<std::string, std::string> const & replacements )
+{
+  std::string const completeFileName = std::string( BASE_PATH ) + "/vulkan/" + fileName;
+  messager.message( "VulkanHppGenerator: Generating " + completeFileName + " ...\n" );
+  writeToFile( replaceWithMap( readSnippet( snippetFile ), replacements ), completeFileName );
+}
+
 inline std::string generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes )
 {
   std::string arrayString = "ArrayWrapper" + std::to_string( sizes.size() ) + "D<" + type;
@@ -358,6 +368,15 @@ inline std::pair<std::vector<std::string>, std::string> readModifiers( std::stri
   return { arraySizes, bitCount };
 }
 
+inline std::string readSnippet( std::string const & snippetFile )
+{
+  std::ifstream ifs( std::string( BASE_PATH ) + "/snippets/" + snippetFile );
+  assert( !ifs.fail() );
+  std::ostringstream oss;
+  oss << ifs.rdbuf();
+  return oss.str();
+}
+
 inline TypeInfo readTypeInfo( tinyxml2::XMLElement const * element )
 {
   TypeInfo                  typeInfo;
@@ -375,7 +394,7 @@ inline TypeInfo readTypeInfo( tinyxml2::XMLElement const * element )
   return typeInfo;
 }
 
-inline std::string replaceWithMap( std::string const & input, std::map<std::string, std::string> replacements )
+inline std::string replaceWithMap( std::string const & input, std::map<std::string, std::string> const & replacements )
 {
   // This will match ${someVariable} and contain someVariable in match group 1
   std::regex re( R"(\$\{([^\}]+)\})" );

@@ -21,8 +21,8 @@
 #include <cassert>
 #include <fstream>
 #include <future>
+#include <numeric>
 #include <regex>
-#include <sstream>
 
 using namespace std::literals;
 
@@ -37,22 +37,18 @@ namespace
   typename std::map<std::string, T>::iterator findByNameOrAlias( std::map<std::string, T> & values, std::string const & name );
   template <typename T>
   typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const & values, std::string const & name );
-  template <typename T>
-  typename std::vector<T>::iterator findByNameOrAlias( std::vector<T> & values, std::string const & name );
-  std::string                       generateCArraySizes( std::vector<std::string> const & sizes );
-  std::string                       generateList( std::vector<std::string> const & elements, std::string const & prefix, std::string const & separator );
-  std::string                       generateNoDiscard( bool returnsSomething, bool multiSuccessCodes, bool multiErrorCodes );
-  std::string                       generateStandardArray( std::string const & type, std::vector<std::string> const & sizes );
-  bool                              isAllUpper( std::string const & name );
-  VulkanHppGenerator::MacroData     parseMacro( std::vector<std::string> const & completeMacro );
-  std::string                       readSnippet( std::string const & snippetFile );
-  std::string                       startLowerCase( std::string const & input );
-  std::string                       startUpperCase( std::string const & input );
-  std::vector<std::string>          tokenizeAny( std::string const & tokenString, std::string const & separators );
+  std::string                             generateCArraySizes( std::vector<std::string> const & sizes );
+  std::string                             generateList( std::vector<std::string> const & elements, std::string const & prefix, std::string const & separator );
+  std::string                             generateNoDiscard( bool returnsSomething, bool multiSuccessCodes, bool multiErrorCodes );
+  std::string                             generateStandardArray( std::string const & type, std::vector<std::string> const & sizes );
+  bool                                    isUpperCase( std::string const & name );
+  VulkanHppGenerator::MacroData           parseMacro( std::vector<std::string> const & completeMacro );
+  std::string                             startLowerCase( std::string const & input );
+  std::string                             startUpperCase( std::string const & input );
+  std::vector<std::string>                tokenizeAny( std::string const & tokenString, std::string const & separators );
 }  // namespace
 
-void writeToFile( std::string const & str, std::string const & fileName );
-
+// Some types come in as non-const pointers, but are meant as const-pointers
 const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window", "VkExportMetalObjectsInfoEXT" };
 
 //
@@ -68,7 +64,6 @@ VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document, 
   const int                                 line     = document.GetLineNum();
   std::vector<tinyxml2::XMLElement const *> elements = getChildElements( &document );
   checkElements( line, elements, { { "registry", true } } );
-  checkForError( elements.size() == 1, line, "encountered " + std::to_string( elements.size() ) + " elements named <registry> but only one is allowed" );
   readRegistry( elements[0] );
   filterLenMembers();
   checkCorrectness();
@@ -93,247 +88,145 @@ VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document, 
 void VulkanHppGenerator::distributeSecondLevelCommands()
 {
   // distribute commands from instance/device to second-level handles, like Queue, Event,... for RAII handles
-  for ( auto & handle : m_handles )
+  assert( !m_handles.empty() && m_handles.begin()->first.empty() );  // the first "handle" is the empty one
+  for ( auto handleIt = std::next( m_handles.begin() ); handleIt != m_handles.end(); ++handleIt )
   {
-    if ( !handle.first.empty() )
+    for ( auto command = handleIt->second.commands.begin(); command != handleIt->second.commands.end(); )
     {
-      for ( auto command = handle.second.commands.begin(); command != handle.second.commands.end(); )
+      bool foundCommand = false;
+      if ( !m_RAIISpecialFunctions.contains( *command ) )
       {
-        bool foundCommand = false;
-        if ( !m_RAIISpecialFunctions.contains( *command ) )
+        auto commandIt = findByNameOrAlias( m_commands, *command );
+        assert( commandIt != m_commands.end() );
+        assert( commandIt->second.params.front().type.type == handleIt->first );
+        if ( ( 1 < commandIt->second.params.size() ) && ( isHandleType( commandIt->second.params[1].type.type ) ) && !commandIt->second.params[1].optional )
         {
-          auto commandIt = findByNameOrAlias( m_commands, *command );
-          assert( commandIt != m_commands.end() );
-          assert( commandIt->second.params.front().type.type == handle.first );
-          if ( ( 1 < commandIt->second.params.size() ) && ( isHandleType( commandIt->second.params[1].type.type ) ) && !commandIt->second.params[1].optional )
+          auto secondLevelHandleIt = m_handles.find( commandIt->second.params[1].type.type );
+          assert( secondLevelHandleIt != m_handles.end() );
+          // filter out functions that seem to fit due to taking handles as first and second argument, but the first argument is not the
+          // type to create the second one, and so it's unknown to the raii handle!
+          assert( !secondLevelHandleIt->second.constructorIts.empty() );
+          if ( ( *secondLevelHandleIt->second.constructorIts.begin() )->second.handle == handleIt->first )
           {
-            auto handleIt = m_handles.find( commandIt->second.params[1].type.type );
-            assert( handleIt != m_handles.end() );
-            // filter out functions seem to fit due to taking handles as first and second argument, but the first argument is not the
-            // type to create the second one, and so it's unknown to the raii handle!
-            assert( !handleIt->second.constructorIts.empty() );
-            if ( ( *handleIt->second.constructorIts.begin() )->second.handle == handle.first )
-            {
-              assert( std::ranges::none_of( handleIt->second.constructorIts,
-                                            [&handle]( auto const & constructorIt ) { return constructorIt->second.handle != handle.first; } ) );
-              handleIt->second.secondLevelCommands.insert( *command );
-              command      = handle.second.commands.erase( command );
-              foundCommand = true;
-            }
+            assert( std::ranges::none_of( secondLevelHandleIt->second.constructorIts,
+                                          [handleIt]( auto const & constructorIt ) { return constructorIt->second.handle != handleIt->first; } ) );
+            secondLevelHandleIt->second.secondLevelCommands.insert( *command );
+            command      = handleIt->second.commands.erase( command );
+            foundCommand = true;
           }
         }
-        if ( !foundCommand )
-        {
-          ++command;
-        }
+      }
+      if ( !foundCommand )
+      {
+        ++command;
       }
     }
   }
 }
 
+void VulkanHppGenerator::generateCppmFile() const
+{
+  generateFileFromTemplate( m_api + ".cppm",
+                            "CppmTemplate.hpp",
+                            { { "api", m_api },
+                              { "hashSpecializations", generateCppModuleHashSpecializations() },
+                              { "licenseHeader", m_vulkanLicenseHeader },
+                              { "raiiUsings", generateCppModuleRaiiUsings() },
+                              { "usings", generateCppModuleUsings() },
+                              { "pfnCommands", generateCppModuleCommands() } } );
+}
+
 void VulkanHppGenerator::generateEnumsHppFile() const
 {
-  std::string const vulkan_enums_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_enums.hpp";
-  messager.message( "VulkanHppGenerator: Generating " + vulkan_enums_hpp + " ...\n" );
-
-  std::string const vulkanEnumsHppTemplate = R"(${licenseHeader}
-#ifndef VULKAN_ENUMS_HPP
-#  define VULKAN_ENUMS_HPP
-
-// include-what-you-use: make sure, vulkan.hpp is used by code-completers
-// IWYU pragma: private; include "vulkan.hpp"
-
-#include <type_traits>    // for std::underlying_type
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-# include <compare>       // for std::partial_ordering (<=> operator)
-#endif
-
-namespace VULKAN_HPP_NAMESPACE
-{
-${Flags}
-
-${enums}
-${objectTypeToDebugReportObjectType}
-}   // namespace VULKAN_HPP_NAMESPACE
-#endif
-)";
-
-  std::string str = replaceWithMap( vulkanEnumsHppTemplate,
-                                    { { "enums", generateEnums() },
-                                      { "Flags", readSnippet( "Flags.hpp" ) },
-                                      { "licenseHeader", m_vulkanLicenseHeader },
-                                      { "objectTypeToDebugReportObjectType", generateObjectTypeToDebugReportObjectType() } } );
-
-  writeToFile( str, vulkan_enums_hpp );
+  generateFileFromTemplate( m_api + "_enums.hpp",
+                            "EnumsHppTemplate.hpp",
+                            { { "enums", generateEnums() },
+                              { "Flags", readSnippet( "Flags.hpp" ) },
+                              { "licenseHeader", m_vulkanLicenseHeader },
+                              { "objectTypeToDebugReportObjectType", generateObjectTypeToDebugReportObjectType() } } );
 }
 
 void VulkanHppGenerator::generateExtensionInspectionFile() const
 {
-  std::string const vulkan_extension_inspection_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_extension_inspection.hpp";
-  messager.message( "VulkanHppGenerator: Generating " + vulkan_extension_inspection_hpp + " ...\n" );
-
-  std::string const vulkanExtensionInspectionHppTemplate = readSnippet( "ExtensionInspection.hpp" );
-  std::string const deprecatedExtensions = generateReplacedExtensionsList( []( ExtensionData const & extension ) { return extension.isDeprecated; },
-                                                                           []( ExtensionData const & extension ) { return extension.deprecatedBy; } );
-  std::string const deprecatedBy         = generateExtensionReplacedBy( []( ExtensionData const & extension ) { return extension.isDeprecated; },
-                                                                []( ExtensionData const & extension ) { return extension.deprecatedBy; } );
-  std::string const obsoletedBy          = generateExtensionReplacedBy( []( ExtensionData const & extension ) { return !extension.obsoletedBy.empty(); },
-                                                               []( ExtensionData const & extension ) { return extension.obsoletedBy; } );
-  std::string const obsoletedExtensions  = generateReplacedExtensionsList( []( ExtensionData const & extension ) { return !extension.obsoletedBy.empty(); },
-                                                                          []( ExtensionData const & extension ) { return extension.obsoletedBy; } );
-  std::string const promotedExtensions   = generateReplacedExtensionsList( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); },
-                                                                         []( ExtensionData const & extension ) { return extension.promotedTo; } );
-  std::string const promotedTo           = generateExtensionReplacedBy( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); },
-                                                              []( ExtensionData const & extension ) { return extension.promotedTo; } );
-
-  std::string versions;
-  for ( auto const & feature : m_features )
-  {
-    versions += "\"" + feature.name + "\", ";
-  }
-  assert( versions.ends_with( ", " ) );
-  versions = versions.substr( 0, versions.length() - 2 );
-
-  std::string str =
-    replaceWithMap( vulkanExtensionInspectionHppTemplate,
-                    { { "api", m_api },
-                      { "deprecatedExtensions", deprecatedExtensions },
-                      { "deviceExtensions", generateExtensionsList( "device" ) },
-                      { "deviceTest", generateExtensionTypeTest( "device" ) },
-                      { "deprecatedBy", deprecatedBy },
-                      { "deprecatedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return extension.isDeprecated; } ) },
-                      { "extensionDependencies", generateExtensionDependencies() },
-                      { "instanceExtensions", generateExtensionsList( "instance" ) },
-                      { "instanceTest", generateExtensionTypeTest( "instance" ) },
-                      { "licenseHeader", m_vulkanLicenseHeader },
-                      { "obsoletedBy", obsoletedBy },
-                      { "obsoletedExtensions", obsoletedExtensions },
-                      { "obsoletedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return !extension.obsoletedBy.empty(); } ) },
-                      { "promotedExtensions", promotedExtensions },
-                      { "promotedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); } ) },
-                      { "promotedTo", promotedTo },
-                      { "versions", versions },
-                      { "voidExtension", ( m_api == "vulkan" ) ? "" : "(void)extension;" } } );
-
-  writeToFile( str, vulkan_extension_inspection_hpp );
+  generateFileFromTemplate(
+    m_api + "_extension_inspection.hpp",
+    "ExtensionInspectionHppTemplate.hpp",
+    { { "api", m_api },
+      { "deprecatedExtensions",
+        generateReplacedExtensionsList( []( ExtensionData const & extension ) { return extension.isDeprecated; },
+                                        []( ExtensionData const & extension ) { return extension.deprecatedBy; } ) },
+      { "deviceExtensions", generateExtensionsList( "device" ) },
+      { "deviceTest", generateExtensionTypeTest( "device" ) },
+      { "deprecatedBy",
+        generateExtensionReplacedBy( []( ExtensionData const & extension ) { return extension.isDeprecated; },
+                                     []( ExtensionData const & extension ) { return extension.deprecatedBy; } ) },
+      { "deprecatedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return extension.isDeprecated; } ) },
+      { "extensionDependencies", generateExtensionDependencies() },
+      { "instanceExtensions", generateExtensionsList( "instance" ) },
+      { "instanceTest", generateExtensionTypeTest( "instance" ) },
+      { "licenseHeader", m_vulkanLicenseHeader },
+      { "obsoletedBy",
+        generateExtensionReplacedBy( []( ExtensionData const & extension ) { return !extension.obsoletedBy.empty(); },
+                                     []( ExtensionData const & extension ) { return extension.obsoletedBy; } ) },
+      { "obsoletedExtensions",
+        generateReplacedExtensionsList( []( ExtensionData const & extension ) { return !extension.obsoletedBy.empty(); },
+                                        []( ExtensionData const & extension ) { return extension.obsoletedBy; } ) },
+      { "obsoletedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return !extension.obsoletedBy.empty(); } ) },
+      { "promotedExtensions",
+        generateReplacedExtensionsList( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); },
+                                        []( ExtensionData const & extension ) { return extension.promotedTo; } ) },
+      { "promotedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); } ) },
+      { "promotedTo",
+        generateExtensionReplacedBy( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); },
+                                     []( ExtensionData const & extension ) { return extension.promotedTo; } ) },
+      { "versions",
+        std::accumulate( std::next( m_features.begin() ),
+                         m_features.end(),
+                         "\"" + m_features[0].name + "\"",
+                         []( std::string const & acc, auto const & feature ) { return acc + ", \"" + feature.name + "\""; } ) },
+      { "voidExtension", ( m_api == "vulkan" ) ? "" : "(void)extension;" } } );
 }
 
 void VulkanHppGenerator::generateFormatTraitsHppFile() const
 {
-  std::string const vulkan_format_traits_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_format_traits.hpp";
-  messager.message( "VulkanHppGenerator: Generating " + vulkan_format_traits_hpp + " ...\n" );
-
-  std::string const vulkanFormatTraitsHppTemplate = R"(${licenseHeader}
-#ifndef VULKAN_FORMAT_TRAITS_HPP
-#  define VULKAN_FORMAT_TRAITS_HPP
-
-#include <vulkan/${api}.hpp>
-
-namespace VULKAN_HPP_NAMESPACE
-{
-${formatTraits}
-}   // namespace VULKAN_HPP_NAMESPACE
-#endif
-)";
-
-  std::string str = replaceWithMap( vulkanFormatTraitsHppTemplate,
-                                    { { "api", m_api }, { "formatTraits", generateFormatTraits() }, { "licenseHeader", m_vulkanLicenseHeader } } );
-
-  writeToFile( str, vulkan_format_traits_hpp );
+  generateFileFromTemplate( m_api + "_format_traits.hpp",
+                            "FormatTraitsHppTemplate.hpp",
+                            { { "api", m_api }, { "formatTraits", generateFormatTraits() }, { "licenseHeader", m_vulkanLicenseHeader } } );
 }
 
 void VulkanHppGenerator::generateFuncsHppFile() const
 {
-  std::string const vulkan_funcs_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_funcs.hpp";
-  messager.message( "VulkanHppGenerator: Generating " + vulkan_funcs_hpp + " ...\n" );
-
-  std::string const vulkanFuncsHppTemplate = R"(${licenseHeader}
-#ifndef VULKAN_FUNCS_HPP
-#  define VULKAN_FUNCS_HPP
-
-// include-what-you-use: make sure, vulkan.hpp is used by code-completers
-// IWYU pragma: private; include "vulkan.hpp"
-
-namespace VULKAN_HPP_NAMESPACE
-{
-${commandDefinitions}
-}   // namespace VULKAN_HPP_NAMESPACE
-#endif
-)";
-
-  std::string str =
-    replaceWithMap( vulkanFuncsHppTemplate, { { "commandDefinitions", generateCommandDefinitions() }, { "licenseHeader", m_vulkanLicenseHeader } } );
-
-  writeToFile( str, vulkan_funcs_hpp );
+  generateFileFromTemplate(
+    m_api + "_funcs.hpp", "FuncsHppTemplate.hpp", { { "commandDefinitions", generateCommandDefinitions() }, { "licenseHeader", m_vulkanLicenseHeader } } );
 }
 
 void VulkanHppGenerator::generateHandlesHppFile() const
 {
-  std::string const vulkan_handles_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_handles.hpp";
-  messager.message( "VulkanHppGenerator: Generating " + vulkan_handles_hpp + " ...\n" );
-
-  std::string str = replaceWithMap( readSnippet( "HandlesTemplate.hpp" ),
-                                    {
-                                      { "funcPointerReturns", generateFuncPointerReturns() },
-                                      { "handles", generateHandles() },
-                                      { "handleForwardDeclarations", generateHandleForwardDeclarations() },
-                                      { "licenseHeader", m_vulkanLicenseHeader },
-                                      { "structForwardDeclarations", generateStructForwardDeclarations() },
-                                      { "uniqueHandles", generateUniqueHandles() },
-                                    } );
-
-  writeToFile( str, vulkan_handles_hpp );
+  generateFileFromTemplate( m_api + "_handles.hpp",
+                            "HandlesHppTemplate.hpp",
+                            { { "funcPointerReturns", generateFuncPointerReturns() },
+                              { "handles", generateHandles() },
+                              { "handleForwardDeclarations", generateHandleForwardDeclarations() },
+                              { "licenseHeader", m_vulkanLicenseHeader },
+                              { "structForwardDeclarations", generateStructForwardDeclarations() },
+                              { "uniqueHandles", generateUniqueHandles() } } );
 }
 
 void VulkanHppGenerator::generateHashHppFile() const
 {
-  std::string const vulkan_hash_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_hash.hpp";
-  messager.message( "VulkanHppGenerator: Generating " + vulkan_hash_hpp + " ...\n" );
-
-  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
-#ifndef VULKAN_HASH_HPP
-#  define VULKAN_HASH_HPP
-
-#include <vulkan/${api}.hpp>
-
-namespace std
-{
-  //=======================================
-  //=== HASH structures for Flags types ===
-  //=======================================
-
-  template <typename BitType>
-  struct hash<VULKAN_HPP_NAMESPACE::Flags<BitType>>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Flags<BitType> const & flags ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<typename std::underlying_type<BitType>::type>{}(
-        static_cast<typename std::underlying_type<BitType>::type>( flags ) );
-    }
-  };
-
-${handleHashStructures}
-${structHashStructures}
-} // namespace std
-#endif
-)";
-
-  std::string str = replaceWithMap( vulkanHandlesHppTemplate,
-                                    { { "api", m_api },
-                                      { "handleHashStructures", generateHandleHashStructures() },
-                                      { "licenseHeader", m_vulkanLicenseHeader },
-                                      { "structHashStructures", generateStructHashStructures() } } );
-
-  writeToFile( str, vulkan_hash_hpp );
+  generateFileFromTemplate( m_api + "_hash.hpp",
+                            "HashHppTemplate.hpp",
+                            { { "api", m_api },
+                              { "handleHashStructures", generateHandleHashStructures() },
+                              { "licenseHeader", m_vulkanLicenseHeader },
+                              { "structHashStructures", generateStructHashStructures() } } );
 }
 
 void VulkanHppGenerator::generateHppFile() const
 {
-  std::string const vulkan_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + ".hpp";
-  messager.message( "VulkanHppGenerator: Generating " + vulkan_hpp + " ...\n" );
-
-  std::string str = replaceWithMap(
-    readSnippet( "HppFileTemplate.hpp" ),
+  generateFileFromTemplate(
+    m_api + ".hpp",
+    "HppTemplate.hpp",
     { { "api", m_api },
       { "ArrayProxy", readSnippet( "ArrayProxy.hpp" ) },
       { "ArrayProxyNoTemporaries", readSnippet( "ArrayProxyNoTemporaries.hpp" ) },
@@ -364,174 +257,59 @@ void VulkanHppGenerator::generateHppFile() const
       { "StructureChain", readSnippet( "StructureChain.hpp" ) },
       { "throwResultException", generateThrowResultException() },
       { "UniqueHandle", readSnippet( "UniqueHandle.hpp" ) } } );
-
-  writeToFile( str, vulkan_hpp );
 }
 
 void VulkanHppGenerator::generateMacrosFile() const
 {
-  std::string const macros_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_hpp_macros.hpp";
-  messager.message( "VulkanHppGenerator: Generating " + macros_hpp + " ...\n" );
-
-  std::string const macrosTemplate = R"(${licenseHeader}
-
-#ifndef VULKAN_HPP_MACROS_HPP
-#define VULKAN_HPP_MACROS_HPP
-
-${macros}
-
-#endif)";
-
-  std::string str =
-    replaceWithMap( macrosTemplate,
-                    { { "licenseHeader", m_vulkanLicenseHeader },
-                      { "macros",
-                        replaceWithMap( readSnippet( "macros.hpp" ),
-                                        { { "vulkan_hpp", m_api + ".hpp" },
-                                          { "vulkan_64_bit_ptr_defines", m_defines.at( "VK_USE_64_BIT_PTR_DEFINES" ).possibleDefinition } } ) } } );
-
-  writeToFile( str, macros_hpp );
+  generateFileFromTemplate( m_api + "_hpp_macros.hpp",
+                            "MacrosHppTemplate.hpp",
+                            { { "licenseHeader", m_vulkanLicenseHeader },
+                              { "vulkan_hpp", m_api + ".hpp" },
+                              { "vulkan_64_bit_ptr_defines", m_defines.at( "VK_USE_64_BIT_PTR_DEFINES" ).possibleDefinition } } );
 }
 
 void VulkanHppGenerator::generateRAIIHppFile() const
 {
-  std::string const vulkan_raii_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_raii.hpp";
-  messager.message( "VulkanHppGenerator: Generating " + vulkan_raii_hpp + " ...\n" );
-
-  std::string str = replaceWithMap( readSnippet( "RAIIHppFileTemplate.hpp" ),
-                                    { { "api", m_api },
-                                      { "licenseHeader", m_vulkanLicenseHeader },
-                                      { "RAIICommandDefinitions", generateRAIICommandDefinitions() },
-                                      { "RAIIDispatchers", generateRAIIDispatchers() },
-                                      { "RAIIHandles", generateRAIIHandles() } } );
-
-  writeToFile( str, vulkan_raii_hpp );
+  generateFileFromTemplate( m_api + "_raii.hpp",
+                            "RAIIHppTemplate.hpp",
+                            { { "api", m_api },
+                              { "licenseHeader", m_vulkanLicenseHeader },
+                              { "RAIICommandDefinitions", generateRAIICommandDefinitions() },
+                              { "RAIIDispatchers", generateRAIIDispatchers() },
+                              { "RAIIHandles", generateRAIIHandles() } } );
 }
 
 void VulkanHppGenerator::generateSharedHppFile() const
 {
-  std::string const vulkan_shared_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_shared.hpp";
-  messager.message( "VulkanHppGenerator: Generating " + vulkan_shared_hpp + " ...\n" );
-
-  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
-#ifndef VULKAN_SHARED_HPP
-#define VULKAN_SHARED_HPP
-
-#include <vulkan/${api}.hpp>
-
-#if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
-#include <atomic>  // std::atomic_size_t
-#endif
-
-namespace VULKAN_HPP_NAMESPACE
-{
-#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
-  ${sharedHandle}
-  namespace detail
-  {
-    ${sharedDestroy}
-  }
-  ${sharedHandles}
-  ${sharedHandleSpecializations}
-  ${sharedHandlesNoDestroy}
-#endif // !VULKAN_HPP_NO_SMART_HANDLE
-} // namespace VULKAN_HPP_NAMESPACE
-#endif // VULKAN_SHARED_HPP
-)";
-
-  std::string str = replaceWithMap( vulkanHandlesHppTemplate,
-                                    {
-                                      { "api", m_api },
-                                      { "licenseHeader", m_vulkanLicenseHeader },
-                                      { "sharedDestroy", readSnippet( "SharedDestroy.hpp" ) },
-                                      { "sharedHandle", readSnippet( "SharedHandle.hpp" ) },
-                                      { "sharedHandles", generateSharedHandles() },
-                                      { "sharedHandlesNoDestroy", generateSharedHandlesNoDestroy() },
-                                      { "sharedHandleSpecializations", readSnippet( "SharedHandleSpecializations.hpp" ) },
-                                    } );
-
-  writeToFile( str, vulkan_shared_hpp );
+  generateFileFromTemplate( m_api + "_shared.hpp",
+                            "SharedHppTemplate.hpp",
+                            { { "api", m_api },
+                              { "licenseHeader", m_vulkanLicenseHeader },
+                              { "sharedHandles", generateSharedHandles() },
+                              { "sharedHandlesNoDestroy", generateSharedHandlesNoDestroy() } } );
 }
 
 void VulkanHppGenerator::generateStaticAssertionsHppFile() const
 {
-  std::string const static_assertions_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_static_assertions.hpp";
-  messager.message( "VulkanHppGenerator: Generating " + static_assertions_hpp + " ...\n" );
-
-  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
-#ifndef VULKAN_STATIC_ASSERTIONS_HPP
-#  define VULKAN_STATIC_ASSERTIONS_HPP
-
-#include <vulkan/${api}.hpp>
-
-//=========================
-//=== static_assertions ===
-//=========================
-
-${staticAssertions}
-#endif
-)";
-
-  std::string str = replaceWithMap( vulkanHandlesHppTemplate,
-                                    { { "api", m_api }, { "licenseHeader", m_vulkanLicenseHeader }, { "staticAssertions", generateStaticAssertions() } } );
-
-  writeToFile( str, static_assertions_hpp );
+  generateFileFromTemplate( m_api + "_static_assertions.hpp",
+                            "StaticAssertionsHppTemplate.hpp",
+                            { { "api", m_api }, { "licenseHeader", m_vulkanLicenseHeader }, { "staticAssertions", generateStaticAssertions() } } );
 }
 
 void VulkanHppGenerator::generateStructsHppFile() const
 {
-  std::string const vulkan_structs_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_structs.hpp";
-  messager.message( "VulkanHppGenerator: Generating " + vulkan_structs_hpp + " ...\n" );
-
-  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
-#ifndef VULKAN_STRUCTS_HPP
-#  define VULKAN_STRUCTS_HPP
-
-// include-what-you-use: make sure, vulkan.hpp is used by code-completers
-// IWYU pragma: private; include "vulkan.hpp"
-
-#include <cstring>  // strcmp
-
-namespace VULKAN_HPP_NAMESPACE
-{
-${structs}
-}   // namespace VULKAN_HPP_NAMESPACE
-#endif
-)";
-
-  std::string str = replaceWithMap( vulkanHandlesHppTemplate, { { "licenseHeader", m_vulkanLicenseHeader }, { "structs", generateStructs() } } );
-
-  writeToFile( str, vulkan_structs_hpp );
+  generateFileFromTemplate(
+    m_api + "_structs.hpp", "StructsHppTemplate.hpp", { { "licenseHeader", m_vulkanLicenseHeader }, { "structs", generateStructs() } } );
 }
 
 void VulkanHppGenerator::generateToStringHppFile() const
 {
-  std::string const vulkan_to_string_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_to_string.hpp";
-  messager.message( "VulkanHppGenerator: Generating " + vulkan_to_string_hpp + " ...\n" );
-
-  std::string str = replaceWithMap( readSnippet( "ToStringHppFileTemplate.hpp" ),
-                                    { { "api", m_api },
-                                      { "bitmasksToString", generateBitmasksToString() },
-                                      { "enumsToString", generateEnumsToString() },
-                                      { "licenseHeader", m_vulkanLicenseHeader } } );
-
-  writeToFile( str, vulkan_to_string_hpp );
-}
-
-void VulkanHppGenerator::generateCppModuleFile() const
-{
-  std::string const vulkan_cppm = std::string( BASE_PATH ) + "/vulkan/" + m_api + ".cppm";
-  messager.message( "VulkanHppGenerator: Generating " + vulkan_cppm + " ...\n" );
-
-  auto const str = replaceWithMap( readSnippet( "CppModuleFileTemplate.hpp" ),
-                                   { { "api", m_api },
-                                     { "hashSpecializations", generateCppModuleHashSpecializations() },
-                                     { "licenseHeader", m_vulkanLicenseHeader },
-                                     { "raiiUsings", generateCppModuleRaiiUsings() },
-                                     { "usings", generateCppModuleUsings() },
-                                     { "pfnCommands", generateCppModuleCommands() } } );
-
-  writeToFile( str, vulkan_cppm );
+  generateFileFromTemplate( m_api + "_to_string.hpp",
+                            "ToStringHppTemplate.hpp",
+                            { { "api", m_api },
+                              { "bitmasksToString", generateBitmasksToString() },
+                              { "enumsToString", generateEnumsToString() },
+                              { "licenseHeader", m_vulkanLicenseHeader } } );
 }
 
 void VulkanHppGenerator::prepareRAIIHandles()
@@ -1348,7 +1126,7 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
       if ( !isNumber( arraySize ) && !m_constants.contains( arraySize ) )
       {
         auto typeIt = m_types.find( arraySize );
-        checkForError( ( typeIt != m_types.end() ) && isAllUpper( arraySize ) && ( typeIt->second.category == TypeCategory::ExternalType ),
+        checkForError( ( typeIt != m_types.end() ) && isUpperCase( arraySize ) && ( typeIt->second.category == TypeCategory::ExternalType ),
                        member.xmlLine,
                        "struct member array size uses unknown constant <" + arraySize + ">" );
       }
@@ -17422,12 +17200,6 @@ namespace
                                  } );
   }
 
-  template <typename T>
-  typename std::vector<T>::iterator findByNameOrAlias( std::vector<T> & values, std::string const & name )
-  {
-    return std::ranges::find_if( values, [&name]( T const & value ) { return ( value.name == name ) || value.aliases.contains( name ); } );
-  }
-
   std::string generateCArraySizes( std::vector<std::string> const & sizes )
   {
     std::string arraySizes;
@@ -17444,9 +17216,9 @@ namespace
     if ( !elements.empty() )
     {
       list = prefix + elements[0];
-      for ( size_t i = 1; i < elements.size(); ++i )
+      for ( auto it = std::next( elements.begin() ); it != elements.end(); ++it )
       {
-        list += separator + elements[i];
+        list += separator + *it;
       }
     }
     return list;
@@ -17467,9 +17239,9 @@ namespace
     return arrayString;
   }
 
-  bool isAllUpper( std::string const & name )
+  bool isUpperCase( std::string const & name )
   {
-    return std::ranges::none_of( name, []( auto const & c ) noexcept { return c != toupper( c ); } );
+    return std::ranges::all_of( name, []( auto const & c ) noexcept { return c == toupper( c ); } );
   }
 
   // function to take three or four-vector of strings containing a macro definition, and return
@@ -17530,15 +17302,6 @@ namespace
       return { strippedComment, calledMacro, args, {} };
     }
     return {};
-  }
-
-  std::string readSnippet( std::string const & snippetFile )
-  {
-    std::ifstream ifs( std::string( BASE_PATH ) + "/snippets/" + snippetFile );
-    assert( !ifs.fail() );
-    std::ostringstream oss;
-    oss << ifs.rdbuf();
-    return oss.str();
   }
 
   std::string startLowerCase( std::string const & input )
@@ -17637,7 +17400,7 @@ int main( int argc, char const ** argv )
     VulkanHppGenerator generator( doc, api );
 
     generator.prepareRAIIHandles();
-    generator.generateCppModuleFile();
+    generator.generateCppmFile();
     generator.generateHppFile();
     generator.generateEnumsHppFile();
     generator.generateExtensionInspectionFile();

@@ -509,8 +509,8 @@ private:
   };
 
 private:
-  void        addCommand( std::string const & name, CommandData & commandData );
-  void        addCommandsToHandle( std::vector<RequireData> const & requireData );
+  void        addCommand( std::string const & name, CommandData && commandData );
+  void        addCommandToHandle( std::pair<std::string, CommandData> const & commandData );
   void        addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredBy );
   std::string addTitleAndProtection( std::string const & title, std::string const & strIf, std::string const & strElse = {} ) const;
   bool        allVectorSizesSupported( std::vector<ParamData> const & params, std::map<size_t, VectorParamData> const & vectorParams ) const;
@@ -614,6 +614,8 @@ private:
   std::vector<MemberData>::const_iterator         findStructMemberItByType( std::string const & type, std::vector<MemberData> const & memberData ) const;
   std::vector<ExtensionData>::const_iterator      findSupportedExtension( std::string const & name ) const;
   std::string                                     findTag( std::string const & name, std::string const & postfix = "" ) const;
+  void                                            forEachRequiredCommand( std::vector<RequireData> const &                                                             requireData,
+                                                                          std::function<void( NameLine const &, std::pair<std::string, CommandData> const & )> const & commandAction ) const;
   std::set<std::string>                           gatherResultCodes() const;
   std::pair<std::string, std::string>             generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
                                                                               std::vector<std::string> const &          returnDataTypes,

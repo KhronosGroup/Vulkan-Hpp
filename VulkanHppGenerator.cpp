@@ -73,12 +73,14 @@ VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document, 
   // some "FlagBits" enums are not specified, but needed for our "Flags" handling -> add them here
   for ( auto & feature : m_features )
   {
-    addCommandsToHandle( feature.requireData );
+    forEachRequiredCommand( feature.requireData,
+                            [this]( NameLine const & command, auto const & commandData ) { addCommandToHandle( { command.name, commandData.second } ); } );
     addMissingFlagBits( feature.requireData, feature.name );
   }
   for ( auto & extension : m_extensions )
   {
-    addCommandsToHandle( extension.requireData );
+    forEachRequiredCommand( extension.requireData,
+                            [this]( NameLine const & command, auto const & commandData ) { addCommandToHandle( { command.name, commandData.second } ); } );
     addMissingFlagBits( extension.requireData, extension.name );
   }
 
@@ -332,38 +334,31 @@ void VulkanHppGenerator::prepareRAIIHandles()
 // VulkanHppGenerator private interface
 //
 
-void VulkanHppGenerator::addCommand( std::string const & name, CommandData & commandData )
+void VulkanHppGenerator::addCommand( std::string const & name, CommandData && commandData )
 {
-  // find the handle this command is going to be associated to
   checkForError( !commandData.params.empty(), commandData.xmlLine, "command <" + name + "> with no params" );
-  auto handleIt = m_handles.find( commandData.params[0].type.type );
+
+  auto [commandIt, inserted] = m_commands.insert( { name, std::move( commandData ) } );
+  checkForError( inserted, commandData.xmlLine, "already encountered command <" + name + ">" );
+
+  // find the handle this command is going to be associated to
+  auto handleIt = m_handles.find( commandIt->second.params[0].type.type );
   if ( handleIt == m_handles.end() )
   {
     handleIt = m_handles.begin();
     assert( handleIt->first == "" );
   }
-  commandData.handle = handleIt->first;
-
-  // add this command to the list of commands
-  checkForError( m_commands.insert( { name, commandData } ).second, commandData.xmlLine, "already encountered command <" + name + ">" );
+  commandIt->second.handle = handleIt->first;
 }
 
-void VulkanHppGenerator::addCommandsToHandle( std::vector<RequireData> const & requireData )
+void VulkanHppGenerator::addCommandToHandle( std::pair<std::string, CommandData> const & commandData )
 {
-  for ( auto const & require : requireData )
+  auto handleIt = m_handles.find( commandData.second.handle );
+  assert( handleIt != m_handles.end() );
+  if ( !handleIt->second.commands.contains( commandData.first ) )
   {
-    for ( auto const & command : require.commands )
-    {
-      auto commandIt = findByNameOrAlias( m_commands, command.name );
-      assert( commandIt != m_commands.end() );
-      auto handleIt = m_handles.find( commandIt->second.handle );
-      assert( handleIt != m_handles.end() );
-      if ( !handleIt->second.commands.contains( command.name ) )
-      {
-        handleIt->second.commands.insert( command.name );
-        registerDeleter( command.name, commandIt->second );
-      }
-    }
+    handleIt->second.commands.insert( commandData.first );
+    registerDeleter( commandData.first, commandData.second );
   }
 }
 
@@ -383,6 +378,7 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
           const size_t pos = bitmaskIt->first.find( "Flags" );
           assert( pos != std::string::npos );
           std::string flagBits = bitmaskIt->first.substr( 0, pos + 4 ) + "Bit" + bitmaskIt->first.substr( pos + 4 );
+          assert( flagBits.find( "Flags" ) == std::string::npos );
 
           bitmaskIt->second.require = flagBits;
 
@@ -451,55 +447,31 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<Requir
                                                               std::string &                    deviceCommandAssignments ) const
 {
   std::string members, initial, instance, device, placeholders;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & command : require.commands )
-    {
-      if ( listedCommands.insert( command.name ).second )
-      {
-        auto commandIt = findByNameOrAlias( m_commands, command.name );
-        assert( commandIt != m_commands.end() );
-
-        members += "    PFN_" + command.name + " " + command.name + " = 0;\n";
-        placeholders += "    PFN_dummy " + command.name + "_placeholder = 0;\n";
-        if ( commandIt->second.handle.empty() )
-        {
-          initial += generateDispatchLoaderDynamicCommandAssignment( command.name, commandIt->first, "NULL" );
-        }
-        else
-        {
-          instance += generateDispatchLoaderDynamicCommandAssignment( command.name, commandIt->first, "instance" );
-          if ( isDeviceCommand( commandIt->second ) )
-          {
-            device += generateDispatchLoaderDynamicCommandAssignment( command.name, commandIt->first, "device" );
-          }
-        }
-      }
-    }
-  }
-  const auto [enter, leave] = generateProtection( getProtectFromTitle( title ) );
-  std::string header        = "\n" + enter + "  //=== " + title + " ===\n";
-  if ( !members.empty() )
-  {
-    commandMembers += header + members;
-    if ( !enter.empty() )
-    {
-      commandMembers += "#else\n" + placeholders;
-    }
-    commandMembers += leave;
-  }
-  if ( !initial.empty() )
-  {
-    initialCommandAssignments += header + initial + leave;
-  }
-  if ( !instance.empty() )
-  {
-    instanceCommandAssignments += header + instance + leave;
-  }
-  if ( !device.empty() )
-  {
-    deviceCommandAssignments += header + device + leave;
-  }
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            if ( listedCommands.insert( command.name ).second )
+                            {
+                              members += "    PFN_" + command.name + " " + command.name + " = 0;\n";
+                              placeholders += "    PFN_dummy " + command.name + "_placeholder = 0;\n";
+                              if ( commandData.second.handle.empty() )
+                              {
+                                initial += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "NULL" );
+                              }
+                              else
+                              {
+                                instance += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "instance" );
+                                if ( isDeviceCommand( commandData.second ) )
+                                {
+                                  device += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "device" );
+                                }
+                              }
+                            }
+                          } );
+  commandMembers += addTitleAndProtection( title, members, placeholders );
+  initialCommandAssignments += addTitleAndProtection( title, initial );
+  instanceCommandAssignments += addTitleAndProtection( title, instance );
+  deviceCommandAssignments += addTitleAndProtection( title, device );
 }
 
 void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireData> const & requireData,
@@ -508,23 +480,15 @@ void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireData> const
                                                   std::string &                    commandMembers ) const
 {
   std::string members;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & command : require.commands )
-    {
-      if ( listedCommands.insert( command.name ).second )
-      {
-        members += "export using ::PFN_" + command.name + ";\n";
-      }
-    }
-  }
-  const auto [enter, leave] = generateProtection( getProtectFromTitle( title ) );
-  std::string header        = "\n" + enter + "  //=== " + title + " ===\n";
-  if ( !members.empty() )
-  {
-    commandMembers += header + members;
-    commandMembers += leave;
-  }
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & )
+                          {
+                            if ( listedCommands.insert( command.name ).second )
+                            {
+                              members += "export using ::PFN_" + command.name + ";\n";
+                            }
+                          } );
+  commandMembers += addTitleAndProtection( title, members );
 }
 
 void VulkanHppGenerator::appendRAIIDispatcherCommands( std::vector<RequireData> const & requireData,
@@ -538,53 +502,50 @@ void VulkanHppGenerator::appendRAIIDispatcherCommands( std::vector<RequireData> 
                                                        std::string &                    instanceMembers ) const
 {
   std::string ci, cm, da, dm, dmp, ia, im, imp;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & command : require.commands )
-    {
-      if ( listedCommands.insert( command.name ).second )
-      {
-        auto commandIt = findByNameOrAlias( m_commands, command.name );
-        if ( commandIt->second.handle.empty() )
-        {
-          ci += ", " + command.name + "( PFN_" + command.name + "( getProcAddr( NULL, \"" + command.name + "\" ) ) )";
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            if ( listedCommands.insert( command.name ).second )
+                            {
+                              if ( commandData.second.handle.empty() )
+                              {
+                                ci += ", " + command.name + "( PFN_" + command.name + "( getProcAddr( NULL, \"" + command.name + "\" ) ) )";
+                                cm += "      PFN_" + command.name + " " + command.name + " = 0;\n";
+                              }
+                              else if ( ( commandData.second.handle == "VkDevice" ) || hasParentHandle( commandData.second.handle, "VkDevice" ) )
+                              {
+                                da += "        " + command.name + " = PFN_" + command.name + "( vkGetDeviceProcAddr( device, \"" + command.name + "\" ) );\n";
+                                // if this is an alias'ed function, use it as a fallback for the original one
+                                if ( command.name != commandData.first )
+                                {
+                                  assert( commandData.second.aliases.contains( command.name ) );
+                                  da += "        if ( !" + commandData.first + " ) " + commandData.first + " = " + command.name + ";\n";
+                                }
+                                dm += "      PFN_" + command.name + " " + command.name + " = 0;\n";
+                                dmp += "      PFN_dummy " + command.name + "_placeholder = 0;\n";
+                              }
+                              else
+                              {
+                                assert( ( commandData.second.handle == "VkInstance" ) || hasParentHandle( commandData.second.handle, "VkInstance" ) );
 
-          cm += "      PFN_" + command.name + " " + command.name + " = 0;\n";
-        }
-        else if ( ( commandIt->second.handle == "VkDevice" ) || hasParentHandle( commandIt->second.handle, "VkDevice" ) )
-        {
-          da += "        " + command.name + " = PFN_" + command.name + "( vkGetDeviceProcAddr( device, \"" + command.name + "\" ) );\n";
-          // if this is an alias'ed function, use it as a fallback for the original one
-          if ( command.name != commandIt->first )
-          {
-            da += "        if ( !" + commandIt->first + " ) " + commandIt->first + " = " + command.name + ";\n";
-          }
-
-          dm += "      PFN_" + command.name + " " + command.name + " = 0;\n";
-          dmp += "      PFN_dummy " + command.name + "_placeholder = 0;\n";
-        }
-        else
-        {
-          assert( ( commandIt->second.handle == "VkInstance" ) || hasParentHandle( commandIt->second.handle, "VkInstance" ) );
-
-          // filter out vkGetInstanceProcAddr, as starting with Vulkan 1.2 it can resolve itself only (!) with an
-          // instance nullptr !
-          if ( command.name != "vkGetInstanceProcAddr" )
-          {
-            ia += "        " + command.name + " = PFN_" + command.name + "( vkGetInstanceProcAddr( instance, \"" + command.name + "\" ) );\n";
-            // if this is an alias'ed function, use it as a fallback for the original one
-            if ( command.name != commandIt->first )
-            {
-              ia += "        if ( !" + commandIt->first + " ) " + commandIt->first + " = " + command.name + ";\n";
-            }
-          }
-
-          im += +"      PFN_" + command.name + " " + command.name + " = 0;\n";
-          imp += "      PFN_dummy " + command.name + "_placeholder = 0;\n";
-        }
-      }
-    }
-  }
+                                // filter out vkGetInstanceProcAddr, as starting with Vulkan 1.2 it can resolve itself only (!) with an
+                                // instance nullptr !
+                                if ( command.name != "vkGetInstanceProcAddr" )
+                                {
+                                  ia +=
+                                    "        " + command.name + " = PFN_" + command.name + "( vkGetInstanceProcAddr( instance, \"" + command.name + "\" ) );\n";
+                                  // if this is an alias'ed function, use it as a fallback for the original one
+                                  if ( command.name != commandData.first )
+                                  {
+                                    assert( commandData.second.aliases.contains( command.name ) );
+                                    ia += "        if ( !" + commandData.first + " ) " + commandData.first + " = " + command.name + ";\n";
+                                  }
+                                }
+                                im += +"      PFN_" + command.name + " " + command.name + " = 0;\n";
+                                imp += "      PFN_dummy " + command.name + "_placeholder = 0;\n";
+                              }
+                            }
+                          } );
   contextInitializers += addTitleAndProtection( title, ci );
   contextMembers += addTitleAndProtection( title, cm );
   deviceAssignments += addTitleAndProtection( title, da );
@@ -1962,6 +1923,21 @@ std::string VulkanHppGenerator::findTag( std::string const & name, std::string c
   return ( tagIt != m_tags.end() ) ? tagIt->first : "";
 }
 
+void VulkanHppGenerator::forEachRequiredCommand(
+  std::vector<RequireData> const &                                                                     requireData,
+  std::function<void( NameLine const & command, std::pair<std::string, CommandData> const & )> const & commandAction ) const
+{
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & command : require.commands )
+    {
+      auto commandIt = findByNameOrAlias( m_commands, command.name );
+      checkForError( commandIt != m_commands.end(), command.xmlLine, "unknown required command <" + command.name + ">" );
+      commandAction( command, *commandIt );
+    }
+  }
+}
+
 std::set<std::string> VulkanHppGenerator::gatherResultCodes() const
 {
   auto resultIt = m_enums.find( "VkResult" );
@@ -3151,18 +3127,14 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::vector<RequireD
                                                             std::string const &              title ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & command : require.commands )
-    {
-      if ( listedCommands.insert( command.name ).second )
-      {
-        auto commandIt = findByNameOrAlias( m_commands, command.name );
-        assert( commandIt != m_commands.end() );
-        str += generateCommandDefinitions( command.name, commandIt->second.handle );
-      }
-    }
-  }
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            if ( listedCommands.insert( command.name ).second )
+                            {
+                              str += generateCommandDefinitions( command.name, commandData.second.handle );
+                            }
+                          } );
   return addTitleAndProtection( title, str );
 }
 
@@ -6955,43 +6927,38 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
                                                                       std::string const &              title ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & command : require.commands )
-    {
-      // some commands are listed for multiple extensions !
-      if ( listedCommands.insert( command.name ).second )
-      {
-        auto commandIt = findByNameOrAlias( m_commands, command.name );
-        assert( commandIt != m_commands.end() );
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            // some commands are listed for multiple extensions !
+                            if ( listedCommands.insert( command.name ).second )
+                            {
+                              str += "\n";
+                              std::string parameterList, parameters;
+                              assert( !commandData.second.params.empty() );
+                              for ( auto param : commandData.second.params )
+                              {
+                                parameterList += param.type.compose( "" ) + " " + param.name + generateCArraySizes( param.arraySizes ) + ", ";
+                                parameters += param.name + ", ";
+                              }
+                              assert( parameterList.ends_with( ", " ) && parameters.ends_with( ", " ) );
+                              parameterList.resize( parameterList.size() - 2 );
+                              parameters.resize( parameters.size() - 2 );
 
-        str += "\n";
-        std::string parameterList, parameters;
-        assert( !commandIt->second.params.empty() );
-        for ( auto param : commandIt->second.params )
-        {
-          parameterList += param.type.compose( "" ) + " " + param.name + generateCArraySizes( param.arraySizes ) + ", ";
-          parameters += param.name + ", ";
-        }
-        assert( parameterList.ends_with( ", " ) && parameters.ends_with( ", " ) );
-        parameterList.resize( parameterList.size() - 2 );
-        parameters.resize( parameters.size() - 2 );
-
-        const std::string commandTemplate = R"(
+                              const std::string commandTemplate = R"(
     ${returnType} ${commandName}( ${parameterList} ) const VULKAN_HPP_NOEXCEPT
     {
       return ::${commandName}( ${parameters} );
     }
 )";
 
-        str += replaceWithMap( commandTemplate,
-                               { { "commandName", command.name },
-                                 { "parameterList", parameterList },
-                                 { "parameters", parameters },
-                                 { "returnType", commandIt->second.returnType } } );
-      }
-    }
-  }
+                              str += replaceWithMap( commandTemplate,
+                                                     { { "commandName", command.name },
+                                                       { "parameterList", parameterList },
+                                                       { "parameters", parameters },
+                                                       { "returnType", commandData.second.returnType } } );
+                            }
+                          } );
   return addTitleAndProtection( title, str );
 }
 
@@ -8635,16 +8602,14 @@ std::string VulkanHppGenerator::generateRAIICommandDefinitions( std::vector<Requ
                                                                 std::string const &              title ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & command : require.commands )
-    {
-      if ( listedCommands.insert( command.name ).second )
-      {
-        str += generateRAIIHandleCommand( command.name, determineInitialSkipCount( command.name ), true );
-      }
-    }
-  }
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & )
+                          {
+                            if ( listedCommands.insert( command.name ).second )
+                            {
+                              str += generateRAIIHandleCommand( command.name, determineInitialSkipCount( command.name ), true );
+                            }
+                          } );
   return addTitleAndProtection( title, str );
 }
 
@@ -9027,38 +8992,36 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair
   {
     std::vector<std::string> firstLevelCommands, secondLevelCommands;
 
-    for ( auto const & require : feature.requireData )
-    {
-      for ( auto const & command : require.commands )
-      {
-        if ( !specialFunctions.contains( command.name ) )
-        {
-          if ( handle.second.commands.contains( command.name ) )
-          {
-            assert( !listedCommands.contains( command.name ) );
-            listedCommands.insert( { command.name, { feature.name, command.xmlLine } } );
-            firstLevelCommands.push_back( command.name );
-          }
-          else if ( handle.second.secondLevelCommands.contains( command.name ) )
-          {
-            auto listedIt = listedCommands.find( command.name );
-            if ( listedIt == listedCommands.end() )
-            {
-              listedCommands.insert( { command.name, { feature.name, command.xmlLine } } );
-              assert( !handle.first.empty() );
-              secondLevelCommands.push_back( command.name );
-            }
-            else
-            {
-              checkForError( listedIt->second.name == feature.name,
-                             command.xmlLine,
-                             "command <" + command.name + "> already listed as required for feature <" + listedIt->second.name + "> on line " +
-                               std::to_string( listedIt->second.xmlLine ) );
-            }
-          }
-        }
-      }
-    }
+    forEachRequiredCommand( feature.requireData,
+                            [&]( NameLine const & command, auto const & )
+                            {
+                              if ( !specialFunctions.contains( command.name ) )
+                              {
+                                if ( handle.second.commands.contains( command.name ) )
+                                {
+                                  assert( !listedCommands.contains( command.name ) );
+                                  listedCommands.insert( { command.name, { feature.name, command.xmlLine } } );
+                                  firstLevelCommands.push_back( command.name );
+                                }
+                                else if ( handle.second.secondLevelCommands.contains( command.name ) )
+                                {
+                                  auto listedIt = listedCommands.find( command.name );
+                                  if ( listedIt == listedCommands.end() )
+                                  {
+                                    listedCommands.insert( { command.name, { feature.name, command.xmlLine } } );
+                                    assert( !handle.first.empty() );
+                                    secondLevelCommands.push_back( command.name );
+                                  }
+                                  else
+                                  {
+                                    checkForError( listedIt->second.name == feature.name,
+                                                   command.xmlLine,
+                                                   "command <" + command.name + "> already listed as required for feature <" + listedIt->second.name +
+                                                     "> on line " + std::to_string( listedIt->second.xmlLine ) );
+                                  }
+                                }
+                              }
+                            } );
     if ( !firstLevelCommands.empty() || !secondLevelCommands.empty() )
     {
       functionDeclarations += "\n  //=== " + feature.name + " ===\n";
@@ -13761,7 +13724,7 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
     if ( api.empty() || ( api == m_api ) )
     {
       checkForError( !m_commands.contains( name ), line, "command <" + name + "> already specified" );
-      addCommand( name, commandData );
+      addCommand( name, std::move( commandData ) );
     }
   }
 }
@@ -17029,16 +16992,14 @@ std::vector<std::string> VulkanHppGenerator::selectCommandsByHandle( std::vector
                                                                      std::set<std::string> &          listedCommands ) const
 {
   std::vector<std::string> selectedCommands;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & command : require.commands )
-    {
-      if ( handleCommands.contains( command.name ) && listedCommands.insert( command.name ).second )
-      {
-        selectedCommands.push_back( command.name );
-      }
-    }
-  }
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & )
+                          {
+                            if ( handleCommands.contains( command.name ) && listedCommands.insert( command.name ).second )
+                            {
+                              selectedCommands.push_back( command.name );
+                            }
+                          } );
   return selectedCommands;
 }
 

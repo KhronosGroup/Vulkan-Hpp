@@ -380,7 +380,7 @@ That semaphore can be used, to acquire the next imageIndex from the `vk::raii::S
     uint32_t imageIndex;
     std::tie( result, imageIndex ) = swapchain.acquireNextImage( timeout, *imageAcquiredSemaphore );
 
-Note, `vk::raii::SwapchainKHR::acquireNextImage` returns a `std::pair<vk::Result, uint32_t>`, that can nicely be assigned onto two separate values using std::tie().
+Note, `vk::raii::SwapchainKHR::acquireNextImage` returns a `ResultValue<uint32_t>`, that can nicely be assigned onto two separate values using std::tie().
 
 And also note, the returned `vk::Result` can not only be `vk::Result::eSuccess`, but also `vk::Result::eTimeout`, `vk::Result::eNotReady`, or `vk::Result::eSuboptimalKHR`, which should be handled here accordingly!
 

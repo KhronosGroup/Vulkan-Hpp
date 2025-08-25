@@ -17,6 +17,8 @@ The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan
 	- [Optional Features](#optional_features)
 		- [Formatting](#formatting)
 		- [Custom views of Vulkan-Hpp objects in Visual Studio](#custom_views)
+- [Breaking Changes](#breaking_changes)
+  - [v1.4.324](#breaking_changes_324)
 - [Usage](#usage)
 	- [namespace vk](#namespace_vk)
 	- [Handles](#handles)
@@ -140,6 +142,14 @@ If the program clang-format is found by CMake, the define `CLANG_FORMAT_EXECUTAB
 #### Custom views of Vulkan-Hpp objects in Visual Studio <a id='custom_views'>
 
 The file `VulkanHpp.natvis` provides a custom view on `vk::Flags` for Visual Studio. If you add this file to the user-specific natvis directory of your Visual Studio installation (%USERPROFILE%\Documents\Visual Studio 2022\Visualizers), you get `vk::Flags` nicely formatted in your debugger with all your Visual Studio projects.
+
+## Breaking Changes <a id='breaking_changes'>
+
+We seriously try to keep the API for all flavours of the Vulkan-Hpp constant or backwards compatible. But every now and then, some breaking changes might get in. Here is a list of those changes, sorted by version.
+
+### v1.4.324 <a id='breaking_changes_324'>
+
+With PR [#2226](https://github.com/KhronosGroup/Vulkan-Hpp/pull/2226), the return type of `vk::raii::Device::acquireNextImage2KHR` and `vk::raii::SwapchainKHR::acquireNextImage` changed from `std::pair<vk::Result,uint32_t>` to the equivalent `vk::ResultValue<uint32_t>`
 
 ## Usage <a id='usage'>
 

@@ -438,42 +438,6 @@ bool VulkanHppGenerator::allVectorSizesSupported( std::vector<ParamData> const &
                               } );
 }
 
-void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<RequireData> const & requireData,
-                                                              std::set<std::string> &          listedCommands,
-                                                              std::string const &              title,
-                                                              std::string &                    commandMembers,
-                                                              std::string &                    initialCommandAssignments,
-                                                              std::string &                    instanceCommandAssignments,
-                                                              std::string &                    deviceCommandAssignments ) const
-{
-  std::string members, initial, instance, device, placeholders;
-  forEachRequiredCommand( requireData,
-                          [&]( NameLine const & command, auto const & commandData )
-                          {
-                            if ( listedCommands.insert( command.name ).second )
-                            {
-                              members += "    PFN_" + command.name + " " + command.name + " = 0;\n";
-                              placeholders += "    PFN_dummy " + command.name + "_placeholder = 0;\n";
-                              if ( commandData.second.handle.empty() )
-                              {
-                                initial += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "NULL" );
-                              }
-                              else
-                              {
-                                instance += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "instance" );
-                                if ( isDeviceCommand( commandData.second ) )
-                                {
-                                  device += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "device" );
-                                }
-                              }
-                            }
-                          } );
-  commandMembers += addTitleAndProtection( title, members, placeholders );
-  initialCommandAssignments += addTitleAndProtection( title, initial );
-  instanceCommandAssignments += addTitleAndProtection( title, instance );
-  deviceCommandAssignments += addTitleAndProtection( title, device );
-}
-
 void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireData> const & requireData,
                                                   std::set<std::string> &          listedCommands,
                                                   std::string const &              title,
@@ -489,69 +453,6 @@ void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireData> const
                             }
                           } );
   commandMembers += addTitleAndProtection( title, members );
-}
-
-void VulkanHppGenerator::appendRAIIDispatcherCommands( std::vector<RequireData> const & requireData,
-                                                       std::set<std::string> &          listedCommands,
-                                                       std::string const &              title,
-                                                       std::string &                    contextInitializers,
-                                                       std::string &                    contextMembers,
-                                                       std::string &                    deviceAssignments,
-                                                       std::string &                    deviceMembers,
-                                                       std::string &                    instanceAssignments,
-                                                       std::string &                    instanceMembers ) const
-{
-  std::string ci, cm, da, dm, dmp, ia, im, imp;
-  forEachRequiredCommand( requireData,
-                          [&]( NameLine const & command, auto const & commandData )
-                          {
-                            if ( listedCommands.insert( command.name ).second )
-                            {
-                              if ( commandData.second.handle.empty() )
-                              {
-                                ci += ", " + command.name + "( PFN_" + command.name + "( getProcAddr( NULL, \"" + command.name + "\" ) ) )";
-                                cm += "      PFN_" + command.name + " " + command.name + " = 0;\n";
-                              }
-                              else if ( ( commandData.second.handle == "VkDevice" ) || hasParentHandle( commandData.second.handle, "VkDevice" ) )
-                              {
-                                da += "        " + command.name + " = PFN_" + command.name + "( vkGetDeviceProcAddr( device, \"" + command.name + "\" ) );\n";
-                                // if this is an alias'ed function, use it as a fallback for the original one
-                                if ( command.name != commandData.first )
-                                {
-                                  assert( commandData.second.aliases.contains( command.name ) );
-                                  da += "        if ( !" + commandData.first + " ) " + commandData.first + " = " + command.name + ";\n";
-                                }
-                                dm += "      PFN_" + command.name + " " + command.name + " = 0;\n";
-                                dmp += "      PFN_dummy " + command.name + "_placeholder = 0;\n";
-                              }
-                              else
-                              {
-                                assert( ( commandData.second.handle == "VkInstance" ) || hasParentHandle( commandData.second.handle, "VkInstance" ) );
-
-                                // filter out vkGetInstanceProcAddr, as starting with Vulkan 1.2 it can resolve itself only (!) with an
-                                // instance nullptr !
-                                if ( command.name != "vkGetInstanceProcAddr" )
-                                {
-                                  ia +=
-                                    "        " + command.name + " = PFN_" + command.name + "( vkGetInstanceProcAddr( instance, \"" + command.name + "\" ) );\n";
-                                  // if this is an alias'ed function, use it as a fallback for the original one
-                                  if ( command.name != commandData.first )
-                                  {
-                                    assert( commandData.second.aliases.contains( command.name ) );
-                                    ia += "        if ( !" + commandData.first + " ) " + commandData.first + " = " + command.name + ";\n";
-                                  }
-                                }
-                                im += +"      PFN_" + command.name + " " + command.name + " = 0;\n";
-                                imp += "      PFN_dummy " + command.name + "_placeholder = 0;\n";
-                              }
-                            }
-                          } );
-  contextInitializers += addTitleAndProtection( title, ci );
-  contextMembers += addTitleAndProtection( title, cm );
-  deviceAssignments += addTitleAndProtection( title, da );
-  deviceMembers += addTitleAndProtection( title, dm, dmp );
-  instanceAssignments += addTitleAndProtection( title, ia );
-  instanceMembers += addTitleAndProtection( title, im, imp );
 }
 
 void VulkanHppGenerator::checkAttributes( int                                                  line,
@@ -6820,13 +6721,19 @@ ${deviceCommandAssignments}
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
   for ( auto const & feature : m_features )
   {
-    appendDispatchLoaderDynamicCommands(
-      feature.requireData, listedCommands, feature.name, commandMembers, initialCommandAssignments, instanceCommandAssignments, deviceCommandAssignments );
+    commandMembers += generateDispatchLoaderDynamicCommandMembers( feature.requireData, listedCommands, feature.name );
+    initialCommandAssignments += generateDispatchLoaderDynamicInitialCommandAssignment( feature.requireData, listedCommands, feature.name );
+    instanceCommandAssignments += generateDispatchLoaderDynamicInstanceCommandAssignment( feature.requireData, listedCommands, feature.name );
+    deviceCommandAssignments += generateDispatchLoaderDynamicDeviceCommandAssignment( feature.requireData, listedCommands, feature.name );
+    forEachRequiredCommand( feature.requireData, [&listedCommands]( NameLine const & command, auto const & ) { listedCommands.insert( command.name ); } );
   }
   for ( auto const & extension : m_extensions )
   {
-    appendDispatchLoaderDynamicCommands(
-      extension.requireData, listedCommands, extension.name, commandMembers, initialCommandAssignments, instanceCommandAssignments, deviceCommandAssignments );
+    commandMembers += generateDispatchLoaderDynamicCommandMembers( extension.requireData, listedCommands, extension.name );
+    initialCommandAssignments += generateDispatchLoaderDynamicInitialCommandAssignment( extension.requireData, listedCommands, extension.name );
+    instanceCommandAssignments += generateDispatchLoaderDynamicInstanceCommandAssignment( extension.requireData, listedCommands, extension.name );
+    deviceCommandAssignments += generateDispatchLoaderDynamicDeviceCommandAssignment( extension.requireData, listedCommands, extension.name );
+    forEachRequiredCommand( extension.requireData, [&listedCommands]( NameLine const & command, auto const & ) { listedCommands.insert( command.name ); } );
   }
 
   return replaceWithMap( dispatchLoaderDynamicTemplate,
@@ -6834,6 +6741,71 @@ ${deviceCommandAssignments}
                            { "deviceCommandAssignments", deviceCommandAssignments },
                            { "initialCommandAssignments", initialCommandAssignments },
                            { "instanceCommandAssignments", instanceCommandAssignments } } );
+}
+
+std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandMembers( std::vector<RequireData> const & requireData,
+                                                                             std::set<std::string> const &    listedCommands,
+                                                                             std::string const &              title ) const
+{
+  std::string members, placeholders;
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & )
+                          {
+                            if ( !listedCommands.contains( command.name ) )
+                            {
+                              members += "    PFN_" + command.name + " " + command.name + " = 0;\n";
+                              placeholders += "    PFN_dummy " + command.name + "_placeholder = 0;\n";
+                            }
+                          } );
+  return addTitleAndProtection( title, members, placeholders );
+}
+
+std::string VulkanHppGenerator::generateDispatchLoaderDynamicDeviceCommandAssignment( std::vector<RequireData> const & requireData,
+                                                                                      std::set<std::string> const &    listedCommands,
+                                                                                      std::string const &              title ) const
+{
+  std::string deviceCommandAssignments;
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            if ( !listedCommands.contains( command.name ) && !commandData.second.handle.empty() && isDeviceCommand( commandData.second ) )
+                            {
+                              deviceCommandAssignments += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "device" );
+                            }
+                          } );
+  return addTitleAndProtection( title, deviceCommandAssignments );
+}
+
+std::string VulkanHppGenerator::generateDispatchLoaderDynamicInitialCommandAssignment( std::vector<RequireData> const & requireData,
+                                                                                       std::set<std::string> const &    listedCommands,
+                                                                                       std::string const &              title ) const
+{
+  std::string initialCommandAssignments;
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            if ( !listedCommands.contains( command.name ) && commandData.second.handle.empty() )
+                            {
+                              initialCommandAssignments += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "NULL" );
+                            }
+                          } );
+  return addTitleAndProtection( title, initialCommandAssignments );
+}
+
+std::string VulkanHppGenerator::generateDispatchLoaderDynamicInstanceCommandAssignment( std::vector<RequireData> const & requireData,
+                                                                                        std::set<std::string> const &    listedCommands,
+                                                                                        std::string const &              title ) const
+{
+  std::string instanceCommandAssignments;
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            if ( !listedCommands.contains( command.name ) && !commandData.second.handle.empty() )
+                            {
+                              instanceCommandAssignments += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "instance" );
+                            }
+                          } );
+  return addTitleAndProtection( title, instanceCommandAssignments );
 }
 
 std::string VulkanHppGenerator::generateDispatchLoaderStatic() const
@@ -8629,6 +8601,130 @@ std::string VulkanHppGenerator::generateRAIICommandDefinitions( std::vector<Requ
   return addTitleAndProtection( title, str );
 }
 
+std::string VulkanHppGenerator::generateRAIIDispatcherCommandsContextInitializers( std::vector<RequireData> const & requireData,
+                                                                                   std::set<std::string> const &    listedCommands,
+                                                                                   std::string const &              title ) const
+{
+  std::string contextInitializers;
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            if ( !listedCommands.contains( command.name ) && commandData.second.handle.empty() )
+                            {
+                              contextInitializers += ", " + command.name + "( PFN_" + command.name + "( getProcAddr( NULL, \"" + command.name + "\" ) ) )";
+                            }
+                          } );
+  return addTitleAndProtection( title, contextInitializers );
+}
+
+std::string VulkanHppGenerator::generateRAIIDispatcherCommandsContextMembers( std::vector<RequireData> const & requireData,
+                                                                              std::set<std::string> const &    listedCommands,
+                                                                              std::string const &              title ) const
+{
+  std::string contextMembers;
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            if ( !listedCommands.contains( command.name ) && commandData.second.handle.empty() )
+                            {
+                              contextMembers += "      PFN_" + command.name + " " + command.name + " = 0;\n";
+                            }
+                          } );
+  return addTitleAndProtection( title, contextMembers );
+}
+
+std::string VulkanHppGenerator::generateRAIIDispatcherCommandsDeviceAssignments( std::vector<RequireData> const & requireData,
+                                                                                 std::set<std::string> const &    listedCommands,
+                                                                                 std::string const &              title ) const
+{
+  std::string deviceAssignments;
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            if ( !listedCommands.contains( command.name ) &&
+                                 ( ( commandData.second.handle == "VkDevice" ) || hasParentHandle( commandData.second.handle, "VkDevice" ) ) )
+                            {
+                              deviceAssignments +=
+                                "        " + command.name + " = PFN_" + command.name + "( vkGetDeviceProcAddr( device, \"" + command.name + "\" ) );\n";
+                              // if this is an alias'ed function, use it as a fallback for the original one
+                              if ( command.name != commandData.first )
+                              {
+                                assert( commandData.second.aliases.contains( command.name ) );
+                                deviceAssignments += "        if ( !" + commandData.first + " ) " + commandData.first + " = " + command.name + ";\n";
+                              }
+                            }
+                          } );
+  return addTitleAndProtection( title, deviceAssignments );
+}
+
+std::string VulkanHppGenerator::generateRAIIDispatcherCommandsDeviceMembers( std::vector<RequireData> const & requireData,
+                                                                             std::set<std::string> const &    listedCommands,
+                                                                             std::string const &              title ) const
+{
+  std::string deviceMembers, deviceMemberDummies;
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            if ( !listedCommands.contains( command.name ) &&
+                                 ( ( commandData.second.handle == "VkDevice" ) || hasParentHandle( commandData.second.handle, "VkDevice" ) ) )
+                            {
+                              deviceMembers += "      PFN_" + command.name + " " + command.name + " = 0;\n";
+                              deviceMemberDummies += "      PFN_dummy " + command.name + "_placeholder = 0;\n";
+                            }
+                          } );
+  return addTitleAndProtection( title, deviceMembers, deviceMemberDummies );
+}
+
+std::string VulkanHppGenerator::generateRAIIDispatcherCommandsInstanceAssignments( std::vector<RequireData> const & requireData,
+                                                                                   std::set<std::string> const &    listedCommands,
+                                                                                   std::string const &              title ) const
+{
+  std::string instanceAssignments;
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            if ( !listedCommands.contains( command.name ) && !commandData.second.handle.empty() &&
+                                 !( ( commandData.second.handle == "VkDevice" ) || hasParentHandle( commandData.second.handle, "VkDevice" ) ) )
+                            {
+                              assert( ( commandData.second.handle == "VkInstance" ) || hasParentHandle( commandData.second.handle, "VkInstance" ) );
+                              // filter out vkGetInstanceProcAddr, as starting with Vulkan 1.2 it can resolve itself only (!) with an
+                              // instance nullptr !
+                              if ( command.name != "vkGetInstanceProcAddr" )
+                              {
+                                instanceAssignments +=
+                                  "        " + command.name + " = PFN_" + command.name + "( vkGetInstanceProcAddr( instance, \"" + command.name + "\" ) );\n";
+                                // if this is an alias'ed function, use it as a fallback for the original one
+                                if ( command.name != commandData.first )
+                                {
+                                  assert( commandData.second.aliases.contains( command.name ) );
+                                  instanceAssignments += "        if ( !" + commandData.first + " ) " + commandData.first + " = " + command.name + ";\n";
+                                }
+                              }
+                            }
+                          } );
+  return addTitleAndProtection( title, instanceAssignments );
+}
+
+std::string VulkanHppGenerator::generateRAIIDispatcherCommandsInstanceMembers( std::vector<RequireData> const & requireData,
+                                                                               std::set<std::string> const &    listedCommands,
+                                                                               std::string const &              title ) const
+{
+  std::string instanceMembers, instanceMemberDummies;
+  forEachRequiredCommand( requireData,
+                          [&]( NameLine const & command, auto const & commandData )
+                          {
+                            if ( !listedCommands.contains( command.name ) && !commandData.second.handle.empty() &&
+                                 !( ( commandData.second.handle == "VkDevice" ) || hasParentHandle( commandData.second.handle, "VkDevice" ) ) )
+                            {
+                              assert( ( commandData.second.handle == "VkInstance" ) || hasParentHandle( commandData.second.handle, "VkInstance" ) );
+
+                              instanceMembers += +"      PFN_" + command.name + " " + command.name + " = 0;\n";
+                              instanceMemberDummies += "      PFN_dummy " + command.name + "_placeholder = 0;\n";
+                            }
+                          } );
+  return addTitleAndProtection( title, instanceMembers, instanceMemberDummies );
+}
+
 std::string VulkanHppGenerator::generateRAIIDispatchers() const
 {
   std::string contextInitializers, contextMembers, deviceAssignments, deviceMembers, instanceAssignments, instanceMembers;
@@ -8636,27 +8732,23 @@ std::string VulkanHppGenerator::generateRAIIDispatchers() const
   std::set<std::string> listedCommands;
   for ( auto const & feature : m_features )
   {
-    appendRAIIDispatcherCommands( feature.requireData,
-                                  listedCommands,
-                                  feature.name,
-                                  contextInitializers,
-                                  contextMembers,
-                                  deviceAssignments,
-                                  deviceMembers,
-                                  instanceAssignments,
-                                  instanceMembers );
+    contextInitializers += generateRAIIDispatcherCommandsContextInitializers( feature.requireData, listedCommands, feature.name );
+    contextMembers += generateRAIIDispatcherCommandsContextMembers( feature.requireData, listedCommands, feature.name );
+    deviceAssignments += generateRAIIDispatcherCommandsDeviceAssignments( feature.requireData, listedCommands, feature.name );
+    deviceMembers += generateRAIIDispatcherCommandsDeviceMembers( feature.requireData, listedCommands, feature.name );
+    instanceAssignments += generateRAIIDispatcherCommandsInstanceAssignments( feature.requireData, listedCommands, feature.name );
+    instanceMembers += generateRAIIDispatcherCommandsInstanceMembers( feature.requireData, listedCommands, feature.name );
+    forEachRequiredCommand( feature.requireData, [&listedCommands]( NameLine const & command, auto const & ) { listedCommands.insert( command.name ); } );
   }
   for ( auto const & extension : m_extensions )
   {
-    appendRAIIDispatcherCommands( extension.requireData,
-                                  listedCommands,
-                                  extension.name,
-                                  contextInitializers,
-                                  contextMembers,
-                                  deviceAssignments,
-                                  deviceMembers,
-                                  instanceAssignments,
-                                  instanceMembers );
+    contextInitializers += generateRAIIDispatcherCommandsContextInitializers( extension.requireData, listedCommands, extension.name );
+    contextMembers += generateRAIIDispatcherCommandsContextMembers( extension.requireData, listedCommands, extension.name );
+    deviceAssignments += generateRAIIDispatcherCommandsDeviceAssignments( extension.requireData, listedCommands, extension.name );
+    deviceMembers += generateRAIIDispatcherCommandsDeviceMembers( extension.requireData, listedCommands, extension.name );
+    instanceAssignments += generateRAIIDispatcherCommandsInstanceAssignments( extension.requireData, listedCommands, extension.name );
+    instanceMembers += generateRAIIDispatcherCommandsInstanceMembers( extension.requireData, listedCommands, extension.name );
+    forEachRequiredCommand( extension.requireData, [&listedCommands]( NameLine const & command, auto const & ) { listedCommands.insert( command.name ); } );
   }
 
   std::string contextDispatcherTemplate = R"(

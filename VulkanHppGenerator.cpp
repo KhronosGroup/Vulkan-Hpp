@@ -3970,17 +3970,33 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
   std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
   if ( vectorParams.empty() )
   {
-    return generateCommandSetInclusive( name,
-                                        commandData,
-                                        initialSkipCount,
-                                        definition,
-                                        { returnParam },
-                                        vectorParams,
-                                        false,
-                                        { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained },
-                                        raii,
-                                        false,
-                                        { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
+    std::string command;
+    if ( raii )
+    {
+      // raii functions returning a structure chain might need a standard implementation as well!
+      command = generateCommandSetInclusive( name,
+                                             commandData,
+                                             initialSkipCount,
+                                             definition,
+                                             { returnParam },
+                                             vectorParams,
+                                             false,
+                                             { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained },
+                                             raii,
+                                             false,
+                                             {} );
+    }
+    return command + generateCommandSetInclusive( name,
+                                                  commandData,
+                                                  initialSkipCount,
+                                                  definition,
+                                                  { returnParam },
+                                                  vectorParams,
+                                                  false,
+                                                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained },
+                                                  raii,
+                                                  false,
+                                                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
   }
   return "";
 }

@@ -3599,6 +3599,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkGetPhysicalDeviceImageFormatProperties2, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceImageFormatProperties2.html
+      VULKAN_HPP_NODISCARD Result getImageFormatProperties2( const PhysicalDeviceImageFormatInfo2 * pImageFormatInfo,
+                                                             ImageFormatProperties2 *               pImageFormatProperties ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkGetPhysicalDeviceImageFormatProperties2, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceImageFormatProperties2.html
       VULKAN_HPP_NODISCARD typename ResultValueType<ImageFormatProperties2>::type
         getImageFormatProperties2( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo ) const;
 
@@ -3731,6 +3736,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkGetPhysicalDeviceVideoCapabilitiesKHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceVideoCapabilitiesKHR.html
+      VULKAN_HPP_NODISCARD Result getVideoCapabilitiesKHR( const VideoProfileInfoKHR * pVideoProfile,
+                                                           VideoCapabilitiesKHR *      pCapabilities ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkGetPhysicalDeviceVideoCapabilitiesKHR, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceVideoCapabilitiesKHR.html
       VULKAN_HPP_NODISCARD typename ResultValueType<VideoCapabilitiesKHR>::type getVideoCapabilitiesKHR( const VideoProfileInfoKHR & videoProfile ) const;
 
       // wrapper function for command vkGetPhysicalDeviceVideoCapabilitiesKHR, see
@@ -3789,6 +3799,11 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceFormatProperties2KHR.html
       template <typename X, typename Y, typename... Z>
       VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> getFormatProperties2KHR( Format format ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkGetPhysicalDeviceImageFormatProperties2KHR, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceImageFormatProperties2KHR.html
+      VULKAN_HPP_NODISCARD Result getImageFormatProperties2KHR( const PhysicalDeviceImageFormatInfo2 * pImageFormatInfo,
+                                                                ImageFormatProperties2 *               pImageFormatProperties ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkGetPhysicalDeviceImageFormatProperties2KHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceImageFormatProperties2KHR.html
@@ -3875,6 +3890,11 @@ namespace VULKAN_HPP_NAMESPACE
         getQueueFamilyPerformanceQueryPassesKHR( const QueryPoolPerformanceCreateInfoKHR & performanceQueryCreateInfo ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_KHR_get_surface_capabilities2 ===
+
+      // wrapper function for command vkGetPhysicalDeviceSurfaceCapabilities2KHR, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceSurfaceCapabilities2KHR.html
+      VULKAN_HPP_NODISCARD Result getSurfaceCapabilities2KHR( const PhysicalDeviceSurfaceInfo2KHR * pSurfaceInfo,
+                                                              SurfaceCapabilities2KHR *             pSurfaceCapabilities ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkGetPhysicalDeviceSurfaceCapabilities2KHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceSurfaceCapabilities2KHR.html
@@ -3969,6 +3989,12 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                         uint32_t connectorId ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
 
       //=== VK_KHR_video_encode_queue ===
+
+      // wrapper function for command vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR.html
+      VULKAN_HPP_NODISCARD Result
+        getVideoEncodeQualityLevelPropertiesKHR( const PhysicalDeviceVideoEncodeQualityLevelInfoKHR * pQualityLevelInfo,
+                                                 VideoEncodeQualityLevelPropertiesKHR *               pQualityLevelProperties ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR.html
@@ -4705,6 +4731,11 @@ namespace VULKAN_HPP_NAMESPACE
 
 #  if defined( VK_USE_PLATFORM_ANDROID_KHR )
       //=== VK_ANDROID_external_memory_android_hardware_buffer ===
+
+      // wrapper function for command vkGetAndroidHardwareBufferPropertiesANDROID, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAndroidHardwareBufferPropertiesANDROID.html
+      VULKAN_HPP_NODISCARD Result getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer *           buffer,
+                                                                             AndroidHardwareBufferPropertiesANDROID * pProperties ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkGetAndroidHardwareBufferPropertiesANDROID, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAndroidHardwareBufferPropertiesANDROID.html
@@ -5500,6 +5531,11 @@ namespace VULKAN_HPP_NAMESPACE
 
 #  if defined( VK_USE_PLATFORM_SCREEN_QNX )
       //=== VK_QNX_external_memory_screen_buffer ===
+
+      // wrapper function for command vkGetScreenBufferPropertiesQNX, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetScreenBufferPropertiesQNX.html
+      VULKAN_HPP_NODISCARD Result getScreenBufferPropertiesQNX( const struct _screen_buffer * buffer,
+                                                                ScreenBufferPropertiesQNX *   pProperties ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkGetScreenBufferPropertiesQNX, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetScreenBufferPropertiesQNX.html
@@ -16826,6 +16862,19 @@ namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkGetPhysicalDeviceImageFormatProperties2, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceImageFormatProperties2.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::getImageFormatProperties2(
+      const PhysicalDeviceImageFormatInfo2 * pImageFormatInfo, ImageFormatProperties2 * pImageFormatProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceImageFormatProperties2 &&
+                         "Function <vkGetPhysicalDeviceImageFormatProperties2> requires <VK_KHR_get_physical_device_properties2> or <VK_VERSION_1_1>" );
+      return static_cast<Result>(
+        getDispatcher()->vkGetPhysicalDeviceImageFormatProperties2( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                    reinterpret_cast<const VkPhysicalDeviceImageFormatInfo2 *>( pImageFormatInfo ),
+                                                                    reinterpret_cast<VkImageFormatProperties2 *>( pImageFormatProperties ) ) );
+    }
+
+    // wrapper function for command vkGetPhysicalDeviceImageFormatProperties2, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceImageFormatProperties2.html
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<ImageFormatProperties2>::type
                          PhysicalDevice::getImageFormatProperties2( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo ) const
     {
@@ -18782,6 +18831,17 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     //=== VK_KHR_video_queue ===
+    // wrapper function for command vkGetPhysicalDeviceVideoCapabilitiesKHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceVideoCapabilitiesKHR.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::getVideoCapabilitiesKHR( const VideoProfileInfoKHR * pVideoProfile,
+                                                                                           VideoCapabilitiesKHR *      pCapabilities ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceVideoCapabilitiesKHR &&
+                         "Function <vkGetPhysicalDeviceVideoCapabilitiesKHR> requires <VK_KHR_video_queue>" );
+      return static_cast<Result>( getDispatcher()->vkGetPhysicalDeviceVideoCapabilitiesKHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                                            reinterpret_cast<const VkVideoProfileInfoKHR *>( pVideoProfile ),
+                                                                                            reinterpret_cast<VkVideoCapabilitiesKHR *>( pCapabilities ) ) );
+    }
 
     // wrapper function for command vkGetPhysicalDeviceVideoCapabilitiesKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceVideoCapabilitiesKHR.html
@@ -19498,6 +19558,19 @@ namespace VULKAN_HPP_NAMESPACE
         static_cast<VkPhysicalDevice>( m_physicalDevice ), static_cast<VkFormat>( format ), reinterpret_cast<VkFormatProperties2 *>( &formatProperties ) );
 
       return structureChain;
+    }
+
+    // wrapper function for command vkGetPhysicalDeviceImageFormatProperties2KHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceImageFormatProperties2KHR.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::getImageFormatProperties2KHR(
+      const PhysicalDeviceImageFormatInfo2 * pImageFormatInfo, ImageFormatProperties2 * pImageFormatProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceImageFormatProperties2KHR &&
+                         "Function <vkGetPhysicalDeviceImageFormatProperties2KHR> requires <VK_KHR_get_physical_device_properties2> or <VK_VERSION_1_1>" );
+      return static_cast<Result>(
+        getDispatcher()->vkGetPhysicalDeviceImageFormatProperties2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                       reinterpret_cast<const VkPhysicalDeviceImageFormatInfo2 *>( pImageFormatInfo ),
+                                                                       reinterpret_cast<VkImageFormatProperties2 *>( pImageFormatProperties ) ) );
     }
 
     // wrapper function for command vkGetPhysicalDeviceImageFormatProperties2KHR, see
@@ -20487,6 +20560,18 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     //=== VK_KHR_get_surface_capabilities2 ===
+    // wrapper function for command vkGetPhysicalDeviceSurfaceCapabilities2KHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceSurfaceCapabilities2KHR.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::getSurfaceCapabilities2KHR(
+      const PhysicalDeviceSurfaceInfo2KHR * pSurfaceInfo, SurfaceCapabilities2KHR * pSurfaceCapabilities ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceSurfaceCapabilities2KHR &&
+                         "Function <vkGetPhysicalDeviceSurfaceCapabilities2KHR> requires <VK_KHR_get_surface_capabilities2>" );
+      return static_cast<Result>(
+        getDispatcher()->vkGetPhysicalDeviceSurfaceCapabilities2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                     reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR *>( pSurfaceInfo ),
+                                                                     reinterpret_cast<VkSurfaceCapabilities2KHR *>( pSurfaceCapabilities ) ) );
+    }
 
     // wrapper function for command vkGetPhysicalDeviceSurfaceCapabilities2KHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceSurfaceCapabilities2KHR.html
@@ -20920,6 +21005,16 @@ namespace VULKAN_HPP_NAMESPACE
 
 #  if defined( VK_USE_PLATFORM_ANDROID_KHR )
     //=== VK_ANDROID_external_memory_android_hardware_buffer ===
+    // wrapper function for command vkGetAndroidHardwareBufferPropertiesANDROID, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAndroidHardwareBufferPropertiesANDROID.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getAndroidHardwareBufferPropertiesANDROID(
+      const struct AHardwareBuffer * buffer, AndroidHardwareBufferPropertiesANDROID * pProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetAndroidHardwareBufferPropertiesANDROID &&
+                         "Function <vkGetAndroidHardwareBufferPropertiesANDROID> requires <VK_ANDROID_external_memory_android_hardware_buffer>" );
+      return static_cast<Result>( getDispatcher()->vkGetAndroidHardwareBufferPropertiesANDROID(
+        static_cast<VkDevice>( m_device ), buffer, reinterpret_cast<VkAndroidHardwareBufferPropertiesANDROID *>( pProperties ) ) );
+    }
 
     // wrapper function for command vkGetAndroidHardwareBufferPropertiesANDROID, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAndroidHardwareBufferPropertiesANDROID.html
@@ -23787,6 +23882,19 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     //=== VK_KHR_video_encode_queue ===
+    // wrapper function for command vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+      PhysicalDevice::getVideoEncodeQualityLevelPropertiesKHR( const PhysicalDeviceVideoEncodeQualityLevelInfoKHR * pQualityLevelInfo,
+                                                               VideoEncodeQualityLevelPropertiesKHR * pQualityLevelProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR &&
+                         "Function <vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR> requires <VK_KHR_video_encode_queue>" );
+      return static_cast<Result>( getDispatcher()->vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR(
+        static_cast<VkPhysicalDevice>( m_physicalDevice ),
+        reinterpret_cast<const VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR *>( pQualityLevelInfo ),
+        reinterpret_cast<VkVideoEncodeQualityLevelPropertiesKHR *>( pQualityLevelProperties ) ) );
+    }
 
     // wrapper function for command vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR.html
@@ -26824,6 +26932,16 @@ namespace VULKAN_HPP_NAMESPACE
 
 #  if defined( VK_USE_PLATFORM_SCREEN_QNX )
     //=== VK_QNX_external_memory_screen_buffer ===
+    // wrapper function for command vkGetScreenBufferPropertiesQNX, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetScreenBufferPropertiesQNX.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getScreenBufferPropertiesQNX( const struct _screen_buffer * buffer,
+                                                                                        ScreenBufferPropertiesQNX *   pProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetScreenBufferPropertiesQNX &&
+                         "Function <vkGetScreenBufferPropertiesQNX> requires <VK_QNX_external_memory_screen_buffer>" );
+      return static_cast<Result>( getDispatcher()->vkGetScreenBufferPropertiesQNX(
+        static_cast<VkDevice>( m_device ), buffer, reinterpret_cast<VkScreenBufferPropertiesQNX *>( pProperties ) ) );
+    }
 
     // wrapper function for command vkGetScreenBufferPropertiesQNX, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetScreenBufferPropertiesQNX.html

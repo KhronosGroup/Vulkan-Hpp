@@ -248,7 +248,7 @@ void VulkanHppGenerator::generateHppFile() const
       { "Exceptions", readSnippet( "Exceptions.hpp" ) },
       { "Exchange", readSnippet( "Exchange.hpp" ) },
       { "headerVersion", m_version },
-      { "includes", replaceWithMap( readSnippet( "includes.hpp" ), { { "vulkan_h", ( m_api == "vulkan" ) ? "vulkan.h" : "vulkan_sc_core.h" } } ) },
+      { "includes", replaceWithMap( readSnippet( "includes.hpp" ), { { "vulkan_h", ( m_api == "vulkansc" ) ? "vulkan_sc_core.h" : ( m_api + ".h" ) } } ) },
       { "licenseHeader", m_vulkanLicenseHeader },
       { "ObjectDestroy", readSnippet( "ObjectDestroy.hpp" ) },
       { "ObjectFree", readSnippet( "ObjectFree.hpp" ) },
@@ -7251,7 +7251,12 @@ std::string VulkanHppGenerator::generateExtensionDependencies() const
   {
     if ( !extension.depends.empty() )
     {
-      std::string dependsPerExtension = "{ \"" + extension.name + "\", { ";
+      std::string dependsPerExtension;
+      if ( !extensionDependencies.empty() )
+      {
+        dependsPerExtension += ", ";
+      }
+      dependsPerExtension += "{ \"" + extension.name + "\", { ";
       for ( auto const & dependsByVersion : extension.depends )
       {
         dependsPerExtension += "{ \"" + dependsByVersion.first + "\", { ";
@@ -7273,7 +7278,7 @@ std::string VulkanHppGenerator::generateExtensionDependencies() const
       }
       assert( dependsPerExtension.ends_with( ", " ) );
       dependsPerExtension = dependsPerExtension.substr( 0, dependsPerExtension.length() - 2 );
-      dependsPerExtension += " } }, ";
+      dependsPerExtension += " } }";
 
       const auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
       extensionDependencies += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + dependsPerExtension;
@@ -7281,8 +7286,6 @@ std::string VulkanHppGenerator::generateExtensionDependencies() const
       previousLeave = leave;
     }
   }
-  assert( extensionDependencies.ends_with( ", " ) );
-  extensionDependencies = extensionDependencies.substr( 0, extensionDependencies.length() - 2 );
 
   if ( !previousLeave.empty() )
   {
@@ -7322,23 +7325,20 @@ std::string VulkanHppGenerator::generateExtensionReplacedTest( Predicate p ) con
   {
     if ( p( extension ) )
     {
+      bool firstTest            = replacedTest.empty();
       const auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
-      replacedTest += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "( extension == \"" + extension.name + "\" ) || ";
+      replacedTest +=
+        ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + ( firstTest ? "" : " || " ) + "( extension == \"" + extension.name + "\" )";
       previousEnter = enter;
       previousLeave = leave;
     }
   }
-  if ( previousLeave.empty() )
-  {
-    // the test ends on an unprotected extension -> remove the trailing " || "
-    assert( replacedTest.ends_with( " || " ) );
-    replacedTest = replacedTest.substr( 0, replacedTest.length() - 4 );
-  }
-  else
+  if ( !previousLeave.empty() )
   {
     // the test ends on a protected extension -> add the previousLeave and a "false" to the end
     // in order to make it work in case the protection is not defined.
-    replacedTest += "\n" + previousLeave + "false";
+    assert( !replacedTest.empty() );
+    replacedTest += "\n" + previousLeave + " || false";
   }
   return replacedTest;
 }
@@ -7350,14 +7350,16 @@ std::string VulkanHppGenerator::generateExtensionsList( std::string const & type
   {
     if ( extension.type == type )
     {
+      if ( !extensionsList.empty() )
+      {
+        extensionsList += ", ";
+      }
       const auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
-      extensionsList += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "\"" + extension.name + "\", ";
+      extensionsList += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "\"" + extension.name + "\"";
       previousEnter = enter;
       previousLeave = leave;
     }
   }
-  assert( extensionsList.ends_with( ", " ) );
-  extensionsList = extensionsList.substr( 0, extensionsList.length() - 2 );
   if ( !previousLeave.empty() )
   {
     extensionsList += "\n" + previousLeave;
@@ -13798,7 +13800,7 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
                      attributes,
                      {},
                      { { "allownoqueues", { "true" } },
-                       { "api", { "vulkan", "vulkansc" } },
+                       { "api", { "vulkan", "vulkanbase", "vulkansc" } },
                        { "cmdbufferlevel", { "primary", "secondary" } },
                        { "comment", {} },
                        { "conditionalrendering", { "false", "true" } },
@@ -13815,12 +13817,12 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
 
     CommandData commandData;
     commandData.xmlLine = line;
-    std::string api;
+    std::vector<std::string> api;
     for ( auto const & attribute : attributes )
     {
       if ( attribute.first == "api" )
       {
-        api = attribute.second;
+        api = tokenize( attribute.second, "," );
       }
       else if ( attribute.first == "errorcodes" )
       {
@@ -13860,9 +13862,11 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
       }
     }
 
-    checkForError( api.empty() || commandData.exports.empty() || ( ( commandData.exports.size() == 1 ) && ( api == commandData.exports.front() ) ),
-                   line,
-                   "command <" + name + "> has non-empty but different attributes <api> and <export>" );
+    checkForError(
+      api.empty() || commandData.exports.empty() ||
+        ( ( commandData.exports.size() == 1 ) && std::ranges::any_of( api, [&commandData]( auto const & a ) { return a == commandData.exports.front(); } ) ),
+      line,
+      "command <" + name + "> has disjunct attributes <api> and <export>" );
 
     for ( auto & param : commandData.params )
     {
@@ -13892,7 +13896,7 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
                    line,
                    "command <" + name + "> does not return a VkResult but specifies successcodes" );
 
-    if ( api.empty() || ( api == m_api ) )
+    if ( api.empty() || std::ranges::any_of( api, [this]( auto const & a ) { return a == m_api; } ) )
     {
       checkForError( !m_commands.contains( name ), line, "command <" + name + "> already specified" );
       addCommand( name, std::move( commandData ) );
@@ -13909,7 +13913,7 @@ std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandPa
                    attributes,
                    {},
                    { { "altlen", {} },
-                     { "api", { "vulkan", "vulkansc" } },
+                     { "api", { "vulkan", "vulkanbase", "vulkansc" } },
                      { "externsync", {} },
                      { "len", {} },
                      { "noautovalidity", { "true" } },
@@ -13920,7 +13924,7 @@ std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandPa
 
   ParamData paramData;
   paramData.xmlLine = line;
-  std::string api;
+  std::vector<std::string> api;
   for ( auto attribute : attributes )
   {
     if ( attribute.first == "altlen" )
@@ -13931,7 +13935,7 @@ std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandPa
     }
     else if ( attribute.first == "api" )
     {
-      api = attribute.second;
+      api = tokenize( attribute.second, "," );
     }
     else if ( attribute.first == "len" )
     {
@@ -13985,13 +13989,11 @@ std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandPa
   paramData.name       = nameData.name;
   paramData.arraySizes = nameData.arraySizes;
 
-  if ( api.empty() || ( api == m_api ) )
-  {
-    checkForError( std::ranges::none_of( params, [&name = nameData.name]( ParamData const & pd ) { return pd.name == name; } ),
-                   line,
-                   "command param <" + nameData.name + "> already used" );
-  }
-  return { api.empty() || ( api == m_api ), paramData };
+  bool valid = api.empty() || std::ranges::any_of( api, [this]( auto const & a ) { return a == m_api; } );
+  checkForError( !valid || std::ranges::none_of( params, [&name = nameData.name]( ParamData const & pd ) { return pd.name == name; } ),
+                 line,
+                 "command param <" + nameData.name + "> already used" );
+  return { valid, paramData };
 }
 
 std::pair<std::string, std::string> VulkanHppGenerator::readCommandProto( tinyxml2::XMLElement const * element )
@@ -14714,7 +14716,10 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
 {
   const int                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "name", {} }, { "number", {} } }, { { "depends", {} } } );
+  checkAttributes( line,
+                   attributes,
+                   { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "comment", {} }, { "name", {} }, { "number", {} } },
+                   { { "apitype", { "internal" } }, { "depends", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, { { "require", false } }, { "deprecate", "remove" } );
 
@@ -14726,6 +14731,14 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
     if ( attribute.first == "api" )
     {
       featureData.api = tokenize( attribute.second, "," );
+    }
+    else if ( attribute.first == "depends" )
+    {
+      std::vector<std::string> depends = tokenize( attribute.second, "," );
+      for ( auto const & dep : depends )
+      {
+        checkForError( findByName( m_features, dep ) != m_features.end(), line, "feature depends on unknown feature <" + dep + ">" );
+      }
     }
     else if ( attribute.first == "name" )
     {
@@ -14739,7 +14752,7 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
     }
   }
 
-  const bool featureSupported = std::ranges::any_of( featureData.api, [this]( std::string const & a ) { return a == m_api; } );
+  const bool featureSupported = std::ranges::any_of( featureData.api, [this]( auto const & a ) { return a == m_api; } );
   for ( auto child : children )
   {
     std::string value = child->Value();
@@ -14757,11 +14770,22 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
     }
   }
 
-  checkForError( featureData.name ==
-                   ( std::ranges::any_of( featureData.api, []( std::string const & a ) { return a == "vulkan"; } ) ? "VK_VERSION_" : "VKSC_VERSION_" ) +
-                     modifiedNumber,
-                 line,
-                 "unexpected formatting of name <" + featureData.name + ">" );
+  if ( std::ranges::any_of( featureData.api, []( auto const & a ) { return a == "vulkanbase"; } ) )
+  {
+    checkForError( ( featureData.name == "VK_BASE_VERSION_" + modifiedNumber ) || ( featureData.name == "VK_COMPUTE_VERSION_" + modifiedNumber ) ||
+                     ( featureData.name == "VK_GRAPHICS_VERSION_" + modifiedNumber ) || ( featureData.name == "VK_VERSION_" + modifiedNumber ),
+                   line,
+                   "unexpected formatting of name <" + featureData.name + ">" );
+  }
+  else
+  {
+    checkForError( featureData.name ==
+                     ( std::ranges::any_of( featureData.api, []( auto const & a ) { return a == "vulkan"; } ) ? "VK_VERSION_" : "VKSC_VERSION_" ) +
+                       modifiedNumber,
+                   line,
+                   "unexpected formatting of name <" + featureData.name + ">" );
+  }
+
   checkForError( !isFeature( featureData.name ), line, "feature <" + featureData.name + "> already specified" );
   if ( featureSupported )
   {
@@ -15720,7 +15744,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
                    attributes,
                    {},
                    { { "altlen", {} },
-                     { "api", { "vulkan", "vulkansc" } },
+                     { "api", { "vulkan", "vulkanbase", "vulkansc" } },
                      { "deprecated", { "ignored" } },
                      { "externsync", { "maybe", "true" } },
                      { "featurelink", {} },
@@ -15738,12 +15762,12 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
   MemberData memberData;
   memberData.xmlLine = line;
 
-  std::string api;
+  std::vector<std::string> api;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "api" )
     {
-      api = attribute.second;
+      api = tokenize( attribute.second, "," );
     }
     else if ( attribute.first == "altlen" )
     {
@@ -15846,7 +15870,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
   checkForError( ( memberData.type.postfix.length() < 3 ) || !memberData.type.postfix.starts_with( "[" ) || !memberData.type.postfix.ends_with( "]" ),
                  line,
                  "struct member <" + name + "> has its array size <" + memberData.type.postfix + "> at the wrong position" );
-  if ( api.empty() || ( api == m_api ) )
+  if ( api.empty() || std::ranges::any_of( api, [this]( auto const & a ) { return a == m_api; } ) )
   {
     checkForError(
       std::ranges::none_of( members, [&name]( MemberData const & md ) { return md.name == name; } ), line, "struct member name <" + name + "> already used" );
@@ -16129,14 +16153,16 @@ void VulkanHppGenerator::readTypeBitmask( tinyxml2::XMLElement const * element, 
   }
   else
   {
-    checkAttributes( line, attributes, { { "category", { "bitmask" } } }, { { "api", { "vulkan", "vulkansc" } }, { "bitvalues", {} }, { "requires", {} } } );
+    checkAttributes(
+      line, attributes, { { "category", { "bitmask" } } }, { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "bitvalues", {} }, { "requires", {} } } );
 
-    std::string api, bitvalues, require;
+    std::vector<std::string> api;
+    std::string              bitvalues, require;
     for ( auto const & attribute : attributes )
     {
       if ( attribute.first == "api" )
       {
-        api = attribute.second;
+        api = tokenize( attribute.second, "," );
       }
       else if ( attribute.first == "bitvalues" )
       {
@@ -16165,7 +16191,7 @@ void VulkanHppGenerator::readTypeBitmask( tinyxml2::XMLElement const * element, 
       require = bitvalues;
     }
 
-    if ( api.empty() || ( api == m_api ) )
+    if ( api.empty() || std::ranges::any_of( api, [this]( auto const & a ) { return a == m_api; } ) )
     {
       checkForError(
         m_types.insert( { nameData.name, TypeData{ TypeCategory::Bitmask, {}, line } } ).second, line, "bitmask <" + nameData.name + "> already specified" );
@@ -16221,15 +16247,16 @@ void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, s
   checkAttributes( line,
                    attributes,
                    { { "category", { "define" } } },
-                   { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "deprecated", { "true" } }, { "name", {} }, { "requires", {} } } );
+                   { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "comment", {} }, { "deprecated", { "true" } }, { "name", {} }, { "requires", {} } } );
 
-  std::string api, name, require;
-  bool        deprecated = false;
+  std::vector<std::string> api;
+  std::string              name, require;
+  bool                     deprecated = false;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "api" )
     {
-      api = attribute.second;
+      api = tokenize( attribute.second, "," );
     }
     else if ( attribute.first == "deprecated" )
     {
@@ -16271,7 +16298,7 @@ void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, s
                      line,
                      "unknown formatting of type category define" );
       name = trim( child->GetText() );
-      if ( ( name == "VK_HEADER_VERSION" ) && ( api.empty() || ( api == m_api ) ) )
+      if ( ( name == "VK_HEADER_VERSION" ) && ( api.empty() || std::ranges::any_of( api, [this]( auto const & a ) { return a == m_api; } ) ) )
       {
         m_version = trimEnd( element->LastChild()->ToText()->Value() );
       }
@@ -16285,7 +16312,7 @@ void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, s
   }
   assert( !name.empty() );
 
-  if ( api.empty() || ( api == m_api ) )
+  if ( api.empty() || std::ranges::any_of( api, [this]( auto const & a ) { return a == m_api; } ) )
   {
     MacroVisitor definesVisitor{};
     element->Accept( &definesVisitor );
@@ -17510,7 +17537,7 @@ int main( int argc, char const ** argv )
     std::cout << "VulkanHppGenerator usage: VulkanHppGenerator [-f filename][-api [vulkan|vulkansc]]" << std::endl;
     std::cout << "\tdefault for filename is <" << VK_SPEC << ">" << std::endl;
     std::cout << "\tdefault for api <vulkan>" << std::endl;
-    std::cout << "\tsupported values for api are <vulkan> and <vulkansc>" << std::endl;
+    std::cout << "\tsupported values for api are <vulkan>, <vulkanbase>, and <vulkansc>" << std::endl;
     return -1;
   }
 
@@ -17533,7 +17560,7 @@ int main( int argc, char const ** argv )
     }
   }
 
-  if ( ( api != "vulkan" ) && ( api != "vulkansc" ) )
+  if ( ( api != "vulkan" ) && ( api != "vulkanbase" ) && ( api != "vulkansc" ) )
   {
     std::cout << "unsupported api <" << api << ">" << std::endl;
     return -1;

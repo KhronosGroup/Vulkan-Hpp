@@ -514,26 +514,10 @@ private:
   void        addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredBy );
   std::string addTitleAndProtection( std::string const & title, std::string const & strIf, std::string const & strElse = {} ) const;
   bool        allVectorSizesSupported( std::vector<ParamData> const & params, std::map<size_t, VectorParamData> const & vectorParams ) const;
-  void        appendDispatchLoaderDynamicCommands( std::vector<RequireData> const & requireData,
-                                                   std::set<std::string> &          listedCommands,
-                                                   std::string const &              title,
-                                                   std::string &                    commandMembers,
-                                                   std::string &                    initialCommandAssignments,
-                                                   std::string &                    instanceCommandAssignments,
-                                                   std::string &                    deviceCommandAssignments ) const;
   void        appendCppModuleCommands( std::vector<RequireData> const & requireData,
                                        std::set<std::string> &          listedCommands,
                                        std::string const &              title,
                                        std::string &                    commandMembers ) const;
-  void        appendRAIIDispatcherCommands( std::vector<RequireData> const & requireData,
-                                            std::set<std::string> &          listedCommands,
-                                            std::string const &              title,
-                                            std::string &                    contextInitializers,
-                                            std::string &                    contextMembers,
-                                            std::string &                    deviceAssignments,
-                                            std::string &                    deviceMembers,
-                                            std::string &                    instanceAssignments,
-                                            std::string &                    instanceMembers ) const;
   void        checkAttributes( int                                                  line,
                                std::map<std::string, std::string> const &           attributes,
                                std::map<std::string, std::set<std::string>> const & required,
@@ -859,7 +843,19 @@ private:
   std::string generateDeprecatedConstructors( std::string const & name ) const;
   std::string generateDeprecatedStructSetters( std::string const & name ) const;
   std::string generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
-  std::string generateDispatchLoaderStatic() const;   // uses exported symbols from loader
+  std::string generateDispatchLoaderDynamicCommandMembers( std::vector<RequireData> const & requireData,
+                                                           std::set<std::string> const &    listedCommands,
+                                                           std::string const &              title ) const;
+  std::string generateDispatchLoaderDynamicDeviceCommandAssignment( std::vector<RequireData> const & requireData,
+                                                                    std::set<std::string> const &    listedCommands,
+                                                                    std::string const &              title ) const;
+  std::string generateDispatchLoaderDynamicInitialCommandAssignment( std::vector<RequireData> const & requireData,
+                                                                     std::set<std::string> const &    listedCommands,
+                                                                     std::string const &              title ) const;
+  std::string generateDispatchLoaderDynamicInstanceCommandAssignment( std::vector<RequireData> const & requireData,
+                                                                      std::set<std::string> const &    listedCommands,
+                                                                      std::string const &              title ) const;
+  std::string generateDispatchLoaderStatic() const;  // uses exported symbols from loader
   std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
   std::string
     generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName, std::string const & aliasName, std::string const & firstArg ) const;
@@ -928,6 +924,24 @@ private:
   std::string                         generateRAIICommandDefinitions() const;
   std::string
     generateRAIICommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;
+  std::string generateRAIIDispatcherCommandsContextInitializers( std::vector<RequireData> const & requireData,
+                                                                 std::set<std::string> const &    listedCommands,
+                                                                 std::string const &              title ) const;
+  std::string generateRAIIDispatcherCommandsContextMembers( std::vector<RequireData> const & requireData,
+                                                            std::set<std::string> const &    listedCommands,
+                                                            std::string const &              title ) const;
+  std::string generateRAIIDispatcherCommandsDeviceAssignments( std::vector<RequireData> const & requireData,
+                                                               std::set<std::string> const &    listedCommands,
+                                                               std::string const &              title ) const;
+  std::string generateRAIIDispatcherCommandsDeviceMembers( std::vector<RequireData> const & requireData,
+                                                           std::set<std::string> const &    listedCommands,
+                                                           std::string const &              title ) const;
+  std::string generateRAIIDispatcherCommandsInstanceAssignments( std::vector<RequireData> const & requireData,
+                                                                 std::set<std::string> const &    listedCommands,
+                                                                 std::string const &              title ) const;
+  std::string generateRAIIDispatcherCommandsInstanceMembers( std::vector<RequireData> const & requireData,
+                                                             std::set<std::string> const &    listedCommands,
+                                                             std::string const &              title ) const;
   std::string generateRAIIDispatchers() const;
   std::string generateRAIIFactoryReturnStatements( CommandData const & commandData,
                                                    std::string const & vkType,

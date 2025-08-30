@@ -5063,7 +5063,6 @@ export namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_USE_PLATFORM_OHOS )
   //=== VK_OHOS_surface ===
-  using VULKAN_HPP_NAMESPACE::OHSurfaceCreateInfoOHOS;
   using VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS;
 #endif /*VK_USE_PLATFORM_OHOS*/
 
@@ -9023,7 +9022,7 @@ export namespace std
 #if defined( VK_USE_PLATFORM_OHOS )
   //=== VK_OHOS_surface ===
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::OHSurfaceCreateInfoOHOS>;
+  struct hash<VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS>;
 #endif /*VK_USE_PLATFORM_OHOS*/
 
   //=== VK_HUAWEI_hdr_vivid ===

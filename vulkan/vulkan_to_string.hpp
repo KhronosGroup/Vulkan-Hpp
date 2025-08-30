@@ -5344,7 +5344,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eVideoDecodeH265InlineSessionParametersInfoKHR             : return "VideoDecodeH265InlineSessionParametersInfoKHR";
       case StructureType::eVideoDecodeAv1InlineSessionParametersInfoKHR              : return "VideoDecodeAv1InlineSessionParametersInfoKHR";
 #if defined( VK_USE_PLATFORM_OHOS )
-      case StructureType::eOhSurfaceCreateInfoOHOS: return "OhSurfaceCreateInfoOHOS";
+      case StructureType::eSurfaceCreateInfoOHOS: return "SurfaceCreateInfoOHOS";
 #endif /*VK_USE_PLATFORM_OHOS*/
       case StructureType::ePhysicalDeviceHdrVividFeaturesHUAWEI            : return "PhysicalDeviceHdrVividFeaturesHUAWEI";
       case StructureType::eHdrVividDynamicMetadataHUAWEI                   : return "HdrVividDynamicMetadataHUAWEI";

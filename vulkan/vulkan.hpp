@@ -56,7 +56,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-static_assert( VK_HEADER_VERSION == 325, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 326, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -9433,7 +9433,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<ShaderModuleCreateInfo, DataGraphPipelineShaderModuleCreateInfoARM>
+  struct StructExtends<ShaderModuleCreateInfo, DataGraphPipelineCreateInfoARM>
   {
     enum
     {

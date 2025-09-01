@@ -9020,11 +9020,11 @@ VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPAC
 #if defined( VK_USE_PLATFORM_OHOS )
 //=== VK_OHOS_surface ===
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::OHSurfaceCreateInfoOHOS ) == sizeof( VkOHSurfaceCreateInfoOHOS ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS ) == sizeof( VkSurfaceCreateInfoOHOS ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::OHSurfaceCreateInfoOHOS>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::OHSurfaceCreateInfoOHOS>::value,
-                          "OHSurfaceCreateInfoOHOS is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS>::value,
+                          "SurfaceCreateInfoOHOS is not nothrow_move_constructible!" );
 #endif /*VK_USE_PLATFORM_OHOS*/
 
 //=== VK_HUAWEI_hdr_vivid ===

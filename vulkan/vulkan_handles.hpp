@@ -2132,8 +2132,7 @@ namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_USE_PLATFORM_OHOS )
   //=== VK_OHOS_surface ===
-  struct OHSurfaceCreateInfoOHOS;
-  using SurfaceCreateInfoOHOS = OHSurfaceCreateInfoOHOS;
+  struct SurfaceCreateInfoOHOS;
 #endif /*VK_USE_PLATFORM_OHOS*/
 
   //=== VK_HUAWEI_hdr_vivid ===

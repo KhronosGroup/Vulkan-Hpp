@@ -3987,6 +3987,23 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
         return generateCommandSetInclusive(
           name, commandData, initialSkipCount, definition, { returnParam }, vectorParams, false, { flavourFlags }, raii, false, { flavourFlags } );
       }
+    case 1:
+      if ( commandData.params[vectorParams.begin()->first].type.isConstPointer() )
+      {
+        assert( vectorParams.begin()->first != returnParam );
+        return generateCommandSetInclusive( name,
+                                            commandData,
+                                            initialSkipCount,
+                                            definition,
+                                            { returnParam },
+                                            vectorParams,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced },
+                                            raii,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced } );
+      }
+      break;
     case 2:
       if ( returnParam == std::next( vectorParams.begin() )->first )
       {

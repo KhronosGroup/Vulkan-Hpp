@@ -2,7 +2,8 @@
 
 #if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
 #  include <cassert>
-#  include <string.h>
+#  include <cstring>
+#  include <cstdlib>
 import VULKAN_HPP_STD_MODULE;
 #else
 #  include <algorithm>

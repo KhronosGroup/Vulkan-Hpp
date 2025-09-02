@@ -402,6 +402,7 @@ private:
     std::string                                 bitCount       = {};
     std::string                                 deprecated     = {};
     std::vector<std::string>                    lenExpressions = {};
+    std::string                                 limitType      = {};
     std::vector<std::pair<std::string, size_t>> lenMembers     = {};
     bool                                        noAutoValidity = {};
     std::vector<bool>                           optional       = {};
@@ -423,6 +424,7 @@ private:
     bool                       allowDuplicate      = {};
     bool                       isExtended          = {};
     bool                       isUnion             = {};
+    bool                       requiredLimitType   = {};
     bool                       returnedOnly        = {};
     bool                       mutualExclusiveLens = {};
     std::vector<MemberData>    members             = {};

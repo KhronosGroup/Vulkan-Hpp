@@ -15727,6 +15727,10 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
         }
       }
     }
+    else if ( attribute.first == "limitype" )
+    {
+      memberData.limitType = attribute.second;
+    }
     else if ( attribute.first == "noautovalidity" )
     {
       memberData.noAutoValidity = ( attribute.second == "true" );
@@ -16476,7 +16480,11 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
     checkAttributes( line,
                      attributes,
                      { { "category", { isUnion ? "union" : "struct" } }, { "name", {} } },
-                     { { "allowduplicate", { "false", "true" } }, { "comment", {} }, { "returnedonly", { "true" } }, { "structextends", {} } } );
+                     { { "allowduplicate", { "false", "true" } },
+                       { "comment", {} },
+                       { "requiredlimittype", { "true" } },
+                       { "returnedonly", { "true" } },
+                       { "structextends", {} } } );
     std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
     checkElements( line, children, {}, { "member", "comment" } );
 
@@ -16498,6 +16506,11 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
       else if ( attribute.first == "name" )
       {
         name = attribute.second;
+      }
+      else if ( attribute.first == "requiredlimittype" )
+      {
+        assert( attribute.second == "true" );
+        structureData.requiredLimitType = true;
       }
       else if ( attribute.first == "returnedonly" )
       {
@@ -16540,6 +16553,13 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
         member.lenMembers.push_back( { member.lenExpressions[0], std::distance( it->second.members.cbegin(), lenMemberIt ) } );
       }
     }
+    checkForError( !structureData.requiredLimitType ||
+                     std::ranges::all_of( structureData.members,
+                                          []( MemberData const & member )
+                                          { return ( member.name == "sType" ) || ( member.name == "pNext" ) || !member.limitType.empty(); } ),
+                   line,
+                   "struct <" + name + "> requires all members to have a limittype" );
+
     it->second.subStruct = determineSubStruct( *it );
 
     // add some default values for some structures here!

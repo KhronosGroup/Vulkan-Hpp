@@ -5630,6 +5630,7 @@ std::string VulkanHppGenerator::generateCppModuleRaiiUsings() const
     using VULKAN_HPP_RAII_NAMESPACE::Context;
     namespace detail
     {
+      using VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType;
       using VULKAN_HPP_RAII_NAMESPACE::detail::ContextDispatcher;
       using VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher;
       using VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher;

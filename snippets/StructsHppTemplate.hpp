@@ -7,6 +7,7 @@ ${licenseHeader}
 // IWYU pragma: private; include "vulkan.hpp"
 
 #include <cstring>  // strcmp
+#include <cstdlib>  // free
 
 namespace VULKAN_HPP_NAMESPACE
 {

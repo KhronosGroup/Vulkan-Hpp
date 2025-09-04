@@ -18,17 +18,23 @@
 #include <cstdint>
 #include <type_traits>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-# include <vulkan/vulkan.h>
-# include <vulkan/vulkan_hpp_macros.hpp>
-  import vulkan_hpp;
+#  include <vulkan/vulkan.h>
+#  include <vulkan/vulkan_hpp_macros.hpp>
+import vulkan_hpp;
 #else
-# include <vulkan/vulkan.hpp>
-# include <vulkan/vulkan_raii.hpp>
+#  include <vulkan/vulkan.hpp>
+#  include <vulkan/vulkan_raii.hpp>
 #endif
 
 static_assert( std::is_same<vk::CppType<vk::IndexType, vk::IndexType::eUint16>::Type, uint16_t>::value, "" );
 static_assert( std::is_same<vk::CppType<vk::ObjectType, vk::ObjectType::eInstance>::Type, vk::Instance>::value, "" );
 static_assert( std::is_same<vk::CppType<vk::DebugReportObjectTypeEXT, vk::DebugReportObjectTypeEXT ::eInstance>::Type, vk::Instance>::value, "" );
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+static_assert( std::is_same<vk::CppType<VkAabbPositionsKHR>::Type, vk::AabbPositionsKHR>::value, "" );
+static_assert( std::is_same<vk::CppType<VkDeviceOrHostAddressConstKHR>::Type, vk::DeviceOrHostAddressConstKHR>::value, "" );
+static_assert( std::is_same<vk::CppType<VkAccelerationStructureGeometryTrianglesDataKHR>::Type, vk::AccelerationStructureGeometryTrianglesDataKHR>::value, "" );
+#endif
 
 #if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
 static_assert( std::is_same<vk::CppType<VkInstance>::Type, vk::Instance>::value, "" );

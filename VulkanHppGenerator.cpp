@@ -11997,6 +11997,14 @@ ${compareOperators}
     public:
 ${members}
   };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<Vk${structureType}>
+  {
+    using Type = ${structureType};
+  };
+#endif
 )";
 
   std::string allowDuplicate, typeValue;
@@ -12767,6 +12775,14 @@ ${setters}
 
 ${members}
   };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<Vk${unionName}>
+  {
+    using Type = ${unionName};
+  };
+#endif
 ${leave})";
 
   return replaceWithMap(

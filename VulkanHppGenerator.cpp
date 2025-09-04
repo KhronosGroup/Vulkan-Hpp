@@ -661,41 +661,28 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
         {
           checkForError( isExtension( d ), extension.xmlLine, "extension <" + extension.name + "> lists an unknown extension dependency <" + d + ">" );
         }
-        for ( auto nextDepsIt = std::next( depsIt ); nextDepsIt != dep.second.end(); ++nextDepsIt )
-        {
-          checkForError( *depsIt != *nextDepsIt, extension.xmlLine, "extension <" + extension.name + "> lists multiple identical dependencies" );
-        }
+        checkForError( std::none_of( std::next( depsIt ), dep.second.end(), [&depsIt]( auto const & d ) { return *depsIt == d; } ),
+                       extension.xmlLine,
+                       "extension <" + extension.name + "> lists multiple identical dependencies" );
       }
     }
-    if ( !extension.deprecatedBy.empty() )
-    {
-      checkForError( isFeature( extension.deprecatedBy ) || isExtension( extension.deprecatedBy ),
-                     extension.xmlLine,
-                     "extension <" + extension.name + "> is deprecated by unknown extension/version <" + extension.deprecatedBy + ">" );
-    }
-    if ( !extension.obsoletedBy.empty() )
-    {
-      checkForError( isFeature( extension.obsoletedBy ) || isExtension( extension.obsoletedBy ),
-                     extension.xmlLine,
-                     "extension <" + extension.name + "> is obsoleted by unknown extension/version <" + extension.obsoletedBy + ">" );
-    }
-    if ( !extension.promotedTo.empty() )
-    {
-      checkForError( isFeature( extension.promotedTo ) || isExtension( extension.promotedTo ),
-                     extension.xmlLine,
-                     "extension <" + extension.name + "> is promoted to unknown extension/version <" + extension.promotedTo + ">" );
-    }
+    checkForError( extension.deprecatedBy.empty() || isFeature( extension.deprecatedBy ) || isExtension( extension.deprecatedBy ),
+                   extension.xmlLine,
+                   "extension <" + extension.name + "> is deprecated by unknown extension/version <" + extension.deprecatedBy + ">" );
+    checkForError( extension.obsoletedBy.empty() || isFeature( extension.obsoletedBy ) || isExtension( extension.obsoletedBy ),
+                   extension.xmlLine,
+                   "extension <" + extension.name + "> is obsoleted by unknown extension/version <" + extension.obsoletedBy + ">" );
+    checkForError( extension.promotedTo.empty() || isFeature( extension.promotedTo ) || isExtension( extension.promotedTo ),
+                   extension.xmlLine,
+                   "extension <" + extension.name + "> is promoted to unknown extension/version <" + extension.promotedTo + ">" );
 
     // check for existence of any requirement
     for ( auto const & require : extension.requireData )
     {
-      if ( !require.depends.empty() )
+      std::vector<std::string> requireDepends = tokenizeAny( require.depends, ",+()" );
+      for ( auto const & dep : requireDepends )
       {
-        std::vector<std::string> requireDepends = tokenizeAny( require.depends, ",+()" );
-        for ( auto const & dep : requireDepends )
-        {
-          checkForError( isFeature( dep ) || isExtension( dep ), require.xmlLine, "extension <" + extension.name + "> lists an unknown depends <" + dep + ">" );
-        }
+        checkForError( isFeature( dep ) || isExtension( dep ), require.xmlLine, "extension <" + extension.name + "> lists an unknown depends <" + dep + ">" );
       }
     }
   }
@@ -715,11 +702,9 @@ void VulkanHppGenerator::checkFuncPointerCorrectness() const
 {
   for ( auto const & funcPointer : m_funcPointers )
   {
-    if ( !funcPointer.second.require.empty() )
-    {
-      checkForError(
-        m_types.contains( funcPointer.second.require ), funcPointer.second.xmlLine, "funcpointer requires unknown <" + funcPointer.second.require + ">" );
-    }
+    checkForError( funcPointer.second.require.empty() || m_types.contains( funcPointer.second.require ),
+                   funcPointer.second.xmlLine,
+                   "funcpointer requires unknown <" + funcPointer.second.require + ">" );
     for ( auto const & argument : funcPointer.second.arguments )
     {
       checkForError( m_types.contains( argument.type.type ), argument.xmlLine, "funcpointer argument of unknown type <" + argument.type.type + ">" );
@@ -734,35 +719,33 @@ void VulkanHppGenerator::checkHandleCorrectness() const
   assert( objectTypeIt != m_enums.end() );
 
   // handle checks
-  for ( auto const & handle : m_handles )
+  assert( m_handles.begin()->first.empty() );
+  for ( auto handleIt = std::next( m_handles.begin() ); handleIt != m_handles.end(); ++handleIt )
   {
+    assert( !handleIt->first.empty() );
+
     // check the existence of the parent
-    checkForError(
-      m_handles.contains( handle.second.parent ), handle.second.xmlLine, "handle <" + handle.first + "> with unknown parent <" + handle.second.parent + ">" );
+    checkForError( m_handles.contains( handleIt->second.parent ),
+                   handleIt->second.xmlLine,
+                   "handle <" + handleIt->first + "> with unknown parent <" + handleIt->second.parent + ">" );
 
     // check existence of objTypeEnum used with this handle type
-    if ( !handle.first.empty() )
-    {
-      assert( !handle.second.objTypeEnum.empty() );
-
-      // only check with used handles!
-      checkForError( !isTypeUsed( handle.first ) || contains( objectTypeIt->second.values, handle.second.objTypeEnum ),
-                     handle.second.xmlLine,
-                     "handle <" + handle.first + "> specifies unknown \"objtypeenum\" <" + handle.second.objTypeEnum + ">" );
-    }
+    checkForError(
+      !handleIt->second.objTypeEnum.empty(), handleIt->second.xmlLine, "handle <" + handleIt->first + "> missing required \"objtypeenum\" attribute" );
+    checkForError( !isTypeUsed( handleIt->first ) || contains( objectTypeIt->second.values, handleIt->second.objTypeEnum ),
+                   handleIt->second.xmlLine,
+                   "handle <" + handleIt->first + "> specifies unknown \"objtypeenum\" <" + handleIt->second.objTypeEnum + ">" );
   }
 
   // check that all specified objectType values are used with a handle type
   for ( auto const & objectTypeValue : objectTypeIt->second.values )
   {
-    if ( objectTypeValue.name != "VK_OBJECT_TYPE_UNKNOWN" )
-    {
-      checkForError( std::ranges::any_of( m_handles,
+    checkForError( ( objectTypeValue.name == "VK_OBJECT_TYPE_UNKNOWN" ) ||
+                     std::ranges::any_of( m_handles,
                                           [&objectTypeValue]( std::pair<std::string, HandleData> const & hd )
                                           { return hd.second.objTypeEnum == objectTypeValue.name; } ),
-                     objectTypeValue.xmlLine,
-                     "VkObjectType value <" + objectTypeValue.name + "> not specified as \"objtypeenum\" for any handle" );
-    }
+                   objectTypeValue.xmlLine,
+                   "VkObjectType value <" + objectTypeValue.name + "> not specified as \"objtypeenum\" for any handle" );
   }
 }
 
@@ -928,9 +911,9 @@ void VulkanHppGenerator::checkStructCorrectness() const
     }
     else
     {
-      checkForWarning( !enumValue.supported || ( sTypeValues.erase( enumValue.name ) == 1 ),
-                       enumValue.xmlLine,
-                       "VkStructureType enum value <" + enumValue.name + "> never used" );
+      checkForError( !enumValue.supported || ( sTypeValues.erase( enumValue.name ) == 1 ),
+                     enumValue.xmlLine,
+                     "VkStructureType enum value <" + enumValue.name + "> never used" );
     }
   }
   assert( sTypeValues.empty() );

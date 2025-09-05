@@ -14,5 +14,8 @@
 
 vulkan_hpp__setup_test( NAME ArrayProxy )
 if( VULKAN_HPP_ENABLE_CPP20_MODULES )
-    # vulkan_hpp__setup_test( NAME ArrayProxy CXX_MODULE ) # error with GCC
+    # gcc 15 fails to ignore -Winit-list-lifetime when importing vulkan_hpp
+    if ( NOT (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "15") )
+        vulkan_hpp__setup_test( NAME ArrayProxy CXX_MODULE )
+    endif()
 endif()

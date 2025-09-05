@@ -5195,6 +5195,11 @@ std::string VulkanHppGenerator::generateCppModuleSharedHandleUsings() const
   sharedHandleUsings += R"(  using VULKAN_HPP_NAMESPACE::SharedHandleTraits;
 )";
 
+  sharedHandleUsings += R"(
+  //=== VK_KHR_swapchain enum ===
+  using VULKAN_HPP_NAMESPACE::SwapchainOwns;
+)";
+
   sharedHandleUsings += smartHandleLeave + "\n";
 
   return sharedHandleUsings;

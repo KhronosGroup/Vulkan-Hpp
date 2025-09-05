@@ -5487,6 +5487,9 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::SharedHandleTraits;
   using VULKAN_HPP_NAMESPACE::SharedIndirectCommandsLayoutEXT;
   using VULKAN_HPP_NAMESPACE::SharedIndirectExecutionSetEXT;
+
+  //=== VK_KHR_swapchain enum ===
+  using VULKAN_HPP_NAMESPACE::SwapchainOwns;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   //===========================

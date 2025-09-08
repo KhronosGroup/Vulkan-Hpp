@@ -3161,6 +3161,15 @@ namespace VULKAN_HPP_NAMESPACE
       Instance()                   = delete;
       Instance( Instance const & ) = delete;
 
+      Instance( VULKAN_HPP_NAMESPACE::Instance              instance,
+                const AllocationCallbacks *                 allocator,
+                std::unique_ptr<detail::InstanceDispatcher> dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_instance( exchange( instance, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       Instance( Instance && rhs ) VULKAN_HPP_NOEXCEPT
         : m_instance( exchange( rhs.m_instance, {} ) )
         , m_allocator( exchange( rhs.m_allocator, {} ) )
@@ -3459,6 +3468,12 @@ namespace VULKAN_HPP_NAMESPACE
       PhysicalDevice() = delete;
 
       PhysicalDevice( PhysicalDevice const & rhs ) : m_physicalDevice( rhs.m_physicalDevice ), m_dispatcher( rhs.m_dispatcher ) {}
+
+      PhysicalDevice( VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice, detail::InstanceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_physicalDevice( exchange( physicalDevice, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       PhysicalDevice( PhysicalDevice && rhs ) VULKAN_HPP_NOEXCEPT
         : m_physicalDevice( exchange( rhs.m_physicalDevice, {} ) )
@@ -4151,6 +4166,15 @@ namespace VULKAN_HPP_NAMESPACE
 
       Device()                 = delete;
       Device( Device const & ) = delete;
+
+      Device( VULKAN_HPP_NAMESPACE::Device              device,
+              const AllocationCallbacks *               allocator,
+              std::unique_ptr<detail::DeviceDispatcher> dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       Device( Device && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -5672,6 +5696,17 @@ namespace VULKAN_HPP_NAMESPACE
       AccelerationStructureKHR()                                   = delete;
       AccelerationStructureKHR( AccelerationStructureKHR const & ) = delete;
 
+      AccelerationStructureKHR( VULKAN_HPP_NAMESPACE::Device                   device,
+                                VULKAN_HPP_NAMESPACE::AccelerationStructureKHR accelerationStructureKHR,
+                                const AllocationCallbacks *                    allocator,
+                                detail::DeviceDispatcher const *               dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_accelerationStructureKHR( exchange( accelerationStructureKHR, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       AccelerationStructureKHR( AccelerationStructureKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_accelerationStructureKHR( exchange( rhs.m_accelerationStructureKHR, {} ) )
@@ -5800,6 +5835,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       AccelerationStructureNV()                                  = delete;
       AccelerationStructureNV( AccelerationStructureNV const & ) = delete;
+
+      AccelerationStructureNV( VULKAN_HPP_NAMESPACE::Device                  device,
+                               VULKAN_HPP_NAMESPACE::AccelerationStructureNV accelerationStructureNV,
+                               const AllocationCallbacks *                   allocator,
+                               detail::DeviceDispatcher const *              dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_accelerationStructureNV( exchange( accelerationStructureNV, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       AccelerationStructureNV( AccelerationStructureNV && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -5936,6 +5982,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       Buffer()                 = delete;
       Buffer( Buffer const & ) = delete;
+
+      Buffer( VULKAN_HPP_NAMESPACE::Device     device,
+              VULKAN_HPP_NAMESPACE::Buffer     buffer,
+              const AllocationCallbacks *      allocator,
+              detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_buffer( exchange( buffer, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       Buffer( Buffer && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -6074,6 +6131,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       BufferCollectionFUCHSIA()                                  = delete;
       BufferCollectionFUCHSIA( BufferCollectionFUCHSIA const & ) = delete;
+
+      BufferCollectionFUCHSIA( VULKAN_HPP_NAMESPACE::Device                  device,
+                               VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA bufferCollectionFUCHSIA,
+                               const AllocationCallbacks *                   allocator,
+                               detail::DeviceDispatcher const *              dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_bufferCollectionFUCHSIA( exchange( bufferCollectionFUCHSIA, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       BufferCollectionFUCHSIA( BufferCollectionFUCHSIA && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -6218,6 +6286,17 @@ namespace VULKAN_HPP_NAMESPACE
       BufferView()                     = delete;
       BufferView( BufferView const & ) = delete;
 
+      BufferView( VULKAN_HPP_NAMESPACE::Device     device,
+                  VULKAN_HPP_NAMESPACE::BufferView bufferView,
+                  const AllocationCallbacks *      allocator,
+                  detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_bufferView( exchange( bufferView, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       BufferView( BufferView && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_bufferView( exchange( rhs.m_bufferView, {} ) )
@@ -6343,6 +6422,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       CommandPool()                      = delete;
       CommandPool( CommandPool const & ) = delete;
+
+      CommandPool( VULKAN_HPP_NAMESPACE::Device      device,
+                   VULKAN_HPP_NAMESPACE::CommandPool commandPool,
+                   const AllocationCallbacks *       allocator,
+                   detail::DeviceDispatcher const *  dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_commandPool( exchange( commandPool, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       CommandPool( CommandPool && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -6474,6 +6564,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       CommandBuffer()                        = delete;
       CommandBuffer( CommandBuffer const & ) = delete;
+
+      CommandBuffer( VULKAN_HPP_NAMESPACE::Device        device,
+                     VULKAN_HPP_NAMESPACE::CommandPool   commandPool,
+                     VULKAN_HPP_NAMESPACE::CommandBuffer commandBuffer,
+                     detail::DeviceDispatcher const *    dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_commandPool( exchange( commandPool, {} ) )
+        , m_commandBuffer( exchange( commandBuffer, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       CommandBuffer( CommandBuffer && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -7938,6 +8039,17 @@ namespace VULKAN_HPP_NAMESPACE
       CuFunctionNVX()                        = delete;
       CuFunctionNVX( CuFunctionNVX const & ) = delete;
 
+      CuFunctionNVX( VULKAN_HPP_NAMESPACE::Device        device,
+                     VULKAN_HPP_NAMESPACE::CuFunctionNVX cuFunctionNVX,
+                     const AllocationCallbacks *         allocator,
+                     detail::DeviceDispatcher const *    dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_cuFunctionNVX( exchange( cuFunctionNVX, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       CuFunctionNVX( CuFunctionNVX && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_cuFunctionNVX( exchange( rhs.m_cuFunctionNVX, {} ) )
@@ -8065,6 +8177,17 @@ namespace VULKAN_HPP_NAMESPACE
       CuModuleNVX()                      = delete;
       CuModuleNVX( CuModuleNVX const & ) = delete;
 
+      CuModuleNVX( VULKAN_HPP_NAMESPACE::Device      device,
+                   VULKAN_HPP_NAMESPACE::CuModuleNVX cuModuleNVX,
+                   const AllocationCallbacks *       allocator,
+                   detail::DeviceDispatcher const *  dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_cuModuleNVX( exchange( cuModuleNVX, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       CuModuleNVX( CuModuleNVX && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_cuModuleNVX( exchange( rhs.m_cuModuleNVX, {} ) )
@@ -8191,6 +8314,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       CudaFunctionNV()                         = delete;
       CudaFunctionNV( CudaFunctionNV const & ) = delete;
+
+      CudaFunctionNV( VULKAN_HPP_NAMESPACE::Device         device,
+                      VULKAN_HPP_NAMESPACE::CudaFunctionNV cudaFunctionNV,
+                      const AllocationCallbacks *          allocator,
+                      detail::DeviceDispatcher const *     dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_cudaFunctionNV( exchange( cudaFunctionNV, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       CudaFunctionNV( CudaFunctionNV && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -8321,6 +8455,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       CudaModuleNV()                       = delete;
       CudaModuleNV( CudaModuleNV const & ) = delete;
+
+      CudaModuleNV( VULKAN_HPP_NAMESPACE::Device       device,
+                    VULKAN_HPP_NAMESPACE::CudaModuleNV cudaModuleNV,
+                    const AllocationCallbacks *        allocator,
+                    detail::DeviceDispatcher const *   dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_cudaModuleNV( exchange( cudaModuleNV, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       CudaModuleNV( CudaModuleNV && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -8457,6 +8602,17 @@ namespace VULKAN_HPP_NAMESPACE
       DataGraphPipelineSessionARM()                                      = delete;
       DataGraphPipelineSessionARM( DataGraphPipelineSessionARM const & ) = delete;
 
+      DataGraphPipelineSessionARM( VULKAN_HPP_NAMESPACE::Device                      device,
+                                   VULKAN_HPP_NAMESPACE::DataGraphPipelineSessionARM dataGraphPipelineSessionARM,
+                                   const AllocationCallbacks *                       allocator,
+                                   detail::DeviceDispatcher const *                  dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_dataGraphPipelineSessionARM( exchange( dataGraphPipelineSessionARM, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       DataGraphPipelineSessionARM( DataGraphPipelineSessionARM && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_dataGraphPipelineSessionARM( exchange( rhs.m_dataGraphPipelineSessionARM, {} ) )
@@ -8585,6 +8741,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       DebugReportCallbackEXT()                                 = delete;
       DebugReportCallbackEXT( DebugReportCallbackEXT const & ) = delete;
+
+      DebugReportCallbackEXT( VULKAN_HPP_NAMESPACE::Instance               instance,
+                              VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT debugReportCallbackEXT,
+                              const AllocationCallbacks *                  allocator,
+                              detail::InstanceDispatcher const *           dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_instance( exchange( instance, {} ) )
+        , m_debugReportCallbackEXT( exchange( debugReportCallbackEXT, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       DebugReportCallbackEXT( DebugReportCallbackEXT && rhs ) VULKAN_HPP_NOEXCEPT
         : m_instance( exchange( rhs.m_instance, {} ) )
@@ -8715,6 +8882,17 @@ namespace VULKAN_HPP_NAMESPACE
       DebugUtilsMessengerEXT()                                 = delete;
       DebugUtilsMessengerEXT( DebugUtilsMessengerEXT const & ) = delete;
 
+      DebugUtilsMessengerEXT( VULKAN_HPP_NAMESPACE::Instance               instance,
+                              VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT debugUtilsMessengerEXT,
+                              const AllocationCallbacks *                  allocator,
+                              detail::InstanceDispatcher const *           dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_instance( exchange( instance, {} ) )
+        , m_debugUtilsMessengerEXT( exchange( debugUtilsMessengerEXT, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       DebugUtilsMessengerEXT( DebugUtilsMessengerEXT && rhs ) VULKAN_HPP_NOEXCEPT
         : m_instance( exchange( rhs.m_instance, {} ) )
         , m_debugUtilsMessengerEXT( exchange( rhs.m_debugUtilsMessengerEXT, {} ) )
@@ -8841,6 +9019,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       DeferredOperationKHR()                               = delete;
       DeferredOperationKHR( DeferredOperationKHR const & ) = delete;
+
+      DeferredOperationKHR( VULKAN_HPP_NAMESPACE::Device               device,
+                            VULKAN_HPP_NAMESPACE::DeferredOperationKHR deferredOperationKHR,
+                            const AllocationCallbacks *                allocator,
+                            detail::DeviceDispatcher const *           dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_deferredOperationKHR( exchange( deferredOperationKHR, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       DeferredOperationKHR( DeferredOperationKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -8982,6 +9171,17 @@ namespace VULKAN_HPP_NAMESPACE
       DescriptorPool()                         = delete;
       DescriptorPool( DescriptorPool const & ) = delete;
 
+      DescriptorPool( VULKAN_HPP_NAMESPACE::Device         device,
+                      VULKAN_HPP_NAMESPACE::DescriptorPool descriptorPool,
+                      const AllocationCallbacks *          allocator,
+                      detail::DeviceDispatcher const *     dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_descriptorPool( exchange( descriptorPool, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       DescriptorPool( DescriptorPool && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_descriptorPool( exchange( rhs.m_descriptorPool, {} ) )
@@ -9103,6 +9303,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       DescriptorSet()                        = delete;
       DescriptorSet( DescriptorSet const & ) = delete;
+
+      DescriptorSet( VULKAN_HPP_NAMESPACE::Device         device,
+                     VULKAN_HPP_NAMESPACE::DescriptorPool descriptorPool,
+                     VULKAN_HPP_NAMESPACE::DescriptorSet  descriptorSet,
+                     detail::DeviceDispatcher const *     dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_descriptorPool( exchange( descriptorPool, {} ) )
+        , m_descriptorSet( exchange( descriptorSet, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       DescriptorSet( DescriptorSet && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -9277,6 +9488,17 @@ namespace VULKAN_HPP_NAMESPACE
       DescriptorSetLayout()                              = delete;
       DescriptorSetLayout( DescriptorSetLayout const & ) = delete;
 
+      DescriptorSetLayout( VULKAN_HPP_NAMESPACE::Device              device,
+                           VULKAN_HPP_NAMESPACE::DescriptorSetLayout descriptorSetLayout,
+                           const AllocationCallbacks *               allocator,
+                           detail::DeviceDispatcher const *          dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_descriptorSetLayout( exchange( descriptorSetLayout, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       DescriptorSetLayout( DescriptorSetLayout && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_descriptorSetLayout( exchange( rhs.m_descriptorSetLayout, {} ) )
@@ -9418,6 +9640,17 @@ namespace VULKAN_HPP_NAMESPACE
       DescriptorUpdateTemplate()                                   = delete;
       DescriptorUpdateTemplate( DescriptorUpdateTemplate const & ) = delete;
 
+      DescriptorUpdateTemplate( VULKAN_HPP_NAMESPACE::Device                   device,
+                                VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
+                                const AllocationCallbacks *                    allocator,
+                                detail::DeviceDispatcher const *               dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_descriptorUpdateTemplate( exchange( descriptorUpdateTemplate, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       DescriptorUpdateTemplate( DescriptorUpdateTemplate && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_descriptorUpdateTemplate( exchange( rhs.m_descriptorUpdateTemplate, {} ) )
@@ -9544,6 +9777,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       DeviceMemory()                       = delete;
       DeviceMemory( DeviceMemory const & ) = delete;
+
+      DeviceMemory( VULKAN_HPP_NAMESPACE::Device       device,
+                    VULKAN_HPP_NAMESPACE::DeviceMemory deviceMemory,
+                    const AllocationCallbacks *        allocator,
+                    detail::DeviceDispatcher const *   dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_deviceMemory( exchange( deviceMemory, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       DeviceMemory( DeviceMemory && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -9711,6 +9955,15 @@ namespace VULKAN_HPP_NAMESPACE
 
       DisplayKHR()                     = delete;
       DisplayKHR( DisplayKHR const & ) = delete;
+
+      DisplayKHR( VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice,
+                  VULKAN_HPP_NAMESPACE::DisplayKHR     displayKHR,
+                  detail::InstanceDispatcher const *   dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_physicalDevice( exchange( physicalDevice, {} ) )
+        , m_displayKHR( exchange( displayKHR, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       DisplayKHR( DisplayKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_physicalDevice( exchange( rhs.m_physicalDevice, {} ) )
@@ -9883,6 +10136,15 @@ namespace VULKAN_HPP_NAMESPACE
 
       DisplayModeKHR( DisplayModeKHR const & rhs ) : m_displayModeKHR( rhs.m_displayModeKHR ), m_dispatcher( rhs.m_dispatcher ) {}
 
+      DisplayModeKHR( VULKAN_HPP_NAMESPACE::PhysicalDevice physicalDevice,
+                      VULKAN_HPP_NAMESPACE::DisplayModeKHR displayModeKHR,
+                      detail::InstanceDispatcher const *   dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_physicalDevice( exchange( physicalDevice, {} ) )
+        , m_displayModeKHR( exchange( displayModeKHR, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       DisplayModeKHR( DisplayModeKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_physicalDevice( exchange( rhs.m_physicalDevice, {} ) )
         , m_displayModeKHR( exchange( rhs.m_displayModeKHR, {} ) )
@@ -10000,6 +10262,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       Event()                = delete;
       Event( Event const & ) = delete;
+
+      Event( VULKAN_HPP_NAMESPACE::Device     device,
+             VULKAN_HPP_NAMESPACE::Event      event,
+             const AllocationCallbacks *      allocator,
+             detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_event( exchange( event, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       Event( Event && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -10139,6 +10412,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       ExternalComputeQueueNV()                                 = delete;
       ExternalComputeQueueNV( ExternalComputeQueueNV const & ) = delete;
+
+      ExternalComputeQueueNV( VULKAN_HPP_NAMESPACE::Device                 device,
+                              VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV externalComputeQueueNV,
+                              const AllocationCallbacks *                  allocator,
+                              detail::DeviceDispatcher const *             dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_externalComputeQueueNV( exchange( externalComputeQueueNV, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       ExternalComputeQueueNV( ExternalComputeQueueNV && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -10288,6 +10572,17 @@ namespace VULKAN_HPP_NAMESPACE
       Fence()                = delete;
       Fence( Fence const & ) = delete;
 
+      Fence( VULKAN_HPP_NAMESPACE::Device     device,
+             VULKAN_HPP_NAMESPACE::Fence      fence,
+             const AllocationCallbacks *      allocator,
+             detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_fence( exchange( fence, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       Fence( Fence && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_fence( exchange( rhs.m_fence, {} ) )
@@ -10419,6 +10714,17 @@ namespace VULKAN_HPP_NAMESPACE
       Framebuffer()                      = delete;
       Framebuffer( Framebuffer const & ) = delete;
 
+      Framebuffer( VULKAN_HPP_NAMESPACE::Device      device,
+                   VULKAN_HPP_NAMESPACE::Framebuffer framebuffer,
+                   const AllocationCallbacks *       allocator,
+                   detail::DeviceDispatcher const *  dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_framebuffer( exchange( framebuffer, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       Framebuffer( Framebuffer && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_framebuffer( exchange( rhs.m_framebuffer, {} ) )
@@ -10547,6 +10853,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       Image()                = delete;
       Image( Image const & ) = delete;
+
+      Image( VULKAN_HPP_NAMESPACE::Device     device,
+             VULKAN_HPP_NAMESPACE::Image      image,
+             const AllocationCallbacks *      allocator,
+             detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_image( exchange( image, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       Image( Image && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -10730,6 +11047,17 @@ namespace VULKAN_HPP_NAMESPACE
       ImageView()                    = delete;
       ImageView( ImageView const & ) = delete;
 
+      ImageView( VULKAN_HPP_NAMESPACE::Device     device,
+                 VULKAN_HPP_NAMESPACE::ImageView  imageView,
+                 const AllocationCallbacks *      allocator,
+                 detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_imageView( exchange( imageView, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       ImageView( ImageView && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_imageView( exchange( rhs.m_imageView, {} ) )
@@ -10865,6 +11193,17 @@ namespace VULKAN_HPP_NAMESPACE
       IndirectCommandsLayoutEXT()                                    = delete;
       IndirectCommandsLayoutEXT( IndirectCommandsLayoutEXT const & ) = delete;
 
+      IndirectCommandsLayoutEXT( VULKAN_HPP_NAMESPACE::Device                    device,
+                                 VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT indirectCommandsLayoutEXT,
+                                 const AllocationCallbacks *                     allocator,
+                                 detail::DeviceDispatcher const *                dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_indirectCommandsLayoutEXT( exchange( indirectCommandsLayoutEXT, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       IndirectCommandsLayoutEXT( IndirectCommandsLayoutEXT && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_indirectCommandsLayoutEXT( exchange( rhs.m_indirectCommandsLayoutEXT, {} ) )
@@ -10996,6 +11335,17 @@ namespace VULKAN_HPP_NAMESPACE
       IndirectCommandsLayoutNV()                                   = delete;
       IndirectCommandsLayoutNV( IndirectCommandsLayoutNV const & ) = delete;
 
+      IndirectCommandsLayoutNV( VULKAN_HPP_NAMESPACE::Device                   device,
+                                VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV indirectCommandsLayoutNV,
+                                const AllocationCallbacks *                    allocator,
+                                detail::DeviceDispatcher const *               dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_indirectCommandsLayoutNV( exchange( indirectCommandsLayoutNV, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       IndirectCommandsLayoutNV( IndirectCommandsLayoutNV && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_indirectCommandsLayoutNV( exchange( rhs.m_indirectCommandsLayoutNV, {} ) )
@@ -11124,6 +11474,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       IndirectExecutionSetEXT()                                  = delete;
       IndirectExecutionSetEXT( IndirectExecutionSetEXT const & ) = delete;
+
+      IndirectExecutionSetEXT( VULKAN_HPP_NAMESPACE::Device                  device,
+                               VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT indirectExecutionSetEXT,
+                               const AllocationCallbacks *                   allocator,
+                               detail::DeviceDispatcher const *              dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_indirectExecutionSetEXT( exchange( indirectExecutionSetEXT, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       IndirectExecutionSetEXT( IndirectExecutionSetEXT && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -11262,6 +11623,17 @@ namespace VULKAN_HPP_NAMESPACE
       MicromapEXT()                      = delete;
       MicromapEXT( MicromapEXT const & ) = delete;
 
+      MicromapEXT( VULKAN_HPP_NAMESPACE::Device      device,
+                   VULKAN_HPP_NAMESPACE::MicromapEXT micromapEXT,
+                   const AllocationCallbacks *       allocator,
+                   detail::DeviceDispatcher const *  dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_micromapEXT( exchange( micromapEXT, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       MicromapEXT( MicromapEXT && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_micromapEXT( exchange( rhs.m_micromapEXT, {} ) )
@@ -11387,6 +11759,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       OpticalFlowSessionNV()                               = delete;
       OpticalFlowSessionNV( OpticalFlowSessionNV const & ) = delete;
+
+      OpticalFlowSessionNV( VULKAN_HPP_NAMESPACE::Device               device,
+                            VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV opticalFlowSessionNV,
+                            const AllocationCallbacks *                allocator,
+                            detail::DeviceDispatcher const *           dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_opticalFlowSessionNV( exchange( opticalFlowSessionNV, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       OpticalFlowSessionNV( OpticalFlowSessionNV && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -11520,6 +11903,15 @@ namespace VULKAN_HPP_NAMESPACE
       PerformanceConfigurationINTEL()                                        = delete;
       PerformanceConfigurationINTEL( PerformanceConfigurationINTEL const & ) = delete;
 
+      PerformanceConfigurationINTEL( VULKAN_HPP_NAMESPACE::Device                        device,
+                                     VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL performanceConfigurationINTEL,
+                                     detail::DeviceDispatcher const *                    dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_performanceConfigurationINTEL( exchange( performanceConfigurationINTEL, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       PerformanceConfigurationINTEL( PerformanceConfigurationINTEL && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_performanceConfigurationINTEL( exchange( rhs.m_performanceConfigurationINTEL, {} ) )
@@ -11639,6 +12031,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       PipelineCache()                        = delete;
       PipelineCache( PipelineCache const & ) = delete;
+
+      PipelineCache( VULKAN_HPP_NAMESPACE::Device        device,
+                     VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache,
+                     const AllocationCallbacks *         allocator,
+                     detail::DeviceDispatcher const *    dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_pipelineCache( exchange( pipelineCache, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       PipelineCache( PipelineCache && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -11832,6 +12235,19 @@ namespace VULKAN_HPP_NAMESPACE
 
       Pipeline()                   = delete;
       Pipeline( Pipeline const & ) = delete;
+
+      Pipeline( VULKAN_HPP_NAMESPACE::Device     device,
+                VULKAN_HPP_NAMESPACE::Pipeline   pipeline,
+                const AllocationCallbacks *      allocator,
+                Result                           constructorSuccessCode,
+                detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_pipeline( exchange( pipeline, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_constructorSuccessCode( exchange( constructorSuccessCode, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       Pipeline( Pipeline && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -12113,6 +12529,19 @@ namespace VULKAN_HPP_NAMESPACE
       PipelineBinaryKHR()                            = delete;
       PipelineBinaryKHR( PipelineBinaryKHR const & ) = delete;
 
+      PipelineBinaryKHR( VULKAN_HPP_NAMESPACE::Device            device,
+                         VULKAN_HPP_NAMESPACE::PipelineBinaryKHR pipelineBinaryKHR,
+                         const AllocationCallbacks *             allocator,
+                         Result                                  constructorSuccessCode,
+                         detail::DeviceDispatcher const *        dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_pipelineBinaryKHR( exchange( pipelineBinaryKHR, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_constructorSuccessCode( exchange( constructorSuccessCode, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       PipelineBinaryKHR( PipelineBinaryKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_pipelineBinaryKHR( exchange( rhs.m_pipelineBinaryKHR, {} ) )
@@ -12276,6 +12705,17 @@ namespace VULKAN_HPP_NAMESPACE
       PipelineLayout()                         = delete;
       PipelineLayout( PipelineLayout const & ) = delete;
 
+      PipelineLayout( VULKAN_HPP_NAMESPACE::Device         device,
+                      VULKAN_HPP_NAMESPACE::PipelineLayout pipelineLayout,
+                      const AllocationCallbacks *          allocator,
+                      detail::DeviceDispatcher const *     dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_pipelineLayout( exchange( pipelineLayout, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       PipelineLayout( PipelineLayout && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_pipelineLayout( exchange( rhs.m_pipelineLayout, {} ) )
@@ -12403,6 +12843,17 @@ namespace VULKAN_HPP_NAMESPACE
       PrivateDataSlot()                          = delete;
       PrivateDataSlot( PrivateDataSlot const & ) = delete;
 
+      PrivateDataSlot( VULKAN_HPP_NAMESPACE::Device          device,
+                       VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot,
+                       const AllocationCallbacks *           allocator,
+                       detail::DeviceDispatcher const *      dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_privateDataSlot( exchange( privateDataSlot, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       PrivateDataSlot( PrivateDataSlot && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_privateDataSlot( exchange( rhs.m_privateDataSlot, {} ) )
@@ -12529,6 +12980,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       QueryPool()                    = delete;
       QueryPool( QueryPool const & ) = delete;
+
+      QueryPool( VULKAN_HPP_NAMESPACE::Device     device,
+                 VULKAN_HPP_NAMESPACE::QueryPool  queryPool,
+                 const AllocationCallbacks *      allocator,
+                 detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_queryPool( exchange( queryPool, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       QueryPool( QueryPool && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -12679,6 +13141,12 @@ namespace VULKAN_HPP_NAMESPACE
       Queue() = delete;
 
       Queue( Queue const & rhs ) : m_queue( rhs.m_queue ), m_dispatcher( rhs.m_dispatcher ) {}
+
+      Queue( VULKAN_HPP_NAMESPACE::Queue queue, detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_queue( exchange( queue, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       Queue( Queue && rhs ) VULKAN_HPP_NOEXCEPT
         : m_queue( exchange( rhs.m_queue, {} ) )
@@ -12860,6 +13328,17 @@ namespace VULKAN_HPP_NAMESPACE
       RenderPass()                     = delete;
       RenderPass( RenderPass const & ) = delete;
 
+      RenderPass( VULKAN_HPP_NAMESPACE::Device     device,
+                  VULKAN_HPP_NAMESPACE::RenderPass renderPass,
+                  const AllocationCallbacks *      allocator,
+                  detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_renderPass( exchange( renderPass, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       RenderPass( RenderPass && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_renderPass( exchange( rhs.m_renderPass, {} ) )
@@ -12994,6 +13473,17 @@ namespace VULKAN_HPP_NAMESPACE
       Sampler()                  = delete;
       Sampler( Sampler const & ) = delete;
 
+      Sampler( VULKAN_HPP_NAMESPACE::Device     device,
+               VULKAN_HPP_NAMESPACE::Sampler    sampler,
+               const AllocationCallbacks *      allocator,
+               detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_sampler( exchange( sampler, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       Sampler( Sampler && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_sampler( exchange( rhs.m_sampler, {} ) )
@@ -13122,6 +13612,17 @@ namespace VULKAN_HPP_NAMESPACE
       SamplerYcbcrConversion()                                 = delete;
       SamplerYcbcrConversion( SamplerYcbcrConversion const & ) = delete;
 
+      SamplerYcbcrConversion( VULKAN_HPP_NAMESPACE::Device                 device,
+                              VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion samplerYcbcrConversion,
+                              const AllocationCallbacks *                  allocator,
+                              detail::DeviceDispatcher const *             dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_samplerYcbcrConversion( exchange( samplerYcbcrConversion, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       SamplerYcbcrConversion( SamplerYcbcrConversion && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_samplerYcbcrConversion( exchange( rhs.m_samplerYcbcrConversion, {} ) )
@@ -13248,6 +13749,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       Semaphore()                    = delete;
       Semaphore( Semaphore const & ) = delete;
+
+      Semaphore( VULKAN_HPP_NAMESPACE::Device     device,
+                 VULKAN_HPP_NAMESPACE::Semaphore  semaphore,
+                 const AllocationCallbacks *      allocator,
+                 detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_semaphore( exchange( semaphore, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       Semaphore( Semaphore && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -13386,6 +13898,19 @@ namespace VULKAN_HPP_NAMESPACE
 
       ShaderEXT()                    = delete;
       ShaderEXT( ShaderEXT const & ) = delete;
+
+      ShaderEXT( VULKAN_HPP_NAMESPACE::Device     device,
+                 VULKAN_HPP_NAMESPACE::ShaderEXT  shaderEXT,
+                 const AllocationCallbacks *      allocator,
+                 Result                           constructorSuccessCode,
+                 detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_shaderEXT( exchange( shaderEXT, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_constructorSuccessCode( exchange( constructorSuccessCode, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       ShaderEXT( ShaderEXT && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -13553,6 +14078,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       ShaderModule()                       = delete;
       ShaderModule( ShaderModule const & ) = delete;
+
+      ShaderModule( VULKAN_HPP_NAMESPACE::Device       device,
+                    VULKAN_HPP_NAMESPACE::ShaderModule shaderModule,
+                    const AllocationCallbacks *        allocator,
+                    detail::DeviceDispatcher const *   dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_shaderModule( exchange( shaderModule, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       ShaderModule( ShaderModule && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -13819,6 +14355,17 @@ namespace VULKAN_HPP_NAMESPACE
       SurfaceKHR()                     = delete;
       SurfaceKHR( SurfaceKHR const & ) = delete;
 
+      SurfaceKHR( VULKAN_HPP_NAMESPACE::Instance     instance,
+                  VULKAN_HPP_NAMESPACE::SurfaceKHR   surfaceKHR,
+                  const AllocationCallbacks *        allocator,
+                  detail::InstanceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_instance( exchange( instance, {} ) )
+        , m_surfaceKHR( exchange( surfaceKHR, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       SurfaceKHR( SurfaceKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_instance( exchange( rhs.m_instance, {} ) )
         , m_surfaceKHR( exchange( rhs.m_surfaceKHR, {} ) )
@@ -13944,6 +14491,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       SwapchainKHR()                       = delete;
       SwapchainKHR( SwapchainKHR const & ) = delete;
+
+      SwapchainKHR( VULKAN_HPP_NAMESPACE::Device       device,
+                    VULKAN_HPP_NAMESPACE::SwapchainKHR swapchainKHR,
+                    const AllocationCallbacks *        allocator,
+                    detail::DeviceDispatcher const *   dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_swapchainKHR( exchange( swapchainKHR, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       SwapchainKHR( SwapchainKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -14167,6 +14725,17 @@ namespace VULKAN_HPP_NAMESPACE
       TensorARM()                    = delete;
       TensorARM( TensorARM const & ) = delete;
 
+      TensorARM( VULKAN_HPP_NAMESPACE::Device     device,
+                 VULKAN_HPP_NAMESPACE::TensorARM  tensorARM,
+                 const AllocationCallbacks *      allocator,
+                 detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_tensorARM( exchange( tensorARM, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
       TensorARM( TensorARM && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
         , m_tensorARM( exchange( rhs.m_tensorARM, {} ) )
@@ -14292,6 +14861,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       TensorViewARM()                        = delete;
       TensorViewARM( TensorViewARM const & ) = delete;
+
+      TensorViewARM( VULKAN_HPP_NAMESPACE::Device        device,
+                     VULKAN_HPP_NAMESPACE::TensorViewARM tensorViewARM,
+                     const AllocationCallbacks *         allocator,
+                     detail::DeviceDispatcher const *    dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_tensorViewARM( exchange( tensorViewARM, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       TensorViewARM( TensorViewARM && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -14419,6 +14999,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       ValidationCacheEXT()                             = delete;
       ValidationCacheEXT( ValidationCacheEXT const & ) = delete;
+
+      ValidationCacheEXT( VULKAN_HPP_NAMESPACE::Device             device,
+                          VULKAN_HPP_NAMESPACE::ValidationCacheEXT validationCacheEXT,
+                          const AllocationCallbacks *              allocator,
+                          detail::DeviceDispatcher const *         dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_validationCacheEXT( exchange( validationCacheEXT, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       ValidationCacheEXT( ValidationCacheEXT && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -14555,6 +15146,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       VideoSessionKHR()                          = delete;
       VideoSessionKHR( VideoSessionKHR const & ) = delete;
+
+      VideoSessionKHR( VULKAN_HPP_NAMESPACE::Device          device,
+                       VULKAN_HPP_NAMESPACE::VideoSessionKHR videoSessionKHR,
+                       const AllocationCallbacks *           allocator,
+                       detail::DeviceDispatcher const *      dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_videoSessionKHR( exchange( videoSessionKHR, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       VideoSessionKHR( VideoSessionKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )
@@ -14696,6 +15298,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       VideoSessionParametersKHR()                                    = delete;
       VideoSessionParametersKHR( VideoSessionParametersKHR const & ) = delete;
+
+      VideoSessionParametersKHR( VULKAN_HPP_NAMESPACE::Device                    device,
+                                 VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR videoSessionParametersKHR,
+                                 const AllocationCallbacks *                     allocator,
+                                 detail::DeviceDispatcher const *                dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_videoSessionParametersKHR( exchange( videoSessionParametersKHR, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
       VideoSessionParametersKHR( VideoSessionParametersKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( exchange( rhs.m_device, {} ) )

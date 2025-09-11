@@ -5,8 +5,6 @@ ${licenseHeader}
 
 module;
 
-#include <vulkan/vulkan_hpp_macros.hpp>
-
 #if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_ENABLE_STD_MODULE )
 #define VULKAN_HPP_ENABLE_STD_MODULE
 #endif
@@ -17,9 +15,6 @@ module;
 #include <vulkan/${api}_hash.hpp>
 #include <vulkan/${api}_raii.hpp>
 #include <vulkan/${api}_shared.hpp>
-#ifndef VULKAN_HPP_NO_TO_STRING
-#include <vulkan/${api}_to_string.hpp>
-#endif
 
 export module ${api}_hpp;
 

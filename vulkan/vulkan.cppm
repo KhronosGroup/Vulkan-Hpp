@@ -10,8 +10,6 @@
 
 module;
 
-#include <vulkan/vulkan_hpp_macros.hpp>
-
 #if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_ENABLE_STD_MODULE )
 #  define VULKAN_HPP_ENABLE_STD_MODULE
 #endif
@@ -22,9 +20,6 @@ module;
 #include <vulkan/vulkan_hash.hpp>
 #include <vulkan/vulkan_raii.hpp>
 #include <vulkan/vulkan_shared.hpp>
-#ifndef VULKAN_HPP_NO_TO_STRING
-#  include <vulkan/vulkan_to_string.hpp>
-#endif
 
 export module vulkan_hpp;
 

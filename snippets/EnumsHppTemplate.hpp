@@ -6,7 +6,11 @@ ${licenseHeader}
 // include-what-you-use: make sure, vulkan.hpp is used by code-completers
 // IWYU pragma: private; include "vulkan.hpp"
 
-#include <type_traits>    // for std::underlying_type
+#if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
+import VULKAN_HPP_STD_MODULE;
+#else
+#  include <type_traits>    // for std::underlying_type
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {

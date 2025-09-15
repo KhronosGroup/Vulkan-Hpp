@@ -1,5 +1,5 @@
 
-name: CI Ubuntu 24
+name: CI Ubuntu EXT
 
 on:
   pull_request:
@@ -112,9 +112,6 @@ jobs:
       run: |
         for CXX_STANDARD in 11 14 17 20 23; do
           for BUILD_TYPE in Debug Release; do
-            if [ clang++-${{matrix.clang_version}} == clang++-17 ] && [ $CXX_STANDARD == 23 ]; then
-              continue
-            fi
 
             CXX_MODULES=ON
             if [ $CXX_STANDARD -lt 20 ]; then

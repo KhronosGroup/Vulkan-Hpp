@@ -3421,7 +3421,7 @@ namespace VULKAN_HPP_NAMESPACE
                            Optional<const AllocationCallbacks> allocator = nullptr ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
 #  endif /*VK_USE_PLATFORM_OHOS*/
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Instance              m_instance  = {};
       const AllocationCallbacks *                 m_allocator = {};
       std::unique_ptr<detail::InstanceDispatcher> m_dispatcher;
@@ -4082,7 +4082,7 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<CooperativeMatrixFlexibleDimensionsPropertiesNV>>::type
         getCooperativeMatrixFlexibleDimensionsPropertiesNV() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::PhysicalDevice m_physicalDevice = {};
       detail::InstanceDispatcher const *   m_dispatcher     = nullptr;
     };
@@ -5620,7 +5620,7 @@ namespace VULKAN_HPP_NAMESPACE
         getMemoryMetalHandlePropertiesEXT( ExternalMemoryHandleTypeFlagBits handleType, HandleType const & handle ) const;
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device              m_device    = {};
       const AllocationCallbacks *               m_allocator = {};
       std::unique_ptr<detail::DeviceDispatcher> m_dispatcher;
@@ -5750,7 +5750,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device                   m_device                   = {};
       VULKAN_HPP_NAMESPACE::AccelerationStructureKHR m_accelerationStructureKHR = {};
       const AllocationCallbacks *                    m_allocator                = {};
@@ -5891,7 +5891,7 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename DataType>
       VULKAN_HPP_NODISCARD typename ResultValueType<DataType>::type getHandle() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device                  m_device                  = {};
       VULKAN_HPP_NAMESPACE::AccelerationStructureNV m_accelerationStructureNV = {};
       const AllocationCallbacks *                   m_allocator               = {};
@@ -6023,7 +6023,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetBufferMemoryRequirements.html
       VULKAN_HPP_NODISCARD MemoryRequirements getMemoryRequirements() const VULKAN_HPP_NOEXCEPT;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};
       VULKAN_HPP_NAMESPACE::Buffer     m_buffer     = {};
       const AllocationCallbacks *      m_allocator  = {};
@@ -6167,7 +6167,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetBufferCollectionPropertiesFUCHSIA.html
       VULKAN_HPP_NODISCARD typename ResultValueType<BufferCollectionPropertiesFUCHSIA>::type getProperties() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device                  m_device                  = {};
       VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA m_bufferCollectionFUCHSIA = {};
       const AllocationCallbacks *                   m_allocator               = {};
@@ -6295,7 +6295,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};
       VULKAN_HPP_NAMESPACE::BufferView m_bufferView = {};
       const AllocationCallbacks *      m_allocator  = {};
@@ -6436,7 +6436,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkTrimCommandPoolKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkTrimCommandPoolKHR.html
       void trimKHR( CommandPoolTrimFlags flags VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device      m_device      = {};
       VULKAN_HPP_NAMESPACE::CommandPool m_commandPool = {};
       const AllocationCallbacks *       m_allocator   = {};
@@ -7864,7 +7864,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkCmdEndRendering2EXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndRendering2EXT.html
       void endRendering2EXT( Optional<const RenderingEndInfoEXT> renderingEndInfo VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device        m_device        = {};
       VULKAN_HPP_NAMESPACE::CommandPool   m_commandPool   = {};
       VULKAN_HPP_NAMESPACE::CommandBuffer m_commandBuffer = {};
@@ -8016,7 +8016,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device        m_device        = {};
       VULKAN_HPP_NAMESPACE::CuFunctionNVX m_cuFunctionNVX = {};
       const AllocationCallbacks *         m_allocator     = {};
@@ -8142,7 +8142,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device      m_device      = {};
       VULKAN_HPP_NAMESPACE::CuModuleNVX m_cuModuleNVX = {};
       const AllocationCallbacks *       m_allocator   = {};
@@ -8270,7 +8270,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device         m_device         = {};
       VULKAN_HPP_NAMESPACE::CudaFunctionNV m_cudaFunctionNV = {};
       const AllocationCallbacks *          m_allocator      = {};
@@ -8404,7 +8404,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetCudaModuleCacheNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetCudaModuleCacheNV.html
       VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<uint8_t>>::type getCache() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device       m_device       = {};
       VULKAN_HPP_NAMESPACE::CudaModuleNV m_cudaModuleNV = {};
       const AllocationCallbacks *        m_allocator    = {};
@@ -8535,7 +8535,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device                      m_device                      = {};
       VULKAN_HPP_NAMESPACE::DataGraphPipelineSessionARM m_dataGraphPipelineSessionARM = {};
       const AllocationCallbacks *                       m_allocator                   = {};
@@ -8664,7 +8664,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Instance               m_instance               = {};
       VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT m_debugReportCallbackEXT = {};
       const AllocationCallbacks *                  m_allocator              = {};
@@ -8793,7 +8793,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Instance               m_instance               = {};
       VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT m_debugUtilsMessengerEXT = {};
       const AllocationCallbacks *                  m_allocator              = {};
@@ -8933,7 +8933,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkDeferredOperationJoinKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDeferredOperationJoinKHR.html
       VULKAN_HPP_NODISCARD Result join() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device               m_device               = {};
       VULKAN_HPP_NAMESPACE::DeferredOperationKHR m_deferredOperationKHR = {};
       const AllocationCallbacks *                m_allocator            = {};
@@ -9065,7 +9065,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkResetDescriptorPool, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetDescriptorPool.html
       typename ResultValueType<void>::type reset( DescriptorPoolResetFlags flags VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device         m_device         = {};
       VULKAN_HPP_NAMESPACE::DescriptorPool m_descriptorPool = {};
       const AllocationCallbacks *          m_allocator      = {};
@@ -9203,7 +9203,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDescriptorSetHostMappingVALVE.html
       VULKAN_HPP_NODISCARD void * getHostMappingVALVE() const VULKAN_HPP_NOEXCEPT;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device         m_device         = {};
       VULKAN_HPP_NAMESPACE::DescriptorPool m_descriptorPool = {};
       VULKAN_HPP_NAMESPACE::DescriptorSet  m_descriptorSet  = {};
@@ -9365,7 +9365,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDescriptorSetLayoutBindingOffsetEXT.html
       VULKAN_HPP_NODISCARD DeviceSize getBindingOffsetEXT( uint32_t binding ) const VULKAN_HPP_NOEXCEPT;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device              m_device              = {};
       VULKAN_HPP_NAMESPACE::DescriptorSetLayout m_descriptorSetLayout = {};
       const AllocationCallbacks *               m_allocator           = {};
@@ -9496,7 +9496,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device                   m_device                   = {};
       VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate m_descriptorUpdateTemplate = {};
       const AllocationCallbacks *                    m_allocator                = {};
@@ -9648,7 +9648,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDeviceMemoryPriorityEXT.html
       void setPriorityEXT( float priority ) const VULKAN_HPP_NOEXCEPT;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device       m_device       = {};
       VULKAN_HPP_NAMESPACE::DeviceMemory m_deviceMemory = {};
       const AllocationCallbacks *        m_allocator    = {};
@@ -9812,7 +9812,7 @@ namespace VULKAN_HPP_NAMESPACE
       typename ResultValueType<void>::type acquireWinrtNV() const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::PhysicalDevice m_physicalDevice = {};
       VULKAN_HPP_NAMESPACE::DisplayKHR     m_displayKHR     = {};
       detail::InstanceDispatcher const *   m_dispatcher     = nullptr;
@@ -9956,7 +9956,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDisplayPlaneCapabilitiesKHR.html
       VULKAN_HPP_NODISCARD typename ResultValueType<DisplayPlaneCapabilitiesKHR>::type getDisplayPlaneCapabilities( uint32_t planeIndex ) const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::PhysicalDevice m_physicalDevice = {};
       VULKAN_HPP_NAMESPACE::DisplayModeKHR m_displayModeKHR = {};
       detail::InstanceDispatcher const *   m_dispatcher     = nullptr;
@@ -10089,7 +10089,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkResetEvent, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetEvent.html
       typename ResultValueType<void>::type reset() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};
       VULKAN_HPP_NAMESPACE::Event      m_event      = {};
       const AllocationCallbacks *      m_allocator  = {};
@@ -10225,7 +10225,7 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename DataType>
       VULKAN_HPP_NODISCARD std::pair<ExternalComputeQueueDataParamsNV, DataType> getData() const VULKAN_HPP_NOEXCEPT;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device                 m_device                 = {};
       VULKAN_HPP_NAMESPACE::ExternalComputeQueueNV m_externalComputeQueueNV = {};
       const AllocationCallbacks *                  m_allocator              = {};
@@ -10370,7 +10370,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetFenceStatus, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetFenceStatus.html
       VULKAN_HPP_NODISCARD Result getStatus() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};
       VULKAN_HPP_NAMESPACE::Fence      m_fence      = {};
       const AllocationCallbacks *      m_allocator  = {};
@@ -10502,7 +10502,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetFramebufferTilePropertiesQCOM.html
       VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<TilePropertiesQCOM>>::type getTilePropertiesQCOM() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device      m_device      = {};
       VULKAN_HPP_NAMESPACE::Framebuffer m_framebuffer = {};
       const AllocationCallbacks *       m_allocator   = {};
@@ -10681,7 +10681,7 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename X, typename Y, typename... Z>
       VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> getSubresourceLayout2KHR( const ImageSubresource2 & subresource ) const VULKAN_HPP_NOEXCEPT;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};
       VULKAN_HPP_NAMESPACE::Image      m_image      = {};
       const AllocationCallbacks *      m_allocator  = {};
@@ -10812,7 +10812,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetImageViewAddressNVX, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageViewAddressNVX.html
       VULKAN_HPP_NODISCARD typename ResultValueType<ImageViewAddressPropertiesNVX>::type getAddressNVX() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};
       VULKAN_HPP_NAMESPACE::ImageView  m_imageView  = {};
       const AllocationCallbacks *      m_allocator  = {};
@@ -10943,7 +10943,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device                    m_device                    = {};
       VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT m_indirectCommandsLayoutEXT = {};
       const AllocationCallbacks *                     m_allocator                 = {};
@@ -11074,7 +11074,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device                   m_device                   = {};
       VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV m_indirectCommandsLayoutNV = {};
       const AllocationCallbacks *                    m_allocator                = {};
@@ -11213,7 +11213,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkUpdateIndirectExecutionSetShaderEXT.html
       void updateShader( ArrayProxy<const WriteIndirectExecutionSetShaderEXT> const & executionSetWrites ) const VULKAN_HPP_NOEXCEPT;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device                  m_device                  = {};
       VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT m_indirectExecutionSetEXT = {};
       const AllocationCallbacks *                   m_allocator               = {};
@@ -11339,7 +11339,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device      m_device      = {};
       VULKAN_HPP_NAMESPACE::MicromapEXT m_micromapEXT = {};
       const AllocationCallbacks *       m_allocator   = {};
@@ -11473,7 +11473,7 @@ namespace VULKAN_HPP_NAMESPACE
       typename ResultValueType<void>::type
         bindImage( OpticalFlowSessionBindingPointNV bindingPoint, VULKAN_HPP_NAMESPACE::ImageView view, ImageLayout layout ) const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device               m_device               = {};
       VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV m_opticalFlowSessionNV = {};
       const AllocationCallbacks *                m_allocator            = {};
@@ -11592,7 +11592,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device                        m_device                        = {};
       VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL m_performanceConfigurationINTEL = {};
       detail::DeviceDispatcher const *                    m_dispatcher                    = nullptr;
@@ -11726,7 +11726,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkMergePipelineCaches, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkMergePipelineCaches.html
       typename ResultValueType<void>::type merge( ArrayProxy<const VULKAN_HPP_NAMESPACE::PipelineCache> const & srcCaches ) const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device        m_device        = {};
       VULKAN_HPP_NAMESPACE::PipelineCache m_pipelineCache = {};
       const AllocationCallbacks *         m_allocator     = {};
@@ -11984,7 +11984,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkCompileDeferredNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCompileDeferredNV.html
       typename ResultValueType<void>::type compileDeferredNV( uint32_t shader ) const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device                 = {};
       VULKAN_HPP_NAMESPACE::Pipeline   m_pipeline               = {};
       const AllocationCallbacks *      m_allocator              = {};
@@ -12201,7 +12201,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device            m_device                 = {};
       VULKAN_HPP_NAMESPACE::PipelineBinaryKHR m_pipelineBinaryKHR      = {};
       const AllocationCallbacks *             m_allocator              = {};
@@ -12354,7 +12354,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device         m_device         = {};
       VULKAN_HPP_NAMESPACE::PipelineLayout m_pipelineLayout = {};
       const AllocationCallbacks *          m_allocator      = {};
@@ -12481,7 +12481,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device          m_device          = {};
       VULKAN_HPP_NAMESPACE::PrivateDataSlot m_privateDataSlot = {};
       const AllocationCallbacks *           m_allocator       = {};
@@ -12629,7 +12629,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkResetQueryPoolEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetQueryPoolEXT.html
       void resetEXT( uint32_t firstQuery, uint32_t queryCount ) const VULKAN_HPP_NOEXCEPT;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};
       VULKAN_HPP_NAMESPACE::QueryPool  m_queryPool  = {};
       const AllocationCallbacks *      m_allocator  = {};
@@ -12806,7 +12806,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkQueueNotifyOutOfBandNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueNotifyOutOfBandNV.html
       void notifyOutOfBandNV( const OutOfBandQueueTypeInfoNV & queueTypeInfo ) const VULKAN_HPP_NOEXCEPT;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Queue      m_queue      = {};
       detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
@@ -12948,7 +12948,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI.html
       VULKAN_HPP_NODISCARD typename ResultValueType<Extent2D>::type getSubpassShadingMaxWorkgroupSizeHUAWEI() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};
       VULKAN_HPP_NAMESPACE::RenderPass m_renderPass = {};
       const AllocationCallbacks *      m_allocator  = {};
@@ -13071,7 +13071,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};
       VULKAN_HPP_NAMESPACE::Sampler    m_sampler    = {};
       const AllocationCallbacks *      m_allocator  = {};
@@ -13200,7 +13200,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device                 m_device                 = {};
       VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion m_samplerYcbcrConversion = {};
       const AllocationCallbacks *                  m_allocator              = {};
@@ -13337,7 +13337,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSemaphoreCounterValueKHR.html
       VULKAN_HPP_NODISCARD typename ResultValueType<uint64_t>::type getCounterValueKHR() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};
       VULKAN_HPP_NAMESPACE::Semaphore  m_semaphore  = {};
       const AllocationCallbacks *      m_allocator  = {};
@@ -13479,7 +13479,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetShaderBinaryDataEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetShaderBinaryDataEXT.html
       VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<uint8_t>>::type getBinaryData() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device                 = {};
       VULKAN_HPP_NAMESPACE::ShaderEXT  m_shaderEXT              = {};
       const AllocationCallbacks *      m_allocator              = {};
@@ -13637,7 +13637,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetShaderModuleIdentifierEXT.html
       VULKAN_HPP_NODISCARD ShaderModuleIdentifierEXT getIdentifierEXT() const VULKAN_HPP_NOEXCEPT;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device       m_device       = {};
       VULKAN_HPP_NAMESPACE::ShaderModule m_shaderModule = {};
       const AllocationCallbacks *        m_allocator    = {};
@@ -13896,7 +13896,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Instance     m_instance   = {};
       VULKAN_HPP_NAMESPACE::SurfaceKHR   m_surfaceKHR = {};
       const AllocationCallbacks *        m_allocator  = {};
@@ -14093,7 +14093,7 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetLatencyTimingsNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetLatencyTimingsNV.html
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::LatencyTimingsFrameReportNV> getLatencyTimingsNV() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device       m_device       = {};
       VULKAN_HPP_NAMESPACE::SwapchainKHR m_swapchainKHR = {};
       const AllocationCallbacks *        m_allocator    = {};
@@ -14244,7 +14244,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};
       VULKAN_HPP_NAMESPACE::TensorARM  m_tensorARM  = {};
       const AllocationCallbacks *      m_allocator  = {};
@@ -14371,7 +14371,7 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device        m_device        = {};
       VULKAN_HPP_NAMESPACE::TensorViewARM m_tensorViewARM = {};
       const AllocationCallbacks *         m_allocator     = {};
@@ -14507,7 +14507,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetValidationCacheDataEXT.html
       VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<uint8_t>>::type getData() const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device             m_device             = {};
       VULKAN_HPP_NAMESPACE::ValidationCacheEXT m_validationCacheEXT = {};
       const AllocationCallbacks *              m_allocator          = {};
@@ -14644,7 +14644,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkBindVideoSessionMemoryKHR.html
       typename ResultValueType<void>::type bindMemory( ArrayProxy<const BindVideoSessionMemoryInfoKHR> const & bindSessionMemoryInfos ) const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device          m_device          = {};
       VULKAN_HPP_NAMESPACE::VideoSessionKHR m_videoSessionKHR = {};
       const AllocationCallbacks *           m_allocator       = {};
@@ -14781,7 +14781,7 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkUpdateVideoSessionParametersKHR.html
       typename ResultValueType<void>::type update( const VideoSessionParametersUpdateInfoKHR & updateInfo ) const;
 
-    private:
+    protected:
       VULKAN_HPP_NAMESPACE::Device                    m_device                    = {};
       VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR m_videoSessionParametersKHR = {};
       const AllocationCallbacks *                     m_allocator                 = {};

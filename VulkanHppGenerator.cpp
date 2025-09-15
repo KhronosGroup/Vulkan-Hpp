@@ -9030,7 +9030,7 @@ ${getParent}
 
     ${memberFunctionsDeclarations}
 
-  private:
+  protected:
     ${memberVariables}
   };
 

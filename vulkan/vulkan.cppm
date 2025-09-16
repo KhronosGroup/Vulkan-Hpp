@@ -28,6 +28,8 @@ module;
 
 export module vulkan_hpp;
 
+export import VULKAN_HPP_STD_MODULE;
+
 export namespace VULKAN_HPP_NAMESPACE
 {
   //=====================================

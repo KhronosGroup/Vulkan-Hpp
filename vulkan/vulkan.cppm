@@ -10,6 +10,11 @@
 
 module;
 
+#include <version>
+#if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_NO_STD_MODULE )
+#  define VULKAN_HPP_ENABLE_STD_MODULE
+#endif
+
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_extension_inspection.hpp>
 #include <vulkan/vulkan_format_traits.hpp>
@@ -18,6 +23,9 @@ module;
 #include <vulkan/vulkan_shared.hpp>
 
 export module vulkan_hpp;
+#if defined( VULKAN_HPP_ENABLE_STD_MODULE )
+export import VULKAN_HPP_STD_MODULE;
+#endif
 
 export namespace VULKAN_HPP_NAMESPACE
 {

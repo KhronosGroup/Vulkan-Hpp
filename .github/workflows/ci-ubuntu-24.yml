@@ -125,6 +125,7 @@ jobs:
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
               -D VULKAN_HPP_PRECOMPILE=OFF                    \
+              -D VULKAN_HPP_NO_STD_MODULE=ON                  \
               -D CMAKE_CXX_COMPILER=${{matrix.compiler}}      \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD             \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE

@@ -56,7 +56,7 @@ option( VULKAN_HPP_NO_NODISCARD_WARNINGS "Remove C++17 [[nodiscard]] from functi
 option( VULKAN_HPP_NO_SETTERS "Remove setters for structs and unions" OFF )
 option( VULKAN_HPP_NO_SMART_HANDLE "Remove the vk::UniqueHandle helper class" OFF )
 option( VULKAN_HPP_NO_SPACESHIP_OPERATOR "Remove the C++20 <=> (spaceship) operator" OFF )
-option( VULKAN_HPP_NO_STD_MODULE "Prevent the automatic use of import std in the C++20 module when compiling with C++23" ON )
+option( VULKAN_HPP_NO_STD_MODULE "Prevent the automatic use of import std in the C++20 module when compiling with C++23" OFF )
 option( VULKAN_HPP_NO_TO_STRING "Remove inclusion of vulkan_to_string.hpp from vulkan.hpp" OFF )
 option( VULKAN_HPP_NO_WIN32_PROTOTYPES "Remove HINSTANCE, LoadLibraryA and other symbols, which are declared if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL is enabled on Win32" OFF )
 option( VULKAN_HPP_RAII_NO_EXCEPTIONS "Do not throw exceptions when vulkan functions from vk::raii return an error code." OFF )

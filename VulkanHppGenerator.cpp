@@ -8898,7 +8898,7 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
 
     auto [singularConstructors, arrayConstructors] = generateRAIIHandleConstructors( handle );
 
-    auto [clearMembers, getConstructorSuccessCode, memberVariables, rawConstructorArguments, rawConstructorInitializerList, moveConstructorInitializerList, moveAssignmentInstructions, swapMembers, releaseMembers] =
+    auto [clearMembers, getConstructorSuccessCode, memberVariables, rawConstructorParams, rawConstructorInitializerList, moveConstructorInitializerList, moveAssignmentInstructions, swapMembers, releaseMembers] =
       generateRAIIHandleDetails( handle );
 
     std::string declarations = generateRAIIHandleCommandDeclarations( handle, specialFunctions );
@@ -8955,6 +8955,18 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
       assignmentOperator += replaceWithMap( assignmentOperatorTemplate, { { "handleType", handleType } } );
     }
 
+    std::string rawConstructor;
+    if ( ( handle.first == "VkBuffer" ) || ( handle.first == "VkImage" ) ) {
+      std::string const rawConstructorTemplate = R"(protected:
+      ${handleType}( ${rawConstructorParams} ) VULKAN_HPP_NOEXCEPT
+        : ${rawConstructorInitializerList}
+      {})";
+      rawConstructor += replaceWithMap( rawConstructorTemplate,
+                           { { "handleType", handleType },
+                             { "rawConstructorParams", rawConstructorParams },
+                             { "rawConstructorInitializerList", rawConstructorInitializerList } } );
+    }
+
     const std::string handleTemplate = R"(
   // wrapper class for handle Vk${handleType}, see https://registry.khronos.org/vulkan/specs/latest/man/html/Vk${handleType}.html
 ${enter}  class ${handleType}
@@ -8977,9 +8989,6 @@ ${singularConstructors}
 
     ${handleType}() = delete;
 ${copyConstructor}
-    ${handleType}( ${rawConstructorArguments} ) VULKAN_HPP_NOEXCEPT
-      : ${rawConstructorInitializerList}
-    {}
     ${handleType}( ${handleType} && rhs ) VULKAN_HPP_NOEXCEPT
       : ${moveConstructorInitializerList}
     {}
@@ -9033,6 +9042,8 @@ ${getParent}
 
     ${memberFunctionsDeclarations}
 
+    ${rawConstructor}
+
   private:
     ${memberVariables}
   };
@@ -9059,9 +9070,8 @@ ${leave})";
                              { "handleType", handleType },
                              { "leave", leave },
                              { "memberFunctionsDeclarations", declarations },
+                             { "rawConstructor", rawConstructor },
                              { "memberVariables", memberVariables },
-                             { "rawConstructorArguments", rawConstructorArguments },
-                             { "rawConstructorInitializerList", rawConstructorInitializerList },
                              { "moveAssignmentInstructions", moveAssignmentInstructions },
                              { "moveConstructorInitializerList", moveConstructorInitializerList },
                              { "objTypeEnum", objTypeEnum },
@@ -10254,7 +10264,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
 
   std::string handleName = startLowerCase( stripPrefix( handle.first, "Vk" ) );
 
-  std::string clearMembers, moveConstructorInitializerList, rawConstructorInitializerList, rawConstructorArguments, moveAssignmentInstructions, memberVariables, swapMembers, releaseMembers;
+  std::string clearMembers, moveConstructorInitializerList, rawConstructorInitializerList, rawConstructorParams, moveAssignmentInstructions, memberVariables, swapMembers, releaseMembers;
 
   if ( handle.second.destructorIt != m_commands.end() )
   {
@@ -10293,7 +10303,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
         clearMembers += "\n      m_" + memberName + " = nullptr;";
         moveConstructorInitializerList += "m_" + memberName + "( exchange( rhs.m_" + memberName + ", {} ) ), ";
         rawConstructorInitializerList += "m_" + memberName + "( exchange( " + memberName + ", {} ) ), ";
-        rawConstructorArguments += memberType + " " + memberName + ", ";
+        rawConstructorParams += memberType + " " + memberName + ", ";
         moveAssignmentInstructions += "\n          std::swap( m_" + memberName + ", rhs.m_" + memberName + " );";
         memberVariables += "\n    " + memberType + " m_" + memberName + " = {};";
         swapMembers += "\n      std::swap( m_" + memberName + ", rhs.m_" + memberName + " );";
@@ -10322,7 +10332,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
       clearMembers += "\n        m_" + frontName + " = nullptr;";
       moveConstructorInitializerList = "m_" + frontName + "( exchange( rhs.m_" + frontName + ", {} ) ), ";
       rawConstructorInitializerList += "m_" + frontName + "( exchange( " + frontName + ", {} ) ), ";
-      rawConstructorArguments += "VULKAN_HPP_NAMESPACE::" + stripPrefix( frontType, "Vk" ) + " " + frontName + ", ";
+      rawConstructorParams += "VULKAN_HPP_NAMESPACE::" + stripPrefix( frontType, "Vk" ) + " " + frontName + ", ";
       moveAssignmentInstructions     = "\n          std::swap( m_" + frontName + ", rhs.m_" + frontName + " );";
       memberVariables                = "\n    VULKAN_HPP_NAMESPACE::" + stripPrefix( frontType, "Vk" ) + " m_" + frontName + " = {};";
       swapMembers                    = "\n      std::swap( m_" + frontName + ", rhs.m_" + frontName + " );";
@@ -10331,7 +10341,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
     clearMembers += "\n        m_" + handleName + " = nullptr;";
     moveConstructorInitializerList += "m_" + handleName + "( exchange( rhs.m_" + handleName + ", {} ) ), ";
     rawConstructorInitializerList += "m_" + handleName + "( exchange( " + handleName + ", {} ) ), ";
-    rawConstructorArguments += "VULKAN_HPP_NAMESPACE::" + stripPrefix( handle.first, "Vk" ) + " " + handleName + ", ";
+    rawConstructorParams += "VULKAN_HPP_NAMESPACE::" + stripPrefix( handle.first, "Vk" ) + " " + handleName + ", ";
     moveAssignmentInstructions += "\n          std::swap( m_" + handleName + ", rhs.m_" + handleName + " );";
     assert( handle.first.starts_with( "Vk" ) );
     memberVariables += "\n    VULKAN_HPP_NAMESPACE::" + stripPrefix( handle.first, "Vk" ) + " m_" + handleName + " = {};";
@@ -10345,7 +10355,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
     swapMembers += "\n      std::swap( m_constructorSuccessCode, rhs.m_constructorSuccessCode );";
     moveConstructorInitializerList += "m_constructorSuccessCode( exchange( rhs.m_constructorSuccessCode, {} ) ), ";
     rawConstructorInitializerList += "m_constructorSuccessCode( exchange( constructorSuccessCode, {} ) ), ";
-    rawConstructorArguments += "Result constructorSuccessCode, ";
+    rawConstructorParams += "Result constructorSuccessCode, ";
     moveAssignmentInstructions += "\n          std::swap( m_constructorSuccessCode, rhs.m_constructorSuccessCode );";
     releaseMembers += "\n        m_constructorSuccessCode = Result::eErrorUnknown;";
   }
@@ -10353,22 +10363,22 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
   if ( handle.first == "VkInstance" )
   {
     memberVariables += "\n      std::unique_ptr<detail::InstanceDispatcher> m_dispatcher;";
-    rawConstructorArguments += "std::unique_ptr<detail::InstanceDispatcher> dispatcher";
+    rawConstructorParams += "std::unique_ptr<detail::InstanceDispatcher> dispatcher";
   }
   else if ( handle.first == "VkDevice" )
   {
     memberVariables += "\n      std::unique_ptr<detail::DeviceDispatcher> m_dispatcher;";
-    rawConstructorArguments += "std::unique_ptr<detail::DeviceDispatcher> dispatcher";
+    rawConstructorParams += "std::unique_ptr<detail::DeviceDispatcher> dispatcher";
   }
   else if ( handle.second.constructorIts.front()->second.params.front().type.type == "VkDevice" )
   {
     memberVariables += "\n      detail::DeviceDispatcher const * m_dispatcher = nullptr;";
-    rawConstructorArguments += "detail::DeviceDispatcher const * dispatcher";
+    rawConstructorParams += "detail::DeviceDispatcher const * dispatcher";
   }
   else
   {
     memberVariables += "\n      detail::InstanceDispatcher const * m_dispatcher = nullptr;";
-    rawConstructorArguments += "detail::InstanceDispatcher const * dispatcher";
+    rawConstructorParams += "detail::InstanceDispatcher const * dispatcher";
   }
   clearMembers += "\n        m_dispatcher = nullptr;";
   swapMembers += "\n      std::swap( m_dispatcher, rhs.m_dispatcher );";
@@ -10387,7 +10397,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
   moveAssignmentInstructions += "\n        std::swap( m_dispatcher, rhs.m_dispatcher );";
 
   return std::make_tuple(
-    clearMembers, getConstructorSuccessCode, memberVariables, rawConstructorArguments, rawConstructorInitializerList, moveConstructorInitializerList, moveAssignmentInstructions, swapMembers, releaseMembers );
+    clearMembers, getConstructorSuccessCode, memberVariables, rawConstructorParams, rawConstructorInitializerList, moveConstructorInitializerList, moveAssignmentInstructions, swapMembers, releaseMembers );
 }
 
 std::string VulkanHppGenerator::generateRAIIHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const

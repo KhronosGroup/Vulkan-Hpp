@@ -732,7 +732,7 @@ void VulkanHppGenerator::checkHandleCorrectness() const
     // check existence of objTypeEnum used with this handle type
     checkForError(
       !handleIt->second.objTypeEnum.empty(), handleIt->second.xmlLine, "handle <" + handleIt->first + "> missing required \"objtypeenum\" attribute" );
-    checkForError( !isTypeUsed( handleIt->first ) || contains( objectTypeIt->second.values, handleIt->second.objTypeEnum ),
+    checkForError( !isTypeUsed( handleIt->first ) || containsName( objectTypeIt->second.values, handleIt->second.objTypeEnum ),
                    handleIt->second.xmlLine,
                    "handle <" + handleIt->first + "> specifies unknown \"objtypeenum\" <" + handleIt->second.objTypeEnum + ">" );
   }
@@ -919,6 +919,21 @@ void VulkanHppGenerator::checkStructCorrectness() const
   assert( sTypeValues.empty() );
 }
 
+void VulkanHppGenerator::checkStructMemberArraySizesAreValid( std::vector<std::string> const & arraySizes, int line ) const
+{
+  // check that any array size is either a number or a known constant
+  for ( auto const & arraySize : arraySizes )
+  {
+    if ( !isNumber( arraySize ) && !m_constants.contains( arraySize ) )
+    {
+      auto typeIt = m_types.find( arraySize );
+      checkForError( ( typeIt != m_types.end() ) && isUpperCase( arraySize ) && ( typeIt->second.category == TypeCategory::ExternalType ),
+                     line,
+                     "struct member array size uses unknown constant <" + arraySize + ">" );
+    }
+  }
+}
+
 void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &             structureName,
                                                        std::vector<MemberData> const & members,
                                                        std::set<std::string> &         sTypeValues ) const
@@ -928,90 +943,98 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
 
   for ( auto const & member : members )
   {
-    // check that all member types are required in some feature or extension
-    if ( member.type.type.starts_with( "Vk" ) )
-    {
-      auto memberTypeIt = m_types.find( member.type.type );
-      assert( memberTypeIt != m_types.end() );
-      checkForError( !memberTypeIt->second.requiredBy.empty(),
-                     member.xmlLine,
-                     "struct member type <" + member.type.type + "> used in struct <" + structureName + "> is never required for any feature or extension" );
-    }
+    checkStructMemberArraySizesAreValid( member.arraySizes, member.xmlLine );
+    checkStructMemberSelectorConnection( member.selector, members, member.type.type );
+    checkStructMemberTypeIsKnown( member.type.type, member.xmlLine );
+    checkStructMemberTypeIsRequired( member.type.type, member.xmlLine, structureName );
+    checkStructMemberValueIsValid( member.value, member.type.type, member.name, member.xmlLine, structUsed, structureName, sTypeValues );
+  }
+}
 
-    // if a member specifies a selector, that member is a union and the selector is an enum
-    // check that there's a 1-1 connection between the specified selections and the values of that enum
-    if ( !member.selector.empty() )
+void VulkanHppGenerator::checkStructMemberSelectorConnection( std::string const &             selector,
+                                                              std::vector<MemberData> const & members,
+                                                              std::string const &             memberType ) const
+{
+  // if a member specifies a selector, that member is a union and the selector is an enum
+  // check that there's a 1-1 connection between the specified selections and the values of that enum
+  if ( !selector.empty() )
+  {
+    auto selectorIt = findStructMemberIt( selector, members );
+    assert( selectorIt != members.end() );
+    auto selectorEnumIt = m_enums.find( selectorIt->type.type );
+    assert( selectorEnumIt != m_enums.end() );
+    auto unionIt = m_structs.find( memberType );
+    assert( ( unionIt != m_structs.end() ) && unionIt->second.isUnion );
+    for ( auto const & unionMember : unionIt->second.members )
     {
-      auto selectorIt = findStructMemberIt( member.selector, members );
-      assert( selectorIt != members.end() );
-      auto selectorEnumIt = m_enums.find( selectorIt->type.type );
-      assert( selectorEnumIt != m_enums.end() );
-      auto unionIt = m_structs.find( member.type.type );
-      assert( ( unionIt != m_structs.end() ) && unionIt->second.isUnion );
-      for ( auto const & unionMember : unionIt->second.members )
+      // check that each union member has a selection, that is a value of the seleting enum
+      assert( !unionMember.selection.empty() );
+      for ( auto const & selection : unionMember.selection )
       {
-        // check that each union member has a selection, that is a value of the seleting enum
-        assert( !unionMember.selection.empty() );
-        for ( auto const & selection : unionMember.selection )
-        {
-          checkForError( contains( selectorEnumIt->second.values, selection ),
-                         unionMember.xmlLine,
-                         "union member <" + unionMember.name + "> uses selection <" + selection + "> that is not part of the selector type <" +
-                           selectorIt->type.type + ">" );
-        }
-      }
-    }
-
-    // check that each member type is known
-    checkForError( m_types.contains( member.type.type ), member.xmlLine, "struct member uses unknown type <" + member.type.type + ">" );
-
-    // check that any used constant is a known constant or some potentially externally defined constant
-    for ( auto const & arraySize : member.arraySizes )
-    {
-      if ( !isNumber( arraySize ) && !m_constants.contains( arraySize ) )
-      {
-        auto typeIt = m_types.find( arraySize );
-        checkForError( ( typeIt != m_types.end() ) && isUpperCase( arraySize ) && ( typeIt->second.category == TypeCategory::ExternalType ),
-                       member.xmlLine,
-                       "struct member array size uses unknown constant <" + arraySize + ">" );
+        checkForError( containsName( selectorEnumIt->second.values, selection ),
+                       unionMember.xmlLine,
+                       "union member <" + unionMember.name + "> uses selection <" + selection + "> that is not part of the selector type <" +
+                         selectorIt->type.type + ">" );
       }
     }
+  }
+}
 
-    // checks if a value is specified
-    if ( !member.value.empty() )
+void VulkanHppGenerator::checkStructMemberTypeIsKnown( std::string const & memberType, int line ) const
+{
+  // check that the member type is known
+  checkForError( m_types.contains( memberType ), line, "struct member uses unknown type <" + memberType + ">" );
+}
+
+void VulkanHppGenerator::checkStructMemberTypeIsRequired( std::string const & memberType, int line, std::string const & structureName ) const
+{
+  // check that the member type is required in some feature or extension
+  if ( memberType.starts_with( "Vk" ) )
+  {
+    auto typeIt = m_types.find( memberType );
+    assert( typeIt != m_types.end() );
+    checkForError( !typeIt->second.requiredBy.empty(),
+                   line,
+                   "struct member type <" + memberType + "> used in struct <" + structureName + "> is never required for any feature or extension" );
+  }
+}
+
+void VulkanHppGenerator::checkStructMemberValueIsValid( std::string const &     memberValue,
+                                                        std::string const &     memberType,
+                                                        std::string const &     memberName,
+                                                        int                     line,
+                                                        bool                    structUsed,
+                                                        std::string const &     structureName,
+                                                        std::set<std::string> & sTypeValues ) const
+{
+  if ( !memberValue.empty() )
+  {
+    auto enumIt = m_enums.find( memberType );
+    if ( enumIt != m_enums.end() )
     {
-      auto enumIt = m_enums.find( member.type.type );
-      if ( enumIt != m_enums.end() )
-      {
-        // check that the value exists in the specified enum (if the struct is used at all)
-        if ( structUsed )
-        {
-          checkForError( contains( enumIt->second.values, member.value ),
-                         member.xmlLine,
-                         "value <" + member.value + "> for member <" + member.name + "> in structure <" + structureName + "> of enum type <" +
-                           member.type.type + "> not listed" );
-          // special handling for sType: no value should appear more than once
-          if ( member.name == "sType" )
-          {
-            checkForError( sTypeValues.insert( member.value ).second, member.xmlLine, "sType value <" + member.value + "> has been used before" );
-          }
-        }
-      }
-      else if ( member.type.type == "uint32_t" )
-      {
-        checkForError( isNumber( member.value ),
-                       member.xmlLine,
-                       "value <" + member.value + "> for member <" + member.name + "> in structure <" + structureName + "> of type <" + member.type.type +
-                         "> is not a number" );
-      }
-      else
-      {
-        // don't know the type of the value -> error out
-        checkForError( false,
-                       member.xmlLine,
-                       "member <" + member.name + "> in structure <" + structureName + "> holds value <" + member.value + "> for an unhandled type <" +
-                         member.type.type + ">" );
-      }
+      // check that the value exists in the specified enum (if the struct is used at all)
+      checkForError( !structUsed || containsName( enumIt->second.values, memberValue ),
+                     line,
+                     "struct member <" + memberName + "> in structure <" + structureName + "> holds value <" + memberValue + "> of enum type <" + memberType +
+                       "> which is not listed" );
+      // special handling for sType: no value should appear more than once
+      checkForError(
+        !structUsed || ( memberName != "sType" ) || sTypeValues.insert( memberValue ).second, line, "sType value <" + memberValue + "> has been used before" );
+    }
+    else if ( memberType == "uint32_t" )
+    {
+      checkForError( isNumber( memberValue ),
+                     line,
+                     "value <" + memberValue + "> for member <" + memberName + "> in structure <" + structureName + "> of type <" + memberType +
+                       "> is not a number" );
+    }
+    else
+    {
+      // don't know the type of the value -> error out
+      checkForError( false,
+                     line,
+                     "member <" + memberName + "> in structure <" + structureName + "> holds value <" + memberValue + "> for an unhandled type <" + memberType +
+                       ">" );
     }
   }
 }
@@ -1032,7 +1055,6 @@ void VulkanHppGenerator::checkSyncAccessCorrectness() const
 
     if ( !syncAccess.second.name.empty() )
     {
-      // with alias
       auto aliasIt = findByNameOrAlias( accessFlagBitsIt->second.values, syncAccess.second.name );
       if ( aliasIt == accessFlagBitsIt->second.values.end() )
       {
@@ -1080,83 +1102,13 @@ void VulkanHppGenerator::checkSyncStageCorrectness() const
   }
 }
 
-std::string VulkanHppGenerator::combineDataTypes( std::map<size_t, VectorParamData> const & vectorParams,
-                                                  std::vector<size_t> const &               returnParams,
-                                                  bool                                      enumerating,
-                                                  std::vector<std::string> const &          dataTypes,
-                                                  CommandFlavourFlags                       flavourFlags,
-                                                  bool                                      raii ) const
-{
-  assert( dataTypes.size() == returnParams.size() );
-
-  std::vector<std::string> modifiedDataTypes( dataTypes.size() );
-  for ( size_t i = 0; i < returnParams.size(); ++i )
-  {
-    auto vectorParamIt   = vectorParams.find( returnParams[i] );
-    modifiedDataTypes[i] = ( vectorParamIt == vectorParams.end() || ( flavourFlags & CommandFlavourFlagBits::singular ) )
-                           ? dataTypes[i]
-                           : ( "std::vector<" + dataTypes[i] +
-                               ( raii || ( flavourFlags & CommandFlavourFlagBits::unique )
-                                   ? ">"
-                                   : ( ", " + startUpperCase( stripPrefix( dataTypes[i], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator>" ) ) );
-  }
-
-  std::string combinedType;
-  switch ( modifiedDataTypes.size() )
-  {
-    case 0: combinedType = "void"; break;
-    case 1: combinedType = modifiedDataTypes[0]; break;
-    case 2:
-      assert( !enumerating || ( vectorParams.contains( returnParams[1] ) && ( vectorParams.find( returnParams[1] )->second.lenParam == returnParams[0] ) ) );
-      combinedType = enumerating ? modifiedDataTypes[1] : ( "std::pair<" + modifiedDataTypes[0] + ", " + modifiedDataTypes[1] + ">" );
-      break;
-    case 3:
-      switch ( vectorParams.size() )
-      {
-        case 0:
-          assert( !enumerating );
-          combinedType = "std::tuple<" + modifiedDataTypes[0] + ", " + modifiedDataTypes[1] + ", " + modifiedDataTypes[2] + ">";
-          break;
-        case 1:
-          assert( enumerating );
-          assert( ( vectorParams.begin()->first == returnParams[2] ) && ( vectorParams.begin()->second.lenParam == returnParams[1] ) );
-          combinedType = "std::pair<" + modifiedDataTypes[0] + ", " + modifiedDataTypes[2] + ">";
-          break;
-        case 2:
-          assert( enumerating );
-          assert( ( vectorParams.begin()->first == returnParams[1] ) && ( vectorParams.begin()->second.lenParam == returnParams[0] ) &&
-                  ( std::next( vectorParams.begin() )->first == returnParams[2] ) &&
-                  ( std::next( vectorParams.begin() )->second.lenParam == returnParams[0] ) );
-          combinedType = "std::pair<" + modifiedDataTypes[1] + ", " + modifiedDataTypes[2] + ">";
-          break;
-        default: assert( false ); break;
-      }
-      break;
-    default: assert( false ); break;
-  }
-  return combinedType;
-}
-
-bool VulkanHppGenerator::contains( std::vector<EnumValueData> const & enumValues, std::string const & name ) const
-{
-  return std::ranges::any_of( enumValues,
-                              [&name]( EnumValueData const & ev )
-                              { return ( ev.name == name ) || std::ranges::any_of( ev.aliases, [&name]( auto const & eav ) { return eav.name == name; } ); } );
-}
-
 bool VulkanHppGenerator::containsArray( std::string const & type ) const
 {
   // a simple recursive check if a type is or contains an array
   auto structureIt = m_structs.find( type );
-  bool found       = false;
-  if ( structureIt != m_structs.end() )
-  {
-    for ( auto memberIt = structureIt->second.members.begin(); memberIt != structureIt->second.members.end() && !found; ++memberIt )
-    {
-      found = !memberIt->arraySizes.empty() || containsArray( memberIt->type.type );
-    }
-  }
-  return found;
+  return ( ( structureIt != m_structs.end() ) &&
+           std::ranges::any_of( structureIt->second.members,
+                                [this]( auto const & member ) { return !member.arraySizes.empty() || containsArray( member.type.type ); } ) );
 }
 
 bool VulkanHppGenerator::containsDeprecated( std::vector<MemberData> const & members ) const
@@ -1200,6 +1152,13 @@ bool VulkanHppGenerator::containsFloatingPoints( std::vector<MemberData> const &
     }
   }
   return false;
+}
+
+bool VulkanHppGenerator::containsName( std::vector<EnumValueData> const & enumValues, std::string const & name ) const
+{
+  return std::ranges::any_of( enumValues,
+                              [&name]( EnumValueData const & ev )
+                              { return ( ev.name == name ) || std::ranges::any_of( ev.aliases, [&name]( auto const & eav ) { return eav.name == name; } ); } );
 }
 
 bool VulkanHppGenerator::containsUnion( std::string const & type ) const
@@ -3118,8 +3077,8 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
     needsVectorSizeCheck( commandData.params, vectorParams, returnParams, singularParams, skippedParams );
   const bool enumerating = determineEnumeration( vectorParams, returnParams );
 
-  std::vector<std::string> dataTypes = determineDataTypes( commandData.params, vectorParams, returnParams, templatedParams, false );
-  std::string              dataType  = combineDataTypes( vectorParams, returnParams, enumerating, dataTypes, flavourFlags, false );
+  std::vector<std::string> dataTypes      = determineDataTypes( commandData.params, vectorParams, returnParams, templatedParams, false );
+  std::string              returnDataType = generateReturnDataType( vectorParams, returnParams, enumerating, dataTypes, flavourFlags, false );
 
   std::string argumentTemplates = generateArgumentTemplates( commandData.params, returnParams, vectorParams, templatedParams, chainedReturnParams, false );
   auto [allocatorTemplates, uniqueHandleAllocatorTemplates] =
@@ -3151,7 +3110,7 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
       vectorSizeCheck.first ? generateVectorSizeCheck( name, commandData, initialSkipCount, vectorSizeCheck.second, skippedParams, false ) : "";
     std::string returnVariable   = generateReturnVariable( commandData, returnParams, vectorParams, flavourFlags );
     std::string dataDeclarations = generateDataDeclarations(
-      commandData, returnParams, vectorParams, templatedParams, flavourFlags, false, dataTypes, dataType, returnType, returnVariable );
+      commandData, returnParams, vectorParams, templatedParams, flavourFlags, false, dataTypes, returnDataType, returnType, returnVariable );
     std::string dataPreparation =
       generateDataPreparation( commandData, initialSkipCount, returnParams, vectorParams, templatedParams, flavourFlags, enumerating, dataTypes );
     std::string dataSizeChecks = generateDataSizeChecks( commandData, returnParams, dataTypes, vectorParams, templatedParams, singular );
@@ -3163,7 +3122,7 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
                                                            returnVariable,
                                                            returnType,
                                                            decoratedReturnType,
-                                                           dataType,
+                                                           returnDataType,
                                                            initialSkipCount,
                                                            returnParams.empty() ? INVALID_INDEX : returnParams[0],
                                                            flavourFlags,
@@ -6284,7 +6243,7 @@ std::string VulkanHppGenerator::generateDebugReportObjectType( std::string const
   debugReportObjectType             = debugReportObjectType.replace( 3, 0, "DEBUG_REPORT_" ) + "_EXT";
   auto enumIt                       = m_enums.find( "VkDebugReportObjectTypeEXT" );
   assert( enumIt != m_enums.end() );
-  return contains( enumIt->second.values, debugReportObjectType ) ? generateEnumValueName( enumIt->first, debugReportObjectType, false ) : "eUnknown";
+  return containsName( enumIt->second.values, debugReportObjectType ) ? generateEnumValueName( enumIt->first, debugReportObjectType, false ) : "eUnknown";
 }
 
 std::string VulkanHppGenerator::generateDecoratedReturnType( CommandData const &                       commandData,
@@ -7915,7 +7874,7 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
     assert( !handleData.second.objTypeEnum.empty() );
     auto enumIt = m_enums.find( "VkObjectType" );
     assert( enumIt != m_enums.end() );
-    assert( contains( enumIt->second.values, handleData.second.objTypeEnum ) );
+    assert( containsName( enumIt->second.values, handleData.second.objTypeEnum ) );
 
     std::string usingAlias;
     for ( auto const & alias : handleData.second.aliases )
@@ -8894,14 +8853,15 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
     assert( !handle.second.objTypeEnum.empty() );
     auto enumIt = m_enums.find( "VkObjectType" );
     assert( enumIt != m_enums.end() );
-    assert( contains( enumIt->second.values, handle.second.objTypeEnum ) );
+    assert( containsName( enumIt->second.values, handle.second.objTypeEnum ) );
     std::string objTypeEnum = generateEnumValueName( enumIt->first, handle.second.objTypeEnum, false );
 
     enumIt = m_enums.find( "VkDebugReportObjectTypeEXT" );
     assert( enumIt != m_enums.end() );
-    std::string valueName             = handle.second.objTypeEnum;
-    valueName                         = valueName.replace( 3, 0, "DEBUG_REPORT_" ) + "_EXT";
-    std::string debugReportObjectType = contains( enumIt->second.values, valueName ) ? generateEnumValueName( enumIt->first, valueName, false ) : "eUnknown";
+    std::string valueName = handle.second.objTypeEnum;
+    valueName             = valueName.replace( 3, 0, "DEBUG_REPORT_" ) + "_EXT";
+    std::string debugReportObjectType =
+      containsName( enumIt->second.values, valueName ) ? generateEnumValueName( enumIt->first, valueName, false ) : "eUnknown";
 
     std::string dispatcherType = ( ( handle.first == "VkDevice" ) || ( handle.second.constructorIts.front()->second.params.front().type.type == "VkDevice" ) )
                                  ? "detail::DeviceDispatcher"
@@ -9215,9 +9175,9 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandEnhanced( std::string c
     ( flavourFlags & CommandFlavourFlagBits::chained ) ? determineChainedReturnParams( commandData.params, returnParams ) : std::vector<size_t>();
   assert( chainedReturnParams.size() <= 1 );
 
-  const bool               enumerating = determineEnumeration( vectorParams, returnParams );
-  std::vector<std::string> dataTypes   = determineDataTypes( commandData.params, vectorParams, returnParams, templatedParams, true );
-  std::string              dataType    = combineDataTypes( vectorParams, returnParams, enumerating, dataTypes, flavourFlags, true );
+  const bool               enumerating    = determineEnumeration( vectorParams, returnParams );
+  std::vector<std::string> dataTypes      = determineDataTypes( commandData.params, vectorParams, returnParams, templatedParams, true );
+  std::string              returnDataType = generateReturnDataType( vectorParams, returnParams, enumerating, dataTypes, flavourFlags, true );
 
   std::string argumentTemplates = generateArgumentTemplates( commandData.params, returnParams, vectorParams, templatedParams, chainedReturnParams, true );
   std::string argumentList      = generateArgumentListEnhanced( commandData.params,
@@ -9260,10 +9220,10 @@ ${vectorSizeCheck}
 
     std::string callSequence = generateCallSequence(
       name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, templatedParams, chainedReturnParams, flavourFlags, true, false );
-    std::string className      = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "Context";
-    std::string returnVariable = generateReturnVariable( commandData, returnParams, vectorParams, flavourFlags );
-    std::string dataDeclarations =
-      generateDataDeclarations( commandData, returnParams, vectorParams, templatedParams, flavourFlags, true, dataTypes, dataType, returnType, returnVariable );
+    std::string className        = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "Context";
+    std::string returnVariable   = generateReturnVariable( commandData, returnParams, vectorParams, flavourFlags );
+    std::string dataDeclarations = generateDataDeclarations(
+      commandData, returnParams, vectorParams, templatedParams, flavourFlags, true, dataTypes, returnDataType, returnType, returnVariable );
     std::string dataPreparation =
       generateDataPreparation( commandData, initialSkipCount, returnParams, vectorParams, templatedParams, flavourFlags, enumerating, dataTypes );
     std::string dataSizeChecks  = generateDataSizeChecks( commandData, returnParams, dataTypes, vectorParams, templatedParams, singular );
@@ -9273,7 +9233,7 @@ ${vectorSizeCheck}
                                                            returnVariable,
                                                            returnType,
                                                            decoratedReturnType,
-                                                           dataType,
+                                                           returnDataType,
                                                            initialSkipCount,
                                                            returnParams.empty() ? INVALID_INDEX : returnParams[0],
                                                            flavourFlags,
@@ -9380,7 +9340,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
   {
     std::string              className      = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "Context";
     std::vector<std::string> dataTypes      = determineDataTypes( commandData.params, vectorParams, returnParams, {}, true );
-    std::string              dataType       = combineDataTypes( vectorParams, returnParams, enumerating, dataTypes, flavourFlags, true );
+    std::string              returnDataType = generateReturnDataType( vectorParams, returnParams, enumerating, dataTypes, flavourFlags, true );
     std::string              returnVariable = generateReturnVariable( commandData, returnParams, vectorParams, flavourFlags );
     std::string              vulkanType;
     auto                     vectorParamIt = vectorParams.find( returnParams.back() );
@@ -9394,7 +9354,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
     }
 
     std::string dataDeclarations =
-      generateDataDeclarations( commandData, returnParams, vectorParams, {}, flavourFlags, true, dataTypes, dataType, returnType, returnVariable );
+      generateDataDeclarations( commandData, returnParams, vectorParams, {}, flavourFlags, true, dataTypes, returnDataType, returnType, returnVariable );
     std::string callSequence =
       generateCallSequence( name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, {}, {}, flavourFlags, true, true );
     std::string resultCheck      = generateResultCheck( commandData, className, "::", commandName, enumerating, true );
@@ -10634,6 +10594,63 @@ ${leave})";
     }
   }
   return str;
+}
+
+std::string VulkanHppGenerator::generateReturnDataType( std::map<size_t, VectorParamData> const & vectorParams,
+                                                        std::vector<size_t> const &               returnParams,
+                                                        bool                                      enumerating,
+                                                        std::vector<std::string> const &          dataTypes,
+                                                        CommandFlavourFlags                       flavourFlags,
+                                                        bool                                      raii ) const
+{
+  assert( dataTypes.size() == returnParams.size() );
+
+  std::vector<std::string> modifiedDataTypes( returnParams.size() );
+  for ( size_t i = 0; i < returnParams.size(); ++i )
+  {
+    auto vectorParamIt   = vectorParams.find( returnParams[i] );
+    modifiedDataTypes[i] = ( vectorParamIt == vectorParams.end() || ( flavourFlags & CommandFlavourFlagBits::singular ) )
+                           ? dataTypes[i]
+                           : ( "std::vector<" + dataTypes[i] +
+                               ( raii || ( flavourFlags & CommandFlavourFlagBits::unique )
+                                   ? ">"
+                                   : ( ", " + startUpperCase( stripPrefix( dataTypes[i], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator>" ) ) );
+  }
+
+  std::string combinedType;
+  switch ( modifiedDataTypes.size() )
+  {
+    case 0: combinedType = "void"; break;
+    case 1: combinedType = modifiedDataTypes[0]; break;
+    case 2:
+      assert( !enumerating || ( vectorParams.contains( returnParams[1] ) && ( vectorParams.find( returnParams[1] )->second.lenParam == returnParams[0] ) ) );
+      combinedType = enumerating ? modifiedDataTypes[1] : ( "std::pair<" + modifiedDataTypes[0] + ", " + modifiedDataTypes[1] + ">" );
+      break;
+    case 3:
+      switch ( vectorParams.size() )
+      {
+        case 0:
+          assert( !enumerating );
+          combinedType = "std::tuple<" + modifiedDataTypes[0] + ", " + modifiedDataTypes[1] + ", " + modifiedDataTypes[2] + ">";
+          break;
+        case 1:
+          assert( enumerating );
+          assert( ( vectorParams.begin()->first == returnParams[2] ) && ( vectorParams.begin()->second.lenParam == returnParams[1] ) );
+          combinedType = "std::pair<" + modifiedDataTypes[0] + ", " + modifiedDataTypes[2] + ">";
+          break;
+        case 2:
+          assert( enumerating );
+          assert( ( vectorParams.begin()->first == returnParams[1] ) && ( vectorParams.begin()->second.lenParam == returnParams[0] ) &&
+                  ( std::next( vectorParams.begin() )->first == returnParams[2] ) &&
+                  ( std::next( vectorParams.begin() )->second.lenParam == returnParams[0] ) );
+          combinedType = "std::pair<" + modifiedDataTypes[1] + ", " + modifiedDataTypes[2] + ">";
+          break;
+        default: assert( false ); break;
+      }
+      break;
+    default: assert( false ); break;
+  }
+  return combinedType;
 }
 
 std::string VulkanHppGenerator::generateReturnStatement( std::string const & commandName,
@@ -12206,7 +12223,7 @@ std::tuple<std::string, std::string, std::string, std::string>
       {
         auto enumIt = m_enums.find( member.type.type );
         assert( enumIt != m_enums.end() );
-        assert( contains( enumIt->second.values, member.value ) );
+        assert( containsName( enumIt->second.values, member.value ) );
         std::string valueName = generateEnumValueName( enumIt->first, member.value, enumIt->second.isBitmask );
         members += stripPrefix( member.type.type, "Vk" ) + "::" + valueName;
         if ( member.name == "sType" )
@@ -14886,7 +14903,8 @@ void VulkanHppGenerator::readFormat( tinyxml2::XMLElement const * element )
   auto formatIt = m_enums.find( "VkFormat" );
   assert( formatIt != m_enums.end() );
 
-  checkForError( contains( formatIt->second.values, name ) && m_formats.insert( { name, format } ).second, line, "format <" + name + "> already specified" );
+  checkForError(
+    containsName( formatIt->second.values, name ) && m_formats.insert( { name, format } ).second, line, "format <" + name + "> already specified" );
 }
 
 void VulkanHppGenerator::readFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData )
@@ -14945,7 +14963,7 @@ void VulkanHppGenerator::readFormatPlane( tinyxml2::XMLElement const * element, 
       plane.compatible = attribute.second;
       auto formatIt    = m_enums.find( "VkFormat" );
       assert( formatIt != m_enums.end() );
-      checkForError( contains( formatIt->second.values, plane.compatible ), line, "encountered unknown format <" + plane.compatible + ">" );
+      checkForError( containsName( formatIt->second.values, plane.compatible ), line, "encountered unknown format <" + plane.compatible + ">" );
     }
     else if ( attribute.first == "index" )
     {
@@ -15555,7 +15573,7 @@ void VulkanHppGenerator::readSPIRVCapabilityEnable( tinyxml2::XMLElement const *
       const auto enumIt = m_enums.find( bitmaskIt->second.require );
       checkForError(
         enumIt != m_enums.end(), line, "member <" + member + "> specified for SPIR-V capability requires an unknown enum <" + bitmaskIt->second.require + ">" );
-      checkForError( contains( enumIt->second.values, value ), line, "unknown attribute value <" + value + "> specified for SPIR-V capability" );
+      checkForError( containsName( enumIt->second.values, value ), line, "unknown attribute value <" + value + "> specified for SPIR-V capability" );
     }
   }
   else if ( attributes.contains( "struct" ) )
@@ -15894,7 +15912,7 @@ void VulkanHppGenerator::readSyncAccessEquivalent( tinyxml2::XMLElement const * 
     std::vector<std::string> access = tokenize( attribute.second, "," );
     for ( auto const & a : access )
     {
-      checkForError( contains( accessFlagBits2It->second.values, a ), line, "syncequivalent access uses unknown value <" + a + ">!" );
+      checkForError( containsName( accessFlagBits2It->second.values, a ), line, "syncequivalent access uses unknown value <" + a + ">!" );
     }
   }
 }
@@ -15986,7 +16004,7 @@ void VulkanHppGenerator::readSyncStageEquivalent( tinyxml2::XMLElement const * e
     std::vector<std::string> stage = tokenize( attribute.second, "," );
     for ( auto const & s : stage )
     {
-      checkForError( contains( stageFlagBits2It->second.values, s ), line, "syncequivalent stage uses unknown value <" + s + ">!" );
+      checkForError( containsName( stageFlagBits2It->second.values, s ), line, "syncequivalent stage uses unknown value <" + s + ">!" );
     }
   }
 }

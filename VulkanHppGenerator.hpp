@@ -547,22 +547,27 @@ private:
   void        checkRequireTypesCorrectness( RequireData const & require ) const;
   void        checkSpirVCapabilityCorrectness() const;
   void        checkStructCorrectness() const;
+  void        checkStructMemberArraySizesAreValid( std::vector<std::string> const & arraySizes, int line ) const;
   void checkStructMemberCorrectness( std::string const & structureName, std::vector<MemberData> const & members, std::set<std::string> & sTypeValues ) const;
+  void checkStructMemberSelectorConnection( std::string const & selector, std::vector<MemberData> const & members, std::string const & memberType ) const;
+  void checkStructMemberTypeIsKnown( std::string const & memberType, int line ) const;
+  void checkStructMemberTypeIsRequired( std::string const & memberType, int line, std::string const & structureName ) const;
+  void checkStructMemberValueIsValid( std::string const &     memberValue,
+                                      std::string const &     memberType,
+                                      std::string const &     memberName,
+                                      int                     line,
+                                      bool                    structUsed,
+                                      std::string const &     structureName,
+                                      std::set<std::string> & sTypeValues ) const;
   void checkSyncAccessCorrectness() const;
   void checkSyncStageCorrectness() const;
-  std::string              combineDataTypes( std::map<size_t, VectorParamData> const & vectorParams,
-                                             std::vector<size_t> const &               returnParams,
-                                             bool                                      enumerating,
-                                             std::vector<std::string> const &          dataTypes,
-                                             CommandFlavourFlags                       flavourFlags,
-                                             bool                                      raii ) const;
-  bool                     contains( std::vector<EnumValueData> const & enumValues, std::string const & name ) const;
-  bool                     containsArray( std::string const & type ) const;
-  bool                     containsDeprecated( std::vector<MemberData> const & members ) const;
-  bool                     containsFuncPointer( std::string const & type ) const;
-  bool                     containsFloatingPoints( std::vector<MemberData> const & members ) const;
-  bool                     containsUnion( std::string const & type ) const;
-  bool                     describesVector( StructureData const & structure, std::string const & type = "" ) const;
+  bool containsArray( std::string const & type ) const;
+  bool containsDeprecated( std::vector<MemberData> const & members ) const;
+  bool containsFuncPointer( std::string const & type ) const;
+  bool containsFloatingPoints( std::vector<MemberData> const & members ) const;
+  bool containsName( std::vector<EnumValueData> const & enumValues, std::string const & name ) const;
+  bool containsUnion( std::string const & type ) const;
+  bool describesVector( StructureData const & structure, std::string const & type = "" ) const;
   std::vector<size_t>      determineChainedReturnParams( std::vector<ParamData> const & params, std::vector<size_t> const & returnParams ) const;
   std::vector<size_t>      determineConstPointerParams( std::vector<ParamData> const & params ) const;
   std::vector<std::string> determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
@@ -1032,6 +1037,12 @@ private:
                                    bool                enumerating,
                                    bool                raii ) const;
   std::string generateResultExceptions() const;
+  std::string generateReturnDataType( std::map<size_t, VectorParamData> const & vectorParams,
+                                      std::vector<size_t> const &               returnParams,
+                                      bool                                      enumerating,
+                                      std::vector<std::string> const &          dataTypes,
+                                      CommandFlavourFlags                       flavourFlags,
+                                      bool                                      raii ) const;
   std::string generateReturnStatement( std::string const & commandName,
                                        CommandData const & commandData,
                                        std::string const & returnVariable,

@@ -6023,6 +6023,18 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetBufferMemoryRequirements.html
       VULKAN_HPP_NODISCARD MemoryRequirements getMemoryRequirements() const VULKAN_HPP_NOEXCEPT;
 
+    protected:
+      Buffer( VULKAN_HPP_NAMESPACE::Device     device,
+              VULKAN_HPP_NAMESPACE::Buffer     buffer,
+              const AllocationCallbacks *      allocator,
+              detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_buffer( exchange( buffer, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
+
     private:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};
       VULKAN_HPP_NAMESPACE::Buffer     m_buffer     = {};
@@ -10680,6 +10692,18 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageSubresourceLayout2KHR.html
       template <typename X, typename Y, typename... Z>
       VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> getSubresourceLayout2KHR( const ImageSubresource2 & subresource ) const VULKAN_HPP_NOEXCEPT;
+
+    protected:
+      Image( VULKAN_HPP_NAMESPACE::Device     device,
+             VULKAN_HPP_NAMESPACE::Image      image,
+             const AllocationCallbacks *      allocator,
+             detail::DeviceDispatcher const * dispatcher ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( device, {} ) )
+        , m_image( exchange( image, {} ) )
+        , m_allocator( exchange( allocator, {} ) )
+        , m_dispatcher( exchange( dispatcher, nullptr ) )
+      {
+      }
 
     private:
       VULKAN_HPP_NAMESPACE::Device     m_device     = {};

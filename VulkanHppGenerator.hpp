@@ -1019,7 +1019,7 @@ private:
   std::string generateRAIIHandleContext( std::pair<std::string, HandleData> const & handle, std::set<std::string> const & specialFunctions ) const;
   std::string generateRAIIHandleDestructorCallArguments( std::string const &                                handleType,
                                                          std::map<std::string, CommandData>::const_iterator destructorIt ) const;
-  std::tuple<std::string, std::string, std::string, std::string, std::string, std::string, std::string>
+  std::tuple<std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string>
               generateRAIIHandleDetails( std::pair<std::string, HandleData> const & handle ) const;
   std::string generateRAIIHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string generateRAIIHandles() const;

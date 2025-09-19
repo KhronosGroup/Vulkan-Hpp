@@ -25,10 +25,14 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include <vector>
 #include <cassert>
 #include <iostream>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 # include <vulkan/vulkan_hpp_macros.hpp>
+# ifdef VULKAN_HPP_SUPPORT_SPAN
+#   include <span>
+# endif
   import vulkan_hpp;
 #else
 # include "vulkan/vulkan.hpp"

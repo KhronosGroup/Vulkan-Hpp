@@ -23,12 +23,14 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-
+#include <vector>
+#include <cstdint>
 #include <iostream>
 #include <unordered_map>
 #include <unordered_set>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
   #include <vulkan/vulkan_hpp_macros.hpp>
+  #include <vulkan/vulkan.h>
   import vulkan_hpp;
 #else
 # include "vulkan/vulkan_hash.hpp"
@@ -55,7 +57,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       auto h1 = std::hash<vk::Instance>{}( *instance );
       auto h2 = std::hash<VkInstance>{}( *instance );
-      assert( h1 == h2 );
+      void( h1 == h2 );
 
       std::unordered_set<vk::Instance> uset;
       uset.insert( *instance );
@@ -72,11 +74,11 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::AabbPositionsKHR aabb0, aabb1;
       auto                 h1 = std::hash<vk::AabbPositionsKHR>{}( aabb0 );
       auto                 h2 = std::hash<vk::AabbPositionsKHR>{}( aabb1 );
-      assert( h1 == h2 );
+      void( h1 == h2 );
 
       aabb0.minX = 1.0f;
       auto h3    = std::hash<vk::AabbPositionsKHR>{}( aabb0 );
-      assert( h1 != h3 );
+      void( h1 != h3 );
 
       std::unordered_set<vk::AabbPositionsKHR> aabbSet;
       aabbSet.insert( aabb0 );
@@ -91,14 +93,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     {
       std::string         name1 = AppName;
       std::string         name2 = AppName;
-      vk::ApplicationInfo appInfo1( name1.c_str(), 1, EngineName, 1, VK_API_VERSION_1_1 );
-      vk::ApplicationInfo appInfo2( name2.c_str(), 1, EngineName, 1, VK_API_VERSION_1_1 );
+      vk::ApplicationInfo appInfo1( name1.c_str(), 1, EngineName, 1, vk::ApiVersion11 );
+      vk::ApplicationInfo appInfo2( name2.c_str(), 1, EngineName, 1, vk::ApiVersion11 );
       auto                h1 = std::hash<vk::ApplicationInfo>{}( appInfo1 );
       auto                h2 = std::hash<vk::ApplicationInfo>{}( appInfo2 );
-      assert( h1 == h2 );
-      assert( appInfo1 == appInfo2 );
+      void( h1 == h2 );
+      void( appInfo1 == appInfo2 );
 #  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-      assert( appInfo1 <= appInfo2 );
+      void( appInfo1 <= appInfo2 );
 #  endif
     }
 
@@ -106,15 +108,15 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::vector<const char *> enabledLayers1 = { "Layer1", "Layer2", "Layer3" };
       auto                      enabledLayers2 = enabledLayers1;
 
-      vk::ApplicationInfo    appInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+      vk::ApplicationInfo    appInfo( AppName, 1, EngineName, 1, vk::ApiVersion11 );
       vk::InstanceCreateInfo info1( {}, &appInfo, static_cast<uint32_t>( enabledLayers1.size() ), enabledLayers1.data() );
       vk::InstanceCreateInfo info2( {}, &appInfo, static_cast<uint32_t>( enabledLayers2.size() ), enabledLayers2.data() );
       auto                   h1 = std::hash<vk::InstanceCreateInfo>{}( info1 );
       auto                   h2 = std::hash<vk::InstanceCreateInfo>{}( info2 );
-      assert( h1 == h2 );
-      assert( info1 == info2 );
+      void( h1 == h2 );
+      void( info1 == info2 );
 #  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-      assert( info1 <= info2 );
+      void( info1 <= info2 );
 #  endif
     }
 #endif

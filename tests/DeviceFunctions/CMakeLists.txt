@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TODO: override the VULKAN_HPP_DISPATCH_LOADER_DYNAMIC flag to 0
-# vulkan_hpp__setup_test( NAME DeviceFunctions ) # error finding C func in global namespace, e.g. ::vkCreateInstance
-if( VULKAN_HPP_ENABLE_CPP20_MODULES )
-    # vulkan_hpp__setup_test( NAME DeviceFunctions CXX_MODULE )
-endif()
+cmake_minimum_required( VERSION 3.12 )
+project( VulkanHppTest LANGUAGES CXX )
+
+set(VULKAN_HPP_DISPATCH_LOADER_DYNAMIC OFF)
+include( ${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt )
+vulkan_hpp__setup_ctest_project()

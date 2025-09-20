@@ -6216,6 +6216,38 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderUntypedPointersFeaturesKHR>::value,
                           "PhysicalDeviceShaderUntypedPointersFeaturesKHR is not nothrow_move_constructible!" );
 
+//=== VK_VALVE_video_encode_rgb_conversion ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE ) ==
+                            sizeof( VkPhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE>::value,
+                          "PhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeRgbConversionCapabilitiesVALVE ) == sizeof( VkVideoEncodeRgbConversionCapabilitiesVALVE ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeRgbConversionCapabilitiesVALVE>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeRgbConversionCapabilitiesVALVE>::value,
+                          "VideoEncodeRgbConversionCapabilitiesVALVE is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeProfileRgbConversionInfoVALVE ) == sizeof( VkVideoEncodeProfileRgbConversionInfoVALVE ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeProfileRgbConversionInfoVALVE>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeProfileRgbConversionInfoVALVE>::value,
+                          "VideoEncodeProfileRgbConversionInfoVALVE is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeSessionRgbConversionCreateInfoVALVE ) ==
+                            sizeof( VkVideoEncodeSessionRgbConversionCreateInfoVALVE ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeSessionRgbConversionCreateInfoVALVE>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeSessionRgbConversionCreateInfoVALVE>::value,
+                          "VideoEncodeSessionRgbConversionCreateInfoVALVE is not nothrow_move_constructible!" );
+
 //=== VK_EXT_image_view_min_lod ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceImageViewMinLodFeaturesEXT ) == sizeof( VkPhysicalDeviceImageViewMinLodFeaturesEXT ),

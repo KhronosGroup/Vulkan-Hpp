@@ -14437,6 +14437,21 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE const & physicalDeviceVideoEncodeRgbConversionFeaturesVALVE ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVideoEncodeRgbConversionFeaturesVALVE.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVideoEncodeRgbConversionFeaturesVALVE.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVideoEncodeRgbConversionFeaturesVALVE.videoEncodeRgbConversion );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoFormatInfoKHR>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoFormatInfoKHR const & physicalDeviceVideoFormatInfoKHR ) const VULKAN_HPP_NOEXCEPT
@@ -19638,6 +19653,20 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeProfileRgbConversionInfoVALVE>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::VideoEncodeProfileRgbConversionInfoVALVE const & videoEncodeProfileRgbConversionInfoVALVE ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeProfileRgbConversionInfoVALVE.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeProfileRgbConversionInfoVALVE.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeProfileRgbConversionInfoVALVE.performEncodeRgbConversion );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeQualityLevelInfoKHR>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoEncodeQualityLevelInfoKHR const & videoEncodeQualityLevelInfoKHR ) const VULKAN_HPP_NOEXCEPT
@@ -19741,6 +19770,23 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeRgbConversionCapabilitiesVALVE>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::VideoEncodeRgbConversionCapabilitiesVALVE const & videoEncodeRgbConversionCapabilitiesVALVE ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeRgbConversionCapabilitiesVALVE.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeRgbConversionCapabilitiesVALVE.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeRgbConversionCapabilitiesVALVE.rgbModels );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeRgbConversionCapabilitiesVALVE.rgbRanges );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeRgbConversionCapabilitiesVALVE.xChromaOffsets );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeRgbConversionCapabilitiesVALVE.yChromaOffsets );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeSessionIntraRefreshCreateInfoKHR>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoEncodeSessionIntraRefreshCreateInfoKHR const & videoEncodeSessionIntraRefreshCreateInfoKHR ) const
@@ -19778,6 +19824,23 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeSessionParametersGetInfoKHR.sType );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeSessionParametersGetInfoKHR.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeSessionParametersGetInfoKHR.videoSessionParameters );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeSessionRgbConversionCreateInfoVALVE>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoEncodeSessionRgbConversionCreateInfoVALVE const & videoEncodeSessionRgbConversionCreateInfoVALVE ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeSessionRgbConversionCreateInfoVALVE.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeSessionRgbConversionCreateInfoVALVE.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeSessionRgbConversionCreateInfoVALVE.rgbModel );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeSessionRgbConversionCreateInfoVALVE.rgbRange );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeSessionRgbConversionCreateInfoVALVE.xChromaOffset );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeSessionRgbConversionCreateInfoVALVE.yChromaOffset );
       return seed;
     }
   };

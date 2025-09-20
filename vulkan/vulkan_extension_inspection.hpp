@@ -367,6 +367,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_KHR_ray_tracing_maintenance1",
                                                             "VK_KHR_shader_untyped_pointers",
                                                             "VK_EXT_global_priority_query",
+                                                            "VK_VALVE_video_encode_rgb_conversion",
                                                             "VK_EXT_image_view_min_lod",
                                                             "VK_EXT_multi_draw",
                                                             "VK_EXT_image_2d_view_of_3d",
@@ -2054,6 +2055,16 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_EXT_global_priority",
             } } } } },
+      { "VK_VALVE_video_encode_rgb_conversion",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_sampler_ycbcr_conversion",
+              "VK_KHR_video_encode_queue",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+              "VK_KHR_video_encode_queue",
+            } } } } },
       { "VK_EXT_image_view_min_lod",
         { { "VK_VERSION_1_0",
             { {
@@ -3599,8 +3610,9 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_multisampled_render_to_single_sampled" ) || ( extension == "VK_EXT_extended_dynamic_state2" ) ||
            ( extension == "VK_EXT_color_write_enable" ) || ( extension == "VK_EXT_primitives_generated_query" ) ||
            ( extension == "VK_KHR_ray_tracing_maintenance1" ) || ( extension == "VK_KHR_shader_untyped_pointers" ) ||
-           ( extension == "VK_EXT_global_priority_query" ) || ( extension == "VK_EXT_image_view_min_lod" ) || ( extension == "VK_EXT_multi_draw" ) ||
-           ( extension == "VK_EXT_image_2d_view_of_3d" ) || ( extension == "VK_EXT_shader_tile_image" ) || ( extension == "VK_EXT_opacity_micromap" )
+           ( extension == "VK_EXT_global_priority_query" ) || ( extension == "VK_VALVE_video_encode_rgb_conversion" ) ||
+           ( extension == "VK_EXT_image_view_min_lod" ) || ( extension == "VK_EXT_multi_draw" ) || ( extension == "VK_EXT_image_2d_view_of_3d" ) ||
+           ( extension == "VK_EXT_shader_tile_image" ) || ( extension == "VK_EXT_opacity_micromap" )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         || ( extension == "VK_NV_displacement_micromap" )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/

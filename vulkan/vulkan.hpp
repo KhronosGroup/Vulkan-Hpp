@@ -57,7 +57,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-static_assert( VK_HEADER_VERSION == 326, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 327, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -8883,6 +8883,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTGlobalPriorityQueryExtensionName = VK_EXT_GLOBAL_PRIORITY_QUERY_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTGlobalPriorityQuerySpecVersion   = VK_EXT_GLOBAL_PRIORITY_QUERY_SPEC_VERSION;
 
+  //=== VK_VALVE_video_encode_rgb_conversion ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto VALVEVideoEncodeRgbConversionExtensionName = VK_VALVE_VIDEO_ENCODE_RGB_CONVERSION_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto VALVEVideoEncodeRgbConversionSpecVersion   = VK_VALVE_VIDEO_ENCODE_RGB_CONVERSION_SPEC_VERSION;
+
   //=== VK_EXT_image_view_min_lod ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTImageViewMinLodExtensionName = VK_EXT_IMAGE_VIEW_MIN_LOD_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTImageViewMinLodSpecVersion   = VK_EXT_IMAGE_VIEW_MIN_LOD_SPEC_VERSION;
@@ -15666,6 +15670,52 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceShaderUntypedPointersFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_VALVE_video_encode_rgb_conversion ===
+  template <>
+  struct StructExtends<PhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<VideoEncodeRgbConversionCapabilitiesVALVE, VideoCapabilitiesKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<VideoEncodeProfileRgbConversionInfoVALVE, VideoProfileInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<VideoEncodeSessionRgbConversionCreateInfoVALVE, VideoSessionCreateInfoKHR>
   {
     enum
     {

@@ -1545,6 +1545,12 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_shader_untyped_pointers ===
   struct PhysicalDeviceShaderUntypedPointersFeaturesKHR;
 
+  //=== VK_VALVE_video_encode_rgb_conversion ===
+  struct PhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE;
+  struct VideoEncodeRgbConversionCapabilitiesVALVE;
+  struct VideoEncodeProfileRgbConversionInfoVALVE;
+  struct VideoEncodeSessionRgbConversionCreateInfoVALVE;
+
   //=== VK_EXT_image_view_min_lod ===
   struct PhysicalDeviceImageViewMinLodFeaturesEXT;
   struct ImageViewMinLodCreateInfoEXT;

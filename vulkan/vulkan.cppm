@@ -814,6 +814,14 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ScreenSurfaceCreateFlagsQNX;
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
+  //=== VK_VALVE_video_encode_rgb_conversion ===
+  using VULKAN_HPP_NAMESPACE::VideoEncodeRgbChromaOffsetFlagBitsVALVE;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeRgbChromaOffsetFlagsVALVE;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeRgbModelConversionFlagBitsVALVE;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeRgbModelConversionFlagsVALVE;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeRgbRangeCompressionFlagBitsVALVE;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeRgbRangeCompressionFlagsVALVE;
+
   //=== VK_EXT_opacity_micromap ===
   using VULKAN_HPP_NAMESPACE::BuildMicromapFlagBitsEXT;
   using VULKAN_HPP_NAMESPACE::BuildMicromapFlagsEXT;
@@ -2359,6 +2367,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTGlobalPriorityQueryExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTGlobalPriorityQuerySpecVersion;
   using VULKAN_HPP_NAMESPACE::MaxGlobalPrioritySizeEXT;
+
+  //=== VK_VALVE_video_encode_rgb_conversion ===
+  using VULKAN_HPP_NAMESPACE::VALVEVideoEncodeRgbConversionExtensionName;
+  using VULKAN_HPP_NAMESPACE::VALVEVideoEncodeRgbConversionSpecVersion;
 
   //=== VK_EXT_image_view_min_lod ===
   using VULKAN_HPP_NAMESPACE::EXTImageViewMinLodExtensionName;
@@ -4475,6 +4487,12 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_shader_untyped_pointers ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderUntypedPointersFeaturesKHR;
+
+  //=== VK_VALVE_video_encode_rgb_conversion ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeProfileRgbConversionInfoVALVE;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeRgbConversionCapabilitiesVALVE;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeSessionRgbConversionCreateInfoVALVE;
 
   //=== VK_EXT_image_view_min_lod ===
   using VULKAN_HPP_NAMESPACE::ImageViewMinLodCreateInfoEXT;
@@ -8071,6 +8089,16 @@ export namespace std
   //=== VK_KHR_shader_untyped_pointers ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderUntypedPointersFeaturesKHR>;
+
+  //=== VK_VALVE_video_encode_rgb_conversion ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeRgbConversionCapabilitiesVALVE>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeProfileRgbConversionInfoVALVE>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeSessionRgbConversionCreateInfoVALVE>;
 
   //=== VK_EXT_image_view_min_lod ===
   template <>

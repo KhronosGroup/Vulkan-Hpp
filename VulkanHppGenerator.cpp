@@ -1120,38 +1120,23 @@ bool VulkanHppGenerator::containsFuncPointer( std::string const & type ) const
 {
   // a simple recursive check if a type contains a funcpointer
   auto structureIt = m_structs.find( type );
-  bool found       = false;
-  if ( structureIt != m_structs.end() )
-  {
-    for ( auto memberIt = structureIt->second.members.begin(); memberIt != structureIt->second.members.end() && !found; ++memberIt )
-    {
-      found = m_funcPointers.contains( memberIt->type.type ) || ( ( memberIt->type.type != type ) && containsFuncPointer( memberIt->type.type ) );
-    }
-  }
-  return found;
+  return ( structureIt != m_structs.end() ) && std::ranges::any_of( structureIt->second.members,
+                                                                    [this, &type]( auto const & member ) {
+                                                                      return m_funcPointers.contains( member.type.type ) ||
+                                                                             ( ( member.type.type != type ) && containsFuncPointer( member.type.type ) );
+                                                                    } );
 }
 
 bool VulkanHppGenerator::containsFloatingPoints( std::vector<MemberData> const & members ) const
 {
-  for ( auto const & m : members )
-  {
-    if ( m.type.isValue() )
-    {
-      if ( ( m.type.type == "float" ) || ( m.type.type == "double" ) )
-      {
-        return true;
-      }
-      else
-      {
-        auto structureIt = m_structs.find( m.type.type );
-        if ( structureIt != m_structs.end() && containsFloatingPoints( structureIt->second.members ) )
-        {
-          return true;
-        }
-      }
-    }
-  }
-  return false;
+  return std::ranges::any_of( members,
+                              [this]( auto const & member )
+                              {
+                                auto structureIt = m_structs.find( member.type.type );
+                                return member.type.isValue() &&
+                                       ( ( member.type.type == "float" ) || ( member.type.type == "double" ) ||
+                                         ( ( structureIt != m_structs.end() ) && containsFloatingPoints( structureIt->second.members ) ) );
+                              } );
 }
 
 bool VulkanHppGenerator::containsName( std::vector<EnumValueData> const & enumValues, std::string const & name ) const
@@ -1165,33 +1150,25 @@ bool VulkanHppGenerator::containsUnion( std::string const & type ) const
 {
   // a simple recursive check if a type is or contains a union
   auto structureIt = m_structs.find( type );
-  bool found       = false;
-  if ( structureIt != m_structs.end() )
-  {
-    found = structureIt->second.isUnion;
-    for ( auto memberIt = structureIt->second.members.begin(); memberIt != structureIt->second.members.end() && !found; ++memberIt )
-    {
-      found = memberIt->type.isValue() && containsUnion( memberIt->type.type );
-    }
-  }
-  return found;
+  return ( structureIt != m_structs.end() ) &&
+         ( structureIt->second.isUnion ||
+           std::ranges::any_of( structureIt->second.members,
+                                [this]( auto const & member ) { return member.type.isValue() && containsUnion( member.type.type ); } ) );
 }
 
 bool VulkanHppGenerator::describesVector( StructureData const & structure, std::string const & type ) const
 {
-  for ( auto const & member : structure.members )
-  {
-    if ( ( type.empty() ? true : ( member.type.type == type ) ) && member.type.isNonConstPointer() && ( member.lenMembers.size() == 1 ) )
-    {
-      assert( member.lenMembers[0].second < structure.members.size() );
-      auto const & lenMember = structure.members[member.lenMembers[0].second];
-      if ( lenMember.type.isValue() && ( ( lenMember.type.type == "size_t" ) || ( lenMember.type.type == "uint32_t" ) ) )
-      {
-        return true;
-      }
-    }
-  }
-  return false;
+  return std::ranges::any_of( structure.members,
+                              [&structure, &type]( auto const & member )
+                              {
+                                if ( ( type.empty() || ( member.type.type == type ) ) && member.type.isNonConstPointer() && ( member.lenMembers.size() == 1 ) )
+                                {
+                                  assert( member.lenMembers[0].second < structure.members.size() );
+                                  auto const & lenMember = structure.members[member.lenMembers[0].second];
+                                  return lenMember.type.isValue() && ( ( lenMember.type.type == "size_t" ) || ( lenMember.type.type == "uint32_t" ) );
+                                }
+                                return false;
+                              } );
 }
 
 std::vector<size_t> VulkanHppGenerator::determineChainedReturnParams( std::vector<ParamData> const & params, std::vector<size_t> const & returnParams ) const
@@ -8847,8 +8824,15 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
 
     auto [singularConstructors, arrayConstructors] = generateRAIIHandleConstructors( handle );
 
-    auto [clearMembers, getConstructorSuccessCode, memberVariables, rawConstructorParams, rawConstructorInitializerList, moveConstructorInitializerList, moveAssignmentInstructions, swapMembers, releaseMembers] =
-      generateRAIIHandleDetails( handle );
+    auto [clearMembers,
+          getConstructorSuccessCode,
+          memberVariables,
+          rawConstructorParams,
+          rawConstructorInitializerList,
+          moveConstructorInitializerList,
+          moveAssignmentInstructions,
+          swapMembers,
+          releaseMembers] = generateRAIIHandleDetails( handle );
 
     std::string declarations = generateRAIIHandleCommandDeclarations( handle, specialFunctions );
 
@@ -8906,15 +8890,16 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
     }
 
     std::string rawConstructor;
-    if ( ( handle.first == "VkBuffer" ) || ( handle.first == "VkImage" ) ) {
+    if ( ( handle.first == "VkBuffer" ) || ( handle.first == "VkImage" ) )
+    {
       std::string const rawConstructorTemplate = R"(protected:
       ${handleType}( ${rawConstructorParams} ) VULKAN_HPP_NOEXCEPT
         : ${rawConstructorInitializerList}
       {})";
       rawConstructor += replaceWithMap( rawConstructorTemplate,
-                           { { "handleType", handleType },
-                             { "rawConstructorParams", rawConstructorParams },
-                             { "rawConstructorInitializerList", rawConstructorInitializerList } } );
+                                        { { "handleType", handleType },
+                                          { "rawConstructorParams", rawConstructorParams },
+                                          { "rawConstructorInitializerList", rawConstructorInitializerList } } );
     }
 
     const std::string handleTemplate = R"(
@@ -10214,7 +10199,8 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
 
   std::string handleName = startLowerCase( stripPrefix( handle.first, "Vk" ) );
 
-  std::string clearMembers, moveConstructorInitializerList, rawConstructorInitializerList, rawConstructorParams, moveAssignmentInstructions, memberVariables, swapMembers, releaseMembers;
+  std::string clearMembers, moveConstructorInitializerList, rawConstructorInitializerList, rawConstructorParams, moveAssignmentInstructions, memberVariables,
+    swapMembers, releaseMembers;
 
   if ( handle.second.destructorIt != m_commands.end() )
   {
@@ -10283,9 +10269,9 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
       moveConstructorInitializerList = "m_" + frontName + "( exchange( rhs.m_" + frontName + ", {} ) ), ";
       rawConstructorInitializerList += "m_" + frontName + "( exchange( " + frontName + ", {} ) ), ";
       rawConstructorParams += "VULKAN_HPP_NAMESPACE::" + stripPrefix( frontType, "Vk" ) + " " + frontName + ", ";
-      moveAssignmentInstructions     = "\n          std::swap( m_" + frontName + ", rhs.m_" + frontName + " );";
-      memberVariables                = "\n    VULKAN_HPP_NAMESPACE::" + stripPrefix( frontType, "Vk" ) + " m_" + frontName + " = {};";
-      swapMembers                    = "\n      std::swap( m_" + frontName + ", rhs.m_" + frontName + " );";
+      moveAssignmentInstructions = "\n          std::swap( m_" + frontName + ", rhs.m_" + frontName + " );";
+      memberVariables            = "\n    VULKAN_HPP_NAMESPACE::" + stripPrefix( frontType, "Vk" ) + " m_" + frontName + " = {};";
+      swapMembers                = "\n      std::swap( m_" + frontName + ", rhs.m_" + frontName + " );";
       releaseMembers += "\n        m_" + frontName + " = nullptr;";
     }
     clearMembers += "\n        m_" + handleName + " = nullptr;";
@@ -10346,8 +10332,15 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
   rawConstructorInitializerList += "m_dispatcher( exchange( dispatcher, nullptr ) )";
   moveAssignmentInstructions += "\n        std::swap( m_dispatcher, rhs.m_dispatcher );";
 
-  return std::make_tuple(
-    clearMembers, getConstructorSuccessCode, memberVariables, rawConstructorParams, rawConstructorInitializerList, moveConstructorInitializerList, moveAssignmentInstructions, swapMembers, releaseMembers );
+  return std::make_tuple( clearMembers,
+                          getConstructorSuccessCode,
+                          memberVariables,
+                          rawConstructorParams,
+                          rawConstructorInitializerList,
+                          moveConstructorInitializerList,
+                          moveAssignmentInstructions,
+                          swapMembers,
+                          releaseMembers );
 }
 
 std::string VulkanHppGenerator::generateRAIIHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const

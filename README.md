@@ -74,6 +74,7 @@ The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan
 	- [VULKAN_HPP_NO_SETTERS](#no_setters)
 	- [VULKAN_HPP_NO_SMART_HANDLE](#no_smart_handle)
 	- [VULKAN_HPP_NO_SPACESHIP_OPERATOR](#no_spaceship_operator)
+	- [VULKAN_HPP_NO_STD_MODULE](#no_std_module)
 	- [VULKAN_HPP_NO_TO_STRING](#no_to_string)
 	- [VULKAN_HPP_NO_WIN32_PROTOTYPES](#no_win32_prototypes)
 	- [VULKAN_HPP_RAII_NO_EXCEPTIONS](#raii_no_exceptions)
@@ -1052,6 +1053,11 @@ By defining `VULKAN_HPP_NO_SMART_HANDLE` before including `vulkan.hpp`, the help
 #### VULKAN_HPP_NO_SPACESHIP_OPERATOR <a id='no_spaceship_operator'>
 
 With C++20, the so-called spaceship-operator `<=>` is introduced. If that operator is supported, all the structs and classes in vulkan.hpp use the default implementation of it. As currently some implementations of this operator are very slow, and others seem to be incomplete, by defining `VULKAN_HPP_NO_SPACESHIP_OPERATOR` before including `vulkan.hpp` you can remove that operator from those structs and classes.
+
+#### VULKAN_HPP_NO_STD_MODULE <a id='no_std_module'>
+
+When compiling the `vulkan.cppm` module with C++23, it will automatically try to use `import std`.
+There might be cases where your toolchain is not set up to deal with `import std` or wrongfully defines `__cpp_lib_modules`, for which you can define `VULKAN_HPP_NO_STD_MODULE` to disable `import std` altogether.
 
 #### VULKAN_HPP_NO_TO_STRING <a id='no_to_string'>
 

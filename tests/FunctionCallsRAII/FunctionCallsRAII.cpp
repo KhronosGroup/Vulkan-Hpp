@@ -99,5 +99,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::PFN_VoidFunction voidFunction = device.getProcAddr( "vkCreateInstance" );
   }
 
+  // Device commands
+  {
+    vk::raii::PhysicalDevice   physicalDevice = nullptr;
+    vk::DeviceCreateInfo       deviceCreateInfo;
+    vk::raii::Device           device         = physicalDevice.createDevice( deviceCreateInfo );
+  }
+
   return 0;
 }

@@ -169,6 +169,24 @@ int main( int /*argc*/, char ** /*argv*/ )
     PFN_vkVoidFunction voidFunction = device.getProcAddr( name );
   }
 
+  // Device commands
+  {
+    vk::PhysicalDevice   physicalDevice;
+    vk::DeviceCreateInfo deviceCreateInfo;
+    vk::Device           device;
+    vk::Result           result = physicalDevice.createDevice( &deviceCreateInfo, nullptr, &device );
+  }
+  {
+    vk::PhysicalDevice   physicalDevice;
+    vk::DeviceCreateInfo deviceCreateInfo;
+    vk::Device           device = physicalDevice.createDevice( deviceCreateInfo );
+  }
+
+  {
+    vk::Device device;
+    device.destroy();
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

@@ -3,7 +3,7 @@ ${licenseHeader}
 #ifndef VULKAN_EXTENSION_INSPECTION_HPP
 #define VULKAN_EXTENSION_INSPECTION_HPP
 
-#if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
+#if defined( VULKAN_HPP_STD_MODULE )
 import VULKAN_HPP_STD_MODULE;
 #else
 #  include <map>

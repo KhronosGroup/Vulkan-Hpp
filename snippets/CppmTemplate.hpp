@@ -5,11 +5,6 @@ ${licenseHeader}
 
 module;
 
-#include <version>
-#if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_NO_STD_MODULE ) && !defined( VULKAN_HPP_ENABLE_STD_MODULE )
-#  define VULKAN_HPP_ENABLE_STD_MODULE
-#endif
-
 #include <vulkan/${api}.hpp>
 #include <vulkan/${api}_extension_inspection.hpp>
 #include <vulkan/${api}_format_traits.hpp>
@@ -18,9 +13,7 @@ module;
 #include <vulkan/${api}_shared.hpp>
 
 export module ${api}_hpp;
-#if defined( VULKAN_HPP_ENABLE_STD_MODULE )
-  export import VULKAN_HPP_STD_MODULE;
-#endif
+export import VULKAN_HPP_STD_MODULE;
 
 export namespace VULKAN_HPP_NAMESPACE
 {

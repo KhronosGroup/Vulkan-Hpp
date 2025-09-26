@@ -1,6 +1,6 @@
 #include <vulkan/vulkan_hpp_macros.hpp>
 
-#if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
+#if defined( VULKAN_HPP_STD_MODULE )
 #  include <cassert>
 #  include <cstring>
 #  include <cstdlib>

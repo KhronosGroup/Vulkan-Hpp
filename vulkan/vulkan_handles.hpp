@@ -1629,10 +1629,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct RenderPassStripeSubmitInfoARM;
 
   //=== VK_NV_copy_memory_indirect ===
-  struct CopyMemoryIndirectCommandNV;
-  struct CopyMemoryToImageIndirectCommandNV;
   struct PhysicalDeviceCopyMemoryIndirectFeaturesNV;
-  struct PhysicalDeviceCopyMemoryIndirectPropertiesNV;
 
   //=== VK_NV_memory_decompression ===
   struct DecompressMemoryRegionNV;
@@ -1997,6 +1994,18 @@ namespace VULKAN_HPP_NAMESPACE
   struct TileMemoryRequirementsQCOM;
   struct TileMemoryBindInfoQCOM;
   struct TileMemorySizeInfoQCOM;
+
+  //=== VK_KHR_copy_memory_indirect ===
+  struct StridedDeviceAddressRangeKHR;
+  struct CopyMemoryIndirectCommandKHR;
+  using CopyMemoryIndirectCommandNV = CopyMemoryIndirectCommandKHR;
+  struct CopyMemoryIndirectInfoKHR;
+  struct CopyMemoryToImageIndirectCommandKHR;
+  using CopyMemoryToImageIndirectCommandNV = CopyMemoryToImageIndirectCommandKHR;
+  struct CopyMemoryToImageIndirectInfoKHR;
+  struct PhysicalDeviceCopyMemoryIndirectFeaturesKHR;
+  struct PhysicalDeviceCopyMemoryIndirectPropertiesKHR;
+  using PhysicalDeviceCopyMemoryIndirectPropertiesNV = PhysicalDeviceCopyMemoryIndirectPropertiesKHR;
 
   //=== VK_NV_display_stereo ===
   struct DisplaySurfaceStereoCreateInfoNV;
@@ -7961,6 +7970,32 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void bindTileMemoryQCOM( Optional<const TileMemoryBindInfoQCOM> tileMemoryBindInfo VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                              Dispatch const & d                                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_KHR_copy_memory_indirect ===
+
+    // wrapper function for command vkCmdCopyMemoryIndirectKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryIndirectKHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void copyMemoryIndirectKHR( const CopyMemoryIndirectInfoKHR * pCopyMemoryIndirectInfo,
+                                Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdCopyMemoryIndirectKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryIndirectKHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void copyMemoryIndirectKHR( const CopyMemoryIndirectInfoKHR & copyMemoryIndirectInfo,
+                                Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkCmdCopyMemoryToImageIndirectKHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryToImageIndirectKHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void copyMemoryToImageIndirectKHR( const CopyMemoryToImageIndirectInfoKHR * pCopyMemoryToImageIndirectInfo,
+                                       Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdCopyMemoryToImageIndirectKHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryToImageIndirectKHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void copyMemoryToImageIndirectKHR( const CopyMemoryToImageIndirectInfoKHR & copyMemoryToImageIndirectInfo,
+                                       Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_cluster_acceleration_structure ===

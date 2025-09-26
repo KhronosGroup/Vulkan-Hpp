@@ -1877,6 +1877,10 @@ namespace VULKAN_HPP_NAMESPACE
           //=== VK_QCOM_tile_memory_heap ===
           vkCmdBindTileMemoryQCOM = PFN_vkCmdBindTileMemoryQCOM( vkGetDeviceProcAddr( device, "vkCmdBindTileMemoryQCOM" ) );
 
+          //=== VK_KHR_copy_memory_indirect ===
+          vkCmdCopyMemoryIndirectKHR        = PFN_vkCmdCopyMemoryIndirectKHR( vkGetDeviceProcAddr( device, "vkCmdCopyMemoryIndirectKHR" ) );
+          vkCmdCopyMemoryToImageIndirectKHR = PFN_vkCmdCopyMemoryToImageIndirectKHR( vkGetDeviceProcAddr( device, "vkCmdCopyMemoryToImageIndirectKHR" ) );
+
           //=== VK_NV_external_compute_queue ===
           vkCreateExternalComputeQueueNV  = PFN_vkCreateExternalComputeQueueNV( vkGetDeviceProcAddr( device, "vkCreateExternalComputeQueueNV" ) );
           vkDestroyExternalComputeQueueNV = PFN_vkDestroyExternalComputeQueueNV( vkGetDeviceProcAddr( device, "vkDestroyExternalComputeQueueNV" ) );
@@ -2872,6 +2876,10 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_QCOM_tile_memory_heap ===
         PFN_vkCmdBindTileMemoryQCOM vkCmdBindTileMemoryQCOM = 0;
+
+        //=== VK_KHR_copy_memory_indirect ===
+        PFN_vkCmdCopyMemoryIndirectKHR        vkCmdCopyMemoryIndirectKHR        = 0;
+        PFN_vkCmdCopyMemoryToImageIndirectKHR vkCmdCopyMemoryToImageIndirectKHR = 0;
 
         //=== VK_NV_external_compute_queue ===
         PFN_vkCreateExternalComputeQueueNV  vkCreateExternalComputeQueueNV  = 0;
@@ -7847,6 +7855,15 @@ namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkCmdBindTileMemoryQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBindTileMemoryQCOM.html
       void bindTileMemoryQCOM( Optional<const TileMemoryBindInfoQCOM> tileMemoryBindInfo VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const
         VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_KHR_copy_memory_indirect ===
+
+      // wrapper function for command vkCmdCopyMemoryIndirectKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryIndirectKHR.html
+      void copyMemoryIndirectKHR( const CopyMemoryIndirectInfoKHR & copyMemoryIndirectInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkCmdCopyMemoryToImageIndirectKHR, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryToImageIndirectKHR.html
+      void copyMemoryToImageIndirectKHR( const CopyMemoryToImageIndirectInfoKHR & copyMemoryToImageIndirectInfo ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_NV_cluster_acceleration_structure ===
 
@@ -27163,6 +27180,29 @@ namespace VULKAN_HPP_NAMESPACE
 
       getDispatcher()->vkCmdBindTileMemoryQCOM( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                 reinterpret_cast<const VkTileMemoryBindInfoQCOM *>( tileMemoryBindInfo.get() ) );
+    }
+
+    //=== VK_KHR_copy_memory_indirect ===
+
+    // wrapper function for command vkCmdCopyMemoryIndirectKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryIndirectKHR.html
+    VULKAN_HPP_INLINE void CommandBuffer::copyMemoryIndirectKHR( const CopyMemoryIndirectInfoKHR & copyMemoryIndirectInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdCopyMemoryIndirectKHR && "Function <vkCmdCopyMemoryIndirectKHR> requires <VK_KHR_copy_memory_indirect>" );
+
+      getDispatcher()->vkCmdCopyMemoryIndirectKHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                   reinterpret_cast<const VkCopyMemoryIndirectInfoKHR *>( &copyMemoryIndirectInfo ) );
+    }
+
+    // wrapper function for command vkCmdCopyMemoryToImageIndirectKHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryToImageIndirectKHR.html
+    VULKAN_HPP_INLINE void
+      CommandBuffer::copyMemoryToImageIndirectKHR( const CopyMemoryToImageIndirectInfoKHR & copyMemoryToImageIndirectInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdCopyMemoryToImageIndirectKHR &&
+                         "Function <vkCmdCopyMemoryToImageIndirectKHR> requires <VK_KHR_copy_memory_indirect>" );
+
+      getDispatcher()->vkCmdCopyMemoryToImageIndirectKHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                          reinterpret_cast<const VkCopyMemoryToImageIndirectInfoKHR *>( &copyMemoryToImageIndirectInfo ) );
     }
 
     //=== VK_NV_external_compute_queue ===

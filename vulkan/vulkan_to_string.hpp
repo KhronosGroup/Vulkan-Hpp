@@ -1742,6 +1742,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " ConvertCooperativeVectorMatrixNV |";
     if ( value & PipelineStageFlagBits2::eDataGraphARM )
       result += " DataGraphARM |";
+    if ( value & PipelineStageFlagBits2::eCopyIndirectKHR )
+      result += " CopyIndirectKHR |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -1986,6 +1988,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " OpticalFlowCostNV |";
     if ( value & FormatFeatureFlagBits2::eTensorDataGraphARM )
       result += " TensorDataGraphARM |";
+    if ( value & FormatFeatureFlagBits2::eCopyImageIndirectDstKHR )
+      result += " CopyImageIndirectDstKHR |";
     if ( value & FormatFeatureFlagBits2::eVideoEncodeQuantizationDeltaMapKHR )
       result += " VideoEncodeQuantizationDeltaMapKHR |";
     if ( value & FormatFeatureFlagBits2::eVideoEncodeEmphasisMapKHR )
@@ -4026,6 +4030,25 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
+  //=== VK_KHR_copy_memory_indirect ===
+
+  VULKAN_HPP_INLINE std::string to_string( AddressCopyFlagsKHR value )
+  {
+    std::string result = "{";
+    if ( value & AddressCopyFlagBitsKHR::eDeviceLocal )
+      result += " DeviceLocal |";
+    if ( value & AddressCopyFlagBitsKHR::eSparse )
+      result += " Sparse |";
+    if ( value & AddressCopyFlagBitsKHR::eProtected )
+      result += " Protected |";
+
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else
+      result = "{}";
+    return result;
+  }
+
   //=== VK_KHR_video_encode_intra_refresh ===
 
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeIntraRefreshModeFlagsKHR value )
@@ -5111,7 +5134,6 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eRenderPassStripeInfoARM                                    : return "RenderPassStripeInfoARM";
       case StructureType::eRenderPassStripeSubmitInfoARM                              : return "RenderPassStripeSubmitInfoARM";
       case StructureType::ePhysicalDeviceCopyMemoryIndirectFeaturesNV                 : return "PhysicalDeviceCopyMemoryIndirectFeaturesNV";
-      case StructureType::ePhysicalDeviceCopyMemoryIndirectPropertiesNV               : return "PhysicalDeviceCopyMemoryIndirectPropertiesNV";
       case StructureType::ePhysicalDeviceMemoryDecompressionFeaturesNV                : return "PhysicalDeviceMemoryDecompressionFeaturesNV";
       case StructureType::ePhysicalDeviceMemoryDecompressionPropertiesNV              : return "PhysicalDeviceMemoryDecompressionPropertiesNV";
       case StructureType::ePhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV     : return "PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV";
@@ -5325,6 +5347,10 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eTileMemoryRequirementsQCOM                                : return "TileMemoryRequirementsQCOM";
       case StructureType::eTileMemoryBindInfoQCOM                                    : return "TileMemoryBindInfoQCOM";
       case StructureType::eTileMemorySizeInfoQCOM                                    : return "TileMemorySizeInfoQCOM";
+      case StructureType::ePhysicalDeviceCopyMemoryIndirectFeaturesKHR               : return "PhysicalDeviceCopyMemoryIndirectFeaturesKHR";
+      case StructureType::ePhysicalDeviceCopyMemoryIndirectPropertiesKHR             : return "PhysicalDeviceCopyMemoryIndirectPropertiesKHR";
+      case StructureType::eCopyMemoryIndirectInfoKHR                                 : return "CopyMemoryIndirectInfoKHR";
+      case StructureType::eCopyMemoryToImageIndirectInfoKHR                          : return "CopyMemoryToImageIndirectInfoKHR";
       case StructureType::eDisplaySurfaceStereoCreateInfoNV                          : return "DisplaySurfaceStereoCreateInfoNV";
       case StructureType::eDisplayModeStereoPropertiesNV                             : return "DisplayModeStereoPropertiesNV";
       case StructureType::eVideoEncodeIntraRefreshCapabilitiesKHR                    : return "VideoEncodeIntraRefreshCapabilitiesKHR";
@@ -7590,6 +7616,7 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineStageFlagBits2::eOpticalFlowNV                   : return "OpticalFlowNV";
       case PipelineStageFlagBits2::eConvertCooperativeVectorMatrixNV: return "ConvertCooperativeVectorMatrixNV";
       case PipelineStageFlagBits2::eDataGraphARM                    : return "DataGraphARM";
+      case PipelineStageFlagBits2::eCopyIndirectKHR                 : return "CopyIndirectKHR";
       default                                                       : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7724,6 +7751,7 @@ namespace VULKAN_HPP_NAMESPACE
       case FormatFeatureFlagBits2::eOpticalFlowVectorNV                 : return "OpticalFlowVectorNV";
       case FormatFeatureFlagBits2::eOpticalFlowCostNV                   : return "OpticalFlowCostNV";
       case FormatFeatureFlagBits2::eTensorDataGraphARM                  : return "TensorDataGraphARM";
+      case FormatFeatureFlagBits2::eCopyImageIndirectDstKHR             : return "CopyImageIndirectDstKHR";
       case FormatFeatureFlagBits2::eVideoEncodeQuantizationDeltaMapKHR  : return "VideoEncodeQuantizationDeltaMapKHR";
       case FormatFeatureFlagBits2::eVideoEncodeEmphasisMapKHR           : return "VideoEncodeEmphasisMapKHR";
       default                                                           : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
@@ -10356,6 +10384,19 @@ namespace VULKAN_HPP_NAMESPACE
       case TimeDomainKHR::eClockMonotonicRaw      : return "ClockMonotonicRaw";
       case TimeDomainKHR::eQueryPerformanceCounter: return "QueryPerformanceCounter";
       default                                     : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_KHR_copy_memory_indirect ===
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AddressCopyFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case AddressCopyFlagBitsKHR::eDeviceLocal: return "DeviceLocal";
+      case AddressCopyFlagBitsKHR::eSparse     : return "Sparse";
+      case AddressCopyFlagBitsKHR::eProtected  : return "Protected";
+      default                                  : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 

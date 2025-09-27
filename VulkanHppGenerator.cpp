@@ -449,7 +449,7 @@ void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireData> const
                           {
                             if ( listedCommands.insert( command.name ).second )
                             {
-                              members += "export using ::PFN_" + command.name + ";\n";
+                              members += "using ::PFN_" + command.name + ";\n";
                             }
                           } );
   commandMembers += addTitleAndProtection( title, members );
@@ -2257,7 +2257,7 @@ std::string VulkanHppGenerator::generateBitmaskToString( std::map<std::string, B
 ${toStringChecks}
     if ( result.size() > 1 )
       result.back() = '}';
-    else 
+    else
       result = "${emptyValue}";
     return result;
   }

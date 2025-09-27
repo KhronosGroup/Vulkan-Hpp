@@ -53,8 +53,11 @@ export namespace std
 #endif
 }
 
-// This VkFlags type is used as part of a bitfield in some structure.
-// As it can't be mimicked by vk-data types, we need to export just that!!
-export using ::VkGeometryInstanceFlagsKHR;
+export
+{
+// This VkFlags type is used as part of a bitfield in some structures.
+// As it can't be mimicked by vk-data types, we need to export just that.
+using ::VkGeometryInstanceFlagsKHR;
 
 ${pfnCommands}
+}

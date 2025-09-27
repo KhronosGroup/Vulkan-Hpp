@@ -2,7 +2,9 @@ ${licenseHeader}
 #ifndef VULKAN_TO_STRING_HPP
 #  define VULKAN_TO_STRING_HPP
 
-#include <vulkan/${api}.hpp>
+#if !defined( VULKAN_HPP_CXX_MODULE )
+#  include <vulkan/${api}.hpp>
+#endif
 
 // ignore warnings on using deprecated enum values in this header
 #if defined( __clang__ ) || defined( __GNUC__ )
@@ -13,9 +15,7 @@ ${licenseHeader}
 #  pragma warning( disable : 4996 )
 #endif
 
-#if defined( VULKAN_HPP_STD_MODULE )
-import VULKAN_HPP_STD_MODULE;
-#else
+#if !defined( VULKAN_HPP_CXX_MODULE )
 #  if defined( __cpp_lib_format )
 #    include <format>   // std::format
 #  else

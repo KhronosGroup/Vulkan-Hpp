@@ -10,7 +10,7 @@
 
 #include <vulkan/vulkan.hpp>
 
-#if !( defined( VULKAN_HPP_STD_MODULE ) )
+#if !defined( VULKAN_HPP_CXX_MODULE )
 #  include <atomic>  // std::atomic_size_t
 #endif
 

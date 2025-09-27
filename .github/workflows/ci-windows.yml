@@ -24,7 +24,7 @@ jobs:
         submodules: recursive
 
     - name: Setup MSVC
-      uses: TheMrMilchmann/setup-msvc-dev@v2
+      uses: TheMrMilchmann/setup-msvc-dev@v4
       with:
         arch: ${{matrix.architecture}}
 
@@ -88,15 +88,25 @@ jobs:
           -D CMAKE_BUILD_TYPE=Release
         cmake --build build --parallel --clean-first
 
+    - name: Set CMake UUID variable
+      id: set-uuid
+      shell: bash
+      run: |
+        CMAKE_VERSION=$(cmake --version | head -n1 | cut -d' ' -f3)
+        UUID=""
+        case $CMAKE_VERSION in
+          4.1.*) UUID="d0edc3af-4c50-42ea-a356-e2862fe7a444" ;;
+          4.0.*) UUID="a9e1cf81-9932-4810-974b-6eccaf14e457" ;;
+          3.30.*) UUID="0e5b6991-d74f-4b3d-a41c-cf096e0b2508" ;;
+          *) UUID="" ;;
+        esac
+        echo "UUID=$UUID" >> $GITHUB_ENV
+
     - name: Build samples and tests
+      shell: bash
       run: |
         for CXX_STANDARD in 11 14 17 20 23; do
           for BUILD_TYPE in Debug Release; do
-            CXX_MODULES=ON
-            if [ ${{matrix.compiler}} == "windows-2019" ] || [ $CXX_STANDARD -lt 20 ]; then
-              CXX_MODULES=OFF
-            fi
-
             echo "================================================================================="
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE with architecture ${{matrix.architecture}}"
             echo "================================================================================="
@@ -110,7 +120,8 @@ jobs:
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
               -D VULKAN_HPP_PRECOMPILE=OFF                    \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD             \
-              -D CMAKE_BUILD_TYPE=$BUILD_TYPE
+              -D CMAKE_BUILD_TYPE=$BUILD_TYPE                 \
+              -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=$UUID
             cmake --build build --parallel --clean-first
           done
         done

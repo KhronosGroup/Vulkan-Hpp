@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        clang_version: [19, 20]
+        clang_version: [19, 20, 21]
 
     steps:
     - uses: actions/checkout@v4
@@ -28,7 +28,8 @@ jobs:
     - name: Install Ninja
       uses: ashutoshvarma/setup-ninja@master
       with:
-        version: 1.11.0
+        version: 1.13.1
+
     - name: Install Clang and CMake
       run: |
         sudo apt-get update && sudo apt-get install lsb-release gpg software-properties-common wget
@@ -106,15 +107,22 @@ jobs:
           -D CMAKE_BUILD_TYPE=Release
         cmake --build build --parallel --clean-first
 
+    - name: Set CMake UUID variable
+      id: set-uuid
+      run: |
+        CMAKE_VERSION=$(cmake --version | head -n1 | cut -d' ' -f3)
+        case $CMAKE_VERSION in
+          4.1.*) UUID="d0edc3af-4c50-42ea-a356-e2862fe7a444" ;;
+          4.0.*) UUID="a9e1cf81-9932-4810-974b-6eccaf14e457" ;;
+          3.30.*) UUID="0e5b6991-d74f-4b3d-a41c-cf096e0b2508" ;;
+          *) UUID="" ;;
+        esac
+        echo "UUID=$UUID" >> $GITHUB_ENV
+
     - name: Build samples and tests
       run: |
         for CXX_STANDARD in 11 14 17 20 23; do
           for BUILD_TYPE in Debug Release; do
-
-            CXX_MODULES=ON
-            if [ $CXX_STANDARD -lt 20 ]; then
-              CXX_MODULES=OFF
-            fi
 
             echo "================================================================================="
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
@@ -130,7 +138,8 @@ jobs:
               -D VULKAN_HPP_PRECOMPILE=OFF                            \
               -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD                     \
-              -D CMAKE_BUILD_TYPE=$BUILD_TYPE
+              -D CMAKE_BUILD_TYPE=$BUILD_TYPE                         \
+              -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=$UUID
             cmake --build build --parallel --clean-first
           done
         done

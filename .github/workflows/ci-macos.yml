@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-14, macos-15]
+        os: [macos-14, macos-15, macos-26]
         compiler: [clang++]
 
     steps:
@@ -26,7 +26,7 @@ jobs:
     - name: Install Ninja
       uses: ashutoshvarma/setup-ninja@master
       with:
-        version: 1.11.0
+        version: 1.13.1
 
     - name: Install glm, glfw and glslang
       run: |

@@ -9,7 +9,7 @@
 #define VULKAN_RAII_HPP
 
 #include <vulkan/vulkan.hpp>
-#if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
+#if !defined( VULKAN_HPP_CXX_MODULE )
 #  include <memory>   // std::unique_ptr
 #  include <utility>  // std::forward
 #endif

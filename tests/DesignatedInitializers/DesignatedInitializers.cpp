@@ -17,11 +17,12 @@
 
 #include <cstdint>
 #include <iostream>
+#include <vector>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-# include <vulkan/vulkan_hpp_macros.hpp>
-  import vulkan_hpp;
+#  include <vulkan/vulkan_hpp_macros.hpp>
+import vulkan_hpp;
 #else
-# include <vulkan/vulkan.hpp>
+#  include <vulkan/vulkan.hpp>
 #endif
 
 #if defined( __clang__ ) || defined( __GNUC__ )
@@ -91,6 +92,15 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   vk::ApplicationInfo ai5{ .pEngineName = engineName };
   vk::ApplicationInfo ai6{ .pApplicationName = appName, .apiVersion = vk::ApiVersion12 };
+
+  std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
+  std::vector<char const *>              extensions;
+  vk::DeviceCreateInfo                   info_device{
+                      .queueCreateInfoCount    = (uint32_t)queueCreateInfos.size(),
+                      .pQueueCreateInfos       = queueCreateInfos.data(),
+                      .enabledExtensionCount   = (uint32_t)extensions.size(),
+                      .ppEnabledExtensionNames = extensions.data(),
+  };
 #  endif
 #endif
 

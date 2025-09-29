@@ -1369,7 +1369,6 @@ namespace VULKAN_HPP_NAMESPACE
     eRenderPassStripeInfoARM                                     = VK_STRUCTURE_TYPE_RENDER_PASS_STRIPE_INFO_ARM,
     eRenderPassStripeSubmitInfoARM                               = VK_STRUCTURE_TYPE_RENDER_PASS_STRIPE_SUBMIT_INFO_ARM,
     ePhysicalDeviceCopyMemoryIndirectFeaturesNV                  = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV,
-    ePhysicalDeviceCopyMemoryIndirectPropertiesNV                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV,
     ePhysicalDeviceMemoryDecompressionFeaturesNV                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV,
     ePhysicalDeviceMemoryDecompressionPropertiesNV               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV,
     ePhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_COMPUTE_FEATURES_NV,
@@ -1597,6 +1596,11 @@ namespace VULKAN_HPP_NAMESPACE
     eTileMemoryRequirementsQCOM                                 = VK_STRUCTURE_TYPE_TILE_MEMORY_REQUIREMENTS_QCOM,
     eTileMemoryBindInfoQCOM                                     = VK_STRUCTURE_TYPE_TILE_MEMORY_BIND_INFO_QCOM,
     eTileMemorySizeInfoQCOM                                     = VK_STRUCTURE_TYPE_TILE_MEMORY_SIZE_INFO_QCOM,
+    ePhysicalDeviceCopyMemoryIndirectFeaturesKHR                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_KHR,
+    ePhysicalDeviceCopyMemoryIndirectPropertiesKHR              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_KHR,
+    ePhysicalDeviceCopyMemoryIndirectPropertiesNV               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV,
+    eCopyMemoryIndirectInfoKHR                                  = VK_STRUCTURE_TYPE_COPY_MEMORY_INDIRECT_INFO_KHR,
+    eCopyMemoryToImageIndirectInfoKHR                           = VK_STRUCTURE_TYPE_COPY_MEMORY_TO_IMAGE_INDIRECT_INFO_KHR,
     eDisplaySurfaceStereoCreateInfoNV                           = VK_STRUCTURE_TYPE_DISPLAY_SURFACE_STEREO_CREATE_INFO_NV,
     eDisplayModeStereoPropertiesNV                              = VK_STRUCTURE_TYPE_DISPLAY_MODE_STEREO_PROPERTIES_NV,
     eVideoEncodeIntraRefreshCapabilitiesKHR                     = VK_STRUCTURE_TYPE_VIDEO_ENCODE_INTRA_REFRESH_CAPABILITIES_KHR,
@@ -4872,7 +4876,8 @@ namespace VULKAN_HPP_NAMESPACE
     eClusterCullingShaderHUAWEI       = VK_PIPELINE_STAGE_2_CLUSTER_CULLING_SHADER_BIT_HUAWEI,
     eOpticalFlowNV                    = VK_PIPELINE_STAGE_2_OPTICAL_FLOW_BIT_NV,
     eConvertCooperativeVectorMatrixNV = VK_PIPELINE_STAGE_2_CONVERT_COOPERATIVE_VECTOR_MATRIX_BIT_NV,
-    eDataGraphARM                     = VK_PIPELINE_STAGE_2_DATA_GRAPH_BIT_ARM
+    eDataGraphARM                     = VK_PIPELINE_STAGE_2_DATA_GRAPH_BIT_ARM,
+    eCopyIndirectKHR                  = VK_PIPELINE_STAGE_2_COPY_INDIRECT_BIT_KHR
   };
 
   using PipelineStageFlagBits2KHR = PipelineStageFlagBits2;
@@ -4900,7 +4905,8 @@ namespace VULKAN_HPP_NAMESPACE
       PipelineStageFlagBits2::eRayTracingShaderKHR | PipelineStageFlagBits2::eFragmentDensityProcessEXT | PipelineStageFlagBits2::eTaskShaderEXT |
       PipelineStageFlagBits2::eMeshShaderEXT | PipelineStageFlagBits2::eSubpassShaderHUAWEI | PipelineStageFlagBits2::eInvocationMaskHUAWEI |
       PipelineStageFlagBits2::eAccelerationStructureCopyKHR | PipelineStageFlagBits2::eMicromapBuildEXT | PipelineStageFlagBits2::eClusterCullingShaderHUAWEI |
-      PipelineStageFlagBits2::eOpticalFlowNV | PipelineStageFlagBits2::eConvertCooperativeVectorMatrixNV | PipelineStageFlagBits2::eDataGraphARM;
+      PipelineStageFlagBits2::eOpticalFlowNV | PipelineStageFlagBits2::eConvertCooperativeVectorMatrixNV | PipelineStageFlagBits2::eDataGraphARM |
+      PipelineStageFlagBits2::eCopyIndirectKHR;
   };
 
   // wrapper class for enum VkAccessFlagBits2, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkAccessFlagBits2.html
@@ -5089,6 +5095,7 @@ namespace VULKAN_HPP_NAMESPACE
     eOpticalFlowVectorNV                  = VK_FORMAT_FEATURE_2_OPTICAL_FLOW_VECTOR_BIT_NV,
     eOpticalFlowCostNV                    = VK_FORMAT_FEATURE_2_OPTICAL_FLOW_COST_BIT_NV,
     eTensorDataGraphARM                   = VK_FORMAT_FEATURE_2_TENSOR_DATA_GRAPH_BIT_ARM,
+    eCopyImageIndirectDstKHR              = VK_FORMAT_FEATURE_2_COPY_IMAGE_INDIRECT_DST_BIT_KHR,
     eVideoEncodeQuantizationDeltaMapKHR   = VK_FORMAT_FEATURE_2_VIDEO_ENCODE_QUANTIZATION_DELTA_MAP_BIT_KHR,
     eVideoEncodeEmphasisMapKHR            = VK_FORMAT_FEATURE_2_VIDEO_ENCODE_EMPHASIS_MAP_BIT_KHR
   };
@@ -5123,8 +5130,8 @@ namespace VULKAN_HPP_NAMESPACE
       FormatFeatureFlagBits2::eWeightImageQCOM | FormatFeatureFlagBits2::eWeightSampledImageQCOM | FormatFeatureFlagBits2::eBlockMatchingQCOM |
       FormatFeatureFlagBits2::eBoxFilterSampledQCOM | FormatFeatureFlagBits2::eTensorShaderARM | FormatFeatureFlagBits2::eTensorImageAliasingARM |
       FormatFeatureFlagBits2::eOpticalFlowImageNV | FormatFeatureFlagBits2::eOpticalFlowVectorNV | FormatFeatureFlagBits2::eOpticalFlowCostNV |
-      FormatFeatureFlagBits2::eTensorDataGraphARM | FormatFeatureFlagBits2::eVideoEncodeQuantizationDeltaMapKHR |
-      FormatFeatureFlagBits2::eVideoEncodeEmphasisMapKHR;
+      FormatFeatureFlagBits2::eTensorDataGraphARM | FormatFeatureFlagBits2::eCopyImageIndirectDstKHR |
+      FormatFeatureFlagBits2::eVideoEncodeQuantizationDeltaMapKHR | FormatFeatureFlagBits2::eVideoEncodeEmphasisMapKHR;
   };
 
   //=== VK_VERSION_1_4 ===
@@ -8935,6 +8942,28 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   using TimeDomainEXT = TimeDomainKHR;
+
+  //=== VK_KHR_copy_memory_indirect ===
+
+  // wrapper class for enum VkAddressCopyFlagBitsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkAddressCopyFlagBitsKHR.html
+  enum class AddressCopyFlagBitsKHR : VkAddressCopyFlagsKHR
+  {
+    eDeviceLocal = VK_ADDRESS_COPY_DEVICE_LOCAL_BIT_KHR,
+    eSparse      = VK_ADDRESS_COPY_SPARSE_BIT_KHR,
+    eProtected   = VK_ADDRESS_COPY_PROTECTED_BIT_KHR
+  };
+
+  // wrapper using for bitmask VkAddressCopyFlagsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkAddressCopyFlagsKHR.html
+  using AddressCopyFlagsKHR = Flags<AddressCopyFlagBitsKHR>;
+
+  template <>
+  struct FlagTraits<AddressCopyFlagBitsKHR>
+  {
+    using WrappedType                                                  = VkAddressCopyFlagBitsKHR;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR AddressCopyFlagsKHR allFlags =
+      AddressCopyFlagBitsKHR::eDeviceLocal | AddressCopyFlagBitsKHR::eSparse | AddressCopyFlagBitsKHR::eProtected;
+  };
 
   //=== VK_NV_display_stereo ===
 

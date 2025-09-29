@@ -10308,10 +10308,10 @@ export {
   //=== VK_QCOM_tile_memory_heap ===
   using ::PFN_vkCmdBindTileMemoryQCOM;
 
-//=== VK_KHR_copy_memory_indirect ===
+  //=== VK_KHR_copy_memory_indirect ===
   using ::PFN_vkCmdCopyMemoryIndirectKHR;
   using ::PFN_vkCmdCopyMemoryToImageIndirectKHR;
-  
+
   //=== VK_NV_external_compute_queue ===
   using ::PFN_vkCreateExternalComputeQueueNV;
   using ::PFN_vkDestroyExternalComputeQueueNV;

@@ -6,7 +6,7 @@ ${licenseHeader}
 module;
 
 #include <version>
-#if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_NO_STD_MODULE )
+#if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_NO_STD_MODULE ) && !defined( VULKAN_HPP_ENABLE_STD_MODULE )
 #  define VULKAN_HPP_ENABLE_STD_MODULE
 #endif
 

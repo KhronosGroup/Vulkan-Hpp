@@ -1174,14 +1174,8 @@ bool VulkanHppGenerator::describesVector( StructureData const & structure, std::
 std::vector<size_t> VulkanHppGenerator::determineChainedReturnParams( std::vector<ParamData> const & params, std::vector<size_t> const & returnParams ) const
 {
   std::vector<size_t> chainedParams;
-
-  for ( auto rp : returnParams )
-  {
-    if ( isStructureChainAnchor( params[rp].type.type ) )
-    {
-      chainedParams.push_back( rp );
-    }
-  }
+  std::ranges::copy_if(
+    returnParams, std::back_inserter( chainedParams ), [this, &params]( size_t rp ) { return isStructureChainAnchor( params[rp].type.type ); } );
   return chainedParams;
 }
 
@@ -1213,19 +1207,22 @@ std::vector<std::string> VulkanHppGenerator::determineDataTypes( std::vector<Vul
     if ( templatedParams.contains( rp ) )
     {
       assert( ( vectorParamIt == vectorParams.end() ) || !vectorParamIt->second.byStructure );
-      if ( ( vectorParamIt != vectorParams.end() ) &&
+      if ( ( vectorParamIt != vectorParams.end() ) && ( params[rp].type.type == "void" ) &&
            std::ranges::any_of( returnParams, [&vectorParamIt]( size_t rp ) noexcept { return rp == vectorParamIt->first; } ) &&
            std::ranges::any_of( returnParams, [&vectorParamIt]( size_t rp ) noexcept { return rp == vectorParamIt->second.lenParam; } ) )
       {
+        // sized data of type void is returned as a std::array<uint8_t>
         dataTypes.push_back( "uint8_t" );
       }
       else
       {
+        // for all other (templated) return parameters, the dataType is the name of the parameter with prefix "p" removed and "Type" appended
         dataTypes.push_back( ( stripPrefix( params[rp].name, "p" ) + "Type" ) );
       }
     }
     else if ( ( vectorParamIt != vectorParams.end() ) && vectorParamIt->second.byStructure )
     {
+      // for non-templated vector parameters, we have to distinguish between those specified by a structure and those specified by a simple length parameter
       dataTypes.push_back(
         trimEnd( stripPostfix( vectorMemberByStructure( params[rp].type.type ).type.compose( "Vk", raii ? "VULKAN_HPP_NAMESPACE" : "" ), "*" ) ) );
     }
@@ -1266,7 +1263,7 @@ size_t VulkanHppGenerator::determineInitialSkipCount( std::string const & comman
 {
   // determine the number of arguments to skip for a function
   // -> 0: the command is not bound to an instance or a device (the corresponding handle has no name)
-  // -> 1: the command bound to an instance or a device (the corresponding handle has a name)
+  // -> 1: the command is bound to an instance or a device (the corresponding handle has a name)
   // -> 2: the command has been moved to a second handle
   auto commandIt = findByNameOrAlias( m_commands, command );
   assert( commandIt != m_commands.end() );
@@ -1339,13 +1336,13 @@ std::vector<std::map<std::string, VulkanHppGenerator::CommandData>::const_iterat
       if ( destructorIt != m_commands.end() )
       {
         // get the destructors parameter to the handleType
-        auto desctructorHandleParamIt =
+        auto destructorHandleParamIt =
           std::ranges::find_if( destructorIt->second.params, [&handleType]( ParamData const & pd ) { return pd.type.type == handleType; } );
-        assert( desctructorHandleParamIt != destructorIt->second.params.end() );
+        assert( destructorHandleParamIt != destructorIt->second.params.end() );
 
         // lambda to check if a destructor parameter is a parameter of the constructor candidate
         // (or it's just the len parameter, which is not needed for the constructor)
-        auto isConstructorCandidateParam = [&desctructorHandleParamIt, &commandIt, this]( ParamData const & destructorParam )
+        auto isConstructorCandidateParam = [&destructorHandleParamIt, &commandIt, this]( ParamData const & destructorParam )
         {
           // check if the destructor param type equals this param type, or, if this param type is a struct, is part of
           // that struct
@@ -1361,7 +1358,7 @@ std::vector<std::map<std::string, VulkanHppGenerator::CommandData>::const_iterat
             return true;
           };
 
-          return ( destructorParam.name == desctructorHandleParamIt->lenExpression ) || std::ranges::any_of( commandIt->second.params, isDestructorParamType );
+          return ( destructorParam.name == destructorHandleParamIt->lenExpression ) || std::ranges::any_of( commandIt->second.params, isDestructorParamType );
         };
 
         // the constructor candidate is valid, if none of the (relevant) destructor parameters is missing in the
@@ -1686,27 +1683,6 @@ void VulkanHppGenerator::filterLenMembers()
       }
     }
   }
-}
-
-std::map<std::string, VulkanHppGenerator::NameLine>::const_iterator VulkanHppGenerator::findAlias( std::string const &                     name,
-                                                                                                   std::map<std::string, NameLine> const & aliases ) const
-{
-  auto lambda = [&name]( std::pair<std::string, NameLine> const & ad ) { return ad.second.name == name; };
-  auto it     = std::ranges::find_if( aliases, lambda );
-  assert( ( it == aliases.end() ) || std::none_of( std::next( it ), aliases.end(), lambda ) );
-  return it;
-}
-
-std::string VulkanHppGenerator::findBaseName( std::string aliasName, std::map<std::string, NameLine> const & aliases ) const
-{
-  std::string baseName = aliasName;
-  auto        aliasIt  = aliases.find( baseName );
-  while ( aliasIt != aliases.end() )
-  {
-    baseName = aliasIt->second.name;
-    aliasIt  = aliases.find( baseName );
-  }
-  return baseName;
 }
 
 std::vector<VulkanHppGenerator::FeatureData>::const_iterator VulkanHppGenerator::findFeature( std::string const & name ) const

@@ -112,5 +112,10 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::vector<vk::ExtensionProperties> properties = context.enumerateInstanceExtensionProperties( nullptr );
   }
 
+  {
+    vk::raii::PhysicalDevice             physicalDevice = nullptr;
+    std::vector<vk::ExtensionProperties> properties     = physicalDevice.enumerateDeviceExtensionProperties( nullptr );
+  }
+
   return 0;
 }

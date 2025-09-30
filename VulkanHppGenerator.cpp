@@ -12265,7 +12265,7 @@ std::tuple<std::string, std::string, std::string, std::string>
         members += " : " + member.bitCount;  // except for bitfield members, where no default member initializatin
                                              // is supported (up to C++20)
       }
-      else if ( member.deprecated.empty() )
+      else
       {
         members += " = ";
         auto enumIt = m_enums.find( member.type.type );

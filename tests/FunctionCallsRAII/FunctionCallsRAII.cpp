@@ -101,9 +101,20 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   // Device commands
   {
-    vk::raii::PhysicalDevice   physicalDevice = nullptr;
-    vk::DeviceCreateInfo       deviceCreateInfo;
-    vk::raii::Device           device         = physicalDevice.createDevice( deviceCreateInfo );
+    vk::raii::PhysicalDevice physicalDevice = nullptr;
+    vk::DeviceCreateInfo     deviceCreateInfo;
+    vk::raii::Device         device = physicalDevice.createDevice( deviceCreateInfo );
+  }
+
+  // Extension discovery commands
+  {
+    vk::raii::Context                    context;
+    std::vector<vk::ExtensionProperties> properties = context.enumerateInstanceExtensionProperties( nullptr );
+  }
+
+  {
+    vk::raii::PhysicalDevice             physicalDevice = nullptr;
+    std::vector<vk::ExtensionProperties> properties     = physicalDevice.enumerateDeviceExtensionProperties( nullptr );
   }
 
   return 0;

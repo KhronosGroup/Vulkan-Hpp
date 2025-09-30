@@ -187,6 +187,46 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroy();
   }
 
+  // Extension discovery commands
+  {
+    uint32_t   propertyCount;
+    vk::Result result = vk::enumerateInstanceExtensionProperties( nullptr, &propertyCount, nullptr );
+    if ( result == vk::Result::eSuccess )
+    {
+      std::vector<vk::ExtensionProperties> properties( propertyCount );
+      result = vk::enumerateInstanceExtensionProperties( nullptr, &propertyCount, properties.data() );
+    }
+  }
+  {
+    std::vector<vk::ExtensionProperties> properties = vk::enumerateInstanceExtensionProperties( nullptr );
+  }
+  {
+    using Allocator = std::allocator<vk::ExtensionProperties>;
+    Allocator                                       allocator;
+    std::vector<vk::ExtensionProperties, Allocator> properties = vk::enumerateInstanceExtensionProperties( nullptr, allocator );
+  }
+
+  {
+    vk::PhysicalDevice physicalDevice;
+    uint32_t           propertyCount;
+    vk::Result         result = physicalDevice.enumerateDeviceExtensionProperties( nullptr, &propertyCount, nullptr );
+    if ( result == vk::Result::eSuccess )
+    {
+      std::vector<vk::ExtensionProperties> properties( propertyCount );
+      result = physicalDevice.enumerateDeviceExtensionProperties( nullptr, &propertyCount, properties.data() );
+    }
+  }
+  {
+    vk::PhysicalDevice                   physicalDevice;
+    std::vector<vk::ExtensionProperties> properties = physicalDevice.enumerateDeviceExtensionProperties( nullptr );
+  }
+  {
+    vk::PhysicalDevice physicalDevice;
+    using Allocator = std::allocator<vk::ExtensionProperties>;
+    Allocator                                       allocator;
+    std::vector<vk::ExtensionProperties, Allocator> properties = physicalDevice.enumerateDeviceExtensionProperties( nullptr, allocator );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

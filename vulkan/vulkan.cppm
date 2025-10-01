@@ -11,15 +11,17 @@ module;
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
-#define VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING \
-  "The Vulkan-Hpp C++ named module is experimental. " \
+#if !defined( VULKAN_HPP_DISABLE_EXPERIMENTAL_WARNING )
+#  define VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING \
+    "The Vulkan-Hpp C++ named module is experimental. " \
   "It is subject to change without prior notice. " \
   "For feedback, go to: https://github.com/KhronosGroup/Vulkan-Hpp/issues"
 
-#if defined( __clang__ ) || defined( __GNUC__ ) || defined( __GNUG__ )
+#  if defined( __clang__ ) || defined( __GNUC__ ) || defined( __GNUG__ )
 _Pragma( VULKAN_HPP_STRINGIFY( GCC warning VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING ) )
-#elif defined( _MSC_VER )
+#  elif defined( _MSC_VER )
 _Pragma( VULKAN_HPP_STRINGIFY( message( __FILE__ "(" VULKAN_HPP_STRINGIFY( __LINE__ ) "): warning: " VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING ) ) )
+#  endif
 #endif
 
 #include <vulkan/vulkan.hpp>

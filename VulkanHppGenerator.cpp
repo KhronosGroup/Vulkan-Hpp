@@ -6275,6 +6275,19 @@ std::string VulkanHppGenerator::generateDecoratedReturnType( CommandData const &
          ( ( commandData.successCodes.size() == 2 ) && ( commandData.successCodes[1] == "VK_INCOMPLETE" ) && enumerating ) )
     {
       decoratedReturnType = "typename ResultValueType<" + returnType + ">::type";
+
+      if ( std::ranges::find( commandData.errorCodes, "VK_ERROR_OUT_OF_DATE_KHR" ) != commandData.errorCodes.end() )
+      {
+        static std::string decoratedReturnTypeTemplate = R"(
+#if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+  ResultValue<${returnType}>
+#else
+  ${decoratedReturnType}
+#endif
+)";
+
+        decoratedReturnType = replaceWithMap( decoratedReturnTypeTemplate, { { "decoratedReturnType", decoratedReturnType }, { "returnType", returnType } } );
+      }
     }
     else if ( !commandData.errorCodes.empty() && ( 1 < commandData.successCodes.size() ) &&
               ( ( returnParams.size() == 1 ) ||
@@ -10572,17 +10585,43 @@ std::string VulkanHppGenerator::generateResultCheck( CommandData const & command
   {
     std::string successCodeList = generateSuccessCodeList( commandData.successCodes, enumerating );
 
-    std::string const resultCheckTemplate =
-      R"(${namespace}detail::resultCheck( result, ${namespaceString} "::${className}${classSeparator}${commandName}"${successCodeList} );)";
+    if ( std::ranges::find( commandData.errorCodes, "VK_ERROR_OUT_OF_DATE_KHR" ) != commandData.errorCodes.end() )
+    {
+      std::vector<std::string> extendedSuccessCodes = commandData.successCodes;
+      extendedSuccessCodes.push_back( "VK_ERROR_OUT_OF_DATE_KHR" );
 
-    resultCheck = replaceWithMap( resultCheckTemplate,
-                                  { { "className", className },
-                                    { "classSeparator", classSeparator },
-                                    { "commandName", commandName },
-                                    { "namespace", raii ? "VULKAN_HPP_NAMESPACE::" : "" },
-                                    { "namespaceString", raii ? "VULKAN_HPP_RAII_NAMESPACE_STRING" : "VULKAN_HPP_NAMESPACE_STRING" },
-                                    { "successCodeList", successCodeList } } );
+      std::string const resultCheckTemplate = R"(
+#if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+  ${namespace}detail::resultCheck( result, ${namespaceString} "::${className}${classSeparator}${commandName}"${extendedSuccessCodeList} );
+#else
+  ${namespace}detail::resultCheck( result, ${namespaceString} "::${className}${classSeparator}${commandName}"${successCodeList} );
+#endif
+ )";
+
+      resultCheck = replaceWithMap( resultCheckTemplate,
+                                    { { "className", className },
+                                      { "classSeparator", classSeparator },
+                                      { "commandName", commandName },
+                                      { "extendedSuccessCodeList", generateSuccessCodeList( extendedSuccessCodes, enumerating ) },
+                                      { "namespace", raii ? "VULKAN_HPP_NAMESPACE::" : "" },
+                                      { "namespaceString", raii ? "VULKAN_HPP_RAII_NAMESPACE_STRING" : "VULKAN_HPP_NAMESPACE_STRING" },
+                                      { "successCodeList", successCodeList } } );
+    }
+    else
+    {
+      std::string const resultCheckTemplate =
+        R"(${namespace}detail::resultCheck( result, ${namespaceString} "::${className}${classSeparator}${commandName}"${successCodeList} );)";
+
+      resultCheck = replaceWithMap( resultCheckTemplate,
+                                    { { "className", className },
+                                      { "classSeparator", classSeparator },
+                                      { "commandName", commandName },
+                                      { "namespace", raii ? "VULKAN_HPP_NAMESPACE::" : "" },
+                                      { "namespaceString", raii ? "VULKAN_HPP_RAII_NAMESPACE_STRING" : "VULKAN_HPP_NAMESPACE_STRING" },
+                                      { "successCodeList", successCodeList } } );
+    }
   }
+
   return resultCheck;
 }
 
@@ -10733,6 +10772,20 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
         else
         {
           returnStatement += "result, std::move( " + returnVariable + " ) );";
+        }
+
+        if ( std::ranges::find( commandData.errorCodes, "VK_ERROR_OUT_OF_DATE_KHR" ) != commandData.errorCodes.end() )
+        {
+          assert( !unique && !returnVariable.empty() );
+          static std::string returnStatementTemplate = R"(
+#if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+  return ResultValue<${returnType}>( result, std::move( ${returnVariable} ) );
+#else
+  ${returnStatement}
+#endif)";
+
+          returnStatement = replaceWithMap( returnStatementTemplate,
+                                            { { "returnStatement", returnStatement }, { "returnType", returnType }, { "returnVariable", returnVariable } } );
         }
       }
     }

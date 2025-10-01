@@ -14076,7 +14076,13 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_display_control ===
 
       // wrapper function for command vkGetSwapchainCounterEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainCounterEXT.html
-      VULKAN_HPP_NODISCARD typename ResultValueType<uint64_t>::type getCounterEXT( SurfaceCounterFlagBitsEXT counter ) const;
+      VULKAN_HPP_NODISCARD
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      ResultValue<uint64_t>
+#  else
+      typename ResultValueType<uint64_t>::type
+#  endif
+        getCounterEXT( SurfaceCounterFlagBitsEXT counter ) const;
 
       //=== VK_GOOGLE_display_timing ===
 
@@ -14086,7 +14092,13 @@ namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkGetPastPresentationTimingGOOGLE, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPastPresentationTimingGOOGLE.html
-      VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PastPresentationTimingGOOGLE>>::type getPastPresentationTimingGOOGLE() const;
+      VULKAN_HPP_NODISCARD
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      ResultValue<std::vector<PastPresentationTimingGOOGLE>>
+#  else
+      typename ResultValueType<std::vector<PastPresentationTimingGOOGLE>>::type
+#  endif
+        getPastPresentationTimingGOOGLE() const;
 
       //=== VK_KHR_shared_presentable_image ===
 
@@ -18317,9 +18329,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                    static_cast<VkSemaphore>( semaphore ),
                                                                                    static_cast<VkFence>( fence ),
                                                                                    &imageIndex ) );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      VULKAN_HPP_NAMESPACE::detail::resultCheck(
+        result,
+        VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::acquireNextImage",
+        { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR, Result::eErrorOutOfDateKHR } );
+#  else
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result,
                                                  VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::acquireNextImage",
                                                  { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
+#  endif
 
       return ResultValue<uint32_t>( result, std::move( imageIndex ) );
     }
@@ -18331,7 +18351,13 @@ namespace VULKAN_HPP_NAMESPACE
 
       Result result = static_cast<Result>(
         getDispatcher()->vkQueuePresentKHR( static_cast<VkQueue>( m_queue ), reinterpret_cast<const VkPresentInfoKHR *>( &presentInfo ) ) );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      VULKAN_HPP_NAMESPACE::detail::resultCheck(
+        result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Queue::presentKHR", { Result::eSuccess, Result::eSuboptimalKHR, Result::eErrorOutOfDateKHR } );
+#  else
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Queue::presentKHR", { Result::eSuccess, Result::eSuboptimalKHR } );
+#  endif
 
       return static_cast<Result>( result );
     }
@@ -18408,9 +18434,17 @@ namespace VULKAN_HPP_NAMESPACE
       uint32_t imageIndex;
       Result   result = static_cast<Result>( getDispatcher()->vkAcquireNextImage2KHR(
         static_cast<VkDevice>( m_device ), reinterpret_cast<const VkAcquireNextImageInfoKHR *>( &acquireInfo ), &imageIndex ) );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      VULKAN_HPP_NAMESPACE::detail::resultCheck(
+        result,
+        VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::acquireNextImage2KHR",
+        { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR, Result::eErrorOutOfDateKHR } );
+#  else
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result,
                                                  VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::acquireNextImage2KHR",
                                                  { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
+#  endif
 
       return ResultValue<uint32_t>( result, std::move( imageIndex ) );
     }
@@ -20259,7 +20293,13 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     // wrapper function for command vkGetSwapchainCounterEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainCounterEXT.html
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<uint64_t>::type SwapchainKHR::getCounterEXT( SurfaceCounterFlagBitsEXT counter ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      ResultValue<uint64_t>
+#  else
+      typename ResultValueType<uint64_t>::type
+#  endif
+      SwapchainKHR::getCounterEXT( SurfaceCounterFlagBitsEXT counter ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetSwapchainCounterEXT && "Function <vkGetSwapchainCounterEXT> requires <VK_EXT_display_control>" );
 
@@ -20268,9 +20308,19 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                       static_cast<VkSwapchainKHR>( m_swapchainKHR ),
                                                                                       static_cast<VkSurfaceCounterFlagBitsEXT>( counter ),
                                                                                       &counterValue ) );
-      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::getCounterEXT" );
 
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      VULKAN_HPP_NAMESPACE::detail::resultCheck(
+        result, VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::getCounterEXT", { Result::eSuccess, Result::eErrorOutOfDateKHR } );
+#  else
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::getCounterEXT" );
+#  endif
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      return ResultValue<uint64_t>( result, std::move( counterValue ) );
+#  else
       return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( counterValue ) );
+#  endif
     }
 
     //=== VK_GOOGLE_display_timing ===
@@ -20293,8 +20343,13 @@ namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkGetPastPresentationTimingGOOGLE, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPastPresentationTimingGOOGLE.html
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<PastPresentationTimingGOOGLE>>::type
-                         SwapchainKHR::getPastPresentationTimingGOOGLE() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      ResultValue<std::vector<PastPresentationTimingGOOGLE>>
+#  else
+      typename ResultValueType<std::vector<PastPresentationTimingGOOGLE>>::type
+#  endif
+      SwapchainKHR::getPastPresentationTimingGOOGLE() const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPastPresentationTimingGOOGLE &&
                          "Function <vkGetPastPresentationTimingGOOGLE> requires <VK_GOOGLE_display_timing>" );
@@ -20316,13 +20371,26 @@ namespace VULKAN_HPP_NAMESPACE
                                                                 reinterpret_cast<VkPastPresentationTimingGOOGLE *>( presentationTimings.data() ) ) );
         }
       } while ( result == Result::eIncomplete );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result,
+                                                 VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::getPastPresentationTimingGOOGLE",
+                                                 { Result::eSuccess, Result::eIncomplete, Result::eErrorOutOfDateKHR } );
+#  else
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::getPastPresentationTimingGOOGLE" );
+#  endif
+
       VULKAN_HPP_ASSERT( presentationTimingCount <= presentationTimings.size() );
       if ( presentationTimingCount < presentationTimings.size() )
       {
         presentationTimings.resize( presentationTimingCount );
       }
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      return ResultValue<std::vector<PastPresentationTimingGOOGLE>>( result, std::move( presentationTimings ) );
+#  else
       return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( presentationTimings ) );
+#  endif
     }
 
     //=== VK_EXT_discard_rectangles ===
@@ -20439,8 +20507,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       Result result =
         static_cast<Result>( getDispatcher()->vkGetSwapchainStatusKHR( static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchainKHR ) ) );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      VULKAN_HPP_NAMESPACE::detail::resultCheck(
+        result, VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::getStatus", { Result::eSuccess, Result::eSuboptimalKHR, Result::eErrorOutOfDateKHR } );
+#  else
       VULKAN_HPP_NAMESPACE::detail::resultCheck(
         result, VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::getStatus", { Result::eSuccess, Result::eSuboptimalKHR } );
+#  endif
 
       return static_cast<Result>( result );
     }
@@ -23053,8 +23127,15 @@ namespace VULKAN_HPP_NAMESPACE
 
       Result result = static_cast<Result>(
         getDispatcher()->vkWaitForPresentKHR( static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchainKHR ), presentId, timeout ) );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result,
+                                                 VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::waitForPresent",
+                                                 { Result::eSuccess, Result::eTimeout, Result::eSuboptimalKHR, Result::eErrorOutOfDateKHR } );
+#  else
       VULKAN_HPP_NAMESPACE::detail::resultCheck(
         result, VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::waitForPresent", { Result::eSuccess, Result::eTimeout, Result::eSuboptimalKHR } );
+#  endif
 
       return static_cast<Result>( result );
     }
@@ -26241,8 +26322,15 @@ namespace VULKAN_HPP_NAMESPACE
       Result result = static_cast<Result>( getDispatcher()->vkWaitForPresent2KHR( static_cast<VkDevice>( m_device ),
                                                                                   static_cast<VkSwapchainKHR>( m_swapchainKHR ),
                                                                                   reinterpret_cast<const VkPresentWait2InfoKHR *>( &presentWait2Info ) ) );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result,
+                                                 VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::waitForPresent2",
+                                                 { Result::eSuccess, Result::eTimeout, Result::eSuboptimalKHR, Result::eErrorOutOfDateKHR } );
+#  else
       VULKAN_HPP_NAMESPACE::detail::resultCheck(
         result, VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::waitForPresent2", { Result::eSuccess, Result::eTimeout, Result::eSuboptimalKHR } );
+#  endif
 
       return static_cast<Result>( result );
     }

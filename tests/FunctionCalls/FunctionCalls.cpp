@@ -227,6 +227,46 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::vector<vk::ExtensionProperties, Allocator> properties = physicalDevice.enumerateDeviceExtensionProperties( nullptr, allocator );
   }
 
+  // Layer discovery commands
+  {
+    uint32_t   propertyCount;
+    vk::Result result = vk::enumerateInstanceLayerProperties( &propertyCount, nullptr );
+    if ( result == vk::Result::eSuccess )
+    {
+      std::vector<vk::LayerProperties> properties( propertyCount );
+      result = vk::enumerateInstanceLayerProperties( &propertyCount, properties.data() );
+    }
+  }
+  {
+    std::vector<vk::LayerProperties> properties = vk::enumerateInstanceLayerProperties();
+  }
+  {
+    using Allocator = std::allocator<vk::LayerProperties>;
+    Allocator                                   allocator;
+    std::vector<vk::LayerProperties, Allocator> properties = vk::enumerateInstanceLayerProperties( allocator );
+  }
+
+  {
+    vk::PhysicalDevice physicalDevice;
+    uint32_t           propertyCount;
+    vk::Result         result = physicalDevice.enumerateDeviceLayerProperties( &propertyCount, nullptr );
+    if ( result == vk::Result::eSuccess )
+    {
+      std::vector<vk::LayerProperties> properties( propertyCount );
+      result = physicalDevice.enumerateDeviceLayerProperties( &propertyCount, properties.data() );
+    }
+  }
+  {
+    vk::PhysicalDevice               physicalDevice;
+    std::vector<vk::LayerProperties> properties = physicalDevice.enumerateDeviceLayerProperties();
+  }
+  {
+    vk::PhysicalDevice physicalDevice;
+    using Allocator = std::allocator<vk::LayerProperties>;
+    Allocator                                   allocator;
+    std::vector<vk::LayerProperties, Allocator> properties = physicalDevice.enumerateDeviceLayerProperties( allocator );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

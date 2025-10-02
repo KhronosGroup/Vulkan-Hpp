@@ -117,5 +117,16 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::vector<vk::ExtensionProperties> properties     = physicalDevice.enumerateDeviceExtensionProperties( nullptr );
   }
 
+  // Layer discovery commands
+  {
+    vk::raii::Context                context;
+    std::vector<vk::LayerProperties> properties = context.enumerateInstanceLayerProperties();
+  }
+
+  {
+    vk::raii::PhysicalDevice         physicalDevice = nullptr;
+    std::vector<vk::LayerProperties> properties     = physicalDevice.enumerateDeviceLayerProperties();
+  }
+
   return 0;
 }

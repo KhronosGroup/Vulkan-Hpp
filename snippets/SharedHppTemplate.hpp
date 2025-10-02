@@ -5,7 +5,7 @@ ${licenseHeader}
 
 #include <vulkan/${api}.hpp>
 
-#if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
+#if !defined( VULKAN_HPP_CXX_MODULE )
 #include <atomic>  // std::atomic_size_t
 #endif
 
@@ -463,7 +463,7 @@ namespace VULKAN_HPP_NAMESPACE
 #    pragma clang diagnostic pop
 #  endif
   }
-  
+
   ${sharedHandles}
 
   // a number of SharedHandle specializations

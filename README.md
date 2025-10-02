@@ -64,6 +64,7 @@ The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan
 	- [VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL](#enable_dynamic_loader_tool)
 	- [VULKAN_HPP_EXPECTED](#expected)
 	- [VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC](#flags_mask_type_as_public)
+	- [VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS](#handle_error_out_of_date_as_success)
 	- [VULKAN_HPP_HANDLES_MOVE_EXCHANGE](#handles_move_exchange)
 	- [VULKAN_HPP_HASH_COMBINE](#hash_combine)
 	- [VULKAN_HPP_INLINE](#inline)
@@ -1013,6 +1014,10 @@ When this is not externally defined and `VULKAN_HPP_CPP_VERSION` is at least `23
 #### VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC <a id='flags_mask_type_as_public'>
 
 By default, the member `m_mask` of the `Flags` class template is private. This is to prevent accidentally setting a `Flags` with some inappropriate value. But it also prevents using a `Flags`, or a structure holding a `Flags`, to be used as a non-type template parameter. If you really need that functionality, and accept the reduced security, you can use this define to change the access specifier for `m_mask` from private to public, which allows using a `Flags` as a non-type template parameter.
+
+#### VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS <a id='handle_error_out_of_date_as_success'>
+
+By default, `VK_ERROR_OUT_OF_DATE_KHR` is an error code. To prevent throwing an exception or, in case exceptions are turned off via `VULKAN_HPP_NO_EXCEPTIONS`, firing an assertion on this return value, you can define `VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS`. `VK_ERROR_OUT_OF_DATE_KHR` will then be handled like a success code.
 
 #### VULKAN_HPP_HANDLES_MOVE_EXCHANGE <a id='handles_move_exchange'>
 

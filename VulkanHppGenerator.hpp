@@ -309,6 +309,8 @@ private:
     std::vector<std::string>   api           = {};
     std::string                name          = {};
     std::string                number        = {};
+    bool                       isInternal    = false;
+    std::vector<std::string>   depends       = {};
     std::vector<DeprecateData> deprecateData = {};
     std::vector<RemoveData>    removeData    = {};
     std::vector<RequireData>   requireData   = {};
@@ -596,6 +598,8 @@ private:
   void                                       distributeRequirements();
   void                                       distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy );
   void                                       distributeStructAliases();
+  void                                       mergeInternalFeatures();
+  void                                       collectTransitiveInternalDependencies( std::string const & featureName, std::set<std::string> & internalFeatures ) const;
   void                                       filterLenMembers();
   std::vector<ExtensionData>::const_iterator findSupportedExtension( std::string const & name ) const;
   std::string                                findTag( std::string const & name, std::string const & postfix = "" ) const;

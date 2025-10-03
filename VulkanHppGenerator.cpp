@@ -1665,6 +1665,104 @@ void VulkanHppGenerator::distributeStructAliases()
   m_structsAliases.clear();
 }
 
+void VulkanHppGenerator::mergeInternalFeatures()
+{
+  // First, validate all feature dependencies now that all features are parsed
+  for ( const auto & feature : m_features )
+  {
+    for ( const auto & dep : feature.depends )
+    {
+      checkForError( findByName( m_features, dep ) != m_features.end(), feature.xmlLine, "feature <" + feature.name + "> depends on unknown feature <" + dep + ">" );
+    }
+  }
+
+  // Skip merging for vulkanbase API
+  if ( m_api == "vulkanbase" )
+  {
+    return;
+  }
+
+  // Find public features and merge all transitively dependent internal features into them
+  std::set<std::string> processedInternalFeatures;
+
+  for ( auto & feature : m_features )
+  {
+    if ( feature.isInternal )
+    {
+      continue;
+    }
+
+    // Check if the public feature supports the current API
+    bool publicFeatureSupported = std::ranges::any_of( feature.api, [this]( auto const & a ) { return a == m_api; } );
+    if ( !publicFeatureSupported )
+    {
+      continue;
+    }
+
+    // This is a public feature, find all internal features that should be merged into it
+    std::set<std::string> internalFeaturesToMerge;
+    collectTransitiveInternalDependencies( feature.name, internalFeaturesToMerge );
+
+    // Only merge internal features that haven't been processed yet
+    std::vector<std::string> newInternalFeatures;
+    for ( const auto & internalFeatureName : internalFeaturesToMerge )
+    {
+      if ( !processedInternalFeatures.contains( internalFeatureName ) )
+      {
+        newInternalFeatures.push_back( internalFeatureName );
+      }
+    }
+
+    // Merge all collected internal features into this public feature
+    for ( const auto & internalFeatureName : newInternalFeatures )
+    {
+      auto internalFeatureIt = std::find_if( m_features.begin(), m_features.end(),
+                                            [&internalFeatureName]( const FeatureData & f ) { return f.name == internalFeatureName; } );
+
+      if ( internalFeatureIt != m_features.end() && internalFeatureIt->isInternal )
+      {
+        // Merge the internal feature's require data into the public feature
+        for ( auto & requireData : internalFeatureIt->requireData )
+        {
+          feature.requireData.push_back( std::move( requireData ) );
+        }
+
+        // Mark this internal feature as processed
+        processedInternalFeatures.insert( internalFeatureName );
+      }
+    }
+  }
+
+  // Remove processed internal features from m_features
+  m_features.erase( std::remove_if( m_features.begin(), m_features.end(),
+                                   [&processedInternalFeatures]( const FeatureData & f ) {
+                                     return f.isInternal && processedInternalFeatures.contains( f.name );
+                                   } ),
+                   m_features.end() );
+}
+
+void VulkanHppGenerator::collectTransitiveInternalDependencies( std::string const & featureName, std::set<std::string> & internalFeatures ) const
+{
+  // Find the feature
+  auto featureIt = std::find_if( m_features.begin(), m_features.end(),
+                                [&featureName]( const FeatureData & f ) { return f.name == featureName; } );
+
+  if ( featureIt != m_features.end() )
+  {
+    // If this feature is internal, add it to the set
+    if ( featureIt->isInternal )
+    {
+      internalFeatures.insert( featureName );
+    }
+
+    // Recursively collect dependencies
+    for ( const auto & dep : featureIt->depends )
+    {
+      collectTransitiveInternalDependencies( dep, internalFeatures );
+    }
+  }
+}
+
 void VulkanHppGenerator::filterLenMembers()
 {
   for ( auto & sd : m_structs )
@@ -14734,11 +14832,8 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "depends" )
     {
-      std::vector<std::string> depends = tokenize( attribute.second, "," );
-      for ( auto const & dep : depends )
-      {
-        checkForError( findByName( m_features, dep ) != m_features.end(), line, "feature depends on unknown feature <" + dep + ">" );
-      }
+      featureData.depends = tokenize( attribute.second, "," );
+      // Note: dependency validation will be done after all features are parsed
     }
     else if ( attribute.first == "name" )
     {
@@ -14749,6 +14844,10 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
       featureData.number = attribute.second;
       modifiedNumber     = featureData.number;
       std::replace( modifiedNumber.begin(), modifiedNumber.end(), '.', '_' );
+    }
+    else if ( attribute.first == "apitype" )
+    {
+      featureData.isInternal = ( attribute.second == "internal" );
     }
   }
 
@@ -15231,7 +15330,8 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     }
   }
 
-  // after everything is read, distribute some information
+  // after everything is read, merge internal features first, then distribute information
+  mergeInternalFeatures();
   distributeEnumExtends();
   distributeEnumValueAliases();
   distributeStructAliases();
@@ -17534,7 +17634,7 @@ int main( int argc, char const ** argv )
 {
   if ( ( argc % 2 ) == 0 )
   {
-    std::cout << "VulkanHppGenerator usage: VulkanHppGenerator [-f filename][-api [vulkan|vulkansc]]" << std::endl;
+    std::cout << "VulkanHppGenerator usage: VulkanHppGenerator [-f filename][-api [vulkan|vulkanbase|vulkansc]]" << std::endl;
     std::cout << "\tdefault for filename is <" << VK_SPEC << ">" << std::endl;
     std::cout << "\tdefault for api <vulkan>" << std::endl;
     std::cout << "\tsupported values for api are <vulkan>, <vulkanbase>, and <vulkansc>" << std::endl;

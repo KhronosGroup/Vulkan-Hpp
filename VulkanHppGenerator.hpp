@@ -598,8 +598,6 @@ private:
   void                                       distributeRequirements();
   void                                       distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy );
   void                                       distributeStructAliases();
-  void                                       mergeInternalFeatures();
-  void                                       collectTransitiveInternalDependencies( std::string const & featureName, std::set<std::string> & internalFeatures ) const;
   void                                       filterLenMembers();
   std::vector<ExtensionData>::const_iterator findSupportedExtension( std::string const & name ) const;
   std::string                                findTag( std::string const & name, std::string const & postfix = "" ) const;
@@ -1154,6 +1152,8 @@ private:
   bool isUnsupportedFeature( std::string const & name ) const;
   bool isVectorByStructure( std::string const & type ) const;
   void markExtendedStructs();
+  void mergeInternalFeatures();
+  void mergeInternalFeatures( std::vector<std::string> const & depends, FeatureData & feature, std::map<std::string, FeatureData> & internalFeatures );
   bool needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & chainedReturnParams ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<ParamData> const &            params,
                                                                                std::map<size_t, VectorParamData> const & vectorParams,

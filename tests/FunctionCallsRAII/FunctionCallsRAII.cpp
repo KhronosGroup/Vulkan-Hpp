@@ -128,5 +128,30 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::vector<vk::LayerProperties> properties     = physicalDevice.enumerateDeviceLayerProperties();
   }
 
+  // Queue commands
+  {
+    vk::raii::Device device           = nullptr;
+    uint32_t         queueFamilyIndex = 0;
+    uint32_t         queueIndex       = 0;
+    vk::raii::Queue  queue            = device.getQueue( queueFamilyIndex, queueIndex );
+  }
+
+  {
+    vk::raii::Queue queue = nullptr;
+    vk::SubmitInfo  submitInfo;
+    vk::Fence       fence;
+    queue.submit( submitInfo, fence );
+  }
+
+  {
+    vk::raii::Queue queue = nullptr;
+    queue.waitIdle();
+  }
+
+  {
+    vk::raii::Device device = nullptr;
+    device.waitIdle();
+  }
+
   return 0;
 }

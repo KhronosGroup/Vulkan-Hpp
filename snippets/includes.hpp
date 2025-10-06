@@ -1,8 +1,7 @@
 #if !defined( VULKAN_HPP_CXX_MODULE )
+// clang-format off
 #  include <vulkan/vulkan_hpp_macros.hpp>
-#endif
-
-#if !defined( VULKAN_HPP_CXX_MODULE )
+// clang-format on
 #  include <algorithm>
 #  include <array>  // ArrayWrapperND
 #  include <cassert>

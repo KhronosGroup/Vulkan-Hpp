@@ -597,10 +597,6 @@ private:
   void                                       distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy );
   void                                       distributeStructAliases();
   void                                       filterLenMembers();
-  std::vector<FeatureData>::const_iterator   findFeature( std::string const & name ) const;
-  std::vector<ParamData>::const_iterator     findParamIt( std::string const & name, std::vector<ParamData> const & paramData ) const;
-  std::vector<MemberData>::const_iterator    findStructMemberIt( std::string const & name, std::vector<MemberData> const & memberData ) const;
-  std::vector<MemberData>::const_iterator    findStructMemberItByType( std::string const & type, std::vector<MemberData> const & memberData ) const;
   std::vector<ExtensionData>::const_iterator findSupportedExtension( std::string const & name ) const;
   std::string                                findTag( std::string const & name, std::string const & postfix = "" ) const;
   void                                       forEachRequiredCommand( std::vector<RequireData> const &                                                             requireData,

@@ -1527,7 +1527,7 @@ std::map<size_t, VulkanHppGenerator::VectorParamData> VulkanHppGenerator::determ
       {
         VectorParamData & vpd = vectorParams[i];
         vpd.byStructure       = true;
-        vpd.lenParam          = 2;
+        vpd.lenParam          = i;
       }
     }
   }
@@ -2457,7 +2457,6 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedNonConstPointer( Par
     }
     else
     {
-      assert( !param.optional );
       argument = "&" + name;
     }
   }
@@ -3401,68 +3400,17 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Retu
                                                                                     std::vector<size_t> const & returnParams,
                                                                                     bool                        raii ) const
 {
-  if ( ( 2 <= commandData.successCodes.size() ) && ( commandData.successCodes[0] == "VK_SUCCESS" ) && ( commandData.successCodes[1] == "VK_INCOMPLETE" ) )
+  if ( ( 2 <= commandData.successCodes.size() ) && ( commandData.successCodes[0] == "VK_SUCCESS" ) &&
+       ( ( commandData.successCodes[1] == "VK_INCOMPLETE" ) || ( commandData.successCodes[1] == "VK_NOT_READY" ) ) )
   {
-    if ( ( commandData.params[returnParams[0]].type.type == "size_t" ) || ( commandData.params[returnParams[0]].type.type == "uint32_t" ) )
+    std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
+    switch ( vectorParams.size() )
     {
-      // needs some very special handling of "vkGetSwapchainImagesKHR" !!
-      if ( isHandleType( commandData.params[returnParams[1]].type.type ) && ( name != "vkGetSwapchainImagesKHR" ) )
-      {
-        std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-        if ( vectorParams.size() == 1 )
+      case 0:
+        if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
         {
-          if ( returnParams[0] == vectorParams.begin()->second.lenParam )
+          if ( commandData.params[returnParams[1]].type.type == "uint64_t" )
           {
-            if ( returnParams[1] == vectorParams.begin()->first )
-            {
-              return generateCommandSetInclusive( name,
-                                                  commandData,
-                                                  initialSkipCount,
-                                                  definition,
-                                                  returnParams,
-                                                  vectorParams,
-                                                  false,
-                                                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
-                                                  raii,
-                                                  true,
-                                                  { CommandFlavourFlagBits::enhanced } );
-            }
-          }
-        }
-      }
-      else if ( isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
-      {
-        std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-        if ( vectorParams.size() == 1 )
-        {
-          if ( returnParams[0] == vectorParams.begin()->second.lenParam )
-          {
-            if ( returnParams[1] == vectorParams.begin()->first )
-            {
-              return generateCommandSetInclusive( name,
-                                                  commandData,
-                                                  initialSkipCount,
-                                                  definition,
-                                                  returnParams,
-                                                  vectorParams,
-                                                  false,
-                                                  { CommandFlavourFlagBits::enhanced,
-                                                    CommandFlavourFlagBits::withAllocator,
-                                                    CommandFlavourFlagBits::chained,
-                                                    CommandFlavourFlagBits::chained | CommandFlavourFlagBits::withAllocator },
-                                                  raii,
-                                                  false,
-                                                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
-            }
-          }
-        }
-      }
-      else
-      {
-        std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-        switch ( vectorParams.size() )
-        {
-          case 0:
             return generateCommandSetInclusive( name,
                                                 commandData,
                                                 initialSkipCount,
@@ -3474,11 +3422,59 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Retu
                                                 raii,
                                                 false,
                                                 { CommandFlavourFlagBits::enhanced } );
-            break;
-          case 1:
-            if ( returnParams[0] == vectorParams.begin()->second.lenParam )
+          }
+          else if ( name == "vkGetDeviceFaultInfoEXT" )
+          {
+            // can't generate an enhanced version for such a complex command! Just use the standard version
+            return generateCommandStandard( name, commandData, initialSkipCount, definition );
+          }
+        }
+        break;
+      case 1:
+        if ( ( returnParams[0] == vectorParams.begin()->first ) && vectorParams.begin()->second.byStructure )
+        {
+          // can't generate an enhanced version for such a complex command! Just use the standard version
+          return generateCommandStandard( name, commandData, initialSkipCount, definition );
+        }
+        else if ( returnParams[0] == vectorParams.begin()->second.lenParam )
+        {
+          if ( returnParams[1] == vectorParams.begin()->first )
+          {
+            if ( ( commandData.params[returnParams[0]].type.type == "size_t" ) || ( commandData.params[returnParams[0]].type.type == "uint32_t" ) )
             {
-              if ( returnParams[1] == vectorParams.begin()->first )
+              // needs some very special handling of "vkGetSwapchainImagesKHR" !!
+              if ( isHandleType( commandData.params[returnParams[1]].type.type ) && ( name != "vkGetSwapchainImagesKHR" ) )
+              {
+                return generateCommandSetInclusive( name,
+                                                    commandData,
+                                                    initialSkipCount,
+                                                    definition,
+                                                    returnParams,
+                                                    vectorParams,
+                                                    false,
+                                                    { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
+                                                    raii,
+                                                    true,
+                                                    { CommandFlavourFlagBits::enhanced } );
+              }
+              else if ( isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+              {
+                return generateCommandSetInclusive( name,
+                                                    commandData,
+                                                    initialSkipCount,
+                                                    definition,
+                                                    returnParams,
+                                                    vectorParams,
+                                                    false,
+                                                    { CommandFlavourFlagBits::enhanced,
+                                                      CommandFlavourFlagBits::withAllocator,
+                                                      CommandFlavourFlagBits::chained,
+                                                      CommandFlavourFlagBits::chained | CommandFlavourFlagBits::withAllocator },
+                                                    raii,
+                                                    false,
+                                                    { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
+              }
+              else
               {
                 return generateCommandSetInclusive( name,
                                                     commandData,
@@ -3493,15 +3489,12 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Retu
                                                     { CommandFlavourFlagBits::enhanced } );
               }
             }
-            break;
-          default: break;
+          }
+          else
+          {
+          }
         }
-      }
-    }
-    else if ( isStructureType( commandData.params[returnParams[0]].type.type ) )
-    {
-      // can't generate an enhanced version for such a complex command! Just use the standard version
-      return generateCommandStandard( name, commandData, initialSkipCount, definition );
+        break;
     }
   }
 
@@ -4047,8 +4040,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors2Ret
             {
               if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
               {
-                if ( isStructureType( commandData.params[vectorParams.begin()->first].type.type ) &&
-                     !isStructureChainAnchor( commandData.params[vectorParams.begin()->first].type.type ) )
+                if ( isStructureType( commandData.params[vectorParams.begin()->first].type.type ) )
                 {
                   return generateCommandSetInclusive(
                     name,
@@ -16615,6 +16607,7 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
                                                         "VkSubmitInfo",
                                                         "VkSubpassDescription",
                                                         "VkSubpassDescription2",
+                                                        "VkSwapchainTimeDomainPropertiesEXT",
                                                         "VkTensorCopyARM",
                                                         "VkTensorDescriptionARM",
                                                         "VkVideoDecodeAV1PictureInfoKHR",

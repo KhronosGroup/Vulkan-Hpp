@@ -267,6 +267,45 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::vector<vk::LayerProperties, Allocator> properties = physicalDevice.enumerateDeviceLayerProperties( allocator );
   }
 
+  // Queue commands
+  {
+    vk::Device device;
+    uint32_t   queueFamilyIndex = 0;
+    uint32_t   queueIndex       = 0;
+    vk::Queue  queue;
+    device.getQueue( queueFamilyIndex, queueIndex, &queue );
+  }
+  {
+    vk::Device device;
+    uint32_t   queueFamilyIndex = 0;
+    uint32_t   queueIndex       = 0;
+    vk::Queue  queue            = device.getQueue( queueFamilyIndex, queueIndex );
+  }
+
+  {
+    vk::Queue      queue;
+    uint32_t       submitCount = 1;
+    vk::SubmitInfo submitInfo;
+    vk::Fence      fence;
+    vk::Result     result = queue.submit( submitCount, &submitInfo, fence );
+  }
+  {
+    vk::Queue      queue;
+    vk::SubmitInfo submitInfo;
+    vk::Fence      fence;
+    queue.submit( submitInfo, fence );
+  }
+
+  {
+    vk::Queue queue;
+    queue.waitIdle();
+  }
+
+  {
+    vk::Device device;
+    device.waitIdle();
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

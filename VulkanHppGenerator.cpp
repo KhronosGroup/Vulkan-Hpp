@@ -30,6 +30,8 @@ namespace
 {
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names );
   template <typename T>
+  typename std::vector<T>::const_iterator findByName( std::vector<T> const & values, std::string const & name );
+  template <typename T>
   typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name );
   template <typename T>
   typename std::map<std::string, T>::const_iterator findByNameOrAlias( std::map<std::string, T> const & values, std::string const & name );
@@ -37,6 +39,8 @@ namespace
   typename std::map<std::string, T>::iterator findByNameOrAlias( std::map<std::string, T> & values, std::string const & name );
   template <typename T>
   typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const & values, std::string const & name );
+  template <typename T>
+  typename std::vector<T>::const_iterator findByType( std::vector<T> const & values, std::string const & type );
   std::string                             generateCArraySizes( std::vector<std::string> const & sizes );
   std::string                             generateList( std::vector<std::string> const & elements, std::string const & prefix, std::string const & separator );
   std::string                             generateNoDiscard( bool returnsSomething, bool multiSuccessCodes, bool multiErrorCodes );
@@ -959,7 +963,7 @@ void VulkanHppGenerator::checkStructMemberSelectorConnection( std::string const 
   // check that there's a 1-1 connection between the specified selections and the values of that enum
   if ( !selector.empty() )
   {
-    auto selectorIt = findStructMemberIt( selector, members );
+    auto selectorIt = findByName( members, selector );
     assert( selectorIt != members.end() );
     auto selectorEnumIt = m_enums.find( selectorIt->type.type );
     assert( selectorEnumIt != m_enums.end() );
@@ -1353,7 +1357,7 @@ std::vector<std::map<std::string, VulkanHppGenerator::CommandData>::const_iterat
               // check if the destructor param type equals a structure member type
               auto structureIt = m_structs.find( pd.type.type );
               return ( structureIt != m_structs.end() ) &&
-                     ( findStructMemberItByType( destructorParam.type.type, structureIt->second.members ) != structureIt->second.members.end() );
+                     ( findByType( structureIt->second.members, destructorParam.type.type ) != structureIt->second.members.end() );
             }
             return true;
           };
@@ -1673,39 +1677,16 @@ void VulkanHppGenerator::filterLenMembers()
       {
         if ( lenMember.second == static_cast<size_t>( ~0 ) )
         {
-          auto lenMemberIt = findStructMemberIt( lenMember.first, sd.second.members );
+          auto lenMemberIt = findByName( sd.second.members, lenMember.first );
           checkForError( lenMemberIt != sd.second.members.end(),
                          member.xmlLine,
                          "struct member <" + member.name + "> uses unknown len member <" + lenMember.first + "> in its \"altlen\" attribute <" +
                            member.lenExpressions[0] + ">" );
-          lenMember.second = std::distance( sd.second.members.cbegin(), lenMemberIt );
+          lenMember.second = std::distance( sd.second.members.begin(), lenMemberIt );
         }
       }
     }
   }
-}
-
-std::vector<VulkanHppGenerator::FeatureData>::const_iterator VulkanHppGenerator::findFeature( std::string const & name ) const
-{
-  return std::ranges::find_if( m_features, [&name]( FeatureData const & fd ) { return fd.name == name; } );
-}
-
-std::vector<VulkanHppGenerator::ParamData>::const_iterator VulkanHppGenerator::findParamIt( std::string const &            name,
-                                                                                            std::vector<ParamData> const & paramData ) const
-{
-  return std::ranges::find_if( paramData, [&name]( ParamData const & pd ) { return pd.name == name; } );
-}
-
-std::vector<VulkanHppGenerator::MemberData>::const_iterator VulkanHppGenerator::findStructMemberIt( std::string const &             name,
-                                                                                                    std::vector<MemberData> const & memberData ) const
-{
-  return std::ranges::find_if( memberData, [&name]( MemberData const & md ) { return md.name == name; } );
-}
-
-std::vector<VulkanHppGenerator::MemberData>::const_iterator VulkanHppGenerator::findStructMemberItByType( std::string const &             type,
-                                                                                                          std::vector<MemberData> const & memberData ) const
-{
-  return std::ranges::find_if( memberData, [&type]( MemberData const & md ) { return md.type.type == type; } );
 }
 
 std::vector<VulkanHppGenerator::ExtensionData>::const_iterator VulkanHppGenerator::findSupportedExtension( std::string const & name ) const
@@ -9700,7 +9681,7 @@ std::string
             auto structureIt = m_structs.find( constructorParam.type.type );
             if ( structureIt != m_structs.end() )
             {
-              auto structureMemberIt = findStructMemberItByType( destructorParam.type.type, structureIt->second.members );
+              auto structureMemberIt = findByType( structureIt->second.members, destructorParam.type.type );
               if ( structureMemberIt != structureIt->second.members.end() )
               {
                 assert( constructorParam.type.isConstPointer() && constructorParam.arraySizes.empty() && constructorParam.lenExpression.empty() &&
@@ -10465,7 +10446,7 @@ std::string VulkanHppGenerator::generateRAIIHandleSingularConstructorArguments( 
             auto structureIt = m_structs.find( param.type.type );
             if ( structureIt != m_structs.end() )
             {
-              auto memberIt = findStructMemberItByType( destructorParam.type.type, structureIt->second.members );
+              auto memberIt = findByType( structureIt->second.members, destructorParam.type.type );
               if ( memberIt != structureIt->second.members.end() )
               {
 #if !defined( NDEBUG )
@@ -11448,7 +11429,7 @@ ${byString}
       if ( hasLen( *mit, structData.second.members ) )
       {
         std::string lenName = ( mit->lenExpressions.front() == "codeSize / 4" ) ? "codeSize" : mit->lenExpressions.front();
-        auto        lenIt   = findStructMemberIt( lenName, structData.second.members );
+        auto        lenIt   = findByName( structData.second.members, lenName );
         assert( lenIt != mit );
         lenIts[lenIt].push_back( mit );
       }
@@ -12407,7 +12388,7 @@ ${byString}
           lenValue += " * sizeof(T)";
         }
 
-        auto lenMember = findStructMemberIt( lenName, memberData );
+        auto lenMember = findByName( memberData, lenName );
         assert( lenMember != memberData.end() && lenMember->type.prefix.empty() && lenMember->type.postfix.empty() );
         if ( lenMember->type.type != "size_t" )
         {
@@ -12666,7 +12647,7 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
       // uint32_t constructor.
       if ( memberIt->type.type == "VkBool32" )
       {
-        if ( findStructMemberItByType( "uint32_t", structure.second.members ) != structure.second.members.end() )
+        if ( findByType( structure.second.members, "uint32_t" ) != structure.second.members.end() )
         {
           continue;
         }
@@ -13300,7 +13281,7 @@ void VulkanHppGenerator::handleRemoval( RemoveData const & removeData )
     assert( commandIt != m_commands.end() );
     for ( auto const & requiredBy : commandIt->second.requiredBy )
     {
-      auto featureIt = std::ranges::find_if( m_features, [&requiredBy]( FeatureData const & fd ) { return fd.name == requiredBy; } );
+      auto featureIt = findByName( m_features, requiredBy );
       if ( featureIt != m_features.end() )
       {
         removed |= handleRemovalCommand( command, featureIt->requireData );
@@ -13344,7 +13325,7 @@ void VulkanHppGenerator::handleRemoval( RemoveData const & removeData )
     bool removed = typeIt->second.requiredBy.empty();
     for ( auto const & requiredBy : typeIt->second.requiredBy )
     {
-      auto featureIt = std::ranges::find_if( m_features, [&requiredBy]( FeatureData const & fd ) { return fd.name == requiredBy; } );
+      auto featureIt = findByName( m_features, requiredBy );
       if ( featureIt != m_features.end() )
       {
         removed |= handleRemovalType( type, featureIt->requireData );
@@ -13581,12 +13562,12 @@ bool VulkanHppGenerator::isMultiSuccessCodeConstructor( std::vector<std::map<std
 
 bool VulkanHppGenerator::isParam( std::string const & name, std::vector<ParamData> const & params ) const
 {
-  return findParamIt( name, params ) != params.end();
+  return findByName( params, name ) != params.end();
 }
 
 bool VulkanHppGenerator::isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const
 {
-  return findStructMemberIt( name, memberData ) != memberData.end();
+  return findByName( memberData, name ) != memberData.end();
 }
 
 bool VulkanHppGenerator::isStructureChainAnchor( std::string const & type ) const
@@ -13646,7 +13627,7 @@ bool VulkanHppGenerator::isTypeUsed( std::string const & type ) const
   assert( typeIt != m_types.end() );
   for ( auto const & require : typeIt->second.requiredBy )
   {
-    auto featureIt = findFeature( require );
+    auto featureIt = findByName( m_features, require );
     if ( featureIt != m_features.end() )
     {
       for ( auto const & r : featureIt->requireData )
@@ -13834,19 +13815,19 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
     {
       for ( auto & lenParam : param.lenParams )
       {
-        auto paramIt = findParamIt( lenParam.first, commandData.params );
+        auto paramIt = findByName( commandData.params, lenParam.first );
         checkForError( paramIt != commandData.params.end(),
                        param.xmlLine,
                        "param <" + param.name + "> uses unknown len parameter <" + lenParam.first + "> in its \"altlen\" attribute <" + param.lenExpression +
                          ">" );
-        lenParam.second = std::distance( commandData.params.cbegin(), paramIt );
+        lenParam.second = std::distance( commandData.params.begin(), paramIt );
       }
       if ( !param.strideParam.first.empty() )
       {
-        auto paramIt = findParamIt( param.strideParam.first, commandData.params );
+        auto paramIt = findByName( commandData.params, param.strideParam.first );
         checkForError(
           paramIt != commandData.params.end(), param.xmlLine, "param <" + param.name + "> uses unknown stride parameter <" + param.strideParam.first + ">" );
-        param.strideParam.second = std::distance( commandData.params.cbegin(), paramIt );
+        param.strideParam.second = std::distance( commandData.params.begin(), paramIt );
       }
     }
 
@@ -13904,10 +13885,10 @@ std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandPa
       if ( paramData.lenExpression.empty() )
       {
         paramData.lenExpression = attribute.second;
-        auto paramIt            = findParamIt( attribute.second, params );
+        auto paramIt            = findByName( params, attribute.second );
         if ( paramIt != params.end() )
         {
-          paramData.lenParams.push_back( { attribute.second, std::distance( params.cbegin(), paramIt ) } );
+          paramData.lenParams.push_back( { attribute.second, std::distance( params.begin(), paramIt ) } );
         }
         else
         {
@@ -15548,7 +15529,7 @@ void VulkanHppGenerator::readSPIRVCapabilityEnable( tinyxml2::XMLElement const *
 
     auto propertyIt = m_structs.find( property );
     checkForError( propertyIt != m_structs.end(), line, "unknown property <" + property + "> specified for SPIR-V capability" );
-    auto memberIt = findStructMemberIt( member, propertyIt->second.members );
+    auto memberIt = findByName( propertyIt->second.members, member );
     checkForError( memberIt != propertyIt->second.members.end(), line, "unknown member <" + member + "> specified for SPIR-V capability" );
     if ( memberIt->type.type == "VkBool32" )
     {
@@ -15765,7 +15746,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
     else if ( attribute.first == "selector" )
     {
       memberData.selector = attribute.second;
-      auto selectorIt     = findStructMemberIt( memberData.selector, members );
+      auto selectorIt     = findByName( members, memberData.selector );
       checkForError( selectorIt != members.end(), line, "member attribute <selector> holds unknown value <" + memberData.selector + ">" );
       checkForError(
         m_enums.contains( selectorIt->type.type ), line, "member attribute <selector> references unknown enum type <" + selectorIt->type.type + ">" );
@@ -16561,9 +16542,9 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
     {
       if ( !member.lenExpressions.empty() && ( member.lenExpressions[0] != "null-terminated" ) && member.lenMembers.empty() )
       {
-        auto lenMemberIt = findStructMemberIt( member.lenExpressions[0], it->second.members );
+        auto lenMemberIt = findByName( it->second.members, member.lenExpressions[0] );
         checkForError( lenMemberIt != it->second.members.end(), line, "member attribute <len> holds unknown value <" + member.lenExpressions[0] + ">" );
-        member.lenMembers.push_back( { member.lenExpressions[0], std::distance( it->second.members.cbegin(), lenMemberIt ) } );
+        member.lenMembers.push_back( { member.lenExpressions[0], std::distance( it->second.members.begin(), lenMemberIt ) } );
       }
     }
     checkForError( !structureData.requiredLimitType ||
@@ -17282,6 +17263,12 @@ namespace
   }
 
   template <typename T>
+  typename std::vector<T>::const_iterator findByName( std::vector<T> const & values, std::string const & name )
+  {
+    return std::ranges::find_if( values, [&name]( T const & value ) { return value.name == name; } );
+  }
+
+  template <typename T>
   typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name )
   {
     return std::ranges::find_if( values, [&name]( T const & value ) { return value.name == name; } );
@@ -17318,6 +17305,12 @@ namespace
                                    return ( value.name == name ) ||
                                           std::ranges::any_of( value.aliases, [&name]( auto const & eav ) { return eav.name == name; } );
                                  } );
+  }
+
+  template <typename T>
+  typename std::vector<T>::const_iterator findByType( std::vector<T> const & values, std::string const & type )
+  {
+    return std::ranges::find_if( values, [&type]( T const & value ) { return value.type.type == type; } );
   }
 
   std::string generateCArraySizes( std::vector<std::string> const & sizes )

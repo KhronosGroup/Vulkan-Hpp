@@ -1,13 +1,24 @@
 ${licenseHeader}
 
-// Note: This module is still in an experimental state.
-// Any feedback is welcome on https://github.com/KhronosGroup/Vulkan-Hpp/issues.
-
 module;
 
-#include <version>
-#if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_NO_STD_MODULE ) && !defined( VULKAN_HPP_ENABLE_STD_MODULE )
-#  define VULKAN_HPP_ENABLE_STD_MODULE
+#define VULKAN_HPP_CXX_MODULE 1
+
+#include <vulkan/vulkan_hpp_macros.hpp>
+
+#if !defined( VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING )
+#  define VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING \
+  "The Vulkan-Hpp C++ named module is experimental. " \
+  "It is subject to change without prior notice.\n" \
+  "To silence this warning, define the VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING macro.\n\n" \
+  "For feedback, go to: https://github.com/KhronosGroup/Vulkan-Hpp/issues"
+
+
+#  if defined(__clang__) || defined(__GNUC__) || defined(__GNUG__)
+_Pragma(VULKAN_HPP_STRINGIFY(GCC warning VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING))
+#  elif defined(_MSC_VER)
+_Pragma(VULKAN_HPP_STRINGIFY(message(__FILE__ "(" VULKAN_HPP_STRINGIFY(__LINE__) "): warning: " VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING)))
+#  endif
 #endif
 
 #include <vulkan/${api}.hpp>
@@ -18,9 +29,7 @@ module;
 #include <vulkan/${api}_shared.hpp>
 
 export module ${api}_hpp;
-#if defined( VULKAN_HPP_ENABLE_STD_MODULE )
-  export import VULKAN_HPP_STD_MODULE;
-#endif
+export import VULKAN_HPP_STD_MODULE;
 
 export namespace VULKAN_HPP_NAMESPACE
 {
@@ -48,8 +57,11 @@ export namespace std
 #endif
 }
 
-// This VkFlags type is used as part of a bitfield in some structure.
-// As it can't be mimicked by vk-data types, we need to export just that!!
-export using ::VkGeometryInstanceFlagsKHR;
+export
+{
+// This VkFlags type is used as part of a bitfield in some structures.
+// As it can't be mimicked by vk-data types, we need to export just that.
+using ::VkGeometryInstanceFlagsKHR;
 
 ${pfnCommands}
+}

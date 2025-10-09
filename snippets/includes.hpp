@@ -1,11 +1,7 @@
-#include <vulkan/vulkan_hpp_macros.hpp>
-
-#if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
-#  include <cassert>
-#  include <cstring>
-#  include <cstdlib>
-import VULKAN_HPP_STD_MODULE;
-#else
+#if !defined( VULKAN_HPP_CXX_MODULE )
+// clang-format off
+#  include <vulkan/vulkan_hpp_macros.hpp>
+// clang-format on
 #  include <algorithm>
 #  include <array>  // ArrayWrapperND
 #  include <cassert>
@@ -28,6 +24,11 @@ import VULKAN_HPP_STD_MODULE;
 #  if defined( VULKAN_HPP_SUPPORT_SPAN )
 #    include <span>
 #  endif
+#else
+#  include <cassert>
+#  include <cstring>
+#  include <cstdlib>
+import VULKAN_HPP_STD_MODULE;
 #endif
 #include <vulkan/${vulkan_h}>
 

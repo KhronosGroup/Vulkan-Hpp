@@ -13490,6 +13490,21 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderFmaFeaturesKHR>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderFmaFeaturesKHR const & physicalDeviceShaderFmaFeaturesKHR ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderFmaFeaturesKHR.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderFmaFeaturesKHR.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderFmaFeaturesKHR.shaderFmaFloat16 );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderFmaFeaturesKHR.shaderFmaFloat32 );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderFmaFeaturesKHR.shaderFmaFloat64 );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderImageAtomicInt64FeaturesEXT>
   {
     std::size_t operator()(

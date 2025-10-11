@@ -2842,6 +2842,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::MESAImageAlignmentControlExtensionName;
   using VULKAN_HPP_NAMESPACE::MESAImageAlignmentControlSpecVersion;
 
+  //=== VK_KHR_shader_fma ===
+  using VULKAN_HPP_NAMESPACE::KHRShaderFmaExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRShaderFmaSpecVersion;
+
   //=== VK_EXT_depth_clamp_control ===
   using VULKAN_HPP_NAMESPACE::EXTDepthClampControlExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTDepthClampControlSpecVersion;
@@ -5088,6 +5092,9 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ImageAlignmentControlCreateInfoMESA;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageAlignmentControlFeaturesMESA;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageAlignmentControlPropertiesMESA;
+
+  //=== VK_KHR_shader_fma ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderFmaFeaturesKHR;
 
   //=== VK_EXT_depth_clamp_control ===
   using VULKAN_HPP_NAMESPACE::DepthClampRangeEXT;
@@ -9060,6 +9067,10 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::ImageAlignmentControlCreateInfoMESA>;
 
+  //=== VK_KHR_shader_fma ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderFmaFeaturesKHR>;
+
   //=== VK_EXT_depth_clamp_control ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampControlFeaturesEXT>;
@@ -9186,7 +9197,8 @@ export namespace std
 #endif
 }  // namespace std
 
-export {
+export
+{
   // This VkFlags type is used as part of a bitfield in some structures.
   // As it can't be mimicked by vk-data types, we need to export just that.
   using ::VkGeometryInstanceFlagsKHR;

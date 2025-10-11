@@ -1665,6 +1665,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceImageAlignmentControlFeaturesMESA            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA,
     ePhysicalDeviceImageAlignmentControlPropertiesMESA          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA,
     eImageAlignmentControlCreateInfoMESA                        = VK_STRUCTURE_TYPE_IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA,
+    ePhysicalDeviceShaderFmaFeaturesKHR                         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FMA_FEATURES_KHR,
     ePhysicalDeviceDepthClampControlFeaturesEXT                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT,
     ePipelineViewportDepthClampControlCreateInfoEXT             = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT,
     ePhysicalDeviceMaintenance9FeaturesKHR                      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR,

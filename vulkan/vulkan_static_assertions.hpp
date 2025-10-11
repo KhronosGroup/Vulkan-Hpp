@@ -8999,6 +8999,15 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageAli
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageAlignmentControlCreateInfoMESA>::value,
                           "ImageAlignmentControlCreateInfoMESA is not nothrow_move_constructible!" );
 
+//=== VK_KHR_shader_fma ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderFmaFeaturesKHR ) == sizeof( VkPhysicalDeviceShaderFmaFeaturesKHR ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderFmaFeaturesKHR>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderFmaFeaturesKHR>::value,
+                          "PhysicalDeviceShaderFmaFeaturesKHR is not nothrow_move_constructible!" );
+
 //=== VK_EXT_depth_clamp_control ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampControlFeaturesEXT ) == sizeof( VkPhysicalDeviceDepthClampControlFeaturesEXT ),

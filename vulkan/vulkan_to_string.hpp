@@ -5417,6 +5417,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceImageAlignmentControlFeaturesMESA           : return "PhysicalDeviceImageAlignmentControlFeaturesMESA";
       case StructureType::ePhysicalDeviceImageAlignmentControlPropertiesMESA         : return "PhysicalDeviceImageAlignmentControlPropertiesMESA";
       case StructureType::eImageAlignmentControlCreateInfoMESA                       : return "ImageAlignmentControlCreateInfoMESA";
+      case StructureType::ePhysicalDeviceShaderFmaFeaturesKHR                        : return "PhysicalDeviceShaderFmaFeaturesKHR";
       case StructureType::ePhysicalDeviceDepthClampControlFeaturesEXT                : return "PhysicalDeviceDepthClampControlFeaturesEXT";
       case StructureType::ePipelineViewportDepthClampControlCreateInfoEXT            : return "PipelineViewportDepthClampControlCreateInfoEXT";
       case StructureType::ePhysicalDeviceMaintenance9FeaturesKHR                     : return "PhysicalDeviceMaintenance9FeaturesKHR";

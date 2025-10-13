@@ -309,6 +309,8 @@ private:
     std::vector<std::string>   api           = {};
     std::string                name          = {};
     std::string                number        = {};
+    bool                       isInternal    = false;
+    std::vector<std::string>   depends       = {};
     std::vector<DeprecateData> deprecateData = {};
     std::vector<RemoveData>    removeData    = {};
     std::vector<RequireData>   requireData   = {};
@@ -1150,6 +1152,8 @@ private:
   bool isUnsupportedFeature( std::string const & name ) const;
   bool isVectorByStructure( std::string const & type ) const;
   void markExtendedStructs();
+  void mergeInternalFeatures();
+  void mergeInternalFeatures( std::vector<std::string> const & depends, FeatureData & feature, std::map<std::string, FeatureData> & internalFeatures );
   bool needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & chainedReturnParams ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<ParamData> const &            params,
                                                                                std::map<size_t, VectorParamData> const & vectorParams,

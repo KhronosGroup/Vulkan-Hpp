@@ -2129,6 +2129,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceImageAlignmentControlPropertiesMESA;
   struct ImageAlignmentControlCreateInfoMESA;
 
+  //=== VK_KHR_shader_fma ===
+  struct PhysicalDeviceShaderFmaFeaturesKHR;
+
   //=== VK_EXT_depth_clamp_control ===
   struct PhysicalDeviceDepthClampControlFeaturesEXT;
   struct PipelineViewportDepthClampControlCreateInfoEXT;

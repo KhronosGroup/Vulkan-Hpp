@@ -478,6 +478,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_EXT_device_generated_commands",
                                                             "VK_KHR_maintenance8",
                                                             "VK_MESA_image_alignment_control",
+                                                            "VK_KHR_shader_fma",
                                                             "VK_EXT_depth_clamp_control",
                                                             "VK_KHR_maintenance9",
                                                             "VK_KHR_video_maintenance2",
@@ -3678,9 +3679,9 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_shader_float8" ) || ( extension == "VK_NV_ray_tracing_validation" ) ||
            ( extension == "VK_NV_cluster_acceleration_structure" ) || ( extension == "VK_NV_partitioned_acceleration_structure" ) ||
            ( extension == "VK_EXT_device_generated_commands" ) || ( extension == "VK_KHR_maintenance8" ) ||
-           ( extension == "VK_MESA_image_alignment_control" ) || ( extension == "VK_EXT_depth_clamp_control" ) || ( extension == "VK_KHR_maintenance9" ) ||
-           ( extension == "VK_KHR_video_maintenance2" ) || ( extension == "VK_HUAWEI_hdr_vivid" ) || ( extension == "VK_NV_cooperative_matrix2" ) ||
-           ( extension == "VK_ARM_pipeline_opacity_micromap" )
+           ( extension == "VK_MESA_image_alignment_control" ) || ( extension == "VK_KHR_shader_fma" ) || ( extension == "VK_EXT_depth_clamp_control" ) ||
+           ( extension == "VK_KHR_maintenance9" ) || ( extension == "VK_KHR_video_maintenance2" ) || ( extension == "VK_HUAWEI_hdr_vivid" ) ||
+           ( extension == "VK_NV_cooperative_matrix2" ) || ( extension == "VK_ARM_pipeline_opacity_micromap" )
 #if defined( VK_USE_PLATFORM_METAL_EXT )
         || ( extension == "VK_EXT_external_memory_metal" )
 #endif /*VK_USE_PLATFORM_METAL_EXT*/

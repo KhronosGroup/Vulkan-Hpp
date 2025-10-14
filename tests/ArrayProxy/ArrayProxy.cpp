@@ -25,17 +25,13 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <array>
-#include <vector>
-#include <iostream>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-# include <vulkan/vulkan_hpp_macros.hpp>
-# ifdef VULKAN_HPP_SUPPORT_SPAN
-#   include <span>
-# endif
-  import vulkan_hpp;
+import vulkan_hpp;
 #else
-# include <vulkan/vulkan.hpp>
+#  include <array>
+#  include <vector>
+#  include <iostream>
+#  include <vulkan/vulkan.hpp>
 #endif
 
 void fct( vk::ArrayProxy<int> /*ap*/ ) {}

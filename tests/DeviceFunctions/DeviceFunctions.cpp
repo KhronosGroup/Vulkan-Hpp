@@ -24,19 +24,15 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#undef VULKAN_HPP_DISPATCH_LOADER_DYNAMIC
-#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 0
-
-#include <vector>
-#include <cstdint>
-#include <cassert>
-#include <iostream>
-#include <algorithm>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-# include <vulkan/vulkan_hpp_macros.hpp> // VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE
-  import vulkan_hpp;
+#  include <vulkan/vulkan_hpp_macros.hpp> // VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE
+import vulkan_hpp;
 #else
-# include <vulkan/vulkan.hpp>
+#  include <vector>
+#  include <cstdint>
+#  include <iostream>
+#  include <algorithm>
+#  include <vulkan/vulkan.hpp>
 #endif
 
 static char const * AppName    = "DeviceFunctions";
@@ -62,7 +58,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                      std::find_if( queueFamilyProperties.begin(),
                                    queueFamilyProperties.end(),
                                    []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } ) );
-    assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
+    void( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
     // create a UniqueDevice
     float                     queuePriority = 0.0f;

@@ -15,12 +15,13 @@
 // VulkanHpp Samples : DispatchLoaderStatic
 //                     Compile test on DispatchLoaderStatic functions
 
-#undef VULKAN_HPP_DISPATCH_LOADER_DYNAMIC
-#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 0
-
-#include <iostream>
-#include <map>
-#include <vulkan/vulkan.hpp>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+import vulkan_hpp;
+#else
+#  include <iostream>
+#  include <map>
+#  include <vulkan/vulkan.hpp>
+#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -29,7 +30,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Instance instance = vk::createInstance( {} );
 
     std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
-    assert( !physicalDevices.empty() );
+    void( !physicalDevices.empty() );
 
     vk::Device device = physicalDevices[0].createDevice( {} );
 

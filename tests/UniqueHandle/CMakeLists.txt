@@ -21,6 +21,6 @@ vulkan_hpp__setup_test_project()
 target_link_libraries( UniqueHandle PRIVATE utils )
 
 # add_subdirectory cannot use the normal compile definitions
-if( NOT VULKAN_HPP_TESTS_BUILD_CTEST )
-    target_compile_definitions( UniqueHandle PRIVATE VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
+if( NOT VULKAN_HPP_TESTS_CTEST )
+    target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
 endif()

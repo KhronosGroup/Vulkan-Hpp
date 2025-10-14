@@ -29,14 +29,14 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <set>
-#include <map>
-#include <vector>
-#include <string>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan_hpp;
+import vulkan_hpp;
 #else
-# include <vulkan/vulkan_extension_inspection.hpp>
+#  include <set>
+#  include <map>
+#  include <vector>
+#  include <string>
+#  include <vulkan/vulkan_extension_inspection.hpp>
 #endif
 
 int main( int /*argc*/, char ** /*argv*/ )

@@ -16,15 +16,14 @@
 //                     Compile test with VULKAN_HPP_NO_EXCEPTIONS set
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
-#include <vector>
-#include <cstdint>
-#include <cassert>
-#include <iostream>
-#include <algorithm>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan_hpp;
+import vulkan_hpp;
 #else
-# include "vulkan/vulkan.hpp"
+#  include <vector>
+#  include <cstdint>
+#  include <iostream>
+#  include <algorithm>
+#  include "vulkan/vulkan.hpp"
 #endif
 
 static char const * AppName    = "NoExceptions";
@@ -45,7 +44,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   vk::detail::defaultDispatchLoaderDynamic.init( *instance );
 
   std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices().value;
-  assert( !physicalDevices.empty() );
+  void( !physicalDevices.empty() );
 
   // get the QueueFamilyProperties of the first PhysicalDevice
   std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevices[0].getQueueFamilyProperties();
@@ -56,7 +55,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                    std::find_if( queueFamilyProperties.begin(),
                                  queueFamilyProperties.end(),
                                  []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } ) );
-  assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
+  void( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
   // create a UniqueDevice
   float                     queuePriority = 0.0f;

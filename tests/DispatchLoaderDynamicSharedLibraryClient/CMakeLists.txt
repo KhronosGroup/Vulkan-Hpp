@@ -23,10 +23,9 @@ vulkan_hpp__setup_library(
 	NAME DispatchLoaderDynamicSharedLibrary
 	SOURCES DispatchLoaderDynamicSharedLibrary.cpp
 	FOLDER "Tests" )
-target_compile_definitions( DispatchLoaderDynamicSharedLibrary PRIVATE VULKAN_HPP_STORAGE_SHARED VULKAN_HPP_STORAGE_SHARED_EXPORT )
+target_compile_definitions( DispatchLoaderDynamicSharedLibrary PUBLIC VULKAN_HPP_STORAGE_SHARED )
+target_compile_definitions( DispatchLoaderDynamicSharedLibrary PRIVATE VULKAN_HPP_STORAGE_SHARED_EXPORT )
 
-vulkan_hpp__setup_test(
-	NAME DispatchLoaderDynamicSharedLibraryClient
-	SOURCES DispatchLoaderDynamicSharedLibraryClient.cpp
-	LIBRARIES DispatchLoaderDynamicSharedLibrary )
-target_compile_definitions( DispatchLoaderDynamicSharedLibraryClient PRIVATE VULKAN_HPP_STORAGE_SHARED )
+vulkan_hpp__setup_test_project()
+target_compile_definitions( DispatchLoaderDynamicSharedLibraryClient PRIVATE "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC" )
+target_link_libraries( DispatchLoaderDynamicSharedLibraryClient PRIVATE DispatchLoaderDynamicSharedLibrary )

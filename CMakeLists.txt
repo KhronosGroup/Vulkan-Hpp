@@ -25,6 +25,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 cmake_minimum_required( VERSION 3.22 )
+include_guard()
 include( CMakeDependentOption )
 project( VulkanHppGenerator LANGUAGES CXX )
 
@@ -38,6 +39,7 @@ option( VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF )
 option( VULKAN_HPP_GENERATOR_BUILD "Build the HPP generator" ${PROJECT_IS_TOP_LEVEL} )
 option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
 option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
+option( VULKAN_HPP_TESTS_BUILD_CTEST "Build tests for ctest, enabling wider test coverage" ON ) # DEBUG
 option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
 cmake_dependent_option( VULKAN_HPP_BUILD_CXX_MODULE "Build and test the C++ named module." ON [[ TARGET __CMAKE::CXX23 ]] OFF)
 
@@ -61,7 +63,7 @@ option( VULKAN_HPP_TYPESAFE_CONVERSION "Enable copy constructors for non-dispatc
 option( VULKAN_HPP_USE_REFLECT "Adds reflect function to structures, which returns an iterable tuple" OFF )
 
 # manually set VK_NO_PROTOTYPES if undefined
-if ( NOT DEFINED VK_NO_PROTOTYPES )
+if( NOT DEFINED VK_NO_PROTOTYPES )
 	set ( VK_NO_PROTOTYPES ${VULKAN_HPP_DISPATCH_LOADER_DYNAMIC} )
 endif()
 
@@ -82,7 +84,7 @@ function( vulkan_hpp__setup_warning_level )
 endfunction()
 
 # Build Vulkan-Hpp and Video-Hpp generators
-if ( VULKAN_HPP_GENERATOR_BUILD )
+if( VULKAN_HPP_GENERATOR_BUILD )
 	set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 
 	# look for the file vk.xml, the ultimate source of truth for vulkan, to generate the headers from
@@ -328,11 +330,11 @@ function( vulkan_hpp__setup_vulkan_targets )
 		# create targets providing VulkanHpp and VulkanVideoHpp as C++20 modules
 		vulkan_hpp__setup_vulkan_module( NAME VulkanHppModule
 			FILE_SET_NAME vulkan_module_file
-			FILE_SET vulkan/vulkan.cppm
+			FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm"
 			ALIAS Vulkan::HppModule )
 		vulkan_hpp__setup_vulkan_module( NAME VulkanVideoHppModule
 			FILE_SET_NAME vulkan_video_module_file
-			FILE_SET vulkan/vulkan_video.cppm
+			FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan_video.cppm"
 			ALIAS Vulkan::VideoHppModule )
 	endif()
 endfunction()
@@ -493,132 +495,132 @@ function( vulkan_hpp__setup_sample_raii )
 		LIBS         utils )
 endfunction()
 
+# set up CTest or add_subdirectory test
 function( vulkan_hpp__setup_test )
-	set( options CXX_MODULE )
-	set( oneValueArgs NAME )
-	set( multiValueArgs LIBRARIES COMPILE_DEFINITIONS )
-	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-
-	if( NOT TARGET_NAME )
-		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_test" )
-	endif()
-
-	set( CPP_FILE ${TARGET_NAME}.cpp )
-	if ( TARGET_CXX_MODULE )
-		set( TARGET_NAME ${TARGET_NAME}_module )
-	endif()
-
-	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
-	add_executable( ${TARGET_NAME} ${CPP_FILE} )
-
-	# use a variant for the module version
-	if( TARGET_CXX_MODULE )
-		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
-
-		# set up new vulkan module when custom compile definitions are needed
-		list( LENGTH TARGET_COMPILE_DEFINITIONS COMPILE_DEFINITIONS_LENGTH )
-		if ( COMPILE_DEFINITIONS_LENGTH GREATER 0 )
-			vulkan_hpp__setup_vulkan_module( NAME ${TARGET_NAME}_VulkanHppModule
-				FILE_SET_NAME vulkan_module_file
-				FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm" )
-			target_compile_definitions( ${TARGET_NAME}_VulkanHppModule PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
-			set_target_properties( ${TARGET_NAME}_VulkanHppModule PROPERTIES CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
-			target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_NAME}_VulkanHppModule )
-		else()
-			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::HppModule )
-		endif()
-		# set macro to hint usage of the vulkan module, it is up to the test source file to respect this
-		target_compile_definitions( ${TARGET_NAME} PUBLIC VULKAN_HPP_USE_CXX_MODULE )
-	else()
-		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
-		target_compile_definitions( ${TARGET_NAME} PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
-	endif()
-
-	vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
-	vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
-
-	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
-	target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_LIBRARIES} )
-endfunction()
-
-function( vulkan_hpp__setup_ctest )
 	set( options CXX_MODULE IMPORT_STD )
 	set( oneValueArgs NAME )
 	set( multiValueArgs )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
-	# test to execute will be the passed NAME
-	set(TARGET_TEST ${TARGET_NAME})
+	if( VULKAN_HPP_TESTS_BUILD_CTEST )
+		# test to execute will be the passed NAME
+		set( TARGET_TEST ${TARGET_NAME} )
 
-	# change target name to reflect module setup
-	if ( TARGET_CXX_MODULE )
-		set(TARGET_NAME "MODULE_${TARGET_NAME}")
-	endif()
-	if ( TARGET_IMPORT_STD )
-		set(TARGET_NAME "STD_${TARGET_NAME}")
-	endif()
+		# change target name to reflect module setup
+		if ( TARGET_CXX_MODULE )
+			set( TARGET_NAME "MODULE_${TARGET_NAME}" )
+		endif()
+		if ( TARGET_IMPORT_STD )
+			set( TARGET_NAME "STD_${TARGET_NAME}" )
+		endif()
 
-	# create isolated test environment
-	add_test(NAME ${TARGET_NAME}
-		COMMAND ${CMAKE_CTEST_COMMAND}
-			--build-and-test
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/tests/${TARGET_TEST}"
-				"${CMAKE_CURRENT_BINARY_DIR}/tests/${TARGET_NAME}"
-			--build-generator ${CMAKE_GENERATOR}
-			--build-options
-				-D TARGET_NAME=${TARGET_NAME}
-				-D TARGET_TEST=${TARGET_TEST}
-				# forward vulkan options
-				-D VULKAN_HPP_PRECOMPILE=${VULKAN_HPP_PRECOMPILE}
-				-D VULKAN_HPP_RUN_GENERATOR=OFF
-				-D VULKAN_HPP_GENERATOR_BUILD=OFF
-				-D VULKAN_HPP_SAMPLES_BUILD=OFF
-				-D VULKAN_HPP_TESTS_BUILD=OFF
-				-D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=${VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP}
-				-D VULKAN_HPP_BUILD_CXX_MODULE=${VULKAN_HPP_BUILD_CXX_MODULE}
-				# forward specific compile definitions
-				-D VULKAN_HPP_DISABLE_ENHANCED_MODE=${VULKAN_HPP_DISABLE_ENHANCED_MODE}
-				-D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=${VULKAN_HPP_DISPATCH_LOADER_DYNAMIC}
-				-D VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC=${VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC}
-				-D VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS=${VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS}
-				-D VULKAN_HPP_HANDLES_MOVE_EXCHANGE=${VULKAN_HPP_HANDLES_MOVE_EXCHANGE}
-				-D VULKAN_HPP_NO_CONSTRUCTORS=${VULKAN_HPP_NO_CONSTRUCTORS}
-				-D VULKAN_HPP_NO_EXCEPTIONS=${VULKAN_HPP_NO_EXCEPTIONS}
-				-D VULKAN_HPP_NO_NODISCARD_WARNINGS=${VULKAN_HPP_NO_NODISCARD_WARNINGS}
-				-D VULKAN_HPP_NO_SETTERS=${VULKAN_HPP_NO_SETTERS}
-				-D VULKAN_HPP_NO_SMART_HANDLE=${VULKAN_HPP_NO_SMART_HANDLE}
-				-D VULKAN_HPP_NO_SPACESHIP_OPERATOR=${VULKAN_HPP_NO_SPACESHIP_OPERATOR}
-				-D VULKAN_HPP_NO_TO_STRING=${VULKAN_HPP_NO_TO_STRING}
-				-D VULKAN_HPP_NO_WIN32_PROTOTYPES=${VULKAN_HPP_NO_WIN32_PROTOTYPES}
-				-D VULKAN_HPP_RAII_NO_EXCEPTIONS=${VULKAN_HPP_RAII_NO_EXCEPTIONS}
-				-D VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST=${VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST}
-				-D VULKAN_HPP_TYPESAFE_CONVERSION=${VULKAN_HPP_TYPESAFE_CONVERSION}
-				-D VULKAN_HPP_USE_REFLECT=${VULKAN_HPP_USE_REFLECT}
-				# forward compiler setup
-				-D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-				-D CMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
-				-D CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER})
+		# create isolated test environment
+		add_test(NAME ${TARGET_NAME}
+			COMMAND ${CMAKE_CTEST_COMMAND}
+				--build-and-test
+					"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/tests/${TARGET_TEST}"
+					"${CMAKE_CURRENT_BINARY_DIR}/tests/${TARGET_NAME}"
+				--build-generator ${CMAKE_GENERATOR}
+				--build-options
+					-D TARGET_NAME=${TARGET_NAME}
+					-D TARGET_TEST=${TARGET_TEST}
+					# forward vulkan options
+					-D VULKAN_HPP_PRECOMPILE=${VULKAN_HPP_PRECOMPILE}
+					-D VULKAN_HPP_RUN_GENERATOR=OFF
+					-D VULKAN_HPP_GENERATOR_BUILD=OFF
+					-D VULKAN_HPP_SAMPLES_BUILD=OFF
+					-D VULKAN_HPP_TESTS_BUILD=OFF
+					-D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=${VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP}
+					-D VULKAN_HPP_BUILD_CXX_MODULE=${VULKAN_HPP_BUILD_CXX_MODULE}
+					# forward specific compile definitions
+					-D VULKAN_HPP_DISABLE_ENHANCED_MODE=${VULKAN_HPP_DISABLE_ENHANCED_MODE}
+					-D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=${VULKAN_HPP_DISPATCH_LOADER_DYNAMIC}
+					-D VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC=${VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC}
+					-D VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS=${VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS}
+					-D VULKAN_HPP_HANDLES_MOVE_EXCHANGE=${VULKAN_HPP_HANDLES_MOVE_EXCHANGE}
+					-D VULKAN_HPP_NO_CONSTRUCTORS=${VULKAN_HPP_NO_CONSTRUCTORS}
+					-D VULKAN_HPP_NO_EXCEPTIONS=${VULKAN_HPP_NO_EXCEPTIONS}
+					-D VULKAN_HPP_NO_NODISCARD_WARNINGS=${VULKAN_HPP_NO_NODISCARD_WARNINGS}
+					-D VULKAN_HPP_NO_SETTERS=${VULKAN_HPP_NO_SETTERS}
+					-D VULKAN_HPP_NO_SMART_HANDLE=${VULKAN_HPP_NO_SMART_HANDLE}
+					-D VULKAN_HPP_NO_SPACESHIP_OPERATOR=${VULKAN_HPP_NO_SPACESHIP_OPERATOR}
+					-D VULKAN_HPP_NO_TO_STRING=${VULKAN_HPP_NO_TO_STRING}
+					-D VULKAN_HPP_NO_WIN32_PROTOTYPES=${VULKAN_HPP_NO_WIN32_PROTOTYPES}
+					-D VULKAN_HPP_RAII_NO_EXCEPTIONS=${VULKAN_HPP_RAII_NO_EXCEPTIONS}
+					-D VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST=${VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST}
+					-D VULKAN_HPP_TYPESAFE_CONVERSION=${VULKAN_HPP_TYPESAFE_CONVERSION}
+					-D VULKAN_HPP_USE_REFLECT=${VULKAN_HPP_USE_REFLECT}
+					# forward compiler setup
+					-D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+					-D CMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
+					-D CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER})
+	else()
+		add_subdirectory( ${TARGET_NAME} )
+	endif()
 endfunction()
 
-function( vulkan_hpp__setup_ctest_project )
-	set( options VIDEO )
-	set( oneValueArgs NAME )
-	set( multiValueArgs )
-	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-
-	# TARGET_NAME and TARGET_TEST are variables set in the specific test instance (see vulkan_hpp__setup_ctest)
-	add_executable( ${TARGET_NAME} "${TARGET_TEST}.cpp" )
-	vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
-	if ( VULKAN_HPP_BUILD_CXX_MODULE )
-		if( TARGET_VIDEO )
-			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::VideoHppModule )
+# set up single test project (called within tests/<test_name>/CMakeLists.txt)
+function( vulkan_hpp__setup_test_project )
+	if( VULKAN_HPP_TESTS_BUILD_CTEST )
+		# TARGET_NAME and TARGET_TEST are variables set in the specific test instance (see vulkan_hpp__setup_test)
+		add_executable( ${TARGET_NAME} "${TARGET_TEST}.cpp" )
+		vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
+		if ( VULKAN_HPP_BUILD_CXX_MODULE )
+			if( TARGET_VIDEO )
+				target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::VideoHppModule )
+			else()
+				target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::HppModule )
+			endif()
+			target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_USE_CXX_MODULE )
+			set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
 		else()
-			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::HppModule )
+			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::Hpp )
 		endif()
-		target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_USE_CXX_MODULE )
-		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
 	else()
-		target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::Hpp )
+		# set( options CXX_MODULE )
+		# set( multiValueArgs LIBRARIES COMPILE_DEFINITIONS )
+		# cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+
+		if( NOT TARGET_NAME )
+			message( FATAL_ERROR "NAME must be defined for vulkan_hpp__setup_test" )
+		endif()
+
+		set( CPP_FILE ${TARGET_NAME}.cpp )
+		if ( TARGET_CXX_MODULE )
+			set( TARGET_NAME ${TARGET_NAME}_module )
+		endif()
+
+		vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
+		add_executable( ${TARGET_NAME} ${CPP_FILE} )
+
+		# use a variant for the module version
+		if( TARGET_CXX_MODULE )
+			set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
+
+			# set up new vulkan module when custom compile definitions are needed
+			list( LENGTH TARGET_COMPILE_DEFINITIONS COMPILE_DEFINITIONS_LENGTH )
+			if ( COMPILE_DEFINITIONS_LENGTH GREATER 0 )
+				vulkan_hpp__setup_vulkan_module( NAME ${TARGET_NAME}_VulkanHppModule
+					FILE_SET_NAME vulkan_module_file
+					FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm" )
+				target_compile_definitions( ${TARGET_NAME}_VulkanHppModule PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
+				set_target_properties( ${TARGET_NAME}_VulkanHppModule PROPERTIES CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
+				target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_NAME}_VulkanHppModule )
+			else()
+				target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::HppModule )
+			endif()
+			# set macro to hint usage of the vulkan module, it is up to the test source file to respect this
+			target_compile_definitions( ${TARGET_NAME} PUBLIC VULKAN_HPP_USE_CXX_MODULE )
+		else()
+			target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
+			target_compile_definitions( ${TARGET_NAME} PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
+		endif()
+
+		vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
+		vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
+
+		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
+		target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_LIBRARIES} )
 	endif()
 endfunction()
 

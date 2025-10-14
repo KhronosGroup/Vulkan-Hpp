@@ -17,4 +17,4 @@ project( VulkanHppTest LANGUAGES CXX )
 
 set(VULKAN_HPP_DISPATCH_LOADER_DYNAMIC OFF)
 include( ${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt )
-vulkan_hpp__setup_ctest_project()
+vulkan_hpp__setup_test_project()

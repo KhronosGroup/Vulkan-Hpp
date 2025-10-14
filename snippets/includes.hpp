@@ -28,6 +28,9 @@
 #  include <cassert>
 #  include <cstring>
 #  include <cstdlib>
+#  if !defined( VULKAN_HPP_STD_MODULE )
+#    define VULKAN_HPP_STD_MODULE std.compat
+#  endif
 import VULKAN_HPP_STD_MODULE;
 #endif
 #include <vulkan/${vulkan_h}>

@@ -87,10 +87,6 @@
 #  define VULKAN_HPP_SUPPORT_SPAN
 #endif
 
-#if !defined( VULKAN_HPP_STD_MODULE ) && defined( __cpp_modules ) && defined( __cpp_lib_modules )
-#  define VULKAN_HPP_STD_MODULE std.compat
-#endif
-
 #ifndef VK_USE_64_BIT_PTR_DEFINES
 #  if defined( __LP64__ ) || defined( _WIN64 ) || ( defined( __x86_64__ ) && !defined( __ILP32__ ) ) || defined( _M_X64 ) || defined( __ia64 ) || \
     defined( _M_IA64 ) || defined( __aarch64__ ) || defined( __powerpc64__ ) || ( defined( __riscv ) && __riscv_xlen == 64 )

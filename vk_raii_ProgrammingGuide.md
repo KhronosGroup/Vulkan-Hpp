@@ -63,7 +63,7 @@ That is, calling a device-related function is identical for both cases:
     // call waitIdle from a vk::raii::Device
     device.waitIdle();
 
-vk::raii goes one step further. In the vk namespace, most of the functions are members of `vk::Device`. In the vk::raii namespace functions strongly related to a non-dispatchable handle are members of the corresponding vi::raii object. For example, to bind memory to a buffer, in vk namespace you write
+vk::raii goes one step further. In the vk namespace, most of the functions are members of `vk::Device`. In the vk::raii namespace functions strongly related to a non-dispatchable handle are members of the corresponding vk::raii object. For example, to bind memory to a buffer, in vk namespace you write
 
     // bind vk::DeviceMemory memory to a vk::Buffer buffer, given vk::DeviceSize memoryOffset
     device.bindBufferMemory( buffer, memory, memoryOffset );

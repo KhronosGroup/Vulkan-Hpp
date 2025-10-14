@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         clang_version: [19, 20]
-    
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -43,7 +43,7 @@ jobs:
 
     - name: Install glm, glfw and glslang
       run: |
-        cd glm 
+        cd glm
         cmake -B build -G Ninja                                   \
           -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
           -D CMAKE_CXX_STANDARD=11                                \
@@ -77,7 +77,7 @@ jobs:
         cmake --build build --parallel
         sudo cmake --install build
         cd ..
-        
+
     - name: Generate headers
       run: |
         cmake -B build -G Ninja                                     \
@@ -85,7 +85,6 @@ jobs:
           -D VULKAN_HPP_RUN_GENERATOR=OFF                           \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF                           \
           -D VULKAN_HPP_TESTS_BUILD=OFF                             \
-          -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF                    \
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                  \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON              \
           -D VULKAN_HPP_PRECOMPILE=OFF                              \
@@ -99,7 +98,6 @@ jobs:
           -D VULKAN_HPP_RUN_GENERATOR=ON                            \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF                           \
           -D VULKAN_HPP_TESTS_BUILD=OFF                             \
-          -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF                    \
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                  \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON              \
           -D VULKAN_HPP_PRECOMPILE=OFF                              \
@@ -121,13 +119,12 @@ jobs:
             echo "================================================================================="
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
             echo "================================================================================="
-            
+
             cmake -B build -G Ninja --fresh                           \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF                       \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                         \
               -D VULKAN_HPP_SAMPLES_BUILD=ON                          \
               -D VULKAN_HPP_TESTS_BUILD=ON                            \
-              -D VULKAN_HPP_ENABLE_CPP20_MODULES=$CXX_MODULES         \
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON            \
               -D VULKAN_HPP_PRECOMPILE=OFF                            \

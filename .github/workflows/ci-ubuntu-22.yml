@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         compiler: [clang++-13, clang++-14, clang++-15, g++-10, g++-11]
-    
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -32,7 +32,7 @@ jobs:
 
     - name: Install glm, glfw and glslang
       run: |
-        cd glm 
+        cd glm
         cmake -B build -G Ninja                      \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
           -D CMAKE_CXX_STANDARD=11                   \
@@ -74,7 +74,6 @@ jobs:
           -D VULKAN_HPP_RUN_GENERATOR=OFF              \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
           -D VULKAN_HPP_TESTS_BUILD=OFF                \
-          -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF       \
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
@@ -88,7 +87,6 @@ jobs:
           -D VULKAN_HPP_RUN_GENERATOR=ON               \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
           -D VULKAN_HPP_TESTS_BUILD=OFF                \
-          -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF       \
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
@@ -96,7 +94,7 @@ jobs:
           -D CMAKE_CXX_STANDARD=20                     \
           -D CMAKE_BUILD_TYPE=Release
         cmake --build build --parallel --clean-first
-    
+
     - name: Build samples and tests
       run: |
         for CXX_STANDARD in 11 14 17 20 23; do
@@ -116,7 +114,6 @@ jobs:
               -D VULKAN_HPP_RUN_GENERATOR=OFF              \
               -D VULKAN_HPP_SAMPLES_BUILD=ON               \
               -D VULKAN_HPP_TESTS_BUILD=ON                 \
-              -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF       \
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
               -D VULKAN_HPP_PRECOMPILE=OFF                 \

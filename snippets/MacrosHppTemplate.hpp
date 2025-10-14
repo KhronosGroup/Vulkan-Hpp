@@ -82,7 +82,7 @@ ${licenseHeader}
 #  define VULKAN_HPP_SUPPORT_SPAN
 #endif
 
-#if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_STD_MODULE ) && defined( VULKAN_HPP_ENABLE_STD_MODULE )
+#if !defined( VULKAN_HPP_STD_MODULE ) && defined( __cpp_modules ) && defined( __cpp_lib_modules )
 #  define VULKAN_HPP_STD_MODULE std.compat
 #endif
 
@@ -298,10 +298,12 @@ namespace VULKAN_HPP_NAMESPACE
 #  define VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT
 #  define VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT
 #  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT
+#  define VULKAN_HPP_DEFAULT_ASSIGNMENT( assignment )
 #else
-#  define VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT         = {}
-#  define VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT = nullptr
-#  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT       = VULKAN_HPP_DEFAULT_DISPATCHER
+#  define VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT                     = {}
+#  define VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT             = nullptr
+#  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT                   = VULKAN_HPP_DEFAULT_DISPATCHER
+#  define VULKAN_HPP_DEFAULT_ASSIGNMENT( assignment )                = assignment
 #endif
 
 #if !defined( VULKAN_HPP_RAII_NAMESPACE )

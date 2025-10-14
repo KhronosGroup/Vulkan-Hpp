@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ${{matrix.os}}
-    
+
     strategy:
       matrix:
         os: [macos-14, macos-15]
@@ -27,10 +27,10 @@ jobs:
       uses: ashutoshvarma/setup-ninja@master
       with:
         version: 1.11.0
-        
+
     - name: Install glm, glfw and glslang
       run: |
-        cd glm 
+        cd glm
         cmake -B build -G Ninja                      \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
           -D CMAKE_CXX_STANDARD=11                   \
@@ -64,7 +64,7 @@ jobs:
         cmake --build build --parallel
         sudo cmake --install build
         cd ..
-        
+
     - name: Generate headers
       run: |
         cmake -B build -G Ninja                        \
@@ -72,7 +72,6 @@ jobs:
           -D VULKAN_HPP_RUN_GENERATOR=OFF              \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
           -D VULKAN_HPP_TESTS_BUILD=OFF                \
-          -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF       \
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
@@ -86,7 +85,6 @@ jobs:
           -D VULKAN_HPP_RUN_GENERATOR=ON               \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
           -D VULKAN_HPP_TESTS_BUILD=OFF                \
-          -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF       \
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
@@ -108,7 +106,6 @@ jobs:
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
               -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
               -D VULKAN_HPP_TESTS_BUILD=ON                    \
-              -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF          \
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
               -D VULKAN_HPP_PRECOMPILE=OFF                    \

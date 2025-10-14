@@ -4,9 +4,11 @@ ${licenseHeader}
 #  define VULKAN_ENUMS_HPP
 
 // include-what-you-use: make sure, vulkan.hpp is used by code-completers
-// IWYU pragma: private; include "vulkan.hpp"
+// IWYU pragma: private, include "vulkan/vulkan.hpp"
 
-#include <type_traits>    // for std::underlying_type
+#if !defined( VULKAN_HPP_CXX_MODULE )
+#  include <type_traits>    // for std::underlying_type
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {

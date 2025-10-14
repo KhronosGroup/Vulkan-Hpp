@@ -9,7 +9,7 @@
 #define VULKAN_FUNCS_HPP
 
 // include-what-you-use: make sure, vulkan.hpp is used by code-completers
-// IWYU pragma: private; include "vulkan.hpp"
+// IWYU pragma: private, include "vulkan/vulkan.hpp"
 
 namespace VULKAN_HPP_NAMESPACE
 {
@@ -9477,8 +9477,15 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t imageIndex;
     Result   result = static_cast<Result>( d.vkAcquireNextImageKHR(
       m_device, static_cast<VkSwapchainKHR>( swapchain ), timeout, static_cast<VkSemaphore>( semaphore ), static_cast<VkFence>( fence ), &imageIndex ) );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    detail::resultCheck( result,
+                         VULKAN_HPP_NAMESPACE_STRING "::Device::acquireNextImageKHR",
+                         { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR, Result::eErrorOutOfDateKHR } );
+#  else
     detail::resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::acquireNextImageKHR", { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
+#  endif
 
     return ResultValue<uint32_t>( result, std::move( imageIndex ) );
   }
@@ -9503,7 +9510,12 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
 
     Result result = static_cast<Result>( d.vkQueuePresentKHR( m_queue, reinterpret_cast<const VkPresentInfoKHR *>( &presentInfo ) ) );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Queue::presentKHR", { Result::eSuccess, Result::eSuboptimalKHR, Result::eErrorOutOfDateKHR } );
+#  else
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Queue::presentKHR", { Result::eSuccess, Result::eSuboptimalKHR } );
+#  endif
 
     return static_cast<Result>( result );
   }
@@ -9682,8 +9694,15 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t imageIndex;
     Result   result =
       static_cast<Result>( d.vkAcquireNextImage2KHR( m_device, reinterpret_cast<const VkAcquireNextImageInfoKHR *>( &acquireInfo ), &imageIndex ) );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    detail::resultCheck( result,
+                         VULKAN_HPP_NAMESPACE_STRING "::Device::acquireNextImage2KHR",
+                         { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR, Result::eErrorOutOfDateKHR } );
+#  else
     detail::resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::acquireNextImage2KHR", { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
+#  endif
 
     return ResultValue<uint32_t>( result, std::move( imageIndex ) );
   }
@@ -14341,8 +14360,13 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkGetSwapchainCounterEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainCounterEXT.html
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<uint64_t>::type
-                       Device::getSwapchainCounterEXT( SwapchainKHR swapchain, SurfaceCounterFlagBitsEXT counter, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    ResultValue<uint64_t>
+#  else
+    typename ResultValueType<uint64_t>::type
+#  endif
+    Device::getSwapchainCounterEXT( SwapchainKHR swapchain, SurfaceCounterFlagBitsEXT counter, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -14352,9 +14376,18 @@ namespace VULKAN_HPP_NAMESPACE
     uint64_t counterValue;
     Result   result = static_cast<Result>(
       d.vkGetSwapchainCounterEXT( m_device, static_cast<VkSwapchainKHR>( swapchain ), static_cast<VkSurfaceCounterFlagBitsEXT>( counter ), &counterValue ) );
-    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSwapchainCounterEXT" );
 
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSwapchainCounterEXT", { Result::eSuccess, Result::eErrorOutOfDateKHR } );
+#  else
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSwapchainCounterEXT" );
+#  endif
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    return ResultValue<uint64_t>( result, std::move( counterValue ) );
+#  else
     return detail::createResultValueType( result, std::move( counterValue ) );
+#  endif
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -14415,8 +14448,13 @@ namespace VULKAN_HPP_NAMESPACE
   template <typename PastPresentationTimingGOOGLEAllocator,
             typename Dispatch,
             typename std::enable_if<std::is_same<typename PastPresentationTimingGOOGLEAllocator::value_type, PastPresentationTimingGOOGLE>::value, int>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>::type
-                       Device::getPastPresentationTimingGOOGLE( SwapchainKHR swapchain, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    ResultValue<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>
+#  else
+    typename ResultValueType<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>::type
+#  endif
+    Device::getPastPresentationTimingGOOGLE( SwapchainKHR swapchain, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -14439,13 +14477,25 @@ namespace VULKAN_HPP_NAMESPACE
                                                                            reinterpret_cast<VkPastPresentationTimingGOOGLE *>( presentationTimings.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    detail::resultCheck(
+      result, VULKAN_HPP_NAMESPACE_STRING "::Device::getPastPresentationTimingGOOGLE", { Result::eSuccess, Result::eIncomplete, Result::eErrorOutOfDateKHR } );
+#  else
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getPastPresentationTimingGOOGLE" );
+#  endif
+
     VULKAN_HPP_ASSERT( presentationTimingCount <= presentationTimings.size() );
     if ( presentationTimingCount < presentationTimings.size() )
     {
       presentationTimings.resize( presentationTimingCount );
     }
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    return ResultValue<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>( result, std::move( presentationTimings ) );
+#  else
     return detail::createResultValueType( result, std::move( presentationTimings ) );
+#  endif
   }
 
   // wrapper function for command vkGetPastPresentationTimingGOOGLE, see
@@ -14453,8 +14503,13 @@ namespace VULKAN_HPP_NAMESPACE
   template <typename PastPresentationTimingGOOGLEAllocator,
             typename Dispatch,
             typename std::enable_if<std::is_same<typename PastPresentationTimingGOOGLEAllocator::value_type, PastPresentationTimingGOOGLE>::value, int>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>::type
-                       Device::getPastPresentationTimingGOOGLE( SwapchainKHR                            swapchain,
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    ResultValue<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>
+#  else
+    typename ResultValueType<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>::type
+#  endif
+    Device::getPastPresentationTimingGOOGLE( SwapchainKHR                            swapchain,
                                              PastPresentationTimingGOOGLEAllocator & pastPresentationTimingGOOGLEAllocator,
                                              Dispatch const &                        d ) const
   {
@@ -14479,13 +14534,25 @@ namespace VULKAN_HPP_NAMESPACE
                                                                            reinterpret_cast<VkPastPresentationTimingGOOGLE *>( presentationTimings.data() ) ) );
       }
     } while ( result == Result::eIncomplete );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    detail::resultCheck(
+      result, VULKAN_HPP_NAMESPACE_STRING "::Device::getPastPresentationTimingGOOGLE", { Result::eSuccess, Result::eIncomplete, Result::eErrorOutOfDateKHR } );
+#  else
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getPastPresentationTimingGOOGLE" );
+#  endif
+
     VULKAN_HPP_ASSERT( presentationTimingCount <= presentationTimings.size() );
     if ( presentationTimingCount < presentationTimings.size() )
     {
       presentationTimings.resize( presentationTimingCount );
     }
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    return ResultValue<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>( result, std::move( presentationTimings ) );
+#  else
     return detail::createResultValueType( result, std::move( presentationTimings ) );
+#  endif
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -14743,7 +14810,13 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
 
     Result result = static_cast<Result>( d.vkGetSwapchainStatusKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ) ) );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    detail::resultCheck(
+      result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSwapchainStatusKHR", { Result::eSuccess, Result::eSuboptimalKHR, Result::eErrorOutOfDateKHR } );
+#  else
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSwapchainStatusKHR", { Result::eSuccess, Result::eSuboptimalKHR } );
+#  endif
 
     return static_cast<Result>( result );
   }
@@ -20811,7 +20884,14 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
 
     Result result = static_cast<Result>( d.vkWaitForPresentKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), presentId, timeout ) );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    detail::resultCheck( result,
+                         VULKAN_HPP_NAMESPACE_STRING "::Device::waitForPresentKHR",
+                         { Result::eSuccess, Result::eTimeout, Result::eSuboptimalKHR, Result::eErrorOutOfDateKHR } );
+#  else
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::waitForPresentKHR", { Result::eSuccess, Result::eTimeout, Result::eSuboptimalKHR } );
+#  endif
 
     return static_cast<Result>( result );
   }
@@ -27698,7 +27778,14 @@ namespace VULKAN_HPP_NAMESPACE
 
     Result result = static_cast<Result>(
       d.vkWaitForPresent2KHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkPresentWait2InfoKHR *>( &presentWait2Info ) ) );
+
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+    detail::resultCheck( result,
+                         VULKAN_HPP_NAMESPACE_STRING "::Device::waitForPresent2KHR",
+                         { Result::eSuccess, Result::eTimeout, Result::eSuboptimalKHR, Result::eErrorOutOfDateKHR } );
+#  else
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::waitForPresent2KHR", { Result::eSuccess, Result::eTimeout, Result::eSuboptimalKHR } );
+#  endif
 
     return static_cast<Result>( result );
   }
@@ -30357,6 +30444,60 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
 
     d.vkCmdBindTileMemoryQCOM( m_commandBuffer, reinterpret_cast<const VkTileMemoryBindInfoQCOM *>( tileMemoryBindInfo.get() ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  //=== VK_KHR_copy_memory_indirect ===
+
+  // wrapper function for command vkCmdCopyMemoryIndirectKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryIndirectKHR.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::copyMemoryIndirectKHR( const CopyMemoryIndirectInfoKHR * pCopyMemoryIndirectInfo,
+                                                               Dispatch const &                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdCopyMemoryIndirectKHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                  reinterpret_cast<const VkCopyMemoryIndirectInfoKHR *>( pCopyMemoryIndirectInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCmdCopyMemoryIndirectKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryIndirectKHR.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::copyMemoryIndirectKHR( const CopyMemoryIndirectInfoKHR & copyMemoryIndirectInfo,
+                                                               Dispatch const &                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdCopyMemoryIndirectKHR && "Function <vkCmdCopyMemoryIndirectKHR> requires <VK_KHR_copy_memory_indirect>" );
+#  endif
+
+    d.vkCmdCopyMemoryIndirectKHR( m_commandBuffer, reinterpret_cast<const VkCopyMemoryIndirectInfoKHR *>( &copyMemoryIndirectInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  // wrapper function for command vkCmdCopyMemoryToImageIndirectKHR, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryToImageIndirectKHR.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::copyMemoryToImageIndirectKHR( const CopyMemoryToImageIndirectInfoKHR * pCopyMemoryToImageIndirectInfo,
+                                                                      Dispatch const &                         d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdCopyMemoryToImageIndirectKHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                         reinterpret_cast<const VkCopyMemoryToImageIndirectInfoKHR *>( pCopyMemoryToImageIndirectInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCmdCopyMemoryToImageIndirectKHR, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryToImageIndirectKHR.html
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::copyMemoryToImageIndirectKHR( const CopyMemoryToImageIndirectInfoKHR & copyMemoryToImageIndirectInfo,
+                                                                      Dispatch const &                         d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdCopyMemoryToImageIndirectKHR && "Function <vkCmdCopyMemoryToImageIndirectKHR> requires <VK_KHR_copy_memory_indirect>" );
+#  endif
+
+    d.vkCmdCopyMemoryToImageIndirectKHR( m_commandBuffer, reinterpret_cast<const VkCopyMemoryToImageIndirectInfoKHR *>( &copyMemoryToImageIndirectInfo ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

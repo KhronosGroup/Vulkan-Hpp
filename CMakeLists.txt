@@ -24,31 +24,28 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-cmake_minimum_required( VERSION 3.13 )
+cmake_minimum_required( VERSION 3.22 )
+include( CMakeDependentOption )
 project( VulkanHppGenerator LANGUAGES CXX )
-
-if( CMAKE_VERSION VERSION_LESS "3.21" )
-    # https://cmake.org/cmake/help/latest/variable/PROJECT_IS_TOP_LEVEL.html
-    string( COMPARE EQUAL ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR} PROJECT_IS_TOP_LEVEL )
-endif()
 
 if ( NOT DEFINED CMAKE_CXX_STANDARD AND PROJECT_IS_TOP_LEVEL )
 	set( CMAKE_CXX_STANDARD 11 )
 endif()
 
 # all the options for this project
-option( VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sample builds" ON )
+option( VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sample builds" OFF )
 option( VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF )
 option( VULKAN_HPP_GENERATOR_BUILD "Build the HPP generator" ${PROJECT_IS_TOP_LEVEL} )
 option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
 option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
 option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
-option( VULKAN_HPP_ENABLE_CPP20_MODULES "Build Vulkan-Hpp as C++20 module; requires minimum CMake version 3.28" OFF )
-option( VULKAN_HPP_ENABLE_STD_MODULE "Build Vulkan-Hpp with import std; requires minimum CMake version 3.30" OFF )
+cmake_dependent_option( VULKAN_HPP_BUILD_CXX_MODULE "Build and test the C++ named module." ON [[ TARGET __CMAKE::CXX23 ]] OFF)
+
 # options for vulkan hpp compile definitions (see https://github.com/KhronosGroup/Vulkan-Hpp/tree/main?tab=readme-ov-file#configuration-options for details)
 option( VULKAN_HPP_DISABLE_ENHANCED_MODE "Disable all enhanced functionality apart from scoped enums, bitmasks, default initialization and vk::StructureChain" OFF )
 option( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC "Select the dynamic (ON) or static (OFF) dispatch loader (defaults to VK_NO_PROTOTYPES)" ${VK_NO_PROTOTYPES} )
 option( VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC "Change the m_mask access modifier in vk::Flags to public" OFF )
+option( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS "Handles VK_ERROR_OUT_OF_DATE_KHR like a success code" OFF )
 option( VULKAN_HPP_HANDLES_MOVE_EXCHANGE "Enable 'm_handle = exchange( rhs.m_handle, {} )' in move constructors" OFF )
 option( VULKAN_HPP_NO_CONSTRUCTORS "Remove constructors from structs and unions to enable C++20 designated initializers" OFF )
 option( VULKAN_HPP_NO_EXCEPTIONS "Do not throw exceptions when vulkan functions return an error code" OFF )
@@ -184,7 +181,7 @@ if( VULKAN_HPP_RUN_GENERATOR )
 			set( VulkanHeaders_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
 		endif()
 	endif()
-	
+
 	file( TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp )
 	string( REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp} )
 
@@ -223,17 +220,8 @@ function( vulkan_hpp__setup_vulkan_module )
 		add_library(${TARGET_ALIAS_NAME} ALIAS ${TARGET_NAME})
 	endforeach()
 
-	# Clang 16's module support can be broken with extensions enabled
-	if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "16.0" )
-		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_EXTENSIONS OFF )
-	endif()
-
-	if ( VULKAN_HPP_ENABLE_STD_MODULE )
-		target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_23 )
-		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_MODULE_STD ON )
-	else()
-		target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_20 )
-	endif()
+	target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_23 )
+	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_MODULE_STD ON )
 
 	if ( NOT TARGET_FILE_SET )
 		message( FATAL_ERROR "FILE_SET must be defined in vulkan_hpp__setup_module" )
@@ -286,7 +274,7 @@ function( vulkan_hpp__setup_vulkan_targets )
 		if ( Vulkan_FOUND )
 			target_link_libraries( VulkanHpp INTERFACE ${Vulkan_LIBRARIES} )
 		else()
-			message(WARNING "Could not link to vulkan-1 libraries, consider using VULKAN_HPP_DISPATCH_LOADER_DYNAMIC")
+			message(WARNING "Could not link to system Vulkan libraries, consider using VULKAN_HPP_DISPATCH_LOADER_DYNAMIC")
 		endif()
 	endif()
 	if( VULKAN_HPP_USE_REFLECT )
@@ -300,6 +288,9 @@ function( vulkan_hpp__setup_vulkan_targets )
 	endif()
 	if( VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC )
 		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC" )
+	endif()
+	if( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS" )
 	endif()
 	if( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
 		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST" )
@@ -333,21 +324,15 @@ function( vulkan_hpp__setup_vulkan_targets )
 	endif()
 
 	# Build Vulkan-Hpp as a module
-	if( VULKAN_HPP_ENABLE_CPP20_MODULES )
-		if ( VULKAN_HPP_ENABLE_STD_MODULE AND CMAKE_VERSION VERSION_LESS "3.30" )
-			message( FATAL_ERROR "Vulkan-Hpp: C++20 modules with import std require CMake 3.30 or later" )
-		elseif ( CMAKE_VERSION VERSION_LESS "3.28" )
-			message( FATAL_ERROR "Vulkan-Hpp: C++20 modules require CMake 3.28 or later" )
-		endif()
-
+	if( VULKAN_HPP_BUILD_CXX_MODULE )
 		# create targets providing VulkanHpp and VulkanVideoHpp as C++20 modules
 		vulkan_hpp__setup_vulkan_module( NAME VulkanHppModule
 			FILE_SET_NAME vulkan_module_file
-			FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm"
-			ALIAS Vulkan::HppModule ) # TODO: respect VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP
+			FILE_SET vulkan/vulkan.cppm
+			ALIAS Vulkan::HppModule )
 		vulkan_hpp__setup_vulkan_module( NAME VulkanVideoHppModule
 			FILE_SET_NAME vulkan_video_module_file
-			FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan_video.cppm"
+			FILE_SET vulkan/vulkan_video.cppm
 			ALIAS Vulkan::VideoHppModule )
 	endif()
 endfunction()
@@ -535,7 +520,7 @@ function( vulkan_hpp__setup_test )
 		if ( COMPILE_DEFINITIONS_LENGTH GREATER 0 )
 			vulkan_hpp__setup_vulkan_module( NAME ${TARGET_NAME}_VulkanHppModule
 				FILE_SET_NAME vulkan_module_file
-				FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm" ) # TODO: respect VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP
+				FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm" )
 			target_compile_definitions( ${TARGET_NAME}_VulkanHppModule PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
 			set_target_properties( ${TARGET_NAME}_VulkanHppModule PROPERTIES CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
 			target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_NAME}_VulkanHppModule )
@@ -573,7 +558,6 @@ function( vulkan_hpp__setup_ctest )
 		set(TARGET_NAME "STD_${TARGET_NAME}")
 	endif()
 
-	# TODO: forward VULKAN_HPP_NO_STD_MODULE
 	# create isolated test environment
 	add_test(NAME ${TARGET_NAME}
 		COMMAND ${CMAKE_CTEST_COMMAND}
@@ -591,12 +575,12 @@ function( vulkan_hpp__setup_ctest )
 				-D VULKAN_HPP_SAMPLES_BUILD=OFF
 				-D VULKAN_HPP_TESTS_BUILD=OFF
 				-D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=${VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP}
-				-D VULKAN_HPP_ENABLE_CPP20_MODULES=${TARGET_CXX_MODULE}
-				-D VULKAN_HPP_ENABLE_STD_MODULE=${TARGET_IMPORT_STD}
+				-D VULKAN_HPP_BUILD_CXX_MODULE=${VULKAN_HPP_BUILD_CXX_MODULE}
 				# forward specific compile definitions
 				-D VULKAN_HPP_DISABLE_ENHANCED_MODE=${VULKAN_HPP_DISABLE_ENHANCED_MODE}
 				-D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=${VULKAN_HPP_DISPATCH_LOADER_DYNAMIC}
 				-D VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC=${VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC}
+				-D VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS=${VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS}
 				-D VULKAN_HPP_HANDLES_MOVE_EXCHANGE=${VULKAN_HPP_HANDLES_MOVE_EXCHANGE}
 				-D VULKAN_HPP_NO_CONSTRUCTORS=${VULKAN_HPP_NO_CONSTRUCTORS}
 				-D VULKAN_HPP_NO_EXCEPTIONS=${VULKAN_HPP_NO_EXCEPTIONS}

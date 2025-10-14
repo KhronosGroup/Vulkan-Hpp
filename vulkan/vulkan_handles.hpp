@@ -9,7 +9,7 @@
 #define VULKAN_HANDLES_HPP
 
 // include-what-you-use: make sure, vulkan.hpp is used by code-completers
-// IWYU pragma: private; include "vulkan.hpp"
+// IWYU pragma: private, include "vulkan/vulkan.hpp"
 
 namespace VULKAN_HPP_NAMESPACE
 {
@@ -1545,6 +1545,12 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_shader_untyped_pointers ===
   struct PhysicalDeviceShaderUntypedPointersFeaturesKHR;
 
+  //=== VK_VALVE_video_encode_rgb_conversion ===
+  struct PhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE;
+  struct VideoEncodeRgbConversionCapabilitiesVALVE;
+  struct VideoEncodeProfileRgbConversionInfoVALVE;
+  struct VideoEncodeSessionRgbConversionCreateInfoVALVE;
+
   //=== VK_EXT_image_view_min_lod ===
   struct PhysicalDeviceImageViewMinLodFeaturesEXT;
   struct ImageViewMinLodCreateInfoEXT;
@@ -1623,10 +1629,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct RenderPassStripeSubmitInfoARM;
 
   //=== VK_NV_copy_memory_indirect ===
-  struct CopyMemoryIndirectCommandNV;
-  struct CopyMemoryToImageIndirectCommandNV;
   struct PhysicalDeviceCopyMemoryIndirectFeaturesNV;
-  struct PhysicalDeviceCopyMemoryIndirectPropertiesNV;
 
   //=== VK_NV_memory_decompression ===
   struct DecompressMemoryRegionNV;
@@ -1992,6 +1995,18 @@ namespace VULKAN_HPP_NAMESPACE
   struct TileMemoryBindInfoQCOM;
   struct TileMemorySizeInfoQCOM;
 
+  //=== VK_KHR_copy_memory_indirect ===
+  struct StridedDeviceAddressRangeKHR;
+  struct CopyMemoryIndirectCommandKHR;
+  using CopyMemoryIndirectCommandNV = CopyMemoryIndirectCommandKHR;
+  struct CopyMemoryIndirectInfoKHR;
+  struct CopyMemoryToImageIndirectCommandKHR;
+  using CopyMemoryToImageIndirectCommandNV = CopyMemoryToImageIndirectCommandKHR;
+  struct CopyMemoryToImageIndirectInfoKHR;
+  struct PhysicalDeviceCopyMemoryIndirectFeaturesKHR;
+  struct PhysicalDeviceCopyMemoryIndirectPropertiesKHR;
+  using PhysicalDeviceCopyMemoryIndirectPropertiesNV = PhysicalDeviceCopyMemoryIndirectPropertiesKHR;
+
   //=== VK_NV_display_stereo ===
   struct DisplaySurfaceStereoCreateInfoNV;
   struct DisplayModeStereoPropertiesNV;
@@ -2113,6 +2128,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceImageAlignmentControlFeaturesMESA;
   struct PhysicalDeviceImageAlignmentControlPropertiesMESA;
   struct ImageAlignmentControlCreateInfoMESA;
+
+  //=== VK_KHR_shader_fma ===
+  struct PhysicalDeviceShaderFmaFeaturesKHR;
 
   //=== VK_EXT_depth_clamp_control ===
   struct PhysicalDeviceDepthClampControlFeaturesEXT;
@@ -7955,6 +7973,32 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void bindTileMemoryQCOM( Optional<const TileMemoryBindInfoQCOM> tileMemoryBindInfo VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                              Dispatch const & d                                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_KHR_copy_memory_indirect ===
+
+    // wrapper function for command vkCmdCopyMemoryIndirectKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryIndirectKHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void copyMemoryIndirectKHR( const CopyMemoryIndirectInfoKHR * pCopyMemoryIndirectInfo,
+                                Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdCopyMemoryIndirectKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryIndirectKHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void copyMemoryIndirectKHR( const CopyMemoryIndirectInfoKHR & copyMemoryIndirectInfo,
+                                Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkCmdCopyMemoryToImageIndirectKHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryToImageIndirectKHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void copyMemoryToImageIndirectKHR( const CopyMemoryToImageIndirectInfoKHR * pCopyMemoryToImageIndirectInfo,
+                                       Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdCopyMemoryToImageIndirectKHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryToImageIndirectKHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void copyMemoryToImageIndirectKHR( const CopyMemoryToImageIndirectInfoKHR & copyMemoryToImageIndirectInfo,
+                                       Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_cluster_acceleration_structure ===
@@ -14045,7 +14089,12 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     // wrapper function for command vkGetSwapchainCounterEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainCounterEXT.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD typename ResultValueType<uint64_t>::type
+    VULKAN_HPP_NODISCARD
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      ResultValue<uint64_t>
+#  else
+      typename ResultValueType<uint64_t>::type
+#  endif
       getSwapchainCounterEXT( SwapchainKHR swapchain, SurfaceCounterFlagBitsEXT counter, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -14079,7 +14128,12 @@ namespace VULKAN_HPP_NAMESPACE
       typename PastPresentationTimingGOOGLEAllocator = std::allocator<PastPresentationTimingGOOGLE>,
       typename Dispatch                              = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
       typename std::enable_if<std::is_same<typename PastPresentationTimingGOOGLEAllocator::value_type, PastPresentationTimingGOOGLE>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>::type
+    VULKAN_HPP_NODISCARD
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      ResultValue<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>
+#  else
+      typename ResultValueType<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>::type
+#  endif
       getPastPresentationTimingGOOGLE( SwapchainKHR swapchain, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetPastPresentationTimingGOOGLE, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPastPresentationTimingGOOGLE.html
@@ -14087,7 +14141,12 @@ namespace VULKAN_HPP_NAMESPACE
       typename PastPresentationTimingGOOGLEAllocator = std::allocator<PastPresentationTimingGOOGLE>,
       typename Dispatch                              = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
       typename std::enable_if<std::is_same<typename PastPresentationTimingGOOGLEAllocator::value_type, PastPresentationTimingGOOGLE>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>::type
+    VULKAN_HPP_NODISCARD
+#  if defined( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
+      ResultValue<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>
+#  else
+      typename ResultValueType<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>::type
+#  endif
       getPastPresentationTimingGOOGLE( SwapchainKHR                            swapchain,
                                        PastPresentationTimingGOOGLEAllocator & pastPresentationTimingGOOGLEAllocator,
                                        Dispatch const & d                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;

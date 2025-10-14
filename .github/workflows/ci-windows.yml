@@ -8,11 +8,11 @@ on:
 jobs:
   build:
     runs-on: ${{matrix.os}}
-    
+
     defaults:
       run:
         shell: bash
-    
+
     strategy:
       matrix:
         os: [windows-2022, windows-2025]
@@ -27,10 +27,10 @@ jobs:
       uses: TheMrMilchmann/setup-msvc-dev@v2
       with:
         arch: ${{matrix.architecture}}
-        
+
     # - name: Install glm, glfw and glslang
     #   run: |
-    #     cd glm 
+    #     cd glm
     #     cmake -B build                               \
     #       -D CMAKE_CXX_STANDARD=11                   \
     #       -D CMAKE_BUILD_TYPE=Release                \
@@ -69,7 +69,6 @@ jobs:
           -D VULKAN_HPP_RUN_GENERATOR=OFF              \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
           -D VULKAN_HPP_TESTS_BUILD=OFF                \
-          -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF       \
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
@@ -82,7 +81,6 @@ jobs:
           -D VULKAN_HPP_RUN_GENERATOR=ON               \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
           -D VULKAN_HPP_TESTS_BUILD=OFF                \
-          -D VULKAN_HPP_ENABLE_CPP20_MODULES=OFF       \
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
@@ -108,7 +106,6 @@ jobs:
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
               -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
               -D VULKAN_HPP_TESTS_BUILD=ON                    \
-              -D VULKAN_HPP_ENABLE_CPP20_MODULES=$CXX_MODULES \
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
               -D VULKAN_HPP_PRECOMPILE=OFF                    \

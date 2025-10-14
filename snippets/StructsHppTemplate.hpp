@@ -4,10 +4,12 @@ ${licenseHeader}
 #  define VULKAN_STRUCTS_HPP
 
 // include-what-you-use: make sure, vulkan.hpp is used by code-completers
-// IWYU pragma: private; include "vulkan.hpp"
+// IWYU pragma: private, include "vulkan/vulkan.hpp"
 
-#include <cstring>  // strcmp
-#include <cstdlib>  // free
+#if !defined( VULKAN_HPP_CXX_MODULE )
+#  include <cstring>  // strcmp
+#  include <cstdlib>  // free
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {

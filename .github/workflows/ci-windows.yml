@@ -102,10 +102,12 @@ jobs:
             echo "================================================================================="
 
             cmake -B build --fresh                            \
+              -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
               -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
               -D VULKAN_HPP_TESTS_BUILD=ON                    \
+              -D VULKAN_HPP_TESTS_CTEST=ON                    \
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
               -D VULKAN_HPP_PRECOMPILE=OFF                    \

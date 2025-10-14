@@ -106,6 +106,7 @@ jobs:
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
               -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
               -D VULKAN_HPP_TESTS_BUILD=ON                    \
+              -D VULKAN_HPP_TESTS_CTEST=ON                    \
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
               -D VULKAN_HPP_PRECOMPILE=OFF                    \

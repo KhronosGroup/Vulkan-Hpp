@@ -14,6 +14,6 @@
 
 # TODO: this test should likely be simplified to remove the additional deps such as glsl (linked via utils)
 vulkan_hpp__setup_test( NAME UniqueHandle LIBRARIES utils COMPILE_DEFINITIONS VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
-if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+if( VULKAN_HPP_BUILD_CXX_MODULE )
     # vulkan_hpp__setup_test( NAME UniqueHandle CXX_MODULE LIBRARIES utils COMPILE_DEFINITIONS VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST ) # TODO
 endif()

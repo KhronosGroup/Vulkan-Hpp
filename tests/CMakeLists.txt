@@ -46,7 +46,7 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 endif()
 vulkan_hpp__setup_ctest( NAME Video )
 
-if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+if( VULKAN_HPP_BUILD_CXX_MODULE )
 	if( NOT ( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "16" ) )
 		vulkan_hpp__setup_ctest( NAME ArrayProxy CXX_MODULE ) # gcc <= 15.x fail to ignore -Winit-list-lifetime
 	endif()

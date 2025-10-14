@@ -20,6 +20,6 @@ vulkan_hpp__setup_ctest_project()
 
 # no native way to set VK_ENABLE_BETA_EXTENSIONS yet
 target_compile_definitions( ${TARGET_NAME} PRIVATE VK_ENABLE_BETA_EXTENSIONS )
-if( VULKAN_HPP_ENABLE_CPP20_MODULES )
+if( VULKAN_HPP_BUILD_CXX_MODULE )
     target_compile_definitions( VulkanHppModule PRIVATE VK_ENABLE_BETA_EXTENSIONS )
 endif()

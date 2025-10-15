@@ -82,6 +82,10 @@ ${licenseHeader}
 #  define VULKAN_HPP_SUPPORT_SPAN
 #endif
 
+#if !defined( VULKAN_HPP_STD_MODULE ) && defined( VULKAN_HPP_CXX_MODULE )
+#  define VULKAN_HPP_STD_MODULE std.compat
+#endif
+
 ${vulkan_64_bit_ptr_defines}
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.

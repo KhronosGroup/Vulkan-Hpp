@@ -114,7 +114,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // some invalid unlink calls
     // clang-format off
-    //sc7.unlink<vk::PhysicalDeviceMaintenance3Properties>();  // voidion fires on trying to unlink some already
+    //sc7.unlink<vk::PhysicalDeviceMaintenance3Properties>();  // assertion fires on trying to unlink some already
     //                                                         // unlinked structure
     //sc7.unlink<vk::PhysicalDeviceProperties2>();
     //sc1.unlink<vk::PhysicalDeviceMaintenance3Properties>();
@@ -128,7 +128,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     // clang-format off
     //sc7.relink<vk::PhysicalDeviceProperties2>();
     //sc1.relink<vk::PhysicalDeviceMaintenance3Properties>();
-    //sc1.relink<vk::PhysicalDeviceIDProperties>();  // voidion fires on trying to relink some structure that hasn't been unlinked
+    //sc1.relink<vk::PhysicalDeviceIDProperties>();  // assertion fires on trying to relink some structure that hasn't been unlinked
     // clang-format on
 
     // simple call, passing structures in

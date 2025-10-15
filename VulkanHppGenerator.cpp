@@ -5325,11 +5325,25 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
     using VULKAN_HPP_NAMESPACE::detail::createResultValueType;
     using VULKAN_HPP_NAMESPACE::detail::resultCheck;
   }
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+  namespace VULKAN_HPP_RAII_NAMESPACE
+  {
+    using VULKAN_HPP_RAII_NAMESPACE::operator==;
+    using VULKAN_HPP_RAII_NAMESPACE::operator!=;
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    using VULKAN_HPP_RAII_NAMESPACE::operator<=>;
+#else
+    using VULKAN_HPP_RAII_NAMESPACE::operator<;
+#endif
+  }
+#endif
 )" };
 
-  // insert the Flags bitwise operators
-  auto const flagsBitWiseOperatorsUsings = std::array{ "operator&", "operator|", "operator^", "operator~" };
-  for ( auto const & operatorName : flagsBitWiseOperatorsUsings )
+  // insert the operators
+  auto const operatorUsings = std::array{ "operator&", "operator|", "operator^", "operator~",
+                                          "operator<", "operator<=", "operator>", "operator>=",
+                                          "operator==", "operator!=" };
+  for ( auto const & operatorName : operatorUsings )
   {
     usings += replaceWithMap( usingTemplate, { { "className", operatorName } } );
   }

@@ -1689,15 +1689,27 @@ void VulkanHppGenerator::filterLenMembers()
   }
 }
 
-std::vector<VulkanHppGenerator::ExtensionData>::const_iterator VulkanHppGenerator::findSupportedExtension( std::string const & name ) const
-{
-  return std::ranges::find_if( m_extensions, [&name]( ExtensionData const & ed ) { return ed.name == name; } );
-}
-
 std::string VulkanHppGenerator::findTag( std::string const & name, std::string const & postfix ) const
 {
   auto tagIt = std::ranges::find_if( m_tags, [&name, &postfix]( std::pair<std::string, TagData> const & t ) { return name.ends_with( t.first + postfix ); } );
   return ( tagIt != m_tags.end() ) ? tagIt->first : "";
+}
+
+void VulkanHppGenerator::forEachRequiredBitmask(
+  std::vector<RequireData> const &                                                                     requireData,
+  std::function<void( NameLine const & bitmask, std::pair<std::string, BitmaskData> const & )> const & bitmaskAction ) const
+{
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & type : require.types )
+    {
+      auto bitmaskIt = m_bitmasks.find( type.name );
+      if ( bitmaskIt != m_bitmasks.end() )
+      {
+        bitmaskAction( type, *bitmaskIt );
+      }
+    }
+  }
 }
 
 void VulkanHppGenerator::forEachRequiredCommand(
@@ -1711,6 +1723,21 @@ void VulkanHppGenerator::forEachRequiredCommand(
       auto commandIt = findByNameOrAlias( m_commands, command.name );
       checkForError( commandIt != m_commands.end(), command.xmlLine, "unknown required command <" + command.name + ">" );
       commandAction( command, *commandIt );
+    }
+  }
+}
+
+void VulkanHppGenerator::forEachRequiredConstant(
+  std::vector<RequireData> const &                                                                      requireData,
+  std::function<void( NameLine const & command, std::pair<std::string, ConstantData> const & )> const & constantAction ) const
+{
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & constant : require.constants )
+    {
+      auto constantIt = m_constants.find( constant.name );
+      checkForError( constantIt != m_constants.end(), constant.xmlLine, "unknown required constant <" + constant.name + ">" );
+      constantAction( constant, *constantIt );
     }
   }
 }
@@ -2141,27 +2168,23 @@ std::string VulkanHppGenerator::generateBitmasksToString( std::vector<RequireDat
                                                           std::string const &              title ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto bitmaskIt = m_bitmasks.find( type.name );
-      if ( ( bitmaskIt != m_bitmasks.end() ) && !listedBitmasks.contains( type.name ) )
-      {
-        listedBitmasks.insert( type.name );
-        str += generateBitmaskToString( bitmaskIt );
-      }
-    }
-  }
+  forEachRequiredBitmask( requireData,
+                          [&listedBitmasks, &str, this]( NameLine const & bitmask, std::pair<std::string, BitmaskData> const & bitmaskData )
+                          {
+                            if ( listedBitmasks.insert( bitmask.name ).second )
+                            {
+                              str += generateBitmaskToString( bitmaskData );
+                            }
+                          } );
   return addTitleAndProtection( title, str );
 }
 
-std::string VulkanHppGenerator::generateBitmaskToString( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const
+std::string VulkanHppGenerator::generateBitmaskToString( std::pair<std::string, BitmaskData> const & bitmaskData ) const
 {
-  auto bitmaskBitsIt = m_enums.find( bitmaskIt->second.require );
+  auto bitmaskBitsIt = m_enums.find( bitmaskData.second.require );
   assert( bitmaskBitsIt != m_enums.end() );
 
-  std::string bitmaskName = stripPrefix( bitmaskIt->first, "Vk" );
+  std::string bitmaskName = stripPrefix( bitmaskData.first, "Vk" );
   std::string enumName    = stripPrefix( bitmaskBitsIt->first, "Vk" );
 
   std::string str;
@@ -4625,24 +4648,21 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     auto const generateConstantsAndProtection =
       [&constexprValueTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedConstants )
     {
-      auto constants = std::string{};
-      for ( auto const & require : requireData )
-      {
-        for ( auto const & constant : require.constants )
+      std::string constants;
+      forEachRequiredConstant(
+        requireData,
+        [&listedConstants, &constants, &constexprValueTemplate, this]( NameLine const & constant, std::pair<std::string, ConstantData> const & constantData )
         {
-          if ( !listedConstants.contains( constant ) )
+          if ( listedConstants.insert( constant.name ).second )
           {
-            auto        constIt = m_constants.find( constant );
-            std::string tag     = findTag( constant );
+            std::string tag = findTag( constant.name );
             constants += replaceWithMap( constexprValueTemplate,
-                                         { { "type", constIt->second.type },
-                                           { "constName", stripPrefix( toCamelCase( stripPostfix( constant, tag ) ), "Vk" ) + tag },
+                                         { { "type", constantData.second.type },
+                                           { "constName", stripPrefix( toCamelCase( stripPostfix( constant.name, tag ) ), "Vk" ) + tag },
                                            { "deprecated", "" },
-                                           { "value", constant } } );
-            listedConstants.insert( constant );
+                                           { "value", constant.name } } );
           }
-        }
-      }
+        } );
       return addTitleAndProtection( title, constants );
     };
 
@@ -4833,20 +4853,9 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
     auto const generateConstantsAndProtection =
       [&]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedConstants )
     {
-      auto constants = std::string{};
+      std::string constants;
       for ( auto const & require : requireData )
       {
-        for ( auto const & constant : require.constants )
-        {
-          if ( !listedConstants.contains( constant ) )
-          {
-            assert( m_constants.find( constant ) != m_constants.end() );
-            std::string tag = findTag( constant );
-            constants += replaceWithMap( constexprUsingTemplate, { { "constName", stripPrefix( toCamelCase( stripPostfix( constant, tag ) ), "Vk" ) + tag } } );
-            listedConstants.insert( constant );
-          }
-        }
-
         for ( auto const & [key, _] : require.enumConstants )
         {
           // keys are the constants themselves. Values are their definitions, and don't need them...
@@ -4856,6 +4865,19 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
           listedConstants.insert( key );
         }
       }
+
+      forEachRequiredConstant(
+        requireData,
+        [&listedConstants, &constants, &constexprUsingTemplate, this]( NameLine const & constant, std::pair<std::string, ConstantData> const & )
+        {
+          if ( listedConstants.insert( constant.name ).second )
+          {
+            assert( m_constants.find( constant.name ) != m_constants.end() );
+            std::string tag = findTag( constant.name );
+            constants +=
+              replaceWithMap( constexprUsingTemplate, { { "constName", stripPrefix( toCamelCase( stripPostfix( constant.name, tag ) ), "Vk" ) + tag } } );
+          }
+        } );
       return addTitleAndProtection( title, constants );
     };
 
@@ -13226,7 +13248,7 @@ std::string VulkanHppGenerator::getPlatform( std::string const & title ) const
 {
   if ( !isSupportedFeature( title ) )
   {
-    auto extensionIt = findSupportedExtension( title );
+    auto extensionIt = findByName( m_extensions, title );
     assert( extensionIt != m_extensions.end() );
     return extensionIt->platform;
   }
@@ -13254,7 +13276,7 @@ std::string VulkanHppGenerator::getProtectFromTitle( std::string const & title )
 {
   if ( !isSupportedFeature( title ) )
   {
-    auto extensionIt = findSupportedExtension( title );
+    auto extensionIt = findByName( m_extensions, title );
     return ( extensionIt != m_extensions.end() ) ? getProtectFromPlatform( extensionIt->platform ) : "";
   }
   return "";
@@ -13709,7 +13731,7 @@ bool VulkanHppGenerator::isTypeUsed( std::string const & type ) const
     }
     else
     {
-      auto extensionIt = findSupportedExtension( require );
+      auto extensionIt = findByName( m_extensions, require );
       if ( extensionIt != m_extensions.end() )
       {
         for ( auto const & r : extensionIt->requireData )
@@ -15419,7 +15441,7 @@ void VulkanHppGenerator::readRequireEnum(
         typeIt = m_types.find( name );
         typeIt->second.requiredBy.insert( requiredBy );
         m_constants[name] = { constIt->second.type, constIt->second.value, line };
-        requireData.constants.push_back( name );
+        requireData.constants.push_back( { name, line } );
       }
     }
     else
@@ -15512,7 +15534,7 @@ void VulkanHppGenerator::readRequireEnum(
         auto typeIt = m_types.find( name );
         checkForError( typeIt != m_types.end(), line, "unknown required enum <" + name + ">" );
         typeIt->second.requiredBy.insert( requiredBy );
-        requireData.constants.push_back( name );
+        requireData.constants.push_back( { name, line } );
       }
       else
       {

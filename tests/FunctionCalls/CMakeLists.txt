@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME FunctionCalls )
-if( VULKAN_HPP_ENABLE_CPP20_MODULES )
-  vulkan_hpp__setup_test( NAME FunctionCalls CXX_MODULE )
-endif()
+cmake_minimum_required( VERSION 3.12 )
+project( VulkanHppTest LANGUAGES CXX )
+
+set(VULKAN_HPP_DISPATCH_LOADER_DYNAMIC ON)
+include( ${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt )
+vulkan_hpp__setup_test_project()

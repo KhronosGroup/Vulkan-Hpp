@@ -15,10 +15,6 @@
 // VulkanHpp Test : Cpp20Module
 //                  Compile test on using c++20 modules
 
-#include <memory>   // std::unique_ptr (seems to be needed on Windows)
-#include <string>   // std::string
-#include <iostream> // std::cout
-
 import vulkan_hpp;
 
 static std::string AppName    = "Cpp20Modules";

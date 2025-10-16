@@ -26,7 +26,7 @@
 #endif
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan_hpp;
+import vulkan_hpp;
 #else
 # include <vulkan/vulkan.hpp>
 #endif

@@ -59,11 +59,28 @@ export namespace VULKAN_HPP_NAMESPACE
     using VULKAN_HPP_NAMESPACE::detail::createResultValueType;
     using VULKAN_HPP_NAMESPACE::detail::resultCheck;
   }  // namespace detail
-
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+  namespace VULKAN_HPP_RAII_NAMESPACE
+  {
+    using VULKAN_HPP_RAII_NAMESPACE::operator==;
+    using VULKAN_HPP_RAII_NAMESPACE::operator!=;
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    using VULKAN_HPP_RAII_NAMESPACE::operator<=>;
+#  else
+    using VULKAN_HPP_RAII_NAMESPACE::operator<;
+#  endif
+  }  // namespace VULKAN_HPP_RAII_NAMESPACE
+#endif
   using VULKAN_HPP_NAMESPACE::operator&;
   using VULKAN_HPP_NAMESPACE::operator|;
   using VULKAN_HPP_NAMESPACE::operator^;
   using VULKAN_HPP_NAMESPACE::operator~;
+  using VULKAN_HPP_NAMESPACE::operator<;
+  using VULKAN_HPP_NAMESPACE::operator<=;
+  using VULKAN_HPP_NAMESPACE::operator>;
+  using VULKAN_HPP_NAMESPACE::operator>=;
+  using VULKAN_HPP_NAMESPACE::operator==;
+  using VULKAN_HPP_NAMESPACE::operator!=;
   using VULKAN_HPP_DEFAULT_DISPATCHER_TYPE;
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )

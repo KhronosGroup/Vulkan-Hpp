@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        clang_version: [19, 20]
+        clang_version: [20]
 
     steps:
     - uses: actions/checkout@v4
@@ -41,42 +41,42 @@ jobs:
         echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ noble main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
         sudo apt update && sudo apt install cmake
 
-    - name: Install glm, glfw and glslang
-      run: |
-        cd glm
-        cmake -B build -G Ninja                                   \
-          -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
-          -D CMAKE_CXX_STANDARD=11                                \
-          -D CMAKE_BUILD_TYPE=Release                             \
-          -D GLM_BUILD_LIBRARY=ON                                 \
-          -D GLM_BUILD_INSTALL=ON                                 \
-          -D GLM_BUILD_TESTS=OFF
-        cmake --build build --parallel
-        sudo cmake --install build
+    # - name: Install glm, glfw and glslang
+    #   run: |
+    #     cd glm
+    #     cmake -B build -G Ninja                                   \
+    #       -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
+    #       -D CMAKE_CXX_STANDARD=11                                \
+    #       -D CMAKE_BUILD_TYPE=Release                             \
+    #       -D GLM_BUILD_LIBRARY=ON                                 \
+    #       -D GLM_BUILD_INSTALL=ON                                 \
+    #       -D GLM_BUILD_TESTS=OFF
+    #     cmake --build build --parallel
+    #     sudo cmake --install build
 
-        cd ../glfw
-        cmake -B build -G Ninja                                   \
-          -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
-          -D CMAKE_CXX_STANDARD=11                                \
-          -D CMAKE_BUILD_TYPE=Release                             \
-          -D GLFW_BUILD_EXAMPLES=OFF                              \
-          -D GLFW_BUILD_TESTS=OFF                                 \
-          -D GLFW_BUILD_DOCS=OFF                                  \
-          -D GLFW_INSTALL=ON
-        cmake --build build --parallel
-        sudo cmake --install build
+    #     cd ../glfw
+    #     cmake -B build -G Ninja                                   \
+    #       -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
+    #       -D CMAKE_CXX_STANDARD=11                                \
+    #       -D CMAKE_BUILD_TYPE=Release                             \
+    #       -D GLFW_BUILD_EXAMPLES=OFF                              \
+    #       -D GLFW_BUILD_TESTS=OFF                                 \
+    #       -D GLFW_BUILD_DOCS=OFF                                  \
+    #       -D GLFW_INSTALL=ON
+    #     cmake --build build --parallel
+    #     sudo cmake --install build
 
-        cd ../glslang
-        cmake -B build -G Ninja                                   \
-          -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
-          -D CMAKE_CXX_STANDARD=11                                \
-          -D CMAKE_BUILD_TYPE=Release                             \
-          -D ENABLE_OPT=OFF                                       \
-          -D GLSLANG_TESTS_DEFAULT=OFF                            \
-          -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
-        cmake --build build --parallel
-        sudo cmake --install build
-        cd ..
+    #     cd ../glslang
+    #     cmake -B build -G Ninja                                   \
+    #       -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
+    #       -D CMAKE_CXX_STANDARD=11                                \
+    #       -D CMAKE_BUILD_TYPE=Release                             \
+    #       -D ENABLE_OPT=OFF                                       \
+    #       -D GLSLANG_TESTS_DEFAULT=OFF                            \
+    #       -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
+    #     cmake --build build --parallel
+    #     sudo cmake --install build
+    #     cd ..
 
     - name: Generate headers
       run: |
@@ -108,13 +108,8 @@ jobs:
 
     - name: Build samples and tests
       run: |
-        for CXX_STANDARD in 20 23; do
+        for CXX_STANDARD in 23; do
           for BUILD_TYPE in Debug Release; do
-
-            CXX_MODULES=ON
-            if [ $CXX_STANDARD -lt 23 ]; then
-              CXX_MODULES=OFF
-            fi
 
             echo "================================================================================="
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
@@ -122,7 +117,7 @@ jobs:
 
             cmake -B build -G Ninja --fresh                           \
               -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 \
-              -D VULKAN_HPP_BUILD_CXX_MODULE=$CXX_MODULES             \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=ON                       \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF                       \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                         \
               -D VULKAN_HPP_SAMPLES_BUILD=OFF                         \

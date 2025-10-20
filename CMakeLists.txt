@@ -510,9 +510,6 @@ function( vulkan_hpp__setup_test )
 		if ( TARGET_CXX_MODULE )
 			set( TARGET_NAME "MODULE_${TARGET_NAME}" )
 		endif()
-		if ( TARGET_IMPORT_STD )
-			set( TARGET_NAME "STD_${TARGET_NAME}" )
-		endif()
 
 		# create isolated test environment
 		add_test(NAME ${TARGET_NAME}
@@ -531,6 +528,7 @@ function( vulkan_hpp__setup_test )
 					-D VULKAN_HPP_GENERATOR_BUILD=OFF
 					-D VULKAN_HPP_SAMPLES_BUILD=OFF
 					-D VULKAN_HPP_TESTS_BUILD=OFF
+					-D VULKAN_HPP_TESTS_CTEST=ON
 					-D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=${VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP}
 					-D VULKAN_HPP_BUILD_CXX_MODULE=${TARGET_CXX_MODULE}
 					# forward specific compile definitions
@@ -554,7 +552,8 @@ function( vulkan_hpp__setup_test )
 					# forward compiler setup
 					-D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 					-D CMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
-					-D CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER})
+					-D CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+					-D CMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS})
 	else()
 		add_subdirectory( ${TARGET_NAME} )
 	endif()

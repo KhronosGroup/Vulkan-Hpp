@@ -31,12 +31,13 @@ jobs:
         version: 1.11.0
     - name: Install Clang and CMake
       run: |
+        sudo apt purge -y --auto-remove clang
         sudo apt-get update && sudo apt-get install lsb-release gpg software-properties-common wget
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
         sudo ./llvm.sh ${{matrix.clang_version}} all
 
-        sudo apt purge --auto-remove cmake
+        sudo apt purge -y --auto-remove cmake
         wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
         echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ noble main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
         sudo apt update && sudo apt install cmake

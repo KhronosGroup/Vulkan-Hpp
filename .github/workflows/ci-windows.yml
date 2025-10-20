@@ -92,8 +92,9 @@ jobs:
       run: |
         for CXX_STANDARD in 11 14 17 20 23; do
           for BUILD_TYPE in Debug Release; do
+          
             CXX_MODULES=ON
-            if [ ${{matrix.compiler}} == "windows-2019" ] || [ $CXX_STANDARD -lt 20 ]; then
+            if [ $CXX_STANDARD -lt 23 ]; then
               CXX_MODULES=OFF
             fi
 
@@ -101,8 +102,9 @@ jobs:
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE with architecture ${{matrix.architecture}}"
             echo "================================================================================="
 
-            cmake -B build --fresh                            \
+            cmake -B build -G Ninja --fresh                   \
               -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=$CXX_MODULES     \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
               -D VULKAN_HPP_SAMPLES_BUILD=ON                  \

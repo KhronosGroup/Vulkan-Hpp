@@ -112,7 +112,7 @@ jobs:
           for BUILD_TYPE in Debug Release; do
 
             CXX_MODULES=ON
-            if [ $CXX_STANDARD -lt 20 ]; then
+            if [ $CXX_STANDARD -lt 23 ]; then
               CXX_MODULES=OFF
             fi
 
@@ -122,6 +122,7 @@ jobs:
 
             cmake -B build -G Ninja --fresh                           \
               -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=$CXX_MODULES             \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF                       \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                         \
               -D VULKAN_HPP_SAMPLES_BUILD=ON                          \
@@ -130,6 +131,7 @@ jobs:
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON            \
               -D VULKAN_HPP_PRECOMPILE=OFF                            \
+              -D CMAKE_CXX_FLAGS=-stdlib=libc++                       \
               -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD                     \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE

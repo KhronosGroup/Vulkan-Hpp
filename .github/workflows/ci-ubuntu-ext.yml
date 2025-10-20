@@ -108,7 +108,7 @@ jobs:
 
     - name: Build samples and tests
       run: |
-        for CXX_STANDARD in 11 14 17 20 23; do
+        for CXX_STANDARD in 20 23; do
           for BUILD_TYPE in Debug Release; do
 
             CXX_MODULES=ON

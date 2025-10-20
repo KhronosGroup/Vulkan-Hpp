@@ -62,10 +62,10 @@ if( VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_BUILD_CXX_MODULE )
 	# CI cannot run these tests, as it does not have access to the Vulkan package
 	if( NOT VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
 		vulkan_hpp__setup_test( NAME DeviceFunctions CXX_MODULE )
-		vulkan_hpp__setup_test( NAME DispatchLoaderDynamic CXX_MODULE )
+		vulkan_hpp__setup_test( NAME DispatchLoaderStatic CXX_MODULE )
 	endif()
 	# vulkan_hpp__setup_test( NAME DispatchLoaderDynamicSharedLibrary CXX_MODULE ) # no CXX_MODULE test version yet
-	vulkan_hpp__setup_test( NAME DispatchLoaderStatic CXX_MODULE )
+	vulkan_hpp__setup_test( NAME DispatchLoaderDynamic CXX_MODULE )
 	vulkan_hpp__setup_test( NAME EnableBetaExtensions CXX_MODULE )
 	# vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE )
 	vulkan_hpp__setup_test( NAME Flags CXX_MODULE )

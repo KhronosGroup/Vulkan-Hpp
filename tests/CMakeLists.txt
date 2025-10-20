@@ -21,7 +21,8 @@ if( CMAKE_CXX_STANDARD GREATER_EQUAL 20 )
 	vulkan_hpp__setup_test( NAME ExtensionInspection )
 endif()
 # without ctest, can only run these tests with VULKAN_HPP_DISPATCH_LOADER_DYNAMIC disabled
-if( NOT( NOT VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_DISPATCH_LOADER_DYNAMIC ))
+# CI cannot run these tests either way, as it does not have access to the Vulkan package
+if( NOT VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
 	vulkan_hpp__setup_test( NAME DeviceFunctions )
 	vulkan_hpp__setup_test( NAME DispatchLoaderStatic )
 endif()

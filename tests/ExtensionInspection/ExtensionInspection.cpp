@@ -49,7 +49,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   static_assert( vk::isPromotedExtension( vk::KHRSamplerMirrorClampToEdgeExtensionName ), "static assert test failed" );
   static_assert( vk::getExtensionPromotedTo( vk::KHRSamplerMirrorClampToEdgeExtensionName ) == "VK_VERSION_1_2", "static assert test failed" );
   static_assert( vk::isObsoletedExtension( vk::AMDNegativeViewportHeightExtensionName ), "static assert test failed" );
-  static_assert( vk::getExtensionObsoletedBy( vk:AMDNegativeViewportHeightExtensionName ) == vk::KHRMaintenance1ExtensionName,
+  static_assert( vk::getExtensionObsoletedBy( vk::AMDNegativeViewportHeightExtensionName ) == vk::KHRMaintenance1ExtensionName,
                  "static assert test failed" );
 #endif
 

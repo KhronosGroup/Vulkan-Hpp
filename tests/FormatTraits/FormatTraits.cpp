@@ -27,10 +27,10 @@ import vulkan_hpp;
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
-#if VULKAN_HPP_CPP_VERSION < 14
+#if VULKAN_HPP_CPP_VERSION < 14 || defined( VULKAN_HPP_USE_CXX_MODULE )
   void( vk::blockSize( vk::Format::eR4G4UnormPack8 ) == 1 );
 #else
-  static_void( vk::blockSize( vk::Format::eR4G4UnormPack8 ) == 1, "Wrong blocksize !" );
+  static_assert( vk::blockSize( vk::Format::eR4G4UnormPack8 ) == 1, "Wrong blocksize !" );
 #endif
 
   vk::Format format = vk::Format::eR4G4UnormPack8;
@@ -47,10 +47,10 @@ int main( int /*argc*/, char ** /*argv*/ )
     format = vk::Format::eR4G4UnormPack8;
   }
 
-#if VULKAN_HPP_CPP_VERSION < 14
+#if VULKAN_HPP_CPP_VERSION < 14 || defined( VULKAN_HPP_USE_CXX_MODULE )
   void( vk::isCompressed( vk::Format::eBc1RgbSrgbBlock ) );
 #else
-  static_void( vk::isCompressed( vk::Format::eBc1RgbSrgbBlock ), "IsCompressed ?" );
+  static_assert( vk::isCompressed( vk::Format::eBc1RgbSrgbBlock ), "IsCompressed ?" );
 #endif
 
   void( vk::packed( format ) == 8 );
@@ -61,10 +61,10 @@ int main( int /*argc*/, char ** /*argv*/ )
   }
 
   constexpr vk::Format constFormat = vk::Format::eR4G4UnormPack8;
-#if VULKAN_HPP_CPP_VERSION < 14
+#if VULKAN_HPP_CPP_VERSION < 14 || defined( VULKAN_HPP_USE_CXX_MODULE )
   void( vk::componentBits( constFormat, 1 ) == 4 );
 #else
-  static_void( vk::componentBits( constFormat, 1 ) == 4, "Wrong component bits !" );
+  static_assert( vk::componentBits( constFormat, 1 ) == 4, "Wrong component bits !" );
 #endif
   void( vk::componentCount( constFormat ) == 2 );
 
@@ -75,10 +75,10 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   void( std::string( vk::componentNumericFormat( constFormat, 1 ) ) == "UNORM" );
 
-#if VULKAN_HPP_CPP_VERSION < 14
+#if VULKAN_HPP_CPP_VERSION < 14 || defined( VULKAN_HPP_USE_CXX_MODULE )
   void( vk::componentPlaneIndex( constFormat, 8 ) == 0 );
 #else
-  static_void( vk::componentPlaneIndex( constFormat, 8 ) == 0, "Hoo" );
+  static_assert( vk::componentPlaneIndex( constFormat, 8 ) == 0, "Hoo" );
 #endif
 
   if ( vk::planeCount( format ) != 1 )
@@ -118,18 +118,18 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << std::endl;
   }
 
-#if VULKAN_HPP_CPP_VERSION < 14
+#if VULKAN_HPP_CPP_VERSION < 14 || defined( VULKAN_HPP_USE_CXX_MODULE )
   void( vk::hasRedComponent( vk::Format::eR4G4B4A4UnormPack16 ) );
   void( vk::hasGreenComponent( vk::Format::eR4G4B4A4UnormPack16 ) );
   void( vk::hasBlueComponent( vk::Format::eR4G4B4A4UnormPack16 ) );
   void( vk::hasAlphaComponent( vk::Format::eR4G4B4A4UnormPack16 ) );
   void( vk::isColor( vk::Format::eR4G4B4A4UnormPack16 ) );
 #else
-  static_void( vk::hasRedComponent( vk::Format::eR4G4B4A4UnormPack16 ), "Hoo" );
-  static_void( vk::hasGreenComponent( vk::Format::eR4G4B4A4UnormPack16 ), "Hoo" );
-  static_void( vk::hasBlueComponent( vk::Format::eR4G4B4A4UnormPack16 ), "Hoo" );
-  static_void( vk::hasAlphaComponent( vk::Format::eR4G4B4A4UnormPack16 ), "Hoo" );
-  static_void( vk::isColor( vk::Format::eR4G4B4A4UnormPack16 ), "Hoo" );
+  static_assert( vk::hasRedComponent( vk::Format::eR4G4B4A4UnormPack16 ), "Hoo" );
+  static_assert( vk::hasGreenComponent( vk::Format::eR4G4B4A4UnormPack16 ), "Hoo" );
+  static_assert( vk::hasBlueComponent( vk::Format::eR4G4B4A4UnormPack16 ), "Hoo" );
+  static_assert( vk::hasAlphaComponent( vk::Format::eR4G4B4A4UnormPack16 ), "Hoo" );
+  static_assert( vk::isColor( vk::Format::eR4G4B4A4UnormPack16 ), "Hoo" );
 #endif
 
   return 0;

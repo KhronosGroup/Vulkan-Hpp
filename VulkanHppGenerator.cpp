@@ -1160,7 +1160,7 @@ bool VulkanHppGenerator::containsUnion( std::string const & type ) const
                                 [this]( auto const & member ) { return member.type.isValue() && containsUnion( member.type.type ); } ) );
 }
 
-bool VulkanHppGenerator::describesVector( StructureData const & structure, std::string const & type ) const
+bool VulkanHppGenerator::describesVector( StructData const & structure, std::string const & type ) const
 {
   return std::ranges::any_of( structure.members,
                               [&structure, &type]( auto const & member )
@@ -1466,12 +1466,12 @@ std::set<size_t> VulkanHppGenerator::determineSkippedParams( std::vector<ParamDa
   return skippedParams;
 }
 
-std::string VulkanHppGenerator::determineSubStruct( std::pair<std::string, StructureData> const & structure ) const
+std::string VulkanHppGenerator::determineSubStruct( std::pair<std::string, StructData> const & structure ) const
 {
   if ( structure.second.members.front().name != "sType" )
   {
     // check if sd is a substruct of structure
-    auto isSubStruct = [&structure]( std::pair<std::string, StructureData> const & sd ) noexcept
+    auto isSubStruct = [&structure]( std::pair<std::string, StructData> const & sd ) noexcept
     {
       // member-by-member comparison of type and name
       auto memberIt = structure.second.members.begin();
@@ -1695,26 +1695,26 @@ std::string VulkanHppGenerator::findTag( std::string const & name, std::string c
   return ( tagIt != m_tags.end() ) ? tagIt->first : "";
 }
 
-void VulkanHppGenerator::forEachRequiredBitmask(
-  std::vector<RequireData> const &                                                                     requireData,
-  std::function<void( NameLine const & bitmask, std::pair<std::string, BitmaskData> const & )> const & bitmaskAction ) const
+void VulkanHppGenerator::forEachRequiredBitmask( std::vector<RequireData> const &                                           requireData,
+                                                 std::set<std::string> &                                                    encounteredBitmasks,
+                                                 std::function<void( std::pair<std::string, BitmaskData> const & )> const & bitmaskAction ) const
 {
   for ( auto const & require : requireData )
   {
     for ( auto const & type : require.types )
     {
       auto bitmaskIt = m_bitmasks.find( type.name );
-      if ( bitmaskIt != m_bitmasks.end() )
+      if ( ( bitmaskIt != m_bitmasks.end() ) && encounteredBitmasks.insert( bitmaskIt->first ).second )
       {
-        bitmaskAction( type, *bitmaskIt );
+        bitmaskAction( *bitmaskIt );
       }
     }
   }
 }
 
 void VulkanHppGenerator::forEachRequiredCommand(
-  std::vector<RequireData> const &                                                                     requireData,
-  std::function<void( NameLine const & command, std::pair<std::string, CommandData> const & )> const & commandAction ) const
+  std::vector<RequireData> const &                                                             requireData,
+  std::function<void( NameLine const &, std::pair<std::string, CommandData> const & )> const & commandAction ) const
 {
   for ( auto const & require : requireData )
   {
@@ -1727,9 +1727,9 @@ void VulkanHppGenerator::forEachRequiredCommand(
   }
 }
 
-void VulkanHppGenerator::forEachRequiredConstant(
-  std::vector<RequireData> const &                                                                      requireData,
-  std::function<void( NameLine const & command, std::pair<std::string, ConstantData> const & )> const & constantAction ) const
+void VulkanHppGenerator::forEachRequiredConstant( std::vector<RequireData> const &                                            requireData,
+                                                  std::set<std::string> &                                                     encounteredConstants,
+                                                  std::function<void( std::pair<std::string, ConstantData> const & )> const & constantAction ) const
 {
   for ( auto const & require : requireData )
   {
@@ -1737,7 +1737,74 @@ void VulkanHppGenerator::forEachRequiredConstant(
     {
       auto constantIt = m_constants.find( constant.name );
       checkForError( constantIt != m_constants.end(), constant.xmlLine, "unknown required constant <" + constant.name + ">" );
-      constantAction( constant, *constantIt );
+      if ( encounteredConstants.insert( constantIt->first ).second )
+      {
+        constantAction( *constantIt );
+      }
+    }
+  }
+}
+
+void VulkanHppGenerator::forEachRequiredEnumConstant( std::vector<RequireData> const &                        requireData,
+                                                      std::set<std::string> &                                 encounteredEnumConstants,
+                                                      std::function<void( EnumConstantData const & )> const & enumConstantAction ) const
+{
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & enumConstant : require.enumConstants )
+    {
+      if ( encounteredEnumConstants.insert( enumConstant.name ).second )
+      {
+        enumConstantAction( enumConstant );
+      }
+    }
+  }
+}
+
+void VulkanHppGenerator::forEachRequiredFuncPointer( std::vector<RequireData> const &                                               requireData,
+                                                     std::function<void( std::pair<std::string, FuncPointerData> const & )> const & funcPointerAction ) const
+{
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & type : require.types )
+    {
+      auto funcPointerIt = m_funcPointers.find( type.name );
+      if ( funcPointerIt != m_funcPointers.end() )
+      {
+        funcPointerAction( *funcPointerIt );
+      }
+    }
+  }
+}
+
+void VulkanHppGenerator::forEachRequiredHandle( std::vector<RequireData> const &                                          requireData,
+                                                std::function<void( std::pair<std::string, HandleData> const & )> const & handleAction ) const
+{
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & type : require.types )
+    {
+      auto handleIt = m_handles.find( type.name );
+      if ( handleIt != m_handles.end() )
+      {
+        handleAction( *handleIt );
+      }
+    }
+  }
+}
+
+void VulkanHppGenerator::forEachRequiredStruct( std::vector<RequireData> const &                                          requireData,
+                                                std::function<void( std::pair<std::string, StructData> const & )> const & structAction ) const
+{
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & type : require.types )
+    {
+      auto structIt = m_structs.find( type.name );
+      if ( structIt != m_structs.end() )
+      {
+        structAction( *structIt );
+      }
     }
   }
 }
@@ -2168,14 +2235,8 @@ std::string VulkanHppGenerator::generateBitmasksToString( std::vector<RequireDat
                                                           std::string const &              title ) const
 {
   std::string str;
-  forEachRequiredBitmask( requireData,
-                          [&listedBitmasks, &str, this]( NameLine const & bitmask, std::pair<std::string, BitmaskData> const & bitmaskData )
-                          {
-                            if ( listedBitmasks.insert( bitmask.name ).second )
-                            {
-                              str += generateBitmaskToString( bitmaskData );
-                            }
-                          } );
+  forEachRequiredBitmask(
+    requireData, listedBitmasks, [&str, this]( std::pair<std::string, BitmaskData> const & bitmaskData ) { str += generateBitmaskToString( bitmaskData ); } );
   return addTitleAndProtection( title, str );
 }
 
@@ -4609,7 +4670,7 @@ std::string VulkanHppGenerator::generateCommandVoid2Return( std::string const & 
   return "";
 }
 
-std::string VulkanHppGenerator::generateConstexprString( std::pair<std::string, StructureData> const & structData ) const
+std::string VulkanHppGenerator::generateConstexprString( std::pair<std::string, StructData> const & structData ) const
 {
   // structs with a VkBaseInStructure and VkBaseOutStructure can't be a constexpr!
   const bool isConstExpression = ( structData.first != "VkBaseInStructure" ) && ( structData.first != "VkBaseOutStructure" );
@@ -4649,20 +4710,18 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
       [&constexprValueTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedConstants )
     {
       std::string constants;
-      forEachRequiredConstant(
-        requireData,
-        [&listedConstants, &constants, &constexprValueTemplate, this]( NameLine const & constant, std::pair<std::string, ConstantData> const & constantData )
-        {
-          if ( listedConstants.insert( constant.name ).second )
-          {
-            std::string tag = findTag( constant.name );
-            constants += replaceWithMap( constexprValueTemplate,
-                                         { { "type", constantData.second.type },
-                                           { "constName", stripPrefix( toCamelCase( stripPostfix( constant.name, tag ) ), "Vk" ) + tag },
-                                           { "deprecated", "" },
-                                           { "value", constant.name } } );
-          }
-        } );
+      forEachRequiredConstant( requireData,
+                               listedConstants,
+                               [&constants, &constexprValueTemplate, this]( std::pair<std::string, ConstantData> const & constantData )
+                               {
+                                 std::string tag = findTag( constantData.first );
+                                 constants +=
+                                   replaceWithMap( constexprValueTemplate,
+                                                   { { "type", constantData.second.type },
+                                                     { "constName", stripPrefix( toCamelCase( stripPostfix( constantData.first, tag ) ), "Vk" ) + tag },
+                                                     { "deprecated", "" },
+                                                     { "value", constantData.first } } );
+                               } );
       return addTitleAndProtection( title, constants );
     };
 
@@ -4786,16 +4845,13 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     };
 
     // add asserts so we don't get a nullptr exception below
-    auto const & extensionMacroPtr   = std::ranges::find_if( enumConstants, []( auto const & keyval ) { return keyval.first.ends_with( "_EXTENSION_NAME" ); } );
-    auto const & specVersionMacroPtr = std::ranges::find_if( enumConstants, []( auto const & keyval ) { return keyval.first.ends_with( "_SPEC_VERSION" ); } );
-    assert( extensionMacroPtr != enumConstants.end() );
-    assert( specVersionMacroPtr != enumConstants.end() );
+    auto extensionMacroIt   = std::ranges::find_if( enumConstants, []( auto const & keyval ) { return keyval.name.ends_with( "_EXTENSION_NAME" ); } );
+    auto specVersionMacroIt = std::ranges::find_if( enumConstants, []( auto const & keyval ) { return keyval.name.ends_with( "_SPEC_VERSION" ); } );
+    assert( extensionMacroIt != enumConstants.end() );
+    assert( specVersionMacroIt != enumConstants.end() );
 
-    auto const & extensionMacro   = extensionMacroPtr->first;
-    auto const & specVersionMacro = specVersionMacroPtr->first;
-
-    auto const extensionVar   = VENDORPascalCaseStripPrefix( extensionMacro );
-    auto const specVersionVar = VENDORPascalCaseStripPrefix( specVersionMacro );
+    auto const extensionVar   = VENDORPascalCaseStripPrefix( extensionMacroIt->name );
+    auto const specVersionVar = VENDORPascalCaseStripPrefix( specVersionMacroIt->name );
 
     std::string deprecationMessage;
     if ( extension.isDeprecated )
@@ -4817,8 +4873,8 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     auto const deprecatedPrefix = deprecationMessage.empty() ? "" : replaceWithMap( deprecatedPrefixTemplate, { { "message", deprecationMessage } } );
 
     auto const thisExtensionConstexprs =
-      replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", extensionMacro }, { "var", extensionVar } } ) +
-      replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", specVersionMacro }, { "var", specVersionVar } } );
+      replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", extensionMacroIt->name }, { "var", extensionVar } } ) +
+      replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", specVersionMacroIt->name }, { "var", specVersionVar } } );
 
     extensionConstexprs += addTitleAndProtection( extension.name, thisExtensionConstexprs );
   }
@@ -4841,12 +4897,6 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
 
   auto const pascalCasePrefixStrip = []( std::string const & macro ) { return stripPrefix( toCamelCase( macro ), "Vk" ); };
   auto const camelCasePrefixStrip  = []( std::string const & macro ) { return startLowerCase( stripPrefix( toCamelCase( macro ), "Vk" ) ); };
-  auto const VENDORCasePrefixStrip = []( std::string const & macro )
-  {
-    auto       prefixStripped = stripPrefix( macro, "VK_" );
-    auto const vendor         = prefixStripped.substr( 0, prefixStripped.find( '_' ) );
-    return vendor + toCamelCase( stripPrefix( prefixStripped, vendor + "_" ) );
-  };
 
   // constants
   {
@@ -4854,30 +4904,25 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
       [&]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedConstants )
     {
       std::string constants;
-      for ( auto const & require : requireData )
-      {
-        for ( auto const & [key, _] : require.enumConstants )
-        {
-          // keys are the constants themselves. Values are their definitions, and don't need them...
-          // Again, recall these constants are all in the form VK_<vendor>_<name>_EXTENSION_NAME and VK_<vendor>_<name>_SPEC_VERSION
-          // strip the Vk, get the vendor, and PascalCase the rest
-          constants += replaceWithMap( constexprUsingTemplate, { { "constName", VENDORCasePrefixStrip( key ) } } );
-          listedConstants.insert( key );
-        }
-      }
+      forEachRequiredEnumConstant( requireData,
+                                   listedConstants,
+                                   [&constants, &constexprUsingTemplate, this]( EnumConstantData const & enumConstant )
+                                   {
+                                     auto       prefixStripped = stripPrefix( enumConstant.name, "VK_" );
+                                     auto const vendor         = prefixStripped.substr( 0, prefixStripped.find( '_' ) );
+                                     constants += replaceWithMap( constexprUsingTemplate,
+                                                                  { { "constName", vendor + toCamelCase( stripPrefix( prefixStripped, vendor + "_" ) ) } } );
+                                   } );
 
-      forEachRequiredConstant(
-        requireData,
-        [&listedConstants, &constants, &constexprUsingTemplate, this]( NameLine const & constant, std::pair<std::string, ConstantData> const & )
-        {
-          if ( listedConstants.insert( constant.name ).second )
-          {
-            assert( m_constants.find( constant.name ) != m_constants.end() );
-            std::string tag = findTag( constant.name );
-            constants +=
-              replaceWithMap( constexprUsingTemplate, { { "constName", stripPrefix( toCamelCase( stripPostfix( constant.name, tag ) ), "Vk" ) + tag } } );
-          }
-        } );
+      forEachRequiredConstant( requireData,
+                               listedConstants,
+                               [&constants, &constexprUsingTemplate, this]( std::pair<std::string, ConstantData> const & constantData )
+                               {
+                                 std::string tag = findTag( constantData.first );
+                                 constants +=
+                                   replaceWithMap( constexprUsingTemplate,
+                                                   { { "constName", stripPrefix( toCamelCase( stripPostfix( constantData.first, tag ) ), "Vk" ) + tag } } );
+                               } );
       return addTitleAndProtection( title, constants );
     };
 
@@ -4944,17 +4989,10 @@ std::string VulkanHppGenerator::generateCppModuleFuncpointerUsings() const
 
   auto const generateUsingsAndProtection = [this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto usings = std::string{};
-    for ( auto const & require : requireData )
-    {
-      for ( auto const & type : require.types )
-      {
-        if ( auto const & funcpointerIt = m_funcPointers.find( type.name ); funcpointerIt != m_funcPointers.end() )
-        {
-          usings += "  using VULKAN_HPP_NAMESPACE::PFN_" + stripPrefix( funcpointerIt->first, "PFN_vk" ) + ";\n";
-        }
-      }
-    }
+    std::string usings;
+    forEachRequiredFuncPointer( requireData,
+                                [&usings]( std::pair<std::string, FuncPointerData> const & funcPointerData )
+                                { usings += "  using VULKAN_HPP_NAMESPACE::PFN_" + stripPrefix( funcPointerData.first, "PFN_vk" ) + ";\n"; } );
     return addTitleAndProtection( title, usings );
   };
 
@@ -4986,17 +5024,10 @@ std::string VulkanHppGenerator::generateCppModuleHandleUsings() const
 
   auto const generateUsingsAndProtection = [&usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto usings = std::string{};
-    for ( auto const & require : requireData )
-    {
-      for ( auto const & type : require.types )
-      {
-        if ( auto const & handleIt = m_handles.find( type.name ); handleIt != m_handles.end() )
-        {
-          usings += replaceWithMap( usingTemplate, { { "className", stripPrefix( handleIt->first, "Vk" ) } } );
-        }
-      }
-    }
+    std::string usings;
+    forEachRequiredHandle( requireData,
+                           [&usings, &usingTemplate, this]( std::pair<std::string, HandleData> const & handleData )
+                           { usings += replaceWithMap( usingTemplate, { { "className", stripPrefix( handleData.first, "Vk" ) } } ); } );
     return addTitleAndProtection( title, usings );
   };
 
@@ -5027,23 +5058,19 @@ std::string VulkanHppGenerator::generateCppModuleStructUsings() const
 
   auto const generateUsingsAndProtection = [&listedStructs, &usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto localUsings = std::string{};
-    for ( auto const & require : requireData )
-    {
-      for ( auto const & type : require.types )
-      {
-        if ( auto const & structIt = m_structs.find( type.name ); structIt != m_structs.end() && listedStructs.insert( type.name ).second )
-        {
-          auto const structureType = stripPrefix( structIt->first, "Vk" );
-          localUsings += replaceWithMap( usingTemplate, { { "structName", structureType } } );
-
-          for ( auto const & alias : structIt->second.aliases )
-          {
-            localUsings += replaceWithMap( usingTemplate, { { "structName", stripPrefix( alias.first, "Vk" ) } } );
-          }
-        }
-      }
-    }
+    std::string localUsings;
+    forEachRequiredStruct( requireData,
+                           [&localUsings, &usingTemplate, &listedStructs, this]( std::pair<std::string, StructData> const & structData )
+                           {
+                             if ( listedStructs.insert( structData.first ).second )
+                             {
+                               localUsings += replaceWithMap( usingTemplate, { { "structName", stripPrefix( structData.first, "Vk" ) } } );
+                               for ( auto const & alias : structData.second.aliases )
+                               {
+                                 localUsings += replaceWithMap( usingTemplate, { { "structName", stripPrefix( alias.first, "Vk" ) } } );
+                               }
+                             }
+                           } );
     return addTitleAndProtection( title, localUsings );
   };
 
@@ -5075,17 +5102,10 @@ std::string VulkanHppGenerator::generateCppModuleSharedHandleUsings() const
 
   auto const generateUsingsAndProtection = [&usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto usings = std::string{};
-    for ( auto const & require : requireData )
-    {
-      for ( auto const & type : require.types )
-      {
-        if ( auto const & handleIt = m_handles.find( type.name ); handleIt != m_handles.end() )
-        {
-          usings += replaceWithMap( usingTemplate, { { "handleName", stripPrefix( handleIt->first, "Vk" ) } } );
-        }
-      }
-    }
+    std::string usings;
+    forEachRequiredHandle( requireData,
+                           [&usings, &usingTemplate, this]( std::pair<std::string, HandleData> const & handleData )
+                           { usings += replaceWithMap( usingTemplate, { { "handleName", stripPrefix( handleData.first, "Vk" ) } } ); } );
     return addTitleAndProtection( title, usings );
   };
 
@@ -5127,17 +5147,15 @@ std::string VulkanHppGenerator::generateCppModuleUniqueHandleUsings() const
 
   auto const generateUsingsAndProtection = [&usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto usings = std::string{};
-    for ( auto const & require : requireData )
-    {
-      for ( auto const & type : require.types )
-      {
-        if ( auto const & handleIt = m_handles.find( type.name ); handleIt != m_handles.end() && !handleIt->second.deleteCommand.empty() )
-        {
-          usings += replaceWithMap( usingTemplate, { { "handleName", stripPrefix( handleIt->first, "Vk" ) } } );
-        }
-      }
-    }
+    std::string usings;
+    forEachRequiredHandle( requireData,
+                           [&usings, &usingTemplate, this]( std::pair<std::string, HandleData> const & handleData )
+                           {
+                             if ( !handleData.second.deleteCommand.empty() )
+                             {
+                               usings += replaceWithMap( usingTemplate, { { "handleName", stripPrefix( handleData.first, "Vk" ) } } );
+                             }
+                           } );
     return addTitleAndProtection( title, usings );
   };
 
@@ -5362,9 +5380,8 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 )" };
 
   // insert the operators
-  auto const operatorUsings = std::array{ "operator&", "operator|", "operator^", "operator~",
-                                          "operator<", "operator<=", "operator>", "operator>=",
-                                          "operator==", "operator!=" };
+  auto const operatorUsings =
+    std::array{ "operator&", "operator|", "operator^", "operator~", "operator<", "operator<=", "operator>", "operator>=", "operator==", "operator!=" };
   for ( auto const & operatorName : operatorUsings )
   {
     usings += replaceWithMap( usingTemplate, { { "className", operatorName } } );
@@ -5553,23 +5570,17 @@ std::string VulkanHppGenerator::generateCppModuleRaiiUsings() const
 
   auto const generateUsingsAndProtection = [&raiiUsingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto usings = std::string{};
-    for ( auto const & require : requireData )
-    {
-      for ( auto const & type : require.types )
-      {
-        if ( auto const & handleIt = m_handles.find( type.name ); handleIt != m_handles.end() )
-        {
-          usings += replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( handleIt->first, "Vk" ) } } );
-
-          // if there is an array constructor, generate the plural type also
-          if ( hasArrayConstructor( handleIt->second ) )
-          {
-            usings += replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( type.name, "Vk" ) + "s" } } );
-          }
-        }
-      }
-    }
+    std::string usings;
+    forEachRequiredHandle( requireData,
+                           [&usings, &raiiUsingTemplate, this]( std::pair<std::string, HandleData> const & handleData )
+                           {
+                             usings += replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( handleData.first, "Vk" ) } } );
+                             // if there is an array constructor, generate the plural type also
+                             if ( hasArrayConstructor( handleData.second ) )
+                             {
+                               usings += replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( handleData.first, "Vk" ) + "s" } } );
+                             }
+                           } );
     return addTitleAndProtection( title, usings );
   };
 
@@ -5599,17 +5610,10 @@ ${specializations}
 
   auto const generateSpecializations = [this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto specializations = std::string{};
-    for ( auto const & require : requireData )
-    {
-      for ( auto const & type : require.types )
-      {
-        if ( auto const & handleIt = m_handles.find( type.name ); handleIt != m_handles.end() )
-        {
-          specializations += "  template <> struct hash<VULKAN_HPP_NAMESPACE::" + stripPrefix( handleIt->first, "Vk" ) + ">;\n";
-        }
-      }
-    }
+    std::string specializations;
+    forEachRequiredHandle( requireData,
+                           [&specializations, this]( std::pair<std::string, HandleData> const & handleData )
+                           { specializations += "  template <> struct hash<VULKAN_HPP_NAMESPACE::" + stripPrefix( handleData.first, "Vk" ) + ">;\n"; } );
     return addTitleAndProtection( title, specializations );
   };
 
@@ -5656,17 +5660,10 @@ ${specializations}
 
   auto const generateSpecializations = [this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto specializations = std::string{};
-    for ( auto const & require : requireData )
-    {
-      for ( auto const & type : require.types )
-      {
-        if ( auto const & structIt = m_structs.find( type.name ); structIt != m_structs.end() )
-        {
-          specializations += "  template <> struct hash<VULKAN_HPP_NAMESPACE::" + stripPrefix( structIt->first, "Vk" ) + ">;\n";
-        }
-      }
-    }
+    std::string specializations;
+    forEachRequiredStruct( requireData,
+                           [&specializations]( std::pair<std::string, StructData> const & structData )
+                           { specializations += "  template <> struct hash<VULKAN_HPP_NAMESPACE::" + stripPrefix( structData.first, "Vk" ) + ">;\n"; } );
     return addTitleAndProtection( title, specializations );
   };
 
@@ -8092,17 +8089,8 @@ ${forwardDeclarations}
 std::string VulkanHppGenerator::generateHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto handleIt = m_handles.find( type.name );
-      if ( handleIt != m_handles.end() )
-      {
-        str += "class " + stripPrefix( handleIt->first, "Vk" ) + ";\n";
-      }
-    }
-  }
+  forEachRequiredHandle( requireData,
+                         [&str]( std::pair<std::string, HandleData> const & handleData ) { str += "class " + stripPrefix( handleData.first, "Vk" ) + ";\n"; } );
   return addTitleAndProtection( title, str );
 }
 
@@ -8121,19 +8109,16 @@ std::string VulkanHppGenerator::generateHandleHashStructures( std::vector<Requir
 )";
 
   std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto handleIt = m_handles.find( type.name );
-      if ( handleIt != m_handles.end() && listedHandles.insert( handleIt->first ).second )
-      {
-        std::string handleType = stripPrefix( handleIt->first, "Vk" );
-        std::string handleName = startLowerCase( handleType );
-        str += replaceWithMap( hashTemplate, { { "name", handleName }, { "type", handleType } } );
-      }
-    }
-  }
+  forEachRequiredHandle( requireData,
+                         [&str, &listedHandles, &hashTemplate]( std::pair<std::string, HandleData> const & handleData )
+                         {
+                           if ( listedHandles.insert( handleData.first ).second )
+                           {
+                             std::string handleType = stripPrefix( handleData.first, "Vk" );
+                             std::string handleName = startLowerCase( handleType );
+                             str += replaceWithMap( hashTemplate, { { "name", handleName }, { "type", handleType } } );
+                           }
+                         } );
   return addTitleAndProtection( title, str );
 }
 
@@ -8465,22 +8450,17 @@ ${objectTypeCases}
     static const std::string objectTypeCaseTemplate = "      case ObjectType::${objectType} : return DebugReportObjectTypeEXT::${debugReportObjectType};\n";
 
     std::string objectTypeCases;
-    for ( auto const & require : requireData )
-    {
-      for ( auto const & type : require.types )
-      {
-        if ( listedTypes.insert( type.name ).second )  // only handle yet unlisted types
-        {
-          auto handleIt = m_handles.find( type.name );
-          if ( handleIt != m_handles.end() )
-          {
-            objectTypeCases += replaceWithMap( objectTypeCaseTemplate,
-                                               { { "debugReportObjectType", generateDebugReportObjectType( handleIt->second.objTypeEnum ) },
-                                                 { "objectType", generateEnumValueName( "VkObjectType", handleIt->second.objTypeEnum, false ) } } );
-          }
-        }
-      }
-    }
+    forEachRequiredHandle( requireData,
+                           [&objectTypeCases, &listedTypes, this]( std::pair<std::string, HandleData> const & handleData )
+                           {
+                             if ( listedTypes.insert( handleData.first ).second )
+                             {
+                               objectTypeCases +=
+                                 replaceWithMap( objectTypeCaseTemplate,
+                                                 { { "debugReportObjectType", generateDebugReportObjectType( handleData.second.objTypeEnum ) },
+                                                   { "objectType", generateEnumValueName( "VkObjectType", handleData.second.objTypeEnum, false ) } } );
+                             }
+                           } );
     return addTitleAndProtection( title, objectTypeCases );
   };
 
@@ -11119,39 +11099,33 @@ std::string VulkanHppGenerator::generateStaticAssertions( std::vector<RequireDat
                                                           std::set<std::string> &          listedStructs ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto handleIt = m_handles.find( type.name );
-      if ( handleIt != m_handles.end() )
-      {
-        std::string const assertionTemplate = R"(
+  forEachRequiredHandle( requireData,
+                         [&str, this]( std::pair<std::string, HandleData> const & handleData )
+                         {
+                           std::string const assertionTemplate = R"(
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
 VULKAN_HPP_STATIC_ASSERT( std::is_copy_constructible<VULKAN_HPP_NAMESPACE::${className}>::value, "${className} is not copy_constructible!" );
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::${className}>::value, "${className} is not nothrow_move_constructible!" );
 )";
-        str += replaceWithMap( assertionTemplate, { { "className", stripPrefix( handleIt->first, "Vk" ) } } );
-      }
-      else
-      {
-        auto structIt = m_structs.find( type.name );
-        if ( ( structIt != m_structs.end() ) && listedStructs.insert( type.name ).second )
-        {
-          std::string const assertionTemplate = R"(
+                           str += replaceWithMap( assertionTemplate, { { "className", stripPrefix( handleData.first, "Vk" ) } } );
+                         } );
+  forEachRequiredStruct( requireData,
+                         [&str, &listedStructs, this]( std::pair<std::string, StructData> const & structData )
+                         {
+                           if ( listedStructs.insert( structData.first ).second )
+                           {
+                             std::string const assertionTemplate = R"(
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::${structureType} ) == sizeof( Vk${structureType} ), "struct and wrapper have different size!" );
 VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::${structureType}>::value, "struct wrapper is not a standard layout!" );
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::${structureType}>::value, "${structureType} is not nothrow_move_constructible!" );
 )";
-          str += replaceWithMap( assertionTemplate, { { "structureType", stripPrefix( structIt->first, "Vk" ) } } );
-        }
-      }
-    }
-  }
+                             str += replaceWithMap( assertionTemplate, { { "structureType", stripPrefix( structData.first, "Vk" ) } } );
+                           }
+                         } );
   return addTitleAndProtection( title, str );
 }
 
-std::string VulkanHppGenerator::generateStruct( std::pair<std::string, StructureData> const & structure, std::set<std::string> & listedStructs ) const
+std::string VulkanHppGenerator::generateStruct( std::pair<std::string, StructData> const & structure, std::set<std::string> & listedStructs ) const
 {
   assert( !listedStructs.contains( structure.first ) );
 
@@ -11202,7 +11176,7 @@ std::string VulkanHppGenerator::generateStruct( std::pair<std::string, Structure
   return str;
 }
 
-std::string VulkanHppGenerator::generateStructCastAssignments( std::pair<std::string, StructureData> const & structData ) const
+std::string VulkanHppGenerator::generateStructCastAssignments( std::pair<std::string, StructData> const & structData ) const
 {
   std::string castAssignments;
   if ( containsDeprecated( structData.second.members ) )
@@ -11238,7 +11212,7 @@ std::string VulkanHppGenerator::generateStructCastAssignments( std::pair<std::st
   return castAssignments;
 }
 
-std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::string, StructureData> const & structData ) const
+std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::string, StructData> const & structData ) const
 {
   static const std::set<std::string> simpleTypes = { "char",   "double",  "DWORD",    "float",    "HANDLE",  "HINSTANCE", "HMONITOR",
                                                      "HWND",   "int",     "int8_t",   "int16_t",  "int32_t", "int64_t",   "LPCWSTR",
@@ -11413,7 +11387,7 @@ ${spaceshipOperatorEndif})";
                            { "spaceshipOperatorIf", spaceshipOperatorIf } } );
 }
 
-std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::string, StructureData> const & structData ) const
+std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::string, StructData> const & structData ) const
 {
   // the constructor with all the elements as arguments, with defaults
   // and the simple copy constructor from the corresponding vulkan structure
@@ -11466,7 +11440,7 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
   return str;
 }
 
-std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData ) const
+std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<std::string, StructData> const & structData ) const
 {
   // some structs needs some special handling!
   if ( structData.first == "VkLayerSettingEXT" )
@@ -11710,8 +11684,7 @@ std::string VulkanHppGenerator::generateStructConstructorArgument( MemberData co
   return str;
 }
 
-std::string VulkanHppGenerator::generateStructHashStructure( std::pair<std::string, StructureData> const & structure,
-                                                             std::set<std::string> &                       listedStructs ) const
+std::string VulkanHppGenerator::generateStructHashStructure( std::pair<std::string, StructData> const & structure, std::set<std::string> & listedStructs ) const
 {
   assert( !listedStructs.contains( structure.first ) );
 
@@ -11866,7 +11839,7 @@ ${structs}
   return replaceWithMap( structsTemplate, { { "structs", structs } } );
 }
 
-std::string VulkanHppGenerator::generateStructure( std::pair<std::string, StructureData> const & structure ) const
+std::string VulkanHppGenerator::generateStructure( std::pair<std::string, StructData> const & structure ) const
 {
   const auto [enter, leave] = generateProtection( getProtectFromType( structure.first ) );
 
@@ -12156,37 +12129,34 @@ std::string VulkanHppGenerator::generateStructExtendsStructs( std::vector<Requir
                                                               std::string const &              title ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto structIt = m_structs.find( type.name );
-      if ( ( structIt != m_structs.end() ) && listedStructs.insert( type.name ).second )
-      {
-        const auto [enter, leave] = generateProtection( getProtectFromTitle( title ) );
+  forEachRequiredStruct( requireData,
+                         [&str, &listedStructs, &title, this]( std::pair<std::string, StructData> const & structData )
+                         {
+                           if ( listedStructs.insert( structData.first ).second )
+                           {
+                             const auto [enter, leave] = generateProtection( getProtectFromTitle( title ) );
 
-        // append all allowed structure chains
-        for ( auto extendName : structIt->second.structExtends )
-        {
-          auto extendsIt                  = findByNameOrAlias( m_structs, extendName );
-          const auto [subEnter, subLeave] = generateProtection( getProtectFromType( extendsIt->first ) );
+                             // append all allowed structure chains
+                             for ( auto extendName : structData.second.structExtends )
+                             {
+                               auto extendsIt                  = findByNameOrAlias( m_structs, extendName );
+                               const auto [subEnter, subLeave] = generateProtection( getProtectFromType( extendsIt->first ) );
 
-          if ( enter != subEnter )
-          {
-            str += subEnter;
-          }
+                               if ( enter != subEnter )
+                               {
+                                 str += subEnter;
+                               }
 
-          str += "  template <> struct StructExtends<" + stripPrefix( structIt->first, "Vk" ) + ", " + stripPrefix( extendName, "Vk" ) +
-                 ">{ enum { value = true }; };\n";
+                               str += "  template <> struct StructExtends<" + stripPrefix( structData.first, "Vk" ) + ", " + stripPrefix( extendName, "Vk" ) +
+                                      ">{ enum { value = true }; };\n";
 
-          if ( leave != subLeave )
-          {
-            str += subLeave;
-          }
-        }
-      }
-    }
-  }
+                               if ( leave != subLeave )
+                               {
+                                 str += subLeave;
+                               }
+                             }
+                           }
+                         } );
   return addTitleAndProtection( title, str );
 }
 
@@ -12219,28 +12189,25 @@ std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<R
                                                                    std::set<std::string> &          listedStructs ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto structIt = m_structs.find( type.name );
-      if ( ( structIt != m_structs.end() ) && listedStructs.insert( type.name ).second )
-      {
-        std::string structureType = stripPrefix( structIt->first, "Vk" );
-        str += ( structIt->second.isUnion ? "  union " : "  struct " ) + structureType + ";\n";
+  forEachRequiredStruct( requireData,
+                         [&str, &listedStructs]( std::pair<std::string, StructData> const & structData )
+                         {
+                           if ( listedStructs.insert( structData.first ).second )
+                           {
+                             std::string structureType = stripPrefix( structData.first, "Vk" );
+                             str += ( structData.second.isUnion ? "  union " : "  struct " ) + structureType + ";\n";
 
-        for ( auto const & alias : structIt->second.aliases )
-        {
-          str += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + structureType + ";\n";
-        }
-      }
-    }
-  }
+                             for ( auto const & alias : structData.second.aliases )
+                             {
+                               str += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + structureType + ";\n";
+                             }
+                           }
+                         } );
   return addTitleAndProtection( title, str );
 }
 
 std::tuple<std::string, std::string, std::string, std::string>
-  VulkanHppGenerator::generateStructMembers( std::pair<std::string, StructureData> const & structData ) const
+  VulkanHppGenerator::generateStructMembers( std::pair<std::string, StructData> const & structData ) const
 {
   std::string members, memberNames, memberTypes, sTypeValue;
   for ( auto const & member : structData.second.members )
@@ -12559,7 +12526,7 @@ ${byString}
   return str;
 }
 
-std::string VulkanHppGenerator::generateStructSubConstructor( std::pair<std::string, StructureData> const & structData ) const
+std::string VulkanHppGenerator::generateStructSubConstructor( std::pair<std::string, StructData> const & structData ) const
 {
   if ( !structData.second.subStruct.empty() )
   {
@@ -12722,7 +12689,7 @@ std::string VulkanHppGenerator::generateTypenameCheck( std::vector<size_t> const
   return typenameCheck;
 }
 
-std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureData> const & structure ) const
+std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructData> const & structure ) const
 {
   auto [enter, leave]   = generateProtection( getProtectFromType( structure.first ) );
   std::string unionName = stripPrefix( structure.first, "Vk" );
@@ -12914,17 +12881,14 @@ std::string VulkanHppGenerator::generateUniqueHandle( std::vector<RequireData> c
                                                       std::set<std::string> &          listedHandles ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto handleIt = m_handles.find( type.name );
-      if ( ( handleIt != m_handles.end() ) && listedHandles.insert( handleIt->first ).second )
-      {
-        str += generateUniqueHandle( *handleIt );
-      }
-    }
-  }
+  forEachRequiredHandle( requireData,
+                         [&str, &listedHandles, this]( std::pair<std::string, HandleData> const & handleData )
+                         {
+                           if ( listedHandles.insert( handleData.first ).second )
+                           {
+                             str += generateUniqueHandle( handleData );
+                           }
+                         } );
   return addTitleAndProtection( title, str );
 }
 
@@ -13031,34 +12995,22 @@ std::string VulkanHppGenerator::generateSharedHandle( std::vector<RequireData> c
                                                       std::set<std::string> &          listedHandles ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto handleIt = m_handles.find( type.name );
-      if ( handleIt != m_handles.end() && listedHandles.insert( handleIt->first ).second )
-      {
-        str += generateSharedHandle( *handleIt );
-      }
-    }
-  }
+  forEachRequiredHandle( requireData,
+                         [&str, &listedHandles, this]( std::pair<std::string, HandleData> const & handleData )
+                         {
+                           if ( listedHandles.insert( handleData.first ).second )
+                           {
+                             str += generateSharedHandle( handleData );
+                           }
+                         } );
   return addTitleAndProtection( title, str );
 }
 
 std::string VulkanHppGenerator::generateSharedHandleNoDestroy( std::vector<RequireData> const & requireData, std::string const & title ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto handleIt = m_handles.find( type.name );
-      if ( handleIt != m_handles.end() )
-      {
-        str += generateSharedHandleNoDestroy( *handleIt );
-      }
-    }
-  }
+  forEachRequiredHandle( requireData,
+                         [&str, this]( std::pair<std::string, HandleData> const & handleData ) { str += generateSharedHandleNoDestroy( handleData ); } );
   return addTitleAndProtection( title, str );
 }
 
@@ -15553,7 +15505,7 @@ void VulkanHppGenerator::readRequireEnum(
         checkForError(
           !supported || name.ends_with( "_EXTENSION_NAME" ) || name.ends_with( "_SPEC_VERSION" ), line, "encountered unexpected enum <" + name + ">" );
 
-        requireData.enumConstants.emplace( name, value );
+        requireData.enumConstants.push_back( { name, value, line } );
       }
     }
     else
@@ -16662,7 +16614,7 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
     std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
     checkElements( line, children, {}, { "member", "comment" } );
 
-    StructureData structureData;
+    StructData structureData;
     structureData.xmlLine = line;
     structureData.isUnion = isUnion;
 
@@ -16707,7 +16659,7 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
                    "struct <" + name + "> already specified" );
     assert( !m_structs.contains( name ) );
 
-    std::map<std::string, StructureData>::iterator it = m_structs.insert( { name, structureData } ).first;
+    std::map<std::string, StructData>::iterator it = m_structs.insert( { name, structureData } ).first;
 
     for ( auto child : children )
     {

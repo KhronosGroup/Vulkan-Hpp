@@ -306,6 +306,84 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.waitIdle();
   }
 
+  // Memory commands
+  {
+    vk::Device             device;
+    vk::MemoryAllocateInfo memoryAllocateInfo;
+    vk::DeviceMemory       memory;
+    vk::Result             result = device.allocateMemory( &memoryAllocateInfo, nullptr, &memory );
+  }
+  {
+    vk::Device             device;
+    vk::MemoryAllocateInfo memoryAllocateInfo;
+    vk::DeviceMemory       memory = device.allocateMemory( memoryAllocateInfo );
+  }
+
+  {
+    vk::Device       device;
+    vk::DeviceMemory memory;
+    device.freeMemory( memory );
+  }
+
+  {
+    vk::Device         device;
+    vk::DeviceMemory   memory;
+    vk::DeviceSize     offset         = 0;
+    vk::DeviceSize     size           = vk::WholeSize;
+    vk::MemoryMapFlags memoryMapFlags = {};
+    void *             pData;
+    vk::Result         result = device.mapMemory( memory, offset, size, memoryMapFlags, &pData );
+  }
+  {
+    vk::Device         device;
+    vk::DeviceMemory   memory;
+    vk::DeviceSize     offset         = 0;
+    vk::DeviceSize     size           = vk::WholeSize;
+    vk::MemoryMapFlags memoryMapFlags = {};
+    void *             pData          = device.mapMemory( memory, offset, size, memoryMapFlags );
+  }
+
+  {
+    vk::Device       device;
+    vk::DeviceMemory memory;
+    device.unmapMemory( memory );
+  }
+
+  {
+    vk::Device            device;
+    vk::DeviceMemory      memory;
+    vk::MappedMemoryRange mappedMemoryRange;
+    vk::Result            result = device.flushMappedMemoryRanges( 1, &mappedMemoryRange );
+  }
+  {
+    vk::Device                         device;
+    std::vector<vk::MappedMemoryRange> mappedMemoryRanges;
+    device.flushMappedMemoryRanges( mappedMemoryRanges );
+  }
+
+  {
+    vk::Device            device;
+    vk::MappedMemoryRange mappedMemoryRange;
+    vk::Result            result = device.invalidateMappedMemoryRanges( 1, &mappedMemoryRange );
+  }
+  {
+    vk::Device                         device;
+    std::vector<vk::MappedMemoryRange> mappedMemoryRanges;
+    device.invalidateMappedMemoryRanges( mappedMemoryRanges );
+  }
+
+  {
+    vk::Device       device;
+    vk::DeviceMemory memory;
+    vk::DeviceSize   commitment;
+    device.getMemoryCommitment( memory, &commitment );
+  }
+  {
+    vk::Device       device;
+    vk::DeviceMemory memory;
+    vk::DeviceSize   commitment = device.getMemoryCommitment( memory );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

@@ -153,5 +153,42 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.waitIdle();
   }
 
+  // Memory commands
+  {
+    vk::raii::Device       device = nullptr;
+    vk::MemoryAllocateInfo memoryAllocateInfo;
+    vk::raii::DeviceMemory deviceMemory = device.allocateMemory( memoryAllocateInfo );
+  }
+
+  {
+    vk::raii::DeviceMemory deviceMemory   = nullptr;
+    vk::DeviceSize         offset         = 0;
+    vk::DeviceSize         size           = vk::WholeSize;
+    vk::MemoryMapFlags     memoryMapFlags = {};
+    void *                 pData          = deviceMemory.mapMemory( offset, size, memoryMapFlags );
+  }
+
+  {
+    vk::raii::DeviceMemory deviceMemory = nullptr;
+    deviceMemory.unmapMemory();
+  }
+
+  {
+    vk::raii::Device                   device = nullptr;
+    std::vector<vk::MappedMemoryRange> mappedMemoryRanges;
+    device.flushMappedMemoryRanges( mappedMemoryRanges );
+  }
+
+  {
+    vk::raii::Device                   device = nullptr;
+    std::vector<vk::MappedMemoryRange> mappedMemoryRanges;
+    device.invalidateMappedMemoryRanges( mappedMemoryRanges );
+  }
+
+  {
+    vk::raii::DeviceMemory deviceMemory = nullptr;
+    vk::DeviceSize         size         = deviceMemory.getCommitment();
+  }
+
   return 0;
 }

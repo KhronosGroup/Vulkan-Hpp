@@ -384,6 +384,47 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DeviceSize   commitment = device.getMemoryCommitment( memory );
   }
 
+  // Memory management API commands
+  {
+    vk::Device       device;
+    vk::Buffer       buffer;
+    vk::DeviceMemory deviceMemory;
+    vk::DeviceSize   memoryOffset = 0;
+    device.bindBufferMemory( buffer, deviceMemory, memoryOffset );
+  }
+
+  {
+    vk::Device       device;
+    vk::Image        image;
+    vk::DeviceMemory deviceMemory;
+    vk::DeviceSize   memoryOffset = 0;
+    device.bindImageMemory( image, deviceMemory, memoryOffset );
+  }
+
+  {
+    vk::Device             device;
+    vk::Buffer             buffer;
+    vk::MemoryRequirements memoryRequirements;
+    device.getBufferMemoryRequirements( buffer, &memoryRequirements );
+  }
+  {
+    vk::Device             device;
+    vk::Buffer             buffer;
+    vk::MemoryRequirements memoryRequirements = device.getBufferMemoryRequirements( buffer );
+  }
+
+  {
+    vk::Device             device;
+    vk::Image              image;
+    vk::MemoryRequirements memoryRequirements;
+    device.getImageMemoryRequirements( image, &memoryRequirements );
+  }
+  {
+    vk::Device             device;
+    vk::Image              image;
+    vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements( image );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

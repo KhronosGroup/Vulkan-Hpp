@@ -190,5 +190,30 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DeviceSize         size         = deviceMemory.getCommitment();
   }
 
+  // Memory management API commands
+  {
+    vk::raii::Buffer buffer = nullptr;
+    vk::DeviceMemory deviceMemory;
+    vk::DeviceSize   memoryOffset = 0;
+    buffer.bindMemory( deviceMemory, memoryOffset );
+  }
+
+  {
+    vk::raii::Image  image = nullptr;
+    vk::DeviceMemory deviceMemory;
+    vk::DeviceSize   memoryOffset = 0;
+    image.bindMemory( deviceMemory, memoryOffset );
+  }
+
+  {
+    vk::raii::Buffer buffer = nullptr;
+    vk::MemoryRequirements memoryRequirements = buffer.getMemoryRequirements();
+  }
+
+  {
+    vk::raii::Image image = nullptr;
+    vk::MemoryRequirements memoryRequirements = image.getMemoryRequirements();
+  }
+
   return 0;
 }

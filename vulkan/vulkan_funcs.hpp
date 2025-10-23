@@ -15988,6 +15988,17 @@ namespace VULKAN_HPP_NAMESPACE
 
     return detail::createResultValueType( result );
   }
+
+  // wrapper function for command vkSetDebugUtilsObjectNameEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
+  template <typename HandleType, typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+                                          Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d ) const
+  {
+    static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
+    VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo(
+      handle.objectType, reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) ), name.c_str() );
+    return setDebugUtilsObjectNameEXT( nameInfo, d );
+  }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   // wrapper function for command vkSetDebugUtilsObjectTagEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
@@ -16015,6 +16026,17 @@ namespace VULKAN_HPP_NAMESPACE
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::setDebugUtilsObjectTagEXT" );
 
     return detail::createResultValueType( result );
+  }
+
+  // wrapper function for command vkSetDebugUtilsObjectTagEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
+  template <typename HandleType, typename TagType, typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+    Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag, Dispatch const & d ) const
+  {
+    static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
+    VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT tagInfo(
+      handle.objectType, reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) ), name, sizeof( TagType ), &tag );
+    return setDebugUtilsObjectTagEXT( tagInfo, d );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

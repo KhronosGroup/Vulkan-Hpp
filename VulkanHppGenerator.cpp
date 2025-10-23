@@ -1665,6 +1665,135 @@ void VulkanHppGenerator::distributeStructAliases()
   m_structsAliases.clear();
 }
 
+void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool definition, bool raii, std::string & cmd ) const
+{
+  if ( name == "vkSetDebugUtilsObjectNameEXT" )
+  {
+    if ( raii )
+    {
+      if ( definition )
+      {
+        cmd.append(
+          R"(
+    // wrapper function for command vkSetDebugUtilsObjectNameEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
+    template <typename HandleType>
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name ) const
+    {
+      static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
+      VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo(
+        handle.objectType, reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) ), name.c_str() );
+      return setDebugUtilsObjectNameEXT( nameInfo );
+    }
+)" );
+      }
+      else
+      {
+        cmd.append( R"(
+      // wrapper function for command vkSetDebugUtilsObjectNameEXT, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
+      template <typename HandleType>
+      typename ResultValueType<void>::type setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name ) const;
+)" );
+      }
+    }
+    else
+    {
+      static const std::string endOfCmd = "#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */\n";
+      assert( cmd.ends_with( endOfCmd ) );
+      size_t pos = cmd.size() - endOfCmd.size();
+      if ( definition )
+      {
+        cmd.insert(
+          pos,
+          R"(  // wrapper function for command vkSetDebugUtilsObjectNameEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
+  template <typename HandleType, typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+                                          Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d ) const
+  {
+    static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
+    VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo(
+      handle.objectType, reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) ), name.c_str() );
+    return setDebugUtilsObjectNameEXT( nameInfo, d );
+  }
+)" );
+      }
+      else
+      {
+        cmd.insert( pos, R"(    // wrapper function for command vkSetDebugUtilsObjectNameEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
+    template <typename HandleType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+)" );
+      }
+    }
+  }
+  else if ( name == "vkSetDebugUtilsObjectTagEXT" )
+  {
+    if ( raii )
+    {
+      if ( definition )
+      {
+        cmd.append(
+          R"(
+    // wrapper function for command vkSetDebugUtilsObjectTagEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
+    template <typename HandleType, typename TagType>
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type
+      Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag ) const
+    {
+      static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
+      VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT tagInfo(
+        handle.objectType, reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) ), name, sizeof( TagType ), &tag );
+      return setDebugUtilsObjectTagEXT( tagInfo );
+    }
+)" );
+      }
+      else
+      {
+        cmd.append( R"(
+      // wrapper function for command vkSetDebugUtilsObjectTagEXT, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
+      template <typename HandleType, typename TagType>
+      typename ResultValueType<void>::type setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag ) const;
+)" );
+      }
+    }
+    else
+    {
+      static const std::string endOfCmd = "#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */\n";
+      assert( cmd.ends_with( endOfCmd ) );
+      size_t pos = cmd.size() - endOfCmd.size();
+      if ( definition )
+      {
+        cmd.insert(
+          pos,
+          R"(  // wrapper function for command vkSetDebugUtilsObjectTagEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
+  template <typename HandleType, typename TagType, typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+    Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag, Dispatch const & d ) const
+  {
+    static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
+    VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT tagInfo(
+      handle.objectType, reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) ), name, sizeof( TagType ), &tag );
+    return setDebugUtilsObjectTagEXT( tagInfo, d );
+  }
+)" );
+      }
+      else
+      {
+        cmd.insert( pos, R"(    // wrapper function for command vkSetDebugUtilsObjectTagEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
+    template <typename HandleType, typename TagType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type setDebugUtilsObjectTagEXT(
+      HandleType const & handle, uint64_t name, TagType const & tag, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+)" );
+      }
+    }
+  }
+}
+
 void VulkanHppGenerator::filterLenMembers()
 {
   for ( auto & sd : m_structs )
@@ -2954,6 +3083,8 @@ std::string
   {
     throw std::runtime_error( "Never encountered a function like <" + name + "> !" );
   }
+
+  extendSpecialCommands( name, definition, raii, cmd );
 
   return cmd;
 }

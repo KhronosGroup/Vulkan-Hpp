@@ -55,8 +55,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     /* VULKAN_KEY_START */
 
-    vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo( vk::ObjectType::eImage, NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST( VkImage, image ), "Image name" );
-    device.setDebugUtilsObjectNameEXT( debugUtilsObjectNameInfo );
+    device.setDebugUtilsObjectNameEXT( image, "Image name" );
 
     /* VULKAN_KEY_END */
 

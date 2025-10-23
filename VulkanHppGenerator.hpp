@@ -605,6 +605,7 @@ private:
   void                                distributeRequirements();
   void                                distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy );
   void                                distributeStructAliases();
+  void                                extendSpecialCommands( std::string const & name, bool definition, bool raii, std::string & cmd ) const;
   void                                filterLenMembers();
   std::string                         findTag( std::string const & name, std::string const & postfix = "" ) const;
   void                                forEachRequiredBitmask( std::vector<RequireData> const &                                           requireData,

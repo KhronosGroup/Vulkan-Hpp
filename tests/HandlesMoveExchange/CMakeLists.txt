@@ -12,7 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME HandlesMoveExchange COMPILE_DEFINITIONS VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
-if( VULKAN_HPP_ENABLE_CPP20_MODULES )
-    vulkan_hpp__setup_test( NAME HandlesMoveExchange CXX_MODULE COMPILE_DEFINITIONS VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+cmake_minimum_required( VERSION 3.12 )
+project( VulkanHppTest LANGUAGES CXX )
+
+set(VULKAN_HPP_HANDLES_MOVE_EXCHANGE ON)
+include( ${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt )
+vulkan_hpp__setup_test_project()
+
+# add_subdirectory cannot use the normal compile definitions
+if( NOT VULKAN_HPP_TESTS_CTEST )
+    target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
 endif()

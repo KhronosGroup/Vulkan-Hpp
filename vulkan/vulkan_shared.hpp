@@ -524,16 +524,6 @@ namespace VULKAN_HPP_NAMESPACE
   using SharedSemaphore = SharedHandle<Semaphore>;
 
   template <>
-  class SharedHandleTraits<Event>
-  {
-  public:
-    using DestructorType = Device;
-    using deleter        = detail::ObjectDestroyShared<Event>;
-  };
-
-  using SharedEvent = SharedHandle<Event>;
-
-  template <>
   class SharedHandleTraits<QueryPool>
   {
   public:
@@ -554,16 +544,6 @@ namespace VULKAN_HPP_NAMESPACE
   using SharedBuffer = SharedHandle<Buffer>;
 
   template <>
-  class SharedHandleTraits<BufferView>
-  {
-  public:
-    using DestructorType = Device;
-    using deleter        = detail::ObjectDestroyShared<BufferView>;
-  };
-
-  using SharedBufferView = SharedHandle<BufferView>;
-
-  template <>
   class SharedHandleTraits<Image>
   {
   public:
@@ -582,6 +562,46 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   using SharedImageView = SharedHandle<ImageView>;
+
+  template <>
+  class SharedHandleTraits<CommandPool>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = detail::ObjectDestroyShared<CommandPool>;
+  };
+
+  using SharedCommandPool = SharedHandle<CommandPool>;
+
+  template <>
+  class SharedHandleTraits<CommandBuffer>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = detail::PoolFreeShared<CommandBuffer, CommandPool>;
+  };
+
+  using SharedCommandBuffer = SharedHandle<CommandBuffer>;
+
+  template <>
+  class SharedHandleTraits<Event>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = detail::ObjectDestroyShared<Event>;
+  };
+
+  using SharedEvent = SharedHandle<Event>;
+
+  template <>
+  class SharedHandleTraits<BufferView>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = detail::ObjectDestroyShared<BufferView>;
+  };
+
+  using SharedBufferView = SharedHandle<BufferView>;
 
   template <>
   class SharedHandleTraits<ShaderModule>
@@ -683,38 +703,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using SharedRenderPass = SharedHandle<RenderPass>;
 
-  template <>
-  class SharedHandleTraits<CommandPool>
-  {
-  public:
-    using DestructorType = Device;
-    using deleter        = detail::ObjectDestroyShared<CommandPool>;
-  };
-
-  using SharedCommandPool = SharedHandle<CommandPool>;
-
-  template <>
-  class SharedHandleTraits<CommandBuffer>
-  {
-  public:
-    using DestructorType = Device;
-    using deleter        = detail::PoolFreeShared<CommandBuffer, CommandPool>;
-  };
-
-  using SharedCommandBuffer = SharedHandle<CommandBuffer>;
-
   //=== VK_VERSION_1_1 ===
-  template <>
-  class SharedHandleTraits<SamplerYcbcrConversion>
-  {
-  public:
-    using DestructorType = Device;
-    using deleter        = detail::ObjectDestroyShared<SamplerYcbcrConversion>;
-  };
-
-  using SharedSamplerYcbcrConversion    = SharedHandle<SamplerYcbcrConversion>;
-  using SharedSamplerYcbcrConversionKHR = SharedHandle<SamplerYcbcrConversion>;
-
   template <>
   class SharedHandleTraits<DescriptorUpdateTemplate>
   {
@@ -725,6 +714,17 @@ namespace VULKAN_HPP_NAMESPACE
 
   using SharedDescriptorUpdateTemplate    = SharedHandle<DescriptorUpdateTemplate>;
   using SharedDescriptorUpdateTemplateKHR = SharedHandle<DescriptorUpdateTemplate>;
+
+  template <>
+  class SharedHandleTraits<SamplerYcbcrConversion>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = detail::ObjectDestroyShared<SamplerYcbcrConversion>;
+  };
+
+  using SharedSamplerYcbcrConversion    = SharedHandle<SamplerYcbcrConversion>;
+  using SharedSamplerYcbcrConversionKHR = SharedHandle<SamplerYcbcrConversion>;
 
   //=== VK_VERSION_1_3 ===
   template <>

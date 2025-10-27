@@ -434,13 +434,11 @@ std::string VulkanHppGenerator::addTitleAndProtection( std::string const & title
 
 bool VulkanHppGenerator::allVectorSizesSupported( std::vector<ParamData> const & params, std::map<size_t, VectorParamData> const & vectorParams ) const
 {
-  // check if all vector sizes are by value and their type is one of "uint32_t", "VkDeviceSize", or "VkSampleCountFlagBits"
   return std::ranges::all_of( vectorParams,
                               [&params]( auto const & vpi )
                               {
-                                return params[vpi.second.lenParam].type.isValue() && ( ( params[vpi.second.lenParam].type.type == "uint32_t" ) ||
-                                                                                       ( params[vpi.second.lenParam].type.type == "VkDeviceSize" ) ||
-                                                                                       ( params[vpi.second.lenParam].type.type == "VkSampleCountFlagBits" ) );
+                                static const std::set<std::string> sizeTypes = { "size_t", "uint32_t", "VkDeviceSize", "VkSampleCountFlagBits" };
+                                return sizeTypes.contains( params[vpi.second.lenParam].type.type );
                               } );
 }
 
@@ -1289,7 +1287,7 @@ size_t VulkanHppGenerator::determineInitialSkipCount( std::string const & comman
 
 std::vector<size_t> VulkanHppGenerator::determineReturnParams( std::vector<ParamData> const & params ) const
 {
-  std::vector<size_t> nonConstPointerParamIndices;
+  std::vector<size_t> returnParams;
 
   for ( size_t i = 0; i < params.size(); i++ )
   {
@@ -1297,10 +1295,10 @@ std::vector<size_t> VulkanHppGenerator::determineReturnParams( std::vector<Param
     // to be a potential return value!
     if ( params[i].type.isNonConstPointer() && !specialPointerTypes.contains( params[i].type.type ) )
     {
-      nonConstPointerParamIndices.push_back( i );
+      returnParams.push_back( i );
     }
   }
-  return nonConstPointerParamIndices;
+  return returnParams;
 }
 
 bool VulkanHppGenerator::isConstructorCandidate( std::pair<std::string, VulkanHppGenerator::CommandData> const & command, std::string const & handleType ) const
@@ -1818,8 +1816,7 @@ void VulkanHppGenerator::forEachRequiredBitmask( std::vector<RequireData> const 
   {
     for ( auto const & type : require.types )
     {
-      auto bitmaskIt = m_bitmasks.find( type.name );
-      if ( ( bitmaskIt != m_bitmasks.end() ) && encounteredBitmasks.insert( bitmaskIt->first ).second )
+      if ( auto bitmaskIt = m_bitmasks.find( type.name ); ( bitmaskIt != m_bitmasks.end() ) && encounteredBitmasks.insert( bitmaskIt->first ).second )
       {
         bitmaskAction( *bitmaskIt );
       }
@@ -1883,8 +1880,7 @@ void VulkanHppGenerator::forEachRequiredFuncPointer( std::vector<RequireData> co
   {
     for ( auto const & type : require.types )
     {
-      auto funcPointerIt = m_funcPointers.find( type.name );
-      if ( funcPointerIt != m_funcPointers.end() )
+      if ( auto funcPointerIt = m_funcPointers.find( type.name ); funcPointerIt != m_funcPointers.end() )
       {
         funcPointerAction( *funcPointerIt );
       }
@@ -1899,8 +1895,7 @@ void VulkanHppGenerator::forEachRequiredHandle( std::vector<RequireData> const &
   {
     for ( auto const & type : require.types )
     {
-      auto handleIt = m_handles.find( type.name );
-      if ( handleIt != m_handles.end() )
+      if ( auto handleIt = m_handles.find( type.name ); handleIt != m_handles.end() )
       {
         handleAction( *handleIt );
       }
@@ -1915,8 +1910,7 @@ void VulkanHppGenerator::forEachRequiredStruct( std::vector<RequireData> const &
   {
     for ( auto const & type : require.types )
     {
-      auto structIt = m_structs.find( type.name );
-      if ( structIt != m_structs.end() )
+      if ( auto structIt = m_structs.find( type.name ); structIt != m_structs.end() )
       {
         structAction( *structIt );
       }
@@ -1928,24 +1922,14 @@ std::set<std::string> VulkanHppGenerator::gatherResultCodes() const
 {
   auto resultIt = m_enums.find( "VkResult" );
   assert( resultIt != m_enums.end() );
+
   std::set<std::string> resultCodes;
   for ( auto rc : resultIt->second.values )
   {
     resultCodes.insert( rc.name );
-    for ( auto ac : rc.aliases )
-    {
-      resultCodes.insert( ac.name );
-    }
+    std::ranges::for_each( rc.aliases, [&resultCodes]( EnumValueAlias const & eva ) { resultCodes.insert( eva.name ); } );
   }
-  // some special handling needed for vulkansc!!
-  if ( m_api == "vulkansc" )
-  {
-    resultCodes.insert( { "VK_ERROR_FRAGMENTATION_EXT",
-                          "VK_ERROR_INVALID_EXTERNAL_HANDLE_KHR",
-                          "VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR",
-                          "VK_ERROR_NOT_PERMITTED_EXT",
-                          "VK_PIPELINE_COMPILE_REQUIRED_EXT" } );
-  }
+
   return resultCodes;
 }
 
@@ -1956,12 +1940,13 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateAllocatorTemplat
                                                                                     CommandFlavourFlags                       flavourFlags,
                                                                                     bool                                      definition ) const
 {
+  assert( returnParams.size() == returnDataTypes.size() );
   assert( chainedReturnParams.size() <= 1 );
+
   const bool chained  = flavourFlags & CommandFlavourFlagBits::chained;
   const bool singular = flavourFlags & CommandFlavourFlagBits::singular;
   const bool unique   = flavourFlags & CommandFlavourFlagBits::unique;
 
-  assert( returnParams.size() == returnDataTypes.size() );
   std::string allocatorTemplates;
   if ( !singular )
   {
@@ -1979,7 +1964,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateAllocatorTemplat
         }
         else
         {
-          allocatorTemplates += "typename " + startUpperCase( stripPrefix( returnDataTypes[i], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
+          allocatorTemplates += "typename " + startUpperCase( returnDataTypes[i] ) + "Allocator";
           if ( !definition )
           {
             allocatorTemplates += " = std::allocator<" + ( unique ? ( "UniqueHandle<" + returnDataTypes[i] + ", Dispatch>" ) : returnDataTypes[i] ) + ">";
@@ -3398,69 +3383,18 @@ std::string VulkanHppGenerator::generateCommandResult(
   {
     return generateCommandResultSingleSuccess( name, commandData, initialSkipCount, definition, raii );
   }
-  else if ( commandData.errorCodes.empty() )
-  {
-    return generateCommandResultMultiSuccessNoErrors( name, commandData, initialSkipCount, definition, raii );
-  }
   else
   {
-    return generateCommandResultMultiSuccessWithErrors( name, commandData, initialSkipCount, definition, raii );
+    return generateCommandResultMultiSuccess( name, commandData, initialSkipCount, definition, raii );
   }
 }
 
-std::string VulkanHppGenerator::generateCommandResultMultiSuccessNoErrors(
+std::string VulkanHppGenerator::generateCommandResultMultiSuccess(
   std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
 {
-  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
-  switch ( returnParams.size() )
+  if ( !commandData.errorCodes.empty() )
   {
-    case 0:
-      {
-        std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-        if ( vectorParams.empty() )
-        {
-          std::vector<size_t> constPointerParams = determineConstPointerParams( commandData.params );
-          if ( constPointerParams.empty() )
-          {
-            return generateCommandSetExclusive( name, commandData, initialSkipCount, definition, raii );
-          }
-        }
-      }
-      break;
-    case 2:
-      if ( ( commandData.successCodes.size() == 2 ) && ( commandData.successCodes[0] == "VK_SUCCESS" ) && ( commandData.successCodes[1] == "VK_INCOMPLETE" ) )
-      {
-        if ( ( commandData.params[returnParams[0]].type.type == "size_t" ) || ( commandData.params[returnParams[0]].type.type == "uint32_t" ) )
-        {
-          if ( ( commandData.params[returnParams[1]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[1]].type.type ) &&
-               !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
-          {
-            std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-            if ( vectorParams.size() == 1 )
-            {
-              if ( returnParams[0] == vectorParams.begin()->second.lenParam )
-              {
-                if ( returnParams[1] == vectorParams.begin()->first )
-                {
-                  return generateCommandSetInclusive( name,
-                                                      commandData,
-                                                      initialSkipCount,
-                                                      definition,
-                                                      returnParams,
-                                                      vectorParams,
-                                                      false,
-                                                      { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
-                                                      raii,
-                                                      false,
-                                                      { CommandFlavourFlagBits::enhanced } );
-                }
-              }
-            }
-          }
-        }
-      }
-      break;
-    default: break;
+    return generateCommandResultMultiSuccessWithErrors( name, commandData, initialSkipCount, definition, raii );
   }
   return "";
 }
@@ -3468,109 +3402,681 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessNoErrors(
 std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors(
   std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
 {
+  std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
+  switch ( vectorParams.size() )
+  {
+    case 0 : return generateCommandResultMultiSuccessWithErrors0Vectors( name, commandData, initialSkipCount, definition, raii );
+    case 1 : return generateCommandResultMultiSuccessWithErrors1Vectors( name, commandData, initialSkipCount, definition, raii, vectorParams );
+    case 2 : return generateCommandResultMultiSuccessWithErrors2Vectors( name, commandData, initialSkipCount, definition, raii, vectorParams );
+    default: return "";
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors0Vectors(
+  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
+{
   std::vector<size_t> returnParams = determineReturnParams( commandData.params );
   switch ( returnParams.size() )
   {
-    case 0 : return generateCommandResultWithErrors0Return( name, commandData, initialSkipCount, definition, raii );
-    case 1 : return generateCommandResultMultiSuccessWithErrors1Return( name, commandData, initialSkipCount, definition, returnParams[0], raii );
-    case 2 : return generateCommandResultMultiSuccessWithErrors2Return( name, commandData, initialSkipCount, definition, returnParams, raii );
-    case 3 : return generateCommandResultMultiSuccessWithErrors3Return( name, commandData, initialSkipCount, definition, returnParams, raii );
-    default: break;
+    case 0 : return generateCommandResultMultiSuccessWithErrors0Vectors0Returns( name, commandData, initialSkipCount, definition, raii );
+    case 1 : return generateCommandResultMultiSuccessWithErrors0Vectors1Returns( name, commandData, initialSkipCount, definition, raii, returnParams );
+    case 2 : return generateCommandResultMultiSuccessWithErrors0Vectors2Returns( name, commandData, initialSkipCount, definition, raii, returnParams );
+    default: return "";
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors0Vectors0Returns(
+  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
+{
+  if ( determineConstPointerParams( commandData.params ).empty() )
+  {
+    return generateCommandSetExclusive( name, commandData, initialSkipCount, definition, raii );
+  }
+  else
+  {
+    return generateCommandSetInclusive(
+      name, commandData, initialSkipCount, definition, {}, {}, false, { CommandFlavourFlagBits::enhanced }, raii, false, { CommandFlavourFlagBits::enhanced } );
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors0Vectors1Returns( std::string const &         name,
+                                                                                             CommandData const &         commandData,
+                                                                                             size_t                      initialSkipCount,
+                                                                                             bool                        definition,
+                                                                                             bool                        raii,
+                                                                                             std::vector<size_t> const & returnParams ) const
+{
+  assert( returnParams.size() == 1 );
+  if ( commandData.params[returnParams[0]].type.type == "uint32_t" )
+  {
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        returnParams,
+                                        {},
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced },
+                                        raii,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced } );
   }
   return "";
 }
 
-std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Return(
-  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors0Vectors2Returns( std::string const &         name,
+                                                                                             CommandData const &         commandData,
+                                                                                             size_t                      initialSkipCount,
+                                                                                             bool                        definition,
+                                                                                             bool                        raii,
+                                                                                             std::vector<size_t> const & returnParams ) const
 {
-  if ( commandData.params[returnParam].type.type == "void" )
+  assert( returnParams.size() == 2 );
+  if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
   {
-    std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-    if ( vectorParams.size() == 1 )
+    if ( commandData.params[returnParams[1]].type.type == "uint64_t" )
     {
-      if ( returnParam == vectorParams.begin()->first )
+      return generateCommandSetInclusive( name,
+                                          commandData,
+                                          initialSkipCount,
+                                          definition,
+                                          returnParams,
+                                          {},
+                                          false,
+                                          { CommandFlavourFlagBits::enhanced },
+                                          raii,
+                                          false,
+                                          { CommandFlavourFlagBits::enhanced } );
+    }
+    else if ( name == "vkGetDeviceFaultInfoEXT" )
+    {
+      // can't generate an enhanced version for such a complex command! Just use the standard version
+      return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, returnParams, {}, false, {}, raii, false, {} );
+    }
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Vectors( std::string const &                       name,
+                                                                                     CommandData const &                       commandData,
+                                                                                     size_t                                    initialSkipCount,
+                                                                                     bool                                      definition,
+                                                                                     bool                                      raii,
+                                                                                     std::map<size_t, VectorParamData> const & vectorParams ) const
+{
+  assert( vectorParams.size() == 1 );
+
+  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
+  switch ( returnParams.size() )
+  {
+    case 0: return generateCommandResultMultiSuccessWithErrors1Vectors0Returns( name, commandData, initialSkipCount, definition, raii, vectorParams );
+    case 1:
+      return generateCommandResultMultiSuccessWithErrors1Vectors1Returns( name, commandData, initialSkipCount, definition, raii, vectorParams, returnParams );
+    case 2:
+      return generateCommandResultMultiSuccessWithErrors1Vectors2Returns( name, commandData, initialSkipCount, definition, raii, vectorParams, returnParams );
+    case 3:
+      return generateCommandResultMultiSuccessWithErrors1Vectors3Returns( name, commandData, initialSkipCount, definition, raii, vectorParams, returnParams );
+    default: return "";
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Vectors( std::string const &                       name,
+                                                                                     CommandData const &                       commandData,
+                                                                                     size_t                                    initialSkipCount,
+                                                                                     bool                                      definition,
+                                                                                     bool                                      raii,
+                                                                                     std::map<size_t, VectorParamData> const & vectorParams ) const
+{
+  assert( vectorParams.size() == 2 );
+
+  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
+  switch ( returnParams.size() )
+  {
+    case 0: return generateCommandResultMultiSuccessWithErrors2Vectors0Returns( name, commandData, initialSkipCount, definition, vectorParams, raii );
+    case 1:
+      return generateCommandResultMultiSuccessWithErrors2Vectors1Returns( name, commandData, initialSkipCount, definition, vectorParams, returnParams, raii );
+    case 3:
+      return generateCommandResultMultiSuccessWithErrors2Vectors3Returns( name, commandData, initialSkipCount, definition, vectorParams, returnParams, raii );
+    default: return "";
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Vectors0Returns( std::string const &                       name,
+                                                                                             CommandData const &                       commandData,
+                                                                                             size_t                                    initialSkipCount,
+                                                                                             bool                                      definition,
+                                                                                             bool                                      raii,
+                                                                                             std::map<size_t, VectorParamData> const & vectorParams ) const
+{
+  assert( vectorParams.size() == 1 );
+  if ( commandData.params[vectorParams.begin()->second.lenParam].type.type == "uint32_t" )
+  {
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        {},
+                                        vectorParams,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced },
+                                        raii,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced } );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Vectors1Returns( std::string const &                       name,
+                                                                                             CommandData const &                       commandData,
+                                                                                             size_t                                    initialSkipCount,
+                                                                                             bool                                      definition,
+                                                                                             bool                                      raii,
+                                                                                             std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                             std::vector<size_t> const &               returnParams ) const
+{
+  assert( ( vectorParams.size() == 1 ) && ( returnParams.size() == 1 ) );
+
+  std::string const & returnType = commandData.params[returnParams[0]].type.type;
+  if ( returnType == "void" )
+  {
+    if ( returnParams[0] == vectorParams.begin()->first )
+    {
+      if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
       {
-        if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
+        return generateCommandSetInclusive( name,
+                                            commandData,
+                                            initialSkipCount,
+                                            definition,
+                                            returnParams,
+                                            vectorParams,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular },
+                                            raii,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
+      }
+    }
+  }
+  else if ( isHandleTypeByStructure( returnType ) )
+  {
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        returnParams,
+                                        vectorParams,
+                                        true,
+                                        { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
+                                        raii,
+                                        true,
+                                        { CommandFlavourFlagBits::enhanced } );
+  }
+  else if ( isVectorByStructure( returnType ) )
+  {
+    // vector by structure is too complex to be supported! Just generate the standard version
+    return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, returnParams, vectorParams, false, {}, raii, false, {} );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Vectors2Returns( std::string const &                       name,
+                                                                                             CommandData const &                       commandData,
+                                                                                             size_t                                    initialSkipCount,
+                                                                                             bool                                      definition,
+                                                                                             bool                                      raii,
+                                                                                             std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                             std::vector<size_t> const &               returnParams ) const
+{
+  assert( ( vectorParams.size() == 1 ) && ( returnParams.size() == 2 ) );
+
+  if ( ( 2 <= commandData.successCodes.size() ) && ( commandData.successCodes[0] == "VK_SUCCESS" ) &&
+       ( ( commandData.successCodes[1] == "VK_INCOMPLETE" ) || ( commandData.successCodes[1] == "VK_NOT_READY" ) ) )
+  {
+    if ( ( returnParams[0] == vectorParams.begin()->first ) && vectorParams.begin()->second.byStructure )
+    {
+      // can't generate an enhanced version for such a complex command! Just use the standard version
+      return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, returnParams, vectorParams, false, {}, raii, true, {} );
+    }
+    else if ( returnParams[0] == vectorParams.begin()->second.lenParam )
+    {
+      if ( returnParams[1] == vectorParams.begin()->first )
+      {
+        if ( ( commandData.params[returnParams[0]].type.type == "size_t" ) || ( commandData.params[returnParams[0]].type.type == "uint32_t" ) )
         {
-          return generateCommandSetInclusive( name,
-                                              commandData,
-                                              initialSkipCount,
-                                              definition,
-                                              { returnParam },
-                                              vectorParams,
-                                              false,
-                                              { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular },
-                                              raii,
-                                              false,
-                                              { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
+          // needs some very special handling of "vkGetSwapchainImagesKHR" !!
+          if ( isHandleType( commandData.params[returnParams[1]].type.type ) && ( name != "vkGetSwapchainImagesKHR" ) )
+          {
+            return generateCommandSetInclusive( name,
+                                                commandData,
+                                                initialSkipCount,
+                                                definition,
+                                                returnParams,
+                                                vectorParams,
+                                                false,
+                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
+                                                raii,
+                                                true,
+                                                { CommandFlavourFlagBits::enhanced } );
+          }
+          else if ( isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+          {
+            return generateCommandSetInclusive( name,
+                                                commandData,
+                                                initialSkipCount,
+                                                definition,
+                                                returnParams,
+                                                vectorParams,
+                                                false,
+                                                { CommandFlavourFlagBits::enhanced,
+                                                  CommandFlavourFlagBits::withAllocator,
+                                                  CommandFlavourFlagBits::chained,
+                                                  CommandFlavourFlagBits::chained | CommandFlavourFlagBits::withAllocator },
+                                                raii,
+                                                false,
+                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
+          }
+          else
+          {
+            return generateCommandSetInclusive( name,
+                                                commandData,
+                                                initialSkipCount,
+                                                definition,
+                                                returnParams,
+                                                vectorParams,
+                                                false,
+                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
+                                                raii,
+                                                false,
+                                                { CommandFlavourFlagBits::enhanced } );
+          }
         }
       }
     }
   }
-  else if ( isHandleType( commandData.params[returnParam].type.type ) )
+
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Vectors3Returns( std::string const &                       name,
+                                                                                             CommandData const &                       commandData,
+                                                                                             size_t                                    initialSkipCount,
+                                                                                             bool                                      definition,
+                                                                                             bool                                      raii,
+                                                                                             std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                             std::vector<size_t> const &               returnParams ) const
+{
+  assert( ( vectorParams.size() == 1 ) && ( returnParams.size() == 3 ) );
+
+  if ( ( commandData.params[returnParams[0]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[0]].type.type ) )
   {
-    std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-    if ( vectorParams.size() == 2 )
+    if ( ( commandData.params[returnParams[1]].type.type == "size_t" ) || ( commandData.params[returnParams[1]].type.type == "uint32_t" ) )
     {
-      if ( returnParam == std::next( vectorParams.begin() )->first )
+      if ( ( commandData.params[returnParams[2]].type.type == "void" ) ||
+           ( !isHandleType( commandData.params[returnParams[2]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[2]].type.type ) ) )
+      {
+        if ( returnParams[1] == vectorParams.begin()->second.lenParam )
+        {
+          if ( returnParams[2] == vectorParams.begin()->first )
+          {
+            std::vector<CommandFlavourFlags> flags     = { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator };
+            std::vector<CommandFlavourFlags> raiiFlags = { CommandFlavourFlagBits::enhanced };
+            if ( isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+            {
+              flags.push_back( CommandFlavourFlagBits::chained );
+              flags.push_back( CommandFlavourFlagBits::chained | CommandFlavourFlagBits::withAllocator );
+              raiiFlags.push_back( CommandFlavourFlagBits::chained );
+            }
+            return generateCommandSetInclusive(
+              name, commandData, initialSkipCount, definition, returnParams, vectorParams, false, flags, raii, false, raiiFlags );
+          }
+        }
+      }
+    }
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Vectors0Returns( std::string const &                       name,
+                                                                                             CommandData const &                       commandData,
+                                                                                             size_t                                    initialSkipCount,
+                                                                                             bool                                      definition,
+                                                                                             std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                             bool                                      raii ) const
+{
+  if ( allVectorSizesSupported( commandData.params, vectorParams ) )
+  {
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        {},
+                                        vectorParams,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced },
+                                        raii,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced } );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Vectors1Returns( std::string const &                       name,
+                                                                                             CommandData const &                       commandData,
+                                                                                             size_t                                    initialSkipCount,
+                                                                                             bool                                      definition,
+                                                                                             std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                             std::vector<size_t> const &               returnParams,
+                                                                                             bool                                      raii ) const
+{
+  assert( ( vectorParams.size() == 2 ) && ( returnParams.size() == 1 ) );
+
+  if ( isHandleType( commandData.params[returnParams[0]].type.type ) )
+  {
+    if ( returnParams[0] == std::next( vectorParams.begin() )->first )
+    {
+      if ( vectorParams.begin()->second.lenParam == std::next( vectorParams.begin() )->second.lenParam )
+      {
+        if ( commandData.params[vectorParams.begin()->second.lenParam].type.type == "uint32_t" )
+        {
+          if ( ( ( commandData.params[vectorParams.begin()->first].type.type != "void" ) &&
+                 !isHandleType( commandData.params[vectorParams.begin()->first].type.type ) ) )
+          {
+            return generateCommandSetInclusive( name,
+                                                commandData,
+                                                initialSkipCount,
+                                                definition,
+                                                returnParams,
+                                                vectorParams,
+                                                true,
+                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator, CommandFlavourFlagBits::singular },
+                                                raii,
+                                                true,
+                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
+          }
+        }
+      }
+    }
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Vectors3Returns( std::string const &                       name,
+                                                                                             CommandData const &                       commandData,
+                                                                                             size_t                                    initialSkipCount,
+                                                                                             bool                                      definition,
+                                                                                             std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                             std::vector<size_t> const &               returnParams,
+                                                                                             bool                                      raii ) const
+{
+  assert( ( vectorParams.size() == 2 ) && ( returnParams.size() == 3 ) );
+
+  if ( commandData.params[returnParams[0]].type.type == "uint32_t" )
+  {
+    if ( isStructureType( commandData.params[returnParams[1]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+    {
+      if ( isStructureType( commandData.params[returnParams[2]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[2]].type.type ) )
       {
         if ( vectorParams.begin()->second.lenParam == std::next( vectorParams.begin() )->second.lenParam )
         {
-          if ( commandData.params[vectorParams.begin()->second.lenParam].type.type == "uint32_t" )
+          if ( returnParams[0] == vectorParams.begin()->second.lenParam )
           {
-            if ( ( ( commandData.params[vectorParams.begin()->first].type.type != "void" ) &&
-                   !isHandleType( commandData.params[vectorParams.begin()->first].type.type ) ) )
+            if ( returnParams[1] == vectorParams.begin()->first )
             {
-              return generateCommandSetInclusive( name,
-                                                  commandData,
-                                                  initialSkipCount,
-                                                  definition,
-                                                  { returnParam },
-                                                  vectorParams,
-                                                  true,
-                                                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator, CommandFlavourFlagBits::singular },
-                                                  raii,
-                                                  true,
-                                                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
+              if ( returnParams[2] == std::next( vectorParams.begin() )->first )
+              {
+                return generateCommandSetInclusive( name,
+                                                    commandData,
+                                                    initialSkipCount,
+                                                    definition,
+                                                    returnParams,
+                                                    vectorParams,
+                                                    false,
+                                                    { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
+                                                    raii,
+                                                    false,
+                                                    { CommandFlavourFlagBits::enhanced } );
+              }
             }
           }
         }
       }
     }
   }
-  else if ( isHandleTypeByStructure( commandData.params[returnParam].type.type ) )
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandResultSingleSuccess(
+  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
+{
+  if ( !commandData.errorCodes.empty() )
   {
-    std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-    if ( vectorParams.size() == 1 )
-    {
-      return generateCommandSetInclusive( name,
-                                          commandData,
-                                          initialSkipCount,
-                                          definition,
-                                          { returnParam },
-                                          vectorParams,
-                                          true,
-                                          { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
-                                          raii,
-                                          true,
-                                          { CommandFlavourFlagBits::enhanced } );
-    }
+    return generateCommandResultSingleSuccessWithErrors( name, commandData, initialSkipCount, definition, raii );
   }
-  else if ( isVectorByStructure( commandData.params[returnParam].type.type ) )
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors(
+  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
+{
+  std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
+  switch ( vectorParams.size() )
   {
-    // vector by structure is too complex to be supported! Just generate the standard version
-    return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, { returnParam }, {}, false, {}, raii, false, {} );
+    case 0 : return generateCommandResultSingleSuccessWithErrors0Vectors( name, commandData, initialSkipCount, definition, raii );
+    case 1 : return generateCommandResultSingleSuccessWithErrors1Vectors( name, commandData, initialSkipCount, definition, vectorParams, raii );
+    case 2 : return generateCommandResultSingleSuccessWithErrors2Vectors( name, commandData, initialSkipCount, definition, vectorParams, raii );
+    default: return "";
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors0Vectors(
+  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
+{
+  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
+  switch ( returnParams.size() )
+  {
+    case 0 : return generateCommandResultSingleSuccessWithErrors0Vectors0Returns( name, commandData, initialSkipCount, definition, raii );
+    case 1 : return generateCommandResultSingleSuccessWithErrors0Vectors1Returns( name, commandData, initialSkipCount, definition, returnParams, raii );
+    default: return "";
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors0Vectors0Returns(
+  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
+{
+  if ( determineConstPointerParams( commandData.params ).empty() )
+  {
+    return generateCommandSetExclusive( name, commandData, initialSkipCount, definition, raii );
   }
   else
   {
-    std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-    if ( vectorParams.empty() )
+    return generateCommandSetInclusive(
+      name, commandData, initialSkipCount, definition, {}, {}, false, { CommandFlavourFlagBits::enhanced }, raii, false, { CommandFlavourFlagBits::enhanced } );
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors0Vectors1Returns( std::string const &         name,
+                                                                                              CommandData const &         commandData,
+                                                                                              size_t                      initialSkipCount,
+                                                                                              bool                        definition,
+                                                                                              std::vector<size_t> const & returnParams,
+                                                                                              bool                        raii ) const
+{
+  assert( returnParams.size() == 1 );
+
+  if ( commandData.params[returnParams[0]].type.type == "void" )
+  {
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        returnParams,
+                                        {},
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced },
+                                        raii,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced } );
+  }
+  else if ( isHandleType( commandData.params[returnParams[0]].type.type ) )
+  {
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        returnParams,
+                                        {},
+                                        true,
+                                        { CommandFlavourFlagBits::enhanced },
+                                        raii,
+                                        true,
+                                        { CommandFlavourFlagBits::enhanced } );
+  }
+  else if ( isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+  {
+    std::string command;
+    if ( raii )
+    {
+      // raii functions returning a structure chain might need a standard implementation as well!
+      command = generateCommandSetInclusive( name,
+                                             commandData,
+                                             initialSkipCount,
+                                             definition,
+                                             returnParams,
+                                             {},
+                                             false,
+                                             { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained },
+                                             raii,
+                                             false,
+                                             {} );
+    }
+    return command + generateCommandSetInclusive( name,
+                                                  commandData,
+                                                  initialSkipCount,
+                                                  definition,
+                                                  returnParams,
+                                                  {},
+                                                  false,
+                                                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained },
+                                                  raii,
+                                                  false,
+                                                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
+  }
+  else
+  {
+    CommandFlavourFlags flavourFlags = CommandFlavourFlagBits::enhanced;
+    if ( name == "vkGetMemoryHostPointerPropertiesEXT" )
+    {
+      // special handling for this function: need to keep the void* argument as a void*!
+      flavourFlags |= CommandFlavourFlagBits::keepVoidPtr;
+    }
+    return generateCommandSetInclusive(
+      name, commandData, initialSkipCount, definition, returnParams, {}, false, { flavourFlags }, raii, false, { flavourFlags } );
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Vectors( std::string const &                       name,
+                                                                                      CommandData const &                       commandData,
+                                                                                      size_t                                    initialSkipCount,
+                                                                                      bool                                      definition,
+                                                                                      std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                      bool                                      raii ) const
+{
+  assert( vectorParams.size() == 1 );
+
+  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
+  switch ( returnParams.size() )
+  {
+    case 0: return generateCommandResultSingleSuccessWithErrors1Vectors0Returns( name, commandData, initialSkipCount, definition, vectorParams, raii );
+    case 1:
+      return generateCommandResultSingleSuccessWithErrors1Vectors1Returns( name, commandData, initialSkipCount, definition, vectorParams, returnParams, raii );
+    case 3:
+      return generateCommandResultSingleSuccessWithErrors1Vectors3Returns( name, commandData, initialSkipCount, definition, vectorParams, returnParams, raii );
+    default: return "";
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Vectors0Returns( std::string const &                       name,
+                                                                                              CommandData const &                       commandData,
+                                                                                              size_t                                    initialSkipCount,
+                                                                                              bool                                      definition,
+                                                                                              std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                              bool                                      raii ) const
+{
+  assert( vectorParams.size() == 1 );
+
+  if ( allVectorSizesSupported( commandData.params, vectorParams ) )
+  {
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        {},
+                                        vectorParams,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced },
+                                        raii,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced } );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Vectors1Returns( std::string const &                       name,
+                                                                                              CommandData const &                       commandData,
+                                                                                              size_t                                    initialSkipCount,
+                                                                                              bool                                      definition,
+                                                                                              std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                              std::vector<size_t> const &               returnParams,
+                                                                                              bool                                      raii ) const
+{
+  assert( ( vectorParams.size() == 1 ) && returnParams.size() == 1 );
+
+  if ( returnParams[0] == vectorParams.begin()->first )
+  {
+    if ( commandData.params[returnParams[0]].type.type == "void" )
+    {
+      if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
+      {
+        return generateCommandSetInclusive( name,
+                                            commandData,
+                                            initialSkipCount,
+                                            definition,
+                                            returnParams,
+                                            vectorParams,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular },
+                                            raii,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
+      }
+    }
+    else if ( isHandleType( commandData.params[returnParams[0]].type.type ) )
+    {
+      if ( isLenByStructMember( commandData.params[vectorParams.begin()->first].lenExpression, commandData.params[vectorParams.begin()->second.lenParam] ) )
+      {
+        return generateCommandSetInclusive( name,
+                                            commandData,
+                                            initialSkipCount,
+                                            definition,
+                                            returnParams,
+                                            vectorParams,
+                                            true,
+                                            { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
+                                            raii,
+                                            true,
+                                            { CommandFlavourFlagBits::enhanced } );
+      }
+    }
+  }
+  else
+  {
+    if ( commandData.params[vectorParams.begin()->first].type.isConstPointer() )
     {
       return generateCommandSetInclusive( name,
                                           commandData,
                                           initialSkipCount,
                                           definition,
-                                          { returnParam },
+                                          returnParams,
                                           vectorParams,
                                           false,
                                           { CommandFlavourFlagBits::enhanced },
@@ -3582,23 +4088,26 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Retu
   return "";
 }
 
-std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Return( std::string const &         name,
-                                                                                    CommandData const &         commandData,
-                                                                                    size_t                      initialSkipCount,
-                                                                                    bool                        definition,
-                                                                                    std::vector<size_t> const & returnParams,
-                                                                                    bool                        raii ) const
+std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Vectors3Returns( std::string const &                       name,
+                                                                                              CommandData const &                       commandData,
+                                                                                              size_t                                    initialSkipCount,
+                                                                                              bool                                      definition,
+                                                                                              std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                              std::vector<size_t> const &               returnParams,
+                                                                                              bool                                      raii ) const
 {
-  if ( ( 2 <= commandData.successCodes.size() ) && ( commandData.successCodes[0] == "VK_SUCCESS" ) &&
-       ( ( commandData.successCodes[1] == "VK_INCOMPLETE" ) || ( commandData.successCodes[1] == "VK_NOT_READY" ) ) )
+  assert( ( vectorParams.size() == 1 ) && returnParams.size() == 3 );
+
+  if ( ( vectorParams.begin()->first == returnParams[2] ) && ( vectorParams.begin()->second.lenParam == returnParams[1] ) )
   {
-    std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-    switch ( vectorParams.size() )
+    if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) &&
+         commandData.params[returnParams[0]].lenParams.empty() )
     {
-      case 0:
-        if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+      if ( ( commandData.params[returnParams[1]].type.type == "size_t" ) && commandData.params[returnParams[1]].lenParams.empty() )
+      {
+        if ( ( commandData.params[returnParams[2]].type.type == "void" ) )
         {
-          if ( commandData.params[returnParams[1]].type.type == "uint64_t" )
+          if ( commandData.params[returnParams[2]].lenExpression == commandData.params[returnParams[1]].name )
           {
             return generateCommandSetInclusive( name,
                                                 commandData,
@@ -3607,217 +4116,59 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Retu
                                                 returnParams,
                                                 vectorParams,
                                                 false,
-                                                { CommandFlavourFlagBits::enhanced },
+                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
                                                 raii,
                                                 false,
                                                 { CommandFlavourFlagBits::enhanced } );
           }
-          else if ( name == "vkGetDeviceFaultInfoEXT" )
-          {
-            // can't generate an enhanced version for such a complex command! Just use the standard version
-            return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, returnParams, vectorParams, false, {}, raii, false, {} );
-          }
         }
-        break;
-      case 1:
-        if ( ( returnParams[0] == vectorParams.begin()->first ) && vectorParams.begin()->second.byStructure )
-        {
-          // can't generate an enhanced version for such a complex command! Just use the standard version
-          return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, returnParams, vectorParams, false, {}, raii, false, {} );
-        }
-        else if ( returnParams[0] == vectorParams.begin()->second.lenParam )
-        {
-          if ( returnParams[1] == vectorParams.begin()->first )
-          {
-            if ( ( commandData.params[returnParams[0]].type.type == "size_t" ) || ( commandData.params[returnParams[0]].type.type == "uint32_t" ) )
-            {
-              // needs some very special handling of "vkGetSwapchainImagesKHR" !!
-              if ( isHandleType( commandData.params[returnParams[1]].type.type ) && ( name != "vkGetSwapchainImagesKHR" ) )
-              {
-                return generateCommandSetInclusive( name,
-                                                    commandData,
-                                                    initialSkipCount,
-                                                    definition,
-                                                    returnParams,
-                                                    vectorParams,
-                                                    false,
-                                                    { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
-                                                    raii,
-                                                    true,
-                                                    { CommandFlavourFlagBits::enhanced } );
-              }
-              else if ( isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
-              {
-                return generateCommandSetInclusive( name,
-                                                    commandData,
-                                                    initialSkipCount,
-                                                    definition,
-                                                    returnParams,
-                                                    vectorParams,
-                                                    false,
-                                                    { CommandFlavourFlagBits::enhanced,
-                                                      CommandFlavourFlagBits::withAllocator,
-                                                      CommandFlavourFlagBits::chained,
-                                                      CommandFlavourFlagBits::chained | CommandFlavourFlagBits::withAllocator },
-                                                    raii,
-                                                    false,
-                                                    { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
-              }
-              else
-              {
-                return generateCommandSetInclusive( name,
-                                                    commandData,
-                                                    initialSkipCount,
-                                                    definition,
-                                                    returnParams,
-                                                    vectorParams,
-                                                    false,
-                                                    { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
-                                                    raii,
-                                                    false,
-                                                    { CommandFlavourFlagBits::enhanced } );
-              }
-            }
-          }
-          else
-          {
-          }
-        }
-        break;
+      }
     }
   }
-
   return "";
 }
 
-std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors3Return( std::string const &         name,
-                                                                                    CommandData const &         commandData,
-                                                                                    size_t                      initialSkipCount,
-                                                                                    bool                        definition,
-                                                                                    std::vector<size_t> const & returnParams,
-                                                                                    bool                        raii ) const
+std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors2Vectors( std::string const &                       name,
+                                                                                      CommandData const &                       commandData,
+                                                                                      size_t                                    initialSkipCount,
+                                                                                      bool                                      definition,
+                                                                                      std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                      bool                                      raii ) const
 {
-  std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-  switch ( vectorParams.size() )
-  {
-    case 0:
-      if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
-      {
-        if ( isStructureType( commandData.params[returnParams[1]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
-        {
-          if ( commandData.params[returnParams[2]].type.type == "uint64_t" )
-          {
-            return generateCommandSetInclusive( name,
-                                                commandData,
-                                                initialSkipCount,
-                                                definition,
-                                                returnParams,
-                                                vectorParams,
-                                                false,
-                                                { CommandFlavourFlagBits::enhanced },
-                                                raii,
-                                                false,
-                                                { CommandFlavourFlagBits::enhanced } );
-          }
-        }
-      }
-      break;
-    case 1:
-      if ( ( commandData.params[returnParams[0]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[0]].type.type ) )
-      {
-        if ( ( commandData.params[returnParams[1]].type.type == "size_t" ) || ( commandData.params[returnParams[1]].type.type == "uint32_t" ) )
-        {
-          if ( ( commandData.params[returnParams[2]].type.type == "void" ) ||
-               ( !isHandleType( commandData.params[returnParams[2]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[2]].type.type ) ) )
-          {
-            if ( returnParams[1] == vectorParams.begin()->second.lenParam )
-            {
-              if ( returnParams[2] == vectorParams.begin()->first )
-              {
-                std::vector<CommandFlavourFlags> flags     = { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator };
-                std::vector<CommandFlavourFlags> raiiFlags = { CommandFlavourFlagBits::enhanced };
-                if ( isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
-                {
-                  flags.push_back( CommandFlavourFlagBits::chained );
-                  flags.push_back( CommandFlavourFlagBits::chained | CommandFlavourFlagBits::withAllocator );
-                  raiiFlags.push_back( CommandFlavourFlagBits::chained );
-                }
-                return generateCommandSetInclusive(
-                  name, commandData, initialSkipCount, definition, returnParams, vectorParams, false, flags, raii, false, raiiFlags );
-              }
-            }
-          }
-        }
-      }
-      break;
-    case 2:
-      if ( commandData.params[returnParams[0]].type.type == "uint32_t" )
-      {
-        if ( isStructureType( commandData.params[returnParams[1]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
-        {
-          if ( isStructureType( commandData.params[returnParams[2]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[2]].type.type ) )
-          {
-            if ( vectorParams.begin()->second.lenParam == std::next( vectorParams.begin() )->second.lenParam )
-            {
-              if ( returnParams[0] == vectorParams.begin()->second.lenParam )
-              {
-                if ( returnParams[1] == vectorParams.begin()->first )
-                {
-                  if ( returnParams[2] == std::next( vectorParams.begin() )->first )
-                  {
-                    return generateCommandSetInclusive( name,
-                                                        commandData,
-                                                        initialSkipCount,
-                                                        definition,
-                                                        returnParams,
-                                                        vectorParams,
-                                                        false,
-                                                        { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
-                                                        raii,
-                                                        false,
-                                                        { CommandFlavourFlagBits::enhanced } );
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      break;
-  }
-  return "";
-}
+  assert( vectorParams.size() == 2 );
 
-std::string VulkanHppGenerator::generateCommandResultSingleSuccess(
-  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
-{
-  if ( commandData.errorCodes.empty() )
-  {
-    return generateCommandResultSingleSuccessNoErrors( name, commandData, initialSkipCount, definition, raii );
-  }
-  else
-  {
-    return generateCommandResultSingleSuccessWithErrors( name, commandData, initialSkipCount, definition, raii );
-  }
-}
-
-std::string VulkanHppGenerator::generateCommandResultSingleSuccessNoErrors(
-  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
-{
   std::vector<size_t> returnParams = determineReturnParams( commandData.params );
   switch ( returnParams.size() )
   {
-    case 0:
+    case 1:
+      return generateCommandResultSingleSuccessWithErrors2Vectors1Returns( name, commandData, initialSkipCount, definition, vectorParams, returnParams, raii );
+    case 2:
+      return generateCommandResultSingleSuccessWithErrors2Vectors2Returns( name, commandData, initialSkipCount, definition, vectorParams, returnParams, raii );
+    default: return "";
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors2Vectors1Returns( std::string const &                       name,
+                                                                                              CommandData const &                       commandData,
+                                                                                              size_t                                    initialSkipCount,
+                                                                                              bool                                      definition,
+                                                                                              std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                              std::vector<size_t> const &               returnParams,
+                                                                                              bool                                      raii ) const
+{
+  assert( ( vectorParams.size() == 2 ) && ( returnParams.size() == 1 ) );
+
+  if ( commandData.params[returnParams[0]].type.type == "void" )
+  {
+    if ( returnParams[0] == std::next( vectorParams.begin() )->first )
+    {
+      if ( vectorParams.begin()->second.lenParam != std::next( vectorParams.begin() )->second.lenParam )
       {
-        std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-        switch ( vectorParams.size() )
+        if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
         {
-          case 0:
-            if ( determineConstPointerParams( commandData.params ).empty() )
-            {
-              return generateCommandSetExclusive( name, commandData, initialSkipCount, definition, raii );
-            }
-            else
+          if ( isHandleType( commandData.params[vectorParams.begin()->first].type.type ) )
+          {
+            if ( commandData.params[std::next( vectorParams.begin() )->second.lenParam].type.isValue() )
             {
               return generateCommandSetInclusive( name,
                                                   commandData,
@@ -3826,36 +4177,26 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessNoErrors(
                                                   returnParams,
                                                   vectorParams,
                                                   false,
-                                                  { CommandFlavourFlagBits::enhanced },
+                                                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular },
                                                   raii,
                                                   false,
-                                                  { CommandFlavourFlagBits::enhanced } );
+                                                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
             }
-            break;
-          case 1:
-            if ( !raii )
-            {
-              if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
-              {
-                if ( isHandleType( commandData.params[vectorParams.begin()->first].type.type ) )
-                {
-                  return generateCommandSet( definition,
-                                             generateCommandStandard( name, commandData, initialSkipCount, definition ),
-                                             { generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, {}, {} ) } );
-                }
-              }
-            }
-            break;
-          default: break;
+          }
         }
       }
-      break;
-    case 1:
+    }
+  }
+  else if ( isHandleType( commandData.params[returnParams[0]].type.type ) )
+  {
+    if ( returnParams[0] == std::next( vectorParams.begin() )->first )
+    {
+      if ( vectorParams.begin()->second.lenParam == std::next( vectorParams.begin() )->second.lenParam )
       {
-        std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-        if ( vectorParams.empty() )
+        if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
         {
-          if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+          if ( ( commandData.params[vectorParams.begin()->first].type.type != "void" ) &&
+               !isHandleType( commandData.params[vectorParams.begin()->first].type.type ) )
           {
             return generateCommandSetInclusive( name,
                                                 commandData,
@@ -3863,83 +4204,66 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessNoErrors(
                                                 definition,
                                                 returnParams,
                                                 vectorParams,
-                                                false,
-                                                { CommandFlavourFlagBits::enhanced },
+                                                true,
+                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator, CommandFlavourFlagBits::singular },
                                                 raii,
-                                                false,
-                                                { CommandFlavourFlagBits::enhanced } );
+                                                true,
+                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
           }
         }
       }
-      break;
-    case 2:
-      if ( ( commandData.params[returnParams[0]].type.type == "size_t" ) || ( commandData.params[returnParams[0]].type.type == "uint32_t" ) )
+    }
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors2Vectors2Returns( std::string const &                       name,
+                                                                                              CommandData const &                       commandData,
+                                                                                              size_t                                    initialSkipCount,
+                                                                                              bool                                      definition,
+                                                                                              std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                              std::vector<size_t> const &               returnParams,
+                                                                                              bool                                      raii ) const
+{
+  assert( ( vectorParams.size() == 2 ) && ( returnParams.size() == 2 ) );
+
+  if ( ( commandData.params[returnParams[0]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[0]].type.type ) &&
+       !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+  {
+    if ( ( commandData.params[returnParams[1]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[1]].type.type ) &&
+         !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+    {
+      if ( returnParams[0] == std::next( vectorParams.begin() )->first )
       {
-        if ( isStructureType( commandData.params[returnParams[1]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+        if ( !vectorParams.contains( returnParams[1] ) )
         {
-          std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-          if ( vectorParams.size() == 1 )
+          assert( ( returnParams[1] != vectorParams.begin()->second.lenParam ) && ( returnParams[1] != std::next( vectorParams.begin() )->second.lenParam ) );
+          if ( vectorParams.begin()->second.lenParam == std::next( vectorParams.begin() )->second.lenParam )
           {
-            if ( returnParams[0] == vectorParams.begin()->second.lenParam )
+            if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
             {
-              if ( returnParams[1] == vectorParams.begin()->first )
+              if ( isStructureType( commandData.params[vectorParams.begin()->first].type.type ) )
               {
-                return generateCommandSetInclusive( name,
-                                                    commandData,
-                                                    initialSkipCount,
-                                                    definition,
-                                                    returnParams,
-                                                    vectorParams,
-                                                    false,
-                                                    { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
-                                                    raii,
-                                                    false,
-                                                    { CommandFlavourFlagBits::enhanced } );
+                return generateCommandSetInclusive(
+                  name,
+                  commandData,
+                  initialSkipCount,
+                  definition,
+                  returnParams,
+                  vectorParams,
+                  false,
+                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator, CommandFlavourFlagBits::singular },
+                  raii,
+                  false,
+                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
               }
             }
           }
         }
       }
-      break;
-    default: break;
+    }
   }
   return "";
-}
-
-std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors(
-  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
-{
-  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
-  switch ( returnParams.size() )
-  {
-    case 0 : return generateCommandResultWithErrors0Return( name, commandData, initialSkipCount, definition, raii );
-    case 1 : return generateCommandResultSingleSuccessWithErrors1Return( name, commandData, initialSkipCount, definition, returnParams[0], raii );
-    case 2 : return generateCommandResultSingleSuccessWithErrors2Return( name, commandData, initialSkipCount, definition, returnParams, raii );
-    case 3 : return generateCommandResultSingleSuccessWithErrors3Return( name, commandData, initialSkipCount, definition, returnParams, raii );
-    default: break;
-  }
-  return "";
-}
-
-std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Return(
-  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const
-{
-  if ( commandData.params[returnParam].type.type == "void" )
-  {
-    return generateCommandResultSingleSuccessWithErrors1ReturnVoid( name, commandData, initialSkipCount, definition, returnParam, raii );
-  }
-  else if ( isHandleType( commandData.params[returnParam].type.type ) )
-  {
-    return generateCommandResultSingleSuccessWithErrors1ReturnHandle( name, commandData, initialSkipCount, definition, returnParam, raii );
-  }
-  else if ( isStructureChainAnchor( commandData.params[returnParam].type.type ) )
-  {
-    return generateCommandResultSingleSuccessWithErrors1ReturnChain( name, commandData, initialSkipCount, definition, returnParam, raii );
-  }
-  else
-  {
-    return generateCommandResultSingleSuccessWithErrors1ReturnValue( name, commandData, initialSkipCount, definition, returnParam, raii );
-  }
 }
 
 std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1ReturnChain(
@@ -3975,74 +4299,6 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
                                                   raii,
                                                   false,
                                                   { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
-  }
-  return "";
-}
-
-std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1ReturnHandle(
-  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const
-{
-  std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-  switch ( vectorParams.size() )
-  {
-    case 0:
-      return generateCommandSetInclusive( name,
-                                          commandData,
-                                          initialSkipCount,
-                                          definition,
-                                          { returnParam },
-                                          vectorParams,
-                                          true,
-                                          { CommandFlavourFlagBits::enhanced },
-                                          raii,
-                                          true,
-                                          { CommandFlavourFlagBits::enhanced } );
-    case 1:
-      if ( returnParam == vectorParams.begin()->first )
-      {
-        if ( isLenByStructMember( commandData.params[vectorParams.begin()->first].lenExpression, commandData.params[vectorParams.begin()->second.lenParam] ) )
-        {
-          return generateCommandSetInclusive( name,
-                                              commandData,
-                                              initialSkipCount,
-                                              definition,
-                                              { returnParam },
-                                              vectorParams,
-                                              true,
-                                              { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
-                                              raii,
-                                              true,
-                                              { CommandFlavourFlagBits::enhanced } );
-        }
-      }
-      break;
-    case 2:
-      if ( returnParam == std::next( vectorParams.begin() )->first )
-      {
-        if ( vectorParams.begin()->second.lenParam == std::next( vectorParams.begin() )->second.lenParam )
-        {
-          if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
-          {
-            if ( ( commandData.params[vectorParams.begin()->first].type.type != "void" ) &&
-                 !isHandleType( commandData.params[vectorParams.begin()->first].type.type ) )
-            {
-              return generateCommandSetInclusive( name,
-                                                  commandData,
-                                                  initialSkipCount,
-                                                  definition,
-                                                  { returnParam },
-                                                  vectorParams,
-                                                  true,
-                                                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator, CommandFlavourFlagBits::singular },
-                                                  raii,
-                                                  true,
-                                                  { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
-            }
-          }
-        }
-      }
-      break;
-    default: break;
   }
   return "";
 }
@@ -4109,206 +4365,6 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
       }
       break;
     default: break;
-  }
-  return "";
-}
-
-std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1ReturnVoid(
-  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const
-{
-  std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-  switch ( vectorParams.size() )
-  {
-    case 0:
-      return generateCommandSetInclusive( name,
-                                          commandData,
-                                          initialSkipCount,
-                                          definition,
-                                          { returnParam },
-                                          vectorParams,
-                                          false,
-                                          { CommandFlavourFlagBits::enhanced },
-                                          raii,
-                                          false,
-                                          { CommandFlavourFlagBits::enhanced } );
-    case 1:
-      if ( returnParam == vectorParams.begin()->first )
-      {
-        if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
-        {
-          return generateCommandSetInclusive( name,
-                                              commandData,
-                                              initialSkipCount,
-                                              definition,
-                                              { returnParam },
-                                              vectorParams,
-                                              false,
-                                              { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular },
-                                              raii,
-                                              false,
-                                              { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
-        }
-      }
-      break;
-    case 2:
-      if ( returnParam == std::next( vectorParams.begin() )->first )
-      {
-        if ( vectorParams.begin()->second.lenParam != std::next( vectorParams.begin() )->second.lenParam )
-        {
-          if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
-          {
-            if ( isHandleType( commandData.params[vectorParams.begin()->first].type.type ) )
-            {
-              if ( commandData.params[std::next( vectorParams.begin() )->second.lenParam].type.isValue() )
-              {
-                return generateCommandSetInclusive( name,
-                                                    commandData,
-                                                    initialSkipCount,
-                                                    definition,
-                                                    { returnParam },
-                                                    vectorParams,
-                                                    false,
-                                                    { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular },
-                                                    raii,
-                                                    false,
-                                                    { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
-              }
-            }
-          }
-        }
-      }
-      break;
-    default: break;
-  }
-  return "";
-}
-
-std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors2Return( std::string const &         name,
-                                                                                     CommandData const &         commandData,
-                                                                                     size_t                      initialSkipCount,
-                                                                                     bool                        definition,
-                                                                                     std::vector<size_t> const & returnParams,
-                                                                                     bool                        raii ) const
-{
-  if ( commandData.params[returnParams[0]].type.type == "size_t" )
-  {
-    if ( commandData.params[returnParams[1]].type.type == "void" )
-    {
-      std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-      if ( vectorParams.size() == 1 )
-      {
-        return generateCommandSetInclusive( name,
-                                            commandData,
-                                            initialSkipCount,
-                                            definition,
-                                            returnParams,
-                                            vectorParams,
-                                            false,
-                                            { CommandFlavourFlagBits::enhanced },
-                                            raii,
-                                            false,
-                                            { CommandFlavourFlagBits::enhanced } );
-      }
-    }
-  }
-  else if ( ( commandData.params[returnParams[0]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[0]].type.type ) &&
-            !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
-  {
-    if ( ( commandData.params[returnParams[1]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[1]].type.type ) &&
-         !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
-    {
-      std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-      if ( vectorParams.size() == 2 )
-      {
-        if ( returnParams[0] == std::next( vectorParams.begin() )->first )
-        {
-          if ( !vectorParams.contains( returnParams[1] ) )
-          {
-            assert( ( returnParams[1] != vectorParams.begin()->second.lenParam ) && ( returnParams[1] != std::next( vectorParams.begin() )->second.lenParam ) );
-            if ( vectorParams.begin()->second.lenParam == std::next( vectorParams.begin() )->second.lenParam )
-            {
-              if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
-              {
-                if ( isStructureType( commandData.params[vectorParams.begin()->first].type.type ) )
-                {
-                  return generateCommandSetInclusive(
-                    name,
-                    commandData,
-                    initialSkipCount,
-                    definition,
-                    returnParams,
-                    vectorParams,
-                    false,
-                    { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator, CommandFlavourFlagBits::singular },
-                    raii,
-                    false,
-                    { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  return "";
-}
-
-std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors3Return( std::string const &         name,
-                                                                                     CommandData const &         commandData,
-                                                                                     size_t                      initialSkipCount,
-                                                                                     bool                        definition,
-                                                                                     std::vector<size_t> const & returnParams,
-                                                                                     bool                        raii ) const
-{
-  if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) &&
-       commandData.params[returnParams[0]].lenParams.empty() && ( commandData.params[returnParams[1]].type.type == "size_t" ) &&
-       commandData.params[returnParams[1]].lenParams.empty() && ( commandData.params[returnParams[2]].type.type == "void" ) &&
-       ( commandData.params[returnParams[2]].lenExpression == commandData.params[returnParams[1]].name ) )
-  {
-    std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-    if ( vectorParams.size() == 1 )
-    {
-      if ( ( returnParams[2] == vectorParams.begin()->first ) && ( returnParams[1] == vectorParams.begin()->second.lenParam ) )
-      {
-        return generateCommandSetInclusive( name,
-                                            commandData,
-                                            initialSkipCount,
-                                            definition,
-                                            returnParams,
-                                            vectorParams,
-                                            false,
-                                            { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
-                                            raii,
-                                            false,
-                                            { CommandFlavourFlagBits::enhanced } );
-      }
-    }
-  }
-  return "";
-}
-
-std::string VulkanHppGenerator::generateCommandResultWithErrors0Return(
-  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
-{
-  std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-  if ( vectorParams.empty() && determineConstPointerParams( commandData.params ).empty() )
-  {
-    return generateCommandSetExclusive( name, commandData, initialSkipCount, definition, raii );
-  }
-  else if ( allVectorSizesSupported( commandData.params, vectorParams ) )
-  {
-    return generateCommandSetInclusive( name,
-                                        commandData,
-                                        initialSkipCount,
-                                        definition,
-                                        {},
-                                        vectorParams,
-                                        false,
-                                        { CommandFlavourFlagBits::enhanced },
-                                        raii,
-                                        false,
-                                        { CommandFlavourFlagBits::enhanced } );
   }
   return "";
 }
@@ -4504,69 +4560,171 @@ std::string
 std::string VulkanHppGenerator::generateCommandVoid(
   std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
 {
+  std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
+  switch ( vectorParams.size() )
+  {
+    case 0 : return generateCommandVoid0Vectors( name, commandData, initialSkipCount, definition, raii );
+    case 1 : return generateCommandVoid1Vectors( name, commandData, initialSkipCount, definition, vectorParams, raii );
+    case 2 : return generateCommandVoid2Vectors( name, commandData, initialSkipCount, definition, vectorParams, raii );
+    case 3 : return generateCommandVoid3Vectors( name, commandData, initialSkipCount, definition, vectorParams, raii );
+    case 4 : return generateCommandVoid4Vectors( name, commandData, initialSkipCount, definition, vectorParams, raii );
+    default: return "";
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandVoid0Vectors(
+  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
+{
   std::vector<size_t> returnParams = determineReturnParams( commandData.params );
   switch ( returnParams.size() )
   {
-    case 0 : return generateCommandVoid0Return( name, commandData, initialSkipCount, definition, raii );
-    case 1 : return generateCommandVoid1Return( name, commandData, initialSkipCount, definition, returnParams[0], raii );
-    case 2 : return generateCommandVoid2Return( name, commandData, initialSkipCount, definition, returnParams, raii );
-    default: break;
+    case 0 : return generateCommandVoid0Vectors0Returns( name, commandData, initialSkipCount, definition, raii );
+    case 1 : return generateCommandVoid0Vectors1Returns( name, commandData, initialSkipCount, definition, returnParams, raii );
+    case 2 : return generateCommandVoid0Vectors2Returns( name, commandData, initialSkipCount, definition, returnParams, raii );
+    default: return "";
   }
-  return "";
 }
 
-std::string VulkanHppGenerator::generateCommandValue(
+std::string VulkanHppGenerator::generateCommandVoid0Vectors0Returns(
   std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
 {
-  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
-  if ( returnParams.empty() )
+  if ( determineConstPointerParams( commandData.params ).empty() )
   {
-    std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-    if ( vectorParams.empty() )
-    {
-      if ( determineConstPointerParams( commandData.params ).empty() )
-      {
-        return generateCommandSetInclusive(
-          name, commandData, initialSkipCount, definition, {}, vectorParams, false, {}, raii, false, { CommandFlavourFlagBits::enhanced } );
-      }
-      else
-      {
-        return generateCommandSetInclusive( name,
-                                            commandData,
-                                            initialSkipCount,
-                                            definition,
-                                            {},
-                                            vectorParams,
-                                            false,
-                                            { CommandFlavourFlagBits::enhanced },
-                                            raii,
-                                            false,
-                                            { CommandFlavourFlagBits::enhanced } );
-      }
-    }
-    else if ( vectorParams.size() <= 1 )
-    {
-      if ( !raii )
-      {
-        return generateCommandSet( definition,
-                                   generateCommandStandard( name, commandData, initialSkipCount, definition ),
-                                   { generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, returnParams, {} ) } );
-      }
-    }
+    return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, {}, {}, false, {}, raii, false, { CommandFlavourFlagBits::enhanced } );
   }
-  return "";
-}
-
-std::string VulkanHppGenerator::generateCommandVoid0Return(
-  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
-{
-  std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-  if ( vectorParams.empty() && determineConstPointerParams( commandData.params ).empty() )
+  else
   {
     return generateCommandSetInclusive(
-      name, commandData, initialSkipCount, definition, {}, vectorParams, false, {}, raii, false, { CommandFlavourFlagBits::enhanced } );
+      name, commandData, initialSkipCount, definition, {}, {}, false, { CommandFlavourFlagBits::enhanced }, raii, false, { CommandFlavourFlagBits::enhanced } );
   }
-  else if ( allVectorSizesSupported( commandData.params, vectorParams ) )
+}
+
+std::string VulkanHppGenerator::generateCommandVoid0Vectors1Returns( std::string const &         name,
+                                                                     CommandData const &         commandData,
+                                                                     size_t                      initialSkipCount,
+                                                                     bool                        definition,
+                                                                     std::vector<size_t> const & returnParams,
+                                                                     bool                        raii ) const
+{
+  assert( returnParams.size() == 1 );
+
+  if ( ( commandData.params[returnParams[0]].type.type == "void" ) )
+  {
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        returnParams,
+                                        {},
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced },
+                                        raii,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced } );
+  }
+  else if ( isHandleType( commandData.params[returnParams[0]].type.type ) )
+  {
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        returnParams,
+                                        {},
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced },
+                                        raii,
+                                        true,
+                                        { CommandFlavourFlagBits::enhanced } );
+  }
+  else if ( isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+  {
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        returnParams,
+                                        {},
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained },
+                                        raii,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
+  }
+  else
+  {
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        returnParams,
+                                        {},
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced },
+                                        raii,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced } );
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandVoid0Vectors2Returns( std::string const &         name,
+                                                                     CommandData const &         commandData,
+                                                                     size_t                      initialSkipCount,
+                                                                     bool                        definition,
+                                                                     std::vector<size_t> const & returnParams,
+                                                                     bool                        raii ) const
+{
+  assert( returnParams.size() == 2 );
+
+  if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+  {
+    if ( ( commandData.params[returnParams[1]].type.type == "void" ) ||
+         ( isStructureType( commandData.params[returnParams[1]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) ) )
+    {
+      return generateCommandSetInclusive( name,
+                                          commandData,
+                                          initialSkipCount,
+                                          definition,
+                                          returnParams,
+                                          {},
+                                          false,
+                                          { CommandFlavourFlagBits::enhanced },
+                                          raii,
+                                          false,
+                                          { CommandFlavourFlagBits::enhanced } );
+    }
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandVoid1Vectors( std::string const &               name,
+                                                             CommandData const &               commandData,
+                                                             size_t                            initialSkipCount,
+                                                             bool                              definition,
+                                                             std::map<size_t, VectorParamData> vectorParams,
+                                                             bool                              raii ) const
+{
+  assert( vectorParams.size() == 1 );
+
+  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
+  switch ( returnParams.size() )
+  {
+    case 0 : return generateCommandVoid1Vectors0Returns( name, commandData, initialSkipCount, definition, vectorParams, raii );
+    case 1 : return generateCommandVoid1Vectors1Returns( name, commandData, initialSkipCount, definition, vectorParams, returnParams, raii );
+    case 2 : return generateCommandVoid1Vectors2Returns( name, commandData, initialSkipCount, definition, vectorParams, returnParams, raii );
+    default: return "";
+  }
+}
+
+std::string VulkanHppGenerator::generateCommandVoid1Vectors0Returns( std::string const &               name,
+                                                                     CommandData const &               commandData,
+                                                                     size_t                            initialSkipCount,
+                                                                     bool                              definition,
+                                                                     std::map<size_t, VectorParamData> vectorParams,
+                                                                     bool                              raii ) const
+{
+  assert( vectorParams.size() == 1 );
+
+  if ( allVectorSizesSupported( commandData.params, vectorParams ) )
   {
     // All the vectorParams have a counter by value, of type "uint32_t", "VkDeviceSize", or "VkSampleCountFlagBits" (!)
     return generateCommandSetInclusive( name,
@@ -4584,157 +4742,58 @@ std::string VulkanHppGenerator::generateCommandVoid0Return(
   return "";
 }
 
-std::string VulkanHppGenerator::generateCommandVoid1Return(
-  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const
+std::string VulkanHppGenerator::generateCommandVoid1Vectors1Returns( std::string const &               name,
+                                                                     CommandData const &               commandData,
+                                                                     size_t                            initialSkipCount,
+                                                                     bool                              definition,
+                                                                     std::map<size_t, VectorParamData> vectorParams,
+                                                                     std::vector<size_t> const &       returnParams,
+                                                                     bool                              raii ) const
 {
-  std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-  if ( ( commandData.params[returnParam].type.type == "void" ) )
+  assert( ( vectorParams.size() == 1 ) && ( returnParams.size() == 1 ) );
+
+  if ( ( commandData.params[returnParams[0]].type.type == "void" ) )
   {
-    switch ( vectorParams.size() )
+    if ( returnParams[0] == vectorParams.begin()->first )
     {
-      case 0:
-        return generateCommandSetInclusive( name,
-                                            commandData,
-                                            initialSkipCount,
-                                            definition,
-                                            { returnParam },
-                                            vectorParams,
-                                            false,
-                                            { CommandFlavourFlagBits::enhanced },
-                                            raii,
-                                            false,
-                                            { CommandFlavourFlagBits::enhanced } );
-      case 1:
-        if ( returnParam == vectorParams.begin()->first )
+      if ( name == stripPluralS( name ) )
+      {
+        std::vector<CommandFlavourFlags> flavourFlags;
+        if ( name == "vkGetDescriptorEXT" )
         {
-          if ( name == stripPluralS( name ) )
-          {
-            std::vector<CommandFlavourFlags> flavourFlags;
-            if ( name == "vkGetDescriptorEXT" )
-            {
-              // special handling for this function: do not return the void*, but keep its argument as it is
-              flavourFlags.push_back( CommandFlavourFlagBits::noReturn | CommandFlavourFlagBits::keepVoidPtr );
-            }
-            flavourFlags.push_back( CommandFlavourFlagBits::singular );
-            return generateCommandSetInclusive(
-              name, commandData, initialSkipCount, definition, { returnParam }, vectorParams, false, flavourFlags, raii, false, flavourFlags );
-          }
+          // special handling for this function: do not return the void*, but keep its argument as it is
+          flavourFlags.push_back( CommandFlavourFlagBits::noReturn | CommandFlavourFlagBits::keepVoidPtr );
         }
-        break;
-      default: break;
-    }
-  }
-  else if ( isHandleType( commandData.params[returnParam].type.type ) )
-  {
-    if ( vectorParams.empty() )
-    {
-      return generateCommandSetInclusive( name,
-                                          commandData,
-                                          initialSkipCount,
-                                          definition,
-                                          { returnParam },
-                                          vectorParams,
-                                          false,
-                                          { CommandFlavourFlagBits::enhanced },
-                                          raii,
-                                          true,
-                                          { CommandFlavourFlagBits::enhanced } );
-    }
-  }
-  else if ( isStructureChainAnchor( commandData.params[returnParam].type.type ) )
-  {
-    if ( vectorParams.empty() )
-    {
-      return generateCommandSetInclusive( name,
-                                          commandData,
-                                          initialSkipCount,
-                                          definition,
-                                          { returnParam },
-                                          vectorParams,
-                                          false,
-                                          { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained },
-                                          raii,
-                                          false,
-                                          { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
+        flavourFlags.push_back( CommandFlavourFlagBits::singular );
+        return generateCommandSetInclusive(
+          name, commandData, initialSkipCount, definition, returnParams, vectorParams, false, flavourFlags, raii, false, flavourFlags );
+      }
     }
   }
   else
   {
-    switch ( vectorParams.size() )
+    if ( returnParams[0] == vectorParams.begin()->first )
     {
-      case 0:
-        return generateCommandSetInclusive( name,
-                                            commandData,
-                                            initialSkipCount,
-                                            definition,
-                                            { returnParam },
-                                            vectorParams,
-                                            false,
-                                            { CommandFlavourFlagBits::enhanced },
-                                            raii,
-                                            false,
-                                            { CommandFlavourFlagBits::enhanced } );
-      case 1:
-        if ( returnParam == vectorParams.begin()->first )
-        {
-          // you get a vector of stuff, with the size being one of the parameters
-          return generateCommandSetInclusive( name,
-                                              commandData,
-                                              initialSkipCount,
-                                              definition,
-                                              { returnParam },
-                                              vectorParams,
-                                              false,
-                                              { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
-                                              raii,
-                                              false,
-                                              { CommandFlavourFlagBits::enhanced } );
-        }
-        else
-        {
-          if ( !isHandleType( commandData.params[vectorParams.begin()->first].type.type ) &&
-               !isStructureChainAnchor( commandData.params[vectorParams.begin()->first].type.type ) &&
-               ( commandData.params[vectorParams.begin()->first].type.type != "void" ) )
-          {
-            if ( isLenByStructMember( commandData.params[vectorParams.begin()->first].lenExpression,
-                                      commandData.params[vectorParams.begin()->second.lenParam] ) )
-            {
-              return generateCommandSetInclusive( name,
-                                                  commandData,
-                                                  initialSkipCount,
-                                                  definition,
-                                                  { returnParam },
-                                                  vectorParams,
-                                                  false,
-                                                  { CommandFlavourFlagBits::enhanced },
-                                                  raii,
-                                                  false,
-                                                  { CommandFlavourFlagBits::enhanced } );
-            }
-          }
-        }
-        break;
-      default: break;
+      // you get a vector of stuff, with the size being one of the parameters
+      return generateCommandSetInclusive( name,
+                                          commandData,
+                                          initialSkipCount,
+                                          definition,
+                                          returnParams,
+                                          vectorParams,
+                                          false,
+                                          { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
+                                          raii,
+                                          false,
+                                          { CommandFlavourFlagBits::enhanced } );
     }
-  }
-  return "";
-}
-
-std::string VulkanHppGenerator::generateCommandVoid2Return( std::string const &         name,
-                                                            CommandData const &         commandData,
-                                                            size_t                      initialSkipCount,
-                                                            bool                        definition,
-                                                            std::vector<size_t> const & returnParams,
-                                                            bool                        raii ) const
-{
-  std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-  switch ( vectorParams.size() )
-  {
-    case 0:
-      if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+    else
+    {
+      if ( !isHandleType( commandData.params[vectorParams.begin()->first].type.type ) &&
+           !isStructureChainAnchor( commandData.params[vectorParams.begin()->first].type.type ) &&
+           ( commandData.params[vectorParams.begin()->first].type.type != "void" ) )
       {
-        if ( ( commandData.params[returnParams[1]].type.type == "void" ) ||
-             ( isStructureType( commandData.params[returnParams[1]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) ) )
+        if ( isLenByStructMember( commandData.params[vectorParams.begin()->first].lenExpression, commandData.params[vectorParams.begin()->second.lenParam] ) )
         {
           return generateCommandSetInclusive( name,
                                               commandData,
@@ -4749,49 +4808,227 @@ std::string VulkanHppGenerator::generateCommandVoid2Return( std::string const & 
                                               { CommandFlavourFlagBits::enhanced } );
         }
       }
-      break;
-    case 1:
-      if ( ( returnParams[0] == vectorParams.begin()->second.lenParam ) && ( commandData.params[returnParams[0]].type.type == "uint32_t" ) )
-      {
-        if ( returnParams[1] == vectorParams.begin()->first )
-        {
-          if ( isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
-          {
-            return generateCommandSetInclusive( name,
-                                                commandData,
-                                                initialSkipCount,
-                                                definition,
-                                                returnParams,
-                                                vectorParams,
-                                                false,
-                                                { CommandFlavourFlagBits::enhanced,
-                                                  CommandFlavourFlagBits::withAllocator,
-                                                  CommandFlavourFlagBits::chained,
-                                                  CommandFlavourFlagBits::chained | CommandFlavourFlagBits::withAllocator },
-                                                raii,
-                                                false,
-                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
-          }
-          else
-          {
-            return generateCommandSetInclusive( name,
-                                                commandData,
-                                                initialSkipCount,
-                                                definition,
-                                                returnParams,
-                                                vectorParams,
-                                                false,
-                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
-                                                raii,
-                                                false,
-                                                { CommandFlavourFlagBits::enhanced } );
-          }
-        }
-      }
-      break;
-    default: break;
+    }
   }
   return "";
+}
+
+std::string VulkanHppGenerator::generateCommandVoid1Vectors2Returns( std::string const &               name,
+                                                                     CommandData const &               commandData,
+                                                                     size_t                            initialSkipCount,
+                                                                     bool                              definition,
+                                                                     std::map<size_t, VectorParamData> vectorParams,
+                                                                     std::vector<size_t> const &       returnParams,
+                                                                     bool                              raii ) const
+{
+  assert( ( vectorParams.size() == 1 ) && ( returnParams.size() == 2 ) );
+
+  if ( ( returnParams[0] == vectorParams.begin()->second.lenParam ) && ( commandData.params[returnParams[0]].type.type == "uint32_t" ) )
+  {
+    if ( returnParams[1] == vectorParams.begin()->first )
+    {
+      if ( isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+      {
+        return generateCommandSetInclusive( name,
+                                            commandData,
+                                            initialSkipCount,
+                                            definition,
+                                            returnParams,
+                                            vectorParams,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced,
+                                              CommandFlavourFlagBits::withAllocator,
+                                              CommandFlavourFlagBits::chained,
+                                              CommandFlavourFlagBits::chained | CommandFlavourFlagBits::withAllocator },
+                                            raii,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
+      }
+      else
+      {
+        return generateCommandSetInclusive( name,
+                                            commandData,
+                                            initialSkipCount,
+                                            definition,
+                                            returnParams,
+                                            vectorParams,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
+                                            raii,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced } );
+      }
+    }
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandVoid2Vectors( std::string const &               name,
+                                                             CommandData const &               commandData,
+                                                             size_t                            initialSkipCount,
+                                                             bool                              definition,
+                                                             std::map<size_t, VectorParamData> vectorParams,
+                                                             bool                              raii ) const
+{
+  assert( vectorParams.size() == 2 );
+
+  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
+  if ( returnParams.empty() )
+  {
+    return generateCommandVoid2Vectors0Returns( name, commandData, initialSkipCount, definition, vectorParams, raii );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandVoid2Vectors0Returns( std::string const &               name,
+                                                                     CommandData const &               commandData,
+                                                                     size_t                            initialSkipCount,
+                                                                     bool                              definition,
+                                                                     std::map<size_t, VectorParamData> vectorParams,
+                                                                     bool                              raii ) const
+{
+  assert( vectorParams.size() == 2 );
+
+  if ( allVectorSizesSupported( commandData.params, vectorParams ) )
+  {
+    // All the vectorParams have a counter by value, of type "uint32_t", "VkDeviceSize", or "VkSampleCountFlagBits" (!)
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        {},
+                                        vectorParams,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced },
+                                        raii,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced } );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandVoid3Vectors( std::string const &               name,
+                                                             CommandData const &               commandData,
+                                                             size_t                            initialSkipCount,
+                                                             bool                              definition,
+                                                             std::map<size_t, VectorParamData> vectorParams,
+                                                             bool                              raii ) const
+{
+  assert( vectorParams.size() == 3 );
+
+  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
+  if ( returnParams.empty() )
+  {
+    return generateCommandVoid3Vectors0Returns( name, commandData, initialSkipCount, definition, vectorParams, raii );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandVoid3Vectors0Returns( std::string const &               name,
+                                                                     CommandData const &               commandData,
+                                                                     size_t                            initialSkipCount,
+                                                                     bool                              definition,
+                                                                     std::map<size_t, VectorParamData> vectorParams,
+                                                                     bool                              raii ) const
+{
+  assert( vectorParams.size() == 3 );
+
+  if ( allVectorSizesSupported( commandData.params, vectorParams ) )
+  {
+    // All the vectorParams have a counter by value, of type "uint32_t", "VkDeviceSize", or "VkSampleCountFlagBits" (!)
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        {},
+                                        vectorParams,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced },
+                                        raii,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced } );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandVoid4Vectors( std::string const &               name,
+                                                             CommandData const &               commandData,
+                                                             size_t                            initialSkipCount,
+                                                             bool                              definition,
+                                                             std::map<size_t, VectorParamData> vectorParams,
+                                                             bool                              raii ) const
+{
+  assert( vectorParams.size() == 4 );
+
+  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
+  if ( returnParams.empty() )
+  {
+    return generateCommandVoid4Vectors0Returns( name, commandData, initialSkipCount, definition, vectorParams, raii );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandVoid4Vectors0Returns( std::string const &               name,
+                                                                     CommandData const &               commandData,
+                                                                     size_t                            initialSkipCount,
+                                                                     bool                              definition,
+                                                                     std::map<size_t, VectorParamData> vectorParams,
+                                                                     bool                              raii ) const
+{
+  assert( vectorParams.size() == 4 );
+
+  if ( allVectorSizesSupported( commandData.params, vectorParams ) )
+  {
+    // All the vectorParams have a counter by value, of type "uint32_t", "VkDeviceSize", or "VkSampleCountFlagBits" (!)
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        {},
+                                        vectorParams,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced },
+                                        raii,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced } );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandValue(
+  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
+{
+  std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
+  if ( vectorParams.empty() )
+  {
+    return generateCommandValue0Vectors( name, commandData, initialSkipCount, definition, raii );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandValue0Vectors(
+  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
+{
+  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
+  if ( returnParams.empty() )
+  {
+    return generateCommandValue0Vectors0Returns( name, commandData, initialSkipCount, definition, raii );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommandValue0Vectors0Returns(
+  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
+{
+  if ( determineConstPointerParams( commandData.params ).empty() )
+  {
+    return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, {}, {}, false, {}, raii, false, { CommandFlavourFlagBits::enhanced } );
+  }
+  else
+  {
+    return generateCommandSetInclusive(
+      name, commandData, initialSkipCount, definition, {}, {}, false, { CommandFlavourFlagBits::enhanced }, raii, false, { CommandFlavourFlagBits::enhanced } );
+  }
 }
 
 std::string VulkanHppGenerator::generateConstexprString( std::pair<std::string, StructData> const & structData ) const

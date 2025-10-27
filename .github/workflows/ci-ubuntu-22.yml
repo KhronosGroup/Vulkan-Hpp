@@ -122,7 +122,6 @@ jobs:
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD          \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE
             cmake --build build --parallel --clean-first
-            cd build && ctest -j --output-on-failure
-            cd ..
+            ctest -j --output-on-failure --test-dir build
           done
         done

@@ -103,7 +103,6 @@ jobs:
             echo "================================================================================="
 
             cmake -B build -G Ninja --fresh                   \
-              -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 \
               -D VULKAN_HPP_BUILD_CXX_MODULE=$CXX_MODULES     \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
@@ -113,10 +112,8 @@ jobs:
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
               -D VULKAN_HPP_PRECOMPILE=OFF                    \
-              -D CMAKE_CXX_STANDARD=$CXX_STANDARD             \
-              -D CMAKE_BUILD_TYPE=$BUILD_TYPE
-            cmake --build build --parallel --clean-first
-            cd build && ctest -j --output-on-failure -C $BUILD_TYPE
-            cd ..
+              -D CMAKE_CXX_STANDARD=$CXX_STANDARD
+            cmake --build build --parallel --clean-first --config $BUILD_TYPE
+            ctest -j --output-on-failure --test-dir build -C $BUILD_TYPE
           done
         done

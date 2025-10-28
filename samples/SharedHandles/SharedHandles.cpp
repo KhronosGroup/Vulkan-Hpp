@@ -86,7 +86,7 @@ public:
     VkResult     err = glfwCreateWindowSurface( instance.get(), window.handle, nullptr, &surface );
     if ( err != VK_SUCCESS )
       throw std::runtime_error( "Failed to create window!" );
-    vk::SharedSurfaceKHR sharedSurface{ surface, instance };
+    vk::SharedSurfaceKHR sharedSurface{ static_cast<vk::SurfaceKHR>(surface), instance };
 
     auto graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, sharedSurface.get() );
     device = vk::SharedDevice{ vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() ) };

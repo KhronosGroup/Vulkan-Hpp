@@ -97,7 +97,7 @@ jobs:
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE with architecture ${{matrix.architecture}}"
             echo "================================================================================="
 
-            cmake -B build -G Ninja --fresh                   \
+            cmake -B build --fresh                   \
               -D VULKAN_HPP_BUILD_CXX_MODULE=$CXX_MODULES     \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \

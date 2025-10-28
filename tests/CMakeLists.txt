@@ -46,7 +46,9 @@ endif()
 vulkan_hpp__setup_test( NAME StridedArrayProxy )
 vulkan_hpp__setup_test( NAME StructureChain )
 # add_subdirectory( UniqueHandle ) # really messy setup, test needs to be shortened
-vulkan_hpp__setup_test( NAME UniqueHandleDefaultArguments )
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	vulkan_hpp__setup_test( NAME UniqueHandleDefaultArguments )
+endif()
 vulkan_hpp__setup_test( NAME Video )
 
 if( VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_BUILD_CXX_MODULE )

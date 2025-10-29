@@ -4768,9 +4768,19 @@ namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
       typename ResultValueType<void>::type setDebugUtilsObjectNameEXT( const DebugUtilsObjectNameInfoEXT & nameInfo ) const;
 
+      // wrapper function for command vkSetDebugUtilsObjectNameEXT, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
+      template <typename HandleType>
+      typename ResultValueType<void>::type setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name ) const;
+
       // wrapper function for command vkSetDebugUtilsObjectTagEXT, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
       typename ResultValueType<void>::type setDebugUtilsObjectTagEXT( const DebugUtilsObjectTagInfoEXT & tagInfo ) const;
+
+      // wrapper function for command vkSetDebugUtilsObjectTagEXT, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
+      template <typename HandleType, typename TagType>
+      typename ResultValueType<void>::type setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag ) const;
 
 #  if defined( VK_USE_PLATFORM_ANDROID_KHR )
       //=== VK_ANDROID_external_memory_android_hardware_buffer ===
@@ -21100,6 +21110,17 @@ namespace VULKAN_HPP_NAMESPACE
       return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result );
     }
 
+    // wrapper function for command vkSetDebugUtilsObjectNameEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
+    template <typename HandleType>
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name ) const
+    {
+      static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
+      VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo(
+        handle.objectType, reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) ), name.c_str() );
+      return setDebugUtilsObjectNameEXT( nameInfo );
+    }
+
     // wrapper function for command vkSetDebugUtilsObjectTagEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
     VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setDebugUtilsObjectTagEXT( const DebugUtilsObjectTagInfoEXT & tagInfo ) const
     {
@@ -21110,6 +21131,18 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::setDebugUtilsObjectTagEXT" );
 
       return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result );
+    }
+
+    // wrapper function for command vkSetDebugUtilsObjectTagEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
+    template <typename HandleType, typename TagType>
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type
+      Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag ) const
+    {
+      static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
+      VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT tagInfo(
+        handle.objectType, reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) ), name, sizeof( TagType ), &tag );
+      return setDebugUtilsObjectTagEXT( tagInfo );
     }
 
     // wrapper function for command vkQueueBeginDebugUtilsLabelEXT, see

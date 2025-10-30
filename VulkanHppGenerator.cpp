@@ -2061,7 +2061,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
           else if ( params[i].optional )
           {
             arguments.push_back( "Optional<" + stripPostfix( composedType, " *" ) + "> " + name +
-                                 ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" ) );
+                                 ( ( definition || withAllocators ) ? "" : " = nullptr" ) );
             hasDefaultAssignment = true;
           }
           else
@@ -2080,7 +2080,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
             if ( params[i].optional )
             {
               arguments.push_back( "Optional<const std::string> " + name +
-                                   ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" ) );
+                                   ( ( definition || withAllocators ) ? "" : " = nullptr" ) );
               hasDefaultAssignment = true;
             }
             else
@@ -2101,7 +2101,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
             if ( params[i].optional && !definition )
             {
               assert( params[i].strideParam.first.empty() );
-              arguments.back() += " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT";
+              arguments.back() += " = nullptr";
               hasDefaultAssignment = true;
             }
           }
@@ -2128,7 +2128,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
         std::string paramName = ( definition && ( params[i].name == "objectType" ) ) ? "objectType_" : params[i].name;
         arguments.push_back( composedType + " " + paramName + generateCArraySizes( params[i].arraySizes ) );
       }
-      arguments.back() += std::string( !definition && ( defaultStartIndex <= i ) && !hasDefaultAssignment ? " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT" : "" );
+      arguments.back() += std::string( !definition && ( defaultStartIndex <= i ) && !hasDefaultAssignment ? " = {}" : "" );
     }
   }
   if ( withAllocators )
@@ -3187,10 +3187,10 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::string const & 
     pos = destroyCommandString.find( commandIt->second.params[1].name,
                                      pos + 1 );  // get the argument to destroy in the advanced version
     assert( pos != std::string::npos );
-    pos = destroyCommandString.find( " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT", pos );
+    pos = destroyCommandString.find( " = {}", pos );
     if ( pos != std::string::npos )
     {
-      destroyCommandString.erase( pos, strlen( " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT" ) );
+      destroyCommandString.erase( pos, strlen( " = {}" ) );
     }
     str += "\n" + destroyCommandString;
   }
@@ -6950,10 +6950,10 @@ std::string VulkanHppGenerator::generateDestroyCommand( std::string const & name
     pos = destroyCommandString.find( localCommandData.params[1].name,
                                      pos + 1 );  // get the argument to destroy in the advanced version
     assert( pos != std::string::npos );
-    pos = destroyCommandString.find( " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT", pos );
+    pos = destroyCommandString.find( " = {}", pos );
     if ( pos != std::string::npos )
     {
-      destroyCommandString.erase( pos, strlen( " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT" ) );
+      destroyCommandString.erase( pos, strlen( " = {}" ) );
     }
     return "\n" + destroyCommandString;
   }

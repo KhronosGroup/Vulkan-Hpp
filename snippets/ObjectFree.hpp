@@ -4,8 +4,8 @@
   public:
     ObjectFree() = default;
 
-    ObjectFree( OwnerType                                               owner,
-                Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+    ObjectFree( OwnerType                           owner,
+                Optional<const AllocationCallbacks> allocationCallbacks = nullptr,
                 Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_owner( owner )
       , m_allocationCallbacks( allocationCallbacks )

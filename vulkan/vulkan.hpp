@@ -36,7 +36,6 @@
 #  endif
 #else
 #  include <cassert>
-#  include <cstdlib>
 #  include <cstring>
 import std.compat;
 #endif

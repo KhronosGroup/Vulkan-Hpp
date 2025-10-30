@@ -142,8 +142,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     /* VULKAN_KEY_START */
 
     // Check disk for existing cache data
-    size_t startCacheSize = 0;
-    char * startCacheData = nullptr;
+    std::vector<char> startCacheData;
 
     std::string   cacheFileName = "pipeline_cache_data.bin";
     std::ifstream readCacheStream( cacheFileName, std::ios_base::in | std::ios_base::binary );
@@ -151,14 +150,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     {
       // Determine cache size
       readCacheStream.seekg( 0, readCacheStream.end );
-      startCacheSize = static_cast<size_t>( readCacheStream.tellg() );
+      size_t startCacheSize = static_cast<size_t>( readCacheStream.tellg() );
       readCacheStream.seekg( 0, readCacheStream.beg );
 
       // Allocate memory to hold the initial cache data
-      startCacheData = (char *)std::malloc( startCacheSize );
+      startCacheData.resize( startCacheSize );
 
       // Read the data into our buffer
-      readCacheStream.read( startCacheData, startCacheSize );
+      readCacheStream.read( startCacheData.data(), startCacheData.size() );
 
       // Clean up and print results
       readCacheStream.close();
@@ -171,7 +170,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::cout << "  Pipeline cache miss!\n";
     }
 
-    if ( startCacheData != nullptr )
+    if ( !startCacheData.empty() )
     {
       // Check for cache validity
       //
@@ -207,11 +206,12 @@ int main( int /*argc*/, char ** /*argv*/ )
       uint32_t deviceID                        = 0;
       uint8_t  pipelineCacheUUID[VK_UUID_SIZE] = {};
 
-      memcpy( &headerLength, (uint8_t *)startCacheData + 0, 4 );
-      memcpy( &cacheHeaderVersion, (uint8_t *)startCacheData + 4, 4 );
-      memcpy( &vendorID, (uint8_t *)startCacheData + 8, 4 );
-      memcpy( &deviceID, (uint8_t *)startCacheData + 12, 4 );
-      memcpy( pipelineCacheUUID, (uint8_t *)startCacheData + 16, VK_UUID_SIZE );
+      uint8_t * startCacheDataPtr = reinterpret_cast<uint8_t *>( startCacheData.data() );
+      memcpy( &headerLength, startCacheDataPtr + 0, 4 );
+      memcpy( &cacheHeaderVersion, startCacheDataPtr + 4, 4 );
+      memcpy( &vendorID, startCacheDataPtr + 8, 4 );
+      memcpy( &deviceID, startCacheDataPtr + 12, 4 );
+      memcpy( pipelineCacheUUID, startCacheDataPtr + 16, VK_UUID_SIZE );
 
       // Check each field and report bad values before freeing existing cache
       bool badCache = false;
@@ -257,9 +257,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       if ( badCache )
       {
         // Don't submit initial cache data if any version info is incorrect
-        free( startCacheData );
-        startCacheSize = 0;
-        startCacheData = nullptr;
+        startCacheData.clear();
 
         // And clear out the old cache file for use in next run
         std::cout << "  Deleting cache entry " << cacheFileName << " to repopulate.\n";
@@ -272,12 +270,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     // Feed the initial cache data into cache creation
-    vk::PipelineCacheCreateInfo pipelineCacheCreateInfo( {}, startCacheSize, startCacheData );
+    vk::PipelineCacheCreateInfo pipelineCacheCreateInfo( {}, startCacheData.size(), startCacheData.data() );
     vk::raii::PipelineCache     pipelineCache( device, pipelineCacheCreateInfo );
 
     // Free our initialData now that pipeline cache has been created
-    free( startCacheData );
-    startCacheData = NULL;
+    startCacheData.clear();
 
     // Time (roughly) taken to create the graphics pipeline
     timestamp_t        start            = getMilliseconds();

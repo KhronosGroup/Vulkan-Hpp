@@ -425,6 +425,84 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements( image );
   }
 
+  // Sparse resource memory management API commands (optional)
+  {
+    vk::Device device;
+    vk::Image  image;
+    uint32_t   sparseMemoryRequirementCount;
+    device.getImageSparseMemoryRequirements( image, &sparseMemoryRequirementCount, nullptr );
+    if ( sparseMemoryRequirementCount )
+    {
+      std::vector<vk::SparseImageMemoryRequirements> sparseImageMemoryRequirements( sparseMemoryRequirementCount );
+      device.getImageSparseMemoryRequirements( image, &sparseMemoryRequirementCount, sparseImageMemoryRequirements.data() );
+    }
+  }
+  {
+    vk::Device                                     device;
+    vk::Image                                      image;
+    std::vector<vk::SparseImageMemoryRequirements> sparseImageMemoryRequirementss = device.getImageSparseMemoryRequirements( image );
+  }
+  {
+    vk::Device device;
+    vk::Image  image;
+    using Allocator = std::allocator<vk::SparseImageMemoryRequirements>;
+    Allocator                                                 allocator;
+    std::vector<vk::SparseImageMemoryRequirements, Allocator> sparseImageMemoryRequirementss = device.getImageSparseMemoryRequirements( image, allocator );
+  }
+
+  {
+    vk::PhysicalDevice      physicalDevice;
+    vk::Format              format        = {};
+    vk::ImageType           type          = {};
+    vk::SampleCountFlagBits samples       = {};
+    vk::ImageUsageFlags     usage         = {};
+    vk::ImageTiling         tiling        = {};
+    uint32_t                propertyCount = 0;
+    physicalDevice.getSparseImageFormatProperties( format, type, samples, usage, tiling, &propertyCount, nullptr );
+    if ( propertyCount )
+    {
+      std::vector<vk::SparseImageFormatProperties> sparseImageFormatProperties( propertyCount );
+      physicalDevice.getSparseImageFormatProperties( format, type, samples, usage, tiling, &propertyCount, sparseImageFormatProperties.data() );
+    }
+  }
+  {
+    vk::PhysicalDevice                           physicalDevice;
+    vk::Format                                   format  = {};
+    vk::ImageType                                type    = {};
+    vk::SampleCountFlagBits                      samples = {};
+    vk::ImageUsageFlags                          usage   = {};
+    vk::ImageTiling                              tiling  = {};
+    std::vector<vk::SparseImageFormatProperties> sparseImageFormatProperties =
+      physicalDevice.getSparseImageFormatProperties( format, type, samples, usage, tiling );
+  }
+  {
+    vk::PhysicalDevice      physicalDevice;
+    vk::Format              format  = {};
+    vk::ImageType           type    = {};
+    vk::SampleCountFlagBits samples = {};
+    vk::ImageUsageFlags     usage   = {};
+    vk::ImageTiling         tiling  = {};
+    using Allocator                 = std::allocator<vk::SparseImageFormatProperties>;
+    Allocator                                               allocator;
+    std::vector<vk::SparseImageFormatProperties, Allocator> sparseImageFormatProperties =
+      physicalDevice.getSparseImageFormatProperties( format, type, samples, usage, tiling, allocator );
+  }
+
+  {
+    vk::Queue          queue;
+    uint32_t           bindInfoCount = 1;
+    vk::BindSparseInfo bindSparseInfo;
+    vk::Fence          fence;
+    vk::Result         result = queue.bindSparse( bindInfoCount, &bindSparseInfo, fence );
+  }
+
+  {
+    vk::Queue          queue;
+    vk::BindSparseInfo bindSparseInfo;
+    vk::Fence          fence;
+    queue.bindSparse( bindSparseInfo, fence );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

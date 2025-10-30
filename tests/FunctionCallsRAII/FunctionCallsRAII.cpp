@@ -206,13 +206,37 @@ int main( int /*argc*/, char ** /*argv*/ )
   }
 
   {
-    vk::raii::Buffer buffer = nullptr;
+    vk::raii::Buffer       buffer             = nullptr;
     vk::MemoryRequirements memoryRequirements = buffer.getMemoryRequirements();
   }
 
   {
-    vk::raii::Image image = nullptr;
+    vk::raii::Image        image              = nullptr;
     vk::MemoryRequirements memoryRequirements = image.getMemoryRequirements();
+  }
+
+  // Sparse resource memory management API commands (optional)
+  {
+    vk::raii::Image                                image                         = nullptr;
+    std::vector<vk::SparseImageMemoryRequirements> sparseImageMemoryRequirements = image.getSparseMemoryRequirements();
+  }
+
+  {
+    vk::raii::PhysicalDevice                     physicalDevice = nullptr;
+    vk::Format                                   format         = {};
+    vk::ImageType                                type           = {};
+    vk::SampleCountFlagBits                      samples        = {};
+    vk::ImageUsageFlags                          usage          = {};
+    vk::ImageTiling                              tiling         = {};
+    std::vector<vk::SparseImageFormatProperties> sparseImageFormatProperties =
+      physicalDevice.getSparseImageFormatProperties( format, type, samples, usage, tiling );
+  }
+
+  {
+    vk::raii::Queue    queue = nullptr;
+    vk::BindSparseInfo bindSparseInfo;
+    vk::Fence          fence;
+    queue.bindSparse( bindSparseInfo, fence );
   }
 
   return 0;

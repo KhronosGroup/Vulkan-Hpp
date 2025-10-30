@@ -6,11 +6,6 @@ ${licenseHeader}
 // include-what-you-use: make sure, vulkan.hpp is used by code-completers
 // IWYU pragma: private, include "vulkan/vulkan.hpp"
 
-#if !defined( VULKAN_HPP_CXX_MODULE )
-#  include <cstring>  // strcmp
-#  include <cstdlib>  // free
-#endif
-
 namespace VULKAN_HPP_NAMESPACE
 {
 ${structs}

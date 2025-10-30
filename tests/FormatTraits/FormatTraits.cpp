@@ -17,7 +17,6 @@
 
 #include <map>
 #include <set>
-#include <cstring>
 #include <cassert>
 #include <iostream>
 #ifdef VULKAN_HPP_USE_CXX_MODULE

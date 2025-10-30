@@ -36,8 +36,6 @@
 #  endif
 #else
 #  include <cassert>
-#  include <cstdlib>
-#  include <cstring>
 import VULKAN_HPP_STD_MODULE;
 #endif
 #include <vulkan/vulkan.h>

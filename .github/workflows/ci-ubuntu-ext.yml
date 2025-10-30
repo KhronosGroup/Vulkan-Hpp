@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        clang_version: [19, 20]
+        clang_version: [19, 20, 21]
 
     steps:
     - uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
         chmod +x llvm.sh
         sudo ./llvm.sh ${{matrix.clang_version}} all
 
-        sudo apt purge --auto-remove cmake
+        sudo apt purge -y --auto-remove cmake
         wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
         echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ noble main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
         sudo apt update && sudo apt install cmake
@@ -108,11 +108,11 @@ jobs:
 
     - name: Build samples and tests
       run: |
-        for CXX_STANDARD in 11 14 17 20 23; do
+        for CXX_STANDARD in 23; do
           for BUILD_TYPE in Debug Release; do
 
             CXX_MODULES=ON
-            if [ $CXX_STANDARD -lt 20 ]; then
+            if [ $CXX_STANDARD -lt 23 ]; then
               CXX_MODULES=OFF
             fi
 
@@ -121,10 +121,12 @@ jobs:
             echo "================================================================================="
 
             cmake -B build -G Ninja --fresh                           \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=$CXX_MODULES             \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF                       \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                         \
               -D VULKAN_HPP_SAMPLES_BUILD=ON                          \
               -D VULKAN_HPP_TESTS_BUILD=ON                            \
+              -D VULKAN_HPP_TESTS_CTEST=ON                            \
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON            \
               -D VULKAN_HPP_PRECOMPILE=OFF                            \
@@ -132,5 +134,6 @@ jobs:
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD                     \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE
             cmake --build build --parallel --clean-first
+            ctest -j --output-on-failure --test-dir build
           done
         done

@@ -26,7 +26,11 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <vulkan/vulkan_raii.hpp>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+import vulkan_hpp;
+#else
+#  include <vulkan/vulkan_raii.hpp>
+#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

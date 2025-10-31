@@ -1663,6 +1663,16 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceNestedCommandBufferFeaturesEXT;
   struct PhysicalDeviceNestedCommandBufferPropertiesEXT;
 
+#if defined( VK_USE_PLATFORM_OHOS )
+  //=== VK_OHOS_external_memory ===
+  struct NativeBufferUsageOHOS;
+  struct NativeBufferPropertiesOHOS;
+  struct NativeBufferFormatPropertiesOHOS;
+  struct ImportNativeBufferInfoOHOS;
+  struct MemoryGetNativeBufferInfoOHOS;
+  struct ExternalFormatOHOS;
+#endif /*VK_USE_PLATFORM_OHOS*/
+
   //=== VK_EXT_external_memory_acquire_unmodified ===
   struct ExternalMemoryAcquireUnmodifiedEXT;
 
@@ -2188,6 +2198,13 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_depth_clamp_zero_one ===
   struct PhysicalDeviceDepthClampZeroOneFeaturesKHR;
   using PhysicalDeviceDepthClampZeroOneFeaturesEXT = PhysicalDeviceDepthClampZeroOneFeaturesKHR;
+
+  //=== VK_ARM_performance_counters_by_region ===
+  struct PhysicalDevicePerformanceCountersByRegionFeaturesARM;
+  struct PhysicalDevicePerformanceCountersByRegionPropertiesARM;
+  struct PerformanceCounterARM;
+  struct PerformanceCounterDescriptionARM;
+  struct RenderPassPerformanceCountersByRegionBeginInfoARM;
 
   //=== VK_EXT_vertex_attribute_robustness ===
   struct PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;
@@ -16913,6 +16930,41 @@ namespace VULKAN_HPP_NAMESPACE
                                                 Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+#if defined( VK_USE_PLATFORM_OHOS )
+    //=== VK_OHOS_external_memory ===
+
+    // wrapper function for command vkGetNativeBufferPropertiesOHOS, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getNativeBufferPropertiesOHOS( const struct OH_NativeBuffer * buffer,
+                                                               NativeBufferPropertiesOHOS *   pProperties,
+                                                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetNativeBufferPropertiesOHOS, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<NativeBufferPropertiesOHOS>::type
+      getNativeBufferPropertiesOHOS( const struct OH_NativeBuffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    // wrapper function for command vkGetNativeBufferPropertiesOHOS, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
+    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
+      getNativeBufferPropertiesOHOS( const struct OH_NativeBuffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkGetMemoryNativeBufferOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetMemoryNativeBufferOHOS.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getMemoryNativeBufferOHOS( const MemoryGetNativeBufferInfoOHOS * pInfo,
+                                                           struct OH_NativeBuffer **             pBuffer,
+                                                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetMemoryNativeBufferOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetMemoryNativeBufferOHOS.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<struct OH_NativeBuffer *>::type
+      getMemoryNativeBufferOHOS( const MemoryGetNativeBufferInfoOHOS & info, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif   /*VK_USE_PLATFORM_OHOS*/
+
     //=== VK_ARM_tensors ===
 
     // wrapper function for command vkCreateTensorARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateTensorARM.html
@@ -20317,6 +20369,45 @@ namespace VULKAN_HPP_NAMESPACE
       getCooperativeMatrixFlexibleDimensionsPropertiesNV(
         CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator & cooperativeMatrixFlexibleDimensionsPropertiesNVAllocator,
         Dispatch const & d                                         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_ARM_performance_counters_by_region ===
+
+    // wrapper function for command vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result
+      enumerateQueueFamilyPerformanceCountersByRegionARM( uint32_t                           queueFamilyIndex,
+                                                          uint32_t *                         pCounterCount,
+                                                          PerformanceCounterARM *            pCounters,
+                                                          PerformanceCounterDescriptionARM * pCounterDescriptions,
+                                                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM.html
+    template <typename PerformanceCounterARMAllocator            = std::allocator<PerformanceCounterARM>,
+              typename PerformanceCounterDescriptionARMAllocator = std::allocator<PerformanceCounterDescriptionARM>,
+              typename Dispatch                                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename PerformanceCounterARMAllocator::value_type, PerformanceCounterARM>::value &&
+                                        std::is_same<typename PerformanceCounterDescriptionARMAllocator::value_type, PerformanceCounterDescriptionARM>::value,
+                                      int>::type                 = 0>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<std::vector<PerformanceCounterARM, PerformanceCounterARMAllocator>,
+                                                            std::vector<PerformanceCounterDescriptionARM, PerformanceCounterDescriptionARMAllocator>>>::type
+      enumerateQueueFamilyPerformanceCountersByRegionARM( uint32_t queueFamilyIndex, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    // wrapper function for command vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM.html
+    template <typename PerformanceCounterARMAllocator            = std::allocator<PerformanceCounterARM>,
+              typename PerformanceCounterDescriptionARMAllocator = std::allocator<PerformanceCounterDescriptionARM>,
+              typename Dispatch                                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename PerformanceCounterARMAllocator::value_type, PerformanceCounterARM>::value &&
+                                        std::is_same<typename PerformanceCounterDescriptionARMAllocator::value_type, PerformanceCounterDescriptionARM>::value,
+                                      int>::type                 = 0>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<std::vector<PerformanceCounterARM, PerformanceCounterARMAllocator>,
+                                                            std::vector<PerformanceCounterDescriptionARM, PerformanceCounterDescriptionARMAllocator>>>::type
+      enumerateQueueFamilyPerformanceCountersByRegionARM( uint32_t                                    queueFamilyIndex,
+                                                          PerformanceCounterARMAllocator &            performanceCounterARMAllocator,
+                                                          PerformanceCounterDescriptionARMAllocator & performanceCounterDescriptionARMAllocator,
+                                                          Dispatch const & d                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     operator VkPhysicalDevice() const VULKAN_HPP_NOEXCEPT

@@ -26319,6 +26319,94 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+#if defined( VK_USE_PLATFORM_OHOS )
+  //=== VK_OHOS_external_memory ===
+
+  // wrapper function for command vkGetNativeBufferPropertiesOHOS, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getNativeBufferPropertiesOHOS( const struct OH_NativeBuffer * buffer,
+                                                                                       NativeBufferPropertiesOHOS *   pProperties,
+                                                                                       Dispatch const &               d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkGetNativeBufferPropertiesOHOS( static_cast<VkDevice>( m_device ), buffer, reinterpret_cast<VkNativeBufferPropertiesOHOS *>( pProperties ) ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkGetNativeBufferPropertiesOHOS, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<NativeBufferPropertiesOHOS>::type
+                       Device::getNativeBufferPropertiesOHOS( const struct OH_NativeBuffer & buffer, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetNativeBufferPropertiesOHOS && "Function <vkGetNativeBufferPropertiesOHOS> requires <VK_OHOS_external_memory>" );
+#    endif
+
+    NativeBufferPropertiesOHOS properties;
+    Result                     result =
+      static_cast<Result>( d.vkGetNativeBufferPropertiesOHOS( m_device, &buffer, reinterpret_cast<VkNativeBufferPropertiesOHOS *>( &properties ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getNativeBufferPropertiesOHOS" );
+
+    return detail::createResultValueType( result, std::move( properties ) );
+  }
+
+  // wrapper function for command vkGetNativeBufferPropertiesOHOS, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
+  template <typename X, typename Y, typename... Z, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<StructureChain<X, Y, Z...>>::type
+                       Device::getNativeBufferPropertiesOHOS( const struct OH_NativeBuffer & buffer, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetNativeBufferPropertiesOHOS && "Function <vkGetNativeBufferPropertiesOHOS> requires <VK_OHOS_external_memory>" );
+#    endif
+
+    StructureChain<X, Y, Z...>   structureChain;
+    NativeBufferPropertiesOHOS & properties = structureChain.template get<NativeBufferPropertiesOHOS>();
+    Result                       result =
+      static_cast<Result>( d.vkGetNativeBufferPropertiesOHOS( m_device, &buffer, reinterpret_cast<VkNativeBufferPropertiesOHOS *>( &properties ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getNativeBufferPropertiesOHOS" );
+
+    return detail::createResultValueType( result, std::move( structureChain ) );
+  }
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  // wrapper function for command vkGetMemoryNativeBufferOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetMemoryNativeBufferOHOS.html
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getMemoryNativeBufferOHOS( const MemoryGetNativeBufferInfoOHOS * pInfo,
+                                                                                   struct OH_NativeBuffer **             pBuffer,
+                                                                                   Dispatch const &                      d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkGetMemoryNativeBufferOHOS( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkMemoryGetNativeBufferInfoOHOS *>( pInfo ), pBuffer ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkGetMemoryNativeBufferOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetMemoryNativeBufferOHOS.html
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<struct OH_NativeBuffer *>::type
+                       Device::getMemoryNativeBufferOHOS( const MemoryGetNativeBufferInfoOHOS & info, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetMemoryNativeBufferOHOS && "Function <vkGetMemoryNativeBufferOHOS> requires <VK_OHOS_external_memory>" );
+#    endif
+
+    struct OH_NativeBuffer * buffer;
+    Result                   result =
+      static_cast<Result>( d.vkGetMemoryNativeBufferOHOS( m_device, reinterpret_cast<const VkMemoryGetNativeBufferInfoOHOS *>( &info ), &buffer ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryNativeBufferOHOS" );
+
+    return detail::createResultValueType( result, std::move( buffer ) );
+  }
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif   /*VK_USE_PLATFORM_OHOS*/
+
   //=== VK_EXT_extended_dynamic_state3 ===
 
   // wrapper function for command vkCmdSetDepthClampEnableEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetDepthClampEnableEXT.html
@@ -31632,6 +31720,137 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_METAL_EXT*/
+
+  //=== VK_ARM_performance_counters_by_region ===
+
+  // wrapper function for command vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM.html
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    PhysicalDevice::enumerateQueueFamilyPerformanceCountersByRegionARM( uint32_t                           queueFamilyIndex,
+                                                                        uint32_t *                         pCounterCount,
+                                                                        PerformanceCounterARM *            pCounters,
+                                                                        PerformanceCounterDescriptionARM * pCounterDescriptions,
+                                                                        Dispatch const &                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                            queueFamilyIndex,
+                                                                            pCounterCount,
+                                                                            reinterpret_cast<VkPerformanceCounterARM *>( pCounters ),
+                                                                            reinterpret_cast<VkPerformanceCounterDescriptionARM *>( pCounterDescriptions ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM.html
+  template <typename PerformanceCounterARMAllocator,
+            typename PerformanceCounterDescriptionARMAllocator,
+            typename Dispatch,
+            typename std::enable_if<std::is_same<typename PerformanceCounterARMAllocator::value_type, PerformanceCounterARM>::value &&
+                                      std::is_same<typename PerformanceCounterDescriptionARMAllocator::value_type, PerformanceCounterDescriptionARM>::value,
+                                    int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+    typename ResultValueType<std::pair<std::vector<PerformanceCounterARM, PerformanceCounterARMAllocator>,
+                                       std::vector<PerformanceCounterDescriptionARM, PerformanceCounterDescriptionARMAllocator>>>::type
+    PhysicalDevice::enumerateQueueFamilyPerformanceCountersByRegionARM( uint32_t queueFamilyIndex, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM &&
+                       "Function <vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM> requires <VK_ARM_performance_counters_by_region>" );
+#  endif
+
+    std::pair<std::vector<PerformanceCounterARM, PerformanceCounterARMAllocator>,
+              std::vector<PerformanceCounterDescriptionARM, PerformanceCounterDescriptionARMAllocator>>
+                                                                                               data_;
+    std::vector<PerformanceCounterARM, PerformanceCounterARMAllocator> &                       counters            = data_.first;
+    std::vector<PerformanceCounterDescriptionARM, PerformanceCounterDescriptionARMAllocator> & counterDescriptions = data_.second;
+    uint32_t                                                                                   counterCount;
+    Result                                                                                     result;
+    do
+    {
+      result = static_cast<Result>(
+        d.vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM( m_physicalDevice, queueFamilyIndex, &counterCount, nullptr, nullptr ) );
+      if ( ( result == Result::eSuccess ) && counterCount )
+      {
+        counters.resize( counterCount );
+        counterDescriptions.resize( counterCount );
+        result = static_cast<Result>( d.vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(
+          m_physicalDevice,
+          queueFamilyIndex,
+          &counterCount,
+          reinterpret_cast<VkPerformanceCounterARM *>( counters.data() ),
+          reinterpret_cast<VkPerformanceCounterDescriptionARM *>( counterDescriptions.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::enumerateQueueFamilyPerformanceCountersByRegionARM" );
+    VULKAN_HPP_ASSERT( counterCount <= counters.size() );
+    if ( counterCount < counters.size() )
+    {
+      counters.resize( counterCount );
+      counterDescriptions.resize( counterCount );
+    }
+    return detail::createResultValueType( result, std::move( data_ ) );
+  }
+
+  // wrapper function for command vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM.html
+  template <typename PerformanceCounterARMAllocator,
+            typename PerformanceCounterDescriptionARMAllocator,
+            typename Dispatch,
+            typename std::enable_if<std::is_same<typename PerformanceCounterARMAllocator::value_type, PerformanceCounterARM>::value &&
+                                      std::is_same<typename PerformanceCounterDescriptionARMAllocator::value_type, PerformanceCounterDescriptionARM>::value,
+                                    int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+    typename ResultValueType<std::pair<std::vector<PerformanceCounterARM, PerformanceCounterARMAllocator>,
+                                       std::vector<PerformanceCounterDescriptionARM, PerformanceCounterDescriptionARMAllocator>>>::type
+    PhysicalDevice::enumerateQueueFamilyPerformanceCountersByRegionARM( uint32_t                                    queueFamilyIndex,
+                                                                        PerformanceCounterARMAllocator &            performanceCounterARMAllocator,
+                                                                        PerformanceCounterDescriptionARMAllocator & performanceCounterDescriptionARMAllocator,
+                                                                        Dispatch const &                            d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM &&
+                       "Function <vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM> requires <VK_ARM_performance_counters_by_region>" );
+#  endif
+
+    std::pair<std::vector<PerformanceCounterARM, PerformanceCounterARMAllocator>,
+              std::vector<PerformanceCounterDescriptionARM, PerformanceCounterDescriptionARMAllocator>>
+      data_(
+        std::piecewise_construct, std::forward_as_tuple( performanceCounterARMAllocator ), std::forward_as_tuple( performanceCounterDescriptionARMAllocator ) );
+    std::vector<PerformanceCounterARM, PerformanceCounterARMAllocator> &                       counters            = data_.first;
+    std::vector<PerformanceCounterDescriptionARM, PerformanceCounterDescriptionARMAllocator> & counterDescriptions = data_.second;
+    uint32_t                                                                                   counterCount;
+    Result                                                                                     result;
+    do
+    {
+      result = static_cast<Result>(
+        d.vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM( m_physicalDevice, queueFamilyIndex, &counterCount, nullptr, nullptr ) );
+      if ( ( result == Result::eSuccess ) && counterCount )
+      {
+        counters.resize( counterCount );
+        counterDescriptions.resize( counterCount );
+        result = static_cast<Result>( d.vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(
+          m_physicalDevice,
+          queueFamilyIndex,
+          &counterCount,
+          reinterpret_cast<VkPerformanceCounterARM *>( counters.data() ),
+          reinterpret_cast<VkPerformanceCounterDescriptionARM *>( counterDescriptions.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::enumerateQueueFamilyPerformanceCountersByRegionARM" );
+    VULKAN_HPP_ASSERT( counterCount <= counters.size() );
+    if ( counterCount < counters.size() )
+    {
+      counters.resize( counterCount );
+      counterDescriptions.resize( counterCount );
+    }
+    return detail::createResultValueType( result, std::move( data_ ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   //=== VK_EXT_fragment_density_map_offset ===
 

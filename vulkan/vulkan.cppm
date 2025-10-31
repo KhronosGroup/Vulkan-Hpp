@@ -1048,6 +1048,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::SwapchainImageUsageFlagsOHOS;
 #endif /*VK_USE_PLATFORM_OHOS*/
 
+  //=== VK_ARM_performance_counters_by_region ===
+  using VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionFlagBitsARM;
+  using VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionFlagsARM;
+
   //=== VK_KHR_maintenance10 ===
   using VULKAN_HPP_NAMESPACE::RenderingAttachmentFlagBitsKHR;
   using VULKAN_HPP_NAMESPACE::RenderingAttachmentFlagsKHR;
@@ -2543,6 +2547,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTNestedCommandBufferExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTNestedCommandBufferSpecVersion;
 
+#if defined( VK_USE_PLATFORM_OHOS )
+  //=== VK_OHOS_external_memory ===
+  using VULKAN_HPP_NAMESPACE::OHOSExternalMemoryExtensionName;
+  using VULKAN_HPP_NAMESPACE::OHOSExternalMemorySpecVersion;
+#endif /*VK_USE_PLATFORM_OHOS*/
+
   //=== VK_EXT_external_memory_acquire_unmodified ===
   using VULKAN_HPP_NAMESPACE::EXTExternalMemoryAcquireUnmodifiedExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTExternalMemoryAcquireUnmodifiedSpecVersion;
@@ -2926,6 +2936,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_depth_clamp_zero_one ===
   using VULKAN_HPP_NAMESPACE::KHRDepthClampZeroOneExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRDepthClampZeroOneSpecVersion;
+
+  //=== VK_ARM_performance_counters_by_region ===
+  using VULKAN_HPP_NAMESPACE::ARMPerformanceCountersByRegionExtensionName;
+  using VULKAN_HPP_NAMESPACE::ARMPerformanceCountersByRegionSpecVersion;
 
   //=== VK_EXT_vertex_attribute_robustness ===
   using VULKAN_HPP_NAMESPACE::EXTVertexAttributeRobustnessExtensionName;
@@ -4680,6 +4694,16 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceNestedCommandBufferFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceNestedCommandBufferPropertiesEXT;
 
+#if defined( VK_USE_PLATFORM_OHOS )
+  //=== VK_OHOS_external_memory ===
+  using VULKAN_HPP_NAMESPACE::ExternalFormatOHOS;
+  using VULKAN_HPP_NAMESPACE::ImportNativeBufferInfoOHOS;
+  using VULKAN_HPP_NAMESPACE::MemoryGetNativeBufferInfoOHOS;
+  using VULKAN_HPP_NAMESPACE::NativeBufferFormatPropertiesOHOS;
+  using VULKAN_HPP_NAMESPACE::NativeBufferPropertiesOHOS;
+  using VULKAN_HPP_NAMESPACE::NativeBufferUsageOHOS;
+#endif /*VK_USE_PLATFORM_OHOS*/
+
   //=== VK_EXT_external_memory_acquire_unmodified ===
   using VULKAN_HPP_NAMESPACE::ExternalMemoryAcquireUnmodifiedEXT;
 
@@ -5205,6 +5229,13 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_depth_clamp_zero_one ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampZeroOneFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampZeroOneFeaturesKHR;
+
+  //=== VK_ARM_performance_counters_by_region ===
+  using VULKAN_HPP_NAMESPACE::PerformanceCounterARM;
+  using VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionARM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDevicePerformanceCountersByRegionFeaturesARM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDevicePerformanceCountersByRegionPropertiesARM;
+  using VULKAN_HPP_NAMESPACE::RenderPassPerformanceCountersByRegionBeginInfoARM;
 
   //=== VK_EXT_vertex_attribute_robustness ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeRobustnessFeaturesEXT;
@@ -8386,6 +8417,22 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceNestedCommandBufferPropertiesEXT>;
 
+#if defined( VK_USE_PLATFORM_OHOS )
+  //=== VK_OHOS_external_memory ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::NativeBufferUsageOHOS>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::NativeBufferPropertiesOHOS>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::NativeBufferFormatPropertiesOHOS>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ImportNativeBufferInfoOHOS>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::MemoryGetNativeBufferInfoOHOS>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ExternalFormatOHOS>;
+#endif /*VK_USE_PLATFORM_OHOS*/
+
   //=== VK_EXT_external_memory_acquire_unmodified ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::ExternalMemoryAcquireUnmodifiedEXT>;
@@ -9229,6 +9276,18 @@ export namespace std
   //=== VK_KHR_depth_clamp_zero_one ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampZeroOneFeaturesKHR>;
+
+  //=== VK_ARM_performance_counters_by_region ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePerformanceCountersByRegionFeaturesARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePerformanceCountersByRegionPropertiesARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PerformanceCounterARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionARM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::RenderPassPerformanceCountersByRegionBeginInfoARM>;
 
   //=== VK_EXT_vertex_attribute_robustness ===
   template <>
@@ -10292,6 +10351,12 @@ export
   using ::PFN_vkGetPipelineIndirectDeviceAddressNV;
   using ::PFN_vkGetPipelineIndirectMemoryRequirementsNV;
 
+#if defined( VK_USE_PLATFORM_OHOS )
+  //=== VK_OHOS_external_memory ===
+  using ::PFN_vkGetMemoryNativeBufferOHOS;
+  using ::PFN_vkGetNativeBufferPropertiesOHOS;
+#endif /*VK_USE_PLATFORM_OHOS*/
+
   //=== VK_EXT_extended_dynamic_state3 ===
   using ::PFN_vkCmdSetAlphaToCoverageEnableEXT;
   using ::PFN_vkCmdSetAlphaToOneEnableEXT;
@@ -10488,6 +10553,9 @@ export
   using ::PFN_vkGetMemoryMetalHandleEXT;
   using ::PFN_vkGetMemoryMetalHandlePropertiesEXT;
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+  //=== VK_ARM_performance_counters_by_region ===
+  using ::PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
 
   //=== VK_EXT_fragment_density_map_offset ===
   using ::PFN_vkCmdEndRendering2EXT;

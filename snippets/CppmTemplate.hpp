@@ -29,7 +29,7 @@ _Pragma(VULKAN_HPP_STRINGIFY(message(__FILE__ "(" VULKAN_HPP_STRINGIFY(__LINE__)
 #include <vulkan/${api}_shared.hpp>
 
 export module ${api}_hpp;
-export import VULKAN_HPP_STD_MODULE;
+export import std.compat;
 
 export namespace VULKAN_HPP_NAMESPACE
 {

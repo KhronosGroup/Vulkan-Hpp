@@ -33,7 +33,7 @@ _Pragma( VULKAN_HPP_STRINGIFY( message( __FILE__ "(" VULKAN_HPP_STRINGIFY( __LIN
 #include <vulkan/vulkan_shared.hpp>
 
   export module vulkan_hpp;
-export import VULKAN_HPP_STD_MODULE;
+export import std.compat;
 
 export namespace VULKAN_HPP_NAMESPACE
 {

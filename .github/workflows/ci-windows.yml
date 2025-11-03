@@ -28,36 +28,36 @@ jobs:
       with:
         arch: ${{matrix.architecture}}
 
-    - name: Install glm, glfw and glslang
-      run: |
-        cd glm
-        cmake -B build                               \
-          -D CMAKE_CXX_STANDARD=11                   \
-          -D GLM_BUILD_LIBRARY=ON                    \
-          -D GLM_BUILD_INSTALL=ON                    \
-          -D GLM_BUILD_TESTS=OFF
-        cmake --build build --parallel --config Release
-        cmake --install build --config Release
+    # - name: Install glm, glfw and glslang
+    #   run: |
+    #     cd glm
+    #     cmake -B build                               \
+    #       -D CMAKE_CXX_STANDARD=11                   \
+    #       -D GLM_BUILD_LIBRARY=ON                    \
+    #       -D GLM_BUILD_INSTALL=ON                    \
+    #       -D GLM_BUILD_TESTS=OFF
+    #     cmake --build build --parallel --config Release
+    #     cmake --install build --config Release
 
-        cd ../glfw
-        cmake -B build                               \
-          -D CMAKE_CXX_STANDARD=11                   \
-          -D GLFW_BUILD_EXAMPLES=OFF                 \
-          -D GLFW_BUILD_TESTS=OFF                    \
-          -D GLFW_BUILD_DOCS=OFF                     \
-          -D GLFW_INSTALL=ON
-        cmake --build build --parallel --config Release
-        cmake --install build --config Release
+    #     cd ../glfw
+    #     cmake -B build                               \
+    #       -D CMAKE_CXX_STANDARD=11                   \
+    #       -D GLFW_BUILD_EXAMPLES=OFF                 \
+    #       -D GLFW_BUILD_TESTS=OFF                    \
+    #       -D GLFW_BUILD_DOCS=OFF                     \
+    #       -D GLFW_INSTALL=ON
+    #     cmake --build build --parallel --config Release
+    #     cmake --install build --config Release
 
-        cd ../glslang
-        cmake -B build                               \
-          -D CMAKE_CXX_STANDARD=11                   \
-          -D ENABLE_OPT=OFF                          \
-          -D GLSLANG_TESTS_DEFAULT=OFF               \
-          -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
-        cmake --build build --parallel --config Release
-        cmake --install build --config Release
-        cd ..
+    #     cd ../glslang
+    #     cmake -B build                               \
+    #       -D CMAKE_CXX_STANDARD=11                   \
+    #       -D ENABLE_OPT=OFF                          \
+    #       -D GLSLANG_TESTS_DEFAULT=OFF               \
+    #       -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
+    #     cmake --build build --parallel --config Release
+    #     cmake --install build --config Release
+    #     cd ..
 
     - name: Generate headers
       run: |

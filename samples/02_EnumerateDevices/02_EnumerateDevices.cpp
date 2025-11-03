@@ -16,7 +16,7 @@
 //                     Enumerate physical devices
 
 #if defined( _MSC_VER )
-// no need to ignore any warnings with MSVC
+#  pragma warning( disable : 4189 )
 #elif defined( __clang__ )
 #  pragma clang diagnostic ignored "-Wunused-variable"
 #elif defined( __GNUC__ )

@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2022, windows-2025]
-        architecture: [x64]
+        architecture: [x86, x64]
 
     steps:
     - uses: actions/checkout@v4

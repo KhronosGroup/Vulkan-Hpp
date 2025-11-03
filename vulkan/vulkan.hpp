@@ -58,7 +58,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-static_assert( VK_HEADER_VERSION == 330, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 331, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -5665,6 +5665,24 @@ namespace VULKAN_HPP_NAMESPACE
         return ::vkGetPipelineIndirectDeviceAddressNV( device, pInfo );
       }
 
+#  if defined( VK_USE_PLATFORM_OHOS )
+      //=== VK_OHOS_external_memory ===
+
+      VkResult vkGetNativeBufferPropertiesOHOS( VkDevice                       device,
+                                                const struct OH_NativeBuffer * buffer,
+                                                VkNativeBufferPropertiesOHOS * pProperties ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetNativeBufferPropertiesOHOS( device, buffer, pProperties );
+      }
+
+      VkResult vkGetMemoryNativeBufferOHOS( VkDevice                                device,
+                                            const VkMemoryGetNativeBufferInfoOHOS * pInfo,
+                                            struct OH_NativeBuffer **               pBuffer ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetMemoryNativeBufferOHOS( device, pInfo, pBuffer );
+      }
+#  endif /*VK_USE_PLATFORM_OHOS*/
+
       //=== VK_EXT_extended_dynamic_state3 ===
 
       void vkCmdSetDepthClampEnableEXT( VkCommandBuffer commandBuffer, VkBool32 depthClampEnable ) const VULKAN_HPP_NOEXCEPT
@@ -6554,6 +6572,19 @@ namespace VULKAN_HPP_NAMESPACE
         return ::vkGetMemoryMetalHandlePropertiesEXT( device, handleType, pHandle, pMemoryMetalHandleProperties );
       }
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+      //=== VK_ARM_performance_counters_by_region ===
+
+      VkResult vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM( VkPhysicalDevice                     physicalDevice,
+                                                                                   uint32_t                             queueFamilyIndex,
+                                                                                   uint32_t *                           pCounterCount,
+                                                                                   VkPerformanceCounterARM *            pCounters,
+                                                                                   VkPerformanceCounterDescriptionARM * pCounterDescriptions ) const
+        VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(
+          physicalDevice, queueFamilyIndex, pCounterCount, pCounters, pCounterDescriptions );
+      }
 
       //=== VK_EXT_fragment_density_map_offset ===
 
@@ -9075,6 +9106,12 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTNestedCommandBufferExtensionName = VK_EXT_NESTED_COMMAND_BUFFER_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTNestedCommandBufferSpecVersion   = VK_EXT_NESTED_COMMAND_BUFFER_SPEC_VERSION;
 
+#if defined( VK_USE_PLATFORM_OHOS )
+  //=== VK_OHOS_external_memory ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto OHOSExternalMemoryExtensionName = VK_OHOS_EXTERNAL_MEMORY_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto OHOSExternalMemorySpecVersion   = VK_OHOS_EXTERNAL_MEMORY_SPEC_VERSION;
+#endif /*VK_USE_PLATFORM_OHOS*/
+
   //=== VK_EXT_external_memory_acquire_unmodified ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTExternalMemoryAcquireUnmodifiedExtensionName = VK_EXT_EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTExternalMemoryAcquireUnmodifiedSpecVersion   = VK_EXT_EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_SPEC_VERSION;
@@ -9450,6 +9487,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_depth_clamp_zero_one ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRDepthClampZeroOneExtensionName = VK_KHR_DEPTH_CLAMP_ZERO_ONE_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRDepthClampZeroOneSpecVersion   = VK_KHR_DEPTH_CLAMP_ZERO_ONE_SPEC_VERSION;
+
+  //=== VK_ARM_performance_counters_by_region ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto ARMPerformanceCountersByRegionExtensionName = VK_ARM_PERFORMANCE_COUNTERS_BY_REGION_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto ARMPerformanceCountersByRegionSpecVersion   = VK_ARM_PERFORMANCE_COUNTERS_BY_REGION_SPEC_VERSION;
 
   //=== VK_EXT_vertex_attribute_robustness ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTVertexAttributeRobustnessExtensionName = VK_EXT_VERTEX_ATTRIBUTE_ROBUSTNESS_EXTENSION_NAME;
@@ -16469,6 +16510,81 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+#  if defined( VK_USE_PLATFORM_OHOS )
+  //=== VK_OHOS_external_memory ===
+  template <>
+  struct StructExtends<NativeBufferUsageOHOS, ImageFormatProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<NativeBufferFormatPropertiesOHOS, NativeBufferPropertiesOHOS>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ImportNativeBufferInfoOHOS, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ExternalFormatOHOS, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ExternalFormatOHOS, SamplerYcbcrConversionCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ExternalFormatOHOS, AttachmentDescription2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ExternalFormatOHOS, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ExternalFormatOHOS, CommandBufferInheritanceInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#  endif /*VK_USE_PLATFORM_OHOS*/
+
   //=== VK_EXT_external_memory_acquire_unmodified ===
   template <>
   struct StructExtends<ExternalMemoryAcquireUnmodifiedEXT, BufferMemoryBarrier>
@@ -19304,6 +19420,52 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_ARM_performance_counters_by_region ===
+  template <>
+  struct StructExtends<PhysicalDevicePerformanceCountersByRegionFeaturesARM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDevicePerformanceCountersByRegionFeaturesARM, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDevicePerformanceCountersByRegionPropertiesARM, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<RenderPassPerformanceCountersByRegionBeginInfoARM, RenderPassBeginInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<RenderPassPerformanceCountersByRegionBeginInfoARM, RenderingInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_vertex_attribute_robustness ===
   template <>
   struct StructExtends<PhysicalDeviceVertexAttributeRobustnessFeaturesEXT, PhysicalDeviceFeatures2>
@@ -20818,6 +20980,15 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdUpdatePipelineIndirectBufferNV       vkCmdUpdatePipelineIndirectBufferNV       = 0;
       PFN_vkGetPipelineIndirectDeviceAddressNV      vkGetPipelineIndirectDeviceAddressNV      = 0;
 
+#if defined( VK_USE_PLATFORM_OHOS )
+      //=== VK_OHOS_external_memory ===
+      PFN_vkGetNativeBufferPropertiesOHOS vkGetNativeBufferPropertiesOHOS = 0;
+      PFN_vkGetMemoryNativeBufferOHOS     vkGetMemoryNativeBufferOHOS     = 0;
+#else
+      PFN_dummy vkGetNativeBufferPropertiesOHOS_placeholder = 0;
+      PFN_dummy vkGetMemoryNativeBufferOHOS_placeholder     = 0;
+#endif /*VK_USE_PLATFORM_OHOS*/
+
       //=== VK_EXT_extended_dynamic_state3 ===
       PFN_vkCmdSetDepthClampEnableEXT                 vkCmdSetDepthClampEnableEXT                 = 0;
       PFN_vkCmdSetPolygonModeEXT                      vkCmdSetPolygonModeEXT                      = 0;
@@ -21025,6 +21196,9 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_dummy vkGetMemoryMetalHandleEXT_placeholder           = 0;
       PFN_dummy vkGetMemoryMetalHandlePropertiesEXT_placeholder = 0;
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+      //=== VK_ARM_performance_counters_by_region ===
+      PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = 0;
 
       //=== VK_EXT_fragment_density_map_offset ===
       PFN_vkCmdEndRendering2EXT vkCmdEndRendering2EXT = 0;
@@ -22399,6 +22573,12 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetPipelineIndirectDeviceAddressNV =
           PFN_vkGetPipelineIndirectDeviceAddressNV( vkGetInstanceProcAddr( instance, "vkGetPipelineIndirectDeviceAddressNV" ) );
 
+#if defined( VK_USE_PLATFORM_OHOS )
+        //=== VK_OHOS_external_memory ===
+        vkGetNativeBufferPropertiesOHOS = PFN_vkGetNativeBufferPropertiesOHOS( vkGetInstanceProcAddr( instance, "vkGetNativeBufferPropertiesOHOS" ) );
+        vkGetMemoryNativeBufferOHOS     = PFN_vkGetMemoryNativeBufferOHOS( vkGetInstanceProcAddr( instance, "vkGetMemoryNativeBufferOHOS" ) );
+#endif /*VK_USE_PLATFORM_OHOS*/
+
         //=== VK_EXT_extended_dynamic_state3 ===
         vkCmdSetDepthClampEnableEXT      = PFN_vkCmdSetDepthClampEnableEXT( vkGetInstanceProcAddr( instance, "vkCmdSetDepthClampEnableEXT" ) );
         vkCmdSetPolygonModeEXT           = PFN_vkCmdSetPolygonModeEXT( vkGetInstanceProcAddr( instance, "vkCmdSetPolygonModeEXT" ) );
@@ -22655,6 +22835,10 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetMemoryMetalHandlePropertiesEXT =
           PFN_vkGetMemoryMetalHandlePropertiesEXT( vkGetInstanceProcAddr( instance, "vkGetMemoryMetalHandlePropertiesEXT" ) );
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+        //=== VK_ARM_performance_counters_by_region ===
+        vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(
+          vkGetInstanceProcAddr( instance, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM" ) );
 
         //=== VK_EXT_fragment_density_map_offset ===
         vkCmdEndRendering2EXT = PFN_vkCmdEndRendering2EXT( vkGetInstanceProcAddr( instance, "vkCmdEndRendering2EXT" ) );
@@ -23672,6 +23856,12 @@ namespace VULKAN_HPP_NAMESPACE
         vkCmdUpdatePipelineIndirectBufferNV = PFN_vkCmdUpdatePipelineIndirectBufferNV( vkGetDeviceProcAddr( device, "vkCmdUpdatePipelineIndirectBufferNV" ) );
         vkGetPipelineIndirectDeviceAddressNV =
           PFN_vkGetPipelineIndirectDeviceAddressNV( vkGetDeviceProcAddr( device, "vkGetPipelineIndirectDeviceAddressNV" ) );
+
+#if defined( VK_USE_PLATFORM_OHOS )
+        //=== VK_OHOS_external_memory ===
+        vkGetNativeBufferPropertiesOHOS = PFN_vkGetNativeBufferPropertiesOHOS( vkGetDeviceProcAddr( device, "vkGetNativeBufferPropertiesOHOS" ) );
+        vkGetMemoryNativeBufferOHOS     = PFN_vkGetMemoryNativeBufferOHOS( vkGetDeviceProcAddr( device, "vkGetMemoryNativeBufferOHOS" ) );
+#endif /*VK_USE_PLATFORM_OHOS*/
 
         //=== VK_EXT_extended_dynamic_state3 ===
         vkCmdSetDepthClampEnableEXT         = PFN_vkCmdSetDepthClampEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetDepthClampEnableEXT" ) );

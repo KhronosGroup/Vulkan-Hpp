@@ -397,6 +397,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_EXT_image_compression_control_swapchain",
                                                             "VK_QCOM_image_processing",
                                                             "VK_EXT_nested_command_buffer",
+#if defined( VK_USE_PLATFORM_OHOS )
+                                                            "VK_OHOS_external_memory",
+#endif /*VK_USE_PLATFORM_OHOS*/
                                                             "VK_EXT_external_memory_acquire_unmodified",
                                                             "VK_EXT_extended_dynamic_state3",
                                                             "VK_EXT_subpass_merge_feedback",
@@ -493,6 +496,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_EXT_external_memory_metal",
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
                                                             "VK_KHR_depth_clamp_zero_one",
+                                                            "VK_ARM_performance_counters_by_region",
                                                             "VK_EXT_vertex_attribute_robustness",
                                                             "VK_ARM_format_pack",
                                                             "VK_VALVE_fragment_density_map_layered",
@@ -2286,7 +2290,23 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } },
-          { "VK_VERSION_1_1", { {} } } } },
+          { "VK_VERSION_1_1", { {} } } } }
+#if defined( VK_USE_PLATFORM_OHOS )
+      ,
+      { "VK_OHOS_external_memory",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_EXT_queue_family_foreign",
+              "VK_KHR_dedicated_allocation",
+              "VK_KHR_external_memory",
+              "VK_KHR_sampler_ycbcr_conversion",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+              "VK_EXT_queue_family_foreign",
+            } } } } }
+#endif /*VK_USE_PLATFORM_OHOS*/
+      ,
       { "VK_EXT_external_memory_acquire_unmodified",
         { { "VK_VERSION_1_0",
             { {
@@ -2769,6 +2789,12 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
       ,
       { "VK_KHR_depth_clamp_zero_one",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_ARM_performance_counters_by_region",
         { { "VK_VERSION_1_0",
             { {
               "VK_KHR_get_physical_device_properties2",
@@ -3726,8 +3752,11 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_NV_memory_decompression" ) || ( extension == "VK_NV_device_generated_commands_compute" ) ||
            ( extension == "VK_NV_ray_tracing_linear_swept_spheres" ) || ( extension == "VK_NV_linear_color_attachment" ) ||
            ( extension == "VK_KHR_shader_maximal_reconvergence" ) || ( extension == "VK_EXT_image_compression_control_swapchain" ) ||
-           ( extension == "VK_QCOM_image_processing" ) || ( extension == "VK_EXT_nested_command_buffer" ) ||
-           ( extension == "VK_EXT_external_memory_acquire_unmodified" ) || ( extension == "VK_EXT_extended_dynamic_state3" ) ||
+           ( extension == "VK_QCOM_image_processing" ) || ( extension == "VK_EXT_nested_command_buffer" )
+#if defined( VK_USE_PLATFORM_OHOS )
+        || ( extension == "VK_OHOS_external_memory" )
+#endif /*VK_USE_PLATFORM_OHOS*/
+        || ( extension == "VK_EXT_external_memory_acquire_unmodified" ) || ( extension == "VK_EXT_extended_dynamic_state3" ) ||
            ( extension == "VK_EXT_subpass_merge_feedback" ) || ( extension == "VK_ARM_tensors" ) || ( extension == "VK_EXT_shader_module_identifier" ) ||
            ( extension == "VK_EXT_rasterization_order_attachment_access" ) || ( extension == "VK_NV_optical_flow" ) ||
            ( extension == "VK_EXT_legacy_dithering" ) || ( extension == "VK_EXT_pipeline_protected_access" )
@@ -3776,7 +3805,8 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_METAL_EXT )
         || ( extension == "VK_EXT_external_memory_metal" )
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
-        || ( extension == "VK_KHR_depth_clamp_zero_one" ) || ( extension == "VK_EXT_vertex_attribute_robustness" ) || ( extension == "VK_ARM_format_pack" ) ||
+        || ( extension == "VK_KHR_depth_clamp_zero_one" ) || ( extension == "VK_ARM_performance_counters_by_region" ) ||
+           ( extension == "VK_EXT_vertex_attribute_robustness" ) || ( extension == "VK_ARM_format_pack" ) ||
            ( extension == "VK_VALVE_fragment_density_map_layered" ) || ( extension == "VK_KHR_robustness2" )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         || ( extension == "VK_NV_present_metering" )

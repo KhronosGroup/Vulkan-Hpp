@@ -38,7 +38,7 @@
 #  include <cassert>
 #  include <cstdlib>
 #  include <cstring>
-import VULKAN_HPP_STD_MODULE;
+import std.compat;
 #endif
 #include <vulkan/vulkan.h>
 

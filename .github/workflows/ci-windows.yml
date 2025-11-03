@@ -28,39 +28,42 @@ jobs:
       with:
         arch: ${{matrix.architecture}}
 
-    # - name: Install glm, glfw and glslang
-    #   run: |
-    #     cd glm
-    #     cmake -B build                               \
-    #       -D CMAKE_CXX_STANDARD=11                   \
-    #       -D CMAKE_BUILD_TYPE=Release                \
-    #       -D GLM_BUILD_LIBRARY=ON                    \
-    #       -D GLM_BUILD_INSTALL=ON                    \
-    #       -D GLM_BUILD_TESTS=OFF
-    #     cmake --build build --parallel
-    #     cmake --install build
+    - name: Install glm, glfw and glslang
+      run: |
+        cd glm
+        cmake -B build                               \
+          -D CMAKE_CXX_STANDARD=11                   \
+          -D GLM_BUILD_LIBRARY=ON                    \
+          -D GLM_BUILD_INSTALL=ON                    \
+          -D GLM_BUILD_TESTS=OFF
+        cmake --build build --parallel --config Debug
+        cmake --install build --config Debug
+        cmake --build build --parallel --config Release
+        cmake --install build --config Release
 
-    #     cd ../glfw
-    #     cmake -B build                               \
-    #       -D CMAKE_CXX_STANDARD=11                   \
-    #       -D CMAKE_BUILD_TYPE=Release                \
-    #       -D GLFW_BUILD_EXAMPLES=OFF                 \
-    #       -D GLFW_BUILD_TESTS=OFF                    \
-    #       -D GLFW_BUILD_DOCS=OFF                     \
-    #       -D GLFW_INSTALL=ON
-    #     cmake --build build --parallel
-    #     cmake --install build
+        cd ../glfw
+        cmake -B build                               \
+          -D CMAKE_CXX_STANDARD=11                   \
+          -D GLFW_BUILD_EXAMPLES=OFF                 \
+          -D GLFW_BUILD_TESTS=OFF                    \
+          -D GLFW_BUILD_DOCS=OFF                     \
+          -D GLFW_INSTALL=ON
+        cmake --build build --parallel --config Debug
+        cmake --install build --config Debug
+        cmake --build build --parallel --config Release
+        cmake --install build --config Release
 
-    #     cd ../glslang
-    #     cmake -B build                               \
-    #       -D CMAKE_CXX_STANDARD=11                   \
-    #       -D CMAKE_BUILD_TYPE=Release                \
-    #       -D ENABLE_OPT=OFF                          \
-    #       -D GLSLANG_TESTS_DEFAULT=OFF               \
-    #       -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
-    #     cmake --build build --parallel
-    #     cmake --install build
-    #     cd ..
+        cd ../glslang
+        cmake -B build                               \
+          -D CMAKE_CXX_STANDARD=11                   \
+          -D ENABLE_OPT=OFF                          \
+          -D GLSLANG_TESTS_DEFAULT=OFF               \
+          -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
+        cmake --build build --parallel --config Debug
+        cmake --install build --config Debug
+        cmake --build build --parallel --config Release
+        cmake --install build --config Release
+        cd ..
 
     - name: Generate headers
       run: |
@@ -74,40 +77,27 @@ jobs:
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
           -D CMAKE_CXX_STANDARD=20
         cmake --build build --parallel --config Debug
-
-        cmake -B build --fresh                         \
-          -D VULKAN_HPP_GENERATOR_BUILD=ON             \
-          -D VULKAN_HPP_RUN_GENERATOR=ON               \
-          -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
-          -D VULKAN_HPP_TESTS_BUILD=OFF                \
-          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
-          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
-          -D VULKAN_HPP_PRECOMPILE=OFF                 \
-          -D CMAKE_CXX_STANDARD=20
-        cmake --build build --parallel --clean-first  --config Release
+        cmake --build build --parallel --config Release
 
     - name: Build samples and tests
       run: |
         for CXX_STANDARD in 11 14 17 20 23; do
-          for BUILD_TYPE in Debug Release; do
-            CXX_MODULES=ON
-            if [ ${{matrix.compiler}} == "windows-2019" ] || [ $CXX_STANDARD -lt 20 ]; then
-              CXX_MODULES=OFF
-            fi
+          echo "================================================================================="
+          echo "Building C++$CXX_STANDARD in Debug with architecture ${{matrix.architecture}}"
+          echo "================================================================================="
+          cmake -B build --fresh                            \
+            -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
+            -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
+            -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
+            -D VULKAN_HPP_TESTS_BUILD=ON                    \
+            -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
+            -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
+            -D VULKAN_HPP_PRECOMPILE=OFF                    \
+            -D CMAKE_CXX_STANDARD=$CXX_STANDARD
+          cmake --build build --parallel --clean-first --config Debug
 
-            echo "================================================================================="
-            echo "Building C++$CXX_STANDARD in $BUILD_TYPE with architecture ${{matrix.architecture}}"
-            echo "================================================================================="
-
-            cmake -B build --fresh                            \
-              -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
-              -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
-              -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
-              -D VULKAN_HPP_TESTS_BUILD=ON                    \
-              -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
-              -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
-              -D VULKAN_HPP_PRECOMPILE=OFF                    \
-              -D CMAKE_CXX_STANDARD=$CXX_STANDARD
-            cmake --build build --parallel --clean-first --config $BUILD_TYPE
-          done
+          echo "================================================================================="
+          echo "Building C++$CXX_STANDARD in Release with architecture ${{matrix.architecture}}"
+          echo "================================================================================="
+          cmake --build build --parallel --config Release
         done

@@ -17,6 +17,7 @@
 
 #if defined( _MSC_VER )
 // no need to ignore any warnings with MSVC
+#endif
 #if defined( __clang__ )
 #  pragma clang diagnostic ignored "-Wunused-variable"
 #elif defined( __GNUC__ )

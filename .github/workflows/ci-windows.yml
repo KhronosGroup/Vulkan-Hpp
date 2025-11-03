@@ -36,8 +36,6 @@ jobs:
           -D GLM_BUILD_LIBRARY=ON                    \
           -D GLM_BUILD_INSTALL=ON                    \
           -D GLM_BUILD_TESTS=OFF
-        cmake --build build --parallel --config Debug
-        cmake --install build --config Debug
         cmake --build build --parallel --config Release
         cmake --install build --config Release
 
@@ -48,8 +46,6 @@ jobs:
           -D GLFW_BUILD_TESTS=OFF                    \
           -D GLFW_BUILD_DOCS=OFF                     \
           -D GLFW_INSTALL=ON
-        cmake --build build --parallel --config Debug
-        cmake --install build --config Debug
         cmake --build build --parallel --config Release
         cmake --install build --config Release
 
@@ -59,8 +55,6 @@ jobs:
           -D ENABLE_OPT=OFF                          \
           -D GLSLANG_TESTS_DEFAULT=OFF               \
           -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
-        cmake --build build --parallel --config Debug
-        cmake --install build --config Debug
         cmake --build build --parallel --config Release
         cmake --install build --config Release
         cd ..

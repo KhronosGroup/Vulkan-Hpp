@@ -1,5 +1,5 @@
 
-name: CI Windows
+name: CI Windows Clang
 
 on:
   pull_request:
@@ -18,7 +18,6 @@ jobs:
         os: [windows-2022, windows-2025]
         architecture: [x86, x64]
         compiler: [clang, clang-cl]
-        build_type: [Debug, Release]
 
     steps:
     - uses: actions/checkout@v4
@@ -33,7 +32,7 @@ jobs:
     - name: Install glm, glfw and glslang
       run: |
         cd glm
-        cmake -B build                               \
+        cmake -B build -G Ninja                      \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
           -D CMAKE_CXX_STANDARD=11                   \
           -D CMAKE_BUILD_TYPE=Release                \
@@ -44,7 +43,7 @@ jobs:
         cmake --install build
 
         cd ../glfw
-        cmake -B build                               \
+        cmake -B build -G Ninja                      \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
           -D CMAKE_CXX_STANDARD=11                   \
           -D CMAKE_BUILD_TYPE=Release                \
@@ -56,7 +55,7 @@ jobs:
         cmake --install build
 
         cd ../glslang
-        cmake -B build                               \
+        cmake -B build -G Ninja                      \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
           -D CMAKE_CXX_STANDARD=11                   \
           -D CMAKE_BUILD_TYPE=Release                \

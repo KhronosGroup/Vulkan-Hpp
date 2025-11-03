@@ -72,9 +72,8 @@ jobs:
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
-          -D CMAKE_CXX_STANDARD=20                     \
-          -D CMAKE_BUILD_TYPE=Debug
-        cmake --build build --parallel
+          -D CMAKE_CXX_STANDARD=20
+        cmake --build build --parallel --config Debug
 
         cmake -B build --fresh                         \
           -D VULKAN_HPP_GENERATOR_BUILD=ON             \
@@ -84,9 +83,8 @@ jobs:
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
-          -D CMAKE_CXX_STANDARD=20                     \
-          -D CMAKE_BUILD_TYPE=Release
-        cmake --build build --parallel --clean-first
+          -D CMAKE_CXX_STANDARD=20
+        cmake --build build --parallel --clean-first  --config Release
 
     - name: Build samples and tests
       run: |
@@ -109,8 +107,7 @@ jobs:
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
               -D VULKAN_HPP_PRECOMPILE=OFF                    \
-              -D CMAKE_CXX_STANDARD=$CXX_STANDARD             \
-              -D CMAKE_BUILD_TYPE=$BUILD_TYPE
-            cmake --build build --parallel --clean-first
+              -D CMAKE_CXX_STANDARD=$CXX_STANDARD
+            cmake --build build --parallel --clean-first --config $BUILD_TYPE
           done
         done

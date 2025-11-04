@@ -20,7 +20,12 @@
 
 // in this test, we ignore some warnings
 // You should not do that in production code !!
-#if defined( __GNUC__ )
+#if defined( _MSC_VER )
+// no need to ignore any warnings with MSVC
+#endif
+#if defined( __clang__ )
+#  pragma clang diagnostic ignored "-Wunused-variable"
+#elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"
 #else
 // unknow compiler... just ignore the warnings for yourselves ;)

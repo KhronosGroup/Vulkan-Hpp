@@ -2060,8 +2060,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
           }
           else if ( params[i].optional )
           {
-            arguments.push_back( "Optional<" + stripPostfix( composedType, " *" ) + "> " + name +
-                                 ( ( definition || withAllocators ) ? "" : " = nullptr" ) );
+            arguments.push_back( "Optional<" + stripPostfix( composedType, " *" ) + "> " + name + ( ( definition || withAllocators ) ? "" : " = nullptr" ) );
             hasDefaultAssignment = true;
           }
           else
@@ -2079,8 +2078,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
             assert( params[i].type.type == "char" );
             if ( params[i].optional )
             {
-              arguments.push_back( "Optional<const std::string> " + name +
-                                   ( ( definition || withAllocators ) ? "" : " = nullptr" ) );
+              arguments.push_back( "Optional<const std::string> " + name + ( ( definition || withAllocators ) ? "" : " = nullptr" ) );
               hasDefaultAssignment = true;
             }
             else
@@ -11976,84 +11974,8 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
 
   std::string str = "\n" + enter;
 
-  std::string constructorsAndSetters;
-  if ( strcmp( &structure.first[0], "VkDeviceFaultInfoEXT" ) == 0 )
-  {
-    // special handling for this structure, as it is filled with dynamic memory on VULKAN_HPP_NAMESPACE::Device::getFaultInfoEXT!
-    constructorsAndSetters += R"(
-#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
-    VULKAN_HPP_CONSTEXPR_14 DeviceFaultInfoEXT( std::array<char, VK_MAX_DESCRIPTION_SIZE> const & description_       = {},
-                                                DeviceFaultAddressInfoEXT *                       pAddressInfos_     = {},
-                                                DeviceFaultVendorInfoEXT *                        pVendorInfos_      = {},
-                                                void *                                            pVendorBinaryData_ = {},
-                                                void *                                            pNext_             = nullptr ) VULKAN_HPP_NOEXCEPT
-      : pNext{ pNext_ }
-      , description{ description_ }
-      , pAddressInfos{ pAddressInfos_ }
-      , pVendorInfos{ pVendorInfos_ }
-      , pVendorBinaryData{ pVendorBinaryData_ }
-    {
-    }
-
-#  ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    VULKAN_HPP_CONSTEXPR_14 DeviceFaultInfoEXT( DeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-    DeviceFaultInfoEXT( VkDeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT : DeviceFaultInfoEXT( *reinterpret_cast<DeviceFaultInfoEXT const *>( &rhs ) ) {}
-
-    DeviceFaultInfoEXT & operator=( DeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-#  else
-    DeviceFaultInfoEXT( DeviceFaultInfoEXT const & )             = delete;
-    DeviceFaultInfoEXT & operator=( DeviceFaultInfoEXT const & ) = delete;
-
-    DeviceFaultInfoEXT( DeviceFaultInfoEXT && rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext{ rhs.pNext }
-      , pAddressInfos{ rhs.pAddressInfos }
-      , pVendorInfos{ rhs.pVendorInfos }
-      , pVendorBinaryData{ rhs.pVendorBinaryData }
-    {
-      memcpy( description, rhs.description, VK_MAX_DESCRIPTION_SIZE );
-
-      rhs.pNext = nullptr;
-      memset( rhs.description, 0, VK_MAX_DESCRIPTION_SIZE );
-      rhs.pAddressInfos     = nullptr;
-      rhs.pVendorInfos      = nullptr;
-      rhs.pVendorBinaryData = nullptr;
-    }
-
-    DeviceFaultInfoEXT & operator=( DeviceFaultInfoEXT && rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      free( pAddressInfos );
-      free( pVendorInfos );
-      free( pVendorBinaryData );
-
-      pNext = rhs.pNext;
-      memcpy( description, rhs.description, VK_MAX_DESCRIPTION_SIZE );
-      pAddressInfos     = rhs.pAddressInfos;
-      pVendorInfos      = rhs.pVendorInfos;
-      pVendorBinaryData = rhs.pVendorBinaryData;
-
-      rhs.pNext = nullptr;
-      memset( rhs.description, 0, VK_MAX_DESCRIPTION_SIZE );
-      rhs.pAddressInfos     = nullptr;
-      rhs.pVendorInfos      = nullptr;
-      rhs.pVendorBinaryData = nullptr;
-
-      return *this;
-    }
-
-    ~DeviceFaultInfoEXT() VULKAN_HPP_NOEXCEPT
-    {
-      free( pAddressInfos );
-      free( pVendorInfos );
-      free( pVendorBinaryData );
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif   /*VULKAN_HPP_NO_CONSTRUCTORS*/
-)";
-  }
-  else
-  {
-    static const std::string constructorsTemplate = R"(
+  std::string              constructorsAndSetters;
+  static const std::string constructorsTemplate = R"(
 #if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
 ${pushIgnored}${constructors}
 ${subConstructors}
@@ -12068,10 +11990,10 @@ ${deprecatedConstructors}
     }
 )";
 
-    std::string pushIgnored, popIgnored;
-    if ( containsDeprecated( structure.second.members ) )
-    {
-      pushIgnored = R"(
+  std::string pushIgnored, popIgnored;
+  if ( containsDeprecated( structure.second.members ) )
+  {
+    pushIgnored = R"(
 #if defined( _MSC_VER )
 #  pragma warning( push )
 #  pragma warning( disable : 4996 ) // 'function': was declared deprecated
@@ -12086,7 +12008,7 @@ ${deprecatedConstructors}
 #endif
 
 )";
-      popIgnored  = R"(
+    popIgnored  = R"(
 
 #if defined( _MSC_VER )
 #  pragma warning( pop )
@@ -12098,17 +12020,16 @@ ${deprecatedConstructors}
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 )";
-    }
-
-    constructorsAndSetters = replaceWithMap( constructorsTemplate,
-                                             { { "castAssignments", generateStructCastAssignments( structure ) },
-                                               { "constructors", generateStructConstructors( structure ) },
-                                               { "deprecatedConstructors", generateDeprecatedConstructors( structure.first ) },
-                                               { "popIgnored", popIgnored },
-                                               { "pushIgnored", pushIgnored },
-                                               { "structName", stripPrefix( structure.first, "Vk" ) },
-                                               { "subConstructors", generateStructSubConstructor( structure ) } } );
   }
+
+  constructorsAndSetters = replaceWithMap( constructorsTemplate,
+                                           { { "castAssignments", generateStructCastAssignments( structure ) },
+                                             { "constructors", generateStructConstructors( structure ) },
+                                             { "deprecatedConstructors", generateDeprecatedConstructors( structure.first ) },
+                                             { "popIgnored", popIgnored },
+                                             { "pushIgnored", pushIgnored },
+                                             { "structName", stripPrefix( structure.first, "Vk" ) },
+                                             { "subConstructors", generateStructSubConstructor( structure ) } } );
 
   if ( !structure.second.returnedOnly )
   {

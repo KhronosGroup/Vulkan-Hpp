@@ -106,6 +106,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DeviceCreateInfo     deviceCreateInfo;
     vk::raii::Device         device = physicalDevice.createDevice( deviceCreateInfo );
   }
+  {
+    vk::raii::PhysicalDevice physicalDevice = nullptr;
+    vk::DeviceCreateInfo     deviceCreateInfo;
+    vk::raii::Device         device( physicalDevice, deviceCreateInfo );
+  }
 
   // Extension discovery commands
   {
@@ -136,6 +141,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     uint32_t         queueIndex       = 0;
     vk::raii::Queue  queue            = device.getQueue( queueFamilyIndex, queueIndex );
   }
+  {
+    vk::raii::Device device           = nullptr;
+    uint32_t         queueFamilyIndex = 0;
+    uint32_t         queueIndex       = 0;
+    vk::raii::Queue  queue( device, queueFamilyIndex, queueIndex );
+  }
 
   {
     vk::raii::Queue queue = nullptr;
@@ -159,6 +170,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::Device       device = nullptr;
     vk::MemoryAllocateInfo memoryAllocateInfo;
     vk::raii::DeviceMemory deviceMemory = device.allocateMemory( memoryAllocateInfo );
+  }
+  {
+    vk::raii::Device       device = nullptr;
+    vk::MemoryAllocateInfo memoryAllocateInfo;
+    vk::raii::DeviceMemory deviceMemory( device, memoryAllocateInfo );
   }
 
   {
@@ -238,6 +254,37 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::BindSparseInfo bindSparseInfo;
     vk::Fence          fence;
     queue.bindSparse( bindSparseInfo, fence );
+  }
+
+  // Fence commands
+  {
+    vk::raii::Device    device = nullptr;
+    vk::FenceCreateInfo fenceCreateInfo;
+    vk::raii::Fence     fence = device.createFence( fenceCreateInfo );
+  }
+  {
+    vk::raii::Device    device = nullptr;
+    vk::FenceCreateInfo fenceCreateInfo;
+    vk::raii::Fence     fence( device, fenceCreateInfo );
+  }
+
+  {
+    vk::raii::Device device = nullptr;
+    vk::Fence        fence;
+    device.resetFences( fence );
+  }
+
+  {
+    vk::raii::Fence fence  = nullptr;
+    vk::Result      result = fence.getStatus();
+  }
+
+  {
+    vk::raii::Device device = nullptr;
+    vk::Fence        fence;
+    vk::Bool32       waitAll = vk::True;
+    uint64_t         timeout = 1000000000;
+    vk::Result       result  = device.waitForFences( fence, waitAll, timeout );
   }
 
   return 0;

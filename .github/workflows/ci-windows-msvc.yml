@@ -1,5 +1,5 @@
 
-name: CI Windows
+name: CI Windows MSVC
 
 on:
   pull_request:

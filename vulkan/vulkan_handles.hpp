@@ -2247,6 +2247,11 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_64bit_indexing ===
   struct PhysicalDeviceShader64BitIndexingFeaturesEXT;
 
+  //=== VK_QCOM_data_graph_model ===
+  struct PipelineCacheHeaderVersionDataGraphQCOM;
+  struct DataGraphPipelineBuiltinModelCreateInfoQCOM;
+  struct PhysicalDeviceDataGraphModelFeaturesQCOM;
+
   //=== VK_KHR_maintenance10 ===
   struct PhysicalDeviceMaintenance10FeaturesKHR;
   struct PhysicalDeviceMaintenance10PropertiesKHR;

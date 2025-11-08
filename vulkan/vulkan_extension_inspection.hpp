@@ -508,6 +508,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_EXT_zero_initialize_device_memory",
                                                             "VK_KHR_present_mode_fifo_latest_ready",
                                                             "VK_EXT_shader_64bit_indexing",
+                                                            "VK_QCOM_data_graph_model",
                                                             "VK_KHR_maintenance10",
                                                             "VK_SEC_pipeline_cache_incremental_mode",
                                                             "VK_EXT_shader_uniform_buffer_unsized_array" };
@@ -1782,7 +1783,17 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } },
-          { "VK_VERSION_1_1", { {} } } } },
+          { "VK_VERSION_1_1", { {} } } } }
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      ,
+      { "VK_NV_cuda_kernel_launch",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } }
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      ,
       { "VK_QCOM_tile_shading",
         { { "VK_VERSION_1_0",
             { {
@@ -2059,6 +2070,12 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_frame_boundary",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_EXT_multisampled_render_to_single_sampled",
         { { "VK_VERSION_1_0",
             { {
@@ -2179,6 +2196,12 @@ namespace VULKAN_HPP_NAMESPACE
             } } } } },
       { "VK_KHR_maintenance4", { { "VK_VERSION_1_1", { {} } } } },
       { "VK_ARM_shader_core_properties", { { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_shader_subgroup_rotate",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_ARM_scheduling_controls",
         { { "VK_VERSION_1_0",
             { {
@@ -2382,7 +2405,13 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_dynamic_rendering",
             } } },
-          { "VK_VERSION_1_3", { {} } } } }
+          { "VK_VERSION_1_3", { {} } } } },
+      { "VK_AMD_anti_lag",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } }
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       ,
       { "VK_AMDX_dense_geometry_format",
@@ -2476,6 +2505,18 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_ray_tracing_pipeline",
             } } } } },
+      { "VK_NV_cooperative_vector",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_NV_extended_sparse_address_space",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_EXT_mutable_descriptor_type",
         { { "VK_VERSION_1_0",
             { {
@@ -2539,6 +2580,12 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_deferred_host_operations",
               "VK_KHR_maintenance5",
             } } } } },
+      { "VK_QCOM_multiview_per_view_render_areas",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_KHR_compute_shader_derivatives",
         { { "VK_VERSION_1_0",
             { {
@@ -2581,6 +2628,12 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_EXT_filter_cubic",
             } } } } },
+      { "VK_QCOM_ycbcr_degamma",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_QCOM_filter_cubic_clamp",
         { { "VK_VERSION_1_0",
             { {
@@ -2602,6 +2655,12 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_EXT_attachment_feedback_loop_layout",
             } } } } },
       { "VK_KHR_vertex_attribute_divisor",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_unified_image_layouts",
         { { "VK_VERSION_1_0",
             { {
               "VK_KHR_get_physical_device_properties2",
@@ -2701,7 +2760,49 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_video_encode_queue",
             } } } } },
+      { "VK_NV_raw_access_chains",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_shader_relaxed_extended_instruction",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_NV_command_buffer_inheritance",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_KHR_maintenance7", { { "VK_VERSION_1_1", { {} } } } },
+      { "VK_NV_shader_atomic_float16_vector",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_shader_replicated_composites",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_shader_float8",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_NV_ray_tracing_validation",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_NV_cluster_acceleration_structure",
         { { "VK_VERSION_1_0",
             { {
@@ -2725,6 +2826,12 @@ namespace VULKAN_HPP_NAMESPACE
           { "VK_VERSION_1_3", { {} } } } },
       { "VK_KHR_maintenance8", { { "VK_VERSION_1_1", { {} } } } },
       { "VK_MESA_image_alignment_control",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_shader_fma",
         { { "VK_VERSION_1_0",
             { {
               "VK_KHR_get_physical_device_properties2",
@@ -2806,6 +2913,12 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
+      { "VK_ARM_format_pack",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_VALVE_fragment_density_map_layered",
         { { "VK_VERSION_1_0",
             { {
@@ -2821,7 +2934,17 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } },
-          { "VK_VERSION_1_1", { {} } } } },
+          { "VK_VERSION_1_1", { {} } } } }
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      ,
+      { "VK_NV_present_metering",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } }
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      ,
       { "VK_EXT_fragment_density_map_offset",
         { { "VK_VERSION_1_0",
             { {
@@ -2862,7 +2985,24 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
+      { "VK_QCOM_data_graph_model",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_ARM_data_graph",
+            } } } } },
       { "VK_KHR_maintenance10",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_SEC_pipeline_cache_incremental_mode",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_shader_uniform_buffer_unsized_array",
         { { "VK_VERSION_1_0",
             { {
               "VK_KHR_get_physical_device_properties2",
@@ -3813,8 +3953,8 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
         || ( extension == "VK_EXT_fragment_density_map_offset" ) || ( extension == "VK_EXT_zero_initialize_device_memory" ) ||
            ( extension == "VK_KHR_present_mode_fifo_latest_ready" ) || ( extension == "VK_EXT_shader_64bit_indexing" ) ||
-           ( extension == "VK_KHR_maintenance10" ) || ( extension == "VK_SEC_pipeline_cache_incremental_mode" ) ||
-           ( extension == "VK_EXT_shader_uniform_buffer_unsized_array" );
+           ( extension == "VK_QCOM_data_graph_model" ) || ( extension == "VK_KHR_maintenance10" ) ||
+           ( extension == "VK_SEC_pipeline_cache_incremental_mode" ) || ( extension == "VK_EXT_shader_uniform_buffer_unsized_array" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

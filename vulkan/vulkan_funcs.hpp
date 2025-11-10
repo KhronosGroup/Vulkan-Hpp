@@ -15995,8 +15995,11 @@ namespace VULKAN_HPP_NAMESPACE
                                           Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d ) const
   {
     static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
-    VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo(
-      handle.objectType, reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) ), name.c_str() );
+    // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
+    VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo;
+    nameInfo.objectType   = handle.objectType;
+    nameInfo.objectHandle = reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) );
+    nameInfo.pObjectName  = name.c_str();
     return setDebugUtilsObjectNameEXT( nameInfo, d );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
@@ -16034,8 +16037,13 @@ namespace VULKAN_HPP_NAMESPACE
     Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag, Dispatch const & d ) const
   {
     static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
-    VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT tagInfo(
-      handle.objectType, reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) ), name, sizeof( TagType ), &tag );
+    // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
+    VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT tagInfo;
+    tagInfo.objectType   = handle.objectType;
+    tagInfo.objectHandle = reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) );
+    tagInfo.tagName      = name;
+    tagInfo.tagSize      = sizeof( TagType );
+    tagInfo.pTag         = &tag;
     return setDebugUtilsObjectTagEXT( tagInfo, d );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */

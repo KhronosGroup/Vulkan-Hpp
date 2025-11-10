@@ -27,7 +27,6 @@
 #else
 #  include <cassert>
 #  include <cstring>
-#  include <cstdlib>
 import std.compat;
 #endif
 #include <vulkan/${vulkan_h}>

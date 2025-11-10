@@ -58,7 +58,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-static_assert( VK_HEADER_VERSION == 331, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 332, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -7614,6 +7614,9 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_partitioned_acceleration_structure ===
   VULKAN_HPP_CONSTEXPR_INLINE uint32_t PartitionedAccelerationStructurePartitionIndexGlobalNV = VK_PARTITIONED_ACCELERATION_STRUCTURE_PARTITION_INDEX_GLOBAL_NV;
 
+  //=== VK_QCOM_data_graph_model ===
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t DataGraphModelToolchainVersionLengthQCOM = VK_DATA_GRAPH_MODEL_TOOLCHAIN_VERSION_LENGTH_QCOM;
+
   //========================
   //=== CONSTEXPR VALUEs ===
   //========================
@@ -9529,6 +9532,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_64bit_indexing ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShader64BitIndexingExtensionName = VK_EXT_SHADER_64BIT_INDEXING_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShader64BitIndexingSpecVersion   = VK_EXT_SHADER_64BIT_INDEXING_SPEC_VERSION;
+
+  //=== VK_QCOM_data_graph_model ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto QCOMDataGraphModelExtensionName = VK_QCOM_DATA_GRAPH_MODEL_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto QCOMDataGraphModelSpecVersion   = VK_QCOM_DATA_GRAPH_MODEL_SPEC_VERSION;
 
   //=== VK_KHR_maintenance10 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance10ExtensionName = VK_KHR_MAINTENANCE_10_EXTENSION_NAME;
@@ -19695,6 +19702,34 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceShader64BitIndexingFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_QCOM_data_graph_model ===
+  template <>
+  struct StructExtends<DataGraphPipelineBuiltinModelCreateInfoQCOM, DataGraphPipelineCreateInfoARM>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceDataGraphModelFeaturesQCOM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceDataGraphModelFeaturesQCOM, DeviceCreateInfo>
   {
     enum
     {

@@ -1048,6 +1048,9 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionFlagBitsARM;
   using VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionFlagsARM;
 
+  //=== VK_QCOM_data_graph_model ===
+  using VULKAN_HPP_NAMESPACE::DataGraphModelCacheTypeQCOM;
+
   //=== VK_KHR_maintenance10 ===
   using VULKAN_HPP_NAMESPACE::RenderingAttachmentFlagBitsKHR;
   using VULKAN_HPP_NAMESPACE::RenderingAttachmentFlagsKHR;
@@ -2974,6 +2977,11 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_64bit_indexing ===
   using VULKAN_HPP_NAMESPACE::EXTShader64BitIndexingExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTShader64BitIndexingSpecVersion;
+
+  //=== VK_QCOM_data_graph_model ===
+  using VULKAN_HPP_NAMESPACE::DataGraphModelToolchainVersionLengthQCOM;
+  using VULKAN_HPP_NAMESPACE::QCOMDataGraphModelExtensionName;
+  using VULKAN_HPP_NAMESPACE::QCOMDataGraphModelSpecVersion;
 
   //=== VK_KHR_maintenance10 ===
   using VULKAN_HPP_NAMESPACE::KHRMaintenance10ExtensionName;
@@ -5273,6 +5281,11 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_shader_64bit_indexing ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShader64BitIndexingFeaturesEXT;
+
+  //=== VK_QCOM_data_graph_model ===
+  using VULKAN_HPP_NAMESPACE::DataGraphPipelineBuiltinModelCreateInfoQCOM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDataGraphModelFeaturesQCOM;
+  using VULKAN_HPP_NAMESPACE::PipelineCacheHeaderVersionDataGraphQCOM;
 
   //=== VK_KHR_maintenance10 ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance10FeaturesKHR;
@@ -9335,6 +9348,14 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShader64BitIndexingFeaturesEXT>;
 
+  //=== VK_QCOM_data_graph_model ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PipelineCacheHeaderVersionDataGraphQCOM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DataGraphPipelineBuiltinModelCreateInfoQCOM>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDataGraphModelFeaturesQCOM>;
+
   //=== VK_KHR_maintenance10 ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance10FeaturesKHR>;
@@ -9365,7 +9386,8 @@ export namespace std
 #endif
 }  // namespace std
 
-export {
+export
+{
   // This VkFlags type is used as part of a bitfield in some structures.
   // As it can't be mimicked by vk-data types, we need to export just that.
   using ::VkGeometryInstanceFlagsKHR;

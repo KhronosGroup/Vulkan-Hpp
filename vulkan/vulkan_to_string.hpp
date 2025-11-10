@@ -5564,6 +5564,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT     : return "PhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT";
       case StructureType::ePhysicalDevicePresentModeFifoLatestReadyFeaturesKHR     : return "PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR";
       case StructureType::ePhysicalDeviceShader64BitIndexingFeaturesEXT            : return "PhysicalDeviceShader64BitIndexingFeaturesEXT";
+      case StructureType::ePhysicalDeviceDataGraphModelFeaturesQCOM                : return "PhysicalDeviceDataGraphModelFeaturesQCOM";
+      case StructureType::eDataGraphPipelineBuiltinModelCreateInfoQCOM             : return "DataGraphPipelineBuiltinModelCreateInfoQCOM";
       case StructureType::ePhysicalDeviceMaintenance10FeaturesKHR                  : return "PhysicalDeviceMaintenance10FeaturesKHR";
       case StructureType::ePhysicalDeviceMaintenance10PropertiesKHR                : return "PhysicalDeviceMaintenance10PropertiesKHR";
       case StructureType::eRenderingAttachmentFlagsInfoKHR                         : return "RenderingAttachmentFlagsInfoKHR";
@@ -6589,8 +6591,9 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( value )
     {
-      case PipelineCacheHeaderVersion::eOne: return "One";
-      default                              : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+      case PipelineCacheHeaderVersion::eOne          : return "One";
+      case PipelineCacheHeaderVersion::eDataGraphQCOM: return "DataGraphQCOM";
+      default                                        : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -10366,8 +10369,10 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( value )
     {
-      case PhysicalDeviceDataGraphProcessingEngineTypeARM::eDefault: return "Default";
-      default                                                      : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+      case PhysicalDeviceDataGraphProcessingEngineTypeARM::eDefault    : return "Default";
+      case PhysicalDeviceDataGraphProcessingEngineTypeARM::eNeuralQCOM : return "NeuralQCOM";
+      case PhysicalDeviceDataGraphProcessingEngineTypeARM::eComputeQCOM: return "ComputeQCOM";
+      default                                                          : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -10376,6 +10381,8 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case PhysicalDeviceDataGraphOperationTypeARM::eSpirvExtendedInstructionSet: return "SpirvExtendedInstructionSet";
+      case PhysicalDeviceDataGraphOperationTypeARM::eNeuralModelQCOM            : return "NeuralModelQCOM";
+      case PhysicalDeviceDataGraphOperationTypeARM::eBuiltinModelQCOM           : return "BuiltinModelQCOM";
       default                                                                   : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -10800,6 +10807,17 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PerformanceCounterDescriptionFlagBitsARM )
   {
     return "(void)";
+  }
+
+  //=== VK_QCOM_data_graph_model ===
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DataGraphModelCacheTypeQCOM value )
+  {
+    switch ( value )
+    {
+      case DataGraphModelCacheTypeQCOM::eGenericBinary: return "GenericBinary";
+      default                                         : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
   }
 
   //=== VK_KHR_maintenance10 ===

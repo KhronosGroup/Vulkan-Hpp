@@ -1733,6 +1733,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDevicePresentModeFifoLatestReadyFeaturesKHR      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR,
     ePhysicalDevicePresentModeFifoLatestReadyFeaturesEXT      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_EXT,
     ePhysicalDeviceShader64BitIndexingFeaturesEXT             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT,
+    ePhysicalDeviceDataGraphModelFeaturesQCOM                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DATA_GRAPH_MODEL_FEATURES_QCOM,
+    eDataGraphPipelineBuiltinModelCreateInfoQCOM              = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_BUILTIN_MODEL_CREATE_INFO_QCOM,
     ePhysicalDeviceMaintenance10FeaturesKHR                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_10_FEATURES_KHR,
     ePhysicalDeviceMaintenance10PropertiesKHR                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_10_PROPERTIES_KHR,
     eRenderingAttachmentFlagsInfoKHR                          = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_FLAGS_INFO_KHR,
@@ -3191,7 +3193,8 @@ namespace VULKAN_HPP_NAMESPACE
   // wrapper class for enum VkPipelineCacheHeaderVersion, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineCacheHeaderVersion.html
   enum class PipelineCacheHeaderVersion
   {
-    eOne = VK_PIPELINE_CACHE_HEADER_VERSION_ONE
+    eOne           = VK_PIPELINE_CACHE_HEADER_VERSION_ONE,
+    eDataGraphQCOM = VK_PIPELINE_CACHE_HEADER_VERSION_DATA_GRAPH_QCOM
   };
 
   // wrapper class for enum VkEventCreateFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkEventCreateFlagBits.html
@@ -8805,14 +8808,18 @@ namespace VULKAN_HPP_NAMESPACE
   // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDeviceDataGraphProcessingEngineTypeARM.html
   enum class PhysicalDeviceDataGraphProcessingEngineTypeARM
   {
-    eDefault = VK_PHYSICAL_DEVICE_DATA_GRAPH_PROCESSING_ENGINE_TYPE_DEFAULT_ARM
+    eDefault     = VK_PHYSICAL_DEVICE_DATA_GRAPH_PROCESSING_ENGINE_TYPE_DEFAULT_ARM,
+    eNeuralQCOM  = VK_PHYSICAL_DEVICE_DATA_GRAPH_PROCESSING_ENGINE_TYPE_NEURAL_QCOM,
+    eComputeQCOM = VK_PHYSICAL_DEVICE_DATA_GRAPH_PROCESSING_ENGINE_TYPE_COMPUTE_QCOM
   };
 
   // wrapper class for enum VkPhysicalDeviceDataGraphOperationTypeARM, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDeviceDataGraphOperationTypeARM.html
   enum class PhysicalDeviceDataGraphOperationTypeARM
   {
-    eSpirvExtendedInstructionSet = VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_SPIRV_EXTENDED_INSTRUCTION_SET_ARM
+    eSpirvExtendedInstructionSet = VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_SPIRV_EXTENDED_INSTRUCTION_SET_ARM,
+    eNeuralModelQCOM             = VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_NEURAL_MODEL_QCOM,
+    eBuiltinModelQCOM            = VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_BUILTIN_MODEL_QCOM
   };
 
   //=== VK_KHR_video_encode_av1 ===
@@ -9403,6 +9410,14 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                                  isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR PerformanceCounterDescriptionFlagsARM allFlags  = {};
+  };
+
+  //=== VK_QCOM_data_graph_model ===
+
+  // wrapper class for enum VkDataGraphModelCacheTypeQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphModelCacheTypeQCOM.html
+  enum class DataGraphModelCacheTypeQCOM
+  {
+    eGenericBinary = VK_DATA_GRAPH_MODEL_CACHE_TYPE_GENERIC_BINARY_QCOM
   };
 
   //=== VK_KHR_maintenance10 ===

@@ -19928,9 +19928,9 @@ namespace VULKAN_HPP_NAMESPACE
       T getProcAddress( const char * function ) const VULKAN_HPP_NOEXCEPT
       {
 #  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined( __Fuchsia__ )
-        return (T)dlsym( m_library, function );
+        return (T)(void *)dlsym( m_library, function );
 #  elif defined( _WIN32 )
-        return ( T )::GetProcAddress( m_library, function );
+        return (T)(void *)::GetProcAddress( m_library, function );
 #  else
 #    error unsupported platform
 #  endif

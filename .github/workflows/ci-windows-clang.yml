@@ -1,5 +1,5 @@
 
-name: CI Windows
+name: CI Windows Clang
 
 on:
   pull_request:
@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2022, windows-2025]
-        architecture: [x86, x64]
+        architecture: [x64]
 
     steps:
     - uses: actions/checkout@v4
@@ -31,32 +31,35 @@ jobs:
     # - name: Install glm, glfw and glslang
     #   run: |
     #     cd glm
-    #     cmake -B build                               \
-    #       -D CMAKE_CXX_STANDARD=11                   \
-    #       -D CMAKE_BUILD_TYPE=Release                \
-    #       -D GLM_BUILD_LIBRARY=ON                    \
-    #       -D GLM_BUILD_INSTALL=ON                    \
+    #     cmake -B build -G Ninja          \
+    #       -D CMAKE_CXX_COMPILER=clang-cl \
+    #       -D CMAKE_CXX_STANDARD=11       \
+    #       -D CMAKE_BUILD_TYPE=Release    \
+    #       -D GLM_BUILD_LIBRARY=ON        \
+    #       -D GLM_BUILD_INSTALL=ON        \
     #       -D GLM_BUILD_TESTS=OFF
     #     cmake --build build --parallel
     #     cmake --install build
 
     #     cd ../glfw
-    #     cmake -B build                               \
-    #       -D CMAKE_CXX_STANDARD=11                   \
-    #       -D CMAKE_BUILD_TYPE=Release                \
-    #       -D GLFW_BUILD_EXAMPLES=OFF                 \
-    #       -D GLFW_BUILD_TESTS=OFF                    \
-    #       -D GLFW_BUILD_DOCS=OFF                     \
+    #     cmake -B build -G Ninja          \
+    #       -D CMAKE_C_COMPILER=clang-cl   \
+    #       -D CMAKE_BUILD_TYPE=Release    \
+    #       -D GLFW_BUILD_EXAMPLES=OFF     \
+    #       -D GLFW_BUILD_TESTS=OFF        \
+    #       -D GLFW_BUILD_DOCS=OFF         \
     #       -D GLFW_INSTALL=ON
     #     cmake --build build --parallel
     #     cmake --install build
 
     #     cd ../glslang
-    #     cmake -B build                               \
-    #       -D CMAKE_CXX_STANDARD=11                   \
-    #       -D CMAKE_BUILD_TYPE=Release                \
-    #       -D ENABLE_OPT=OFF                          \
-    #       -D GLSLANG_TESTS_DEFAULT=OFF               \
+    #     cmake -B build -G Ninja          \
+    #       -D CMAKE_C_COMPILER=clang-cl   \
+    #       -D CMAKE_CXX_COMPILER=clang-cl \
+    #       -D CMAKE_CXX_STANDARD=11       \
+    #       -D CMAKE_BUILD_TYPE=Release    \
+    #       -D ENABLE_OPT=OFF              \
+    #       -D GLSLANG_TESTS_DEFAULT=OFF   \
     #       -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
     #     cmake --build build --parallel
     #     cmake --install build
@@ -64,7 +67,7 @@ jobs:
 
     - name: Generate headers
       run: |
-        cmake -B build                                 \
+        cmake -B build -G Ninja                        \
           -D VULKAN_HPP_GENERATOR_BUILD=ON             \
           -D VULKAN_HPP_RUN_GENERATOR=OFF              \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
@@ -72,10 +75,12 @@ jobs:
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
+          -D CMAKE_BUILD_TYPE=Debug                    \
+          -D CMAKE_CXX_COMPILER=clang-cl               \
           -D CMAKE_CXX_STANDARD=20
-        cmake --build build --parallel --config Debug
+        cmake --build build --parallel
 
-        cmake -B build --fresh                         \
+        cmake -B build -G Ninja --fresh                \
           -D VULKAN_HPP_GENERATOR_BUILD=ON             \
           -D VULKAN_HPP_RUN_GENERATOR=ON               \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
@@ -83,23 +88,20 @@ jobs:
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
+          -D CMAKE_BUILD_TYPE=Release                  \
+          -D CMAKE_CXX_COMPILER=clang-cl               \
           -D CMAKE_CXX_STANDARD=20
-        cmake --build build --parallel --clean-first  --config Release
+        cmake --build build --parallel --clean-first
 
     - name: Build samples and tests
       run: |
         for CXX_STANDARD in 11 14 17 20 23; do
           for BUILD_TYPE in Debug Release; do
-            CXX_MODULES=ON
-            if [ ${{matrix.compiler}} == "windows-2019" ] || [ $CXX_STANDARD -lt 20 ]; then
-              CXX_MODULES=OFF
-            fi
-
             echo "================================================================================="
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE with architecture ${{matrix.architecture}}"
             echo "================================================================================="
 
-            cmake -B build --fresh                            \
+            cmake -B build -G Ninja --fresh                   \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
               -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
@@ -107,7 +109,10 @@ jobs:
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
               -D VULKAN_HPP_PRECOMPILE=OFF                    \
+              -D CMAKE_BUILD_TYPE=$BUILD_TYPE                 \
+              -D CMAKE_C_COMPILER=clang-cl                    \
+              -D CMAKE_CXX_COMPILER=clang-cl                  \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD
-            cmake --build build --parallel --clean-first --config $BUILD_TYPE
+            cmake --build build --parallel --clean-first
           done
         done

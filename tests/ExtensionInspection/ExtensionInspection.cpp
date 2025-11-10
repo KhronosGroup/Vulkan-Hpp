@@ -18,7 +18,8 @@
 // ignore warning 4189: local variable is initialized but not referenced
 #if defined( _MSC_VER )
 #  pragma warning( disable : 4189 )
-#elif defined( __clang__ )
+#endif
+#if defined( __clang__ )
 #  pragma clang diagnostic ignored "-Wunused-variable"
 #elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"

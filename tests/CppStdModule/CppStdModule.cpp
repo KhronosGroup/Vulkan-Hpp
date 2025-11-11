@@ -16,7 +16,7 @@
 //                  Compile test on using c++20 modules
 
 import std;
-import vulkan_hpp;
+import vulkan;
 
 #if defined( _MSC_VER )
 #  pragma warning( disable : 4189 )  // local variable is initialized but not referenced

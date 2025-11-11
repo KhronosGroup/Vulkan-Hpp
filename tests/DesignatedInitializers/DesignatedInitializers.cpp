@@ -20,7 +20,7 @@
 #include <vector>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan_hpp_macros.hpp>
-import vulkan_hpp;
+import vulkan;
 #else
 #  include <vulkan/vulkan.hpp>
 #endif

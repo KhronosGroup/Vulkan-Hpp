@@ -19,7 +19,7 @@
 #include <string>   // std::string
 #include <iostream> // std::cout
 
-import vulkan_hpp;
+import vulkan;
 
 static std::string AppName    = "Cpp20Modules";
 static std::string EngineName = "Vulkan.cppm";

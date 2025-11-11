@@ -5276,11 +5276,10 @@ namespace VULKAN_HPP_NAMESPACE
         getAccelerationStructureOpaqueCaptureDescriptorDataEXT( const AccelerationStructureCaptureDescriptorDataInfoEXT & info ) const;
 
       //=== VK_EXT_device_fault ===
+
       // wrapper function for command vkGetDeviceFaultInfoEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultInfoEXT.html
-      template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-      VULKAN_HPP_NODISCARD Result getFaultInfoEXT( DeviceFaultCountsEXT * pFaultCounts,
-                                                   DeviceFaultInfoEXT *   pFaultInfo,
-                                                   Dispatch const & d     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+      VULKAN_HPP_NODISCARD Result getFaultInfoEXT( DeviceFaultCountsEXT * pFaultCounts, DeviceFaultInfoEXT * pFaultInfo ) const VULKAN_HPP_NOEXCEPT;
+
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
       //=== VK_FUCHSIA_external_memory ===
 
@@ -24791,15 +24790,13 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_EXT_device_fault ===
     // wrapper function for command vkGetDeviceFaultInfoEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultInfoEXT.html
-    template <typename Dispatch>
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getFaultInfoEXT( DeviceFaultCountsEXT * pFaultCounts,
-                                                                           DeviceFaultInfoEXT *   pFaultInfo,
-                                                                           Dispatch const &       d ) const VULKAN_HPP_NOEXCEPT
+                                                                           DeviceFaultInfoEXT *   pFaultInfo ) const VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-      return static_cast<Result>( d.vkGetDeviceFaultInfoEXT( static_cast<VkDevice>( m_device ),
-                                                             reinterpret_cast<VkDeviceFaultCountsEXT *>( pFaultCounts ),
-                                                             reinterpret_cast<VkDeviceFaultInfoEXT *>( pFaultInfo ) ) );
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeviceFaultInfoEXT && "Function <vkGetDeviceFaultInfoEXT> requires <VK_EXT_device_fault>" );
+      return static_cast<Result>( getDispatcher()->vkGetDeviceFaultInfoEXT( static_cast<VkDevice>( m_device ),
+                                                                            reinterpret_cast<VkDeviceFaultCountsEXT *>( pFaultCounts ),
+                                                                            reinterpret_cast<VkDeviceFaultInfoEXT *>( pFaultInfo ) ) );
     }
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
     //=== VK_NV_acquire_winrt_display ===

@@ -16412,6 +16412,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD Result getFaultInfoEXT( DeviceFaultCountsEXT * pFaultCounts,
                                                  DeviceFaultInfoEXT *   pFaultInfo,
                                                  Dispatch const & d     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
 #if defined( VK_USE_PLATFORM_FUCHSIA )
     //=== VK_FUCHSIA_external_memory ===
 

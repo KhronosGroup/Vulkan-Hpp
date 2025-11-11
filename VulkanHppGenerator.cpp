@@ -3636,7 +3636,7 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Retu
           else if ( name == "vkGetDeviceFaultInfoEXT" )
           {
             // can't generate an enhanced version for such a complex command! Just use the standard version
-            return generateCommandStandard( name, commandData, initialSkipCount, definition );
+            return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, returnParams, vectorParams, false, {}, raii, false, {} );
           }
         }
         break;
@@ -3644,7 +3644,7 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Retu
         if ( ( returnParams[0] == vectorParams.begin()->first ) && vectorParams.begin()->second.byStructure )
         {
           // can't generate an enhanced version for such a complex command! Just use the standard version
-          return generateCommandStandard( name, commandData, initialSkipCount, definition );
+          return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, returnParams, vectorParams, false, {}, raii, false, {} );
         }
         else if ( returnParams[0] == vectorParams.begin()->second.lenParam )
         {

@@ -4,7 +4,7 @@ ${licenseHeader}
 
 ${includes}
 
-static_assert( VK_HEADER_VERSION == ${headerVersion}, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == ${headerVersion}, "Wrong VK_HEADER_VERSION!" );
 
 ${defines}
 

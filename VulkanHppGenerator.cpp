@@ -1680,7 +1680,7 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
     template <typename HandleType>
     VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name ) const
     {
-      static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
+      VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
       // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
       VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo;
       nameInfo.objectType   = handle.objectType;
@@ -1714,7 +1714,7 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
                                           Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d ) const
   {
-    static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
+    VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
     // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
     VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo;
     nameInfo.objectType   = handle.objectType;
@@ -1749,7 +1749,7 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
     VULKAN_HPP_INLINE typename ResultValueType<void>::type
       Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag ) const
     {
-      static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
+      VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
       // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
       VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT tagInfo;
       tagInfo.objectType   = handle.objectType;
@@ -1785,7 +1785,7 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
     Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag, Dispatch const & d ) const
   {
-    static_assert( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
+    VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
     // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
     VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT tagInfo;
     tagInfo.objectType   = handle.objectType;

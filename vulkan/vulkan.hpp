@@ -57,7 +57,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-static_assert( VK_HEADER_VERSION == 332, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 332, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -150,7 +150,7 @@ namespace VULKAN_HPP_NAMESPACE
   private:
     VULKAN_HPP_CONSTEXPR_14 void copy( char const * data, size_t len ) VULKAN_HPP_NOEXCEPT
     {
-      size_t n = ( std::min )( N - 1, len );
+      size_t n = (std::min)( N - 1, len );
       for ( size_t i = 0; i < n; ++i )
       {
         ( *this )[i] = data[i];
@@ -662,13 +662,13 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     StructureChain() VULKAN_HPP_NOEXCEPT
     {
-      static_assert( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid, "The structure chain is not valid!" );
+      VULKAN_HPP_STATIC_ASSERT( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid, "The structure chain is not valid!" );
       link<sizeof...( ChainElements ) - 1>();
     }
 
     StructureChain( StructureChain const & rhs ) VULKAN_HPP_NOEXCEPT : std::tuple<ChainElements...>( rhs )
     {
-      static_assert( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid, "The structure chain is not valid!" );
+      VULKAN_HPP_STATIC_ASSERT( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid, "The structure chain is not valid!" );
       link( &std::get<0>( *this ),
             &std::get<0>( rhs ),
             reinterpret_cast<VkBaseOutStructure *>( &std::get<0>( *this ) ),
@@ -677,7 +677,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     StructureChain( ChainElements const &... elems ) VULKAN_HPP_NOEXCEPT : std::tuple<ChainElements...>( elems... )
     {
-      static_assert( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid, "The structure chain is not valid!" );
+      VULKAN_HPP_STATIC_ASSERT( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid, "The structure chain is not valid!" );
       link<sizeof...( ChainElements ) - 1>();
     }
 
@@ -737,7 +737,7 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || ( Which != 0 ), bool>::type
       isLinked() const VULKAN_HPP_NOEXCEPT
     {
-      static_assert( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't unlink Structure that's not part of this StructureChain!" );
+      VULKAN_HPP_STATIC_ASSERT( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't unlink Structure that's not part of this StructureChain!" );
       return isLinked( reinterpret_cast<VkBaseInStructure const *>( &get<ClassType, Which>() ) );
     }
 
@@ -745,7 +745,7 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || ( Which != 0 ), void>::type
       relink() VULKAN_HPP_NOEXCEPT
     {
-      static_assert( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't relink Structure that's not part of this StructureChain!" );
+      VULKAN_HPP_STATIC_ASSERT( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't relink Structure that's not part of this StructureChain!" );
       auto pNext = reinterpret_cast<VkBaseInStructure *>( &get<ClassType, Which>() );
       VULKAN_HPP_ASSERT( !isLinked( pNext ) );
       auto & headElement = std::get<0>( static_cast<std::tuple<ChainElements...> &>( *this ) );
@@ -757,7 +757,7 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || ( Which != 0 ), void>::type
       unlink() VULKAN_HPP_NOEXCEPT
     {
-      static_assert( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't unlink Structure that's not part of this StructureChain!" );
+      VULKAN_HPP_STATIC_ASSERT( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't unlink Structure that's not part of this StructureChain!" );
       unlink( reinterpret_cast<VkBaseOutStructure const *>( &get<ClassType, Which>() ) );
     }
 
@@ -7343,25 +7343,25 @@ namespace VULKAN_HPP_NAMESPACE
 
     T const * operator->() const VULKAN_HPP_NOEXCEPT
     {
-      assert( has_value() );
+      VULKAN_HPP_ASSERT( has_value() );
       return &value;
     }
 
     T * operator->() VULKAN_HPP_NOEXCEPT
     {
-      assert( has_value() );
+      VULKAN_HPP_ASSERT( has_value() );
       return &value;
     }
 
     T const & operator*() const VULKAN_HPP_NOEXCEPT
     {
-      assert( has_value() );
+      VULKAN_HPP_ASSERT( has_value() );
       return value;
     }
 
     T & operator*() VULKAN_HPP_NOEXCEPT
     {
-      assert( has_value() );
+      VULKAN_HPP_ASSERT( has_value() );
       return value;
     }
   };

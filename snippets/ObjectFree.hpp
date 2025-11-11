@@ -4,6 +4,23 @@
   public:
     ObjectFree() = default;
 
+// dispatcher parameter cannot be placed after allocationCallbacks when default dispatcher is disabled
+#if defined( VULKAN_HPP_NO_DEFAULT_DISPATCHER )
+    ObjectFree( OwnerType                           owner,
+                  Dispatch const & dispatch ) VULKAN_HPP_NOEXCEPT
+        : m_owner( owner )
+        , m_allocationCallbacks( nullptr )
+        , m_dispatch( &dispatch )
+      {}
+
+    ObjectFree( OwnerType                           owner,
+                Optional<const AllocationCallbacks> allocationCallbacks = nullptr,
+                Dispatch const & dispatch ) VULKAN_HPP_NOEXCEPT
+      : m_owner( owner )
+      , m_allocationCallbacks( allocationCallbacks )
+      , m_dispatch( &dispatch )
+    {}
+#else
     ObjectFree( OwnerType                           owner,
                 Optional<const AllocationCallbacks> allocationCallbacks = nullptr,
                 Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
@@ -11,6 +28,7 @@
       , m_allocationCallbacks( allocationCallbacks )
       , m_dispatch( &dispatch )
     {}
+#endif // VULKAN_HPP_NO_DEFAULT_DISPATCHER
 
     OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
     {

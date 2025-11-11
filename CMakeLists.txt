@@ -341,12 +341,10 @@ if( VULKAN_HPP_BUILD_CXX_MODULE )
 	# create targets providing VulkanHpp and VulkanVideoHpp as C++ named modules
 	vulkan_hpp__setup_vulkan_module( NAME VulkanHppModule
 		FILE_SET_NAME vulkan_module_file
-		FILE_SET vulkan/vulkan.cppm
+		FILE_SET
+			vulkan/vulkan.cppm
+			vulkan/vulkan_video.cppm
 		ALIAS Vulkan::HppModule ) # TODO: respect VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP
-	vulkan_hpp__setup_vulkan_module( NAME VulkanVideoHppModule
-		FILE_SET_NAME vulkan_video_module_file
-		FILE_SET vulkan/vulkan_video.cppm
-		ALIAS Vulkan::VideoHppModule )
 endif()
 
 function( vulkan_hpp__setup_platform )

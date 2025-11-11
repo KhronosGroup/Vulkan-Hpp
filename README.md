@@ -90,34 +90,35 @@ The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan
 
 Vulkan-Hpp is part of the [LunarG Vulkan SDK](https://www.lunarg.com/vulkan-sdk/) since version 1.0.24. Just `#include <vulkan/vulkan.hpp>` and you're ready to use the C++ bindings. If you're using a Vulkan version not yet supported by the Vulkan SDK, you can find the latest version of the headers [here](vulkan).
 
-### Minimum Requirements
-
-Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers are known to work:
-* Visual Studio >= 2015
-* GCC >= 4.8.2 (earlier version might work, but are untested)
-* Clang >= 3.3
-
-### Building Vulkan-Hpp, Samples, and Tests
-
-To build the local samples and tests you'll have to clone this repository and run CMake to generate the required build files
-
-0. Install dependencies.
-   * Ensure that you have CMake and git installed and accessible from a shell.
-   * Ensure that you have installed the Vulkan SDK.
-   * Optionally install clang-format >= 11.0 to get a nicely formatted Vulkan-Hpp header.
-1. Open a shell which provides git and clone the repository with:
-
-    `git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git`
+### Minimum Requirements
+
+Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers are known to work:
+
+- Visual Studio >= 2015
+- GCC >= 4.8.2 (earlier version might work, but are untested)
+- Clang >= 3.3
+
+### Building Vulkan-Hpp, Samples, and Tests
+
+To build the local samples and tests you'll have to clone this repository and run CMake to generate the required build files
+
+0. Install dependencies.
+   - Ensure that you have CMake and git installed and accessible from a shell.
+   - Ensure that you have installed the Vulkan SDK.
+   - Optionally install clang-format >= 11.0 to get a nicely formatted Vulkan-Hpp header.
+1. Open a shell which provides git and clone the repository with:
+
+    `git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git`
 2. Change the current directory to the newly created Vulkan-Hpp directory.
 3. Create a build environment with CMake:
 
-    `cmake -DVULKAN_HPP_SAMPLES_BUILD=ON -DVULKAN_HPP_SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DVULKAN_HPP_TESTS_BUILD=ON -DVULKAN_HPP_TESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -B build`
-
-    You might need to specify a generator via `-G`, for a full list of generators execute `cmake -G`.
-    *  To rebuild `vulkan.hpp` from the `vk.xml` XML registry file, add the
-       `-DVULKAN_HPP_RUN_GENERATOR=ON` option to the CMake command line.
-4. Either open the generated project with an IDE, e.g. Visual Studio or launch the build process with `cmake --build build --parallel`.
-
+    `cmake -DVULKAN_HPP_SAMPLES_BUILD=ON -DVULKAN_HPP_SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DVULKAN_HPP_TESTS_BUILD=ON -DVULKAN_HPP_TESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -B build`
+
+    You might need to specify a generator via `-G`, for a full list of generators execute `cmake -G`.
+    - To rebuild `vulkan.hpp` from the `vk.xml` XML registry file, add the
+       `-DVULKAN_HPP_RUN_GENERATOR=ON` option to the CMake command line.
+4. Either open the generated project with an IDE, e.g. Visual Studio or launch the build process with `cmake --build build --parallel`.
+
 Optional: To update the Vulkan-Hpp and its submodules execute `git pull --recurse-submodules`.
 
 ### Installing vulkan-hpp using vcpkg
@@ -157,31 +158,34 @@ The `vulkan_hpp` module has been renamed to `vulkan`.
 With PR [#2226](https://github.com/KhronosGroup/Vulkan-Hpp/pull/2226), the return type of `vk::raii::Device::acquireNextImage2KHR` and `vk::raii::SwapchainKHR::acquireNextImage` changed from `std::pair<vk::Result,uint32_t>` to the equivalent `vk::ResultValue<uint32_t>`
 
 ## Usage
-
-### namespace vk
-
-To avoid name collisions with the Vulkan C API, the C++ bindings reside in the `vk` namespace. The following rules apply to the new naming:
-
-* All functions, enums, handles, and structs have the `Vk` prefix removed. In addition to this the first letter of functions is lower case.
-  * `vkCreateInstance` can be accessed as `vk::createInstance`.
-  * `VkImageTiling` can be accessed as `vk::ImageTiling`.
-  * `VkImageCreateInfo` can be accessed as `vk::ImageCreateInfo`.
-* Enums are mapped to scoped enums to provide compile time type safety. The names have been changed to 'e' + CamelCase with the `VK_` prefix and type infix removed. If the enum type is an extension, the extension suffix has been removed from the enum values.
-
-In all other cases the extension suffix has not been removed.
-  * `VK_IMAGETYPE_2D` is now `vk::ImageType::e2D`.
-  * `VK_COLOR_SPACE_SRGB_NONLINEAR_KHR` is now `vk::ColorSpaceKHR::eSrgbNonlinear`.
-  * `VK_STRUCTURE_TYPE_PRESENT_INFO_KHR` is now `vk::StructureType::ePresentInfoKHR`.
-* Flag bits are handled like scoped enums with the addition that the `_BIT` suffix has also been removed.
-
-In some cases it might be necessary to move Vulkan-Hpp to a custom namespace. This can be achieved by defining `VULKAN_HPP_NAMESPACE` before including Vulkan-Hpp.
-
-### Handles
-
-Vulkan-Hpp declares a class for all handles to ensure full type safety and to add support for member functions on handles. A member function has been added to a handle class for each function which accepts the corresponding handle as first parameter. Instead of `vkBindBufferMemory(device, ...)` one can write `device.bindBufferMemory(...)` or `vk::bindBufferMemory(device, ...)`.
-
-### namespace vk::raii
-
+
+### namespace vk
+
+To avoid name collisions with the Vulkan C API, the C++ bindings reside in the `vk::` namespace. The following rules apply to the new naming:
+
+- All functions, enums, handles, and structs have the `Vk` or `vk` prefix removed. Furthermore, the first character of function names is always lowercase. For example:
+  - `vkCreateInstance` corresponds to `vk::createInstance`.
+  - `VkImageTiling` corresponds to `vk::ImageTiling`.
+  - `VkImageCreateInfo` corresponds to `vk::ImageCreateInfo`.
+- Enums are mapped to scoped enums to provide compile time type safety. The names have been changed to 'e' + CamelCase with the `VK_` prefix and type infix removed. If the enum type is an extension, the extension suffix has been removed from the enum values.
+
+In all other cases, the extension suffix has not been removed.
+
+For example:
+
+- `VK_IMAGETYPE_2D` is now `vk::ImageType::e2D`.
+- `VK_COLOR_SPACE_SRGB_NONLINEAR_KHR` is now `vk::ColorSpaceKHR::eSrgbNonlinear`.
+- `VK_STRUCTURE_TYPE_PRESENT_INFO_KHR` is now `vk::StructureType::ePresentInfoKHR`.
+- Flag bits are handled like scoped enums with the addition that the `_BIT` suffix has also been removed.
+
+In some cases it might be necessary to move Vulkan-Hpp to a custom namespace. This can be achieved by defining `VULKAN_HPP_NAMESPACE` before including Vulkan-Hpp.
+
+### Handles
+
+Vulkan-Hpp declares a class for all handles to ensure full type safety, and adds support for member functions on handles. A member function has been added to a handle class for each function which accepts the corresponding handle as first parameter. Instead of `vkBindBufferMemory(device, ...)` one can write `device.bindBufferMemory(...)` or `vk::bindBufferMemory(device, ...)`.
+
+### namespace vk::raii
+
 There is an additional header named [`vulkan_raii.hpp`](vulkan/vulkan_raii.hpp) generated. That header holds raii-compliant wrapper classes for the handle types. That is, for e.g. the handle type `VkInstance`, there's a raii-compliant wrapper `vk::raii::Instance`. Please have a look at the samples using those classes in the directory [RAII_Samples](RAII_Samples).
 
 ### C/C++ Interop for Handles
@@ -224,14 +228,15 @@ ci.queueFamilyIndexCount = 0;
 ci.pQueueFamilyIndices = 0;
 ci.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 vkCreateImage(device, &ci, allocator, &image);
-```
-
-There are two typical issues Vulkan developers encounter when filling out a `CreateInfo` struct field by field:
-* One or more fields are left uninitialized.
-* `sType` is incorrect.
-
-Especially the first one is hard to detect.
-
+```
+
+There are two typical issues Vulkan developers encounter when filling out a `CreateInfo` struct field by field:
+
+- One or more fields are left uninitialized.
+- `sType` is incorrect.
+
+Especially the first one is hard to detect.
+
 Vulkan-Hpp provides constructors for all `CreateInfo` objects which accept one parameter for each member variable. This way the compiler throws a compiler error if a value has been forgotten. In addition to this `sType` is automatically filled with the correct value and `pNext` set to a `nullptr` by default. Here's how the same code looks with a constructor:
 
 ```c++
@@ -563,12 +568,13 @@ There is also a specialization for `vk::SwapchainKHR` which takes an additional 
 ```c++
 vk::SwapchainKHR swapchain = device.createSwapchainKHR(...);
 vk::SharedSwapchainKHR sharedSwapchain(swapchain, device, surface); // sharedSwapchain now owns the swapchain and surface
-```
-
-You can create a `vk::SharedHandle` overload for your own handle type or own shared handles by providing several template arguments to `SharedHandleBase`:
- - A handle type
- - A parent handle type or a header structure, that contains the parent
- - A class itself for CRTP
+```
+
+You can create a `vk::SharedHandle` overload for your own handle type or own shared handles by providing several template arguments to `SharedHandleBase`:
+
+- A handle type
+- A parent handle type or a header structure, that contains the parent
+- A class itself for CRTP
 
 With this, provide a custom static destruction function `internalDestroy`, that takes in a parent handle and a handle to destroy. Don't forget to add a friend declaration for the base class.
 
@@ -649,50 +655,64 @@ vk::detail::DispatchLoaderDynamic dldid( nstance, getInstanceProcAddr, device);
 // Pass dispatch class to function call as last parameter
 device.getQueue(graphics_queue_family_index, 0, &graphics_queue, dldid);
 ```
-
-To use the `vk::detail::DispatchLoaderDynamic` as the default dispatcher (means: you don't need to explicitly add it to every function call),  you need to  `#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1`, and have the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code to provide storage for that default dispatcher. Then you can use it by the macro `VULKAN_HPP_DEFAULT_DISPATCHER`, as is shown in the code snippets below.
-Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-step process, where you have three choices for the first step:
-1. Before any call into a vk-function you need to initialize the dynamic dispatcher by one of three methods
-- Let Vulkan-Hpp do all the work by internally using a little helper class `vk::detail::DynamicLoader`:
-```c++
-    VULKAN_HPP_DEFAULT_DISPATCHER.init();
-```
-- Use your own dynamic loader, which just needs to provide a templated function `getProcAddress` (compare with `vk::detail::DynamicLoader` in `vulkan.hpp`):
-```c++
-    YourDynamicLoader ydl;
-    VULKAN_HPP_DEFAULT_DISPATCHER.init(ydl);
-```
-> [!NOTE]
-> You need to keep that dynamic loader object alive until after the last call to a vulkan function in your program. For example by making it static, or storing it globally.
-- Use your own initial function pointer of type `PFN_vkGetInstanceProcAddr`:
-```c++
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = your_own_function_pointer_getter();
-    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
-```
-2. initialize it with a `vk::Instance` to get all the other function pointers:
-```c++
-    vk::Instance instance = vk::createInstance({}, nullptr);
-    VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
-```
-3. optionally initialize it with a `vk::Device` to get device-specific function pointers
-```c++
-    std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
-    assert(!physicalDevices.empty());
-    vk::Device device = physicalDevices[0].createDevice({}, nullptr);
-    VULKAN_HPP_DEFAULT_DISPATCHER.init(device);
-```
-After the second step above, the dispatcher is fully functional. Adding the third step can potentially result in more efficient code. But if you intend to use multiple devices, you could just omit that third step and let the driver do the device-dispatching.
-
-In some cases the storage for the `vk::detail::DispatchLoaderDynamic` should be embedded in a DLL. For those cases you need to define `VULKAN_HPP_STORAGE_SHARED` to tell Vulkan-Hpp that the storage resides in a DLL. When compiling the DLL with the storage it is also required to define `VULKAN_HPP_STORAGE_SHARED_EXPORT` to export the required symbols.
+
+To use the `vk::detail::DispatchLoaderDynamic` as the default dispatcher (means: you don't need to explicitly add it to every function call),  you need to  `#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1`, and have the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code to provide storage for that default dispatcher. Then you can use it by the macro `VULKAN_HPP_DEFAULT_DISPATCHER`, as is shown in the code snippets below.
+Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-step process, where you have three choices for the first step:
+
+1. Before any call into a vk-function you need to initialize the dynamic dispatcher by one of three methods
+
+- Let Vulkan-Hpp do all the work by internally using a little helper class `vk::detail::DynamicLoader`:
+
+```c++
+    VULKAN_HPP_DEFAULT_DISPATCHER.init();
+```
+
+- Use your own dynamic loader, which just needs to provide a templated function `getProcAddress` (compare with `vk::detail::DynamicLoader` in `vulkan.hpp`):
+
+```c++
+    YourDynamicLoader ydl;
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(ydl);
+```
+
+> [!NOTE]
+> You need to keep that dynamic loader object alive until after the last call to a vulkan function in your program. For example by making it static, or storing it globally.
+
+- Use your own initial function pointer of type `PFN_vkGetInstanceProcAddr`:
+
+```c++
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = your_own_function_pointer_getter();
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+```
+
+2. initialize it with a `vk::Instance` to get all the other function pointers:
+
+```c++
+    vk::Instance instance = vk::createInstance({}, nullptr);
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
+```
+
+3. optionally initialize it with a `vk::Device` to get device-specific function pointers
+
+```c++
+    std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
+    assert(!physicalDevices.empty());
+    vk::Device device = physicalDevices[0].createDevice({}, nullptr);
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(device);
+```
+
+After the second step above, the dispatcher is fully functional. Adding the third step can potentially result in more efficient code. But if you intend to use multiple devices, you could just omit that third step and let the driver do the device-dispatching.
+
+In some cases the storage for the `vk::detail::DispatchLoaderDynamic` should be embedded in a DLL. For those cases you need to define `VULKAN_HPP_STORAGE_SHARED` to tell Vulkan-Hpp that the storage resides in a DLL. When compiling the DLL with the storage it is also required to define `VULKAN_HPP_STORAGE_SHARED_EXPORT` to export the required symbols.
 
 For all functions, that `VULKAN_HPP_DEFAULT_DISPATCHER` is the default for the last argument to that function. If you want to explicitly provide the dispatcher for each and every function call (when you have multiple dispatchers for different devices, for example) and you want to make sure, that you don't accidentally miss any function call, you can define `VULKAN_HPP_NO_DEFAULT_DISPATCHER` before you include `vulkan.hpp` to remove that default argument.
 
-### Type traits
-
-`vulkan.hpp` provides a couple of type traits, easing template metaprogramming:
-- `template <typename EnumType, EnumType value> struct CppType`
-	Maps `IndexType` values (`IndexType::eUint16`, `IndexType::eUint32`, ...) to the corresponding type (`uint16_t`, `uint32_t`, ...) by the member type `Type`;
-	Maps `ObjectType` values (`ObjectType::eInstance`, `ObjectType::eDevice`, ...) to the corresponding type (`vk::Instance`, `vk::Device`, ...) by the member type `Type`;
+### Type traits
+
+`vulkan.hpp` provides a couple of type traits, easing template metaprogramming:
+
+- `template <typename EnumType, EnumType value> struct CppType`
+ Maps `IndexType` values (`IndexType::eUint16`, `IndexType::eUint32`, ...) to the corresponding type (`uint16_t`, `uint32_t`, ...) by the member type `Type`;
+ Maps `ObjectType` values (`ObjectType::eInstance`, `ObjectType::eDevice`, ...) to the corresponding type (`vk::Instance`, `vk::Device`, ...) by the member type `Type`;
 	Maps `DebugReportObjectType` values (`DebugReportObjectTypeEXT::eInstance`, `DebugReportObjectTypeEXT::eDevice`, ...) to the corresponding type (`vk::Instance`, `vk::Device`, ...) by the member type `Type`;
 - `template <typename T> struct IndexTypeValue`
 	Maps scalar types (`uint16_t`, `uint32_t`, ...) to the corresponding `IndexType` value (`IndexType::eUint16`, `IndexType::eUint32`, ...).
@@ -705,12 +725,13 @@ For all functions, that `VULKAN_HPP_DEFAULT_DISPATCHER` is the default for the l
 - `HandleClass::debugReportObjectType`
 	Maps a handle class (`vk::Instance`, `vk::Device`, ...) to the corresponding `DebugReportObjectTypeEXT` value (`DebugReportObjectTypeEXT::eInstance`, `DebugReportObjectTypeEXT::eDevice`, ...) by the static member `debugReportObjectType`.
 
-### vk::Format trait functions
-
-With the additional header [`vulkan_format_traits.hpp`](vulkan/vulkan_format_traits.hpp), a couple of trait functions on `vk::Format` are provided. With C++14 and above, all those functions are marked as `constexpr`, that is with appropriate arguments, they are resolved at compile time.
-- `std::array<uint8_t, 3> blockExtent( vk::Format format );`
-	Gets the three-dimensional extent of texel blocks.
-- `uin8_t blockSize( vk::Format format );`
+### vk::Format trait functions
+
+With the additional header [`vulkan_format_traits.hpp`](vulkan/vulkan_format_traits.hpp), a couple of trait functions on `vk::Format` are provided. With C++14 and above, all those functions are marked as `constexpr`, that is with appropriate arguments, they are resolved at compile time.
+
+- `std::array<uint8_t, 3> blockExtent( vk::Format format );`
+ Gets the three-dimensional extent of texel blocks.
+- `uin8_t blockSize( vk::Format format );`
 	Gets the texel block size of this format in bytes.
 - `char const * compatibilityClass( VULKAN_HPP_NAMESPACE::Format format );`
 	The class of the format (can't be just named "class"!)
@@ -759,12 +780,13 @@ With the additional header [`vulkan_hash.hpp`](vulkan/vulkan_hash.hpp), you get 
 
 ### Extension Inspection
 
-With the additional header [`vulkan_extension_inspection.hpp`](vulkan/vulkan_extension_inspection.hpp), some functions to inspect extensions are provided. With C++20 and above, some of those functions are marked as `constexpr`, that is with appropriate arguments, they are resolved at compile time.
-Each extension is identified by a string holding its name. Note that there exists a define with that name for each extension.
-Some functions might provide information that depends on the vulkan version. As all functions here work solely on strings, the vulkan versions are encoded by a string beginning with "VK_VERSION_", followed by the major and the minor version, separated by an undersore, like this: "VK_VERSION_1_0".
-- `std::set<std::string> const & getDeviceExtensions();`
-	Gets all device extensions specified for the current platform. Note, that not all of them might be supported by the actual devices.
-- `std::set<std::string> const & getInstanceExtensions();`
+With the additional header [`vulkan_extension_inspection.hpp`](vulkan/vulkan_extension_inspection.hpp), some functions to inspect extensions are provided. With C++20 and above, some of those functions are marked as `constexpr`, that is with appropriate arguments, they are resolved at compile time.
+Each extension is identified by a string holding its name. Note that there exists a define with that name for each extension.
+Some functions might provide information that depends on the vulkan version. As all functions here work solely on strings, the vulkan versions are encoded by a string beginning with "VK_VERSION_", followed by the major and the minor version, separated by an undersore, like this: "VK_VERSION_1_0".
+
+- `std::set<std::string> const & getDeviceExtensions();`
+ Gets all device extensions specified for the current platform. Note, that not all of them might be supported by the actual devices.
+- `std::set<std::string> const & getInstanceExtensions();`
 	Gets all instance extensions specified for the current platform. Note, that not all of them might be supported by the actual instances.
 - `std::map<std::string, std::string> const & getDeprecatedExtensions();`
 	Gets a map of all deprecated extensions to the extension or vulkan version that is supposed to replace that functionality.
@@ -805,22 +827,22 @@ C++ modules are intended to supersede header files. Modules have potential to dr
 Vulkan-Hpp has some extremely long headers (e.g. [`vulkan_structs.hpp`](vulkan/vulkan_structs.hpp)), and the C++ module is likely to shorten compile times for projects currently using it.
 
 #### Compiler support
-
-This feature requires a recent compiler with complete C++20 support:
-
-* Visual Studio 2019 16.10 or later (providing `cl.exe` 19.28 or later)
-* Clang 15.0.0 or later
-
-If you intend to use CMake's C++ module support (and possibly Ninja), then more recent tools are required:
-
-* Visual Studio 2022 17.4 or later (providing `cl.exe` 19.34 or later)
-* Clang 17.0.0 or later
-* GCC 14.0 or later
-* CMake 3.28 or later
-* Ninja 1.10.2 or later
-
-> [!WARNING]
-> The Vulkan-Hpp C++ named module is still experimental. Some suggested ways to use it in your projects are below. The long-term goal is to submit patches to the CMake [`FindVulkan`](https://cmake.org/cmake/help/latest/module/FindVulkan.html) module so that users may transparently configure the named module, without needing to declare it as an additional library in consumer CMake code.
+
+This feature requires a recent compiler with complete C++20 support:
+
+- Visual Studio 2019 16.10 or later (providing `cl.exe` 19.28 or later)
+- Clang 15.0.0 or later
+
+If you intend to use CMake's C++ module support (and possibly Ninja), then more recent tools are required:
+
+- Visual Studio 2022 17.4 or later (providing `cl.exe` 19.34 or later)
+- Clang 17.0.0 or later
+- GCC 14.0 or later
+- CMake 3.28 or later
+- Ninja 1.10.2 or later
+
+> [!WARNING]
+> The Vulkan-Hpp C++ named module is still experimental. Some suggested ways to use it in your projects are below. The long-term goal is to submit patches to the CMake [`FindVulkan`](https://cmake.org/cmake/help/latest/module/FindVulkan.html) module so that users may transparently configure the named module, without needing to declare it as an additional library in consumer CMake code.
 
 ##### Usage with CMake
 
@@ -931,24 +953,25 @@ clang++ -std=c++20 <path-to-vulkan-hpp>/vulkan.cppm -precompile -o vulkan.pcm
 clang++ -std=c++20 -fprebuilt-module-path=. main.cpp vulkan.pcm -o main
 ./main
 ```
-
-More information about module compilation may be found at the respective compiler's documentation:
-
-* [MSVC](https://learn.microsoft.com/en-us/cpp/cpp/modules-cpp?view=msvc-170)
-* [Clang](https://clang.llvm.org/docs/StandardCPlusPlusModules.html)
-
-### Samples and Tests
-
+
+More information about module compilation may be found at the respective compiler's documentation:
+
+- [MSVC](https://learn.microsoft.com/en-us/cpp/cpp/modules-cpp?view=msvc-170)
+- [Clang](https://clang.llvm.org/docs/StandardCPlusPlusModules.html)
+
+### Samples and Tests
+
 When you configure your project using CMake, you can enable SAMPLES_BUILD to add some sample projects to your solution. Most of them are ports from the LunarG samples, but there are some more, like CreateDebugUtilsMessenger, InstanceVersion, PhysicalDeviceDisplayProperties, PhysicalDeviceExtensions, PhysicalDeviceFeatures, PhysicalDeviceGroups, PhysicalDeviceMemoryProperties, PhysicalDeviceProperties, PhysicalDeviceQueueFamilyProperties, and RayTracing. All those samples should just compile and run.
 When you configure your project using CMake, you can enable TESTS_BUILD to add some test projects to your solution. Those tests are just compilation tests and are not required to run.
 
 ### Compile time issues
-
-As `vulkan.hpp` is pretty big, some compilers might need some time to digest all that stuff. In order to potentially reduce the time needed to compile that header, a couple of defines will be introduced, that allow you to hide certain features. Whenever you don't need that corresponding feature, defining that value might improve your compile time.
-Currently, there are just a couple of such defines:
-- `VULKAN_HPP_NO_SPACESHIP_OPERATOR`, which removes the spaceship operator on structures (available with C++20)
-- `VULKAN_HPP_NO_TO_STRING`, which removes the various `vk::to_string` functions on enums and bitmasks.
-- `VULKAN_HPP_USE_REFLECT`, this one needs to be defined to use the reflection function on structures. It's very slow to compile, though!
+
+As `vulkan.hpp` is pretty big, some compilers might need some time to digest all that stuff. In order to potentially reduce the time needed to compile that header, a couple of defines will be introduced, that allow you to hide certain features. Whenever you don't need that corresponding feature, defining that value might improve your compile time.
+Currently, there are just a couple of such defines:
+
+- `VULKAN_HPP_NO_SPACESHIP_OPERATOR`, which removes the spaceship operator on structures (available with C++20)
+- `VULKAN_HPP_NO_TO_STRING`, which removes the various `vk::to_string` functions on enums and bitmasks.
+- `VULKAN_HPP_USE_REFLECT`, this one needs to be defined to use the reflection function on structures. It's very slow to compile, though!
 
 ### Strict aliasing issue
 
@@ -979,23 +1002,25 @@ This names the default dispatcher type, as specified by `VULKAN_HPP_DEFAULT_DISP
 
 If you have not defined your own `VULKAN_HPP_DEFAULT_DISPATCHER`, and have `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` defined to be `1` (the default), you need to have the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in any of your source files to provide storage for that default dispatcher. `VULKAN_HPP_STORAGE_API` then controls the import/export status of that default dispatcher.
 
-### `VULKAN_HPP_DISABLE_ENHANCED_MODE`
-
-When this is defined before including `vulkan.hpp`, you essentially disable all enhanced functionality. All you then get is:
-* improved compile time error detection, via scoped enums;
-* usage of the helper class `vk::Flags` for bitmasks;
-* wrapper structs for all vulkan structs providing default initialization;
-* the helper class `vk::StructureChain` for compile-time construction of structure chains.
-
-If this is not defined, you additionally get:
-* enhanced versions of the commands (consuming `vk::ArrayProxy<>`), simplifying handling of array data; returning requested data; throwing exceptions on errors (as long as `VULKAN_HPP_NO_EXCEPTIONS` is not defined);
-* enhanced structure constructors (as long as `VULKAN_HPP_NO_STRUCT_CONSTRUCTORS` is not defined) (consuming `vk::ArrayProxyNoTemporaries<>`);
-* enhanced setter functions on some members of structs (consuming `vk::ArrayProxyNoTemporaries<>`);
-* the helper classes `vk::ArrayProxy<>` and `vk::ArrayProxyNoTemporaries<>`
-* all the RAII-stuff in `vulkan_raii.hpp`
-
-### `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC`
-
+### `VULKAN_HPP_DISABLE_ENHANCED_MODE`
+
+When this is defined before including `vulkan.hpp`, you essentially disable all enhanced functionality. All you then get is:
+
+- improved compile time error detection, via scoped enums;
+- usage of the helper class `vk::Flags` for bitmasks;
+- wrapper structs for all vulkan structs providing default initialization;
+- the helper class `vk::StructureChain` for compile-time construction of structure chains.
+
+If this is not defined, you additionally get:
+
+- enhanced versions of the commands (consuming `vk::ArrayProxy<>`), simplifying handling of array data; returning requested data; throwing exceptions on errors (as long as `VULKAN_HPP_NO_EXCEPTIONS` is not defined);
+- enhanced structure constructors (as long as `VULKAN_HPP_NO_STRUCT_CONSTRUCTORS` is not defined) (consuming `vk::ArrayProxyNoTemporaries<>`);
+- enhanced setter functions on some members of structs (consuming `vk::ArrayProxyNoTemporaries<>`);
+- the helper classes `vk::ArrayProxy<>` and `vk::ArrayProxyNoTemporaries<>`
+- all the RAII-stuff in `vulkan_raii.hpp`
+
+### `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC`
+
 This either selects the dynamic (when it's `1`) or the static (when it's not `1`) DispatchLoader as the default one, as long as it's not explicitly specified by `VULKAN_HPP_DEFAULT_DISPATCHER`. By default, this is defined to be `1` if `VK_NO_PROTOTYPES` is defined, otherwise `0`.
 
 ### `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE`

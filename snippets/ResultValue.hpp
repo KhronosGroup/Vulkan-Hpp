@@ -35,25 +35,25 @@
 
     T const * operator->() const VULKAN_HPP_NOEXCEPT
     {
-      assert( has_value() );
+      VULKAN_HPP_ASSERT( has_value() );
       return &value;
     }
 
     T * operator->() VULKAN_HPP_NOEXCEPT
     {
-      assert( has_value() );
+      VULKAN_HPP_ASSERT( has_value() );
       return &value;
     }
 
     T const & operator*() const VULKAN_HPP_NOEXCEPT
     {
-      assert(has_value ());
+      VULKAN_HPP_ASSERT(has_value ());
       return value;
     }
 
     T & operator*() VULKAN_HPP_NOEXCEPT
     {
-      assert(has_value ());
+      VULKAN_HPP_ASSERT(has_value ());
       return value;
     }
   };

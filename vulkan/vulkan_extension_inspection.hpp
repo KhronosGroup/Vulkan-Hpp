@@ -3018,7 +3018,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
 #if !defined( NDEBUG )
     static std::set<std::string> versions = { "VK_VERSION_1_0", "VK_VERSION_1_1", "VK_VERSION_1_2", "VK_VERSION_1_3", "VK_VERSION_1_4" };
-    assert( versions.find( version ) != versions.end() );
+    VULKAN_HPP_ASSERT( versions.find( version ) != versions.end() );
 #endif
     static std::vector<std::vector<std::string>> noDependencies;
 

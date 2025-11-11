@@ -5701,6 +5701,7 @@ std::string VulkanHppGenerator::generateCppModuleRaiiUsings() const
     //======================
 
     using VULKAN_HPP_RAII_NAMESPACE::Context;
+    using VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType;
     namespace detail
     {
       using VULKAN_HPP_RAII_NAMESPACE::detail::ContextDispatcher;

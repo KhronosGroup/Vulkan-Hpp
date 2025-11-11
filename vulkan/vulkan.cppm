@@ -28,7 +28,8 @@ VULKAN_HPP_COMPILE_WARNING( VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING )
 #include <vulkan/vulkan_raii.hpp>
 #include <vulkan/vulkan_shared.hpp>
 
-export module vulkan_hpp;
+export module vulkan;
+export import :video;
 export import std;
 
 export namespace VULKAN_HPP_NAMESPACE

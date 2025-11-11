@@ -38,7 +38,7 @@
 #else
 #  include <cassert>
 #  include <cstring>
-import std.compat;
+import std;
 #endif
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1

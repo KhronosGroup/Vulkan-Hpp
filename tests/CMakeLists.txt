@@ -41,6 +41,7 @@ add_subdirectory( FunctionCallsRAII )
 add_subdirectory( Handles )
 add_subdirectory( HandlesMoveExchange )
 add_subdirectory( Hash )
+add_subdirectory( NoDefaultDispatcher )
 add_subdirectory( NoExceptions )
 if( ( CMAKE_CXX_STANDARD GREATER_EQUAL 23 ) AND NOT ( ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" ) AND ( CMAKE_CXX_COMPILER_VERSION VERSION_LESS 15.0 ) ) )
 	# This test is for C++23 only... but clang++13 and clang++14 seem to have a problem with it

@@ -1710,7 +1710,7 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
         cmd.insert(
           pos,
           R"(  // wrapper function for command vkSetDebugUtilsObjectNameEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
-  template <typename HandleType, typename Dispatch>
+  template <typename HandleType, typename Dispatch, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
                                           Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d ) const
   {
@@ -1728,7 +1728,7 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
       {
         cmd.insert( pos, R"(    // wrapper function for command vkSetDebugUtilsObjectNameEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
-    template <typename HandleType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename HandleType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
       setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 )" );
@@ -1781,7 +1781,7 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
         cmd.insert(
           pos,
           R"(  // wrapper function for command vkSetDebugUtilsObjectTagEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
-  template <typename HandleType, typename TagType, typename Dispatch>
+  template <typename HandleType, typename TagType, typename Dispatch, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
     Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag, Dispatch const & d ) const
   {
@@ -1801,7 +1801,7 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
       {
         cmd.insert( pos, R"(    // wrapper function for command vkSetDebugUtilsObjectTagEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
-    template <typename HandleType, typename TagType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename HandleType, typename TagType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type setDebugUtilsObjectTagEXT(
       HandleType const & handle, uint64_t name, TagType const & tag, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 )" );
@@ -3293,7 +3293,7 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
 
     std::string const functionTemplate =
       R"(  // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
-  template <${argumentTemplates}${allocatorTemplates}typename Dispatch${uniqueHandleAllocatorTemplates}${typenameCheck}>
+  template <${argumentTemplates}${allocatorTemplates}typename Dispatch${uniqueHandleAllocatorTemplates}${typenameCheck}, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   ${nodiscard}VULKAN_HPP_INLINE ${decoratedReturnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const}${noexcept}
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -3336,7 +3336,7 @@ ${vectorSizeCheck}
   {
     std::string const functionTemplate =
       R"(    // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
-    template <${argumentTemplates}${allocatorTemplates}typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${uniqueHandleAllocatorTemplates}${typenameCheck}>
+    template <${argumentTemplates}${allocatorTemplates}typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${uniqueHandleAllocatorTemplates}${typenameCheck}, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     ${nodiscard}${decoratedReturnType} ${commandName}( ${argumentList} )${const}${noexcept};)";
 
     return replaceWithMap( functionTemplate,
@@ -4487,7 +4487,7 @@ std::string
 
     std::string const functionTemplate =
       R"(  // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
-  template <typename Dispatch>
+  template <typename Dispatch, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const} VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -4509,7 +4509,7 @@ std::string
   {
     std::string const functionTemplate =
       R"(    // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     ${nodiscard}${returnType} ${commandName}( ${argumentList} VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )${const} VULKAN_HPP_NOEXCEPT;)";
 
     return replaceWithMap( functionTemplate,
@@ -5509,6 +5509,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 #endif /*VK_NO_PROTOTYPES*/
     using VULKAN_HPP_NAMESPACE::detail::createResultValueType;
     using VULKAN_HPP_NAMESPACE::detail::resultCheck;
+    using VULKAN_HPP_NAMESAPCE::detail::isDispatchLoader;
   }
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   namespace VULKAN_HPP_RAII_NAMESPACE
@@ -6799,7 +6800,14 @@ ${deviceCommandAssignments}
       static DynamicLoader dl;
       init(instance, device, dl);
     }
-  };)";
+  };
+
+  template <>
+  struct isDispatchLoader<DispatchLoaderDynamic>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+  };
+)";
 
   std::string           commandMembers, deviceCommandAssignments, initialCommandAssignments, instanceCommandAssignments;
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
@@ -6900,6 +6908,12 @@ std::string VulkanHppGenerator::generateDispatchLoaderStatic() const
   {
   public:
 ${commands}
+  };
+
+  template <>
+  struct isDispatchLoader<DispatchLoaderStatic>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
 
   inline DispatchLoaderStatic & getDispatchLoaderStatic()

@@ -20,3 +20,10 @@
     bool   m_valid         = true;
 #endif
   };
+  
+  template <typename Type>
+  struct isDispatchLoader
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
+  };
+  

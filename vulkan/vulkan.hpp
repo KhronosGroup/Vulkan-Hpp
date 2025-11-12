@@ -150,7 +150,7 @@ namespace VULKAN_HPP_NAMESPACE
   private:
     VULKAN_HPP_CONSTEXPR_14 void copy( char const * data, size_t len ) VULKAN_HPP_NOEXCEPT
     {
-      size_t n = (std::min)( N - 1, len );
+      size_t n = ( std::min )( N - 1, len );
       for ( size_t i = 0; i < n; ++i )
       {
         ( *this )[i] = data[i];
@@ -1021,6 +1021,12 @@ namespace VULKAN_HPP_NAMESPACE
       size_t vkHeaderVersion = VK_HEADER_VERSION;
       bool   m_valid         = true;
 #endif
+    };
+
+    template <typename Type>
+    struct isDispatchLoader
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
     };
 
 #if !defined( VK_NO_PROTOTYPES ) || ( defined( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC ) && ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 0 ) )
@@ -6598,6 +6604,12 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCmdEndRendering2KHR( commandBuffer, pRenderingEndInfo );
       }
+    };
+
+    template <>
+    struct isDispatchLoader<DispatchLoaderStatic>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     inline DispatchLoaderStatic & getDispatchLoaderStatic()
@@ -24151,6 +24163,13 @@ namespace VULKAN_HPP_NAMESPACE
         init( instance, device, dl );
       }
     };
+
+    template <>
+    struct isDispatchLoader<DispatchLoaderDynamic>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
   }  // namespace detail
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

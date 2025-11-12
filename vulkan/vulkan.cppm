@@ -5737,6 +5737,7 @@ export namespace VULKAN_HPP_NAMESPACE
     //======================
 
     using VULKAN_HPP_RAII_NAMESPACE::Context;
+    using VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType;
 
     namespace detail
     {

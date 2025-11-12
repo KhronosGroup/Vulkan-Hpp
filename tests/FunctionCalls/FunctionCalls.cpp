@@ -504,6 +504,66 @@ int main( int /*argc*/, char ** /*argv*/ )
     queue.bindSparse( bindSparseInfo, fence );
   }
 
+  // Fence commands
+  {
+    vk::Device              device;
+    vk::FenceCreateInfo     fenceCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::Fence               fence;
+    vk::Result              result = device.createFence( &fenceCreateInfo, &allocationCallbacks, &fence );
+  }
+  {
+    vk::Device          device;
+    vk::FenceCreateInfo fenceCreateInfo;
+    vk::Fence           fence = device.createFence( fenceCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Fence               fence;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyFence( fence, &allocationCallbacks );
+  }
+  {
+    vk::Device device;
+    vk::Fence  fence;
+    device.destroyFence( fence );
+  }
+
+  {
+    vk::Device device;
+    uint32_t   fenceCount = 1;
+    vk::Fence  fence;
+    vk::Result result = device.resetFences( fenceCount, &fence );
+  }
+  {
+    vk::Device device;
+    vk::Fence  fence;
+    device.resetFences( fence );
+  }
+
+  {
+    vk::Device device;
+    vk::Fence  fence;
+    vk::Result result = device.getFenceStatus( fence );
+  }
+
+  {
+    vk::Device device;
+    uint32_t   fenceCount = 1;
+    vk::Fence  fence;
+    vk::Bool32 waitAll = vk::True;
+    uint64_t   timeout = 1000000000;
+    vk::Result result  = device.waitForFences( fenceCount, &fence, waitAll, timeout );
+  }
+  {
+    vk::Device device;
+    vk::Fence  fence;
+    vk::Bool32 waitAll = vk::True;
+    uint64_t   timeout = 1000000000;
+    vk::Result result  = device.waitForFences( fence, waitAll, timeout );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

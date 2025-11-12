@@ -8,6 +8,7 @@
 #ifndef VULKAN_HPP
 #define VULKAN_HPP
 
+#include <vulkan/vulkan.h>
 #if !defined( VULKAN_HPP_CXX_MODULE )
 // clang-format off
 #  include <vulkan/vulkan_hpp_macros.hpp>
@@ -37,9 +38,8 @@
 #else
 #  include <cassert>
 #  include <cstring>
-import std.compat;
+import std;
 #endif
-#include <vulkan/vulkan.h>
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1
 #  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined( __Fuchsia__ )
@@ -150,7 +150,7 @@ namespace VULKAN_HPP_NAMESPACE
   private:
     VULKAN_HPP_CONSTEXPR_14 void copy( char const * data, size_t len ) VULKAN_HPP_NOEXCEPT
     {
-      size_t n = ( std::min )( N - 1, len );
+      size_t n = (std::min)( N - 1, len );
       for ( size_t i = 0; i < n; ++i )
       {
         ( *this )[i] = data[i];

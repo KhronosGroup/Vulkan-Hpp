@@ -29,7 +29,7 @@ VULKAN_HPP_COMPILE_WARNING( VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING )
 #include <vulkan/vulkan_shared.hpp>
 
 export module vulkan_hpp;
-export import std.compat;
+export import std;
 
 export namespace VULKAN_HPP_NAMESPACE
 {

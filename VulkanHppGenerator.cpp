@@ -28,6 +28,8 @@ using namespace std::literals;
 
 namespace
 {
+  template <typename T>
+  bool                                        containsByName( std::vector<T> const & values, std::string const & name );
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names );
   template <typename T>
   typename std::vector<T>::const_iterator findByName( std::vector<T> const & values, std::string const & name );
@@ -1552,40 +1554,8 @@ std::set<size_t> VulkanHppGenerator::determineVoidPointerParams( std::vector<Par
   return voidPointerParams;
 }
 
-void VulkanHppGenerator::distributeEnumExtends()
-{
-  for ( auto const & extendedEnum : m_enumExtends )
-  {
-    assert( !extendedEnum.second.empty() );
-    auto typeIt = m_types.find( extendedEnum.first );
-    checkForError( typeIt != m_types.end(),
-                   extendedEnum.second.front().xmlLine,
-                   "enum value <" + extendedEnum.second.front().name + "> extends unknown type <" + extendedEnum.first + ">" );
-    checkForError( typeIt->second.category == TypeCategory::Enum,
-                   extendedEnum.second.front().xmlLine,
-                   "enum value <" + extendedEnum.second.front().name + "> extends non-enum type <" + extendedEnum.first + ">" );
-
-    const auto enumIt = m_enums.find( extendedEnum.first );
-    assert( enumIt != m_enums.end() );
-
-    for ( auto const & eed : extendedEnum.second )
-    {
-      for ( auto const & requiredBy : eed.requiredBy )
-      {
-        typeIt->second.requiredBy.insert( requiredBy );
-      }
-      checkForError( enumIt->second.addEnumAlias( eed.xmlLine, eed.name, eed.alias, eed.protect, ( eed.api.empty() || ( eed.api == m_api ) ) && eed.supported ),
-                     eed.xmlLine,
-                     "enum value alias <" + eed.name + "> already listed with different properties" );
-    }
-  }
-  m_enumExtends.clear();
-}
-
 void VulkanHppGenerator::distributeEnumValueAliases()
 {
-  assert( m_enumExtends.empty() );
-
   for ( auto & e : m_enums )
   {
     for ( auto & a : e.second.valueAliases )
@@ -2076,7 +2046,8 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
           }
           else if ( params[i].optional )
           {
-            arguments.push_back( "Optional<" + stripPostfix( composedType, " *" ) + "> " + name + ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr )" ) );
+            arguments.push_back( "Optional<" + stripPostfix( composedType, " *" ) + "> " + name +
+                                 ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr )" ) );
             hasDefaultAssignment = true;
           }
           else
@@ -2094,7 +2065,8 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
             assert( params[i].type.type == "char" );
             if ( params[i].optional )
             {
-              arguments.push_back( "Optional<const std::string> " + name + ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr )" ) );
+              arguments.push_back( "Optional<const std::string> " + name +
+                                   ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr )" ) );
               hasDefaultAssignment = true;
             }
             else
@@ -15367,7 +15339,6 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     // for all api but vulkanbase, we merge the internal features into the normal ones
     mergeInternalFeatures();
   }
-  distributeEnumExtends();
   distributeEnumValueAliases();
   distributeStructAliases();
   distributeRequirements();
@@ -15486,19 +15457,15 @@ void VulkanHppGenerator::readRequireEnum(
         protect = getProtectFromPlatform( platform );
       }
 
-      auto extendIt = m_enumExtends.insert( { extends, {} } ).first;
-      auto eedIt    = std::ranges::find_if( extendIt->second, [&name]( auto const & eed ) { return eed.name == name; } );
-      if ( eedIt == extendIt->second.end() )
-      {
-        extendIt->second.push_back( { alias, api, name, protect, { requiredBy }, supported, line } );
-      }
-      else
-      {
-        checkForError( ( eedIt->alias == alias ) && ( eedIt->api == api ) && ( eedIt->protect == protect ) && ( eedIt->supported == supported ),
-                       line,
-                       "extending enum <" + extends + "> with already listed value <" + name + "> but different properties" );
-        eedIt->requiredBy.insert( requiredBy );
-      }
+      auto typeIt = m_types.find( extends );
+      checkForError( typeIt != m_types.end(), line, "enum value <" + name + "> extends unknown type <" + extends + ">" );
+      checkForError( typeIt->second.category == TypeCategory::Enum, line, "enum value <" + name + "> extends non-enum type <" + extends + ">" );
+      typeIt->second.requiredBy.insert( requiredBy );
+      auto enumIt = findByNameOrAlias( m_enums, extends );
+      assert( enumIt != m_enums.end() );
+      checkForError( enumIt->second.addEnumAlias( line, name, alias, protect, supported ),
+                     line,
+                     "enum value alias <" + name + "> already listed with different properties" );
     }
   }
   else
@@ -15757,7 +15724,9 @@ void VulkanHppGenerator::readSPIRVCapabilityEnable( tinyxml2::XMLElement const *
       const auto enumIt = m_enums.find( bitmaskIt->second.require );
       checkForError(
         enumIt != m_enums.end(), line, "member <" + member + "> specified for SPIR-V capability requires an unknown enum <" + bitmaskIt->second.require + ">" );
-      checkForError( containsName( enumIt->second.values, value ), line, "unknown attribute value <" + value + "> specified for SPIR-V capability" );
+      checkForError( containsByName( enumIt->second.values, value ) || containsByName( enumIt->second.valueAliases, value ),
+                     line,
+                     "unknown attribute value <" + value + "> specified for SPIR-V capability" );
     }
   }
   else if ( attributes.contains( "struct" ) )
@@ -17433,6 +17402,10 @@ bool VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & n
   {
     valueAliases.push_back( { alias, name, protect, supported, line } );
   }
+  else
+  {
+    ok = ( ( aliasIt->alias == alias ) && ( aliasIt->protect == protect ) && ( aliasIt->supported == supported ) );
+  }
   return ok;
 }
 
@@ -17464,6 +17437,12 @@ bool VulkanHppGenerator::EnumData::addEnumValue(
 
 namespace
 {
+  template <typename T>
+  bool containsByName( std::vector<T> const & values, std::string const & name )
+  {
+    return std::ranges::any_of( values, [&name]( T const & value ) { return value.name == name; } );
+  }
+
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names )
   {
     std::vector<std::pair<std::string, size_t>> filteredNames;

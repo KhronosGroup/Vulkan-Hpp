@@ -600,7 +600,6 @@ private:
   std::string                         determineSubStruct( std::pair<std::string, StructData> const & structure ) const;
   std::map<size_t, VectorParamData>   determineVectorParams( std::vector<ParamData> const & params ) const;
   std::set<size_t>                    determineVoidPointerParams( std::vector<ParamData> const & params ) const;
-  void                                distributeEnumExtends();
   void                                distributeEnumValueAliases();
   void                                distributeRequirements();
   void                                distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy );
@@ -1266,27 +1265,26 @@ private:
   MemberData const &       vectorMemberByStructure( std::string const & structureType ) const;
 
 private:
-  std::string                         m_api;
-  std::map<std::string, BaseTypeData> m_baseTypes;
-  std::map<std::string, BitmaskData>  m_bitmasks;
-  std::set<std::string>               m_commandQueues;
-  std::map<std::string, CommandData>  m_commands;
-  std::map<std::string, ConstantData> m_constants;
-  std::map<std::string, DefineData>   m_defines;
-  DefinesPartition                    m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
-  std::map<std::string, std::vector<EnumExtendData>> m_enumExtends;
-  std::map<std::string, EnumData>                    m_enums;
-  std::vector<ExtensionData>                         m_extensions;
-  std::map<std::string, ExternalTypeData>            m_externalTypes;
-  std::vector<FeatureData>                           m_features;
-  std::map<std::string, FormatData>                  m_formats;
-  std::map<std::string, FuncPointerData>             m_funcPointers;
-  std::map<std::string, HandleData>                  m_handles;
-  std::map<std::string, IncludeData>                 m_includes;
-  std::map<std::string, PlatformData>                m_platforms;
-  std::set<std::string>                              m_RAIISpecialFunctions;
-  std::map<std::string, SpirVCapabilityData>         m_spirVCapabilities;
-  std::map<std::string, StructData>                  m_structs;
+  std::string                                   m_api;
+  std::map<std::string, BaseTypeData>           m_baseTypes;
+  std::map<std::string, BitmaskData>            m_bitmasks;
+  std::set<std::string>                         m_commandQueues;
+  std::map<std::string, CommandData>            m_commands;
+  std::map<std::string, ConstantData>           m_constants;
+  std::map<std::string, DefineData>             m_defines;
+  DefinesPartition                              m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
+  std::map<std::string, EnumData>               m_enums;
+  std::vector<ExtensionData>                    m_extensions;
+  std::map<std::string, ExternalTypeData>       m_externalTypes;
+  std::vector<FeatureData>                      m_features;
+  std::map<std::string, FormatData>             m_formats;
+  std::map<std::string, FuncPointerData>        m_funcPointers;
+  std::map<std::string, HandleData>             m_handles;
+  std::map<std::string, IncludeData>            m_includes;
+  std::map<std::string, PlatformData>           m_platforms;
+  std::set<std::string>                         m_RAIISpecialFunctions;
+  std::map<std::string, SpirVCapabilityData>    m_spirVCapabilities;
+  std::map<std::string, StructData>             m_structs;
   std::vector<std::pair<std::string, NameLine>> m_structsAliases;  // temporary storage for aliases, as they might be listed before the actual struct is listed
   std::map<std::string, NameLine>               m_syncAccesses;
   std::map<std::string, NameLine>               m_syncStages;

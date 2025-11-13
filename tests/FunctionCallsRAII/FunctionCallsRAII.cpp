@@ -287,5 +287,17 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Result       result  = device.waitForFences( fence, waitAll, timeout );
   }
 
+  // Queue semaphore commands
+  {
+    vk::raii::Device        device = nullptr;
+    vk::SemaphoreCreateInfo semaphoreCreateInfo;
+    vk::raii::Semaphore     semaphore = device.createSemaphore( semaphoreCreateInfo );
+  }
+  {
+    vk::raii::Device        device = nullptr;
+    vk::SemaphoreCreateInfo semaphoreCreateInfo;
+    vk::raii::Semaphore     semaphore( device, semaphoreCreateInfo );
+  }
+
   return 0;
 }

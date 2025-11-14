@@ -32,7 +32,7 @@
 #include <iostream>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 # include <vulkan/vulkan_hpp_macros.hpp>
-  import vulkan_hpp;
+  import vulkan;
 #else
 # include <vulkan/vulkan.hpp>
 #endif
@@ -208,9 +208,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( sv1 );
 
     // getVector
-    // fct( getConstVector() );    // not supported: cannot convert argument 1 from 'const std::vector<int,std::allocator<int>>' to 'vk::ArrayProxyNoTemporaries<int>' 
-    // fctc( getConstVector() );   // not supported: cannot convert argument 1 from 'const std::vector<int,std::allocator<int>>' to 'vk::ArrayProxyNoTemporaries<const int32_t>' 
-    // fct( getVector() );         // not supported: cannot convert argument 1 from 'std::vector<int,std::allocator<int>>' to 'vk::ArrayProxyNoTemporaries<int>' 
+    // fct( getConstVector() );    // not supported: cannot convert argument 1 from 'const std::vector<int,std::allocator<int>>' to 'vk::ArrayProxyNoTemporaries<int>'
+    // fctc( getConstVector() );   // not supported: cannot convert argument 1 from 'const std::vector<int,std::allocator<int>>' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
+    // fct( getVector() );         // not supported: cannot convert argument 1 from 'std::vector<int,std::allocator<int>>' to 'vk::ArrayProxyNoTemporaries<int>'
     // fctc( getVector() );        // not supported: cannot convert argument 1 from 'std::vector<int,std::allocator<int>>' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
 
     vk::ArrayProxyNoTemporaries<int> apnt18 = sv0;

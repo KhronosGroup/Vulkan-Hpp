@@ -35,7 +35,7 @@
 # ifdef VULKAN_HPP_SUPPORT_SPAN
 #   include <span>
 # endif
-  import vulkan_hpp;
+  import vulkan;
 #else
 # include <vulkan/vulkan.hpp>
 #endif

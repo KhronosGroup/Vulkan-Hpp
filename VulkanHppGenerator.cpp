@@ -5480,8 +5480,8 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
     using VULKAN_HPP_NAMESPACE::detail::getDispatchLoaderStatic;
 #endif /*VK_NO_PROTOTYPES*/
     using VULKAN_HPP_NAMESPACE::detail::createResultValueType;
+    using VULKAN_HPP_NAMESPACE::detail::isDispatchLoader;
     using VULKAN_HPP_NAMESPACE::detail::resultCheck;
-    using VULKAN_HPP_NAMESAPCE::detail::isDispatchLoader;
   }
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   namespace VULKAN_HPP_RAII_NAMESPACE

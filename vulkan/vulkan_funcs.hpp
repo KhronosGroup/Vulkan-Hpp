@@ -32088,6 +32088,33 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+  //=== VK_EXT_custom_resolve ===
+
+  // wrapper function for command vkCmdBeginCustomResolveEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginCustomResolveEXT.html
+  template <typename Dispatch, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
+  VULKAN_HPP_INLINE void CommandBuffer::beginCustomResolveEXT( const BeginCustomResolveInfoEXT * pBeginCustomResolveInfo,
+                                                               Dispatch const &                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdBeginCustomResolveEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                  reinterpret_cast<const VkBeginCustomResolveInfoEXT *>( pBeginCustomResolveInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCmdBeginCustomResolveEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginCustomResolveEXT.html
+  template <typename Dispatch, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
+  VULKAN_HPP_INLINE void CommandBuffer::beginCustomResolveEXT( Optional<const BeginCustomResolveInfoEXT> beginCustomResolveInfo,
+                                                               Dispatch const &                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdBeginCustomResolveEXT && "Function <vkCmdBeginCustomResolveEXT> requires <VK_EXT_custom_resolve>" );
+#  endif
+
+    d.vkCmdBeginCustomResolveEXT( m_commandBuffer, reinterpret_cast<const VkBeginCustomResolveInfoEXT *>( beginCustomResolveInfo.get() ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
   //=== VK_KHR_maintenance10 ===
 
   // wrapper function for command vkCmdEndRendering2KHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndRendering2KHR.html

@@ -1491,7 +1491,6 @@ namespace VULKAN_HPP_NAMESPACE
     eReleaseSwapchainImagesInfoKHR                                = VK_STRUCTURE_TYPE_RELEASE_SWAPCHAIN_IMAGES_INFO_KHR,
     eReleaseSwapchainImagesInfoEXT                                = VK_STRUCTURE_TYPE_RELEASE_SWAPCHAIN_IMAGES_INFO_EXT,
     ePhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM,
-    ePhysicalDeviceRayTracingInvocationReorderFeaturesNV          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV,
     ePhysicalDeviceRayTracingInvocationReorderPropertiesNV        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV,
     ePhysicalDeviceCooperativeVectorFeaturesNV                    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_VECTOR_FEATURES_NV,
     ePhysicalDeviceCooperativeVectorPropertiesNV                  = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_VECTOR_PROPERTIES_NV,
@@ -1677,6 +1676,9 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceImageAlignmentControlPropertiesMESA          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_PROPERTIES_MESA,
     eImageAlignmentControlCreateInfoMESA                        = VK_STRUCTURE_TYPE_IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA,
     ePhysicalDeviceShaderFmaFeaturesKHR                         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FMA_FEATURES_KHR,
+    ePhysicalDeviceRayTracingInvocationReorderFeaturesEXT       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_EXT,
+    ePhysicalDeviceRayTracingInvocationReorderFeaturesNV        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV,
+    ePhysicalDeviceRayTracingInvocationReorderPropertiesEXT     = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_EXT,
     ePhysicalDeviceDepthClampControlFeaturesEXT                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT,
     ePipelineViewportDepthClampControlCreateInfoEXT             = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT,
     ePhysicalDeviceMaintenance9FeaturesKHR                      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_9_FEATURES_KHR,
@@ -1733,6 +1735,9 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDevicePresentModeFifoLatestReadyFeaturesKHR      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_KHR,
     ePhysicalDevicePresentModeFifoLatestReadyFeaturesEXT      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_MODE_FIFO_LATEST_READY_FEATURES_EXT,
     ePhysicalDeviceShader64BitIndexingFeaturesEXT             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_64_BIT_INDEXING_FEATURES_EXT,
+    ePhysicalDeviceCustomResolveFeaturesEXT                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_RESOLVE_FEATURES_EXT,
+    eBeginCustomResolveInfoEXT                                = VK_STRUCTURE_TYPE_BEGIN_CUSTOM_RESOLVE_INFO_EXT,
+    eCustomResolveCreateInfoEXT                               = VK_STRUCTURE_TYPE_CUSTOM_RESOLVE_CREATE_INFO_EXT,
     ePhysicalDeviceDataGraphModelFeaturesQCOM                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DATA_GRAPH_MODEL_FEATURES_QCOM,
     eDataGraphPipelineBuiltinModelCreateInfoQCOM              = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_BUILTIN_MODEL_CREATE_INFO_QCOM,
     ePhysicalDeviceMaintenance10FeaturesKHR                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_10_FEATURES_KHR,
@@ -4174,8 +4179,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     ePerViewAttributesNVX                         = VK_SUBPASS_DESCRIPTION_PER_VIEW_ATTRIBUTES_BIT_NVX,
     ePerViewPositionXOnlyNVX                      = VK_SUBPASS_DESCRIPTION_PER_VIEW_POSITION_X_ONLY_BIT_NVX,
-    eFragmentRegionQCOM                           = VK_SUBPASS_DESCRIPTION_FRAGMENT_REGION_BIT_QCOM,
-    eShaderResolveQCOM                            = VK_SUBPASS_DESCRIPTION_SHADER_RESOLVE_BIT_QCOM,
     eTileShadingApronQCOM                         = VK_SUBPASS_DESCRIPTION_TILE_SHADING_APRON_BIT_QCOM,
     eRasterizationOrderAttachmentColorAccessEXT   = VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_BIT_EXT,
     eRasterizationOrderAttachmentColorAccessARM   = VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_BIT_ARM,
@@ -4183,7 +4186,11 @@ namespace VULKAN_HPP_NAMESPACE
     eRasterizationOrderAttachmentDepthAccessARM   = VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_ARM,
     eRasterizationOrderAttachmentStencilAccessEXT = VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_EXT,
     eRasterizationOrderAttachmentStencilAccessARM = VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_ARM,
-    eEnableLegacyDitheringEXT                     = VK_SUBPASS_DESCRIPTION_ENABLE_LEGACY_DITHERING_BIT_EXT
+    eEnableLegacyDitheringEXT                     = VK_SUBPASS_DESCRIPTION_ENABLE_LEGACY_DITHERING_BIT_EXT,
+    eFragmentRegionEXT                            = VK_SUBPASS_DESCRIPTION_FRAGMENT_REGION_BIT_EXT,
+    eFragmentRegionQCOM                           = VK_SUBPASS_DESCRIPTION_FRAGMENT_REGION_BIT_QCOM,
+    eCustomResolveEXT                             = VK_SUBPASS_DESCRIPTION_CUSTOM_RESOLVE_BIT_EXT,
+    eShaderResolveQCOM                            = VK_SUBPASS_DESCRIPTION_SHADER_RESOLVE_BIT_QCOM
   };
 
   // wrapper using for bitmask VkSubpassDescriptionFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkSubpassDescriptionFlags.html
@@ -4196,9 +4203,9 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                    isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR SubpassDescriptionFlags allFlags =
       SubpassDescriptionFlagBits::ePerViewAttributesNVX | SubpassDescriptionFlagBits::ePerViewPositionXOnlyNVX |
-      SubpassDescriptionFlagBits::eFragmentRegionQCOM | SubpassDescriptionFlagBits::eShaderResolveQCOM | SubpassDescriptionFlagBits::eTileShadingApronQCOM |
-      SubpassDescriptionFlagBits::eRasterizationOrderAttachmentColorAccessEXT | SubpassDescriptionFlagBits::eRasterizationOrderAttachmentDepthAccessEXT |
-      SubpassDescriptionFlagBits::eRasterizationOrderAttachmentStencilAccessEXT | SubpassDescriptionFlagBits::eEnableLegacyDitheringEXT;
+      SubpassDescriptionFlagBits::eTileShadingApronQCOM | SubpassDescriptionFlagBits::eRasterizationOrderAttachmentColorAccessEXT |
+      SubpassDescriptionFlagBits::eRasterizationOrderAttachmentDepthAccessEXT | SubpassDescriptionFlagBits::eRasterizationOrderAttachmentStencilAccessEXT |
+      SubpassDescriptionFlagBits::eEnableLegacyDitheringEXT | SubpassDescriptionFlagBits::eFragmentRegionEXT | SubpassDescriptionFlagBits::eCustomResolveEXT;
   };
 
   // wrapper class for enum VkStencilFaceFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkStencilFaceFlagBits.html
@@ -4765,8 +4772,9 @@ namespace VULKAN_HPP_NAMESPACE
     eMin        = VK_RESOLVE_MODE_MIN_BIT,
     eMax        = VK_RESOLVE_MODE_MAX_BIT,
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
-    eExternalFormatDownsampleANDROID = VK_RESOLVE_MODE_EXTERNAL_FORMAT_DOWNSAMPLE_BIT_ANDROID
+    eExternalFormatDownsampleANDROID = VK_RESOLVE_MODE_EXTERNAL_FORMAT_DOWNSAMPLE_BIT_ANDROID,
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+    eCustomEXT = VK_RESOLVE_MODE_CUSTOM_BIT_EXT
   };
 
   using ResolveModeFlagBitsKHR = ResolveModeFlagBits;
@@ -4785,7 +4793,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
                                                                    | ResolveModeFlagBits::eExternalFormatDownsampleANDROID
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-      ;
+                                                                   | ResolveModeFlagBits::eCustomEXT;
   };
 
   //=== VK_VERSION_1_3 ===
@@ -5165,6 +5173,8 @@ namespace VULKAN_HPP_NAMESPACE
     eContentsInlineKHR                   = VK_RENDERING_CONTENTS_INLINE_BIT_KHR,
     eContentsInlineEXT                   = VK_RENDERING_CONTENTS_INLINE_BIT_EXT,
     ePerLayerFragmentDensityVALVE        = VK_RENDERING_PER_LAYER_FRAGMENT_DENSITY_BIT_VALVE,
+    eFragmentRegionEXT                   = VK_RENDERING_FRAGMENT_REGION_BIT_EXT,
+    eCustomResolveEXT                    = VK_RENDERING_CUSTOM_RESOLVE_BIT_EXT,
     eLocalReadConcurrentAccessControlKHR = VK_RENDERING_LOCAL_READ_CONCURRENT_ACCESS_CONTROL_BIT_KHR
   };
 
@@ -5179,10 +5189,10 @@ namespace VULKAN_HPP_NAMESPACE
   {
     using WrappedType                                             = VkRenderingFlagBits;
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool           isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR RenderingFlags allFlags  = RenderingFlagBits::eContentsSecondaryCommandBuffers | RenderingFlagBits::eSuspending |
-                                                                   RenderingFlagBits::eResuming | RenderingFlagBits::eEnableLegacyDitheringEXT |
-                                                                   RenderingFlagBits::eContentsInlineKHR | RenderingFlagBits::ePerLayerFragmentDensityVALVE |
-                                                                   RenderingFlagBits::eLocalReadConcurrentAccessControlKHR;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR RenderingFlags allFlags =
+      RenderingFlagBits::eContentsSecondaryCommandBuffers | RenderingFlagBits::eSuspending | RenderingFlagBits::eResuming |
+      RenderingFlagBits::eEnableLegacyDitheringEXT | RenderingFlagBits::eContentsInlineKHR | RenderingFlagBits::ePerLayerFragmentDensityVALVE |
+      RenderingFlagBits::eFragmentRegionEXT | RenderingFlagBits::eCustomResolveEXT | RenderingFlagBits::eLocalReadConcurrentAccessControlKHR;
   };
 
   //=== VK_VERSION_1_4 ===
@@ -8577,16 +8587,6 @@ namespace VULKAN_HPP_NAMESPACE
       PresentGravityFlagBitsKHR::eMin | PresentGravityFlagBitsKHR::eMax | PresentGravityFlagBitsKHR::eCentered;
   };
 
-  //=== VK_NV_ray_tracing_invocation_reorder ===
-
-  // wrapper class for enum VkRayTracingInvocationReorderModeNV, see
-  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkRayTracingInvocationReorderModeNV.html
-  enum class RayTracingInvocationReorderModeNV
-  {
-    eNone    = VK_RAY_TRACING_INVOCATION_REORDER_MODE_NONE_NV,
-    eReorder = VK_RAY_TRACING_INVOCATION_REORDER_MODE_REORDER_NV
-  };
-
   //=== VK_NV_cooperative_vector ===
 
   // wrapper class for enum VkCooperativeVectorMatrixLayoutNV, see
@@ -9335,6 +9335,18 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool            isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR AccessFlags3KHR allFlags  = AccessFlagBits3KHR::eNone;
   };
+
+  //=== VK_EXT_ray_tracing_invocation_reorder ===
+
+  // wrapper class for enum VkRayTracingInvocationReorderModeEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkRayTracingInvocationReorderModeEXT.html
+  enum class RayTracingInvocationReorderModeEXT
+  {
+    eNone    = VK_RAY_TRACING_INVOCATION_REORDER_MODE_NONE_EXT,
+    eReorder = VK_RAY_TRACING_INVOCATION_REORDER_MODE_REORDER_EXT
+  };
+
+  using RayTracingInvocationReorderModeNV = RayTracingInvocationReorderModeEXT;
 
   //=== VK_EXT_depth_clamp_control ===
 

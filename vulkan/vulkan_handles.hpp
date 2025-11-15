@@ -1827,7 +1827,6 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_ray_tracing_invocation_reorder ===
   struct PhysicalDeviceRayTracingInvocationReorderPropertiesNV;
-  struct PhysicalDeviceRayTracingInvocationReorderFeaturesNV;
 
   //=== VK_NV_cooperative_vector ===
   struct PhysicalDeviceCooperativeVectorPropertiesNV;
@@ -2148,6 +2147,11 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_shader_fma ===
   struct PhysicalDeviceShaderFmaFeaturesKHR;
 
+  //=== VK_EXT_ray_tracing_invocation_reorder ===
+  struct PhysicalDeviceRayTracingInvocationReorderPropertiesEXT;
+  struct PhysicalDeviceRayTracingInvocationReorderFeaturesEXT;
+  using PhysicalDeviceRayTracingInvocationReorderFeaturesNV = PhysicalDeviceRayTracingInvocationReorderFeaturesEXT;
+
   //=== VK_EXT_depth_clamp_control ===
   struct PhysicalDeviceDepthClampControlFeaturesEXT;
   struct PipelineViewportDepthClampControlCreateInfoEXT;
@@ -2246,6 +2250,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_shader_64bit_indexing ===
   struct PhysicalDeviceShader64BitIndexingFeaturesEXT;
+
+  //=== VK_EXT_custom_resolve ===
+  struct PhysicalDeviceCustomResolveFeaturesEXT;
+  struct BeginCustomResolveInfoEXT;
+  struct CustomResolveCreateInfoEXT;
 
   //=== VK_QCOM_data_graph_model ===
   struct PipelineCacheHeaderVersionDataGraphQCOM;
@@ -8155,6 +8164,19 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     void endRendering2EXT( Optional<const RenderingEndInfoKHR> renderingEndInfo VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
                            Dispatch const & d                                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_EXT_custom_resolve ===
+
+    // wrapper function for command vkCmdBeginCustomResolveEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginCustomResolveEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
+    void beginCustomResolveEXT( const BeginCustomResolveInfoEXT * pBeginCustomResolveInfo,
+                                Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdBeginCustomResolveEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginCustomResolveEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
+    void beginCustomResolveEXT( Optional<const BeginCustomResolveInfoEXT> beginCustomResolveInfo VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
+                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_KHR_maintenance10 ===

@@ -1386,6 +1386,18 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::BeginCustomResolveInfoEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::BeginCustomResolveInfoEXT const & beginCustomResolveInfoEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, beginCustomResolveInfoEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, beginCustomResolveInfoEXT.pNext );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::BindAccelerationStructureMemoryInfoNV>
   {
     std::size_t
@@ -3423,6 +3435,23 @@ namespace std
     }
   };
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::CustomResolveCreateInfoEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::CustomResolveCreateInfoEXT const & customResolveCreateInfoEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, customResolveCreateInfoEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, customResolveCreateInfoEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, customResolveCreateInfoEXT.customResolve );
+      VULKAN_HPP_HASH_COMBINE( seed, customResolveCreateInfoEXT.colorAttachmentCount );
+      VULKAN_HPP_HASH_COMBINE( seed, customResolveCreateInfoEXT.pColorAttachmentFormats );
+      VULKAN_HPP_HASH_COMBINE( seed, customResolveCreateInfoEXT.depthAttachmentFormat );
+      VULKAN_HPP_HASH_COMBINE( seed, customResolveCreateInfoEXT.stencilAttachmentFormat );
+      return seed;
+    }
+  };
 
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
   template <>
@@ -9686,6 +9715,20 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceCustomResolveFeaturesEXT>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceCustomResolveFeaturesEXT const & physicalDeviceCustomResolveFeaturesEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCustomResolveFeaturesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCustomResolveFeaturesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCustomResolveFeaturesEXT.customResolve );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDataGraphFeaturesARM>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceDataGraphFeaturesARM const & physicalDeviceDataGraphFeaturesARM ) const VULKAN_HPP_NOEXCEPT
@@ -13074,16 +13117,30 @@ namespace std
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderFeaturesNV>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderFeaturesEXT>
   {
-    std::size_t
-      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderFeaturesNV const & physicalDeviceRayTracingInvocationReorderFeaturesNV ) const
-      VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderFeaturesEXT const &
+                              physicalDeviceRayTracingInvocationReorderFeaturesEXT ) const VULKAN_HPP_NOEXCEPT
     {
       std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingInvocationReorderFeaturesNV.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingInvocationReorderFeaturesNV.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingInvocationReorderFeaturesNV.rayTracingInvocationReorder );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingInvocationReorderFeaturesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingInvocationReorderFeaturesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingInvocationReorderFeaturesEXT.rayTracingInvocationReorder );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderPropertiesEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderPropertiesEXT const &
+                              physicalDeviceRayTracingInvocationReorderPropertiesEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingInvocationReorderPropertiesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingInvocationReorderPropertiesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingInvocationReorderPropertiesEXT.rayTracingInvocationReorderReorderingHint );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingInvocationReorderPropertiesEXT.maxShaderBindingTableRecordIndex );
       return seed;
     }
   };

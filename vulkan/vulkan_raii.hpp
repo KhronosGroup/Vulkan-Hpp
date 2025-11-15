@@ -1948,6 +1948,9 @@ namespace VULKAN_HPP_NAMESPACE
           if ( !vkCmdEndRendering2KHR )
             vkCmdEndRendering2KHR = vkCmdEndRendering2EXT;
 
+          //=== VK_EXT_custom_resolve ===
+          vkCmdBeginCustomResolveEXT = PFN_vkCmdBeginCustomResolveEXT( vkGetDeviceProcAddr( device, "vkCmdBeginCustomResolveEXT" ) );
+
           //=== VK_KHR_maintenance10 ===
           vkCmdEndRendering2KHR = PFN_vkCmdEndRendering2KHR( vkGetDeviceProcAddr( device, "vkCmdEndRendering2KHR" ) );
         }
@@ -2970,6 +2973,9 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_EXT_fragment_density_map_offset ===
         PFN_vkCmdEndRendering2EXT vkCmdEndRendering2EXT = 0;
+
+        //=== VK_EXT_custom_resolve ===
+        PFN_vkCmdBeginCustomResolveEXT vkCmdBeginCustomResolveEXT = 0;
 
         //=== VK_KHR_maintenance10 ===
         PFN_vkCmdEndRendering2KHR vkCmdEndRendering2KHR = 0;
@@ -8008,6 +8014,12 @@ namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkCmdEndRendering2EXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndRendering2EXT.html
       void endRendering2EXT( Optional<const RenderingEndInfoKHR> renderingEndInfo VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ) ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_EXT_custom_resolve ===
+
+      // wrapper function for command vkCmdBeginCustomResolveEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginCustomResolveEXT.html
+      void beginCustomResolveEXT( Optional<const BeginCustomResolveInfoEXT> beginCustomResolveInfo VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ) ) const
+        VULKAN_HPP_NOEXCEPT;
 
       //=== VK_KHR_maintenance10 ===
 
@@ -27969,6 +27981,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       getDispatcher()->vkCmdEndRendering2EXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                               reinterpret_cast<const VkRenderingEndInfoKHR *>( renderingEndInfo.get() ) );
+    }
+
+    //=== VK_EXT_custom_resolve ===
+
+    // wrapper function for command vkCmdBeginCustomResolveEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginCustomResolveEXT.html
+    VULKAN_HPP_INLINE void CommandBuffer::beginCustomResolveEXT( Optional<const BeginCustomResolveInfoEXT> beginCustomResolveInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBeginCustomResolveEXT && "Function <vkCmdBeginCustomResolveEXT> requires <VK_EXT_custom_resolve>" );
+
+      getDispatcher()->vkCmdBeginCustomResolveEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                   reinterpret_cast<const VkBeginCustomResolveInfoEXT *>( beginCustomResolveInfo.get() ) );
     }
 
     //=== VK_KHR_maintenance10 ===

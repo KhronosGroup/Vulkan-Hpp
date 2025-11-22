@@ -1827,6 +1827,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_ray_tracing_invocation_reorder ===
   struct PhysicalDeviceRayTracingInvocationReorderPropertiesNV;
+  struct PhysicalDeviceRayTracingInvocationReorderFeaturesNV;
 
   //=== VK_NV_cooperative_vector ===
   struct PhysicalDeviceCooperativeVectorPropertiesNV;
@@ -2150,7 +2151,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_ray_tracing_invocation_reorder ===
   struct PhysicalDeviceRayTracingInvocationReorderPropertiesEXT;
   struct PhysicalDeviceRayTracingInvocationReorderFeaturesEXT;
-  using PhysicalDeviceRayTracingInvocationReorderFeaturesNV = PhysicalDeviceRayTracingInvocationReorderFeaturesEXT;
 
   //=== VK_EXT_depth_clamp_control ===
   struct PhysicalDeviceDepthClampControlFeaturesEXT;

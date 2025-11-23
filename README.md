@@ -138,32 +138,30 @@ Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers
 
 ### Build steps
 
-To build the local samples and tests you'll have to clone this repository and run CMake to generate the required build files
+1. Install dependencies:
+   - Install CMake and git; ensure both are available from a shell.
+   - Install the LunarG Vulkan SDK.
+   - Optionally install clang-format ≥ 11.0 so that any generated headers can be correctly formatted.
+2. Open a shell which provides git and clone the repository with:
 
-0. Install dependencies.
-   - Ensure that you have CMake and git installed and accessible from a shell.
-   - Ensure that you have installed the Vulkan SDK.
-   - Optionally install clang-format >= 11.0 to get a nicely formatted Vulkan-Hpp header.
-1. Open a shell which provides git and clone the repository with:
+    ```git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git```
+3. Change the shell's working directory to the newly created `Vulkan-Hpp` directory.
+4. Create a build environment with CMake:
+    ```cmake -DVULKAN_HPP_SAMPLES_BUILD=ON -DVULKAN_HPP_SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DVULKAN_HPP_TESTS_BUILD=ON -DVULKAN_HPP_TESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -B build```
 
-    `git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git`
-2. Change the current directory to the newly created Vulkan-Hpp directory.
-3. Create a build environment with CMake:
+    You may need to specify a generator via `-G`; for a full list of generators execute `cmake -G`.
 
-    `cmake -DVULKAN_HPP_SAMPLES_BUILD=ON -DVULKAN_HPP_SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DVULKAN_HPP_TESTS_BUILD=ON -DVULKAN_HPP_TESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -B build`
-
-    You might need to specify a generator via `-G`, for a full list of generators execute `cmake -G`.
-    - To rebuild `vulkan.hpp` from the `vk.xml` XML registry file, add the
+    To rebuild `vulkan.hpp` from the `vk.xml` XML registry file, add the
        `-DVULKAN_HPP_RUN_GENERATOR=ON` option to the CMake command line.
-4. Either open the generated project with an IDE, e.g. Visual Studio or launch the build process with `cmake --build build --parallel`.
+5. The generated project may be opened with an IDE like Visual Studio or CLion, or the generator, samples, and tests may be built directly from a shell:
 
-Optional: To update the Vulkan-Hpp and its submodules execute `git pull --recurse-submodules`.
+    ```cmake --build build --parallel```
 
 ### Additional features
 
 #### Formatting
 
-If the program clang-format is found by CMake, the define `CLANG_FORMAT_EXECUTABLE` is set accordingly. In that case, the generated `vulkan.hpp` is formatted using the `.clang-format` file located in the root directory of this project. Otherwise, it's formatted as hard-coded in the generator.
+If a `clang-format` executable is found by CMake, the define `CLANG_FORMAT_EXECUTABLE` is set accordingly. In that case, the generated headers are formatted using the `.clang-format` file located in the root directory of this project; otherwise, the formatting is left as hard-coded in the generator.
 
 #### Custom views of Vulkan-Hpp objects in Visual Studio
 
@@ -171,7 +169,7 @@ The file `VulkanHpp.natvis` provides a custom view on `vk::Flags` for Visual Stu
 
 ## Breaking Changes
 
-We seriously try to keep the API for all flavours of the Vulkan-Hpp constant or backwards compatible. But every now and then, some breaking changes might get in. Here is a list of those changes, sorted by version.
+We try to keep the API for all flavours of Vulkan-Hpp constant or backwards compatible. However, we may introduce unavoidable breaking changes, usually to fix bugs. Following is a list of those changes, arranged by version.
 
 ### v1.4.334
 

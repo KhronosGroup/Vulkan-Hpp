@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        clang_version: [18]
+        clang_version: [19, 20, 21]
 
     steps:
     - uses: actions/checkout@v4
@@ -34,10 +34,10 @@ jobs:
     - name: Install Clang
       run: |
         sudo apt-get update && sudo apt-get install lsb-release gpg software-properties-common wget
-        # wget https://apt.llvm.org/llvm.sh
-        # chmod +x llvm.sh
-        # sudo ./llvm.sh ${{matrix.clang_version}} all
-        sudo apt install libc++-dev libc++abi-dev
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        sudo ./llvm.sh ${{matrix.clang_version}} all
+        # sudo apt install libc++-18-dev libc++-18-abi-dev
 
     - name: Install glm, glfw and glslang
       run: |

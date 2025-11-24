@@ -31,10 +31,10 @@ jobs:
         version: 1.11.0
     - name: Install Clang and CMake
       run: |
-        sudo apt-get update && sudo apt-get install lsb-release gpg software-properties-common wget
-        wget https://apt.llvm.org/llvm.sh
-        chmod +x llvm.sh
-        sudo ./llvm.sh ${{matrix.clang_version}} all
+        # sudo apt-get update && sudo apt-get install lsb-release gpg software-properties-common wget
+        # wget https://apt.llvm.org/llvm.sh
+        # chmod +x llvm.sh
+        # sudo ./llvm.sh ${{matrix.clang_version}} all
 
         sudo apt purge -y --auto-remove cmake
         wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
@@ -56,8 +56,7 @@ jobs:
 
         cd ../glfw
         cmake -B build -G Ninja                                   \
-          -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
-          -D CMAKE_CXX_STANDARD=11                                \
+          -D CMAKE_C_COMPILER=clang-${{matrix.clang_version}}     \
           -D CMAKE_BUILD_TYPE=Release                             \
           -D GLFW_BUILD_EXAMPLES=OFF                              \
           -D GLFW_BUILD_TESTS=OFF                                 \
@@ -68,6 +67,7 @@ jobs:
 
         cd ../glslang
         cmake -B build -G Ninja                                   \
+          -D CMAKE_C_COMPILER=clang-${{matrix.clang_version}}     \
           -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
           -D CMAKE_CXX_STANDARD=11                                \
           -D CMAKE_BUILD_TYPE=Release                             \
@@ -130,6 +130,7 @@ jobs:
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON            \
               -D VULKAN_HPP_PRECOMPILE=OFF                            \
+              -D CMAKE_C_COMPILER=clang-${{matrix.clang_version}} \
               -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD                     \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE                         \

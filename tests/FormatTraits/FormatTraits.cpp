@@ -15,14 +15,13 @@
 // VulkanHpp Samples : FormatTraits
 //                     Compile test on using format traits functions
 
-#include <cassert>
-#include <cstring>
-#include <iostream>
-#include <map>
-#include <set>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 import vulkan_hpp;
 #else
+#  include <cstring>
+#  include <iostream>
+#  include <map>
+#  include <set>
 #  include <vulkan/vulkan_format_traits.hpp>
 #endif
 

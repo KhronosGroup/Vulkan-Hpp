@@ -17,7 +17,8 @@
 
 #if defined( _MSC_VER )
 #  pragma warning( disable : 4189 )  // local variable is initialized but not referenced
-#elif defined( __clang__ )
+#endif
+#if defined( __clang__ )
 #  pragma clang diagnostic ignored "-Wunused-variable"
 #elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"
@@ -313,6 +314,263 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Device device;
     device.waitIdle();
+  }
+
+  // Memory commands
+  {
+    vk::Device             device;
+    vk::MemoryAllocateInfo memoryAllocateInfo;
+    vk::DeviceMemory       memory;
+    vk::Result             result = device.allocateMemory( &memoryAllocateInfo, nullptr, &memory );
+  }
+  {
+    vk::Device             device;
+    vk::MemoryAllocateInfo memoryAllocateInfo;
+    vk::DeviceMemory       memory = device.allocateMemory( memoryAllocateInfo );
+  }
+
+  {
+    vk::Device       device;
+    vk::DeviceMemory memory;
+    device.freeMemory( memory );
+  }
+
+  {
+    vk::Device         device;
+    vk::DeviceMemory   memory;
+    vk::DeviceSize     offset         = 0;
+    vk::DeviceSize     size           = vk::WholeSize;
+    vk::MemoryMapFlags memoryMapFlags = {};
+    void *             pData;
+    vk::Result         result = device.mapMemory( memory, offset, size, memoryMapFlags, &pData );
+  }
+  {
+    vk::Device         device;
+    vk::DeviceMemory   memory;
+    vk::DeviceSize     offset         = 0;
+    vk::DeviceSize     size           = vk::WholeSize;
+    vk::MemoryMapFlags memoryMapFlags = {};
+    void *             pData          = device.mapMemory( memory, offset, size, memoryMapFlags );
+  }
+
+  {
+    vk::Device       device;
+    vk::DeviceMemory memory;
+    device.unmapMemory( memory );
+  }
+
+  {
+    vk::Device            device;
+    vk::DeviceMemory      memory;
+    vk::MappedMemoryRange mappedMemoryRange;
+    vk::Result            result = device.flushMappedMemoryRanges( 1, &mappedMemoryRange );
+  }
+  {
+    vk::Device                         device;
+    std::vector<vk::MappedMemoryRange> mappedMemoryRanges;
+    device.flushMappedMemoryRanges( mappedMemoryRanges );
+  }
+
+  {
+    vk::Device            device;
+    vk::MappedMemoryRange mappedMemoryRange;
+    vk::Result            result = device.invalidateMappedMemoryRanges( 1, &mappedMemoryRange );
+  }
+  {
+    vk::Device                         device;
+    std::vector<vk::MappedMemoryRange> mappedMemoryRanges;
+    device.invalidateMappedMemoryRanges( mappedMemoryRanges );
+  }
+
+  {
+    vk::Device       device;
+    vk::DeviceMemory memory;
+    vk::DeviceSize   commitment;
+    device.getMemoryCommitment( memory, &commitment );
+  }
+  {
+    vk::Device       device;
+    vk::DeviceMemory memory;
+    vk::DeviceSize   commitment = device.getMemoryCommitment( memory );
+  }
+
+  // Memory management API commands
+  {
+    vk::Device       device;
+    vk::Buffer       buffer;
+    vk::DeviceMemory deviceMemory;
+    vk::DeviceSize   memoryOffset = 0;
+    device.bindBufferMemory( buffer, deviceMemory, memoryOffset );
+  }
+
+  {
+    vk::Device       device;
+    vk::Image        image;
+    vk::DeviceMemory deviceMemory;
+    vk::DeviceSize   memoryOffset = 0;
+    device.bindImageMemory( image, deviceMemory, memoryOffset );
+  }
+
+  {
+    vk::Device             device;
+    vk::Buffer             buffer;
+    vk::MemoryRequirements memoryRequirements;
+    device.getBufferMemoryRequirements( buffer, &memoryRequirements );
+  }
+  {
+    vk::Device             device;
+    vk::Buffer             buffer;
+    vk::MemoryRequirements memoryRequirements = device.getBufferMemoryRequirements( buffer );
+  }
+
+  {
+    vk::Device             device;
+    vk::Image              image;
+    vk::MemoryRequirements memoryRequirements;
+    device.getImageMemoryRequirements( image, &memoryRequirements );
+  }
+  {
+    vk::Device             device;
+    vk::Image              image;
+    vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements( image );
+  }
+
+  // Sparse resource memory management API commands (optional)
+  {
+    vk::Device device;
+    vk::Image  image;
+    uint32_t   sparseMemoryRequirementCount;
+    device.getImageSparseMemoryRequirements( image, &sparseMemoryRequirementCount, nullptr );
+    if ( sparseMemoryRequirementCount )
+    {
+      std::vector<vk::SparseImageMemoryRequirements> sparseImageMemoryRequirements( sparseMemoryRequirementCount );
+      device.getImageSparseMemoryRequirements( image, &sparseMemoryRequirementCount, sparseImageMemoryRequirements.data() );
+    }
+  }
+  {
+    vk::Device                                     device;
+    vk::Image                                      image;
+    std::vector<vk::SparseImageMemoryRequirements> sparseImageMemoryRequirementss = device.getImageSparseMemoryRequirements( image );
+  }
+  {
+    vk::Device device;
+    vk::Image  image;
+    using Allocator = std::allocator<vk::SparseImageMemoryRequirements>;
+    Allocator                                                 allocator;
+    std::vector<vk::SparseImageMemoryRequirements, Allocator> sparseImageMemoryRequirementss = device.getImageSparseMemoryRequirements( image, allocator );
+  }
+
+  {
+    vk::PhysicalDevice      physicalDevice;
+    vk::Format              format        = {};
+    vk::ImageType           type          = {};
+    vk::SampleCountFlagBits samples       = {};
+    vk::ImageUsageFlags     usage         = {};
+    vk::ImageTiling         tiling        = {};
+    uint32_t                propertyCount = 0;
+    physicalDevice.getSparseImageFormatProperties( format, type, samples, usage, tiling, &propertyCount, nullptr );
+    if ( propertyCount )
+    {
+      std::vector<vk::SparseImageFormatProperties> sparseImageFormatProperties( propertyCount );
+      physicalDevice.getSparseImageFormatProperties( format, type, samples, usage, tiling, &propertyCount, sparseImageFormatProperties.data() );
+    }
+  }
+  {
+    vk::PhysicalDevice                           physicalDevice;
+    vk::Format                                   format  = {};
+    vk::ImageType                                type    = {};
+    vk::SampleCountFlagBits                      samples = {};
+    vk::ImageUsageFlags                          usage   = {};
+    vk::ImageTiling                              tiling  = {};
+    std::vector<vk::SparseImageFormatProperties> sparseImageFormatProperties =
+      physicalDevice.getSparseImageFormatProperties( format, type, samples, usage, tiling );
+  }
+  {
+    vk::PhysicalDevice      physicalDevice;
+    vk::Format              format  = {};
+    vk::ImageType           type    = {};
+    vk::SampleCountFlagBits samples = {};
+    vk::ImageUsageFlags     usage   = {};
+    vk::ImageTiling         tiling  = {};
+    using Allocator                 = std::allocator<vk::SparseImageFormatProperties>;
+    Allocator                                               allocator;
+    std::vector<vk::SparseImageFormatProperties, Allocator> sparseImageFormatProperties =
+      physicalDevice.getSparseImageFormatProperties( format, type, samples, usage, tiling, allocator );
+  }
+
+  {
+    vk::Queue          queue;
+    uint32_t           bindInfoCount = 1;
+    vk::BindSparseInfo bindSparseInfo;
+    vk::Fence          fence;
+    vk::Result         result = queue.bindSparse( bindInfoCount, &bindSparseInfo, fence );
+  }
+
+  {
+    vk::Queue          queue;
+    vk::BindSparseInfo bindSparseInfo;
+    vk::Fence          fence;
+    queue.bindSparse( bindSparseInfo, fence );
+  }
+
+  // Fence commands
+  {
+    vk::Device              device;
+    vk::FenceCreateInfo     fenceCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::Fence               fence;
+    vk::Result              result = device.createFence( &fenceCreateInfo, &allocationCallbacks, &fence );
+  }
+  {
+    vk::Device          device;
+    vk::FenceCreateInfo fenceCreateInfo;
+    vk::Fence           fence = device.createFence( fenceCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Fence               fence;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyFence( fence, &allocationCallbacks );
+  }
+  {
+    vk::Device device;
+    vk::Fence  fence;
+    device.destroyFence( fence );
+  }
+
+  {
+    vk::Device device;
+    uint32_t   fenceCount = 1;
+    vk::Fence  fence;
+    vk::Result result = device.resetFences( fenceCount, &fence );
+  }
+  {
+    vk::Device device;
+    vk::Fence  fence;
+    device.resetFences( fence );
+  }
+
+  {
+    vk::Device device;
+    vk::Fence  fence;
+    vk::Result result = device.getFenceStatus( fence );
+  }
+
+  {
+    vk::Device device;
+    uint32_t   fenceCount = 1;
+    vk::Fence  fence;
+    vk::Bool32 waitAll = vk::True;
+    uint64_t   timeout = 1000000000;
+    vk::Result result  = device.waitForFences( fenceCount, &fence, waitAll, timeout );
+  }
+  {
+    vk::Device device;
+    vk::Fence  fence;
+    vk::Bool32 waitAll = vk::True;
+    uint64_t   timeout = 1000000000;
+    vk::Result result  = device.waitForFences( fence, waitAll, timeout );
   }
 
 #if 0

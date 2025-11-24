@@ -12,12 +12,7 @@ module;
   "\tTo silence this warning, define the VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING macro.\n" \
   "\tFor feedback, go to: https://github.com/KhronosGroup/Vulkan-Hpp/issues"
 
-
-#  if defined(__clang__) || defined(__GNUC__) || defined(__GNUG__)
-_Pragma(VULKAN_HPP_STRINGIFY(GCC warning VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING))
-#  elif defined(_MSC_VER)
-_Pragma(VULKAN_HPP_STRINGIFY(message(__FILE__ "(" VULKAN_HPP_STRINGIFY(__LINE__) "): warning: " VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING)))
-#  endif
+  VULKAN_HPP_COMPILE_WARNING( VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING )
 #endif
 
 #include <vulkan/${api}.hpp>
@@ -28,7 +23,7 @@ _Pragma(VULKAN_HPP_STRINGIFY(message(__FILE__ "(" VULKAN_HPP_STRINGIFY(__LINE__)
 #include <vulkan/${api}_shared.hpp>
 
 export module ${api}_hpp;
-export import VULKAN_HPP_STD_MODULE;
+export import std;
 
 export namespace VULKAN_HPP_NAMESPACE
 {

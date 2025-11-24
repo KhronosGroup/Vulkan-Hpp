@@ -35,6 +35,18 @@
 #  include <ciso646>
 #endif
 
+#define VULKAN_HPP_STRINGIFY2( text ) #text
+#define VULKAN_HPP_STRINGIFY( text )  VULKAN_HPP_STRINGIFY2( text )
+#define VULKAN_HPP_NAMESPACE_STRING   VULKAN_HPP_STRINGIFY( VULKAN_HPP_NAMESPACE )
+
+#if defined( __clang__ ) || defined( __GNUC__ ) || defined( __GNUG__ )
+#  define VULKAN_HPP_COMPILE_WARNING( text ) _Pragma( VULKAN_HPP_STRINGIFY( GCC warning text ) )
+#elif defined( _MSC_VER )
+#  define VULKAN_HPP_COMPILE_WARNING( text ) _Pragma( VULKAN_HPP_STRINGIFY( message( __FILE__ "(" VULKAN_HPP_STRINGIFY( __LINE__ ) "): warning: " text ) ) )
+#else
+#  define VULKAN_HPP_COMPILE_WARNING( text )
+#endif
+
 #if defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 #  if !defined( VULKAN_HPP_NO_SMART_HANDLE )
 #    define VULKAN_HPP_NO_SMART_HANDLE
@@ -87,8 +99,8 @@
 #  define VULKAN_HPP_SUPPORT_SPAN
 #endif
 
-#if !defined( VULKAN_HPP_STD_MODULE ) && defined( VULKAN_HPP_CXX_MODULE )
-#  define VULKAN_HPP_STD_MODULE std.compat
+#if defined( VULKAN_HPP_CXX_MODULE ) && !( defined( __cpp_modules ) && defined( __cpp_lib_modules ) )
+VULKAN_HPP_COMPILE_WARNING( "This is a non-conforming implementation of C++ named modules and the standard library module." )
 #endif
 
 #ifndef VK_USE_64_BIT_PTR_DEFINES
@@ -225,10 +237,6 @@
 #  define VULKAN_HPP_NAMESPACE vk
 #endif
 
-#define VULKAN_HPP_STRINGIFY2( text ) #text
-#define VULKAN_HPP_STRINGIFY( text )  VULKAN_HPP_STRINGIFY2( text )
-#define VULKAN_HPP_NAMESPACE_STRING   VULKAN_HPP_STRINGIFY( VULKAN_HPP_NAMESPACE )
-
 #if !defined( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
 #  if defined( VK_NO_PROTOTYPES )
 #    define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
@@ -307,16 +315,11 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if defined( VULKAN_HPP_NO_DEFAULT_DISPATCHER )
-#  define VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT
-#  define VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT
-#  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT
 #  define VULKAN_HPP_DEFAULT_ASSIGNMENT( assignment )
 #else
-#  define VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT         = {}
-#  define VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT = nullptr
-#  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT       = VULKAN_HPP_DEFAULT_DISPATCHER
-#  define VULKAN_HPP_DEFAULT_ASSIGNMENT( assignment )    = assignment
+#  define VULKAN_HPP_DEFAULT_ASSIGNMENT( assignment ) = assignment
 #endif
+#define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT VULKAN_HPP_DEFAULT_ASSIGNMENT( VULKAN_HPP_DEFAULT_DISPATCHER )
 
 #if !defined( VULKAN_HPP_RAII_NAMESPACE )
 #  define VULKAN_HPP_RAII_NAMESPACE        raii

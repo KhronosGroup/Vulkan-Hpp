@@ -17,7 +17,8 @@
 
 #if defined( _MSC_VER )
 #  pragma warning( disable : 4189 )  // local variable is initialized but not referenced
-#elif defined( __clang__ )
+#endif
+#if defined( __clang__ )
 #  pragma clang diagnostic ignored "-Wunused-variable"
 #elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"
@@ -109,6 +110,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DeviceCreateInfo     deviceCreateInfo;
     vk::raii::Device         device = physicalDevice.createDevice( deviceCreateInfo );
   }
+  {
+    vk::raii::PhysicalDevice physicalDevice = nullptr;
+    vk::DeviceCreateInfo     deviceCreateInfo;
+    vk::raii::Device         device( physicalDevice, deviceCreateInfo );
+  }
 
   // Extension discovery commands
   {
@@ -139,6 +145,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     uint32_t         queueIndex       = 0;
     vk::raii::Queue  queue            = device.getQueue( queueFamilyIndex, queueIndex );
   }
+  {
+    vk::raii::Device device           = nullptr;
+    uint32_t         queueFamilyIndex = 0;
+    uint32_t         queueIndex       = 0;
+    vk::raii::Queue  queue( device, queueFamilyIndex, queueIndex );
+  }
 
   {
     vk::raii::Queue queue = nullptr;
@@ -155,6 +167,128 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::raii::Device device = nullptr;
     device.waitIdle();
+  }
+
+  // Memory commands
+  {
+    vk::raii::Device       device = nullptr;
+    vk::MemoryAllocateInfo memoryAllocateInfo;
+    vk::raii::DeviceMemory deviceMemory = device.allocateMemory( memoryAllocateInfo );
+  }
+  {
+    vk::raii::Device       device = nullptr;
+    vk::MemoryAllocateInfo memoryAllocateInfo;
+    vk::raii::DeviceMemory deviceMemory( device, memoryAllocateInfo );
+  }
+
+  {
+    vk::raii::DeviceMemory deviceMemory   = nullptr;
+    vk::DeviceSize         offset         = 0;
+    vk::DeviceSize         size           = vk::WholeSize;
+    vk::MemoryMapFlags     memoryMapFlags = {};
+    void *                 pData          = deviceMemory.mapMemory( offset, size, memoryMapFlags );
+  }
+
+  {
+    vk::raii::DeviceMemory deviceMemory = nullptr;
+    deviceMemory.unmapMemory();
+  }
+
+  {
+    vk::raii::Device                   device = nullptr;
+    std::vector<vk::MappedMemoryRange> mappedMemoryRanges;
+    device.flushMappedMemoryRanges( mappedMemoryRanges );
+  }
+
+  {
+    vk::raii::Device                   device = nullptr;
+    std::vector<vk::MappedMemoryRange> mappedMemoryRanges;
+    device.invalidateMappedMemoryRanges( mappedMemoryRanges );
+  }
+
+  {
+    vk::raii::DeviceMemory deviceMemory = nullptr;
+    vk::DeviceSize         size         = deviceMemory.getCommitment();
+  }
+
+  // Memory management API commands
+  {
+    vk::raii::Buffer buffer = nullptr;
+    vk::DeviceMemory deviceMemory;
+    vk::DeviceSize   memoryOffset = 0;
+    buffer.bindMemory( deviceMemory, memoryOffset );
+  }
+
+  {
+    vk::raii::Image  image = nullptr;
+    vk::DeviceMemory deviceMemory;
+    vk::DeviceSize   memoryOffset = 0;
+    image.bindMemory( deviceMemory, memoryOffset );
+  }
+
+  {
+    vk::raii::Buffer       buffer             = nullptr;
+    vk::MemoryRequirements memoryRequirements = buffer.getMemoryRequirements();
+  }
+
+  {
+    vk::raii::Image        image              = nullptr;
+    vk::MemoryRequirements memoryRequirements = image.getMemoryRequirements();
+  }
+
+  // Sparse resource memory management API commands (optional)
+  {
+    vk::raii::Image                                image                         = nullptr;
+    std::vector<vk::SparseImageMemoryRequirements> sparseImageMemoryRequirements = image.getSparseMemoryRequirements();
+  }
+
+  {
+    vk::raii::PhysicalDevice                     physicalDevice = nullptr;
+    vk::Format                                   format         = {};
+    vk::ImageType                                type           = {};
+    vk::SampleCountFlagBits                      samples        = {};
+    vk::ImageUsageFlags                          usage          = {};
+    vk::ImageTiling                              tiling         = {};
+    std::vector<vk::SparseImageFormatProperties> sparseImageFormatProperties =
+      physicalDevice.getSparseImageFormatProperties( format, type, samples, usage, tiling );
+  }
+
+  {
+    vk::raii::Queue    queue = nullptr;
+    vk::BindSparseInfo bindSparseInfo;
+    vk::Fence          fence;
+    queue.bindSparse( bindSparseInfo, fence );
+  }
+
+  // Fence commands
+  {
+    vk::raii::Device    device = nullptr;
+    vk::FenceCreateInfo fenceCreateInfo;
+    vk::raii::Fence     fence = device.createFence( fenceCreateInfo );
+  }
+  {
+    vk::raii::Device    device = nullptr;
+    vk::FenceCreateInfo fenceCreateInfo;
+    vk::raii::Fence     fence( device, fenceCreateInfo );
+  }
+
+  {
+    vk::raii::Device device = nullptr;
+    vk::Fence        fence;
+    device.resetFences( fence );
+  }
+
+  {
+    vk::raii::Fence fence  = nullptr;
+    vk::Result      result = fence.getStatus();
+  }
+
+  {
+    vk::raii::Device device = nullptr;
+    vk::Fence        fence;
+    vk::Bool32       waitAll = vk::True;
+    uint64_t         timeout = 1000000000;
+    vk::Result       result  = device.waitForFences( fence, waitAll, timeout );
   }
 
   return 0;

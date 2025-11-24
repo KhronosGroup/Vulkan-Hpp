@@ -5,7 +5,7 @@ public:
   ObjectDestroy() = default;
 
   ObjectDestroy( OwnerType                           owner,
-                 Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                 Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
                  Dispatch const & dispatch           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
     : m_owner( owner )
     , m_allocationCallbacks( allocationCallbacks )

@@ -25,22 +25,19 @@ jobs:
     - name: Install libraries
       run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
 
-    - name: Install Ninja
-      uses: ashutoshvarma/setup-ninja@master
+    - name: Install CMake and Ninja
+      uses: lukka/get-cmake@latest
       with:
-        version: 1.11.0
+        cmakeVersion: 4.1.2
+        ninjaVersion: latest
 
-    - name: Install Clang and CMake
+    - name: Install Clang
       run: |
         sudo apt-get update && sudo apt-get install lsb-release gpg software-properties-common wget
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
         sudo ./llvm.sh ${{matrix.clang_version}} all
-
-        sudo apt purge -y --auto-remove cmake
-        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
-        echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ noble main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
-        sudo apt update && sudo apt install cmake
+        sudo apt install libc++-dev libc++abi-dev
 
     - name: Install glm, glfw and glslang
       run: |

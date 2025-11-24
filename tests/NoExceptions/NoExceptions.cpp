@@ -17,6 +17,7 @@
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
+#include <cstdint>
 import vulkan_hpp;
 #else
 #  include <vector>
@@ -50,7 +51,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevices[0].getQueueFamilyProperties();
 
   // get the first index into queueFamiliyProperties which supports graphics
-  size_t graphicsQueueFamilyIndex =
+  std::size_t graphicsQueueFamilyIndex =
     std::distance( queueFamilyProperties.begin(),
                    std::find_if( queueFamilyProperties.begin(),
                                  queueFamilyProperties.end(),

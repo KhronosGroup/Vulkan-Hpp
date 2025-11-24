@@ -16,6 +16,7 @@
 //                   Compile test on using designated initializers
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
+#  include <cstdint>
 import vulkan_hpp;
 #else
 #  include <cstdint>

@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        clang_version: [19, 20, 21]
+        clang_version: [18]
 
     steps:
     - uses: actions/checkout@v4
@@ -132,7 +132,9 @@ jobs:
               -D VULKAN_HPP_PRECOMPILE=OFF                            \
               -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD                     \
-              -D CMAKE_BUILD_TYPE=$BUILD_TYPE
+              -D CMAKE_BUILD_TYPE=$BUILD_TYPE                         \
+              -D CMAKE_EXE_LINKER_FLAGS='-stdlib=libc++ -lc++abi'     \
+              -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444
             cmake --build build --parallel --clean-first
             ctest -j --output-on-failure --test-dir build
           done

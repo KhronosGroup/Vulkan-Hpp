@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        clang_version: [18]
+        clang_version: [21]
 
     steps:
     - uses: actions/checkout@v4
@@ -33,11 +33,10 @@ jobs:
 
     - name: Install Clang
       run: |
-        # sudo apt-get update && sudo apt-get install lsb-release gpg software-properties-common wget
-        # wget https://apt.llvm.org/llvm.sh
-        # chmod +x llvm.sh
-        # sudo ./llvm.sh ${{matrix.clang_version}} all
-        sudo apt install libc++-dev libc++abi-dev
+        sudo apt-get update && sudo apt-get install lsb-release gpg software-properties-common wget
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        sudo ./llvm.sh ${{matrix.clang_version}} all
 
     - name: Install glm, glfw and glslang
       run: |
@@ -94,6 +93,7 @@ jobs:
           -D VULKAN_HPP_PRECOMPILE=OFF                              \
           -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}}   \
           -D CMAKE_CXX_STANDARD=20                                  \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++                         \
           -D CMAKE_BUILD_TYPE=Debug
         cmake --build build --parallel
 
@@ -107,6 +107,7 @@ jobs:
           -D VULKAN_HPP_PRECOMPILE=OFF                              \
           -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}}   \
           -D CMAKE_CXX_STANDARD=20                                  \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++                         \
           -D CMAKE_BUILD_TYPE=Release
         cmake --build build --parallel --clean-first
 

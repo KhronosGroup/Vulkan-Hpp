@@ -36,6 +36,7 @@ jobs:
         cmake -B build -G Ninja                      \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
           -D CMAKE_CXX_STANDARD=11                   \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++          \
           -D CMAKE_BUILD_TYPE=Release                \
           -D GLM_BUILD_LIBRARY=ON                    \
           -D GLM_BUILD_INSTALL=ON                    \
@@ -47,6 +48,7 @@ jobs:
         cmake -B build -G Ninja                      \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
           -D CMAKE_CXX_STANDARD=11                   \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++          \
           -D CMAKE_BUILD_TYPE=Release                \
           -D GLFW_BUILD_EXAMPLES=OFF                 \
           -D GLFW_BUILD_TESTS=OFF                    \
@@ -59,6 +61,7 @@ jobs:
         cmake -B build -G Ninja                      \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
           -D CMAKE_CXX_STANDARD=11                   \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++          \
           -D CMAKE_BUILD_TYPE=Release                \
           -D ENABLE_OPT=OFF                          \
           -D GLSLANG_TESTS_DEFAULT=OFF               \
@@ -79,6 +82,7 @@ jobs:
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}}   \
           -D CMAKE_CXX_STANDARD=20                     \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++            \
           -D CMAKE_BUILD_TYPE=Debug
         cmake --build build --parallel
 
@@ -92,6 +96,7 @@ jobs:
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
           -D CMAKE_CXX_COMPILER=${{matrix.compiler}}   \
           -D CMAKE_CXX_STANDARD=20                     \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++            \
           -D CMAKE_BUILD_TYPE=Release
         cmake --build build --parallel --clean-first
 
@@ -118,6 +123,7 @@ jobs:
               -D VULKAN_HPP_PRECOMPILE=OFF                    \
               -D CMAKE_CXX_COMPILER=${{matrix.compiler}}      \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD             \
+              -D CMAKE_CXX_FLAGS=-stdlib=libc++               \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE
             cmake --build build --parallel --clean-first
             ctest -j --output-on-failure --test-dir build

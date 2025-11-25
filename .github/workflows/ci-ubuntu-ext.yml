@@ -37,6 +37,7 @@ jobs:
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
         sudo ./llvm.sh ${{matrix.clang_version}} all
+        ln -s llvm-${{matrix.clang_version}}-share
 
     - name: Install glm, glfw and glslang
       run: |

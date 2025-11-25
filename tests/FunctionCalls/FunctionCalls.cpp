@@ -573,6 +573,31 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Result result  = device.waitForFences( fence, waitAll, timeout );
   }
 
+  // Queue semaphore commands
+  {
+    vk::Device              device;
+    vk::SemaphoreCreateInfo semaphoreCreateInfo;
+    vk::Semaphore           semaphore;
+    vk::Result              result = device.createSemaphore( &semaphoreCreateInfo, nullptr, &semaphore );
+  }
+  {
+    vk::Device              device;
+    vk::SemaphoreCreateInfo semaphoreCreateInfo;
+    vk::Semaphore           semaphore = device.createSemaphore( semaphoreCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Semaphore           semaphore;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroySemaphore( semaphore, &allocationCallbacks );
+  }
+  {
+    vk::Device    device;
+    vk::Semaphore semaphore;
+    device.destroySemaphore( semaphore );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

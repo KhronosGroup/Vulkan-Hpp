@@ -86,7 +86,7 @@ public:
     VkResult     err = glfwCreateWindowSurface( instance.get(), window.handle, nullptr, &surface );
     if ( err != VK_SUCCESS )
       throw std::runtime_error( "Failed to create window!" );
-    vk::SharedSurfaceKHR sharedSurface{ static_cast<vk::SurfaceKHR>(surface), instance };
+    vk::SharedSurfaceKHR sharedSurface{ static_cast<vk::SurfaceKHR>( surface ), instance };
 
     auto graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, sharedSurface.get() );
     device = vk::SharedDevice{ vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() ) };
@@ -109,16 +109,12 @@ public:
     std::transform( swapChainData.images.begin(),
                     swapChainData.images.end(),
                     std::back_inserter( images ),
-                    [this]( vk::Image image ) {
-                      return vk::SharedImage{ image, device, vk::SwapchainOwns::yes };
-                    } );
+                    [this]( vk::Image image ) { return vk::SharedImage{ image, device, vk::SwapchainOwns::yes }; } );
 
     std::transform( swapChainData.imageViews.begin(),
                     swapChainData.imageViews.end(),
                     std::back_inserter( imageViews ),
-                    [this]( vk::ImageView imageView ) {
-                      return vk::SharedImageView{ imageView, device };
-                    } );
+                    [this]( vk::ImageView imageView ) { return vk::SharedImageView{ imageView, device }; } );
     commandPool =
       vk::SharedCommandPool{ device->createCommandPool( { vk::CommandPoolCreateFlagBits::eResetCommandBuffer, graphicsAndPresentQueueFamilyIndex.first } ),
                              device };
@@ -230,9 +226,9 @@ public:
     vk::Result result = presentQueue->presentKHR( vk::PresentInfoKHR( {}, swap, currentBuffer ) );
     switch ( result )
     {
-      case vk::Result::eSuccess: break;
+      case vk::Result::eSuccess      : break;
       case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n"; break;
-      default: assert( false );  // an unexpected result is returned !
+      default                        : assert( false );  // an unexpected result is returned !
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 

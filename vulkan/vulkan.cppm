@@ -4870,6 +4870,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM;
 
   //=== VK_NV_ray_tracing_invocation_reorder ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderFeaturesNV;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderPropertiesNV;
 
   //=== VK_NV_cooperative_vector ===
@@ -5193,7 +5194,6 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_ray_tracing_invocation_reorder ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderFeaturesEXT;
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderFeaturesNV;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderPropertiesEXT;
 
   //=== VK_EXT_depth_clamp_control ===
@@ -8708,6 +8708,8 @@ export namespace std
   //=== VK_NV_ray_tracing_invocation_reorder ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderPropertiesNV>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderFeaturesNV>;
 
   //=== VK_NV_cooperative_vector ===
   template <>

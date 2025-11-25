@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        clang_version: [21]
+        clang_version: [19, 20, 21]
 
     steps:
     - uses: actions/checkout@v4
@@ -114,7 +114,7 @@ jobs:
 
     - name: Build samples and tests
       run: |
-        for CXX_STANDARD in 23; do
+        for CXX_STANDARD in 11 14 17 20 23; do
           for BUILD_TYPE in Debug Release; do
 
             CXX_MODULES=ON
@@ -130,7 +130,7 @@ jobs:
               -D VULKAN_HPP_BUILD_CXX_MODULE=$CXX_MODULES             \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF                       \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                         \
-              -D VULKAN_HPP_SAMPLES_BUILD=OFF                         \
+              -D VULKAN_HPP_SAMPLES_BUILD=ON                          \
               -D VULKAN_HPP_TESTS_BUILD=ON                            \
               -D VULKAN_HPP_TESTS_CTEST=ON                            \
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                \

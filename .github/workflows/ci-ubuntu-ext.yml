@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        clang_version: [19, 20, 21]
+        clang_version: [20, 21]
 
     steps:
     - uses: actions/checkout@v4

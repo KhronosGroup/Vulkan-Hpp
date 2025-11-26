@@ -23,6 +23,7 @@
 #  pragma clang diagnostic ignored "-Wunused-variable"
 #elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"
+#  pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #else
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
@@ -32,21 +33,28 @@
 #ifdef VULKAN_HPP_USE_CXX_MODULE
   import vulkan;
 #else
-# include "vulkan/vulkan.hpp"
+#  include "vulkan/vulkan.hpp"
 #endif
 
 static char const * AppName    = "StructureChain";
 static char const * EngineName = "Vulkan.hpp";
 
-namespace vk {
-  namespace detail {
+namespace vk
+{
+  namespace detail
+  {
     DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }
-}
+  }  // namespace detail
+}  // namespace vk
 
 template <typename T>
 void unused( T const & )
 {
+}
+
+void test( std::tuple<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT> const & cis )
+{
+  unused( cis );
 }
 
 int main( int /*argc*/, char ** /*argv*/ )
@@ -201,6 +209,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     chain.unlink<vk::ValidationFeaturesEXT>();
     chain.unlink<vk::DebugUtilsMessengerCreateInfoEXT>();
     chain.relink<vk::DebugUtilsMessengerCreateInfoEXT>();
+
+    // test using rvalue reference out of a StructureChain
+    vk::Instance i = vk::createInstance( vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT>().get<vk::InstanceCreateInfo>() );
+
+    test(
+      vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT>().get<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT>() );
   }
   catch ( vk::SystemError const & err )
   {

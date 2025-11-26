@@ -12362,10 +12362,16 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
   if ( member.type.type != "VkStructureType" )  // filter out StructureType, which is supposed to be immutable !
   {
     static const std::string templateString = R"(
-    ${deprecated}${constexpr}${structureName} & set${MemberName}( ${memberType} ${reference}${memberName}_ ) VULKAN_HPP_NOEXCEPT
+    ${deprecated}${constexpr}${structureName} & set${MemberName}( ${memberType} ${reference}${memberName}_ ) & VULKAN_HPP_NOEXCEPT
     {
       ${assignment};
       return *this;
+    }
+
+    ${deprecated}${constexpr}${structureName} && set${MemberName}( ${memberType} ${reference}${memberName}_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      ${assignment};
+      return std::move( *this );
     }
 )";
 

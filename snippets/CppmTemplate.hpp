@@ -23,6 +23,7 @@ module;
 #include <vulkan/${api}_shared.hpp>
 
 export module ${api}_hpp;
+export import :video;
 export import std;
 
 export namespace VULKAN_HPP_NAMESPACE

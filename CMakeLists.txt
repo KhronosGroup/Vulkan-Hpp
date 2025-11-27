@@ -331,15 +331,13 @@ function( vulkan_hpp__setup_vulkan_targets )
 
 	# Build Vulkan-Hpp as a module
 	if( VULKAN_HPP_BUILD_CXX_MODULE )
-		# create targets providing VulkanHpp and VulkanVideoHpp as C++20 modules
+		# create target providing VulkanHpp and VulkanVideoHpp as C++ named modules
 		vulkan_hpp__setup_vulkan_module( NAME VulkanHppModule
 			FILE_SET_NAME vulkan_module_file
-			FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm"
+			FILE_SET
+				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm"
+				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan_video.cppm"
 			ALIAS Vulkan::HppModule )
-		vulkan_hpp__setup_vulkan_module( NAME VulkanVideoHppModule
-			FILE_SET_NAME vulkan_video_module_file
-			FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan_video.cppm"
-			ALIAS Vulkan::VideoHppModule )
 	endif()
 endfunction()
 

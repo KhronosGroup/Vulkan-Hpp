@@ -8,10 +8,9 @@ module;
 
 #if !defined( VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING )
 #  define VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING \
-  "The Vulkan-Hpp C++ named module is experimental. " \
-  "It is subject to change without prior notice.\n" \
-  "To silence this warning, define the VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING macro.\n\n" \
-  "For feedback, go to: https://github.com/KhronosGroup/Vulkan-Hpp/issues"
+  "\n\tThe Vulkan-Hpp C++ named module is experimental. It is subject to change without prior notice.\n" \
+  "\tTo silence this warning, define the VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING macro.\n" \
+  "\tFor feedback, go to: https://github.com/KhronosGroup/Vulkan-Hpp/issues"
 
   VULKAN_HPP_COMPILE_WARNING( VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING )
 #endif

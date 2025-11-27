@@ -22,7 +22,7 @@ module;
 #include <vulkan/${api}_raii.hpp>
 #include <vulkan/${api}_shared.hpp>
 
-export module ${api}_hpp;
+export module ${api};
 export import :video;
 export import std;
 

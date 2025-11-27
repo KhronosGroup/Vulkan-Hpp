@@ -692,15 +692,21 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
-    T & get() VULKAN_HPP_NOEXCEPT
+      T & get() & VULKAN_HPP_NOEXCEPT
     {
       return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( static_cast<std::tuple<ChainElements...> &>( *this ) );
     }
 
     template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
-    T const & get() const VULKAN_HPP_NOEXCEPT
+    T const & get() const & VULKAN_HPP_NOEXCEPT
     {
       return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( static_cast<std::tuple<ChainElements...> const &>( *this ) );
+    }
+
+    template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
+      T && get() && VULKAN_HPP_NOEXCEPT
+    {
+      return std::move( std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( static_cast<std::tuple<ChainElements...> &>( *this ) ) );
     }
 
     template <typename T0, typename T1, typename... Ts>

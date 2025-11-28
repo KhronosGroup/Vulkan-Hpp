@@ -1118,6 +1118,19 @@ namespace VULKAN_HPP_NAMESPACE
   struct QueueFamilyCheckpointProperties2NV;
   struct CheckpointData2NV;
 
+  //=== VK_EXT_present_timing ===
+  struct PhysicalDevicePresentTimingFeaturesEXT;
+  struct PresentTimingSurfaceCapabilitiesEXT;
+  struct SwapchainCalibratedTimestampInfoEXT;
+  struct SwapchainTimingPropertiesEXT;
+  struct SwapchainTimeDomainPropertiesEXT;
+  struct PastPresentationTimingInfoEXT;
+  struct PastPresentationTimingPropertiesEXT;
+  struct PastPresentationTimingEXT;
+  struct PresentTimingsInfoEXT;
+  struct PresentTimingInfoEXT;
+  struct PresentStageTimeEXT;
+
   //=== VK_INTEL_shader_integer_functions2 ===
   struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL;
 
@@ -15644,6 +15657,54 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
       signalSemaphoreKHR( const SemaphoreSignalInfo & signalInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_EXT_present_timing ===
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkSetSwapchainPresentTimingQueueSizeEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetSwapchainPresentTimingQueueSizeEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
+    VULKAN_HPP_NODISCARD Result setSwapchainPresentTimingQueueSizeEXT( SwapchainKHR       swapchain,
+                                                                       uint32_t           size,
+                                                                       Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#else
+    // wrapper function for command vkSetSwapchainPresentTimingQueueSizeEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetSwapchainPresentTimingQueueSizeEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
+    VULKAN_HPP_NODISCARD Result setSwapchainPresentTimingQueueSizeEXT( SwapchainKHR       swapchain,
+                                                                       uint32_t           size,
+                                                                       Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    // wrapper function for command vkGetSwapchainTimingPropertiesEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainTimingPropertiesEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
+    VULKAN_HPP_NODISCARD Result getSwapchainTimingPropertiesEXT( SwapchainKHR                   swapchain,
+                                                                 SwapchainTimingPropertiesEXT * pSwapchainTimingProperties,
+                                                                 uint64_t *                     pSwapchainTimingPropertiesCounter,
+                                                                 Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetSwapchainTimingPropertiesEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainTimingPropertiesEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
+    VULKAN_HPP_NODISCARD ResultValue<std::pair<SwapchainTimingPropertiesEXT, uint64_t>>
+                         getSwapchainTimingPropertiesEXT( SwapchainKHR swapchain, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkGetSwapchainTimeDomainPropertiesEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainTimeDomainPropertiesEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
+    VULKAN_HPP_NODISCARD Result getSwapchainTimeDomainPropertiesEXT( SwapchainKHR                       swapchain,
+                                                                     SwapchainTimeDomainPropertiesEXT * pSwapchainTimeDomainProperties,
+                                                                     uint64_t *                         pTimeDomainsCounter,
+                                                                     Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    // wrapper function for command vkGetPastPresentationTimingEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPastPresentationTimingEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
+    VULKAN_HPP_NODISCARD Result getPastPresentationTimingEXT( const PastPresentationTimingInfoEXT * pPastPresentationTimingInfo,
+                                                              PastPresentationTimingPropertiesEXT * pPastPresentationTimingProperties,
+                                                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
     //=== VK_INTEL_performance_query ===
 

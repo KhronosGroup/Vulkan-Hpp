@@ -2260,6 +2260,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += " Protected |";
     if ( value & SwapchainCreateFlagBitsKHR::eMutableFormat )
       result += " MutableFormat |";
+    if ( value & SwapchainCreateFlagBitsKHR::ePresentTimingEXT )
+      result += " PresentTimingEXT |";
     if ( value & SwapchainCreateFlagBitsKHR::ePresentId2 )
       result += " PresentId2 |";
     if ( value & SwapchainCreateFlagBitsKHR::ePresentWait2 )
@@ -3203,6 +3205,57 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCompilerControlFlagsAMD )
   {
     return "{}";
+  }
+
+  //=== VK_EXT_present_timing ===
+
+  VULKAN_HPP_INLINE std::string to_string( PresentStageFlagsEXT value )
+  {
+    std::string result = "{";
+    if ( value & PresentStageFlagBitsEXT::eQueueOperationsEnd )
+      result += " QueueOperationsEnd |";
+    if ( value & PresentStageFlagBitsEXT::eRequestDequeued )
+      result += " RequestDequeued |";
+    if ( value & PresentStageFlagBitsEXT::eImageFirstPixelOut )
+      result += " ImageFirstPixelOut |";
+    if ( value & PresentStageFlagBitsEXT::eImageFirstPixelVisible )
+      result += " ImageFirstPixelVisible |";
+
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else
+      result = "{}";
+    return result;
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( PresentTimingInfoFlagsEXT value )
+  {
+    std::string result = "{";
+    if ( value & PresentTimingInfoFlagBitsEXT::ePresentAtRelativeTime )
+      result += " PresentAtRelativeTime |";
+    if ( value & PresentTimingInfoFlagBitsEXT::ePresentAtNearestRefreshCycle )
+      result += " PresentAtNearestRefreshCycle |";
+
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else
+      result = "{}";
+    return result;
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( PastPresentationTimingFlagsEXT value )
+  {
+    std::string result = "{";
+    if ( value & PastPresentationTimingFlagBitsEXT::eAllowPartialResults )
+      result += " AllowPartialResults |";
+    if ( value & PastPresentationTimingFlagBitsEXT::eAllowOutOfOrderResults )
+      result += " AllowOutOfOrderResults |";
+
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else
+      result = "{}";
+    return result;
   }
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
@@ -4367,6 +4420,7 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eErrorVideoProfileCodecNotSupportedKHR      : return "ErrorVideoProfileCodecNotSupportedKHR";
       case Result::eErrorVideoStdVersionNotSupportedKHR        : return "ErrorVideoStdVersionNotSupportedKHR";
       case Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: return "ErrorInvalidDrmFormatModifierPlaneLayoutEXT";
+      case Result::eErrorPresentTimingQueueFullEXT             : return "ErrorPresentTimingQueueFullEXT";
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
       case Result::eErrorFullScreenExclusiveModeLostEXT: return "ErrorFullScreenExclusiveModeLostEXT";
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -4950,6 +5004,16 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eQueueFamilyCheckpointPropertiesNV                 : return "QueueFamilyCheckpointPropertiesNV";
       case StructureType::eQueueFamilyCheckpointProperties2NV                : return "QueueFamilyCheckpointProperties2NV";
       case StructureType::eCheckpointData2NV                                 : return "CheckpointData2NV";
+      case StructureType::ePhysicalDevicePresentTimingFeaturesEXT            : return "PhysicalDevicePresentTimingFeaturesEXT";
+      case StructureType::eSwapchainTimingPropertiesEXT                      : return "SwapchainTimingPropertiesEXT";
+      case StructureType::eSwapchainTimeDomainPropertiesEXT                  : return "SwapchainTimeDomainPropertiesEXT";
+      case StructureType::ePresentTimingsInfoEXT                             : return "PresentTimingsInfoEXT";
+      case StructureType::ePresentTimingInfoEXT                              : return "PresentTimingInfoEXT";
+      case StructureType::ePastPresentationTimingInfoEXT                     : return "PastPresentationTimingInfoEXT";
+      case StructureType::ePastPresentationTimingPropertiesEXT               : return "PastPresentationTimingPropertiesEXT";
+      case StructureType::ePastPresentationTimingEXT                         : return "PastPresentationTimingEXT";
+      case StructureType::ePresentTimingSurfaceCapabilitiesEXT               : return "PresentTimingSurfaceCapabilitiesEXT";
+      case StructureType::eSwapchainCalibratedTimestampInfoEXT               : return "SwapchainCalibratedTimestampInfoEXT";
       case StructureType::ePhysicalDeviceShaderIntegerFunctions2FeaturesINTEL: return "PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL";
       case StructureType::eQueryPoolPerformanceQueryCreateInfoINTEL          : return "QueryPoolPerformanceQueryCreateInfoINTEL";
       case StructureType::eInitializePerformanceApiInfoINTEL                 : return "InitializePerformanceApiInfoINTEL";
@@ -8140,6 +8204,7 @@ namespace VULKAN_HPP_NAMESPACE
       case SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions: return "SplitInstanceBindRegions";
       case SwapchainCreateFlagBitsKHR::eProtected               : return "Protected";
       case SwapchainCreateFlagBitsKHR::eMutableFormat           : return "MutableFormat";
+      case SwapchainCreateFlagBitsKHR::ePresentTimingEXT        : return "PresentTimingEXT";
       case SwapchainCreateFlagBitsKHR::ePresentId2              : return "PresentId2";
       case SwapchainCreateFlagBitsKHR::ePresentWait2            : return "PresentWait2";
       case SwapchainCreateFlagBitsKHR::eDeferredMemoryAllocation: return "DeferredMemoryAllocation";
@@ -9189,6 +9254,40 @@ namespace VULKAN_HPP_NAMESPACE
       case MemoryOverallocationBehaviorAMD::eAllowed   : return "Allowed";
       case MemoryOverallocationBehaviorAMD::eDisallowed: return "Disallowed";
       default                                          : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_EXT_present_timing ===
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PresentStageFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case PresentStageFlagBitsEXT::eQueueOperationsEnd    : return "QueueOperationsEnd";
+      case PresentStageFlagBitsEXT::eRequestDequeued       : return "RequestDequeued";
+      case PresentStageFlagBitsEXT::eImageFirstPixelOut    : return "ImageFirstPixelOut";
+      case PresentStageFlagBitsEXT::eImageFirstPixelVisible: return "ImageFirstPixelVisible";
+      default                                              : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PresentTimingInfoFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case PresentTimingInfoFlagBitsEXT::ePresentAtRelativeTime       : return "PresentAtRelativeTime";
+      case PresentTimingInfoFlagBitsEXT::ePresentAtNearestRefreshCycle: return "PresentAtNearestRefreshCycle";
+      default                                                         : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PastPresentationTimingFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case PastPresentationTimingFlagBitsEXT::eAllowPartialResults   : return "AllowPartialResults";
+      case PastPresentationTimingFlagBitsEXT::eAllowOutOfOrderResults: return "AllowOutOfOrderResults";
+      default                                                        : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -10510,6 +10609,8 @@ namespace VULKAN_HPP_NAMESPACE
       case TimeDomainKHR::eClockMonotonic         : return "ClockMonotonic";
       case TimeDomainKHR::eClockMonotonicRaw      : return "ClockMonotonicRaw";
       case TimeDomainKHR::eQueryPerformanceCounter: return "QueryPerformanceCounter";
+      case TimeDomainKHR::ePresentStageLocalEXT   : return "PresentStageLocalEXT";
+      case TimeDomainKHR::eSwapchainLocalEXT      : return "SwapchainLocalEXT";
       default                                     : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

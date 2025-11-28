@@ -57,7 +57,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 334, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 335, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -4443,6 +4443,36 @@ namespace VULKAN_HPP_NAMESPACE
         return ::vkSignalSemaphoreKHR( device, pSignalInfo );
       }
 
+      //=== VK_EXT_present_timing ===
+
+      VkResult vkSetSwapchainPresentTimingQueueSizeEXT( VkDevice device, VkSwapchainKHR swapchain, uint32_t size ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkSetSwapchainPresentTimingQueueSizeEXT( device, swapchain, size );
+      }
+
+      VkResult vkGetSwapchainTimingPropertiesEXT( VkDevice                         device,
+                                                  VkSwapchainKHR                   swapchain,
+                                                  VkSwapchainTimingPropertiesEXT * pSwapchainTimingProperties,
+                                                  uint64_t *                       pSwapchainTimingPropertiesCounter ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetSwapchainTimingPropertiesEXT( device, swapchain, pSwapchainTimingProperties, pSwapchainTimingPropertiesCounter );
+      }
+
+      VkResult vkGetSwapchainTimeDomainPropertiesEXT( VkDevice                             device,
+                                                      VkSwapchainKHR                       swapchain,
+                                                      VkSwapchainTimeDomainPropertiesEXT * pSwapchainTimeDomainProperties,
+                                                      uint64_t *                           pTimeDomainsCounter ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetSwapchainTimeDomainPropertiesEXT( device, swapchain, pSwapchainTimeDomainProperties, pTimeDomainsCounter );
+      }
+
+      VkResult vkGetPastPresentationTimingEXT( VkDevice                                device,
+                                               const VkPastPresentationTimingInfoEXT * pPastPresentationTimingInfo,
+                                               VkPastPresentationTimingPropertiesEXT * pPastPresentationTimingProperties ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetPastPresentationTimingEXT( device, pPastPresentationTimingInfo, pPastPresentationTimingProperties );
+      }
+
       //=== VK_INTEL_performance_query ===
 
       VkResult vkInitializePerformanceApiINTEL( VkDevice device, const VkInitializePerformanceApiInfoINTEL * pInitializeInfo ) const VULKAN_HPP_NOEXCEPT
@@ -7240,6 +7270,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
   };
 
+  class PresentTimingQueueFullEXTError : public SystemError
+  {
+  public:
+    PresentTimingQueueFullEXTError( std::string const & message ) : SystemError( make_error_code( Result::eErrorPresentTimingQueueFullEXT ), message ) {}
+
+    PresentTimingQueueFullEXTError( char const * message ) : SystemError( make_error_code( Result::eErrorPresentTimingQueueFullEXT ), message ) {}
+  };
+
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
   class FullScreenExclusiveModeLostEXTError : public SystemError
   {
@@ -7313,6 +7351,7 @@ namespace VULKAN_HPP_NAMESPACE
         case Result::eErrorVideoProfileCodecNotSupportedKHR      : throw VideoProfileCodecNotSupportedKHRError( message );
         case Result::eErrorVideoStdVersionNotSupportedKHR        : throw VideoStdVersionNotSupportedKHRError( message );
         case Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: throw InvalidDrmFormatModifierPlaneLayoutEXTError( message );
+        case Result::eErrorPresentTimingQueueFullEXT             : throw PresentTimingQueueFullEXTError( message );
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
         case Result::eErrorFullScreenExclusiveModeLostEXT: throw FullScreenExclusiveModeLostEXTError( message );
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -8468,6 +8507,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_timeline_semaphore ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRTimelineSemaphoreExtensionName = VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRTimelineSemaphoreSpecVersion   = VK_KHR_TIMELINE_SEMAPHORE_SPEC_VERSION;
+
+  //=== VK_EXT_present_timing ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTPresentTimingExtensionName = VK_EXT_PRESENT_TIMING_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTPresentTimingSpecVersion   = VK_EXT_PRESENT_TIMING_SPEC_VERSION;
 
   //=== VK_INTEL_shader_integer_functions2 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto INTELShaderIntegerFunctions2ExtensionName = VK_INTEL_SHADER_INTEGER_FUNCTIONS_2_EXTENSION_NAME;
@@ -13513,6 +13556,52 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<QueueFamilyCheckpointProperties2NV, QueueFamilyProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_present_timing ===
+  template <>
+  struct StructExtends<PhysicalDevicePresentTimingFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDevicePresentTimingFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PresentTimingSurfaceCapabilitiesEXT, SurfaceCapabilities2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<SwapchainCalibratedTimestampInfoEXT, CalibratedTimestampInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PresentTimingsInfoEXT, PresentInfoKHR>
   {
     enum
     {
@@ -20764,6 +20853,12 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkWaitSemaphoresKHR           vkWaitSemaphoresKHR           = 0;
       PFN_vkSignalSemaphoreKHR          vkSignalSemaphoreKHR          = 0;
 
+      //=== VK_EXT_present_timing ===
+      PFN_vkSetSwapchainPresentTimingQueueSizeEXT vkSetSwapchainPresentTimingQueueSizeEXT = 0;
+      PFN_vkGetSwapchainTimingPropertiesEXT       vkGetSwapchainTimingPropertiesEXT       = 0;
+      PFN_vkGetSwapchainTimeDomainPropertiesEXT   vkGetSwapchainTimeDomainPropertiesEXT   = 0;
+      PFN_vkGetPastPresentationTimingEXT          vkGetPastPresentationTimingEXT          = 0;
+
       //=== VK_INTEL_performance_query ===
       PFN_vkInitializePerformanceApiINTEL         vkInitializePerformanceApiINTEL         = 0;
       PFN_vkUninitializePerformanceApiINTEL       vkUninitializePerformanceApiINTEL       = 0;
@@ -22251,6 +22346,14 @@ namespace VULKAN_HPP_NAMESPACE
         if ( !vkSignalSemaphore )
           vkSignalSemaphore = vkSignalSemaphoreKHR;
 
+        //=== VK_EXT_present_timing ===
+        vkSetSwapchainPresentTimingQueueSizeEXT =
+          PFN_vkSetSwapchainPresentTimingQueueSizeEXT( vkGetInstanceProcAddr( instance, "vkSetSwapchainPresentTimingQueueSizeEXT" ) );
+        vkGetSwapchainTimingPropertiesEXT = PFN_vkGetSwapchainTimingPropertiesEXT( vkGetInstanceProcAddr( instance, "vkGetSwapchainTimingPropertiesEXT" ) );
+        vkGetSwapchainTimeDomainPropertiesEXT =
+          PFN_vkGetSwapchainTimeDomainPropertiesEXT( vkGetInstanceProcAddr( instance, "vkGetSwapchainTimeDomainPropertiesEXT" ) );
+        vkGetPastPresentationTimingEXT = PFN_vkGetPastPresentationTimingEXT( vkGetInstanceProcAddr( instance, "vkGetPastPresentationTimingEXT" ) );
+
         //=== VK_INTEL_performance_query ===
         vkInitializePerformanceApiINTEL   = PFN_vkInitializePerformanceApiINTEL( vkGetInstanceProcAddr( instance, "vkInitializePerformanceApiINTEL" ) );
         vkUninitializePerformanceApiINTEL = PFN_vkUninitializePerformanceApiINTEL( vkGetInstanceProcAddr( instance, "vkUninitializePerformanceApiINTEL" ) );
@@ -23598,6 +23701,14 @@ namespace VULKAN_HPP_NAMESPACE
         vkSignalSemaphoreKHR = PFN_vkSignalSemaphoreKHR( vkGetDeviceProcAddr( device, "vkSignalSemaphoreKHR" ) );
         if ( !vkSignalSemaphore )
           vkSignalSemaphore = vkSignalSemaphoreKHR;
+
+        //=== VK_EXT_present_timing ===
+        vkSetSwapchainPresentTimingQueueSizeEXT =
+          PFN_vkSetSwapchainPresentTimingQueueSizeEXT( vkGetDeviceProcAddr( device, "vkSetSwapchainPresentTimingQueueSizeEXT" ) );
+        vkGetSwapchainTimingPropertiesEXT = PFN_vkGetSwapchainTimingPropertiesEXT( vkGetDeviceProcAddr( device, "vkGetSwapchainTimingPropertiesEXT" ) );
+        vkGetSwapchainTimeDomainPropertiesEXT =
+          PFN_vkGetSwapchainTimeDomainPropertiesEXT( vkGetDeviceProcAddr( device, "vkGetSwapchainTimeDomainPropertiesEXT" ) );
+        vkGetPastPresentationTimingEXT = PFN_vkGetPastPresentationTimingEXT( vkGetDeviceProcAddr( device, "vkGetPastPresentationTimingEXT" ) );
 
         //=== VK_INTEL_performance_query ===
         vkInitializePerformanceApiINTEL   = PFN_vkInitializePerformanceApiINTEL( vkGetDeviceProcAddr( device, "vkInitializePerformanceApiINTEL" ) );

@@ -17,7 +17,7 @@
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan.h>
-import vulkan_hpp;
+import vulkan;
 #else
 #  include <cstdint>
 #  include <type_traits>

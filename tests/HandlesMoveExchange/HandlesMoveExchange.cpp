@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan_hpp;
+  import vulkan;
 #else
 #  include <iostream>
 #  include <vulkan/vulkan.hpp>

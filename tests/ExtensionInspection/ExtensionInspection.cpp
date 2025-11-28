@@ -32,7 +32,7 @@
 #endif
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-import vulkan_hpp;
+import vulkan;
 #else
 #  include <set>
 #  include <map>

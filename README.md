@@ -149,6 +149,10 @@ The file `VulkanHpp.natvis` provides a custom view on `vk::Flags` for Visual Stu
 
 We seriously try to keep the API for all flavours of the Vulkan-Hpp constant or backwards compatible. But every now and then, some breaking changes might get in. Here is a list of those changes, sorted by version.
 
+### v1.4.334
+
+The `vulkan_hpp` module has been renamed to `vulkan`.
+
 ### v1.4.324 <a id='breaking_changes_324'>
 
 With PR [#2226](https://github.com/KhronosGroup/Vulkan-Hpp/pull/2226), the return type of `vk::raii::Device::acquireNextImage2KHR` and `vk::raii::SwapchainKHR::acquireNextImage` changed from `std::pair<vk::Result,uint32_t>` to the equivalent `vk::ResultValue<uint32_t>`
@@ -797,7 +801,7 @@ Some functions might provide information that depends on the vulkan version. As 
 
 #### Overview <a id='named_module_overview'>
 
-Vulkan-Hpp provides a [C++ named module](https://en.cppreference.com/w/cpp/language/modules), `vulkan_hpp` in [`vulkan.cppm`](vulkan/vulkan.cppm).
+Vulkan-Hpp provides a [C++ named module](https://en.cppreference.com/w/cpp/language/modules), `vulkan` in [`vulkan.cppm`](vulkan/vulkan.cppm).
 C++ modules are intended to supersede header files. Modules have potential to drastically improve compilation times for large projects, as declarations and definitions may be easily shared across translation units without repeatedly parsing headers.
 Vulkan-Hpp has some extremely long headers (e.g. [`vulkan_structs.hpp`](vulkan/vulkan_structs.hpp)), and the C++ module is likely to shorten compile times for projects currently using it.
 
@@ -882,7 +886,7 @@ target_link_libraries( VulkanHppModule PUBLIC Vulkan::Headers )
 Finally, supply the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code, just as in the non-module case. In order to have that macro available, include [`vulkan_hpp_macros.hpp`](vulkan/vulkan_hpp_macros.hpp), a lightweight header providing all Vulkan-Hpp related macros and defines. And as explained above, you need to initialize that dispatcher in two or three steps:
 
 ```cpp
-import vulkan_hpp;
+import vulkan;
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 

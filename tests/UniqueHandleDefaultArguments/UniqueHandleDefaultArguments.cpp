@@ -17,8 +17,8 @@
 // Should be used on 64 bit only, as on 32 bit the test is ambiguous.
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-#  include <vulkan/vulkan.h>
-import vulkan_hpp;
+  #include <vulkan/vulkan.h>
+  import vulkan;
 #else
 #  include "vulkan/vulkan.hpp"
 #endif

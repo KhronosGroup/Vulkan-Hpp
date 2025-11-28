@@ -26,7 +26,7 @@
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan_hpp_macros.hpp> // VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE
-import vulkan_hpp;
+import vulkan;
 #else
 #  include <vector>
 #  include <cstdint>

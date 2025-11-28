@@ -16,7 +16,7 @@
 //                     Compile test on using vk::ArrayWrapper1D
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-import vulkan_hpp;
+import vulkan;
 #else
 # include <string>
 # include <iostream>

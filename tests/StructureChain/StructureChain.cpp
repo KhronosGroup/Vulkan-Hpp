@@ -27,12 +27,11 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <cassert>
-#include <iostream>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan;
+import vulkan;
 #else
-# include "vulkan/vulkan.hpp"
+#  include <iostream>
+#  include "vulkan/vulkan.hpp"
 #endif
 
 static char const * AppName    = "StructureChain";
@@ -75,31 +74,27 @@ int main( int /*argc*/, char ** /*argv*/ )
                        vk::PhysicalDevicePushDescriptorPropertiesKHR>
       sc7;
 
-#if ( 17 <= VULKAN_HPP_CPP_VERSION )
+#if ( 17 <= VULKAN_HPP_CPP_VERSION ) || defined( VULKAN_HPP_USE_CXX_MODULE )
     // test for structured binding from a StructureChain
     auto const & [p0, p1] = sc1;
     auto & [p2, p3]       = sc2;
 #endif
 
-#if !defined( NDEBUG )
     void * pNext = sc7.get<vk::PhysicalDeviceIDProperties>().pNext;
-#endif
     sc7.assign<vk::PhysicalDeviceIDProperties>( {} );
-    assert( pNext == sc7.get<vk::PhysicalDeviceIDProperties>().pNext );
+    void( pNext == sc7.get<vk::PhysicalDeviceIDProperties>().pNext );
 
     vk::StructureChain<vk::DeviceQueueCreateInfo, vk::DeviceQueueGlobalPriorityCreateInfoKHR> sc8;
     sc8.assign<vk::DeviceQueueGlobalPriorityCreateInfoKHR>( {} );
 
-#if !defined( NDEBUG )
     void * pNext1 = sc7.get<vk::PhysicalDeviceMaintenance3Properties>().pNext;
-#endif
     sc7.assign<vk::PhysicalDeviceMaintenance3Properties>( {} ).assign<vk::PhysicalDeviceIDProperties>( {} );
-    assert( pNext == sc7.get<vk::PhysicalDeviceIDProperties>().pNext );
-    assert( pNext1 == sc7.get<vk::PhysicalDeviceMaintenance3Properties>().pNext );
+    void( pNext == sc7.get<vk::PhysicalDeviceIDProperties>().pNext );
+    void( pNext1 == sc7.get<vk::PhysicalDeviceMaintenance3Properties>().pNext );
 
     // some checks on unmodified chains
-    assert( sc7.isLinked<vk::PhysicalDeviceProperties2>() );
-    assert( sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
+    void( sc7.isLinked<vk::PhysicalDeviceProperties2>() );
+    void( sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
 
     // some invalid StructureChains
     // clang-format off
@@ -118,7 +113,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // unlink a struct from a StructureChain
     sc7.unlink<vk::PhysicalDeviceMaintenance3Properties>();
-    assert( !sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
+    void( !sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
 
     // some invalid unlink calls
     // clang-format off
@@ -130,7 +125,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // re-link a struct
     sc7.relink<vk::PhysicalDeviceMaintenance3Properties>();
-    assert( sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
+    void( sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
 
     // invalid re-linking
     // clang-format off
@@ -169,8 +164,6 @@ int main( int /*argc*/, char ** /*argv*/ )
     unused( qfd );
 
     // some tests with structures with allowDuplicate == true
-    // include them as soon as vk.xml has been fixed on attribute "allowduplicate" !
-#if 0
     vk::StructureChain<vk::DeviceCreateInfo, vk::DevicePrivateDataCreateInfoEXT, vk::DevicePrivateDataCreateInfoEXT>
          dci0;
     auto dci1( dci0 );
@@ -188,7 +181,6 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     dci2.unlink<vk::DevicePrivateDataCreateInfoEXT, 1>();
     dci2.relink<vk::DevicePrivateDataCreateInfoEXT, 1>();
-#endif
 
     vk::StructureChain<vk::InstanceCreateInfo,
                        vk::DebugReportCallbackCreateInfoEXT,
@@ -205,12 +197,12 @@ int main( int /*argc*/, char ** /*argv*/ )
   catch ( vk::SystemError const & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

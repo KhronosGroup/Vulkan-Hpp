@@ -687,6 +687,14 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_AMD_memory_overallocation_behavior ===
   using VULKAN_HPP_NAMESPACE::MemoryOverallocationBehaviorAMD;
 
+  //=== VK_EXT_present_timing ===
+  using VULKAN_HPP_NAMESPACE::PastPresentationTimingFlagBitsEXT;
+  using VULKAN_HPP_NAMESPACE::PastPresentationTimingFlagsEXT;
+  using VULKAN_HPP_NAMESPACE::PresentStageFlagBitsEXT;
+  using VULKAN_HPP_NAMESPACE::PresentStageFlagsEXT;
+  using VULKAN_HPP_NAMESPACE::PresentTimingInfoFlagBitsEXT;
+  using VULKAN_HPP_NAMESPACE::PresentTimingInfoFlagsEXT;
+
   //=== VK_INTEL_performance_query ===
   using VULKAN_HPP_NAMESPACE::PerformanceConfigurationTypeINTEL;
   using VULKAN_HPP_NAMESPACE::PerformanceOverrideTypeINTEL;
@@ -1104,6 +1112,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::OutOfDeviceMemoryError;
   using VULKAN_HPP_NAMESPACE::OutOfHostMemoryError;
   using VULKAN_HPP_NAMESPACE::OutOfPoolMemoryError;
+  using VULKAN_HPP_NAMESPACE::PresentTimingQueueFullEXTError;
   using VULKAN_HPP_NAMESPACE::SurfaceLostKHRError;
   using VULKAN_HPP_NAMESPACE::SystemError;
   using VULKAN_HPP_NAMESPACE::TooManyObjectsError;
@@ -1893,6 +1902,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_timeline_semaphore ===
   using VULKAN_HPP_NAMESPACE::KHRTimelineSemaphoreExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRTimelineSemaphoreSpecVersion;
+
+  //=== VK_EXT_present_timing ===
+  using VULKAN_HPP_NAMESPACE::EXTPresentTimingExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTPresentTimingSpecVersion;
 
   //=== VK_INTEL_shader_integer_functions2 ===
   using VULKAN_HPP_NAMESPACE::INTELShaderIntegerFunctions2ExtensionName;
@@ -4162,6 +4175,19 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::CheckpointDataNV;
   using VULKAN_HPP_NAMESPACE::QueueFamilyCheckpointProperties2NV;
   using VULKAN_HPP_NAMESPACE::QueueFamilyCheckpointPropertiesNV;
+
+  //=== VK_EXT_present_timing ===
+  using VULKAN_HPP_NAMESPACE::PastPresentationTimingEXT;
+  using VULKAN_HPP_NAMESPACE::PastPresentationTimingInfoEXT;
+  using VULKAN_HPP_NAMESPACE::PastPresentationTimingPropertiesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDevicePresentTimingFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PresentStageTimeEXT;
+  using VULKAN_HPP_NAMESPACE::PresentTimingInfoEXT;
+  using VULKAN_HPP_NAMESPACE::PresentTimingsInfoEXT;
+  using VULKAN_HPP_NAMESPACE::PresentTimingSurfaceCapabilitiesEXT;
+  using VULKAN_HPP_NAMESPACE::SwapchainCalibratedTimestampInfoEXT;
+  using VULKAN_HPP_NAMESPACE::SwapchainTimeDomainPropertiesEXT;
+  using VULKAN_HPP_NAMESPACE::SwapchainTimingPropertiesEXT;
 
   //=== VK_INTEL_shader_integer_functions2 ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL;
@@ -7606,6 +7632,30 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::CheckpointData2NV>;
 
+  //=== VK_EXT_present_timing ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePresentTimingFeaturesEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PresentTimingSurfaceCapabilitiesEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::SwapchainCalibratedTimestampInfoEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::SwapchainTimingPropertiesEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::SwapchainTimeDomainPropertiesEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PastPresentationTimingInfoEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PastPresentationTimingPropertiesEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PastPresentationTimingEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PresentTimingsInfoEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PresentTimingInfoEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PresentStageTimeEXT>;
+
   //=== VK_INTEL_shader_integer_functions2 ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL>;
@@ -9420,7 +9470,8 @@ export namespace std
 #endif
 }  // namespace std
 
-export {
+export
+{
   // This VkFlags type is used as part of a bitfield in some structures.
   // As it can't be mimicked by vk-data types, we need to export just that.
   using ::VkGeometryInstanceFlagsKHR;
@@ -10088,6 +10139,12 @@ export {
   using ::PFN_vkGetSemaphoreCounterValueKHR;
   using ::PFN_vkSignalSemaphoreKHR;
   using ::PFN_vkWaitSemaphoresKHR;
+
+  //=== VK_EXT_present_timing ===
+  using ::PFN_vkGetPastPresentationTimingEXT;
+  using ::PFN_vkGetSwapchainTimeDomainPropertiesEXT;
+  using ::PFN_vkGetSwapchainTimingPropertiesEXT;
+  using ::PFN_vkSetSwapchainPresentTimingQueueSizeEXT;
 
   //=== VK_INTEL_performance_query ===
   using ::PFN_vkAcquirePerformanceConfigurationINTEL;

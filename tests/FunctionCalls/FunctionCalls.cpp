@@ -45,9 +45,10 @@ int main( int /*argc*/, char ** /*argv*/ )
   //=== VK_VERSION_1_0 ===
   // Device initialization
   {
-    vk::InstanceCreateInfo instanceCreateInfo;
-    vk::Instance           instance;
-    vk::Result             result = vk::createInstance( &instanceCreateInfo, nullptr, &instance );
+    vk::InstanceCreateInfo  instanceCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::Instance            instance;
+    vk::Result              result = vk::createInstance( &instanceCreateInfo, &allocationCallbacks, &instance );
   }
   {
     vk::InstanceCreateInfo instanceCreateInfo;
@@ -181,10 +182,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   // Device commands
   {
-    vk::PhysicalDevice   physicalDevice;
-    vk::DeviceCreateInfo deviceCreateInfo;
-    vk::Device           device;
-    vk::Result           result = physicalDevice.createDevice( &deviceCreateInfo, nullptr, &device );
+    vk::PhysicalDevice      physicalDevice;
+    vk::DeviceCreateInfo    deviceCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::Device              device;
+    vk::Result              result = physicalDevice.createDevice( &deviceCreateInfo, &allocationCallbacks, &device );
   }
   {
     vk::PhysicalDevice   physicalDevice;
@@ -318,10 +320,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   // Memory commands
   {
-    vk::Device             device;
-    vk::MemoryAllocateInfo memoryAllocateInfo;
-    vk::DeviceMemory       memory;
-    vk::Result             result = device.allocateMemory( &memoryAllocateInfo, nullptr, &memory );
+    vk::Device              device;
+    vk::MemoryAllocateInfo  memoryAllocateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::DeviceMemory        memory;
+    vk::Result              result = device.allocateMemory( &memoryAllocateInfo, &allocationCallbacks, &memory );
   }
   {
     vk::Device             device;
@@ -538,6 +541,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Fence  fence;
     device.destroyFence( fence );
   }
+  {
+    vk::Device device;
+    vk::Fence  fence;
+    device.destroy( fence );
+  }
 
   {
     vk::Device device;
@@ -577,8 +585,9 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Device              device;
     vk::SemaphoreCreateInfo semaphoreCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
     vk::Semaphore           semaphore;
-    vk::Result              result = device.createSemaphore( &semaphoreCreateInfo, nullptr, &semaphore );
+    vk::Result              result = device.createSemaphore( &semaphoreCreateInfo, &allocationCallbacks, &semaphore );
   }
   {
     vk::Device              device;
@@ -596,6 +605,73 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Device    device;
     vk::Semaphore semaphore;
     device.destroySemaphore( semaphore );
+  }
+  {
+    vk::Device    device;
+    vk::Semaphore semaphore;
+    device.destroy( semaphore );
+  }
+
+  // Query commands
+  {
+    vk::Device              device;
+    vk::QueryPoolCreateInfo queryPoolCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::QueryPool           queryPool;
+    vk::Result              result = device.createQueryPool( &queryPoolCreateInfo, &allocationCallbacks, &queryPool );
+  }
+  {
+    vk::Device              device;
+    vk::QueryPoolCreateInfo queryPoolCreateInfo;
+    vk::QueryPool           queryPool = device.createQueryPool( queryPoolCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::QueryPool           queryPool;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyQueryPool( queryPool, &allocationCallbacks );
+  }
+  {
+    vk::Device    device;
+    vk::QueryPool queryPool;
+    device.destroyQueryPool( queryPool );
+  }
+  {
+    vk::Device    device;
+    vk::QueryPool queryPool;
+    device.destroy( queryPool );
+  }
+
+  {
+    vk::Device           device;
+    vk::QueryPool        queryPool;
+    uint32_t             firstQuery = 0;
+    uint32_t             queryCount = 1;
+    size_t               dataSize   = sizeof( uint32_t );
+    uint32_t             data;
+    vk::DeviceSize       stride = 0;
+    vk::QueryResultFlags flags  = {};
+    vk::Result           result = device.getQueryPoolResults( queryPool, firstQuery, queryCount, dataSize, &data, stride, flags );
+  }
+  {
+    vk::Device                             device;
+    vk::QueryPool                          queryPool;
+    uint32_t                               firstQuery  = 0;
+    uint32_t                               queryCount  = 1;
+    size_t                                 dataSize    = sizeof( uint32_t );
+    vk::DeviceSize                         stride      = 0;
+    vk::QueryResultFlags                   flags       = {};
+    vk::ResultValue<std::vector<uint32_t>> resultValue = device.getQueryPoolResults<uint32_t>( queryPool, firstQuery, queryCount, dataSize, stride, flags );
+  }
+  {
+    vk::Device                device;
+    vk::QueryPool             queryPool;
+    uint32_t                  firstQuery  = 0;
+    uint32_t                  queryCount  = 1;
+    vk::DeviceSize            stride      = 0;
+    vk::QueryResultFlags      flags       = {};
+    vk::ResultValue<uint32_t> resultValue = device.getQueryPoolResult<uint32_t>( queryPool, firstQuery, queryCount, stride, flags );
   }
 
 #if 0

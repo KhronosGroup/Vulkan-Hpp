@@ -304,5 +304,35 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::Semaphore     semaphore( device, semaphoreCreateInfo );
   }
 
+  // Query commands
+  {
+    vk::raii::Device        device = nullptr;
+    vk::QueryPoolCreateInfo queryPoolCreateInfo;
+    vk::raii::QueryPool     queryPool = device.createQueryPool( queryPoolCreateInfo );
+  }
+  {
+    vk::raii::Device        device = nullptr;
+    vk::QueryPoolCreateInfo queryPoolCreateInfo;
+    vk::raii::QueryPool     queryPool( device, queryPoolCreateInfo );
+  }
+
+  {
+    vk::raii::QueryPool                    queryPool   = nullptr;
+    uint32_t                               firstQuery  = 0;
+    uint32_t                               queryCount  = 1;
+    size_t                                 dataSize    = sizeof( uint32_t );
+    vk::DeviceSize                         stride      = sizeof( uint32_t );
+    vk::QueryResultFlagBits                flags       = {};
+    vk::ResultValue<std::vector<uint32_t>> resultValue = queryPool.getResults<uint32_t>( firstQuery, queryCount, dataSize, stride, flags );
+  }
+  {
+    vk::raii::QueryPool       queryPool   = nullptr;
+    uint32_t                  firstQuery  = 0;
+    uint32_t                  queryCount  = 1;
+    vk::DeviceSize            stride      = sizeof( uint32_t );
+    vk::QueryResultFlagBits   flags       = {};
+    vk::ResultValue<uint32_t> resultValue = queryPool.getResult<uint32_t>( firstQuery, queryCount, stride, flags );
+  }
+
   return 0;
 }

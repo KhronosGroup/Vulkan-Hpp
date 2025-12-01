@@ -239,6 +239,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_NV_scissor_exclusive",
                                                             "VK_NV_device_diagnostic_checkpoints",
                                                             "VK_KHR_timeline_semaphore",
+                                                            "VK_EXT_present_timing",
                                                             "VK_INTEL_shader_integer_functions2",
                                                             "VK_INTEL_performance_query",
                                                             "VK_KHR_vulkan_memory_model",
@@ -1367,6 +1368,14 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_present_timing",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_calibrated_timestamps",
+              "VK_KHR_get_surface_capabilities2",
+              "VK_KHR_present_id2",
+              "VK_KHR_swapchain",
+            } } } } },
       { "VK_INTEL_shader_integer_functions2",
         { { "VK_VERSION_1_0",
             { {
@@ -3835,7 +3844,7 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_NV_compute_shader_derivatives" ) || ( extension == "VK_NV_mesh_shader" ) ||
            ( extension == "VK_NV_fragment_shader_barycentric" ) || ( extension == "VK_NV_shader_image_footprint" ) ||
            ( extension == "VK_NV_scissor_exclusive" ) || ( extension == "VK_NV_device_diagnostic_checkpoints" ) ||
-           ( extension == "VK_KHR_timeline_semaphore" ) || ( extension == "VK_INTEL_shader_integer_functions2" ) ||
+           ( extension == "VK_KHR_timeline_semaphore" ) || ( extension == "VK_EXT_present_timing" ) || ( extension == "VK_INTEL_shader_integer_functions2" ) ||
            ( extension == "VK_INTEL_performance_query" ) || ( extension == "VK_KHR_vulkan_memory_model" ) || ( extension == "VK_EXT_pci_bus_info" ) ||
            ( extension == "VK_AMD_display_native_hdr" ) || ( extension == "VK_KHR_shader_terminate_invocation" ) ||
            ( extension == "VK_EXT_fragment_density_map" ) || ( extension == "VK_EXT_scalar_block_layout" ) ||

@@ -17,7 +17,7 @@ module;
 
 #include <vulkan/vulkan_video.hpp>
 
-export module vulkan_hpp:video;
+export module vulkan:video;
 
 export namespace VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE
 {

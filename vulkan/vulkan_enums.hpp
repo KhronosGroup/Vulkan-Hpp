@@ -282,6 +282,7 @@ namespace VULKAN_HPP_NAMESPACE
     eErrorVideoProfileCodecNotSupportedKHR       = VK_ERROR_VIDEO_PROFILE_CODEC_NOT_SUPPORTED_KHR,
     eErrorVideoStdVersionNotSupportedKHR         = VK_ERROR_VIDEO_STD_VERSION_NOT_SUPPORTED_KHR,
     eErrorInvalidDrmFormatModifierPlaneLayoutEXT = VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT,
+    eErrorPresentTimingQueueFullEXT              = VK_ERROR_PRESENT_TIMING_QUEUE_FULL_EXT,
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
     eErrorFullScreenExclusiveModeLostEXT = VK_ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT,
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -1085,6 +1086,16 @@ namespace VULKAN_HPP_NAMESPACE
     eQueueFamilyCheckpointPropertiesNV                  = VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV,
     eQueueFamilyCheckpointProperties2NV                 = VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV,
     eCheckpointData2NV                                  = VK_STRUCTURE_TYPE_CHECKPOINT_DATA_2_NV,
+    ePhysicalDevicePresentTimingFeaturesEXT             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_TIMING_FEATURES_EXT,
+    eSwapchainTimingPropertiesEXT                       = VK_STRUCTURE_TYPE_SWAPCHAIN_TIMING_PROPERTIES_EXT,
+    eSwapchainTimeDomainPropertiesEXT                   = VK_STRUCTURE_TYPE_SWAPCHAIN_TIME_DOMAIN_PROPERTIES_EXT,
+    ePresentTimingsInfoEXT                              = VK_STRUCTURE_TYPE_PRESENT_TIMINGS_INFO_EXT,
+    ePresentTimingInfoEXT                               = VK_STRUCTURE_TYPE_PRESENT_TIMING_INFO_EXT,
+    ePastPresentationTimingInfoEXT                      = VK_STRUCTURE_TYPE_PAST_PRESENTATION_TIMING_INFO_EXT,
+    ePastPresentationTimingPropertiesEXT                = VK_STRUCTURE_TYPE_PAST_PRESENTATION_TIMING_PROPERTIES_EXT,
+    ePastPresentationTimingEXT                          = VK_STRUCTURE_TYPE_PAST_PRESENTATION_TIMING_EXT,
+    ePresentTimingSurfaceCapabilitiesEXT                = VK_STRUCTURE_TYPE_PRESENT_TIMING_SURFACE_CAPABILITIES_EXT,
+    eSwapchainCalibratedTimestampInfoEXT                = VK_STRUCTURE_TYPE_SWAPCHAIN_CALIBRATED_TIMESTAMP_INFO_EXT,
     ePhysicalDeviceShaderIntegerFunctions2FeaturesINTEL = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL,
     eQueryPoolPerformanceQueryCreateInfoINTEL           = VK_STRUCTURE_TYPE_QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL,
     eQueryPoolCreateInfoINTEL                           = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO_INTEL,
@@ -5543,6 +5554,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSplitInstanceBindRegions    = VK_SWAPCHAIN_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR,
     eProtected                   = VK_SWAPCHAIN_CREATE_PROTECTED_BIT_KHR,
     eMutableFormat               = VK_SWAPCHAIN_CREATE_MUTABLE_FORMAT_BIT_KHR,
+    ePresentTimingEXT            = VK_SWAPCHAIN_CREATE_PRESENT_TIMING_BIT_EXT,
     ePresentId2                  = VK_SWAPCHAIN_CREATE_PRESENT_ID_2_BIT_KHR,
     ePresentWait2                = VK_SWAPCHAIN_CREATE_PRESENT_WAIT_2_BIT_KHR,
     eDeferredMemoryAllocation    = VK_SWAPCHAIN_CREATE_DEFERRED_MEMORY_ALLOCATION_BIT_KHR,
@@ -5559,7 +5571,8 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                    isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR SwapchainCreateFlagsKHR allFlags =
       SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions | SwapchainCreateFlagBitsKHR::eProtected | SwapchainCreateFlagBitsKHR::eMutableFormat |
-      SwapchainCreateFlagBitsKHR::ePresentId2 | SwapchainCreateFlagBitsKHR::ePresentWait2 | SwapchainCreateFlagBitsKHR::eDeferredMemoryAllocation;
+      SwapchainCreateFlagBitsKHR::ePresentTimingEXT | SwapchainCreateFlagBitsKHR::ePresentId2 | SwapchainCreateFlagBitsKHR::ePresentWait2 |
+      SwapchainCreateFlagBitsKHR::eDeferredMemoryAllocation;
   };
 
   // wrapper class for enum VkDeviceGroupPresentModeFlagBitsKHR, see
@@ -7180,6 +7193,70 @@ namespace VULKAN_HPP_NAMESPACE
     eDefault    = VK_MEMORY_OVERALLOCATION_BEHAVIOR_DEFAULT_AMD,
     eAllowed    = VK_MEMORY_OVERALLOCATION_BEHAVIOR_ALLOWED_AMD,
     eDisallowed = VK_MEMORY_OVERALLOCATION_BEHAVIOR_DISALLOWED_AMD
+  };
+
+  //=== VK_EXT_present_timing ===
+
+  // wrapper class for enum VkPresentStageFlagBitsEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPresentStageFlagBitsEXT.html
+  enum class PresentStageFlagBitsEXT : VkPresentStageFlagsEXT
+  {
+    eQueueOperationsEnd     = VK_PRESENT_STAGE_QUEUE_OPERATIONS_END_BIT_EXT,
+    eRequestDequeued        = VK_PRESENT_STAGE_REQUEST_DEQUEUED_BIT_EXT,
+    eImageFirstPixelOut     = VK_PRESENT_STAGE_IMAGE_FIRST_PIXEL_OUT_BIT_EXT,
+    eImageFirstPixelVisible = VK_PRESENT_STAGE_IMAGE_FIRST_PIXEL_VISIBLE_BIT_EXT
+  };
+
+  // wrapper using for bitmask VkPresentStageFlagsEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPresentStageFlagsEXT.html
+  using PresentStageFlagsEXT = Flags<PresentStageFlagBitsEXT>;
+
+  template <>
+  struct FlagTraits<PresentStageFlagBitsEXT>
+  {
+    using WrappedType                                                   = VkPresentStageFlagBitsEXT;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                 isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR PresentStageFlagsEXT allFlags =
+      PresentStageFlagBitsEXT::eQueueOperationsEnd | PresentStageFlagBitsEXT::eRequestDequeued | PresentStageFlagBitsEXT::eImageFirstPixelOut |
+      PresentStageFlagBitsEXT::eImageFirstPixelVisible;
+  };
+
+  // wrapper class for enum VkPresentTimingInfoFlagBitsEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPresentTimingInfoFlagBitsEXT.html
+  enum class PresentTimingInfoFlagBitsEXT : VkPresentTimingInfoFlagsEXT
+  {
+    ePresentAtRelativeTime        = VK_PRESENT_TIMING_INFO_PRESENT_AT_RELATIVE_TIME_BIT_EXT,
+    ePresentAtNearestRefreshCycle = VK_PRESENT_TIMING_INFO_PRESENT_AT_NEAREST_REFRESH_CYCLE_BIT_EXT
+  };
+
+  // wrapper using for bitmask VkPresentTimingInfoFlagsEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPresentTimingInfoFlagsEXT.html
+  using PresentTimingInfoFlagsEXT = Flags<PresentTimingInfoFlagBitsEXT>;
+
+  template <>
+  struct FlagTraits<PresentTimingInfoFlagBitsEXT>
+  {
+    using WrappedType                                                        = VkPresentTimingInfoFlagBitsEXT;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                      isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR PresentTimingInfoFlagsEXT allFlags =
+      PresentTimingInfoFlagBitsEXT::ePresentAtRelativeTime | PresentTimingInfoFlagBitsEXT::ePresentAtNearestRefreshCycle;
+  };
+
+  // wrapper class for enum VkPastPresentationTimingFlagBitsEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPastPresentationTimingFlagBitsEXT.html
+  enum class PastPresentationTimingFlagBitsEXT : VkPastPresentationTimingFlagsEXT
+  {
+    eAllowPartialResults    = VK_PAST_PRESENTATION_TIMING_ALLOW_PARTIAL_RESULTS_BIT_EXT,
+    eAllowOutOfOrderResults = VK_PAST_PRESENTATION_TIMING_ALLOW_OUT_OF_ORDER_RESULTS_BIT_EXT
+  };
+
+  // wrapper using for bitmask VkPastPresentationTimingFlagsEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPastPresentationTimingFlagsEXT.html
+  using PastPresentationTimingFlagsEXT = Flags<PastPresentationTimingFlagBitsEXT>;
+
+  template <>
+  struct FlagTraits<PastPresentationTimingFlagBitsEXT>
+  {
+    using WrappedType                                                             = VkPastPresentationTimingFlagBitsEXT;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                           isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR PastPresentationTimingFlagsEXT allFlags =
+      PastPresentationTimingFlagBitsEXT::eAllowPartialResults | PastPresentationTimingFlagBitsEXT::eAllowOutOfOrderResults;
   };
 
   //=== VK_INTEL_performance_query ===
@@ -8976,7 +9053,9 @@ namespace VULKAN_HPP_NAMESPACE
     eDevice                  = VK_TIME_DOMAIN_DEVICE_KHR,
     eClockMonotonic          = VK_TIME_DOMAIN_CLOCK_MONOTONIC_KHR,
     eClockMonotonicRaw       = VK_TIME_DOMAIN_CLOCK_MONOTONIC_RAW_KHR,
-    eQueryPerformanceCounter = VK_TIME_DOMAIN_QUERY_PERFORMANCE_COUNTER_KHR
+    eQueryPerformanceCounter = VK_TIME_DOMAIN_QUERY_PERFORMANCE_COUNTER_KHR,
+    ePresentStageLocalEXT    = VK_TIME_DOMAIN_PRESENT_STAGE_LOCAL_EXT,
+    eSwapchainLocalEXT       = VK_TIME_DOMAIN_SWAPCHAIN_LOCAL_EXT
   };
 
   using TimeDomainEXT = TimeDomainKHR;

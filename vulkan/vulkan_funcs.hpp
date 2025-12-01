@@ -20269,6 +20269,108 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+  //=== VK_EXT_present_timing ===
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkSetSwapchainPresentTimingQueueSizeEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetSwapchainPresentTimingQueueSizeEXT.html
+  template <typename Dispatch, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::setSwapchainPresentTimingQueueSizeEXT( SwapchainKHR     swapchain,
+                                                                                               uint32_t         size,
+                                                                                               Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkSetSwapchainPresentTimingQueueSizeEXT( static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( swapchain ), size ) );
+  }
+#else
+  // wrapper function for command vkSetSwapchainPresentTimingQueueSizeEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetSwapchainPresentTimingQueueSizeEXT.html
+  template <typename Dispatch, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::setSwapchainPresentTimingQueueSizeEXT( SwapchainKHR swapchain, uint32_t size, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkSetSwapchainPresentTimingQueueSizeEXT && "Function <vkSetSwapchainPresentTimingQueueSizeEXT> requires <VK_EXT_present_timing>" );
+#  endif
+
+    Result result = static_cast<Result>( d.vkSetSwapchainPresentTimingQueueSizeEXT( m_device, static_cast<VkSwapchainKHR>( swapchain ), size ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::setSwapchainPresentTimingQueueSizeEXT", { Result::eSuccess, Result::eNotReady } );
+
+    return static_cast<Result>( result );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  // wrapper function for command vkGetSwapchainTimingPropertiesEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainTimingPropertiesEXT.html
+  template <typename Dispatch, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getSwapchainTimingPropertiesEXT( SwapchainKHR                   swapchain,
+                                                                                         SwapchainTimingPropertiesEXT * pSwapchainTimingProperties,
+                                                                                         uint64_t *                     pSwapchainTimingPropertiesCounter,
+                                                                                         Dispatch const &               d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkGetSwapchainTimingPropertiesEXT( static_cast<VkDevice>( m_device ),
+                                                                     static_cast<VkSwapchainKHR>( swapchain ),
+                                                                     reinterpret_cast<VkSwapchainTimingPropertiesEXT *>( pSwapchainTimingProperties ),
+                                                                     pSwapchainTimingPropertiesCounter ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkGetSwapchainTimingPropertiesEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainTimingPropertiesEXT.html
+  template <typename Dispatch, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::pair<SwapchainTimingPropertiesEXT, uint64_t>>
+                                         Device::getSwapchainTimingPropertiesEXT( SwapchainKHR swapchain, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetSwapchainTimingPropertiesEXT && "Function <vkGetSwapchainTimingPropertiesEXT> requires <VK_EXT_present_timing>" );
+#  endif
+
+    std::pair<SwapchainTimingPropertiesEXT, uint64_t> data_;
+    SwapchainTimingPropertiesEXT &                    swapchainTimingProperties        = data_.first;
+    uint64_t &                                        swapchainTimingPropertiesCounter = data_.second;
+    Result                                            result                           = static_cast<Result>( d.vkGetSwapchainTimingPropertiesEXT( m_device,
+                                                                              static_cast<VkSwapchainKHR>( swapchain ),
+                                                                              reinterpret_cast<VkSwapchainTimingPropertiesEXT *>( &swapchainTimingProperties ),
+                                                                              &swapchainTimingPropertiesCounter ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSwapchainTimingPropertiesEXT", { Result::eSuccess, Result::eNotReady } );
+
+    return ResultValue<std::pair<SwapchainTimingPropertiesEXT, uint64_t>>( result, std::move( data_ ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  // wrapper function for command vkGetSwapchainTimeDomainPropertiesEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainTimeDomainPropertiesEXT.html
+  template <typename Dispatch, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getSwapchainTimeDomainPropertiesEXT( SwapchainKHR                       swapchain,
+                                                                                             SwapchainTimeDomainPropertiesEXT * pSwapchainTimeDomainProperties,
+                                                                                             uint64_t *                         pTimeDomainsCounter,
+                                                                                             Dispatch const &                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkGetSwapchainTimeDomainPropertiesEXT( static_cast<VkDevice>( m_device ),
+                                               static_cast<VkSwapchainKHR>( swapchain ),
+                                               reinterpret_cast<VkSwapchainTimeDomainPropertiesEXT *>( pSwapchainTimeDomainProperties ),
+                                               pTimeDomainsCounter ) );
+  }
+
+  // wrapper function for command vkGetPastPresentationTimingEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPastPresentationTimingEXT.html
+  template <typename Dispatch, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getPastPresentationTimingEXT( const PastPresentationTimingInfoEXT * pPastPresentationTimingInfo,
+                                                                                      PastPresentationTimingPropertiesEXT * pPastPresentationTimingProperties,
+                                                                                      Dispatch const &                      d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkGetPastPresentationTimingEXT( static_cast<VkDevice>( m_device ),
+                                        reinterpret_cast<const VkPastPresentationTimingInfoEXT *>( pPastPresentationTimingInfo ),
+                                        reinterpret_cast<VkPastPresentationTimingPropertiesEXT *>( pPastPresentationTimingProperties ) ) );
+  }
+
   //=== VK_INTEL_performance_query ===
 
   // wrapper function for command vkInitializePerformanceApiINTEL, see

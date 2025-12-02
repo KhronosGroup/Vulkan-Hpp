@@ -665,6 +665,37 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::ResultValue<uint32_t> resultValue = device.getQueryPoolResult<uint32_t>( queryPool, firstQuery, queryCount, stride, flags );
   }
 
+  // Buffer commands
+  {
+    vk::Device              device;
+    vk::BufferCreateInfo    bufferCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::Buffer              buffer;
+    vk::Result              result = device.createBuffer( &bufferCreateInfo, &allocationCallbacks, &buffer );
+  }
+  {
+    vk::Device           device;
+    vk::BufferCreateInfo bufferCreateInfo;
+    vk::Buffer           buffer = device.createBuffer( bufferCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Buffer              buffer;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyBuffer( buffer, &allocationCallbacks );
+  }
+  {
+    vk::Device device;
+    vk::Buffer buffer;
+    device.destroyBuffer( buffer );
+  }
+  {
+    vk::Device device;
+    vk::Buffer buffer;
+    device.destroy( buffer );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

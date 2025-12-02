@@ -329,5 +329,17 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::ResultValue<uint32_t> resultValue = queryPool.getResult<uint32_t>( firstQuery, queryCount, stride, flags );
   }
 
+  // Buffer commands
+  {
+    vk::raii::Device     device = nullptr;
+    vk::BufferCreateInfo bufferCreateInfo;
+    vk::raii::Buffer     buffer = device.createBuffer( bufferCreateInfo );
+  }
+  {
+    vk::raii::Device     device = nullptr;
+    vk::BufferCreateInfo bufferCreateInfo;
+    vk::raii::Buffer     buffer( device, bufferCreateInfo );
+  }
+
   return 0;
 }

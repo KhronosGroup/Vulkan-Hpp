@@ -692,27 +692,45 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
-    T & get() VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NODISCARD T & get() & VULKAN_HPP_NOEXCEPT
     {
       return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( static_cast<std::tuple<ChainElements...> &>( *this ) );
     }
 
     template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
-    T const & get() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD T const & get() const & VULKAN_HPP_NOEXCEPT
     {
       return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( static_cast<std::tuple<ChainElements...> const &>( *this ) );
     }
 
+    template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
+      VULKAN_HPP_NODISCARD T && get() && VULKAN_HPP_NOEXCEPT
+    {
+      return std::move( std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( static_cast<std::tuple<ChainElements...> &>( *this ) ) );
+    }
+
     template <typename T0, typename T1, typename... Ts>
-    std::tuple<T0 &, T1 &, Ts &...> get() VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NODISCARD std::tuple<T0 &, T1 &, Ts &...> get() & VULKAN_HPP_NOEXCEPT
     {
       return std::tie( get<T0>(), get<T1>(), get<Ts>()... );
     }
 
     template <typename T0, typename T1, typename... Ts>
-    std::tuple<T0 const &, T1 const &, Ts const &...> get() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD std::tuple<T0 const &, T1 const &, Ts const &...> get() const & VULKAN_HPP_NOEXCEPT
     {
       return std::tie( get<T0>(), get<T1>(), get<Ts>()... );
+    }
+
+    template <typename T0, typename T1, typename... Ts>
+      VULKAN_HPP_NODISCARD std::tuple<T0 &&, T1 &&, Ts &&...> get() && VULKAN_HPP_NOEXCEPT
+    {
+      return std::forward_as_tuple( std::move( get<T0>() ), std::move( get<T1>() ), std::move( get<Ts>() )... );
+    }
+
+    template <typename T0, typename T1, typename... Ts>
+    VULKAN_HPP_NODISCARD std::tuple<T0 const &&, T1 const &&, Ts const &&...> get() const && VULKAN_HPP_NOEXCEPT
+    {
+      return std::forward_as_tuple( std::move( get<T0>() ), std::move( get<T1>() ), std::move( get<Ts>() )... );
     }
 
     // assign a complete structure to the StructureChain without modifying the chaining
@@ -727,14 +745,16 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename ClassType, size_t Which = 0>
-    typename std::enable_if<std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value && ( Which == 0 ), bool>::type
+    VULKAN_HPP_NODISCARD
+      typename std::enable_if<std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value && ( Which == 0 ), bool>::type
       isLinked() const VULKAN_HPP_NOEXCEPT
     {
       return true;
     }
 
     template <typename ClassType, size_t Which = 0>
-    typename std::enable_if<!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || ( Which != 0 ), bool>::type
+    VULKAN_HPP_NODISCARD
+      typename std::enable_if<!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || ( Which != 0 ), bool>::type
       isLinked() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_STATIC_ASSERT( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't unlink Structure that's not part of this StructureChain!" );
@@ -785,7 +805,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     };
 
-    bool isLinked( VkBaseInStructure const * pNext ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD bool isLinked( VkBaseInStructure const * pNext ) const VULKAN_HPP_NOEXCEPT
     {
       VkBaseInStructure const * elementPtr =
         reinterpret_cast<VkBaseInStructure const *>( &std::get<0>( static_cast<std::tuple<ChainElements...> const &>( *this ) ) );

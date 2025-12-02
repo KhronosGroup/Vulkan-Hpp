@@ -1052,6 +1052,7 @@ private:
                                    std::string const & classSeparator,
                                    std::string         commandName,
                                    bool                enumerating,
+                                   bool                isMultiPipelineCreation,
                                    bool                raii ) const;
   std::string generateResultExceptions() const;
   std::string generateReturnDataType( std::map<size_t, VectorParamData> const & vectorParams,

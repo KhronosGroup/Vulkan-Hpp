@@ -3250,7 +3250,14 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
     std::string dataSizeChecks = generateDataSizeChecks( commandData, returnParams, dataTypes, vectorParams, templatedParams, singular );
     std::string callSequence   = generateCallSequence(
       name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, templatedParams, chainedReturnParams, flavourFlags, false, false );
-    std::string resultCheck     = generateResultCheck( commandData, className, classSeparator, commandName, enumerating, false );
+    std::string resultCheck =
+      generateResultCheck( commandData,
+                           className,
+                           classSeparator,
+                           commandName,
+                           enumerating,
+                           ( returnParams.size() == 1 ) && ( commandData.params[returnParams[0]].type.type == "VkPipeline" ) && !singular,
+                           false );
     std::string returnStatement = generateReturnStatement( name,
                                                            commandData,
                                                            returnVariable,
@@ -9340,8 +9347,15 @@ ${vectorSizeCheck}
       commandData, returnParams, vectorParams, templatedParams, flavourFlags, true, dataTypes, returnDataType, returnType, returnVariable );
     std::string dataPreparation =
       generateDataPreparation( commandData, initialSkipCount, returnParams, vectorParams, templatedParams, flavourFlags, enumerating, dataTypes );
-    std::string dataSizeChecks  = generateDataSizeChecks( commandData, returnParams, dataTypes, vectorParams, templatedParams, singular );
-    std::string resultCheck     = generateResultCheck( commandData, className, "::", commandName, enumerating, true );
+    std::string dataSizeChecks = generateDataSizeChecks( commandData, returnParams, dataTypes, vectorParams, templatedParams, singular );
+    std::string resultCheck =
+      generateResultCheck( commandData,
+                           className,
+                           "::",
+                           commandName,
+                           enumerating,
+                           ( returnParams.size() == 1 ) && ( commandData.params[returnParams[0]].type.type == "VkPipeline" ) && !singular,
+                           true );
     std::string returnStatement = generateReturnStatement( name,
                                                            commandData,
                                                            returnVariable,
@@ -9471,7 +9485,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
       generateDataDeclarations( commandData, returnParams, vectorParams, {}, flavourFlags, true, dataTypes, returnDataType, returnType, returnVariable );
     std::string callSequence =
       generateCallSequence( name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, {}, {}, flavourFlags, true, true );
-    std::string resultCheck      = generateResultCheck( commandData, className, "::", commandName, enumerating, true );
+    std::string resultCheck      = generateResultCheck( commandData, className, "::", commandName, enumerating, false, true );
     std::string returnStatements = generateRAIIFactoryReturnStatements( commandData, vulkanType, enumerating, returnType, returnVariable, singular );
 
     std::string const definitionTemplate =
@@ -10677,6 +10691,7 @@ std::string VulkanHppGenerator::generateResultCheck( CommandData const & command
                                                      std::string const & classSeparator,
                                                      std::string         commandName,
                                                      bool                enumerating,
+                                                     bool                isMultiPipelineCreation,
                                                      bool                raii ) const
 {
   std::string resultCheck;
@@ -10702,6 +10717,20 @@ std::string VulkanHppGenerator::generateResultCheck( CommandData const & command
                                       { "classSeparator", classSeparator },
                                       { "commandName", commandName },
                                       { "extendedSuccessCodeList", generateSuccessCodeList( extendedSuccessCodes, enumerating ) },
+                                      { "namespace", raii ? "VULKAN_HPP_NAMESPACE::" : "" },
+                                      { "namespaceString", raii ? "VULKAN_HPP_RAII_NAMESPACE_STRING" : "VULKAN_HPP_NAMESPACE_STRING" },
+                                      { "successCodeList", successCodeList } } );
+    }
+    else if ( isMultiPipelineCreation )
+    {
+      std::string const resultCheckTemplate =
+        R"(${namespace}detail::resultCheck( result, ${namespaceString} "::${className}${classSeparator}${commandName}"${successCodeList}, ${device}, pipelines, allocator.get(), d );)";
+
+      resultCheck = replaceWithMap( resultCheckTemplate,
+                                    { { "className", className },
+                                      { "classSeparator", classSeparator },
+                                      { "device", raii ? "static_cast<VkDevice>( m_device )" : "m_device" },
+                                      { "commandName", commandName },
                                       { "namespace", raii ? "VULKAN_HPP_NAMESPACE::" : "" },
                                       { "namespaceString", raii ? "VULKAN_HPP_RAII_NAMESPACE_STRING" : "VULKAN_HPP_NAMESPACE_STRING" },
                                       { "successCodeList", successCodeList } } );

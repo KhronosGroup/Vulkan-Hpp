@@ -116,5 +116,6 @@ jobs:
               -D CMAKE_CXX_COMPILER=clang-cl                  \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD
             cmake --build build --parallel --clean-first
+            ctest -j --output-on-failure --test-dir build
           done
         done

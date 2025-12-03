@@ -4838,13 +4838,11 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
                                listedConstants,
                                [&constants, &constexprValueTemplate, this]( std::pair<std::string, ConstantData> const & constantData )
                                {
-                                 std::string tag = findTag( constantData.first );
-                                 constants +=
-                                   replaceWithMap( constexprValueTemplate,
-                                                   { { "type", constantData.second.type },
-                                                     { "constName", stripPrefix( toCamelCase( stripPostfix( constantData.first, tag ) ), "Vk" ) + tag },
-                                                     { "deprecated", "" },
-                                                     { "value", constantData.first } } );
+                                 constants += replaceWithMap( constexprValueTemplate,
+                                                              { { "type", constantData.second.type },
+                                                                { "constName", generateTaggedCamelCase( constantData.first ) },
+                                                                { "deprecated", "" },
+                                                                { "value", constantData.first } } );
                                } );
       return addTitleAndProtection( title, constants );
     };
@@ -4938,72 +4936,44 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
   //=== CONSTEXPR EXTENSION NAMEs ===
   //=================================
 
-  ${extensionConstexprs}
+  ${enumConstants}
 )" };
 
-  auto extensionConstexprs = std::string{};
-
-  static auto const extensionTemplate           = std::string{ R"(${deprecated}VULKAN_HPP_CONSTEXPR_INLINE auto ${var} = ${macro};
-)" };
-  static auto const deprecatedPrefixTemplate    = std::string{ R"(VULKAN_HPP_DEPRECATED( ${message} ) )" };
-  static auto const deprecatedByMessageTemplate = std::string{ R"("The ${extensionName} extension has been deprecated by ${deprecatedBy}.")" };
-  static auto const deprecatedMessageTemplate   = std::string{ R"("The ${extensionName} extension has been deprecated.")" };
-  static auto const obsoletedMessageTemplate    = std::string{ R"("The ${extensionName} extension has been obsoleted by ${obsoletedBy}.")" };
-
-  // I really, really wish C++ had discards for structured bindings...
+  std::string enumConstants;
   for ( auto const & extension : m_extensions )
   {
-    auto const & requireDatas = extension.requireData;
-
-    // assert that requireDatas has at least one require...
-    // and the first require has at least two enumConstants, which we are going to use
-    assert( requireDatas.size() >= 1 );
-    assert( requireDatas.front().enumConstants.size() >= 2 );
-    auto const & enumConstants = requireDatas.front().enumConstants;
-
-    auto const VENDORPascalCaseStripPrefix = []( std::string const & macro )
-    {
-      auto       prefixStripped = stripPrefix( macro, "VK_" );
-      auto const vendor         = prefixStripped.substr( 0, prefixStripped.find( '_' ) );
-      return vendor + toCamelCase( stripPrefix( prefixStripped, vendor + "_" ) );
-    };
-
-    // add asserts so we don't get a nullptr exception below
-    auto extensionMacroIt   = std::ranges::find_if( enumConstants, []( auto const & keyval ) { return keyval.name.ends_with( "_EXTENSION_NAME" ); } );
-    auto specVersionMacroIt = std::ranges::find_if( enumConstants, []( auto const & keyval ) { return keyval.name.ends_with( "_SPEC_VERSION" ); } );
-    assert( extensionMacroIt != enumConstants.end() );
-    assert( specVersionMacroIt != enumConstants.end() );
-
-    auto const extensionVar   = VENDORPascalCaseStripPrefix( extensionMacroIt->name );
-    auto const specVersionVar = VENDORPascalCaseStripPrefix( specVersionMacroIt->name );
-
-    std::string deprecationMessage;
-    if ( extension.isDeprecated )
-    {
-      assert( extension.obsoletedBy.empty() && extension.promotedTo.empty() );
-      deprecationMessage = extension.deprecatedBy.empty()
-                           ? replaceWithMap( deprecatedMessageTemplate, { { "extensionName", extension.name } } )
-                           : replaceWithMap( deprecatedByMessageTemplate, { { "extensionName", extension.name }, { "deprecatedBy", extension.deprecatedBy } } );
-    }
-    else if ( !extension.obsoletedBy.empty() )
-    {
-      assert( extension.promotedTo.empty() );
-      deprecationMessage = replaceWithMap( obsoletedMessageTemplate, { { "extensionName", extension.name }, { "obsoletedBy", extension.obsoletedBy } } );
-    }
-    else if ( !extension.promotedTo.empty() )
-    {
-      // promoted extensions are _not_ deprecated!
-    }
-    auto const deprecatedPrefix = deprecationMessage.empty() ? "" : replaceWithMap( deprecatedPrefixTemplate, { { "message", deprecationMessage } } );
-
-    auto const thisExtensionConstexprs =
-      replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", extensionMacroIt->name }, { "var", extensionVar } } ) +
-      replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", specVersionMacroIt->name }, { "var", specVersionVar } } );
-
-    extensionConstexprs += addTitleAndProtection( extension.name, thisExtensionConstexprs );
+    std::string           enumConstantsByExtension;
+    std::set<std::string> encounteredEnumConstants;
+    forEachRequiredEnumConstant( extension.requireData,
+                                 encounteredEnumConstants,
+                                 [&enumConstantsByExtension, &extension, this]( EnumConstantData const & enumConstant )
+                                 {
+                                   std::string constant = generateTaggedCamelCase( enumConstant.name );
+                                   std::string deprecationMessage;
+                                   if ( extension.isDeprecated )
+                                   {
+                                     assert( extension.obsoletedBy.empty() && extension.promotedTo.empty() );
+                                     deprecationMessage = extension.deprecatedBy.empty()
+                                                          ? ( "The " + extension.name + " extension has been deprecated." )
+                                                          : ( "The " + extension.name + " extension has been deprecated by " + extension.deprecatedBy + "." );
+                                   }
+                                   else if ( !extension.obsoletedBy.empty() )
+                                   {
+                                     assert( extension.promotedTo.empty() );
+                                     deprecationMessage = "The " + extension.name + " extension has been obsoleted by " + extension.obsoletedBy + ".";
+                                   }
+                                   else if ( !extension.promotedTo.empty() )
+                                   {
+                                     // promoted extensions are _not_ deprecated!
+                                   }
+                                   auto const deprecatedPrefix = deprecationMessage.empty() ? "" : "VULKAN_HPP_DEPRECATED( \"" + deprecationMessage + "\" )";
+                                   enumConstantsByExtension +=
+                                     deprecatedPrefix + "VULKAN_HPP_CONSTEXPR_INLINE auto " + constant + " = " + enumConstant.name + ";\n";
+                                 } );
+    enumConstants += addTitleAndProtection( extension.name, enumConstantsByExtension );
   }
 
-  constexprDefines += replaceWithMap( extensionConstexprDefinesTemplate, { { "extensionConstexprs", extensionConstexprs } } );
+  constexprDefines += replaceWithMap( extensionConstexprDefinesTemplate, { { "enumConstants", enumConstants } } );
 
   return constexprDefines;
 }
@@ -5030,23 +5000,13 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
       std::string constants;
       forEachRequiredEnumConstant( requireData,
                                    listedConstants,
-                                   [&constants, &constexprUsingTemplate]( EnumConstantData const & enumConstant )
-                                   {
-                                     auto       prefixStripped = stripPrefix( enumConstant.name, "VK_" );
-                                     auto const vendor         = prefixStripped.substr( 0, prefixStripped.find( '_' ) );
-                                     constants += replaceWithMap( constexprUsingTemplate,
-                                                                  { { "constName", vendor + toCamelCase( stripPrefix( prefixStripped, vendor + "_" ) ) } } );
-                                   } );
+                                   [&constants, this]( EnumConstantData const & enumConstant )
+                                   { constants += "  using VULKAN_HPP_NAMESPACE::" + generateTaggedCamelCase( enumConstant.name ) + ";\n"; } );
 
       forEachRequiredConstant( requireData,
                                listedConstants,
-                               [&constants, &constexprUsingTemplate, this]( std::pair<std::string, ConstantData> const & constantData )
-                               {
-                                 std::string tag = findTag( constantData.first );
-                                 constants +=
-                                   replaceWithMap( constexprUsingTemplate,
-                                                   { { "constName", stripPrefix( toCamelCase( stripPostfix( constantData.first, tag ) ), "Vk" ) + tag } } );
-                               } );
+                               [&constants, this]( std::pair<std::string, ConstantData> const & constantData )
+                               { constants += "  using VULKAN_HPP_NAMESPACE::" + generateTaggedCamelCase( constantData.first ) + ";\n"; } );
       return addTitleAndProtection( title, constants );
     };
 
@@ -11836,9 +11796,7 @@ std::string VulkanHppGenerator::generateStructConstructorArgument( MemberData co
       }
       else
       {
-        assert( memberData.defaultValue.starts_with( "VK_" ) );
-        std::string tag = findTag( memberData.defaultValue );
-        str += toCamelCase( stripPostfix( stripPrefix( memberData.defaultValue, "VK_" ), tag ) ) + tag;
+        str += generateTaggedCamelCase( memberData.defaultValue );
       }
     }
   }
@@ -12370,9 +12328,7 @@ std::tuple<std::string, std::string, std::string, std::string>
         }
         else
         {
-          assert( member.defaultValue.starts_with( "VK_" ) );
-          std::string tag = findTag( member.defaultValue );
-          members += toCamelCase( stripPostfix( stripPrefix( member.defaultValue, "VK_" ), tag ) ) + tag;
+          members += generateTaggedCamelCase( member.defaultValue );
         }
       }
     }
@@ -12687,10 +12643,8 @@ std::string VulkanHppGenerator::generateSuccessCheck( std::vector<std::string> c
 
 std::string VulkanHppGenerator::generateSuccessCode( std::string const & code ) const
 {
-  std::string tag = findTag( code );
-  // on each success code: prepend 'Result::e', strip "VK_" and a tag, convert it to camel
-  // case, and add the tag again
-  return "Result::e" + toCamelCase( stripPostfix( stripPrefix( code, "VK_" ), tag ) ) + tag;
+  // on each success code: prepend 'Result::e' to the tagged camel case version of the code
+  return "Result::e" + generateTaggedCamelCase( code );
 }
 
 std::string VulkanHppGenerator::generateSuccessCodeList( std::vector<std::string> const & successCodes, bool enumerating ) const
@@ -13145,6 +13099,31 @@ ${sharedHandles}
     sharedHandles.pop_back();
   }
   return replaceWithMap( sharedHandlesTemplate, { { "sharedHandles", sharedHandles } } );
+}
+
+std::string VulkanHppGenerator::generateTaggedCamelCase( std::string const & name ) const
+{
+  assert( name.starts_with( "VK_" ) );
+  std::string taggedName = stripPrefix( name, "VK_" );
+  std::string leadingTag = taggedName.substr( 0, taggedName.find_first_of( '_' ) );
+  if ( m_tags.contains( leadingTag ) )
+  {
+    taggedName = stripPrefix( taggedName, leadingTag + "_" );
+  }
+  else
+  {
+    leadingTag = "";
+  }
+  std::string trailingTag = taggedName.substr( taggedName.find_last_of( '_' ) + 1 );
+  if ( m_tags.contains( trailingTag ) )
+  {
+    taggedName = stripPostfix( taggedName, "_" + trailingTag );
+  }
+  else
+  {
+    trailingTag = "";
+  }
+  return leadingTag + toCamelCase( taggedName ) + trailingTag;
 }
 
 std::string VulkanHppGenerator::generateVectorSizeCheck( std::string const &                           name,
@@ -14993,6 +14972,7 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * elemen
       requireData.types.push_back( readRequireType( child ) );
     }
   }
+  checkForError( requireData.enumConstants.empty(), line, "Need to handle enumConstants in features as well!" );
 }
 
 void VulkanHppGenerator::readFormat( tinyxml2::XMLElement const * element )
@@ -15517,7 +15497,7 @@ void VulkanHppGenerator::readRequireEnum(
                        { "extnumber", {} },
                        { "offset", {} },
                        { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } },
-                       { "type", { "uint32_t" } },
+                       { "type", { "float", "uint32_t" } },
                        { "value", {} } } );
 
     std::string api, bitpos, extends, name, offset, protect, type, value;
@@ -15543,6 +15523,7 @@ void VulkanHppGenerator::readRequireEnum(
       else if ( attribute.first == "name" )
       {
         name = attribute.second;
+        checkForError( name.starts_with( "VK_" ), line, "enum value <" + name + "> does not start with <VK_>" );
       }
       else if ( attribute.first == "offset" )
       {
@@ -15580,15 +15561,12 @@ void VulkanHppGenerator::readRequireEnum(
           checkForError( m_types.insert( { name, TypeData{ TypeCategory::Constant, { requiredBy }, line } } ).second,
                          line,
                          "required enum <" + name + "> specified by value <" + value + "> is already specified" );
-          if ( type == "uint32_t" )
+          if ( !type.empty() )
           {
             assert( !m_constants.contains( name ) );
             m_constants[name] = { type, value, line };
           }
         }
-
-        checkForError(
-          !supported || name.ends_with( "_EXTENSION_NAME" ) || name.ends_with( "_SPEC_VERSION" ), line, "encountered unexpected enum <" + name + ">" );
 
         requireData.enumConstants.push_back( { name, value, line } );
       }

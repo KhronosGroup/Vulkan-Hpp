@@ -696,6 +696,51 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroy( buffer );
   }
 
+  // Image commands
+  {
+    vk::Device              device;
+    vk::ImageCreateInfo     imageCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::Image               image;
+    vk::Result              result = device.createImage( &imageCreateInfo, &allocationCallbacks, &image );
+  }
+  {
+    vk::Device          device;
+    vk::ImageCreateInfo imageCreateInfo;
+    vk::Image           image = device.createImage( imageCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Image               image;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyImage( image, &allocationCallbacks );
+  }
+  {
+    vk::Device device;
+    vk::Image  image;
+    device.destroyImage( image );
+  }
+  {
+    vk::Device device;
+    vk::Image  image;
+    device.destroy( image );
+  }
+
+  {
+    vk::Device            device;
+    vk::Image             image;
+    vk::ImageSubresource  subresource;
+    vk::SubresourceLayout subresourceLayout;
+    device.getImageSubresourceLayout( image, &subresource, &subresourceLayout );
+  }
+  {
+    vk::Device            device;
+    vk::Image             image;
+    vk::ImageSubresource  subresource;
+    vk::SubresourceLayout subresourceLayout = device.getImageSubresourceLayout( image, subresource );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

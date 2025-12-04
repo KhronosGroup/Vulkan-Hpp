@@ -341,5 +341,23 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::Buffer     buffer( device, bufferCreateInfo );
   }
 
+  // Image commands
+  {
+    vk::raii::Device    device = nullptr;
+    vk::ImageCreateInfo imageCreateInfo;
+    vk::raii::Image     image = device.createImage( imageCreateInfo );
+  }
+  {
+    vk::raii::Device    device = nullptr;
+    vk::ImageCreateInfo imageCreateInfo;
+    vk::raii::Image     image( device, imageCreateInfo );
+  }
+
+  {
+    vk::raii::Image       image = nullptr;
+    vk::ImageSubresource  imageSubresource;
+    vk::SubresourceLayout subresourceLayout = image.getSubresourceLayout( imageSubresource );
+  }
+
   return 0;
 }

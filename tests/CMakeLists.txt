@@ -27,7 +27,7 @@ if( NOT VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
 	vulkan_hpp__setup_test( NAME DispatchLoaderStatic )
 endif()
 # without ctest, can only run these tests with VULKAN_HPP_DISPATCH_LOADER_DYNAMIC enabled
-if( NOT( NOT VULKAN_HPP_TESTS_CTEST AND NOT VULKAN_HPP_DISPATCH_LOADER_DYNAMIC ))
+if( VULKAN_HPP_TESTS_CTEST OR VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
 	vulkan_hpp__setup_test( NAME DispatchLoaderDynamic )
 	vulkan_hpp__setup_test( NAME DispatchLoaderDynamicSharedLibraryClient )
 	vulkan_hpp__setup_test( NAME NoExceptions )

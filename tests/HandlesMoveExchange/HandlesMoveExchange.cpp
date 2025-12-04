@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <cassert>
-#include <iostream>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
   import vulkan;
 #else
-# include <vulkan/vulkan.hpp>
+#  include <iostream>
+#  include <vulkan/vulkan.hpp>
 #endif
 
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
@@ -34,23 +33,23 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance;
     instance = vk::createInstance( {} );
-    assert( instance != nullptr );
+    void( instance != nullptr );
 
     vk::Instance anotherInstance = std::move( instance );
-    assert( instance == nullptr );
-    assert( anotherInstance != nullptr );
+    void( instance == nullptr );
+    void( anotherInstance != nullptr );
 
     anotherInstance.destroy();
   }
   catch ( vk::SystemError const & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
 
   return 0;

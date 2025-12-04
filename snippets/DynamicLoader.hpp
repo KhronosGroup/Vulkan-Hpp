@@ -34,6 +34,11 @@
 		{
 		  m_library = dlopen( "/usr/local/lib/libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 		}
+        // for Homebrew installations on Apple Silicon
+        if ( !m_library )
+		{
+		  m_library = dlopen( "/opt/homebrew/lib/libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
+		}
         if ( !m_library )
 		{
 		  m_library = dlopen( "libMoltenVK.dylib", RTLD_NOW | RTLD_LOCAL );

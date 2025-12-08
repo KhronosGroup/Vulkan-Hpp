@@ -31,6 +31,7 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <compare> // necessary due to MSVC "design": https://developercommunity.visualstudio.com/t/Template-exports-requiring-importing-of-/1425979#T-N1435887
 #  include <vulkan/vulkan_core.h>
@@ -38,11 +39,6 @@ import vulkan;
 #else
 #  include <vulkan/vulkan.hpp>
 #endif
-
-template<typename T> void release_assert( const T &condition )
-{
-  if ( !condition ) throw std::runtime_error( "failed assert" );
-}
 
 
 int main( int /*argc*/, char ** /*argv*/ )

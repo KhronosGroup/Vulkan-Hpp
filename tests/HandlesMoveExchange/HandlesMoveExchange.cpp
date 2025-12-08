@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
   import vulkan;
 #else
@@ -19,10 +20,6 @@
 #  include <vulkan/vulkan.hpp>
 #endif
 
-template<typename T> void release_assert( const T &condition )
-{
-  if ( !condition ) throw std::runtime_error( "failed assert" );
-}
 
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 namespace vk {

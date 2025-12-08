@@ -28,6 +28,7 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 import vulkan;
 #else

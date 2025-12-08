@@ -15,6 +15,7 @@
 // VulkanHpp Samples : DispatchLoaderStatic
 //                     Compile test on DispatchLoaderStatic functions
 
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 import vulkan_hpp;
 #else
@@ -23,10 +24,6 @@ import vulkan_hpp;
 #  include <vulkan/vulkan.hpp>
 #endif
 
-template<typename T> void release_assert( const T &condition )
-{
-  if ( !condition ) throw std::runtime_error( "failed assert" );
-}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

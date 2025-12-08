@@ -15,6 +15,7 @@
 // VulkanHpp Samples : ArrayProxy
 //                     Compile test on using vk::ArrayProxy
 
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan.h>
 import vulkan;
@@ -23,10 +24,6 @@ import vulkan;
 #  include <vulkan/vulkan_raii.hpp>
 #endif
 
-template<typename T> void release_assert( const T &condition )
-{
-  if ( !condition ) throw std::runtime_error( "failed assert" );
-}
 
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 namespace vk {

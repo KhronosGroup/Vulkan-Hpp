@@ -16,6 +16,7 @@
 //                     Compile test with VULKAN_HPP_NO_EXCEPTIONS set and using raii-classes
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <cstdint>
 import vulkan;
@@ -26,10 +27,6 @@ import vulkan;
 #  include "vulkan/vulkan_raii.hpp"
 #endif
 
-template<typename T> void release_assert( const T &condition )
-{
-  if ( !condition ) throw std::runtime_error( "failed assert" );
-}
 
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";

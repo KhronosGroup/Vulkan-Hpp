@@ -15,6 +15,7 @@
 // VulkanHpp Samples : FormatTraits
 //                     Compile test on using format traits functions
 
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 import vulkan;
 #else
@@ -25,10 +26,6 @@ import vulkan;
 #  include <vulkan/vulkan_format_traits.hpp>
 #endif
 
-template<typename T> void release_assert( const T &condition )
-{
-  if ( !condition ) throw std::runtime_error( "failed assert" );
-}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

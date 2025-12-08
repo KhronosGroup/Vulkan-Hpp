@@ -24,6 +24,7 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan_hpp_macros.hpp> // VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE
 import vulkan;
@@ -35,10 +36,6 @@ import vulkan;
 #  include <vulkan/vulkan.hpp>
 #endif
 
-template<typename T> void release_assert( const T &condition )
-{
-  if ( !condition ) throw std::runtime_error( "failed assert" );
-}
 
 static char const * AppName    = "DeviceFunctions";
 static char const * EngineName = "Vulkan.hpp";

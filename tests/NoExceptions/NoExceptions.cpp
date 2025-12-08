@@ -27,6 +27,11 @@ import vulkan;
 #  include "vulkan/vulkan.hpp"
 #endif
 
+template<typename T> void release_assert( const T &condition )
+{
+  if ( !condition ) throw std::runtime_error( "failed assert" );
+}
+
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
 
@@ -45,7 +50,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   vk::detail::defaultDispatchLoaderDynamic.init( *instance );
 
   std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices().value;
-  void( !physicalDevices.empty() );
+  release_assert( !physicalDevices.empty() );
 
   // get the QueueFamilyProperties of the first PhysicalDevice
   std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevices[0].getQueueFamilyProperties();
@@ -56,7 +61,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                    std::find_if( queueFamilyProperties.begin(),
                                  queueFamilyProperties.end(),
                                  []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } ) );
-  void( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
+  release_assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
   // create a UniqueDevice
   float                     queuePriority = 0.0f;

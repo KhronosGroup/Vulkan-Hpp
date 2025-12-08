@@ -23,6 +23,11 @@ import vulkan;
 #  include <vulkan/vulkan_raii.hpp>
 #endif
 
+template<typename T> void release_assert( const T &condition )
+{
+  if ( !condition ) throw std::runtime_error( "failed assert" );
+}
+
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 namespace vk {
   namespace detail {
@@ -37,21 +42,21 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     // test operator==() with vk-handle and nullptr
     vk::Instance instance;
-    void( instance == nullptr );
-    void( nullptr == instance );
+    release_assert( instance == nullptr );
+    release_assert( nullptr == instance );
 
     instance = vk::createInstance( {} );
-    void( instance != nullptr );
-    void( nullptr != instance );
+    release_assert( instance != nullptr );
+    release_assert( nullptr != instance );
 
     vk::Instance instance2;
-    void( instance != instance2 );
-    void( !( instance == instance2 ) );
+    release_assert( instance != instance2 );
+    release_assert( !( instance == instance2 ) );
 
-    void( instance2 < instance );
+    release_assert( instance2 < instance );
 
     instance2 = vk::createInstance( {} );
-    void( instance != instance2 );
+    release_assert( instance != instance2 );
 
     if ( instance == instance2 )
     {
@@ -112,7 +117,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     vk::raii::PhysicalDevices physicalDevices( i0 );
-    void( physicalDevices.size() == 2 );
+    release_assert( physicalDevices.size() == 2 );
     if ( physicalDevices[0] == physicalDevices[1] )
     {
       std::cout << "fufu";

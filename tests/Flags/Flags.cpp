@@ -39,70 +39,75 @@ import vulkan;
 #  include <vulkan/vulkan.hpp>
 #endif
 
+template<typename T> void release_assert( const T &condition )
+{
+  if ( !condition ) throw std::runtime_error( "failed assert" );
+}
+
+
 int main( int /*argc*/, char ** /*argv*/ )
 {
   vk::MemoryHeapFlags mhf0;
-  void( mhf0.m_mask == 0 );
+  release_assert( mhf0.m_mask == 0 );
 
   vk::MemoryHeapFlags mhf1( vk::MemoryHeapFlagBits::eDeviceLocal );
-  void( mhf1.m_mask == VK_MEMORY_HEAP_DEVICE_LOCAL_BIT );
+  release_assert( mhf1.m_mask == VK_MEMORY_HEAP_DEVICE_LOCAL_BIT );
 
   vk::MemoryHeapFlags mhf2( mhf1 );
-  void( mhf2.m_mask == VK_MEMORY_HEAP_DEVICE_LOCAL_BIT );
+  release_assert( mhf2.m_mask == VK_MEMORY_HEAP_DEVICE_LOCAL_BIT );
 
   VkMemoryHeapFlags   vkmhf = VK_MEMORY_HEAP_DEVICE_LOCAL_BIT | VK_MEMORY_HEAP_MULTI_INSTANCE_BIT;
   vk::MemoryHeapFlags mhf3( vkmhf );
-  void( mhf3.m_mask == ( VK_MEMORY_HEAP_DEVICE_LOCAL_BIT | VK_MEMORY_HEAP_MULTI_INSTANCE_BIT ) );
+  release_assert( mhf3.m_mask == ( VK_MEMORY_HEAP_DEVICE_LOCAL_BIT | VK_MEMORY_HEAP_MULTI_INSTANCE_BIT ) );
 
   // error
   // vk::MemoryHeapFlags mhf4( vk::MemoryHeapFlagBits::eDeviceLocal | vk::ImageAspectFlagBits::eDepth );
+  release_assert( mhf0 < mhf1 );
+  release_assert( !( mhf1 < mhf2 ) );
 
-  void( mhf0 < mhf1 );
-  void( !( mhf1 < mhf2 ) );
+  release_assert( mhf0 <= mhf1 );
+  release_assert( mhf1 <= mhf2 );
+  release_assert( !( mhf3 <= mhf2 ) );
 
-  void( mhf0 <= mhf1 );
-  void( mhf1 <= mhf2 );
-  void( !( mhf3 <= mhf2 ) );
+  release_assert( mhf1 > mhf0 );
+  release_assert( !( mhf2 > mhf1 ) );
 
-  void( mhf1 > mhf0 );
-  void( !( mhf2 > mhf1 ) );
+  release_assert( mhf1 >= mhf0 );
+  release_assert( mhf2 >= mhf1 );
+  release_assert( !( mhf2 >= mhf3 ) );
 
-  void( mhf1 >= mhf0 );
-  void( mhf2 >= mhf1 );
-  void( !( mhf2 >= mhf3 ) );
+  release_assert( !( mhf0 == mhf1 ) );
+  release_assert( mhf1 == mhf2 );
 
-  void( !( mhf0 == mhf1 ) );
-  void( mhf1 == mhf2 );
+  release_assert( mhf0 != mhf1 );
+  release_assert( !( mhf1 != mhf2 ) );
 
-  void( mhf0 != mhf1 );
-  void( !( mhf1 != mhf2 ) );
+  release_assert( !mhf0 );
+  release_assert( !!mhf1 );
 
-  void( !mhf0 );
-  void( !!mhf1 );
+  release_assert( mhf1 & vk::MemoryHeapFlagBits::eDeviceLocal );
+  release_assert( !( mhf0 & vk::MemoryHeapFlagBits::eDeviceLocal ) );
+  
+  release_assert( ( mhf0 | vk::MemoryHeapFlagBits::eDeviceLocal ) == vk::MemoryHeapFlagBits::eDeviceLocal );
+  release_assert( ( mhf1 | vk::MemoryHeapFlagBits::eDeviceLocal ) == vk::MemoryHeapFlagBits::eDeviceLocal );
 
-  void( mhf1 & vk::MemoryHeapFlagBits::eDeviceLocal );
-  void( !( mhf0 & vk::MemoryHeapFlagBits::eDeviceLocal ) );
-
-  void( ( mhf0 | vk::MemoryHeapFlagBits::eDeviceLocal ) == vk::MemoryHeapFlagBits::eDeviceLocal );
-  void( ( mhf1 | vk::MemoryHeapFlagBits::eDeviceLocal ) == vk::MemoryHeapFlagBits::eDeviceLocal );
-
-  void( ( mhf0 ^ mhf1 ) == mhf1 );
-  void( ( mhf1 ^ mhf2 ) == mhf0 );
+  release_assert( ( mhf0 ^ mhf1 ) == mhf1 );
+  release_assert( ( mhf1 ^ mhf2 ) == mhf0 );
 
   vk::MemoryHeapFlags mhf4( ~mhf0 );
-  void( mhf4 == ( vk::MemoryHeapFlagBits::eDeviceLocal | vk::MemoryHeapFlagBits::eMultiInstance ) );
-
+  release_assert( mhf4 == ( vk::MemoryHeapFlagBits::eDeviceLocal | vk::MemoryHeapFlagBits::eMultiInstance ) );
+  
   mhf0 = mhf1;
-  void( mhf0 == mhf1 );
-
+  release_assert( mhf0 == mhf1 );
+  
   mhf0 |= vk::MemoryHeapFlagBits::eMultiInstance;
-  void( mhf0 & vk::MemoryHeapFlagBits::eMultiInstance );
-
+  release_assert( mhf0 & vk::MemoryHeapFlagBits::eMultiInstance );
+  
   mhf0 &= vk::MemoryHeapFlagBits::eDeviceLocal;
-  void( mhf0 & vk::MemoryHeapFlagBits::eDeviceLocal );
-
+  release_assert( mhf0 & vk::MemoryHeapFlagBits::eDeviceLocal );
+  
   mhf0 ^= mhf3;
-  void( mhf0 == ( vk::MemoryHeapFlagBits::eMultiInstance ) );
+  release_assert( mhf0 == ( vk::MemoryHeapFlagBits::eMultiInstance ) );
 
   vkmhf = static_cast<VkMemoryHeapFlags>(mhf0);
 

@@ -23,6 +23,11 @@ import vulkan_hpp;
 #  include <vulkan/vulkan.hpp>
 #endif
 
+template<typename T> void release_assert( const T &condition )
+{
+  if ( !condition ) throw std::runtime_error( "failed assert" );
+}
+
 int main( int /*argc*/, char ** /*argv*/ )
 {
   try
@@ -30,7 +35,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Instance instance = vk::createInstance( {} );
 
     std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
-    void( !physicalDevices.empty() );
+    release_assert( !physicalDevices.empty() );
 
     vk::Device device = physicalDevices[0].createDevice( {} );
 

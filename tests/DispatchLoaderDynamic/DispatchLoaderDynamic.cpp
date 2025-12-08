@@ -24,6 +24,11 @@ import vulkan;
 #  include <vulkan/vulkan.hpp>
 #endif
 
+template<typename T> void release_assert( const T &condition )
+{
+  if ( !condition ) throw std::runtime_error( "failed assert" );
+}
+
 namespace vk {
   namespace detail {
     DispatchLoaderDynamic defaultDispatchLoaderDynamic;
@@ -54,7 +59,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // create a dispatcher, based on additional vkDevice/vkGetDeviceProcAddr
     std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
-    void( !physicalDevices.empty() );
+    release_assert( !physicalDevices.empty() );
 
     vk::Device device = physicalDevices[0].createDevice( {}, nullptr );
 

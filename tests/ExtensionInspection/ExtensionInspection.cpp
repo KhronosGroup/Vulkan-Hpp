@@ -41,6 +41,11 @@ import vulkan;
 #  include <vulkan/vulkan_extension_inspection.hpp>
 #endif
 
+template<typename T> void release_assert( const T &condition )
+{
+  if ( !condition ) throw std::runtime_error( "failed assert" );
+}
+
 int main( int /*argc*/, char ** /*argv*/ )
 {
 #if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110400 < GCC_VERSION ) )
@@ -56,41 +61,41 @@ int main( int /*argc*/, char ** /*argv*/ )
 #endif
 
   std::set<std::string> const & instanceExtensions = vk::getInstanceExtensions();
-  void( instanceExtensions.find( vk::KHRSurfaceExtensionName ) != instanceExtensions.end() );
+  release_assert( instanceExtensions.find( vk::KHRSurfaceExtensionName ) != instanceExtensions.end() );
 
   std::set<std::string> const & deviceExtensions = vk::getDeviceExtensions();
-  void( deviceExtensions.find( vk::KHRSwapchainExtensionName ) != deviceExtensions.end() );
+  release_assert( deviceExtensions.find( vk::KHRSwapchainExtensionName ) != deviceExtensions.end() );
 
   std::map<std::string, std::vector<std::vector<std::string>>> depends = vk::getExtensionDepends( vk::KHRSwapchainExtensionName );
-  void( ( depends.size() == 1 ) && ( depends.begin()->first == "VK_VERSION_1_0" ) && ( depends.begin()->second.size() == 1 ) &&
+  release_assert( ( depends.size() == 1 ) && ( depends.begin()->first == "VK_VERSION_1_0" ) && ( depends.begin()->second.size() == 1 ) &&
           ( depends.begin()->second[0].size() == 1 ) && ( depends.begin()->second[0][0] == vk::KHRSurfaceExtensionName ) );
 
   auto [available0, deps0] = vk::getExtensionDepends( "VK_VERSION_1_0", vk::KHRSurfaceExtensionName );
-  void( available0 && deps0.empty() );
+  release_assert( available0 && deps0.empty() );
 
   auto [available1, deps1] = vk::getExtensionDepends( "VK_VERSION_1_0", vk::KHRSwapchainExtensionName );
-  void( available1 && ( deps1.size() == 1 ) && ( deps1[0].size() == 1 ) && ( deps1[0][0] == vk::KHRSurfaceExtensionName ) );
+  release_assert( available1 && ( deps1.size() == 1 ) && ( deps1[0].size() == 1 ) && ( deps1[0][0] == vk::KHRSurfaceExtensionName ) );
 
   auto [available2, deps2] = vk::getExtensionDepends( "VK_VERSION_1_1", vk::KHRSwapchainExtensionName );
-  void( available2 && ( deps2.size() == 1 ) && ( deps2[0].size() == 1 ) && ( deps2[0][0] == vk::KHRSurfaceExtensionName ) );
+  release_assert( available2 && ( deps2.size() == 1 ) && ( deps2[0].size() == 1 ) && ( deps2[0][0] == vk::KHRSurfaceExtensionName ) );
 
   auto [available3, deps3] = vk::getExtensionDepends( "VK_VERSION_1_1", vk::EXTShaderTileImageExtensionName );
-  void( !available3 );
+  release_assert( !available3 );
 
   auto [available4, deps4] = vk::getExtensionDepends( "VK_VERSION_1_3", vk::EXTShaderTileImageExtensionName );
-  void( available4 && ( deps4.size() == 1 ) && deps4[0].empty() );
+  release_assert( available4 && ( deps4.size() == 1 ) && deps4[0].empty() );
 
   std::map<std::string, std::string> const & deprecatedExtensions = vk::getDeprecatedExtensions();
   auto                                       deprecatedIt         = deprecatedExtensions.find( vk::EXTDebugReportExtensionName );
-  void( ( deprecatedIt != deprecatedExtensions.end() ) && ( deprecatedIt->second == vk::EXTDebugUtilsExtensionName ) );
+  release_assert( ( deprecatedIt != deprecatedExtensions.end() ) && ( deprecatedIt->second == vk::EXTDebugUtilsExtensionName ) );
 
   std::map<std::string, std::string> const & obsoletedExtensions = vk::getObsoletedExtensions();
   auto                                       obsoletedIt         = obsoletedExtensions.find( vk::AMDNegativeViewportHeightExtensionName );
-  void( ( obsoletedIt != obsoletedExtensions.end() ) && ( obsoletedIt->second == vk::KHRMaintenance1ExtensionName ) );
+  release_assert( ( obsoletedIt != obsoletedExtensions.end() ) && ( obsoletedIt->second == vk::KHRMaintenance1ExtensionName ) );
 
   std::map<std::string, std::string> const & promotedExtensions = vk::getPromotedExtensions();
   auto                                       promotedIt         = promotedExtensions.find( vk::EXTDebugMarkerExtensionName );
-  void( ( promotedIt != promotedExtensions.end() ) && ( promotedIt->second == vk::EXTDebugUtilsExtensionName ) );
+  release_assert( ( promotedIt != promotedExtensions.end() ) && ( promotedIt->second == vk::EXTDebugUtilsExtensionName ) );
 
   return 0;
 }

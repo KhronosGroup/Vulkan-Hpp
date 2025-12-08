@@ -27,6 +27,11 @@ import vulkan;
 # include <vulkan/vulkan.hpp>
 #endif
 
+template<typename T> void release_assert( const T &condition )
+{
+  if ( !condition ) throw std::runtime_error( "failed assert" );
+}
+
 void f( std::string const & s )
 {
   std::cout << "<" << s << ">" << std::endl;
@@ -36,7 +41,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   vk::ArrayWrapper1D<char, 10> awc1( { 'f', 'o', 'o', 'b', 'a', 'h' } );
   std::string                  s1 = awc1;
-  void( s1.length() == 6 );
+  release_assert( s1.length() == 6 );
   std::cout << "<" << awc1 << ">" << std::endl;
 
   // s1 = awc1;  // 'operator =' is ambiguous
@@ -48,50 +53,50 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   vk::ArrayWrapper1D<char, 5> awc3( { 'f', 'o', 'o', 'b', 'a', 'h' } );
   std::string                 s3 = awc3;
-  void( s3.length() == 4 );
+  release_assert( s3.length() == 4 );
   std::cout << "<" << s3 << ">" << std::endl;
 
   vk::ArrayWrapper1D<char, 5> awc4( foobah );
   std::string                 s4 = awc4;
-  void( s4.length() == 4 );
+  release_assert( s4.length() == 4 );
 
 #if 17 <= VULKAN_HPP_CPP_VERSION || defined( VULKAN_HPP_USE_CXX_MODULE )
   std::cout << std::boolalpha << std::is_convertible_v<vk::ArrayWrapper1D<char, 10>, std::string_view> << std::endl;
 
   std::string_view sv1 = awc1;
-  void( sv1.size() == 6 );
+  release_assert( sv1.size() == 6 );
   sv1 = awc2;
-  void( sv1.size() == 6 );
+  release_assert( sv1.size() == 6 );
   sv1 = awc3;
-  void( sv1.size() == 5 );
+  release_assert( sv1.size() == 5 );
 
   vk::ArrayWrapper1D<char, 8> awc5( sv1 );
 #endif
 
-  void( awc1 == awc2 );
-  void( !( awc1 != awc2 ) );
-  void( awc1 <= awc2 );
-  void( !( awc1 < awc2 ) );
-  void( awc1 >= awc2 );
-  void( !( awc1 > awc2 ) );
+  release_assert( awc1 == awc2 );
+  release_assert( !( awc1 != awc2 ) );
+  release_assert( awc1 <= awc2 );
+  release_assert( !( awc1 < awc2 ) );
+  release_assert( awc1 >= awc2 );
+  release_assert( !( awc1 > awc2 ) );
 
-  void( awc3 == awc4 );
+  release_assert( awc3 == awc4 );
 
-  void( foobah == awc1 );
-  void( !( foobah != awc1 ) );
-  void( foobah <= awc1 );
-  void( !( foobah < awc1 ) );
-  void( foobah >= awc1 );
-  void( !( foobah > awc1 ) );
+  release_assert( foobah == awc1 );
+  release_assert( !( foobah != awc1 ) );
+  release_assert( foobah <= awc1 );
+  release_assert( !( foobah < awc1 ) );
+  release_assert( foobah >= awc1 );
+  release_assert( !( foobah > awc1 ) );
 
-  void( awc1 == foobah );
-  void( !( awc1 != foobah ) );
-  void( awc1 <= foobah );
-  void( !( awc1 < foobah ) );
-  void( awc1 >= foobah );
-  void( !( awc1 > foobah ) );
+  release_assert( awc1 == foobah );
+  release_assert( !( awc1 != foobah ) );
+  release_assert( awc1 <= foobah );
+  release_assert( !( awc1 < foobah ) );
+  release_assert( awc1 >= foobah );
+  release_assert( !( awc1 > foobah ) );
 
-  void( foobah > awc4 );
+  release_assert( foobah > awc4 );
 
   return 0;
 }

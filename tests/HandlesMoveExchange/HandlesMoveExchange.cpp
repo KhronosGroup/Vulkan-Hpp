@@ -19,6 +19,11 @@
 #  include <vulkan/vulkan.hpp>
 #endif
 
+template<typename T> void release_assert( const T &condition )
+{
+  if ( !condition ) throw std::runtime_error( "failed assert" );
+}
+
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 namespace vk {
   namespace detail {
@@ -33,11 +38,11 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance;
     instance = vk::createInstance( {} );
-    void( instance != nullptr );
+    release_assert( instance != nullptr );
 
     vk::Instance anotherInstance = std::move( instance );
-    void( instance == nullptr );
-    void( anotherInstance != nullptr );
+    release_assert( instance == nullptr );
+    release_assert( anotherInstance != nullptr );
 
     anotherInstance.destroy();
   }

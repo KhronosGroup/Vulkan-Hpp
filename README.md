@@ -1,8 +1,12 @@
 
 # Vulkan-Hpp: C++ bindings for Vulkan
 
+## Overview
+
 Vulkan-Hpp provides header-only C++ bindings for the Vulkan C API to improve the developer experience with Vulkan without introducing run-time CPU costs.
 It adds features like type safety for enumerations and bit-fields, STL container support, exception support, and several varieties of RAII-capable types.
+
+This repository contains the [generators](VulkanHppGenerator.hpp) for Vulkan-Hpp, which accept the [XML specification of Vulkan](https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/refs/heads/main/xml/vk.xml) and emit C++ bindings, which are documented further below.
 
 | Platform | Build Status |
 |:--------:|:------------:|
@@ -22,6 +26,7 @@ It adds features like type safety for enumerations and bit-fields, STL container
     - [Formatting](#formatting)
     - [Custom views of Vulkan-Hpp objects in Visual Studio](#custom-views-of-vulkan-hpp-objects-in-visual-studio)
 - [Breaking Changes](#breaking-changes)
+  - [v1.4.334](#v14334)
   - [v1.4.324](#v14324)
 - [Usage](#usage)
   - [namespace vk](#namespace-vk)
@@ -89,10 +94,6 @@ It adds features like type safety for enumerations and bit-fields, STL container
 - [Contributing](#contributing)
 - [License](#license)
 
-## Overview
-
-This repository contains the [generators](VulkanHppGenerator.hpp) for Vulkan-Hpp, which accept the [XML specification of Vulkan](https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/refs/heads/main/xml/vk.xml) and emit C++ bindings, which are documented further below.
-
 ## Installation and usage
 
 ### Vulkan SDK
@@ -141,8 +142,8 @@ Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers
 1. Install dependencies:
    - Install CMake and git; ensure both are available from a shell.
    - Install the LunarG Vulkan SDK.
-   - Optionally install clang-format ≥ 11.0 so that any generated headers can be correctly formatted.
-2. Open a shell which provides git and clone the repository with:
+   - Optionally install `clang-format` with version at least 11.0 so that any generated headers can be correctly formatted.
+2. In a shell, clone the repository:
 
     ```git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git```
 3. Change the shell's working directory to the newly created `Vulkan-Hpp` directory.
@@ -151,9 +152,9 @@ Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers
 
     You may need to specify a generator via `-G`; for a full list of generators execute `cmake -G`.
 
-    To rebuild `vulkan.hpp` from the `vk.xml` XML registry file, add the
+    To regenerate `vulkan.hpp` from the `vk.xml` XML registry file, add the
        `-DVULKAN_HPP_RUN_GENERATOR=ON` option to the CMake command line.
-5. The generated project may be opened with an IDE like Visual Studio or CLion, or the generator, samples, and tests may be built directly from a shell:
+5. The generated project may be opened with an IDE like Visual Studio or CLion, or the various targets may be built directly from a shell:
 
     ```cmake --build build --parallel```
 
@@ -165,7 +166,7 @@ If a `clang-format` executable is found by CMake, the define `CLANG_FORMAT_EXECU
 
 #### Custom views of Vulkan-Hpp objects in Visual Studio
 
-The file `VulkanHpp.natvis` provides a custom view on `vk::Flags` for Visual Studio. If you add this file to the user-specific natvis directory of your Visual Studio installation (%USERPROFILE%\Documents\Visual Studio 2022\Visualizers), you get `vk::Flags` nicely formatted in your debugger with all your Visual Studio projects.
+[`VulkanHpp.natvis`](./VulkanHpp.natvis) provides a custom view over `vk::Flags` for Visual Studio. Add this file to the directory of your Visual Studio installation (`%USERPROFILE%\Documents\Visual Studio 2022\Visualizers`). `vk::Flags` will be appropriately formatted in the debugger.
 
 ## Breaking Changes
 
@@ -173,11 +174,11 @@ We try to keep the API for all flavours of Vulkan-Hpp constant or backwards comp
 
 ### v1.4.334
 
-The `vulkan_hpp` module has been renamed to `vulkan`.
+The `vulkan_hpp` C++ named module has been renamed to `vulkan`.
 
-### v1.4.324 <a id='breaking_changes_324'>
+### v1.4.324
 
-With PR [#2226](https://github.com/KhronosGroup/Vulkan-Hpp/pull/2226), the return type of `vk::raii::Device::acquireNextImage2KHR` and `vk::raii::SwapchainKHR::acquireNextImage` changed from `std::pair<vk::Result,uint32_t>` to the equivalent `vk::ResultValue<uint32_t>`
+With PR [#2226](https://github.com/KhronosGroup/Vulkan-Hpp/pull/2226), the return type of `vk::raii::Device::acquireNextImage2KHR` and `vk::raii::SwapchainKHR::acquireNextImage` has changed from `std::pair<vk::Result,uint32_t>` to the equivalent `vk::ResultValue<uint32_t>`
 
 ## Usage
 
@@ -1153,7 +1154,7 @@ Feel free to submit a PR to add to this list.
 
 ## License
 
-```
+```plaintext
 Copyright 2015-2020 The Khronos Group Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");

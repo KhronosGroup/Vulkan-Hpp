@@ -1,17 +1,20 @@
 # Usage
 
-- [namespace vk](#namespace-vk)
+The C++ language and standard library enable Vulkan-Hpp to be more expressive and type-safe, lifting many error categories from run-time to compile-time.
+This includes features like namespaces, RAII, exceptions, references, enum classes, templates, the builder pattern, designated initialisers, and library containers like `std::array`, `std::string_view`, `std::vector`, and more.
+
+- [Naming convention for Vulkan-Hpp symbols](#naming-convention-for-vulkan-hpp-symbols)
+- [`vk::CreateInfo` structs](#vkcreateinfo-structs)
+  - [Designated initializers](#designated-initializers)
+  - [Builder pattern](#builder-pattern)
 - [Handles](#handles)
-- [namespace vk::raii](#namespace-vkraii)
-- [C/C++ Interop for Handles](#cc-interop-for-handles)
-- [Flags](#flags)
-- [CreateInfo structs](#createinfo-structs)
-- [Designated Initializers](#designated-initializers)
+  - [C/C++ inter-op for handles](#cc-inter-op-for-handles)
+- [Flag bits and bitwise operations](#flag-bits-and-bitwise-operations)
 - [Passing Arrays to Functions using ArrayProxy](#passing-arrays-to-functions-using-arrayproxy)
 - [Passing Structs to Functions](#passing-structs-to-functions)
 - [Structure Pointer Chains](#structure-pointer-chains)
 - [Return values, Error Codes \& Exceptions](#return-values-error-codes--exceptions)
-- [C++17: \[\[nodiscard\]\]](#c17-nodiscard)
+- [C++17: `[[nodiscard]]`](#c17-nodiscard)
 - [Enumerations](#enumerations)
 - [UniqueHandle for automatic resource management](#uniquehandle-for-automatic-resource-management)
 - [SharedHandle](#sharedhandle)
@@ -31,56 +34,39 @@
 - [Compile time issues](#compile-time-issues)
 - [Strict aliasing issue](#strict-aliasing-issue)
 
-## namespace vk
+## Naming convention for Vulkan-Hpp symbols
 
-To avoid name collisions with the Vulkan C API, the C++ bindings reside in the `vk::` namespace. The following rules apply to the new naming:
+All symbols (functions, handles, structs, enums) of Vulkan-Hpp are defined in the `vk::` namespace. The following naming rules apply:
 
-- All functions, enums, handles, and structs have the `Vk` or `vk` prefix removed. Furthermore, the first character of function names is always lowercase. For example:
-  - `vkCreateInstance` corresponds to `vk::createInstance`.
-  - `VkImageTiling` corresponds to `vk::ImageTiling`.
-  - `VkImageCreateInfo` corresponds to `vk::ImageCreateInfo`.
-- Enums are mapped to scoped enums to provide compile time type safety. The names have been changed to 'e' + CamelCase with the `VK_` prefix and type infix removed. If the enum type is an extension, the extension suffix has been removed from the enum values.
-
-In all other cases, the extension suffix has not been removed.
+- The `Vk` or `vk` prefix is removed.
+- The first character of function names is always lowercase.
 
 For example:
 
-- `VK_IMAGETYPE_2D` is now `vk::ImageType::e2D`.
-- `VK_COLOR_SPACE_SRGB_NONLINEAR_KHR` is now `vk::ColorSpaceKHR::eSrgbNonlinear`.
-- `VK_STRUCTURE_TYPE_PRESENT_INFO_KHR` is now `vk::StructureType::ePresentInfoKHR`.
-- Flag bits are handled like scoped enums with the addition that the `_BIT` suffix has also been removed.
+- `vkCreateInstance` corresponds to `vk::createInstance`.
+- `VkImageTiling` corresponds to `vk::ImageTiling`.
+- `VkImageCreateInfo` corresponds to `vk::ImageCreateInfo`.
+
+Untyped unsigned integer enum values in the C API are mapped to scoped `enum class`es to provide compile-time type safety. There is a slightly different naming convention for these enum classes and their values:
+
+- The `VK_` prefix and type infix are removed.
+- An `e` prefix is added, and the casing is CamelCase.
+- If the enum type is an extension, the `extension` suffix has been removed from the enum **values**.
+- In all other cases, the extension suffix has not been removed.
+
+For example:
+
+- `VK_IMAGETYPE_2D` corresponds to `vk::ImageType::e2D`.
+- `VK_COLOR_SPACE_SRGB_NONLINEAR_KHR` corresponds to `vk::ColorSpaceKHR::eSrgbNonlinear`.
+- `VK_STRUCTURE_TYPE_PRESENT_INFO_KHR` corresponds to `vk::StructureType::ePresentInfoKHR`.
+
+Flag bits are handled like scoped enums with the addition that the `_BIT` suffix has also been removed.
 
 In some cases it might be necessary to move Vulkan-Hpp to a custom namespace. This can be achieved by defining `VULKAN_HPP_NAMESPACE` before including Vulkan-Hpp.
 
-## Handles
+## `vk::CreateInfo` structs
 
-Vulkan-Hpp declares a class for all handles to ensure full type safety, and adds support for member functions on handles. A member function has been added to a handle class for each function which accepts the corresponding handle as first parameter. Instead of `vkBindBufferMemory(device, ...)` one can write `device.bindBufferMemory(...)` or `vk::bindBufferMemory(device, ...)`.
-
-## namespace vk::raii
-
-There is an additional header named [`vulkan_raii.hpp`](vulkan/vulkan_raii.hpp) generated. That header holds raii-compliant wrapper classes for the handle types. That is, for e.g. the handle type `VkInstance`, there's a raii-compliant wrapper `vk::raii::Instance`. Please have a look at the samples using those classes in the directory [RAII_Samples](RAII_Samples).
-
-## C/C++ Interop for Handles
-
-On 64-bit platforms Vulkan-Hpp supports implicit conversions between C++ Vulkan handles and C Vulkan handles. On 32-bit platforms all non-dispatchable handles are defined as `uint64_t`, thus preventing type-conversion checks at compile time which would catch assignments between incompatible handle types. Due to that Vulkan-Hpp does not enable implicit conversion for 32-bit platforms by default and it is recommended to use a `static_cast` for the conversion like this: `VkImage = static_cast<VkImage>(cppImage)` to prevent converting some arbitrary int to a handle or vice versa by accident. If you're developing your code on a 64-bit platform, but want to compile your code for a 32-bit platform without adding the explicit casts, you can define `VULKAN_HPP_TYPESAFE_CONVERSION` to `1` in your build system or before including `vulkan.hpp`. On 64-bit platforms this define is set to `1` by default and can be set to `0` to disable implicit conversions.
-
-## Flags
-
-The scoped enum feature adds type safety to the flags, but also prevents using the flag bits as input for bitwise operations such as `&` and `|`.
-
-As solution Vulkan-Hpp provides a class template `vk::Flags` which brings the standard operations like `&=`, `|=`, `&`, and `|` to our scoped enums. Except for the initialization with `0` this class behaves exactly like a normal bitmask with the improvement that it is impossible to set bits not specified by the corresponding enum by accident. Here are a few examples for the bitmask handling:
-
-```c++
-vk::ImageUsageFlags iu1; // initialize a bitmask with no bit set
-vk::ImageUsageFlags iu2 = {}; // initialize a bitmask with no bit set
-vk::ImageUsageFlags iu3 = vk::ImageUsageFlagBits::eColorAttachment; // initialize with a single value
-vk::ImageUsageFlags iu4 = vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage; // or two bits to get a bitmask
-PipelineShaderStageCreateInfo ci({} /* pass a flag without any bits set */, ...);
-```
-
-## CreateInfo structs
-
-When constructing a handle in Vulkan one usually has to create some `CreateInfo` struct which describes the new handle. This can result in quite lengthy code as can be seen in the following Vulkan C example:
+When constructing a handle in Vulkan, one usually has to create some `CreateInfo` struct to configure the handle. This results in the following C-style code:
 
 ```c++
 VkImageCreateInfo ci;
@@ -102,14 +88,14 @@ ci.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 vkCreateImage(device, &ci, allocator, &image);
 ```
 
-There are two typical issues Vulkan developers encounter when filling out a `CreateInfo` struct field by field:
+This is long, imperative, and error-prone. When populating a `CreateInfo` struct field by field like this, there are two common mistakes:
 
 - One or more fields are left uninitialized.
-- `sType` is incorrect.
+- the `::sType` field may be incorrect.
 
-Especially the first one is hard to detect.
+The first issue may be especially hard to detect.
 
-Vulkan-Hpp provides constructors for all `CreateInfo` objects which accept one parameter for each member variable. This way the compiler throws a compiler error if a value has been forgotten. In addition to this `sType` is automatically filled with the correct value and `pNext` set to a `nullptr` by default. Here's how the same code looks with a constructor:
+Vulkan-Hpp provides constructors for all `CreateInfo` structs; these accept one parameter for each member variable. This way the compiler throws a compiler error if a value has been forgotten. Additionally, `sType` is automatically set the correct value, and `pNext` is set to `nullptr`. This is how the above code looks with a constructor:
 
 ```c++
 vk::ImageCreateInfo ci({}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
@@ -120,7 +106,7 @@ vk::ImageCreateInfo ci({}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
 vk::Image image = device.createImage(ci);
 ```
 
-With constructors for `CreateInfo` structures, one can also pass temporaries to Vulkan functions like this:
+With constructors for `CreateInfo` structures, one may also pass temporaries to Vulkan functions like this:
 
 ```c++
 vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
@@ -130,9 +116,9 @@ vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B
                                      vk::SharingMode::eExclusive, 0, nullptr, vk::ImageLayout::eUndefined});
 ```
 
-## Designated Initializers
+### Designated initializers
 
-Beginning with C++20, C++ supports designated initializers. As that feature requires to not have any user-declared or inherited constructors, you have to `#define VULKAN_HPP_NO_CONSTRUCTORS`, which removes all the structure and union constructors from `vulkan.hpp`. Instead you can then use aggregate initialization. The first few vk-lines in your source might then look like:
+C++ supports designated initializers for POD (plain old data) structs in C++20 and later versions. Such structs cannot have user-defined constructors; to disable the, you have to `#define VULKAN_HPP_NO_CONSTRUCTORS`, which removes all the structure and union constructors from `vulkan.hpp`. Instead you can then use designated initialization. The first few vk-lines in your source might then look like:
 
 ```c++
 // initialize the vk::ApplicationInfo structure
@@ -158,6 +144,42 @@ vk::InstanceCreateInfo instanceCreateInfo({}, &applicationInfo);
 
 Note, that the designator order needs to match the declaration order.
 Note as well, that now you can explicitly set the `sType` member of vk-structures. This is neither neccessary (as they are correctly initialized by default) nor recommended.
+
+### Builder pattern
+
+## Handles
+
+There is a corresponding `vk::` class for each Vulkan handle.
+These classes also provide member functions, where each function corresponds to a function in the C API function which accepts the corresponding handle as the **first** parameter.
+
+For example, instead of `vkBindBufferMemory(device, ...)` one may write `device.bindBufferMemory(...)` or `vk::bindBufferMemory(device, ...)`.
+
+<!-- ## namespace vk::raii
+
+There is an additional header named [`vulkan_raii.hpp`](vulkan/vulkan_raii.hpp) generated. That header holds raii-compliant wrapper classes for the handle types. That is, for e.g. the handle type `VkInstance`, there's a raii-compliant wrapper `vk::raii::Instance`. Please have a look at the samples using those classes in the directory [RAII_Samples](RAII_Samples). -->
+
+### C/C++ inter-op for handles
+
+On 64-bit platforms, Vulkan-Hpp supports implicit conversions between handles provided by the C API and Vulkan-Hpp. On 32-bit platforms, all non-dispatchable handles are defined as `uint64_t`, thus preventing type-conversion checks at compile time which would catch assignments between incompatible handle types. Therefore, Vulkan-Hpp does not enable implicit conversion for 32-bit platforms by default and it is recommended to use a `static_cast`: `VkImage = static_cast<VkImage>(cppImage)` to prevent unintended conversions of untyped integers to handles.
+
+If you are developing on a 64-bit platform but want to compile for a 32-bit platform without adding these verbose explicit casts, define the macro `VULKAN_HPP_TYPESAFE_CONVERSION=1` in your build system, or before writing `#include <vulkan/vulkan.hpp>`. On 64-bit platforms this macro is set to `1` by default and can be set to `0` to disable implicit conversions.
+
+## Flag bits and bitwise operations
+
+Scoped enums add type safety to Vulkan flags, but also prevent bitwise operations with these flag bits.
+
+As a solution, Vulkan-Hpp provides a class template, `vk::Flags<>`. This class is default-initialised to zero, and behaves exactly like a normal bitmask; however, the type safety ensures that it is impossible to set unrelated bits, with errors emitted at compile time.
+
+For example:
+
+```c++
+vk::ImageUsageFlags iu1; // Initialize a bitmask with no bit set
+vk::ImageUsageFlags iu2 = {}; // Default-initialize with no bit set
+vk::ImageUsageFlags iu3 = vk::ImageUsageFlagBits::eColorAttachment; // initialize with a single value
+vk::ImageUsageFlags iu4 = vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage; // or two bits to get a bitmask
+vk::ImageUsageFlags iu5 = iu3 | vk::PipelineStageFlagBits::eVertexShader; // Compile-time error
+PipelineShaderStageCreateInfo ci({} /* pass a flag without any bits set */, ...);
+```
 
 ## Passing Arrays to Functions using ArrayProxy
 
@@ -371,7 +393,7 @@ catch(std::exception const &e)
 > [!IMPORTANT]
 > The vulkan handles in the `vk`-namespace do not support RAII, hence you need to cleanup your resources in the error handler! Instead, you could use the handle wrapper classes in the `vk::raii`-namespace.
 
-## C++17: [[nodiscard]]
+## C++17: `[[nodiscard]]`
 
 With C++17 and above, some functions are attributed with `[[nodiscard]]`, resulting in a warning if you don't use the return value in any way. You can switch those warnings off by defining `VULKAN_HPP_NO_NODISCARD_WARNINGS`.
 

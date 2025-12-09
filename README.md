@@ -8,13 +8,16 @@ It adds features like type safety for enumerations and bit-fields, STL container
 
 This repository contains the [generators](VulkanHppGenerator.hpp) for Vulkan-Hpp, which accept the [XML specification of Vulkan](https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/refs/heads/main/xml/vk.xml) and emit C++ bindings, which are documented further below.
 
+## CI/CD status
+
 | Platform | Build Status |
-|:--------:|:------------:|
-| Windows  | [![CI Windows Clang](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-clang.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-clang.yml) <br> [![CI Windows MSVC](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-msvc.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-msvc.yml) |
-| Linux    | [![CI Ubuntu 22](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-22.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-22.yml) <br> [![CI Ubuntu 24](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-24.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-24.yml) |
-| MacOS    | [![CI MacOS](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-macos.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-macos.yml) |
+|:--------|:------------|
+| **Windows**  | [![CI Windows Clang](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-clang.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-clang.yml) <br> [![CI Windows MSVC](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-msvc.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-msvc.yml) |
+| **Linux**    | [![CI Ubuntu 22](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-22.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-22.yml) <br> [![CI Ubuntu 24](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-24.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-24.yml) |
+| **macOS**    | [![CI MacOS](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-macos.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-macos.yml) |
 
 - [Overview](#overview)
+- [CI/CD status](#cicd-status)
 - [Installation and usage](#installation-and-usage)
   - [Vulkan SDK](#vulkan-sdk)
   - [vcpkg](#vcpkg)

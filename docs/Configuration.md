@@ -142,7 +142,7 @@ With C++20, the so-called spaceship-operator `<=>` is introduced. If that operat
 
 ## `VULKAN_HPP_NO_TO_STRING`
 
-By default, the file [`vulkan_to_string.hpp`](vulkan/vulkan_to_string.hpp) is included by `vulkan.hpp` and provides functions `vk::to_string` for enums and bitmasks. If you don't need those functions, you can define `VULKAN_HPP_NO_TO_STRING` to prevent that inclusion. If you have certain files where you want to use those functions nevertheless, you can explicitly include `vulkan_to_string.hpp` there.
+By default, the file [`vulkan_to_string.hpp`](../vulkan/vulkan_to_string.hpp) is included by `vulkan.hpp` and provides functions `vk::to_string` for enums and bitmasks. If you don't need those functions, you can define `VULKAN_HPP_NO_TO_STRING` to prevent that inclusion. If you have certain files where you want to use those functions nevertheless, you can explicitly include `vulkan_to_string.hpp` there.
 
 ## `VULKAN_HPP_NO_WIN32_PROTOTYPES`
 
@@ -167,7 +167,7 @@ With this define you can specify whether the `vk::detail::DispatchLoaderDynamic`
 
 ## `VULKAN_HPP_UNEXPECTED`
 
-See [`VULKAN_HPP_EXPECTED`](#expected).
+See [`VULKAN_HPP_EXPECTED`](#vulkan_hpp_expected).
 
 ## `VULKAN_HPP_USE_REFLECT`
 

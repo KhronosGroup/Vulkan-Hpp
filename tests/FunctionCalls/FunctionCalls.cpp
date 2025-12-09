@@ -30,7 +30,7 @@
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan.h>
-import vulkan_hpp;
+import vulkan;
 #else
 #  include <cassert>
 #  include <vulkan/vulkan.hpp>

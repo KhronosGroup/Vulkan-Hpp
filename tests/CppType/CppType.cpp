@@ -15,7 +15,7 @@
 // VulkanHpp Tests : CppType
 //                   Compile test on using vk::CppType
 
-#include "../test_macros.hpp"
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan.h>
 import vulkan;

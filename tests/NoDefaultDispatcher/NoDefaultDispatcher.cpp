@@ -15,7 +15,7 @@
 // VulkanHpp Samples : NoDefaultDispatcher
 //                     Compile test with VULKAN_HPP_NO_DEFAULT_DISPATCHER defined
 
-#include "../test_macros.hpp"
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 import vulkan;
 #else

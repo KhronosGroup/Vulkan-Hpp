@@ -16,7 +16,7 @@
 
 // Should be used on 64 bit only, as on 32 bit the test is ambiguous.
 
-#include "../test_macros.hpp"
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
   #include <vulkan/vulkan.h>
   import vulkan;

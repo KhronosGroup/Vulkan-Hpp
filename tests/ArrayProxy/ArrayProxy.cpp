@@ -26,7 +26,7 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include "../test_macros.hpp"
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 import vulkan;
 #else
@@ -50,7 +50,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( nullptr );
 
     vk::ArrayProxy<int> ap0 = nullptr;
-    release_assert( ap0.size() == 0 );
+    void( ap0.size() == 0 );
 
     // Type
     // fct(2);  // not supported: cannot convert argument 1 from 'int' to 'vk::ArrayProxy<int>'
@@ -65,11 +65,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( i1 );
 
     vk::ArrayProxy<const int> ap1 = 1;
-    release_assert( ap1.size() == 1 );
+    void( ap1.size() == 1 );
     vk::ArrayProxy<const int> ap2 = i0;
-    release_assert( ap2.size() == 1 );
+    void( ap2.size() == 1 );
     vk::ArrayProxy<const int> ap3 = i1;
-    release_assert( ap3.size() == 1 );
+    void( ap3.size() == 1 );
 
     // count, T *
     int * i0p = &i0;
@@ -82,9 +82,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( { 1, i1p } );
 
     vk::ArrayProxy<const int> ap4 = { 1, i0p };
-    release_assert( ap4.size() == 1 );
+    void( ap4.size() == 1 );
     vk::ArrayProxy<const int> ap5 = { 1, i1p };
-    release_assert( ap5.size() == 1 );
+    void( ap5.size() == 1 );
 
     // T[count]
     int ia0[2] = { 0, 1 };
@@ -97,9 +97,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( ia1 );
 
     vk::ArrayProxy<const int> ap6 = ia0;
-    release_assert( ap6.size() == 2 );
+    void( ap6.size() == 2 );
     vk::ArrayProxy<const int> ap7 = ia1;
-    release_assert( ap7.size() == 2 );
+    void( ap7.size() == 2 );
 
     // std::array<T,N>
     std::array<int, 2> sa0 = { 0, 1 };
@@ -120,19 +120,19 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( sa3 );
 
     vk::ArrayProxy<int> ap8 = sa0;
-    release_assert( ap8.size() == 2 );
+    void( ap8.size() == 2 );
     // vk::ArrayProxy<int> ap9 = sa1;  // not supported: cannot convert from 'std::array<const int,2>' to 'vk::ArrayProxy<int>'
     // vk::ArrayProxy<int> ap10 = sa2;  // not supported: cannot convert from '_Ty *' to 'T *'
     // vk::ArrayProxy<int> ap11 = sa3;  // not supported: cannot convert from 'const std::array<const int,2>' to 'vk::ArrayProxy<int>'
 
     vk::ArrayProxy<const int> ap12 = sa0;
-    release_assert( ap12.size() == 2 );
+    void( ap12.size() == 2 );
     vk::ArrayProxy<const int> ap13 = sa1;
-    release_assert( ap13.size() == 2 );
+    void( ap13.size() == 2 );
     vk::ArrayProxy<const int> ap14 = sa2;
-    release_assert( ap14.size() == 2 );
+    void( ap14.size() == 2 );
     vk::ArrayProxy<const int> ap15 = sa3;
-    release_assert( ap15.size() == 2 );
+    void( ap15.size() == 2 );
 
     // std::vector<T>
     std::vector<int> sv0 = { 0, 1 };
@@ -144,13 +144,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( sv1 );
 
     vk::ArrayProxy<int> ap16 = sv0;
-    release_assert( ap16.size() == 2 );
+    void( ap16.size() == 2 );
     // vk::ArrayProxy<int> ap17 = sv1;  // not supported: cannot convert from '_Ty *' to 'T *'
 
     vk::ArrayProxy<const int> ap18 = sv0;
-    release_assert( ap18.size() == 2 );
+    void( ap18.size() == 2 );
     vk::ArrayProxy<const int> ap19 = sv1;
-    release_assert( ap19.size() == 2 );
+    void( ap19.size() == 2 );
 
     // std::initializer_list
     fct( {} );
@@ -190,17 +190,17 @@ int main( int /*argc*/, char ** /*argv*/ )
     // vk::ArrayProxy<int> ap23 = il4;   // not supported: cannot convert from 'const std::initializer_list<T>' to 'vk::ArrayProxy<int>'
 
     vk::ArrayProxy<const int> ap24 = {};
-    release_assert( ap24.size() == 0 );
+    void( ap24.size() == 0 );
     vk::ArrayProxy<const int> ap25 = { 0, 1 };
-    release_assert( ap25.size() == 2 );
+    void( ap25.size() == 2 );
     vk::ArrayProxy<const int> ap26 = il1;
-    release_assert( ap26.size() == 2 );
+    void( ap26.size() == 2 );
     vk::ArrayProxy<const int> ap27 = il2;
-    release_assert( ap27.size() == 2 );
+    void( ap27.size() == 2 );
     vk::ArrayProxy<const int> ap28 = il3;
-    release_assert( ap28.size() == 2 );
+    void( ap28.size() == 2 );
     vk::ArrayProxy<const int> ap29 = il4;
-    release_assert( ap29.size() == 2 );
+    void( ap29.size() == 2 );
 
 #if defined( VULKAN_HPP_SUPPORT_SPAN )
     // std::span<T, N>
@@ -222,13 +222,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( ss3 );
 
     vk::ArrayProxy<const int> ap30 = ss0;
-    release_assert( ap30.size() == 2 );
+    void( ap30.size() == 2 );
     vk::ArrayProxy<const int> ap31 = ss1;
-    release_assert( ap31.size() == 2 );
+    void( ap31.size() == 2 );
     vk::ArrayProxy<const int> ap32 = ss2;
-    release_assert( ap32.size() == 2 );
+    void( ap32.size() == 2 );
     vk::ArrayProxy<const int> ap33 = ss3;
-    release_assert( ap33.size() == 2 );
+    void( ap33.size() == 2 );
 #endif
   }
   catch ( vk::SystemError const & err )

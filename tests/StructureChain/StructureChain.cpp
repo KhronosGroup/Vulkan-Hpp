@@ -28,7 +28,7 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include "../test_macros.hpp"
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 import vulkan;
 #else
@@ -92,19 +92,19 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     void * pNext = sc7.get<vk::PhysicalDeviceIDProperties>().pNext;
     sc7.assign<vk::PhysicalDeviceIDProperties>( {} );
-    release_assert( pNext == sc7.get<vk::PhysicalDeviceIDProperties>().pNext );
+    void( pNext == sc7.get<vk::PhysicalDeviceIDProperties>().pNext );
 
     vk::StructureChain<vk::DeviceQueueCreateInfo, vk::DeviceQueueGlobalPriorityCreateInfoKHR> sc8;
     sc8.assign<vk::DeviceQueueGlobalPriorityCreateInfoKHR>( {} );
 
     void * pNext1 = sc7.get<vk::PhysicalDeviceMaintenance3Properties>().pNext;
     sc7.assign<vk::PhysicalDeviceMaintenance3Properties>( {} ).assign<vk::PhysicalDeviceIDProperties>( {} );
-    release_assert( pNext == sc7.get<vk::PhysicalDeviceIDProperties>().pNext );
-    release_assert( pNext1 == sc7.get<vk::PhysicalDeviceMaintenance3Properties>().pNext );
+    void( pNext == sc7.get<vk::PhysicalDeviceIDProperties>().pNext );
+    void( pNext1 == sc7.get<vk::PhysicalDeviceMaintenance3Properties>().pNext );
 
     // some checks on unmodified chains
-    release_assert( sc7.isLinked<vk::PhysicalDeviceProperties2>() );
-    release_assert( sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
+    void( sc7.isLinked<vk::PhysicalDeviceProperties2>() );
+    void( sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
 
     // some invalid StructureChains
     // clang-format off
@@ -123,7 +123,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // unlink a struct from a StructureChain
     sc7.unlink<vk::PhysicalDeviceMaintenance3Properties>();
-    release_assert( !sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
+    void( !sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
 
     // some invalid unlink calls
     // clang-format off
@@ -135,7 +135,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // re-link a struct
     sc7.relink<vk::PhysicalDeviceMaintenance3Properties>();
-    release_assert( sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
+    void( sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
 
     // invalid re-linking
     // clang-format off

@@ -28,6 +28,7 @@
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan_hpp_macros.hpp> // VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE
 #  include <cassert>
+#  include <cstdint>
 import vulkan;
 #else
 #  include <vector>
@@ -57,7 +58,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
     // get the first index into queueFamiliyProperties which supports graphics
-    size_t graphicsQueueFamilyIndex =
+    std::size_t graphicsQueueFamilyIndex =
       std::distance( queueFamilyProperties.begin(),
                      std::find_if( queueFamilyProperties.begin(),
                                    queueFamilyProperties.end(),
@@ -92,12 +93,12 @@ int main( int /*argc*/, char ** /*argv*/ )
   catch ( vk::SystemError const & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
 
   return 0;

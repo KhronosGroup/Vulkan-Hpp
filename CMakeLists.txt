@@ -569,7 +569,6 @@ function( vulkan_hpp__setup_test_project )
 		vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
 		if ( VULKAN_HPP_BUILD_CXX_MODULE )
 			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::HppModule )
-			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::VideoHppModule )
 			target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_USE_CXX_MODULE )
 			set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
 		else()
@@ -592,7 +591,7 @@ function( vulkan_hpp__setup_test_project )
 	endif()
 endfunction()
 
-# create Vulkan::Hpp and possibly Vulkan::HppModule/VideoHppModule targets
+# create Vulkan::Hpp and possibly Vulkan::HppModule targets
 vulkan_hpp__setup_vulkan_targets()
 
 if( VULKAN_HPP_SAMPLES_BUILD OR VULKAN_HPP_TESTS_BUILD )

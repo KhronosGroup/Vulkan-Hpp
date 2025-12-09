@@ -321,7 +321,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::QueryPool                    queryPool   = nullptr;
     uint32_t                               firstQuery  = 0;
     uint32_t                               queryCount  = 1;
-    size_t                                 dataSize    = sizeof( uint32_t );
+    std::size_t                            dataSize    = sizeof( uint32_t );
     vk::DeviceSize                         stride      = sizeof( uint32_t );
     vk::QueryResultFlagBits                flags       = {};
     vk::ResultValue<std::vector<uint32_t>> resultValue = queryPool.getResults<uint32_t>( firstQuery, queryCount, dataSize, stride, flags );

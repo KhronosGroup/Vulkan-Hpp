@@ -1,8 +1,8 @@
-## Building
+# Building
 
-### Minimum requirements
+## Minimum requirements
 
-Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers are known to work, and tested during releases:
+The generator, samples, and tests requires a C++11 compiler. The following compilers are known to work, and tested during releases:
 
 - Visual Studio ≥ 2015
 - GCC ≥ 4.8.2
@@ -10,9 +10,9 @@ Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers
 
 > [!NOTE]
 > Compiling the C++ named module requires the most recent compiler toolchains possible.
-> This is detailed in the corresponding [section](./docs/Usage.md/#c20-named-module).
+> This is detailed in the corresponding [section](./Usage.md/#c20-named-module).
 
-### Build steps
+## Build steps
 
 1. Install dependencies:
    - Install CMake and git; ensure both are available from a shell.
@@ -33,12 +33,12 @@ Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers
 
     ```cmake --build build --parallel```
 
-### Additional features
+## Additional features
 
-#### Formatting
+### Formatting
 
 If a `clang-format` executable is found by CMake, the define `CLANG_FORMAT_EXECUTABLE` is set accordingly. In that case, the generated headers are formatted using the `.clang-format` file located in the root directory of this project; otherwise, the formatting is left as hard-coded in the generator.
 
-#### Custom views of Vulkan-Hpp objects in Visual Studio
+### Custom views of Vulkan-Hpp objects in Visual Studio
 
-[`VulkanHpp.natvis`](./VulkanHpp.natvis) provides a custom view over `vk::Flags` for Visual Studio. Add this file to the directory of your Visual Studio installation (`%USERPROFILE%\Documents\Visual Studio 2022\Visualizers`). `vk::Flags` will be appropriately formatted in the debugger.
+[`VulkanHpp.natvis`](../VulkanHpp.natvis) provides a custom view over `vk::Flags` for Visual Studio. Add this file to the directory of your Visual Studio installation (`%USERPROFILE%\Documents\Visual Studio 2022\Visualizers`). `vk::Flags` will be appropriately formatted in the debugger.

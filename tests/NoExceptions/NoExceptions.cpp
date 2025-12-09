@@ -19,13 +19,15 @@
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #include <cstdint>
+#  include <cassert>
 import vulkan;
 #else
 #  include <vector>
 #  include <cstdint>
 #  include <iostream>
 #  include <algorithm>
-#  include "vulkan/vulkan.hpp"
+#  include <cassert>
+#  include <vulkan/vulkan.hpp>
 #endif
 
 
@@ -47,7 +49,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   vk::detail::defaultDispatchLoaderDynamic.init( *instance );
 
   std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices().value;
-  void( !physicalDevices.empty() );
+  assert( !physicalDevices.empty() );
 
   // get the QueueFamilyProperties of the first PhysicalDevice
   std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevices[0].getQueueFamilyProperties();
@@ -58,7 +60,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                    std::find_if( queueFamilyProperties.begin(),
                                  queueFamilyProperties.end(),
                                  []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } ) );
-  void( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
+  assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
   // create a UniqueDevice
   float                     queuePriority = 0.0f;

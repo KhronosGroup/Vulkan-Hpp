@@ -19,6 +19,7 @@
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <cstdint>
+#  include <cassert>
 import vulkan;
 #else
 #  include <vector>
@@ -38,10 +39,10 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, vk::ApiVersion11 );
   auto                instance = context.createInstance( { {}, &appInfo } );
-  void( instance.has_value() );
+  assert( instance.has_value() );
 
   auto physicalDevices = instance->enumeratePhysicalDevices();
-  void( physicalDevices.has_value() );
+  assert( physicalDevices.has_value() );
   auto physicalDevice = physicalDevices->front();
 
   // get the QueueFamilyProperties of the first PhysicalDevice
@@ -53,21 +54,21 @@ int main( int /*argc*/, char ** /*argv*/ )
                    std::find_if( queueFamilyProperties.begin(),
                                  queueFamilyProperties.end(),
                                  []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } ) );
-  void( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
+  assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
   // create a Device
   float                     queuePriority = 0.0f;
   vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
   auto                      device = physicalDevice.createDevice( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
-  void( device.has_value() );
+  assert( device.has_value() );
 
   // create a CommandPool to allocate a CommandBuffer from
   auto commandPool = device->createCommandPool( vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlags(), deviceQueueCreateInfo.queueFamilyIndex ) );
-  void( commandPool.has_value() );
+  assert( commandPool.has_value() );
 
   // allocate a CommandBuffer from the CommandPool
   auto commandBuffers = device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 1 ) );
-  void( commandBuffers.has_value() );
+  assert( commandBuffers.has_value() );
 
   auto commandBuffer = std::move( commandBuffers.value[0] );
 #endif

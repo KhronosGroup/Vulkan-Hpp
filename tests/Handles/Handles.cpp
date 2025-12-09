@@ -18,6 +18,7 @@
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan.h>
+#  include <cassert>
 import vulkan;
 #else
 #  include <iostream>
@@ -39,21 +40,21 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     // test operator==() with vk-handle and nullptr
     vk::Instance instance;
-    void( instance == nullptr );
-    void( nullptr == instance );
+    assert( instance == nullptr );
+    assert( nullptr == instance );
 
     instance = vk::createInstance( {} );
-    void( instance != nullptr );
-    void( nullptr != instance );
+    assert( instance != nullptr );
+    assert( nullptr != instance );
 
     vk::Instance instance2;
-    void( instance != instance2 );
-    void( !( instance == instance2 ) );
+    assert( instance != instance2 );
+    assert( !( instance == instance2 ) );
 
-    void( instance2 < instance );
+    assert( instance2 < instance );
 
     instance2 = vk::createInstance( {} );
-    void( instance != instance2 );
+    assert( instance != instance2 );
 
     if ( instance == instance2 )
     {
@@ -114,7 +115,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     vk::raii::PhysicalDevices physicalDevices( i0 );
-    void( physicalDevices.size() == 2 );
+    assert( physicalDevices.size() == 2 );
     if ( physicalDevices[0] == physicalDevices[1] )
     {
       std::cout << "fufu";

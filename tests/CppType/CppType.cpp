@@ -18,10 +18,12 @@
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan.h>
+#  include <cassert>
 import vulkan;
 #else
 #  include <cstdint>
 #  include <type_traits>
+#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #  include <vulkan/vulkan_raii.hpp>
 #endif

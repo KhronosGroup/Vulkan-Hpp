@@ -21,6 +21,7 @@ import vulkan_hpp;
 #else
 #  include <iostream>
 #  include <map>
+#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #endif
 
@@ -32,7 +33,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Instance instance = vk::createInstance( {} );
 
     std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
-    void( !physicalDevices.empty() );
+    assert( !physicalDevices.empty() );
 
     vk::Device device = physicalDevices[0].createDevice( {} );
 

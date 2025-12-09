@@ -33,6 +33,7 @@
 
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
+#  include <cassert>
 import vulkan;
 #else
 #  include <set>
@@ -58,41 +59,41 @@ int main( int /*argc*/, char ** /*argv*/ )
 #endif
 
   std::set<std::string> const & instanceExtensions = vk::getInstanceExtensions();
-  void( instanceExtensions.find( vk::KHRSurfaceExtensionName ) != instanceExtensions.end() );
+  assert( instanceExtensions.find( vk::KHRSurfaceExtensionName ) != instanceExtensions.end() );
 
   std::set<std::string> const & deviceExtensions = vk::getDeviceExtensions();
-  void( deviceExtensions.find( vk::KHRSwapchainExtensionName ) != deviceExtensions.end() );
+  assert( deviceExtensions.find( vk::KHRSwapchainExtensionName ) != deviceExtensions.end() );
 
   std::map<std::string, std::vector<std::vector<std::string>>> depends = vk::getExtensionDepends( vk::KHRSwapchainExtensionName );
-  void( ( depends.size() == 1 ) && ( depends.begin()->first == "VK_VERSION_1_0" ) && ( depends.begin()->second.size() == 1 ) &&
+  assert( ( depends.size() == 1 ) && ( depends.begin()->first == "VK_VERSION_1_0" ) && ( depends.begin()->second.size() == 1 ) &&
           ( depends.begin()->second[0].size() == 1 ) && ( depends.begin()->second[0][0] == vk::KHRSurfaceExtensionName ) );
 
   auto [available0, deps0] = vk::getExtensionDepends( "VK_VERSION_1_0", vk::KHRSurfaceExtensionName );
-  void( available0 && deps0.empty() );
+  assert( available0 && deps0.empty() );
 
   auto [available1, deps1] = vk::getExtensionDepends( "VK_VERSION_1_0", vk::KHRSwapchainExtensionName );
-  void( available1 && ( deps1.size() == 1 ) && ( deps1[0].size() == 1 ) && ( deps1[0][0] == vk::KHRSurfaceExtensionName ) );
+  assert( available1 && ( deps1.size() == 1 ) && ( deps1[0].size() == 1 ) && ( deps1[0][0] == vk::KHRSurfaceExtensionName ) );
 
   auto [available2, deps2] = vk::getExtensionDepends( "VK_VERSION_1_1", vk::KHRSwapchainExtensionName );
-  void( available2 && ( deps2.size() == 1 ) && ( deps2[0].size() == 1 ) && ( deps2[0][0] == vk::KHRSurfaceExtensionName ) );
+  assert( available2 && ( deps2.size() == 1 ) && ( deps2[0].size() == 1 ) && ( deps2[0][0] == vk::KHRSurfaceExtensionName ) );
 
   auto [available3, deps3] = vk::getExtensionDepends( "VK_VERSION_1_1", vk::EXTShaderTileImageExtensionName );
-  void( !available3 );
+  assert( !available3 );
 
   auto [available4, deps4] = vk::getExtensionDepends( "VK_VERSION_1_3", vk::EXTShaderTileImageExtensionName );
-  void( available4 && ( deps4.size() == 1 ) && deps4[0].empty() );
+  assert( available4 && ( deps4.size() == 1 ) && deps4[0].empty() );
 
   std::map<std::string, std::string> const & deprecatedExtensions = vk::getDeprecatedExtensions();
   auto                                       deprecatedIt         = deprecatedExtensions.find( vk::EXTDebugReportExtensionName );
-  void( ( deprecatedIt != deprecatedExtensions.end() ) && ( deprecatedIt->second == vk::EXTDebugUtilsExtensionName ) );
+  assert( ( deprecatedIt != deprecatedExtensions.end() ) && ( deprecatedIt->second == vk::EXTDebugUtilsExtensionName ) );
 
   std::map<std::string, std::string> const & obsoletedExtensions = vk::getObsoletedExtensions();
   auto                                       obsoletedIt         = obsoletedExtensions.find( vk::AMDNegativeViewportHeightExtensionName );
-  void( ( obsoletedIt != obsoletedExtensions.end() ) && ( obsoletedIt->second == vk::KHRMaintenance1ExtensionName ) );
+  assert( ( obsoletedIt != obsoletedExtensions.end() ) && ( obsoletedIt->second == vk::KHRMaintenance1ExtensionName ) );
 
   std::map<std::string, std::string> const & promotedExtensions = vk::getPromotedExtensions();
   auto                                       promotedIt         = promotedExtensions.find( vk::EXTDebugMarkerExtensionName );
-  void( ( promotedIt != promotedExtensions.end() ) && ( promotedIt->second == vk::EXTDebugUtilsExtensionName ) );
+  assert( ( promotedIt != promotedExtensions.end() ) && ( promotedIt->second == vk::EXTDebugUtilsExtensionName ) );
 
   return 0;
 }

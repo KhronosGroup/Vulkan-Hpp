@@ -17,11 +17,13 @@
 
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
+#  include <cassert>
 import vulkan;
 #else
 #  include <map>
 #  include <vector>
 #  include <iostream>
+#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #endif
 
@@ -56,7 +58,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // create a dispatcher, based on additional vkDevice/vkGetDeviceProcAddr
     std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
-    void( !physicalDevices.empty() );
+    assert( !physicalDevices.empty() );
 
     vk::Device device = physicalDevices[0].createDevice( {}, nullptr );
 

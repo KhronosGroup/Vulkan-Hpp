@@ -14,9 +14,11 @@
 
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan;
+  #  include <cassert>
+import vulkan;
 #else
 #  include <iostream>
+#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #endif
 
@@ -35,11 +37,11 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance;
     instance = vk::createInstance( {} );
-    void( instance != nullptr );
+    assert( instance != nullptr );
 
     vk::Instance anotherInstance = std::move( instance );
-    void( instance == nullptr );
-    void( anotherInstance != nullptr );
+    assert( instance == nullptr );
+    assert( anotherInstance != nullptr );
 
     anotherInstance.destroy();
   }

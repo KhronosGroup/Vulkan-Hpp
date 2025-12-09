@@ -18,10 +18,12 @@
 
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  #include <vulkan/vulkan.h>
-  import vulkan;
+#  include <vulkan/vulkan.h>
+#  include <cassert>
+import vulkan;
 #else
-#  include "vulkan/vulkan.hpp"
+#  include <cassert>
+#  include <vulkan/vulkan.hpp>
 #endif
 
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1

@@ -27,12 +27,14 @@
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan_hpp_macros.hpp> // VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE
+#  include <cassert>
 import vulkan;
 #else
 #  include <vector>
 #  include <cstdint>
 #  include <iostream>
 #  include <algorithm>
+#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #endif
 
@@ -60,7 +62,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                      std::find_if( queueFamilyProperties.begin(),
                                    queueFamilyProperties.end(),
                                    []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } ) );
-    void( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
+    assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
     // create a UniqueDevice
     float                     queuePriority = 0.0f;

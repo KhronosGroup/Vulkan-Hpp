@@ -28,7 +28,7 @@
 
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-import vulkan_video_hpp;
+import vulkan;
 #else
 #  include <vulkan/vulkan_video.hpp>
 #endif

@@ -30,7 +30,7 @@
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <cstdint>
-import vulkan_hpp;
+import vulkan;
 #else
 #  include <vulkan/vulkan_raii.hpp>
 #endif

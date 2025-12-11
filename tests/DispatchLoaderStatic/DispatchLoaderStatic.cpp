@@ -15,12 +15,17 @@
 // VulkanHpp Samples : DispatchLoaderStatic
 //                     Compile test on DispatchLoaderStatic functions
 
-#undef VULKAN_HPP_DISPATCH_LOADER_DYNAMIC
-#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 0
 
-#include <iostream>
-#include <map>
-#include <vulkan/vulkan.hpp>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+#include <cassert>
+import vulkan;
+#else
+#  include <iostream>
+#  include <map>
+#  include <cassert>
+#  include <vulkan/vulkan.hpp>
+#endif
+
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -39,12 +44,12 @@ int main( int /*argc*/, char ** /*argv*/ )
   catch ( vk::SystemError const & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
 
   return 0;

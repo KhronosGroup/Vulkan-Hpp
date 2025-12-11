@@ -15,20 +15,22 @@
 // VulkanHpp Samples : FormatTraits
 //                     Compile test on using format traits functions
 
-#include <cassert>
-#include <cstring>
-#include <iostream>
-#include <map>
-#include <set>
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
+#  include <cassert>
 import vulkan;
 #else
+#  include <cstring>
+#  include <iostream>
+#  include <map>
+#  include <set>
 #  include <vulkan/vulkan_format_traits.hpp>
 #endif
 
+
 int main( int /*argc*/, char ** /*argv*/ )
 {
-#if VULKAN_HPP_CPP_VERSION < 14
+#if VULKAN_HPP_CPP_VERSION < 14 || defined( VULKAN_HPP_USE_CXX_MODULE )
   assert( vk::blockSize( vk::Format::eR4G4UnormPack8 ) == 1 );
 #else
   static_assert( vk::blockSize( vk::Format::eR4G4UnormPack8 ) == 1, "Wrong blocksize !" );
@@ -48,7 +50,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     format = vk::Format::eR4G4UnormPack8;
   }
 
-#if VULKAN_HPP_CPP_VERSION < 14
+#if VULKAN_HPP_CPP_VERSION < 14 || defined( VULKAN_HPP_USE_CXX_MODULE )
   assert( vk::isCompressed( vk::Format::eBc1RgbSrgbBlock ) );
 #else
   static_assert( vk::isCompressed( vk::Format::eBc1RgbSrgbBlock ), "IsCompressed ?" );
@@ -62,7 +64,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   }
 
   constexpr vk::Format constFormat = vk::Format::eR4G4UnormPack8;
-#if VULKAN_HPP_CPP_VERSION < 14
+#if VULKAN_HPP_CPP_VERSION < 14 || defined( VULKAN_HPP_USE_CXX_MODULE )
   assert( vk::componentBits( constFormat, 1 ) == 4 );
 #else
   static_assert( vk::componentBits( constFormat, 1 ) == 4, "Wrong component bits !" );
@@ -76,7 +78,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   assert( std::string( vk::componentNumericFormat( constFormat, 1 ) ) == "UNORM" );
 
-#if VULKAN_HPP_CPP_VERSION < 14
+#if VULKAN_HPP_CPP_VERSION < 14 || defined( VULKAN_HPP_USE_CXX_MODULE )
   assert( vk::componentPlaneIndex( constFormat, 8 ) == 0 );
 #else
   static_assert( vk::componentPlaneIndex( constFormat, 8 ) == 0, "Hoo" );
@@ -119,7 +121,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << std::endl;
   }
 
-#if VULKAN_HPP_CPP_VERSION < 14
+#if VULKAN_HPP_CPP_VERSION < 14 || defined( VULKAN_HPP_USE_CXX_MODULE )
   assert( vk::hasRedComponent( vk::Format::eR4G4B4A4UnormPack16 ) );
   assert( vk::hasGreenComponent( vk::Format::eR4G4B4A4UnormPack16 ) );
   assert( vk::hasBlueComponent( vk::Format::eR4G4B4A4UnormPack16 ) );

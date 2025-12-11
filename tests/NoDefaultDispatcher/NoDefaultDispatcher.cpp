@@ -15,11 +15,12 @@
 // VulkanHpp Samples : NoDefaultDispatcher
 //                     Compile test with VULKAN_HPP_NO_DEFAULT_DISPATCHER defined
 
-#define VULKAN_HPP_NO_DEFAULT_DISPATCHER
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
+#  include <cassert>
 import vulkan;
 #else
+#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #  include <vulkan/vulkan_raii.hpp>
 #  include <vulkan/vulkan_shared.hpp>

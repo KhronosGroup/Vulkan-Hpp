@@ -15,13 +15,16 @@
 // VulkanHpp Tests : DesignatedInitializers
 //                   Compile test on using designated initializers
 
-#include <cstdint>
-#include <iostream>
-#include <vector>
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-#  include <vulkan/vulkan_hpp_macros.hpp>
+#  include <cstdint>
+#  include <cassert>
 import vulkan;
 #else
+#  include <cstdint>
+#  include <iostream>
+#  include <vector>
+#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #endif
 
@@ -62,26 +65,8 @@ int main( int /*argc*/, char ** /*argv*/ )
   // default initialization is available in any case
   vk::ApplicationInfo ai0;
 
-#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
-  // due to default initializers, any number of members can be initialized
-  // most IDEs will probably help with the order of the members !
-  vk::ApplicationInfo ai1( appName );
-  vk::ApplicationInfo ai2( appName, appVersion );
-  vk::ApplicationInfo ai3( appName, appVersion, engineName );
-  vk::ApplicationInfo ai4( appName, appVersion, engineName, engineVersion );
-  vk::ApplicationInfo ai5( appName, appVersion, engineName, engineVersion, vk::ApiVersion12 );
-
-  // a structure in namespace vk:: can be copied from the corresponding vulkan C-struct
-  VkApplicationInfo   vai;
-  vk::ApplicationInfo ai6( vai );
-
-#else
-
   // aggregate initialization: need to explicitly specify sType and pNext, as well as all the other members !
   vk::ApplicationInfo ai1{ vk::StructureType::eApplicationInfo, nullptr, appName, appVersion, engineName, engineVersion, vk::ApiVersion12 };
-
-#  if ( 20 <= VULKAN_HPP_CPP_VERSION )
-  // designated initializers are available with C++20
 
   // it's allowed, but not recommended to explicitly specify sType
   vk::ApplicationInfo ai2 = { .sType = vk::StructureType::eApplicationInfo };
@@ -101,8 +86,6 @@ int main( int /*argc*/, char ** /*argv*/ )
                       .enabledExtensionCount   = (uint32_t)extensions.size(),
                       .ppEnabledExtensionNames = extensions.data(),
   };
-#  endif
-#endif
 
   return 0;
 }

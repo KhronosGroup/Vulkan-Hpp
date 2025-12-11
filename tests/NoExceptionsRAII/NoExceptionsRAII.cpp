@@ -16,15 +16,18 @@
 //                     Compile test with VULKAN_HPP_NO_EXCEPTIONS set and using raii-classes
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
-#include <vector>
-#include <cassert>
-#include <cstdint>
-#include <algorithm>
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan;
+#  include <cstdint>
+#  include <cassert>
+import vulkan;
 #else
-# include "vulkan/vulkan_raii.hpp"
+#  include <vector>
+#  include <cstdint>
+#  include <algorithm>
+#  include "vulkan/vulkan_raii.hpp"
 #endif
+
 
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
@@ -46,7 +49,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
   // get the first index into queueFamiliyProperties which supports graphics
-  size_t graphicsQueueFamilyIndex =
+  std::size_t graphicsQueueFamilyIndex =
     std::distance( queueFamilyProperties.begin(),
                    std::find_if( queueFamilyProperties.begin(),
                                  queueFamilyProperties.end(),

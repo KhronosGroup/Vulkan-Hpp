@@ -15,14 +15,16 @@
 // VulkanHpp Samples : ArrayProxy
 //                     Compile test on using vk::ArrayProxy
 
-#include <cassert>
-#include <iostream>
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  #include <vulkan/vulkan.h>
-  import vulkan;
+#  include <vulkan/vulkan.h>
+#  include <cassert>
+import vulkan;
 #else
-# include <vulkan/vulkan_raii.hpp>
+#  include <iostream>
+#  include <vulkan/vulkan_raii.hpp>
 #endif
+
 
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 namespace vk {

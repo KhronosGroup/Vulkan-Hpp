@@ -27,9 +27,20 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <vulkan/vulkan.hpp>
 
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+#  include <vulkan/vulkan.h>
+import vulkan;
+#else
+#  include <cassert>
+#  include <vulkan/vulkan.hpp>
+#endif
+
+namespace vk {
+  namespace detail {
+    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+  }
+}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

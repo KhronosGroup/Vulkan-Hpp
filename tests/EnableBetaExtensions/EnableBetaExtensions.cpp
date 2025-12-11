@@ -28,8 +28,10 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan;
+#  include <cassert>
+import vulkan;
 #else
 # include <vulkan/vulkan.hpp>
 #endif

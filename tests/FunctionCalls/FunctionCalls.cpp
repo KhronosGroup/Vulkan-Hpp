@@ -741,6 +741,37 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::SubresourceLayout subresourceLayout = device.getImageSubresourceLayout( image, subresource );
   }
 
+  // Image view commands
+  {
+    vk::Device              device;
+    vk::ImageViewCreateInfo imageViewCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::ImageView           imageView;
+    vk::Result              result = device.createImageView( &imageViewCreateInfo, &allocationCallbacks, &imageView );
+  }
+  {
+    vk::Device              device;
+    vk::ImageViewCreateInfo imageViewCreateInfo;
+    vk::ImageView           imageView = device.createImageView( imageViewCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::ImageView           imageView;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyImageView( imageView, &allocationCallbacks );
+  }
+  {
+    vk::Device    device;
+    vk::ImageView imageView;
+    device.destroyImageView( imageView );
+  }
+  {
+    vk::Device    device;
+    vk::ImageView imageView;
+    device.destroy( imageView );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

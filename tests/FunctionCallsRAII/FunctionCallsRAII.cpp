@@ -359,5 +359,17 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::SubresourceLayout subresourceLayout = image.getSubresourceLayout( imageSubresource );
   }
 
+  // Image view commands
+  {
+    vk::raii::Device         device = nullptr;
+    vk::ImageViewCreateInfo  imageViewCreateInfo;
+    vk::raii::ImageView      imageView = device.createImageView( imageViewCreateInfo );
+  }
+  {
+    vk::raii::Device         device = nullptr;
+    vk::ImageViewCreateInfo  imageViewCreateInfo;
+    vk::raii::ImageView      imageView( device, imageViewCreateInfo );
+  }
+
   return 0;
 }

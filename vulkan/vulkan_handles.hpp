@@ -10991,7 +10991,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename CheckpointDataNVAllocator::value_type, CheckpointDataNV>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                            = true>
     VULKAN_HPP_NODISCARD std::vector<CheckpointDataNV, CheckpointDataNVAllocator>
-      getCheckpointDataNV( CheckpointDataNVAllocator & checkpointDataNVAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getCheckpointDataNV( CheckpointDataNVAllocator const & checkpointDataNVAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetQueueCheckpointData2NV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueueCheckpointData2NV.html
@@ -11013,7 +11013,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename CheckpointData2NVAllocator::value_type, CheckpointData2NV>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                              = true>
     VULKAN_HPP_NODISCARD std::vector<CheckpointData2NV, CheckpointData2NVAllocator>
-      getCheckpointData2NV( CheckpointData2NVAllocator & checkpointData2NVAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getCheckpointData2NV( CheckpointData2NVAllocator const & checkpointData2NVAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_INTEL_performance_query ===
@@ -11409,9 +11409,9 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename SparseImageMemoryRequirementsAllocator::value_type, SparseImageMemoryRequirements>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD std::vector<SparseImageMemoryRequirements, SparseImageMemoryRequirementsAllocator>
-                         getImageSparseMemoryRequirements( Image                                    image,
-                                                           SparseImageMemoryRequirementsAllocator & sparseImageMemoryRequirementsAllocator,
-                                                           Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getImageSparseMemoryRequirements( Image                                          image,
+                                                           SparseImageMemoryRequirementsAllocator const & sparseImageMemoryRequirementsAllocator,
+                                                           Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkCreateFence, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateFence.html
@@ -11876,7 +11876,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                      = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<CommandBuffer, CommandBufferAllocator>>::type
       allocateCommandBuffers( const CommandBufferAllocateInfo & allocateInfo,
-                              CommandBufferAllocator &          commandBufferAllocator,
+                              CommandBufferAllocator const &    commandBufferAllocator,
                               Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
     // wrapper function for command vkAllocateCommandBuffers, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkAllocateCommandBuffers.html
@@ -11893,7 +11893,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<CommandBuffer, Dispatch>, CommandBufferAllocator>>::type
       allocateCommandBuffersUnique( const CommandBufferAllocateInfo & allocateInfo,
-                                    CommandBufferAllocator &          commandBufferAllocator,
+                                    CommandBufferAllocator const &    commandBufferAllocator,
                                     Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_NO_SMART_HANDLE */
 #endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
@@ -12172,7 +12172,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                          = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type getPipelineCacheData(
-      PipelineCache pipelineCache, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      PipelineCache pipelineCache, Uint8_tAllocator const & uint8_tAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkMergePipelineCaches, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkMergePipelineCaches.html
@@ -12216,7 +12216,7 @@ namespace VULKAN_HPP_NAMESPACE
                          createComputePipelines( PipelineCache                                       pipelineCache,
                                                  ArrayProxy<const ComputePipelineCreateInfo> const & createInfos,
                                                  Optional<const AllocationCallbacks>                 allocator,
-                                                 PipelineAllocator &                                 pipelineAllocator,
+                                                 PipelineAllocator const &                           pipelineAllocator,
                                                  Dispatch const & d                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateComputePipelines, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateComputePipelines.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
@@ -12244,7 +12244,7 @@ namespace VULKAN_HPP_NAMESPACE
                          createComputePipelinesUnique( PipelineCache                                       pipelineCache,
                                                        ArrayProxy<const ComputePipelineCreateInfo> const & createInfos,
                                                        Optional<const AllocationCallbacks>                 allocator,
-                                                       PipelineAllocator &                                 pipelineAllocator,
+                                                       PipelineAllocator const &                           pipelineAllocator,
                                                        Dispatch const & d                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateComputePipelines, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateComputePipelines.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
@@ -12516,7 +12516,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                      = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<DescriptorSet, DescriptorSetAllocator>>::type
       allocateDescriptorSets( const DescriptorSetAllocateInfo & allocateInfo,
-                              DescriptorSetAllocator &          descriptorSetAllocator,
+                              DescriptorSetAllocator const &    descriptorSetAllocator,
                               Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
     // wrapper function for command vkAllocateDescriptorSets, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkAllocateDescriptorSets.html
@@ -12533,7 +12533,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<DescriptorSet, Dispatch>, DescriptorSetAllocator>>::type
       allocateDescriptorSetsUnique( const DescriptorSetAllocateInfo & allocateInfo,
-                                    DescriptorSetAllocator &          descriptorSetAllocator,
+                                    DescriptorSetAllocator const &    descriptorSetAllocator,
                                     Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_NO_SMART_HANDLE */
 #endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
@@ -12610,7 +12610,7 @@ namespace VULKAN_HPP_NAMESPACE
                          createGraphicsPipelines( PipelineCache                                        pipelineCache,
                                                   ArrayProxy<const GraphicsPipelineCreateInfo> const & createInfos,
                                                   Optional<const AllocationCallbacks>                  allocator,
-                                                  PipelineAllocator &                                  pipelineAllocator,
+                                                  PipelineAllocator const &                            pipelineAllocator,
                                                   Dispatch const & d                                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateGraphicsPipelines, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateGraphicsPipelines.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
@@ -12638,7 +12638,7 @@ namespace VULKAN_HPP_NAMESPACE
                          createGraphicsPipelinesUnique( PipelineCache                                        pipelineCache,
                                                         ArrayProxy<const GraphicsPipelineCreateInfo> const & createInfos,
                                                         Optional<const AllocationCallbacks>                  allocator,
-                                                        PipelineAllocator &                                  pipelineAllocator,
+                                                        PipelineAllocator const &                            pipelineAllocator,
                                                         Dispatch const & d                                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateGraphicsPipelines, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateGraphicsPipelines.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
@@ -12878,9 +12878,9 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, SparseImageMemoryRequirements2>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
-                         getImageSparseMemoryRequirements2( const ImageSparseMemoryRequirementsInfo2 & info,
-                                                            SparseImageMemoryRequirements2Allocator &  sparseImageMemoryRequirements2Allocator,
-                                                            Dispatch const & d                         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getImageSparseMemoryRequirements2( const ImageSparseMemoryRequirementsInfo2 &      info,
+                                                            SparseImageMemoryRequirements2Allocator const & sparseImageMemoryRequirements2Allocator,
+                                                            Dispatch const & d                              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkTrimCommandPool, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkTrimCommandPool.html
@@ -13319,9 +13319,9 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, SparseImageMemoryRequirements2>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
-                         getImageSparseMemoryRequirements( const DeviceImageMemoryRequirements &     info,
-                                                           SparseImageMemoryRequirements2Allocator & sparseImageMemoryRequirements2Allocator,
-                                                           Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getImageSparseMemoryRequirements( const DeviceImageMemoryRequirements &           info,
+                                                           SparseImageMemoryRequirements2Allocator const & sparseImageMemoryRequirements2Allocator,
+                                                           Dispatch const & d                              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_VERSION_1_4 ===
@@ -13529,7 +13529,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename ImageAllocator::value_type, Image>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                      = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<Image, ImageAllocator>>::type
-      getSwapchainImagesKHR( SwapchainKHR swapchain, ImageAllocator & imageAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getSwapchainImagesKHR( SwapchainKHR swapchain, ImageAllocator const & imageAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkAcquireNextImageKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkAcquireNextImageKHR.html
@@ -13616,7 +13616,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<SwapchainKHR, SwapchainKHRAllocator>>::type
       createSharedSwapchainsKHR( ArrayProxy<const SwapchainCreateInfoKHR> const & createInfos,
                                  Optional<const AllocationCallbacks>              allocator,
-                                 SwapchainKHRAllocator &                          swapchainKHRAllocator,
+                                 SwapchainKHRAllocator const &                    swapchainKHRAllocator,
                                  Dispatch const & d                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateSharedSwapchainsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateSharedSwapchainsKHR.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
@@ -13642,7 +13642,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<SwapchainKHR, Dispatch>, SwapchainKHRAllocator>>::type
       createSharedSwapchainsKHRUnique( ArrayProxy<const SwapchainCreateInfoKHR> const & createInfos,
                                        Optional<const AllocationCallbacks>              allocator,
-                                       SwapchainKHRAllocator &                          swapchainKHRAllocator,
+                                       SwapchainKHRAllocator const &                    swapchainKHRAllocator,
                                        Dispatch const & d                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateSharedSwapchainsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateSharedSwapchainsKHR.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
@@ -13757,9 +13757,9 @@ namespace VULKAN_HPP_NAMESPACE
                                       int>::type                                             = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VideoSessionMemoryRequirementsKHR, VideoSessionMemoryRequirementsKHRAllocator>>::type
-      getVideoSessionMemoryRequirementsKHR( VideoSessionKHR                              videoSession,
-                                            VideoSessionMemoryRequirementsKHRAllocator & videoSessionMemoryRequirementsKHRAllocator,
-                                            Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getVideoSessionMemoryRequirementsKHR( VideoSessionKHR                                    videoSession,
+                                            VideoSessionMemoryRequirementsKHRAllocator const & videoSessionMemoryRequirementsKHRAllocator,
+                                            Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkBindVideoSessionMemoryKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkBindVideoSessionMemoryKHR.html
@@ -14009,11 +14009,11 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                          = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
-      getShaderInfoAMD( Pipeline            pipeline,
-                        ShaderStageFlagBits shaderStage,
-                        ShaderInfoTypeAMD   infoType,
-                        Uint8_tAllocator &  uint8_tAllocator,
-                        Dispatch const & d  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getShaderInfoAMD( Pipeline                 pipeline,
+                        ShaderStageFlagBits      shaderStage,
+                        ShaderInfoTypeAMD        infoType,
+                        Uint8_tAllocator const & uint8_tAllocator,
+                        Dispatch const & d       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
@@ -14372,9 +14372,9 @@ namespace VULKAN_HPP_NAMESPACE
 #  else
       typename ResultValueType<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>::type
 #  endif
-      getPastPresentationTimingGOOGLE( SwapchainKHR                            swapchain,
-                                       PastPresentationTimingGOOGLEAllocator & pastPresentationTimingGOOGLEAllocator,
-                                       Dispatch const & d                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getPastPresentationTimingGOOGLE( SwapchainKHR                                  swapchain,
+                                       PastPresentationTimingGOOGLEAllocator const & pastPresentationTimingGOOGLEAllocator,
+                                       Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_EXT_hdr_metadata ===
@@ -14619,7 +14619,7 @@ namespace VULKAN_HPP_NAMESPACE
                          createExecutionGraphPipelinesAMDX( PipelineCache                                                  pipelineCache,
                                                             ArrayProxy<const ExecutionGraphPipelineCreateInfoAMDX> const & createInfos,
                                                             Optional<const AllocationCallbacks>                            allocator,
-                                                            PipelineAllocator &                                            pipelineAllocator,
+                                                            PipelineAllocator const &                                      pipelineAllocator,
                                                             Dispatch const & d                                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateExecutionGraphPipelinesAMDX, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateExecutionGraphPipelinesAMDX.html
@@ -14651,7 +14651,7 @@ namespace VULKAN_HPP_NAMESPACE
                          createExecutionGraphPipelinesAMDXUnique( PipelineCache                                                  pipelineCache,
                                                                   ArrayProxy<const ExecutionGraphPipelineCreateInfoAMDX> const & createInfos,
                                                                   Optional<const AllocationCallbacks>                            allocator,
-                                                                  PipelineAllocator &                                            pipelineAllocator,
+                                                                  PipelineAllocator const &                                      pipelineAllocator,
                                                                   Dispatch const & d                                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateExecutionGraphPipelinesAMDX, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateExecutionGraphPipelinesAMDX.html
@@ -14771,9 +14771,9 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, SparseImageMemoryRequirements2>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
-                         getImageSparseMemoryRequirements2KHR( const ImageSparseMemoryRequirementsInfo2 & info,
-                                                               SparseImageMemoryRequirements2Allocator &  sparseImageMemoryRequirements2Allocator,
-                                                               Dispatch const & d                         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getImageSparseMemoryRequirements2KHR( const ImageSparseMemoryRequirementsInfo2 &      info,
+                                                               SparseImageMemoryRequirements2Allocator const & sparseImageMemoryRequirements2Allocator,
+                                                               Dispatch const & d                              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_KHR_acceleration_structure ===
@@ -15016,7 +15016,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                        PipelineCache                                             pipelineCache,
                                                        ArrayProxy<const RayTracingPipelineCreateInfoKHR> const & createInfos,
                                                        Optional<const AllocationCallbacks>                       allocator,
-                                                       PipelineAllocator &                                       pipelineAllocator,
+                                                       PipelineAllocator const &                                 pipelineAllocator,
                                                        Dispatch const & d                                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateRayTracingPipelinesKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateRayTracingPipelinesKHR.html
@@ -15051,7 +15051,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                              PipelineCache                                             pipelineCache,
                                                              ArrayProxy<const RayTracingPipelineCreateInfoKHR> const & createInfos,
                                                              Optional<const AllocationCallbacks>                       allocator,
-                                                             PipelineAllocator &                                       pipelineAllocator,
+                                                             PipelineAllocator const &                                 pipelineAllocator,
                                                              Dispatch const & d                                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateRayTracingPipelinesKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateRayTracingPipelinesKHR.html
@@ -15295,7 +15295,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                          = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type getValidationCacheDataEXT(
-      ValidationCacheEXT validationCache, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      ValidationCacheEXT validationCache, Uint8_tAllocator const & uint8_tAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_ray_tracing ===
@@ -15426,7 +15426,7 @@ namespace VULKAN_HPP_NAMESPACE
                          createRayTracingPipelinesNV( PipelineCache                                            pipelineCache,
                                                       ArrayProxy<const RayTracingPipelineCreateInfoNV> const & createInfos,
                                                       Optional<const AllocationCallbacks>                      allocator,
-                                                      PipelineAllocator &                                      pipelineAllocator,
+                                                      PipelineAllocator const &                                pipelineAllocator,
                                                       Dispatch const & d                                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateRayTracingPipelinesNV, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateRayTracingPipelinesNV.html
@@ -15458,7 +15458,7 @@ namespace VULKAN_HPP_NAMESPACE
                          createRayTracingPipelinesNVUnique( PipelineCache                                            pipelineCache,
                                                             ArrayProxy<const RayTracingPipelineCreateInfoNV> const & createInfos,
                                                             Optional<const AllocationCallbacks>                      allocator,
-                                                            PipelineAllocator &                                      pipelineAllocator,
+                                                            PipelineAllocator const &                                pipelineAllocator,
                                                             Dispatch const & d                                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateRayTracingPipelinesNV, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateRayTracingPipelinesNV.html
@@ -15609,7 +15609,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                            = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
       getCalibratedTimestampsEXT( ArrayProxy<const CalibratedTimestampInfoKHR> const & timestampInfos,
-                                  Uint64_tAllocator &                                  uint64_tAllocator,
+                                  Uint64_tAllocator const &                            uint64_tAllocator,
                                   Dispatch const & d                                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetCalibratedTimestampsEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetCalibratedTimestampsEXT.html
@@ -16037,9 +16037,9 @@ namespace VULKAN_HPP_NAMESPACE
                                       int>::type                                             = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PipelineExecutablePropertiesKHR, PipelineExecutablePropertiesKHRAllocator>>::type
-      getPipelineExecutablePropertiesKHR( const PipelineInfoKHR &                    pipelineInfo,
-                                          PipelineExecutablePropertiesKHRAllocator & pipelineExecutablePropertiesKHRAllocator,
-                                          Dispatch const & d                         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getPipelineExecutablePropertiesKHR( const PipelineInfoKHR &                          pipelineInfo,
+                                          PipelineExecutablePropertiesKHRAllocator const & pipelineExecutablePropertiesKHRAllocator,
+                                          Dispatch const & d                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetPipelineExecutableStatisticsKHR, see
@@ -16067,9 +16067,9 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename PipelineExecutableStatisticKHRAllocator::value_type, PipelineExecutableStatisticKHR>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PipelineExecutableStatisticKHR, PipelineExecutableStatisticKHRAllocator>>::type
-      getPipelineExecutableStatisticsKHR( const PipelineExecutableInfoKHR &         executableInfo,
-                                          PipelineExecutableStatisticKHRAllocator & pipelineExecutableStatisticKHRAllocator,
-                                          Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getPipelineExecutableStatisticsKHR( const PipelineExecutableInfoKHR &               executableInfo,
+                                          PipelineExecutableStatisticKHRAllocator const & pipelineExecutableStatisticKHRAllocator,
+                                          Dispatch const & d                              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetPipelineExecutableInternalRepresentationsKHR, see
@@ -16104,9 +16104,9 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD
       typename ResultValueType<std::vector<PipelineExecutableInternalRepresentationKHR, PipelineExecutableInternalRepresentationKHRAllocator>>::type
       getPipelineExecutableInternalRepresentationsKHR(
-        const PipelineExecutableInfoKHR &                      executableInfo,
-        PipelineExecutableInternalRepresentationKHRAllocator & pipelineExecutableInternalRepresentationKHRAllocator,
-        Dispatch const & d                                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+        const PipelineExecutableInfoKHR &                            executableInfo,
+        PipelineExecutableInternalRepresentationKHRAllocator const & pipelineExecutableInternalRepresentationKHRAllocator,
+        Dispatch const & d                                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_EXT_host_image_copy ===
@@ -16402,7 +16402,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                          = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<VideoEncodeSessionParametersFeedbackInfoKHR, std::vector<uint8_t, Uint8_tAllocator>>>::type
       getEncodedVideoSessionParametersKHR( const VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo,
-                                           Uint8_tAllocator &                             uint8_tAllocator,
+                                           Uint8_tAllocator const &                       uint8_tAllocator,
                                            Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetEncodedVideoSessionParametersKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetEncodedVideoSessionParametersKHR.html
@@ -16427,7 +16427,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                          = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<StructureChain<X, Y, Z...>, std::vector<uint8_t, Uint8_tAllocator>>>::type
       getEncodedVideoSessionParametersKHR( const VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo,
-                                           Uint8_tAllocator &                             uint8_tAllocator,
+                                           Uint8_tAllocator const &                       uint8_tAllocator,
                                            Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -16477,7 +16477,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                          = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
-      getCudaModuleCacheNV( CudaModuleNV module, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getCudaModuleCacheNV( CudaModuleNV module, Uint8_tAllocator const & uint8_tAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkCreateCudaFunctionNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateCudaFunctionNV.html
@@ -17183,9 +17183,9 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, SparseImageMemoryRequirements2>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
-                         getImageSparseMemoryRequirementsKHR( const DeviceImageMemoryRequirements &     info,
-                                                              SparseImageMemoryRequirements2Allocator & sparseImageMemoryRequirements2Allocator,
-                                                              Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getImageSparseMemoryRequirementsKHR( const DeviceImageMemoryRequirements &           info,
+                                                              SparseImageMemoryRequirements2Allocator const & sparseImageMemoryRequirements2Allocator,
+                                                              Dispatch const & d                              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_VALVE_descriptor_set_host_mapping ===
@@ -17716,7 +17716,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD ResultValue<std::vector<ShaderEXT, ShaderEXTAllocator>>
                          createShadersEXT( ArrayProxy<const ShaderCreateInfoEXT> const & createInfos,
                                            Optional<const AllocationCallbacks>           allocator,
-                                           ShaderEXTAllocator &                          shaderEXTAllocator,
+                                           ShaderEXTAllocator const &                    shaderEXTAllocator,
                                            Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateShadersEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateShadersEXT.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
@@ -17741,7 +17741,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<ShaderEXT, Dispatch>, ShaderEXTAllocator>>
                          createShadersEXTUnique( ArrayProxy<const ShaderCreateInfoEXT> const & createInfos,
                                                  Optional<const AllocationCallbacks>           allocator,
-                                                 ShaderEXTAllocator &                          shaderEXTAllocator,
+                                                 ShaderEXTAllocator const &                    shaderEXTAllocator,
                                                  Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateShadersEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateShadersEXT.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
@@ -17798,7 +17798,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                          = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
-      getShaderBinaryDataEXT( ShaderEXT shader, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getShaderBinaryDataEXT( ShaderEXT shader, Uint8_tAllocator const & uint8_tAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_KHR_pipeline_binary ===
@@ -17827,7 +17827,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD ResultValue<std::vector<PipelineBinaryKHR, PipelineBinaryKHRAllocator>>
                          createPipelineBinariesKHR( const PipelineBinaryCreateInfoKHR & createInfo,
                                                     Optional<const AllocationCallbacks> allocator,
-                                                    PipelineBinaryKHRAllocator &        pipelineBinaryKHRAllocator,
+                                                    PipelineBinaryKHRAllocator const &  pipelineBinaryKHRAllocator,
                                                     Dispatch const & d                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
     // wrapper function for command vkCreatePipelineBinariesKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreatePipelineBinariesKHR.html
@@ -17849,7 +17849,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<PipelineBinaryKHR, Dispatch>, PipelineBinaryKHRAllocator>>
                          createPipelineBinariesKHRUnique( const PipelineBinaryCreateInfoKHR & createInfo,
                                                           Optional<const AllocationCallbacks> allocator,
-                                                          PipelineBinaryKHRAllocator &        pipelineBinaryKHRAllocator,
+                                                          PipelineBinaryKHRAllocator const &  pipelineBinaryKHRAllocator,
                                                           Dispatch const & d                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_NO_SMART_HANDLE */
 #endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
@@ -17914,7 +17914,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                          = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<PipelineBinaryKeyKHR, std::vector<uint8_t, Uint8_tAllocator>>>::type getPipelineBinaryDataKHR(
-      const PipelineBinaryDataInfoKHR & info, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      const PipelineBinaryDataInfoKHR & info, Uint8_tAllocator const & uint8_tAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkReleaseCapturedPipelineDataKHR, see
@@ -17957,8 +17957,10 @@ namespace VULKAN_HPP_NAMESPACE
               typename Dispatch                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<std::is_same<typename TilePropertiesQCOMAllocator::value_type, TilePropertiesQCOM>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                = true>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<TilePropertiesQCOM, TilePropertiesQCOMAllocator>>::type getFramebufferTilePropertiesQCOM(
-      Framebuffer framebuffer, TilePropertiesQCOMAllocator & tilePropertiesQCOMAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<TilePropertiesQCOM, TilePropertiesQCOMAllocator>>::type
+      getFramebufferTilePropertiesQCOM( Framebuffer                         framebuffer,
+                                        TilePropertiesQCOMAllocator const & tilePropertiesQCOMAllocator,
+                                        Dispatch const & d                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetDynamicRenderingTilePropertiesQCOM, see
@@ -18063,9 +18065,9 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename LatencyTimingsFrameReportNVAllocator::value_type, LatencyTimingsFrameReportNV>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                                  = true>
     VULKAN_HPP_NODISCARD std::vector<LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator>
-                         getLatencyTimingsNV( SwapchainKHR                           swapchain,
-                                              LatencyTimingsFrameReportNVAllocator & latencyTimingsFrameReportNVAllocator,
-                                              Dispatch const & d                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getLatencyTimingsNV( SwapchainKHR                                 swapchain,
+                                              LatencyTimingsFrameReportNVAllocator const & latencyTimingsFrameReportNVAllocator,
+                                              Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_ARM_data_graph ===
@@ -18104,7 +18106,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                       PipelineCache                                            pipelineCache,
                                                       ArrayProxy<const DataGraphPipelineCreateInfoARM> const & createInfos,
                                                       Optional<const AllocationCallbacks>                      allocator,
-                                                      PipelineAllocator &                                      pipelineAllocator,
+                                                      PipelineAllocator const &                                pipelineAllocator,
                                                       Dispatch const & d                                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateDataGraphPipelinesARM, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateDataGraphPipelinesARM.html
@@ -18139,7 +18141,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             PipelineCache                                            pipelineCache,
                                                             ArrayProxy<const DataGraphPipelineCreateInfoARM> const & createInfos,
                                                             Optional<const AllocationCallbacks>                      allocator,
-                                                            PipelineAllocator &                                      pipelineAllocator,
+                                                            PipelineAllocator const &                                pipelineAllocator,
                                                             Dispatch const & d                                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkCreateDataGraphPipelinesARM, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateDataGraphPipelinesARM.html
@@ -18211,9 +18213,9 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD
       typename ResultValueType<std::vector<DataGraphPipelineSessionBindPointRequirementARM, DataGraphPipelineSessionBindPointRequirementARMAllocator>>::type
       getDataGraphPipelineSessionBindPointRequirementsARM(
-        const DataGraphPipelineSessionBindPointRequirementsInfoARM & info,
-        DataGraphPipelineSessionBindPointRequirementARMAllocator &   dataGraphPipelineSessionBindPointRequirementARMAllocator,
-        Dispatch const & d                                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+        const DataGraphPipelineSessionBindPointRequirementsInfoARM &     info,
+        DataGraphPipelineSessionBindPointRequirementARMAllocator const & dataGraphPipelineSessionBindPointRequirementARMAllocator,
+        Dispatch const & d                                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetDataGraphPipelineSessionMemoryRequirementsARM, see
@@ -18312,9 +18314,9 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename DataGraphPipelinePropertyARMAllocator::value_type, DataGraphPipelinePropertyARM>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                                    = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<DataGraphPipelinePropertyARM, DataGraphPipelinePropertyARMAllocator>>::type
-      getDataGraphPipelineAvailablePropertiesARM( const DataGraphPipelineInfoARM &        pipelineInfo,
-                                                  DataGraphPipelinePropertyARMAllocator & dataGraphPipelinePropertyARMAllocator,
-                                                  Dispatch const & d                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getDataGraphPipelineAvailablePropertiesARM( const DataGraphPipelineInfoARM &              pipelineInfo,
+                                                  DataGraphPipelinePropertyARMAllocator const & dataGraphPipelinePropertyARMAllocator,
+                                                  Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetDataGraphPipelinePropertiesARM, see
@@ -18380,7 +18382,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                            = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
       getCalibratedTimestampsKHR( ArrayProxy<const CalibratedTimestampInfoKHR> const & timestampInfos,
-                                  Uint64_tAllocator &                                  uint64_tAllocator,
+                                  Uint64_tAllocator const &                            uint64_tAllocator,
                                   Dispatch const & d                                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetCalibratedTimestampsKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetCalibratedTimestampsKHR.html
@@ -18983,8 +18985,8 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename QueueFamilyPropertiesAllocator::value_type, QueueFamilyProperties>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                      = true>
     VULKAN_HPP_NODISCARD std::vector<QueueFamilyProperties, QueueFamilyPropertiesAllocator>
-                         getQueueFamilyProperties( QueueFamilyPropertiesAllocator & queueFamilyPropertiesAllocator,
-                                                   Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getQueueFamilyProperties( QueueFamilyPropertiesAllocator const & queueFamilyPropertiesAllocator,
+                                                   Dispatch const & d                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetPhysicalDeviceMemoryProperties, see
@@ -19047,9 +19049,9 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename ExtensionPropertiesAllocator::value_type, ExtensionProperties>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                  = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<ExtensionProperties, ExtensionPropertiesAllocator>>::type
-      enumerateDeviceExtensionProperties( Optional<const std::string>    layerName,
-                                          ExtensionPropertiesAllocator & extensionPropertiesAllocator,
-                                          Dispatch const & d             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      enumerateDeviceExtensionProperties( Optional<const std::string>          layerName,
+                                          ExtensionPropertiesAllocator const & extensionPropertiesAllocator,
+                                          Dispatch const & d                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkEnumerateDeviceLayerProperties, see
@@ -19074,7 +19076,8 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename LayerPropertiesAllocator::value_type, LayerProperties>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                          = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<LayerProperties, LayerPropertiesAllocator>>::type
-      enumerateDeviceLayerProperties( LayerPropertiesAllocator & layerPropertiesAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      enumerateDeviceLayerProperties( LayerPropertiesAllocator const & layerPropertiesAllocator,
+                                      Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetPhysicalDeviceSparseImageFormatProperties, see
@@ -19111,13 +19114,13 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename SparseImageFormatPropertiesAllocator::value_type, SparseImageFormatProperties>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                                  = true>
     VULKAN_HPP_NODISCARD std::vector<SparseImageFormatProperties, SparseImageFormatPropertiesAllocator>
-                         getSparseImageFormatProperties( Format                                 format,
-                                                         ImageType                              type,
-                                                         SampleCountFlagBits                    samples,
-                                                         ImageUsageFlags                        usage,
-                                                         ImageTiling                            tiling,
-                                                         SparseImageFormatPropertiesAllocator & sparseImageFormatPropertiesAllocator,
-                                                         Dispatch const & d                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getSparseImageFormatProperties( Format                                       format,
+                                                         ImageType                                    type,
+                                                         SampleCountFlagBits                          samples,
+                                                         ImageUsageFlags                              usage,
+                                                         ImageTiling                                  tiling,
+                                                         SparseImageFormatPropertiesAllocator const & sparseImageFormatPropertiesAllocator,
+                                                         Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_VERSION_1_1 ===
@@ -19228,8 +19231,8 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename QueueFamilyProperties2Allocator::value_type, QueueFamilyProperties2>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                        = true>
     VULKAN_HPP_NODISCARD std::vector<QueueFamilyProperties2, QueueFamilyProperties2Allocator>
-                         getQueueFamilyProperties2( QueueFamilyProperties2Allocator & queueFamilyProperties2Allocator,
-                                                    Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getQueueFamilyProperties2( QueueFamilyProperties2Allocator const & queueFamilyProperties2Allocator,
+                                                    Dispatch const & d                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetPhysicalDeviceQueueFamilyProperties2, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyProperties2.html
     template <typename StructureChain,
@@ -19298,9 +19301,9 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename SparseImageFormatProperties2Allocator::value_type, SparseImageFormatProperties2>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                                    = true>
     VULKAN_HPP_NODISCARD std::vector<SparseImageFormatProperties2, SparseImageFormatProperties2Allocator>
-                         getSparseImageFormatProperties2( const PhysicalDeviceSparseImageFormatInfo2 & formatInfo,
-                                                          SparseImageFormatProperties2Allocator &      sparseImageFormatProperties2Allocator,
-                                                          Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getSparseImageFormatProperties2( const PhysicalDeviceSparseImageFormatInfo2 &  formatInfo,
+                                                          SparseImageFormatProperties2Allocator const & sparseImageFormatProperties2Allocator,
+                                                          Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetPhysicalDeviceExternalBufferProperties, see
@@ -19372,8 +19375,8 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename PhysicalDeviceToolPropertiesAllocator::value_type, PhysicalDeviceToolProperties>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                                    = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PhysicalDeviceToolProperties, PhysicalDeviceToolPropertiesAllocator>>::type
-      getToolProperties( PhysicalDeviceToolPropertiesAllocator & physicalDeviceToolPropertiesAllocator,
-                         Dispatch const & d                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getToolProperties( PhysicalDeviceToolPropertiesAllocator const & physicalDeviceToolPropertiesAllocator,
+                         Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_KHR_surface ===
@@ -19430,7 +19433,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename SurfaceFormatKHRAllocator::value_type, SurfaceFormatKHR>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                            = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<SurfaceFormatKHR, SurfaceFormatKHRAllocator>>::type getSurfaceFormatsKHR(
-      SurfaceKHR surface, SurfaceFormatKHRAllocator & surfaceFormatKHRAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      SurfaceKHR surface, SurfaceFormatKHRAllocator const & surfaceFormatKHRAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetPhysicalDeviceSurfacePresentModesKHR, see
@@ -19456,7 +19459,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename PresentModeKHRAllocator::value_type, PresentModeKHR>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                        = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PresentModeKHR, PresentModeKHRAllocator>>::type getSurfacePresentModesKHR(
-      SurfaceKHR surface, PresentModeKHRAllocator & presentModeKHRAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      SurfaceKHR surface, PresentModeKHRAllocator const & presentModeKHRAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_KHR_swapchain ===
@@ -19484,7 +19487,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename Rect2DAllocator::value_type, Rect2D>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                        = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<Rect2D, Rect2DAllocator>>::type
-      getPresentRectanglesKHR( SurfaceKHR surface, Rect2DAllocator & rect2DAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getPresentRectanglesKHR( SurfaceKHR surface, Rect2DAllocator const & rect2DAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_KHR_display ===
@@ -19511,8 +19514,8 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename DisplayPropertiesKHRAllocator::value_type, DisplayPropertiesKHR>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                    = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<DisplayPropertiesKHR, DisplayPropertiesKHRAllocator>>::type
-      getDisplayPropertiesKHR( DisplayPropertiesKHRAllocator & displayPropertiesKHRAllocator,
-                               Dispatch const & d              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getDisplayPropertiesKHR( DisplayPropertiesKHRAllocator const & displayPropertiesKHRAllocator,
+                               Dispatch const & d                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetPhysicalDeviceDisplayPlanePropertiesKHR, see
@@ -19537,8 +19540,8 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename DisplayPlanePropertiesKHRAllocator::value_type, DisplayPlanePropertiesKHR>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<DisplayPlanePropertiesKHR, DisplayPlanePropertiesKHRAllocator>>::type
-      getDisplayPlanePropertiesKHR( DisplayPlanePropertiesKHRAllocator & displayPlanePropertiesKHRAllocator,
-                                    Dispatch const & d                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getDisplayPlanePropertiesKHR( DisplayPlanePropertiesKHRAllocator const & displayPlanePropertiesKHRAllocator,
+                                    Dispatch const & d                         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetDisplayPlaneSupportedDisplaysKHR, see
@@ -19564,7 +19567,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename DisplayKHRAllocator::value_type, DisplayKHR>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<DisplayKHR, DisplayKHRAllocator>>::type getDisplayPlaneSupportedDisplaysKHR(
-      uint32_t planeIndex, DisplayKHRAllocator & displayKHRAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      uint32_t planeIndex, DisplayKHRAllocator const & displayKHRAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetDisplayModePropertiesKHR, see
@@ -19590,9 +19593,9 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename DisplayModePropertiesKHRAllocator::value_type, DisplayModePropertiesKHR>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                            = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<DisplayModePropertiesKHR, DisplayModePropertiesKHRAllocator>>::type
-      getDisplayModePropertiesKHR( DisplayKHR                          display,
-                                   DisplayModePropertiesKHRAllocator & displayModePropertiesKHRAllocator,
-                                   Dispatch const & d                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getDisplayModePropertiesKHR( DisplayKHR                                display,
+                                   DisplayModePropertiesKHRAllocator const & displayModePropertiesKHRAllocator,
+                                   Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkCreateDisplayModeKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateDisplayModeKHR.html
@@ -19755,9 +19758,9 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename VideoFormatPropertiesKHRAllocator::value_type, VideoFormatPropertiesKHR>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                            = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VideoFormatPropertiesKHR, VideoFormatPropertiesKHRAllocator>>::type
-      getVideoFormatPropertiesKHR( const PhysicalDeviceVideoFormatInfoKHR & videoFormatInfo,
-                                   VideoFormatPropertiesKHRAllocator &      videoFormatPropertiesKHRAllocator,
-                                   Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getVideoFormatPropertiesKHR( const PhysicalDeviceVideoFormatInfoKHR &  videoFormatInfo,
+                                   VideoFormatPropertiesKHRAllocator const & videoFormatPropertiesKHRAllocator,
+                                   Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetPhysicalDeviceVideoFormatPropertiesKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceVideoFormatPropertiesKHR.html
     template <typename StructureChain,
@@ -19916,8 +19919,8 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename QueueFamilyProperties2Allocator::value_type, QueueFamilyProperties2>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                        = true>
     VULKAN_HPP_NODISCARD std::vector<QueueFamilyProperties2, QueueFamilyProperties2Allocator>
-                         getQueueFamilyProperties2KHR( QueueFamilyProperties2Allocator & queueFamilyProperties2Allocator,
-                                                       Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getQueueFamilyProperties2KHR( QueueFamilyProperties2Allocator const & queueFamilyProperties2Allocator,
+                                                       Dispatch const & d                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetPhysicalDeviceQueueFamilyProperties2KHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyProperties2KHR.html
     template <typename StructureChain,
@@ -19986,9 +19989,9 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename SparseImageFormatProperties2Allocator::value_type, SparseImageFormatProperties2>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                                    = true>
     VULKAN_HPP_NODISCARD std::vector<SparseImageFormatProperties2, SparseImageFormatProperties2Allocator>
-                         getSparseImageFormatProperties2KHR( const PhysicalDeviceSparseImageFormatInfo2 & formatInfo,
-                                                             SparseImageFormatProperties2Allocator &      sparseImageFormatProperties2Allocator,
-                                                             Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getSparseImageFormatProperties2KHR( const PhysicalDeviceSparseImageFormatInfo2 &  formatInfo,
+                                                             SparseImageFormatProperties2Allocator const & sparseImageFormatProperties2Allocator,
+                                                             Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_KHR_external_memory_capabilities ===
@@ -20139,10 +20142,10 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<std::vector<PerformanceCounterKHR, PerformanceCounterKHRAllocator>,
                                                             std::vector<PerformanceCounterDescriptionKHR, PerformanceCounterDescriptionKHRAllocator>>>::type
-      enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t                                    queueFamilyIndex,
-                                                       PerformanceCounterKHRAllocator &            performanceCounterKHRAllocator,
-                                                       PerformanceCounterDescriptionKHRAllocator & performanceCounterDescriptionKHRAllocator,
-                                                       Dispatch const & d                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t                                          queueFamilyIndex,
+                                                       PerformanceCounterKHRAllocator const &            performanceCounterKHRAllocator,
+                                                       PerformanceCounterDescriptionKHRAllocator const & performanceCounterDescriptionKHRAllocator,
+                                                       Dispatch const & d                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR, see
@@ -20209,7 +20212,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                              = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<SurfaceFormat2KHR, SurfaceFormat2KHRAllocator>>::type
       getSurfaceFormats2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo,
-                             SurfaceFormat2KHRAllocator &          surfaceFormat2KHRAllocator,
+                             SurfaceFormat2KHRAllocator const &    surfaceFormat2KHRAllocator,
                              Dispatch const & d                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetPhysicalDeviceSurfaceFormats2KHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceSurfaceFormats2KHR.html
@@ -20257,8 +20260,8 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename DisplayProperties2KHRAllocator::value_type, DisplayProperties2KHR>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                      = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<DisplayProperties2KHR, DisplayProperties2KHRAllocator>>::type
-      getDisplayProperties2KHR( DisplayProperties2KHRAllocator & displayProperties2KHRAllocator,
-                                Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getDisplayProperties2KHR( DisplayProperties2KHRAllocator const & displayProperties2KHRAllocator,
+                                Dispatch const & d                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetPhysicalDeviceDisplayPlaneProperties2KHR, see
@@ -20283,8 +20286,8 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename DisplayPlaneProperties2KHRAllocator::value_type, DisplayPlaneProperties2KHR>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<DisplayPlaneProperties2KHR, DisplayPlaneProperties2KHRAllocator>>::type
-      getDisplayPlaneProperties2KHR( DisplayPlaneProperties2KHRAllocator & displayPlaneProperties2KHRAllocator,
-                                     Dispatch const & d                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getDisplayPlaneProperties2KHR( DisplayPlaneProperties2KHRAllocator const & displayPlaneProperties2KHRAllocator,
+                                     Dispatch const & d                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetDisplayModeProperties2KHR, see
@@ -20310,9 +20313,9 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename DisplayModeProperties2KHRAllocator::value_type, DisplayModeProperties2KHR>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<DisplayModeProperties2KHR, DisplayModeProperties2KHRAllocator>>::type
-      getDisplayModeProperties2KHR( DisplayKHR                           display,
-                                    DisplayModeProperties2KHRAllocator & displayModeProperties2KHRAllocator,
-                                    Dispatch const & d                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getDisplayModeProperties2KHR( DisplayKHR                                 display,
+                                    DisplayModeProperties2KHRAllocator const & displayModeProperties2KHRAllocator,
+                                    Dispatch const & d                         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetDisplayModeProperties2KHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDisplayModeProperties2KHR.html
     template <typename StructureChain,
@@ -20387,7 +20390,8 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename TimeDomainKHRAllocator::value_type, TimeDomainKHR>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                      = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<TimeDomainKHR, TimeDomainKHRAllocator>>::type
-      getCalibrateableTimeDomainsEXT( TimeDomainKHRAllocator & timeDomainKHRAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getCalibrateableTimeDomainsEXT( TimeDomainKHRAllocator const & timeDomainKHRAllocator,
+                                      Dispatch const & d             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_KHR_fragment_shading_rate ===
@@ -20418,8 +20422,8 @@ namespace VULKAN_HPP_NAMESPACE
                               int>::type                                             = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PhysicalDeviceFragmentShadingRateKHR, PhysicalDeviceFragmentShadingRateKHRAllocator>>::type
-      getFragmentShadingRatesKHR( PhysicalDeviceFragmentShadingRateKHRAllocator & physicalDeviceFragmentShadingRateKHRAllocator,
-                                  Dispatch const & d                              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getFragmentShadingRatesKHR( PhysicalDeviceFragmentShadingRateKHRAllocator const & physicalDeviceFragmentShadingRateKHRAllocator,
+                                  Dispatch const & d                                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_EXT_tooling_info ===
@@ -20448,8 +20452,8 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename PhysicalDeviceToolPropertiesAllocator::value_type, PhysicalDeviceToolProperties>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                                    = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PhysicalDeviceToolProperties, PhysicalDeviceToolPropertiesAllocator>>::type
-      getToolPropertiesEXT( PhysicalDeviceToolPropertiesAllocator & physicalDeviceToolPropertiesAllocator,
-                            Dispatch const & d                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getToolPropertiesEXT( PhysicalDeviceToolPropertiesAllocator const & physicalDeviceToolPropertiesAllocator,
+                            Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_cooperative_matrix ===
@@ -20478,8 +20482,8 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename CooperativeMatrixPropertiesNVAllocator::value_type, CooperativeMatrixPropertiesNV>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<CooperativeMatrixPropertiesNV, CooperativeMatrixPropertiesNVAllocator>>::type
-      getCooperativeMatrixPropertiesNV( CooperativeMatrixPropertiesNVAllocator & cooperativeMatrixPropertiesNVAllocator,
-                                        Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getCooperativeMatrixPropertiesNV( CooperativeMatrixPropertiesNVAllocator const & cooperativeMatrixPropertiesNVAllocator,
+                                        Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_coverage_reduction_mode ===
@@ -20511,8 +20515,8 @@ namespace VULKAN_HPP_NAMESPACE
                               int>::type                                             = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<FramebufferMixedSamplesCombinationNV, FramebufferMixedSamplesCombinationNVAllocator>>::type
-      getSupportedFramebufferMixedSamplesCombinationsNV( FramebufferMixedSamplesCombinationNVAllocator & framebufferMixedSamplesCombinationNVAllocator,
-                                                         Dispatch const & d                              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getSupportedFramebufferMixedSamplesCombinationsNV( FramebufferMixedSamplesCombinationNVAllocator const & framebufferMixedSamplesCombinationNVAllocator,
+                                                         Dispatch const & d                                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
@@ -20542,7 +20546,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                        = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PresentModeKHR, PresentModeKHRAllocator>>::type
       getSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo,
-                                  PresentModeKHRAllocator &             presentModeKHRAllocator,
+                                  PresentModeKHRAllocator const &       presentModeKHRAllocator,
                                   Dispatch const & d                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -20725,9 +20729,9 @@ namespace VULKAN_HPP_NAMESPACE
                                       int>::type                                             = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<OpticalFlowImageFormatPropertiesNV, OpticalFlowImageFormatPropertiesNVAllocator>>::type
-      getOpticalFlowImageFormatsNV( const OpticalFlowImageFormatInfoNV &          opticalFlowImageFormatInfo,
-                                    OpticalFlowImageFormatPropertiesNVAllocator & opticalFlowImageFormatPropertiesNVAllocator,
-                                    Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getOpticalFlowImageFormatsNV( const OpticalFlowImageFormatInfoNV &                opticalFlowImageFormatInfo,
+                                    OpticalFlowImageFormatPropertiesNVAllocator const & opticalFlowImageFormatPropertiesNVAllocator,
+                                    Dispatch const & d                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_cooperative_vector ===
@@ -20756,8 +20760,8 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename CooperativeVectorPropertiesNVAllocator::value_type, CooperativeVectorPropertiesNV>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<CooperativeVectorPropertiesNV, CooperativeVectorPropertiesNVAllocator>>::type
-      getCooperativeVectorPropertiesNV( CooperativeVectorPropertiesNVAllocator & cooperativeVectorPropertiesNVAllocator,
-                                        Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getCooperativeVectorPropertiesNV( CooperativeVectorPropertiesNVAllocator const & cooperativeVectorPropertiesNVAllocator,
+                                        Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_KHR_cooperative_matrix ===
@@ -20786,8 +20790,8 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename CooperativeMatrixPropertiesKHRAllocator::value_type, CooperativeMatrixPropertiesKHR>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<CooperativeMatrixPropertiesKHR, CooperativeMatrixPropertiesKHRAllocator>>::type
-      getCooperativeMatrixPropertiesKHR( CooperativeMatrixPropertiesKHRAllocator & cooperativeMatrixPropertiesKHRAllocator,
-                                         Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getCooperativeMatrixPropertiesKHR( CooperativeMatrixPropertiesKHRAllocator const & cooperativeMatrixPropertiesKHRAllocator,
+                                         Dispatch const & d                              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_ARM_data_graph ===
@@ -20817,9 +20821,9 @@ namespace VULKAN_HPP_NAMESPACE
                                       int>::type                                             = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<QueueFamilyDataGraphPropertiesARM, QueueFamilyDataGraphPropertiesARMAllocator>>::type
-      getQueueFamilyDataGraphPropertiesARM( uint32_t                                     queueFamilyIndex,
-                                            QueueFamilyDataGraphPropertiesARMAllocator & queueFamilyDataGraphPropertiesARMAllocator,
-                                            Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getQueueFamilyDataGraphPropertiesARM( uint32_t                                           queueFamilyIndex,
+                                            QueueFamilyDataGraphPropertiesARMAllocator const & queueFamilyDataGraphPropertiesARMAllocator,
+                                            Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM, see
@@ -20862,7 +20866,8 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename TimeDomainKHRAllocator::value_type, TimeDomainKHR>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                      = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<TimeDomainKHR, TimeDomainKHRAllocator>>::type
-      getCalibrateableTimeDomainsKHR( TimeDomainKHRAllocator & timeDomainKHRAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getCalibrateableTimeDomainsKHR( TimeDomainKHRAllocator const & timeDomainKHRAllocator,
+                                      Dispatch const & d             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_cooperative_matrix2 ===
@@ -20897,8 +20902,8 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD
       typename ResultValueType<std::vector<CooperativeMatrixFlexibleDimensionsPropertiesNV, CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator>>::type
       getCooperativeMatrixFlexibleDimensionsPropertiesNV(
-        CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator & cooperativeMatrixFlexibleDimensionsPropertiesNVAllocator,
-        Dispatch const & d                                         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+        CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator const & cooperativeMatrixFlexibleDimensionsPropertiesNVAllocator,
+        Dispatch const & d                                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_ARM_performance_counters_by_region ===
@@ -20936,10 +20941,10 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<std::vector<PerformanceCounterARM, PerformanceCounterARMAllocator>,
                                                             std::vector<PerformanceCounterDescriptionARM, PerformanceCounterDescriptionARMAllocator>>>::type
-      enumerateQueueFamilyPerformanceCountersByRegionARM( uint32_t                                    queueFamilyIndex,
-                                                          PerformanceCounterARMAllocator &            performanceCounterARMAllocator,
-                                                          PerformanceCounterDescriptionARMAllocator & performanceCounterDescriptionARMAllocator,
-                                                          Dispatch const & d                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      enumerateQueueFamilyPerformanceCountersByRegionARM( uint32_t                                          queueFamilyIndex,
+                                                          PerformanceCounterARMAllocator const &            performanceCounterARMAllocator,
+                                                          PerformanceCounterDescriptionARMAllocator const & performanceCounterDescriptionARMAllocator,
+                                                          Dispatch const & d                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     operator VkPhysicalDevice() const VULKAN_HPP_NOEXCEPT
@@ -21063,7 +21068,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename PhysicalDeviceAllocator::value_type, PhysicalDevice>::value, int>::type = 0,
               typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                        = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PhysicalDevice, PhysicalDeviceAllocator>>::type
-      enumeratePhysicalDevices( PhysicalDeviceAllocator & physicalDeviceAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      enumeratePhysicalDevices( PhysicalDeviceAllocator const & physicalDeviceAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetInstanceProcAddr, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetInstanceProcAddr.html
@@ -21101,8 +21106,8 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename PhysicalDeviceGroupPropertiesAllocator::value_type, PhysicalDeviceGroupProperties>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PhysicalDeviceGroupProperties, PhysicalDeviceGroupPropertiesAllocator>>::type
-      enumeratePhysicalDeviceGroups( PhysicalDeviceGroupPropertiesAllocator & physicalDeviceGroupPropertiesAllocator,
-                                     Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      enumeratePhysicalDeviceGroups( PhysicalDeviceGroupPropertiesAllocator const & physicalDeviceGroupPropertiesAllocator,
+                                     Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_KHR_surface ===
@@ -21460,8 +21465,8 @@ namespace VULKAN_HPP_NAMESPACE
       typename std::enable_if<std::is_same<typename PhysicalDeviceGroupPropertiesAllocator::value_type, PhysicalDeviceGroupProperties>::value, int>::type = 0,
       typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<PhysicalDeviceGroupProperties, PhysicalDeviceGroupPropertiesAllocator>>::type
-      enumeratePhysicalDeviceGroupsKHR( PhysicalDeviceGroupPropertiesAllocator & physicalDeviceGroupPropertiesAllocator,
-                                        Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      enumeratePhysicalDeviceGroupsKHR( PhysicalDeviceGroupPropertiesAllocator const & physicalDeviceGroupPropertiesAllocator,
+                                        Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
 #if defined( VK_USE_PLATFORM_IOS_MVK )
@@ -21850,9 +21855,9 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename ExtensionPropertiesAllocator::value_type, ExtensionProperties>::value, int>::type = 0,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                                  = true>
   VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<ExtensionProperties, ExtensionPropertiesAllocator>>::type
-    enumerateInstanceExtensionProperties( Optional<const std::string>    layerName,
-                                          ExtensionPropertiesAllocator & extensionPropertiesAllocator,
-                                          Dispatch const & d             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
+    enumerateInstanceExtensionProperties( Optional<const std::string>          layerName,
+                                          ExtensionPropertiesAllocator const & extensionPropertiesAllocator,
+                                          Dispatch const & d                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   // wrapper function for command vkEnumerateInstanceLayerProperties, see
@@ -21877,7 +21882,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename LayerPropertiesAllocator::value_type, LayerProperties>::value, int>::type = 0,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type                                          = true>
   VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<LayerProperties, LayerPropertiesAllocator>>::type
-    enumerateInstanceLayerProperties( LayerPropertiesAllocator & layerPropertiesAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
+    enumerateInstanceLayerProperties( LayerPropertiesAllocator const & layerPropertiesAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   //=== VK_VERSION_1_1 ===

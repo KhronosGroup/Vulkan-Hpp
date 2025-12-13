@@ -3018,6 +3018,13 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTShaderUniformBufferUnsizedArrayExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTShaderUniformBufferUnsizedArraySpecVersion;
 
+  //=== VK_NV_compute_occupancy_priority ===
+  using VULKAN_HPP_NAMESPACE::ComputeOccupancyPriorityHighNV;
+  using VULKAN_HPP_NAMESPACE::ComputeOccupancyPriorityLowNV;
+  using VULKAN_HPP_NAMESPACE::ComputeOccupancyPriorityNormalNV;
+  using VULKAN_HPP_NAMESPACE::NVComputeOccupancyPriorityExtensionName;
+  using VULKAN_HPP_NAMESPACE::NVComputeOccupancyPrioritySpecVersion;
+
   //========================
   //=== CONSTEXPR VALUEs ===
   //========================
@@ -5345,6 +5352,10 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_shader_uniform_buffer_unsized_array ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT;
+
+  //=== VK_NV_compute_occupancy_priority ===
+  using VULKAN_HPP_NAMESPACE::ComputeOccupancyPriorityParametersNV;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceComputeOccupancyPriorityFeaturesNV;
 
   //===============
   //=== HANDLEs ===
@@ -9460,6 +9471,12 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT>;
 
+  //=== VK_NV_compute_occupancy_priority ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ComputeOccupancyPriorityParametersNV>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceComputeOccupancyPriorityFeaturesNV>;
+
   //=================================================================
   //=== Required exports for VULKAN_HPP_NAMESPACE::StructureChain ===
   //=================================================================
@@ -10672,4 +10689,7 @@ export
 
   //=== VK_KHR_maintenance10 ===
   using ::PFN_vkCmdEndRendering2KHR;
+
+  //=== VK_NV_compute_occupancy_priority ===
+  using ::PFN_vkCmdSetComputeOccupancyPriorityNV;
 }

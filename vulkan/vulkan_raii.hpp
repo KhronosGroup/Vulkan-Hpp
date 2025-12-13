@@ -1961,6 +1961,9 @@ namespace VULKAN_HPP_NAMESPACE
 
           //=== VK_KHR_maintenance10 ===
           vkCmdEndRendering2KHR = PFN_vkCmdEndRendering2KHR( vkGetDeviceProcAddr( device, "vkCmdEndRendering2KHR" ) );
+
+          //=== VK_NV_compute_occupancy_priority ===
+          vkCmdSetComputeOccupancyPriorityNV = PFN_vkCmdSetComputeOccupancyPriorityNV( vkGetDeviceProcAddr( device, "vkCmdSetComputeOccupancyPriorityNV" ) );
         }
 
       public:
@@ -2993,6 +2996,9 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_KHR_maintenance10 ===
         PFN_vkCmdEndRendering2KHR vkCmdEndRendering2KHR = 0;
+
+        //=== VK_NV_compute_occupancy_priority ===
+        PFN_vkCmdSetComputeOccupancyPriorityNV vkCmdSetComputeOccupancyPriorityNV = 0;
       };
 
     }  // namespace detail
@@ -8047,6 +8053,12 @@ namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkCmdEndRendering2KHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndRendering2KHR.html
       void endRendering2KHR( Optional<const RenderingEndInfoKHR> renderingEndInfo VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ) ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_NV_compute_occupancy_priority ===
+
+      // wrapper function for command vkCmdSetComputeOccupancyPriorityNV, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetComputeOccupancyPriorityNV.html
+      void setComputeOccupancyPriorityNV( const ComputeOccupancyPriorityParametersNV & parameters ) const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device        m_device        = {};
@@ -28105,6 +28117,19 @@ namespace VULKAN_HPP_NAMESPACE
 
       getDispatcher()->vkCmdEndRendering2KHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                               reinterpret_cast<const VkRenderingEndInfoKHR *>( renderingEndInfo.get() ) );
+    }
+
+    //=== VK_NV_compute_occupancy_priority ===
+
+    // wrapper function for command vkCmdSetComputeOccupancyPriorityNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetComputeOccupancyPriorityNV.html
+    VULKAN_HPP_INLINE void CommandBuffer::setComputeOccupancyPriorityNV( const ComputeOccupancyPriorityParametersNV & parameters ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetComputeOccupancyPriorityNV &&
+                         "Function <vkCmdSetComputeOccupancyPriorityNV> requires <VK_NV_compute_occupancy_priority>" );
+
+      getDispatcher()->vkCmdSetComputeOccupancyPriorityNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                           reinterpret_cast<const VkComputeOccupancyPriorityParametersNV *>( &parameters ) );
     }
 
     //====================

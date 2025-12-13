@@ -514,7 +514,8 @@ namespace VULKAN_HPP_NAMESPACE
                                                             "VK_QCOM_data_graph_model",
                                                             "VK_KHR_maintenance10",
                                                             "VK_SEC_pipeline_cache_incremental_mode",
-                                                            "VK_EXT_shader_uniform_buffer_unsized_array" };
+                                                            "VK_EXT_shader_uniform_buffer_unsized_array",
+                                                            "VK_NV_compute_occupancy_priority" };
     return deviceExtensions;
   }
 
@@ -3029,6 +3030,12 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_NV_compute_occupancy_priority",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
           { "VK_VERSION_1_1", { {} } } } }
     };
     auto depIt = dependencies.find( extension );
@@ -3987,7 +3994,8 @@ namespace VULKAN_HPP_NAMESPACE
         || ( extension == "VK_EXT_fragment_density_map_offset" ) || ( extension == "VK_EXT_zero_initialize_device_memory" ) ||
            ( extension == "VK_KHR_present_mode_fifo_latest_ready" ) || ( extension == "VK_EXT_shader_64bit_indexing" ) ||
            ( extension == "VK_EXT_custom_resolve" ) || ( extension == "VK_QCOM_data_graph_model" ) || ( extension == "VK_KHR_maintenance10" ) ||
-           ( extension == "VK_SEC_pipeline_cache_incremental_mode" ) || ( extension == "VK_EXT_shader_uniform_buffer_unsized_array" );
+           ( extension == "VK_SEC_pipeline_cache_incremental_mode" ) || ( extension == "VK_EXT_shader_uniform_buffer_unsized_array" ) ||
+           ( extension == "VK_NV_compute_occupancy_priority" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

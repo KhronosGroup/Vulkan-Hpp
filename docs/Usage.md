@@ -1,12 +1,12 @@
 # Usage
 
-The C++ language and standard library enable Vulkan-Hpp to be more expressive and type-safe, lifting many error categories from run-time to compile-time.
-This includes features like namespaces, RAII, exceptions, references, enum classes, templates, the builder pattern, designated initialisers, and library containers like `std::array`, `std::string_view`, `std::vector`, and more.
+This document is a usage guide for Vulkan-Hpp.
+It details why Vulkan-Hpp is different from the C API, and how to use its various features.
 
 - [Naming convention for Vulkan-Hpp symbols](#naming-convention-for-vulkan-hpp-symbols)
 - [`vk::CreateInfo` structs](#vkcreateinfo-structs)
   - [Designated initializers](#designated-initializers)
-  - [Builder pattern](#builder-pattern)
+  - [Builder pattern with `set` member functions](#builder-pattern-with-set-member-functions)
 - [Handles](#handles)
   - [C/C++ inter-op for handles](#cc-inter-op-for-handles)
 - [Flag bits and bitwise operations](#flag-bits-and-bitwise-operations)
@@ -36,7 +36,9 @@ This includes features like namespaces, RAII, exceptions, references, enum class
 
 ## Naming convention for Vulkan-Hpp symbols
 
-All symbols (functions, handles, structs, enums) of Vulkan-Hpp are defined in the `vk::` namespace. The following naming rules apply:
+All symbols (functions, handles, structs, enums) of Vulkan-Hpp are defined in the `vk::` namespace. This can be renamed by end-users to a custom namespace by defining the `VULKAN_HPP_NAMESPACE` macro in the build system.
+
+All symbols have been renamed from the C API in meaningful ways. The following rules apply:
 
 - The `Vk` or `vk` prefix is removed.
 - The first character of function names is always lowercase.
@@ -47,7 +49,7 @@ For example:
 - `VkImageTiling` corresponds to `vk::ImageTiling`.
 - `VkImageCreateInfo` corresponds to `vk::ImageCreateInfo`.
 
-Untyped unsigned integer enum values in the C API are mapped to scoped `enum class`es to provide compile-time type safety. There is a slightly different naming convention for these enum classes and their values:
+Untyped unsigned integer enum values in the C API are mapped to scoped `enum class`es to provide compile-time type safety. There is a slightly different naming convention:
 
 - The `VK_` prefix and type infix are removed.
 - An `e` prefix is added, and the casing is CamelCase.
@@ -60,13 +62,11 @@ For example:
 - `VK_COLOR_SPACE_SRGB_NONLINEAR_KHR` corresponds to `vk::ColorSpaceKHR::eSrgbNonlinear`.
 - `VK_STRUCTURE_TYPE_PRESENT_INFO_KHR` corresponds to `vk::StructureType::ePresentInfoKHR`.
 
-Flag bits are handled like scoped enums with the addition that the `_BIT` suffix has also been removed.
-
-In some cases it might be necessary to move Vulkan-Hpp to a custom namespace. This can be achieved by defining `VULKAN_HPP_NAMESPACE` before including Vulkan-Hpp.
+Flag bits are handled similarly; additionally, the `_BIT` suffix is removed.
 
 ## `vk::CreateInfo` structs
 
-When constructing a handle in Vulkan, one usually has to create some `CreateInfo` struct to configure the handle. This results in the following C-style code:
+When constructing a handle in Vulkan, one usually has to prepare some `CreateInfo` struct to configure said handle. This results in the following C-style code:
 
 ```c++
 VkImageCreateInfo ci;
@@ -88,12 +88,11 @@ ci.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 vkCreateImage(device, &ci, allocator, &image);
 ```
 
-This is long, imperative, and error-prone. When populating a `CreateInfo` struct field by field like this, there are two common mistakes:
+This is long, imperative, and error-prone. When a `CreateInfo` struct is populated field-by-field in this manner, several common mistakes are possible:
 
-- One or more fields are left uninitialized.
-- the `::sType` field may be incorrect.
-
-The first issue may be especially hard to detect.
+- One or more fields may be left uninitialized;
+- the `::sType` field may be incorrect;
+- flag bits and enums may be initialised to unrelated (and hence invalid) values.
 
 Vulkan-Hpp provides constructors for all `CreateInfo` structs; these accept one parameter for each member variable. This way the compiler throws a compiler error if a value has been forgotten. Additionally, `sType` is automatically set the correct value, and `pNext` is set to `nullptr`. This is how the above code looks with a constructor:
 
@@ -118,7 +117,10 @@ vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B
 
 ### Designated initializers
 
-C++ supports designated initializers for POD (plain old data) structs in C++20 and later versions. Such structs cannot have user-defined constructors; to disable the, you have to `#define VULKAN_HPP_NO_CONSTRUCTORS`, which removes all the structure and union constructors from `vulkan.hpp`. Instead you can then use designated initialization. The first few vk-lines in your source might then look like:
+C++ supports [designated initializers](https://en.cppreference.com/w/cpp/language/aggregate_initialization.html#Designated_initializers) for aggregate types in C++20 and later.
+Such types cannot have user-defined constructors, which can be disabled by defining the [`VULKAN_HPP_NO_CONSTRUCTORS`](./Configuration.md#vulkan_hpp_no_constructors) macro in the build system, or before writing `#include <vulkan/vulkan.hpp>`.
+
+Designated initialisers allow for more expressive code which mentions the member variables immediately in the source code, without having to run code analysers or IntelliSense. The first few lines of Vulkan initialisation might look like the following:
 
 ```c++
 // initialize the vk::ApplicationInfo structure
@@ -126,7 +128,7 @@ vk::ApplicationInfo applicationInfo{ .pApplicationName   = AppName,
                                      .applicationVersion = 1,
                                      .pEngineName        = EngineName,
                                      .engineVersion      = 1,
-                                     .apiVersion         = VK_API_VERSION_1_1 };
+                                     .apiVersion         = vk::ApiVersion11 };
 
 // initialize the vk::InstanceCreateInfo
 vk::InstanceCreateInfo instanceCreateInfo{ .pApplicationInfo = &applicationInfo };
@@ -136,16 +138,34 @@ instead of
 
 ```c++
 // initialize the vk::ApplicationInfo structure
-vk::ApplicationInfo applicationInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
+vk::ApplicationInfo applicationInfo(AppName, 1, EngineName, 1, vk::ApiVersion11);
 
 // initialize the vk::InstanceCreateInfo
 vk::InstanceCreateInfo instanceCreateInfo({}, &applicationInfo);
 ```
 
-Note, that the designator order needs to match the declaration order.
-Note as well, that now you can explicitly set the `sType` member of vk-structures. This is neither neccessary (as they are correctly initialized by default) nor recommended.
+Note that the designator order needs to match the declaration order. Additionally, members may be omitted, in which case they are default-initialized.
+For instance, note how `::sType` and `::pNext` are omitted above; they are automatically default-initialized to the correct values or `nullptr`, respectively.
 
-### Builder pattern
+### Builder pattern with `set` member functions
+
+You might find that having _no_ constructors loses a little flexibility whilst constructing these structs; for instance, constructors that accept [`ArrayProxy`](#passing-arrays-to-functions-using-arrayproxy) parameters cannot be used with designated initializers, which fall back to the C-style pointer-and-count parameters.
+
+Vulkan-Hpp provides a solution to this problem by generating `set` member functions for all member variables (pointer-size pairs are generalised to either `ArrayProxy` or `ArrayProxyNoTemporaries`) for all structs. For instance, the above `vk::ImageCreateInfo` struct may be constructed like this:
+
+```c++
+vk::ImageCreateInfo ci = vk::ImageCreateInfo{}
+  .setImageType(vk::ImageType::e2D)
+  .setFormat(vk::Format::eR8G8B8A8Unorm)
+  .setExtent({ width, height, 1 })
+  .setMipLevels(1)
+  .setArrayLayers(1)
+  .setSamples(vk::SampleCountFlagBits::e1)
+  .setTiling(vk::ImageTiling::eOptimal)
+  .setUsage(vk::ImageUsageFlagBits::eColorAttachment)
+  .setSharingMode(vk::SharingMode::eExclusive)
+  .setInitialLayout(vk::ImageLayout::eUndefined);
+```
 
 ## Handles
 

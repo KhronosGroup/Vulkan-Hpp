@@ -23,6 +23,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   namespace detail
   {
+    ${IsDispatchedList}
     ${DispatchLoaderBase}
     ${DispatchLoaderStatic}
   }

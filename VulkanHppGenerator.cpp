@@ -13790,7 +13790,7 @@ void VulkanHppGenerator::markExtendedStructs()
   {
     for ( auto const & extends : s.second.structExtends )
     {
-      auto structIt = m_structs.find( extends );
+      auto structIt = findByNameOrAlias( m_structs, extends );
       checkForError( structIt != m_structs.end(), s.second.xmlLine, "struct <" + s.first + "> extends unknown struct <" + extends + ">" );
       structIt->second.isExtended = true;
     }

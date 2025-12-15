@@ -6689,8 +6689,9 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif
 
-#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   struct AllocationCallbacks;
+
+#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
 
   namespace detail
   {

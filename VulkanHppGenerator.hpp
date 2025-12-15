@@ -1097,6 +1097,7 @@ private:
   std::string generateHandleHashStructures() const;
   std::string generateHandles() const;
   std::string generateIndexTypeTraits( std::pair<std::string, EnumData> const & enumData ) const;
+  std::string generateIsDispatchedList() const;
   std::string generateLayerSettingTypeTraits() const;
   std::string
               generateLenInitializer( std::vector<MemberData>::const_iterator                                                                                 mit,

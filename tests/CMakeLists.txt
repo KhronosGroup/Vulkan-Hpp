@@ -73,7 +73,9 @@ if( VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_BUILD_CXX_MODULE )
 	# vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE )
 	vulkan_hpp__setup_test( NAME Flags CXX_MODULE )
 	# vulkan_hpp__setup_test( NAME FormatTraits CXX_MODULE ) # module has no access to format traits
-	vulkan_hpp__setup_test( NAME FunctionCalls CXX_MODULE )
+	if( NOT MSVC ) # internal compiler error with MSVC on getMemoryProperties()
+		vulkan_hpp__setup_test( NAME FunctionCalls CXX_MODULE )
+	endif()
 	vulkan_hpp__setup_test( NAME FunctionCallsRAII CXX_MODULE )
 	# vulkan_hpp__setup_test( NAME Handles CXX_MODULE ) # errors using equality operator with raii handles
 	vulkan_hpp__setup_test( NAME HandlesMoveExchange CXX_MODULE )
@@ -81,7 +83,9 @@ if( VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_BUILD_CXX_MODULE )
 	vulkan_hpp__setup_test( NAME NoDefaultDispatcher CXX_MODULE )
 	vulkan_hpp__setup_test( NAME NoExceptions CXX_MODULE )
 	vulkan_hpp__setup_test( NAME NoExceptionsRAII CXX_MODULE )
-	vulkan_hpp__setup_test( NAME StructureChain CXX_MODULE )
+	if( NOT MSVC ) # MSVC cannot deduct types for structured binding
+		vulkan_hpp__setup_test( NAME StructureChain CXX_MODULE )
+	endif()
 	# add_subdirectory( UniqueHandle ) # no CXX_MODULE test version yet
 	vulkan_hpp__setup_test( NAME UniqueHandleDefaultArguments CXX_MODULE )
 	vulkan_hpp__setup_test( NAME Video CXX_MODULE )

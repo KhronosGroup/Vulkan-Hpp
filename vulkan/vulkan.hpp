@@ -57,7 +57,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 335, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 336, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -6661,6 +6661,14 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCmdEndRendering2KHR( commandBuffer, pRenderingEndInfo );
       }
+
+      //=== VK_NV_compute_occupancy_priority ===
+
+      void vkCmdSetComputeOccupancyPriorityNV( VkCommandBuffer                                commandBuffer,
+                                               const VkComputeOccupancyPriorityParametersNV * pParameters ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkCmdSetComputeOccupancyPriorityNV( commandBuffer, pParameters );
+      }
     };
 
     template <>
@@ -7723,6 +7731,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_QCOM_data_graph_model ===
   VULKAN_HPP_CONSTEXPR_INLINE uint32_t DataGraphModelToolchainVersionLengthQCOM = VK_DATA_GRAPH_MODEL_TOOLCHAIN_VERSION_LENGTH_QCOM;
+
+  //=== VK_NV_compute_occupancy_priority ===
+  VULKAN_HPP_CONSTEXPR_INLINE float ComputeOccupancyPriorityLowNV    = VK_COMPUTE_OCCUPANCY_PRIORITY_LOW_NV;
+  VULKAN_HPP_CONSTEXPR_INLINE float ComputeOccupancyPriorityNormalNV = VK_COMPUTE_OCCUPANCY_PRIORITY_NORMAL_NV;
+  VULKAN_HPP_CONSTEXPR_INLINE float ComputeOccupancyPriorityHighNV   = VK_COMPUTE_OCCUPANCY_PRIORITY_HIGH_NV;
 
   //========================
   //=== CONSTEXPR VALUEs ===
@@ -9667,6 +9680,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_uniform_buffer_unsized_array ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderUniformBufferUnsizedArraySpecVersion   = VK_EXT_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderUniformBufferUnsizedArrayExtensionName = VK_EXT_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_EXTENSION_NAME;
+
+  //=== VK_NV_compute_occupancy_priority ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVComputeOccupancyPrioritySpecVersion   = VK_NV_COMPUTE_OCCUPANCY_PRIORITY_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVComputeOccupancyPriorityExtensionName = VK_NV_COMPUTE_OCCUPANCY_PRIORITY_EXTENSION_NAME;
 
 }  // namespace VULKAN_HPP_NAMESPACE
 
@@ -20060,6 +20077,25 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_NV_compute_occupancy_priority ===
+  template <>
+  struct StructExtends<PhysicalDeviceComputeOccupancyPriorityFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceComputeOccupancyPriorityFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
 #endif  // VULKAN_HPP_DISABLE_ENHANCED_MODE
 
   namespace detail
@@ -21488,6 +21524,9 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_maintenance10 ===
       PFN_vkCmdEndRendering2KHR vkCmdEndRendering2KHR = 0;
+
+      //=== VK_NV_compute_occupancy_priority ===
+      PFN_vkCmdSetComputeOccupancyPriorityNV vkCmdSetComputeOccupancyPriorityNV = 0;
 
     public:
       DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT                                    = default;
@@ -23141,6 +23180,9 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_KHR_maintenance10 ===
         vkCmdEndRendering2KHR = PFN_vkCmdEndRendering2KHR( vkGetInstanceProcAddr( instance, "vkCmdEndRendering2KHR" ) );
+
+        //=== VK_NV_compute_occupancy_priority ===
+        vkCmdSetComputeOccupancyPriorityNV = PFN_vkCmdSetComputeOccupancyPriorityNV( vkGetInstanceProcAddr( instance, "vkCmdSetComputeOccupancyPriorityNV" ) );
       }
 
       void init( Device deviceCpp ) VULKAN_HPP_NOEXCEPT
@@ -24401,6 +24443,9 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_KHR_maintenance10 ===
         vkCmdEndRendering2KHR = PFN_vkCmdEndRendering2KHR( vkGetDeviceProcAddr( device, "vkCmdEndRendering2KHR" ) );
+
+        //=== VK_NV_compute_occupancy_priority ===
+        vkCmdSetComputeOccupancyPriorityNV = PFN_vkCmdSetComputeOccupancyPriorityNV( vkGetDeviceProcAddr( device, "vkCmdSetComputeOccupancyPriorityNV" ) );
       }
 
       template <typename DynamicLoader>

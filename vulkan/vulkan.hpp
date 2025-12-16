@@ -7518,7 +7518,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct ResultValueType
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
+#  ifdef VULKAN_HPP_EXPECTED
+    using type = VULKAN_HPP_EXPECTED<T, Result>;
+#  else
     using type = ResultValue<T>;
+#  endif
 #else
     using type = T;
 #endif
@@ -7528,7 +7532,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct ResultValueType<void>
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
+#  ifdef VULKAN_HPP_EXPECTED
+    using type = VULKAN_HPP_EXPECTED<void, Result>;
+#  else
     using type = Result;
+#  endif
 #else
     using type = void;
 #endif
@@ -7545,7 +7553,11 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_INLINE typename ResultValueType<void>::type createResultValueType( Result result )
     {
 #if defined( VULKAN_HPP_NO_EXCEPTIONS )
+#  ifdef VULKAN_HPP_EXPECTED
+      return VULKAN_HPP_EXPECTED<void, Result>( result );
+#  else
       return result;
+#  endif
 #else
       ignore( result );
 #endif
@@ -7555,7 +7567,15 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValueType( Result result, T & data )
     {
 #if defined( VULKAN_HPP_NO_EXCEPTIONS )
+#  ifdef VULKAN_HPP_EXPECTED
+      if ( result == Result::eSuccess )
+      {
+        return data;
+      }
+      return VULKAN_HPP_UNEXPECTED( data );
+#  else
       return ResultValue<T>( result, data );
+#  endif
 #else
       ignore( result );
       return data;
@@ -7566,7 +7586,15 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValueType( Result result, T && data )
     {
 #if defined( VULKAN_HPP_NO_EXCEPTIONS )
+#  ifdef VULKAN_HPP_EXPECTED
+      if ( result == Result::eSuccess )
+      {
+        return std::move( data );
+      }
+      return VULKAN_HPP_UNEXPECTED( result );
+#  else
       return ResultValue<T>( result, std::move( data ) );
+#  endif
 #else
       ignore( result );
       return std::move( data );

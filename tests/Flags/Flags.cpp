@@ -93,8 +93,8 @@ int main( int /*argc*/, char ** /*argv*/ )
   assert( ( mhf1 ^ mhf2 ) == mhf0 );
 
   vk::MemoryHeapFlags mhf4( ~mhf0 );
-  assert( mhf4 == ( vk::MemoryHeapFlagBits::eDeviceLocal | vk::MemoryHeapFlagBits::eMultiInstance ) );
-  
+  assert( mhf4 == ( vk::MemoryHeapFlagBits::eDeviceLocal | vk::MemoryHeapFlagBits::eMultiInstance | vk::MemoryHeapFlagBits::eTileMemoryQCOM ) );
+
   mhf0 = mhf1;
   assert( mhf0 == mhf1 );
   
@@ -107,7 +107,9 @@ int main( int /*argc*/, char ** /*argv*/ )
   mhf0 ^= mhf3;
   assert( mhf0 == ( vk::MemoryHeapFlagBits::eMultiInstance ) );
 
-  vkmhf = static_cast<VkMemoryHeapFlags>(mhf0);
+  assert( mhf0 );
+
+  vkmhf = static_cast<VkMemoryHeapFlags>( mhf0 );
 
   return 0;
 }

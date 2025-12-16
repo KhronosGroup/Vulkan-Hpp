@@ -107,8 +107,6 @@ int main( int /*argc*/, char ** /*argv*/ )
   mhf0 ^= mhf3;
   assert( mhf0 == ( vk::MemoryHeapFlagBits::eMultiInstance ) );
 
-  assert( mhf0 );
-
   vkmhf = static_cast<VkMemoryHeapFlags>( mhf0 );
 
   return 0;

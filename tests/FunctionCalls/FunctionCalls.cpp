@@ -676,6 +676,113 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::ResultValue<uint32_t> resultValue = device.getQueryPoolResult<uint32_t>( queryPool, firstQuery, queryCount, stride, flags );
   }
 
+  // Buffer commands
+  {
+    vk::Device              device;
+    vk::BufferCreateInfo    bufferCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::Buffer              buffer;
+    vk::Result              result = device.createBuffer( &bufferCreateInfo, &allocationCallbacks, &buffer );
+  }
+  {
+    vk::Device           device;
+    vk::BufferCreateInfo bufferCreateInfo;
+    vk::Buffer           buffer = device.createBuffer( bufferCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Buffer              buffer;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyBuffer( buffer, &allocationCallbacks );
+  }
+  {
+    vk::Device device;
+    vk::Buffer buffer;
+    device.destroyBuffer( buffer );
+  }
+  {
+    vk::Device device;
+    vk::Buffer buffer;
+    device.destroy( buffer );
+  }
+
+  // Image commands
+  {
+    vk::Device              device;
+    vk::ImageCreateInfo     imageCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::Image               image;
+    vk::Result              result = device.createImage( &imageCreateInfo, &allocationCallbacks, &image );
+  }
+  {
+    vk::Device          device;
+    vk::ImageCreateInfo imageCreateInfo;
+    vk::Image           image = device.createImage( imageCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Image               image;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyImage( image, &allocationCallbacks );
+  }
+  {
+    vk::Device device;
+    vk::Image  image;
+    device.destroyImage( image );
+  }
+  {
+    vk::Device device;
+    vk::Image  image;
+    device.destroy( image );
+  }
+
+  {
+    vk::Device            device;
+    vk::Image             image;
+    vk::ImageSubresource  subresource;
+    vk::SubresourceLayout subresourceLayout;
+    device.getImageSubresourceLayout( image, &subresource, &subresourceLayout );
+  }
+  {
+    vk::Device            device;
+    vk::Image             image;
+    vk::ImageSubresource  subresource;
+    vk::SubresourceLayout subresourceLayout = device.getImageSubresourceLayout( image, subresource );
+  }
+
+  // Image view commands
+  {
+    vk::Device              device;
+    vk::ImageViewCreateInfo imageViewCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::ImageView           imageView;
+    vk::Result              result = device.createImageView( &imageViewCreateInfo, &allocationCallbacks, &imageView );
+  }
+  {
+    vk::Device              device;
+    vk::ImageViewCreateInfo imageViewCreateInfo;
+    vk::ImageView           imageView = device.createImageView( imageViewCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::ImageView           imageView;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyImageView( imageView, &allocationCallbacks );
+  }
+  {
+    vk::Device    device;
+    vk::ImageView imageView;
+    device.destroyImageView( imageView );
+  }
+  {
+    vk::Device    device;
+    vk::ImageView imageView;
+    device.destroy( imageView );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

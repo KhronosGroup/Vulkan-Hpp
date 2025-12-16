@@ -335,5 +335,47 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::ResultValue<uint32_t> resultValue = queryPool.getResult<uint32_t>( firstQuery, queryCount, stride, flags );
   }
 
+  // Buffer commands
+  {
+    vk::raii::Device     device = nullptr;
+    vk::BufferCreateInfo bufferCreateInfo;
+    vk::raii::Buffer     buffer = device.createBuffer( bufferCreateInfo );
+  }
+  {
+    vk::raii::Device     device = nullptr;
+    vk::BufferCreateInfo bufferCreateInfo;
+    vk::raii::Buffer     buffer( device, bufferCreateInfo );
+  }
+
+  // Image commands
+  {
+    vk::raii::Device    device = nullptr;
+    vk::ImageCreateInfo imageCreateInfo;
+    vk::raii::Image     image = device.createImage( imageCreateInfo );
+  }
+  {
+    vk::raii::Device    device = nullptr;
+    vk::ImageCreateInfo imageCreateInfo;
+    vk::raii::Image     image( device, imageCreateInfo );
+  }
+
+  {
+    vk::raii::Image       image = nullptr;
+    vk::ImageSubresource  imageSubresource;
+    vk::SubresourceLayout subresourceLayout = image.getSubresourceLayout( imageSubresource );
+  }
+
+  // Image view commands
+  {
+    vk::raii::Device         device = nullptr;
+    vk::ImageViewCreateInfo  imageViewCreateInfo;
+    vk::raii::ImageView      imageView = device.createImageView( imageViewCreateInfo );
+  }
+  {
+    vk::raii::Device         device = nullptr;
+    vk::ImageViewCreateInfo  imageViewCreateInfo;
+    vk::raii::ImageView      imageView( device, imageViewCreateInfo );
+  }
+
   return 0;
 }

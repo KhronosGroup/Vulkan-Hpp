@@ -5,7 +5,7 @@ The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan
 
 | Platform | Build Status |
 |:--------:|:------------:|
-| Windows  | [![CI Windows](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows.yml) |
+| Windows  | [![CI Windows Clang](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-clang.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-clang.yml) <br> [![CI Windows MSVC](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-msvc.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-msvc.yml) |
 | Linux    | [![CI Ubuntu 22](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-22.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-22.yml) <br> [![CI Ubuntu 24](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-24.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-24.yml) |
 | MacOS    | [![CI MacOS](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-macos.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-macos.yml) |
 

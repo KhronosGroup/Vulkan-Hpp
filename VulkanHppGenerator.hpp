@@ -1052,6 +1052,7 @@ private:
                                    std::string const & classSeparator,
                                    std::string         commandName,
                                    bool                enumerating,
+                                   bool                isMultiPipelineCreation,
                                    bool                raii ) const;
   std::string generateResultExceptions() const;
   std::string generateReturnDataType( std::map<size_t, VectorParamData> const & vectorParams,
@@ -1124,6 +1125,7 @@ private:
   std::string generateSharedHandleNoDestroy( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string generateSharedHandles() const;
   std::string generateSharedHandlesNoDestroy() const;
+  std::string generateTaggedCamelCase( std::string const & name ) const;
   std::string generateVectorSizeCheck( std::string const &                           name,
                                        CommandData const &                           commandData,
                                        size_t                                        initialSkipCount,

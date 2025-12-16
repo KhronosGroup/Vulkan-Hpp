@@ -9609,4 +9609,21 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT>::value,
                           "PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT is not nothrow_move_constructible!" );
 
+//=== VK_NV_compute_occupancy_priority ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ComputeOccupancyPriorityParametersNV ) == sizeof( VkComputeOccupancyPriorityParametersNV ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ComputeOccupancyPriorityParametersNV>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ComputeOccupancyPriorityParametersNV>::value,
+                          "ComputeOccupancyPriorityParametersNV is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceComputeOccupancyPriorityFeaturesNV ) ==
+                            sizeof( VkPhysicalDeviceComputeOccupancyPriorityFeaturesNV ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceComputeOccupancyPriorityFeaturesNV>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceComputeOccupancyPriorityFeaturesNV>::value,
+                          "PhysicalDeviceComputeOccupancyPriorityFeaturesNV is not nothrow_move_constructible!" );
+
 #endif

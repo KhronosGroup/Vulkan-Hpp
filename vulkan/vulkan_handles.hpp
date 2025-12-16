@@ -2288,6 +2288,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_uniform_buffer_unsized_array ===
   struct PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT;
 
+  //=== VK_NV_compute_occupancy_priority ===
+  struct ComputeOccupancyPriorityParametersNV;
+  struct PhysicalDeviceComputeOccupancyPriorityFeaturesNV;
+
   //===================================
   //=== HANDLE forward declarations ===
   //===================================
@@ -8203,6 +8207,21 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
     void endRendering2KHR( Optional<const RenderingEndInfoKHR> renderingEndInfo VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
                            Dispatch const & d                                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_NV_compute_occupancy_priority ===
+
+    // wrapper function for command vkCmdSetComputeOccupancyPriorityNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetComputeOccupancyPriorityNV.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
+    void setComputeOccupancyPriorityNV( const ComputeOccupancyPriorityParametersNV * pParameters,
+                                        Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdSetComputeOccupancyPriorityNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetComputeOccupancyPriorityNV.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
+    void setComputeOccupancyPriorityNV( const ComputeOccupancyPriorityParametersNV & parameters,
+                                        Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     operator VkCommandBuffer() const VULKAN_HPP_NOEXCEPT

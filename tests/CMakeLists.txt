@@ -54,7 +54,7 @@ vulkan_hpp__setup_test( NAME Video )
 
 if( VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_BUILD_CXX_MODULE )
  	# gcc <= 15.x fail to ignore -Winit-list-lifetime
-	if( NOT ( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "16" ) )
+	if( NOT( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "16" ) )
 		vulkan_hpp__setup_test( NAME ArrayProxy CXX_MODULE )
 		vulkan_hpp__setup_test( NAME StridedArrayProxy CXX_MODULE )
 	endif()
@@ -73,7 +73,7 @@ if( VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_BUILD_CXX_MODULE )
 	# vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE )
 	vulkan_hpp__setup_test( NAME Flags CXX_MODULE )
 	# vulkan_hpp__setup_test( NAME FormatTraits CXX_MODULE ) # module has no access to format traits
-	if( NOT MSVC ) # internal compiler error with MSVC on getMemoryProperties()
+	if( NOT( MSVC AND MSVC_VERSION VERSION_LESS "1950" ) )
 		vulkan_hpp__setup_test( NAME FunctionCalls CXX_MODULE )
 	endif()
 	vulkan_hpp__setup_test( NAME FunctionCallsRAII CXX_MODULE )

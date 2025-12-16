@@ -838,6 +838,12 @@ private:
                                                                     bool                                      definition,
                                                                     std::map<size_t, VectorParamData> const & vectorParams,
                                                                     bool                                      raii ) const;
+  std::string generateCommandResultSingleSuccessWithErrors2Vectors0Returns( std::string const &                       name,
+                                                                            CommandData const &                       commandData,
+                                                                            size_t                                    initialSkipCount,
+                                                                            bool                                      definition,
+                                                                            std::map<size_t, VectorParamData> const & vectorParams,
+                                                                            bool                                      raii ) const;
   std::string generateCommandResultSingleSuccessWithErrors2Vectors1Returns( std::string const &                       name,
                                                                             CommandData const &                       commandData,
                                                                             size_t                                    initialSkipCount,

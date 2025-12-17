@@ -1,5 +1,5 @@
 
-name: CI Windows Clang
+name: CI Windows MSVC-Ninja
 
 on:
   pull_request:

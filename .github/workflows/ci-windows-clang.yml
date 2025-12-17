@@ -1,5 +1,5 @@
 
-name: CI Windows Clang
+name: CI Windows ClangCL-Ninja
 
 on:
   pull_request:

@@ -1104,6 +1104,7 @@ With this define you can include a reflection mechanism on the vk-structures. It
 ## See Also <a id='see_also'>
 
 Feel free to submit a PR to add to this list.
+You should use clang-format version 21.1.0 to format the generated files.
 
 - [Examples](https://github.com/jherico/vulkan) A port of Sascha Willems [examples](https://github.com/SaschaWillems/Vulkan) to Vulkan-Hpp
 - [Vookoo](https://github.com/andy-thomason/Vookoo/) Stateful helper classes for Vulkan-Hpp, [Introduction Article](https://accu.org/journals/overload/25/139/overload139.pdf#page=14).

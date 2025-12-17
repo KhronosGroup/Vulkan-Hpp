@@ -4,13 +4,13 @@ AlignAfterOpenBracket : Align
 AlignArrayOfStructures : None
 AlignConsecutiveAssignments : Consecutive
 AlignConsecutiveBitFields : Consecutive
+AlignConsecutiveDeclarations : Consecutive
+AlignConsecutiveMacros : Consecutive
 AlignConsecutiveShortCaseStatements :
     Enabled : true
     AcrossEmptyLines : false
     AcrossComments : true
     AlignCaseColons : true
-AlignConsecutiveDeclarations : Consecutive
-AlignConsecutiveMacros : Consecutive
 AlignEscapedNewlines : Left
 AlignOperands : AlignAfterOperator
 AlignTrailingComments :

@@ -52,8 +52,8 @@ using FARPROC = int64_t( __stdcall * )();
 using FARPROC = int( __stdcall * )();
 #    endif
 extern "C" __declspec( dllimport ) HINSTANCE __stdcall LoadLibraryA( char const * lpLibFileName );
-extern "C" __declspec( dllimport ) int __stdcall FreeLibrary( HINSTANCE hLibModule );
-extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE hModule, const char * lpProcName );
+extern "C" __declspec( dllimport ) int __stdcall       FreeLibrary( HINSTANCE hLibModule );
+extern "C" __declspec( dllimport ) FARPROC __stdcall   GetProcAddress( HINSTANCE hModule, const char * lpProcName );
 #  endif
 #endif
 
@@ -150,7 +150,7 @@ namespace VULKAN_HPP_NAMESPACE
   private:
     VULKAN_HPP_CONSTEXPR_14 void copy( char const * data, size_t len ) VULKAN_HPP_NOEXCEPT
     {
-      size_t n = ( std::min )( N - 1, len );
+      size_t n = (std::min)( N - 1, len );
       for ( size_t i = 0; i < n; ++i )
       {
         ( *this )[i] = data[i];

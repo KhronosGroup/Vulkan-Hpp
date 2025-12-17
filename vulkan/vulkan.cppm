@@ -9487,8 +9487,7 @@ export namespace std
 #endif
 }  // namespace std
 
-export
-{
+export {
   // This VkFlags type is used as part of a bitfield in some structures.
   // As it can't be mimicked by vk-data types, we need to export just that.
   using ::VkGeometryInstanceFlagsKHR;

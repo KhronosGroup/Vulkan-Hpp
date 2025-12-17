@@ -5926,14 +5926,12 @@ export namespace VULKAN_HPP_NAMESPACE
     //=== VK_EXT_device_generated_commands ===
     using VULKAN_HPP_RAII_NAMESPACE::IndirectCommandsLayoutEXT;
     using VULKAN_HPP_RAII_NAMESPACE::IndirectExecutionSetEXT;
-
   }  // namespace VULKAN_HPP_RAII_NAMESPACE
 #endif
 }  // namespace VULKAN_HPP_NAMESPACE
 
 export namespace std
 {
-
   //=======================================
   //=== HASH specialization for Flags types ===
   //=======================================

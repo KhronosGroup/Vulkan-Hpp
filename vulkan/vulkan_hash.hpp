@@ -20981,6 +20981,5 @@ namespace std
 #  endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #endif  // 14 <= VULKAN_HPP_CPP_VERSION
-
 }  // namespace std
 #endif

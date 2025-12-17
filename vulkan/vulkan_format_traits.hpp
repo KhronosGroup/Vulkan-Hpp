@@ -9641,6 +9641,5 @@ namespace VULKAN_HPP_NAMESPACE
       default: VULKAN_HPP_ASSERT( false ); return 0;
     }
   }
-
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

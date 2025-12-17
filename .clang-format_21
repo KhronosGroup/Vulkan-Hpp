@@ -27,7 +27,7 @@ AllowShortFunctionsOnASingleLine : Empty
 AllowShortIfStatementsOnASingleLine : Never
 AllowShortLambdasOnASingleLine : All
 AllowShortLoopsOnASingleLine : false
-AllowShortNamespacesOnASingleLine : true
+AllowShortNamespacesOnASingleLine : false
 AlwaysBreakAfterReturnType : None
 AlwaysBreakBeforeMultilineStrings : true
 AlwaysBreakTemplateDeclarations : Yes
@@ -145,5 +145,5 @@ SpacesInSquareBrackets : false
 Standard : Latest
 UseCRLF : true
 UseTab : Never
-WrapNamespaceBodyWithEmptyLines : false
+WrapNamespaceBodyWithEmptyLines : Never
 ...

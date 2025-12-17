@@ -361,14 +361,32 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   // Image view commands
   {
-    vk::raii::Device         device = nullptr;
-    vk::ImageViewCreateInfo  imageViewCreateInfo;
-    vk::raii::ImageView      imageView = device.createImageView( imageViewCreateInfo );
+    vk::raii::Device        device = nullptr;
+    vk::ImageViewCreateInfo imageViewCreateInfo;
+    vk::raii::ImageView     imageView = device.createImageView( imageViewCreateInfo );
   }
   {
-    vk::raii::Device         device = nullptr;
-    vk::ImageViewCreateInfo  imageViewCreateInfo;
-    vk::raii::ImageView      imageView( device, imageViewCreateInfo );
+    vk::raii::Device        device = nullptr;
+    vk::ImageViewCreateInfo imageViewCreateInfo;
+    vk::raii::ImageView     imageView( device, imageViewCreateInfo );
+  }
+
+  // Command pool commands
+  {
+    vk::raii::Device          device = nullptr;
+    vk::CommandPoolCreateInfo commandPoolCreateInfo;
+    vk::raii::CommandPool     commandPool = device.createCommandPool( commandPoolCreateInfo );
+  }
+  {
+    vk::raii::Device          device = nullptr;
+    vk::CommandPoolCreateInfo commandPoolCreateInfo;
+    vk::raii::CommandPool     commandPool( device, commandPoolCreateInfo );
+  }
+
+  {
+    vk::raii::CommandPool     commandPool = nullptr;
+    vk::CommandPoolResetFlags flags       = {};
+    commandPool.reset( flags );
   }
 
   return 0;

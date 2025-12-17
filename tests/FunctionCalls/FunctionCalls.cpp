@@ -772,6 +772,44 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroy( imageView );
   }
 
+  // Command pool commands
+  {
+    vk::Device                device;
+    vk::CommandPoolCreateInfo commandPoolCreateInfo;
+    vk::AllocationCallbacks   allocationCallbacks;
+    vk::CommandPool           commandPool;
+    vk::Result                result = device.createCommandPool( &commandPoolCreateInfo, &allocationCallbacks, &commandPool );
+  }
+  {
+    vk::Device                device;
+    vk::CommandPoolCreateInfo commandPoolCreateInfo;
+    vk::CommandPool           commandPool = device.createCommandPool( commandPoolCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::CommandPool         commandPool;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyCommandPool( commandPool, &allocationCallbacks );
+  }
+  {
+    vk::Device      device;
+    vk::CommandPool commandPool;
+    device.destroyCommandPool( commandPool );
+  }
+  {
+    vk::Device      device;
+    vk::CommandPool commandPool;
+    device.destroy( commandPool );
+  }
+
+  {
+    vk::Device                device;
+    vk::CommandPool           commandPool;
+    vk::CommandPoolResetFlags flags = {};
+    device.resetCommandPool( commandPool, flags );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

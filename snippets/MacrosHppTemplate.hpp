@@ -311,7 +311,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 #define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT  VULKAN_HPP_DEFAULT_ASSIGNMENT( VULKAN_HPP_DEFAULT_DISPATCHER )
 
-#if !defined( VULKAN_HPP_EXPECTED ) && ( 23 <= VULKAN_HPP_CPP_VERSION ) && defined( __cpp_lib_expected )
+#if !defined( VULKAN_HPP_EXPECTED ) && ( 23 <= VULKAN_HPP_CPP_VERSION ) && defined( __cpp_lib_expected ) && defined(VULKAN_HPP_USE_STD_EXPECTED)
 #  if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
 #    include <expected>
 #  endif

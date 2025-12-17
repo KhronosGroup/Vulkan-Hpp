@@ -157,8 +157,12 @@
     VULKAN_HPP_INLINE typename ResultValueType<void>::type createResultValueType( Result result )
     {
 #if defined( VULKAN_HPP_NO_EXCEPTIONS )
-#ifdef VULKAN_HPP_EXPECTED
-      return VULKAN_HPP_EXPECTED<void, Result>(result);
+#ifdef VULKAN_HPP_UNEXPECTED
+      if (result == Result::eSuccess)
+      {
+          return {};
+      }
+      return VULKAN_HPP_UNEXPECTED(result);
 #else
       return result;
 #endif

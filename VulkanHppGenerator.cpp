@@ -1124,11 +1124,11 @@ bool VulkanHppGenerator::containsFuncPointer( std::string const & type ) const
 {
   // a simple recursive check if a type contains a funcpointer
   auto structureIt = m_structs.find( type );
-  return ( structureIt != m_structs.end() ) && std::ranges::any_of( structureIt->second.members,
-                                                                    [this, &type]( auto const & member ) {
-                                                                      return m_funcPointers.contains( member.type.type ) ||
-                                                                             ( ( member.type.type != type ) && containsFuncPointer( member.type.type ) );
-                                                                    } );
+  return ( structureIt != m_structs.end() ) &&
+         std::ranges::any_of(
+           structureIt->second.members,
+           [this, &type]( auto const & member )
+           { return m_funcPointers.contains( member.type.type ) || ( ( member.type.type != type ) && containsFuncPointer( member.type.type ) ); } );
 }
 
 bool VulkanHppGenerator::containsFloatingPoints( std::vector<MemberData> const & members ) const
@@ -7869,7 +7869,8 @@ std::string VulkanHppGenerator::generateFormatTraits() const
       []( FormatData const & formatData ) { return !formatData.blockExtent.empty(); },
       []( FormatData const & formatData ) { return "return {{ " + formatData.blockExtent + " }};"; } );
   };
-  auto generateBlockSizeCases = [&]( auto const formatIt ) {
+  auto generateBlockSizeCases = [&]( auto const formatIt )
+  {
     return generateFormatTraitsCases( formatIt->second, noPredicate, []( FormatData const & formatData ) { return "return " + formatData.blockSize + ";"; } );
   };
   auto generateBlueCases = [this]( auto const formatIt )
@@ -7891,7 +7892,8 @@ std::string VulkanHppGenerator::generateFormatTraits() const
                                      []( FormatData const & formatData )
                                      {
                                        return std::ranges::any_of( formatData.components,
-                                                                   []( auto const & component ) {
+                                                                   []( auto const & component )
+                                                                   {
                                                                      return ( component.name == "R" ) || ( component.name == "G" ) ||
                                                                             ( component.name == "B" ) || ( component.name == "A" );
                                                                    } );
@@ -7922,7 +7924,8 @@ std::string VulkanHppGenerator::generateFormatTraits() const
   {
     return generateFormatTraitsCases( formatIt->second,
                                       noPredicate,
-                                      [&]( FormatData const & formatData ) {
+                                      [&]( FormatData const & formatData )
+                                      {
                                         return generateComponentCases(
                                           formatData, []( ComponentData const & componentData ) { return "\"" + componentData.numericFormat + "\""; }, "\"\"" );
                                       } );
@@ -17811,11 +17814,10 @@ namespace
   template <typename T>
   typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const & values, std::string const & name )
   {
-    return std::ranges::find_if( values,
-                                 [&name]( T const & value ) {
-                                   return ( value.name == name ) ||
-                                          std::ranges::any_of( value.aliases, [&name]( auto const & eav ) { return eav.name == name; } );
-                                 } );
+    return std::ranges::find_if(
+      values,
+      [&name]( T const & value )
+      { return ( value.name == name ) || std::ranges::any_of( value.aliases, [&name]( auto const & eav ) { return eav.name == name; } ); } );
   }
 
   template <typename T>

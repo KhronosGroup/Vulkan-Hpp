@@ -15,20 +15,20 @@
 // VulkanHpp Samples : ArrayWrapper
 //                     Compile test on using vk::ArrayWrapper1D
 
-#include <string>
-#include <cassert>
-#include <iostream>
-
-#include <vulkan/vulkan_hpp_macros.hpp>
-#if 17 <= VULKAN_HPP_CPP_VERSION
-# include <string_view>
-#endif
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan;
+#  include <cassert>
+import vulkan;
 #else
+# include <string>
+# include <iostream>
+# include <vulkan/vulkan_hpp_macros.hpp>
+# if 17 <= VULKAN_HPP_CPP_VERSION
+#   include <string_view>
+# endif
 # include <vulkan/vulkan.hpp>
 #endif
+
 
 void f( std::string const & s )
 {
@@ -58,7 +58,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   std::string                 s4 = awc4;
   assert( s4.length() == 4 );
 
-#if 17 <= VULKAN_HPP_CPP_VERSION
+#if 17 <= VULKAN_HPP_CPP_VERSION || defined( VULKAN_HPP_USE_CXX_MODULE )
   std::cout << std::boolalpha << std::is_convertible_v<vk::ArrayWrapper1D<char, 10>, std::string_view> << std::endl;
 
   std::string_view sv1 = awc1;

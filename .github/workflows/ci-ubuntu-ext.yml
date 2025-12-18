@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        clang_version: [19, 20]
+        clang_version: [20, 21]
 
     steps:
     - uses: actions/checkout@v4
@@ -25,28 +25,28 @@ jobs:
     - name: Install libraries
       run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
 
-    - name: Install Ninja
-      uses: ashutoshvarma/setup-ninja@master
+    - name: Install CMake and Ninja
+      uses: lukka/get-cmake@latest
       with:
-        version: 1.11.0
-    - name: Install Clang and CMake
+        cmakeVersion: 4.1.2
+        ninjaVersion: latest
+
+    - name: Install Clang
       run: |
         sudo apt-get update && sudo apt-get install lsb-release gpg software-properties-common wget
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
         sudo ./llvm.sh ${{matrix.clang_version}} all
-
-        sudo apt purge --auto-remove cmake
-        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
-        echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ noble main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
-        sudo apt update && sudo apt install cmake
+        sudo ln -s /lib/llvm-${{matrix.clang_version}}/share /lib/share
 
     - name: Install glm, glfw and glslang
       run: |
         cd glm
         cmake -B build -G Ninja                                   \
+          -D CMAKE_C_COMPILER=clang-${{matrix.clang_version}}     \
           -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
           -D CMAKE_CXX_STANDARD=11                                \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++                       \
           -D CMAKE_BUILD_TYPE=Release                             \
           -D GLM_BUILD_LIBRARY=ON                                 \
           -D GLM_BUILD_INSTALL=ON                                 \
@@ -56,8 +56,10 @@ jobs:
 
         cd ../glfw
         cmake -B build -G Ninja                                   \
+          -D CMAKE_C_COMPILER=clang-${{matrix.clang_version}}     \
           -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
           -D CMAKE_CXX_STANDARD=11                                \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++                       \
           -D CMAKE_BUILD_TYPE=Release                             \
           -D GLFW_BUILD_EXAMPLES=OFF                              \
           -D GLFW_BUILD_TESTS=OFF                                 \
@@ -68,8 +70,10 @@ jobs:
 
         cd ../glslang
         cmake -B build -G Ninja                                   \
+          -D CMAKE_C_COMPILER=clang-${{matrix.clang_version}}     \
           -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
           -D CMAKE_CXX_STANDARD=11                                \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++                       \
           -D CMAKE_BUILD_TYPE=Release                             \
           -D ENABLE_OPT=OFF                                       \
           -D GLSLANG_TESTS_DEFAULT=OFF                            \
@@ -90,6 +94,7 @@ jobs:
           -D VULKAN_HPP_PRECOMPILE=OFF                              \
           -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}}   \
           -D CMAKE_CXX_STANDARD=20                                  \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++                         \
           -D CMAKE_BUILD_TYPE=Debug
         cmake --build build --parallel
 
@@ -103,6 +108,7 @@ jobs:
           -D VULKAN_HPP_PRECOMPILE=OFF                              \
           -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}}   \
           -D CMAKE_CXX_STANDARD=20                                  \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++                         \
           -D CMAKE_BUILD_TYPE=Release
         cmake --build build --parallel --clean-first
 
@@ -112,7 +118,7 @@ jobs:
           for BUILD_TYPE in Debug Release; do
 
             CXX_MODULES=ON
-            if [ $CXX_STANDARD -lt 20 ]; then
+            if [ $CXX_STANDARD -lt 23 ]; then
               CXX_MODULES=OFF
             fi
 
@@ -121,16 +127,21 @@ jobs:
             echo "================================================================================="
 
             cmake -B build -G Ninja --fresh                           \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=$CXX_MODULES             \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF                       \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                         \
               -D VULKAN_HPP_SAMPLES_BUILD=ON                          \
               -D VULKAN_HPP_TESTS_BUILD=ON                            \
+              -D VULKAN_HPP_TESTS_CTEST=ON                            \
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON            \
               -D VULKAN_HPP_PRECOMPILE=OFF                            \
               -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD                     \
-              -D CMAKE_BUILD_TYPE=$BUILD_TYPE
+              -D CMAKE_CXX_FLAGS=-stdlib=libc++                       \
+              -D CMAKE_BUILD_TYPE=$BUILD_TYPE                         \
+              -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444
             cmake --build build --parallel --clean-first
+            ctest -j --output-on-failure --test-dir build
           done
         done

@@ -12,7 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME NoExceptionsRAII COMPILE_DEFINITIONS VULKAN_HPP_NO_EXCEPTIONS )
-if( VULKAN_HPP_ENABLE_CPP20_MODULES )
-    vulkan_hpp__setup_test( NAME NoExceptionsRAII CXX_MODULE COMPILE_DEFINITIONS VULKAN_HPP_NO_EXCEPTIONS )
+cmake_minimum_required( VERSION 3.12 )
+project( VulkanHppTest LANGUAGES CXX )
+
+set(VULKAN_HPP_NO_EXCEPTIONS ON)
+include( ${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt )
+vulkan_hpp__setup_test_project()
+
+# add_subdirectory cannot use the normal compile definitions
+if( NOT VULKAN_HPP_TESTS_CTEST )
+    target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_NO_EXCEPTIONS )
 endif()

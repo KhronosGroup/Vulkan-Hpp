@@ -18,72 +18,82 @@
 // ignore warning 4189: local variable is initialized but not referenced
 #if defined( _MSC_VER )
 #  pragma warning( disable : 4189 )
+#  pragma warning( disable : 4996 )
 #endif
 #if defined( __clang__ )
 #  pragma clang diagnostic ignored "-Wunused-variable"
+#  pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"
 #  pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #else
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan;
+#  include <cassert>
+import vulkan;
 #else
-# include <vulkan/vulkan_extension_inspection.hpp>
+#  include <set>
+#  include <map>
+#  include <vector>
+#  include <string>
+#  include <vulkan/vulkan_extension_inspection.hpp>
 #endif
+
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
 #if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110400 < GCC_VERSION ) )
-  static_assert( vk::isInstanceExtension( VK_KHR_SURFACE_EXTENSION_NAME ), "static_assert test failed" );
-  static_assert( vk::isDeviceExtension( VK_KHR_SWAPCHAIN_EXTENSION_NAME ), "static assert test failed" );
-  static_assert( vk::isDeprecatedExtension( VK_EXT_DEBUG_REPORT_EXTENSION_NAME ), "static assert test failed" );
-  static_assert( vk::getExtensionDeprecatedBy( VK_EXT_DEBUG_REPORT_EXTENSION_NAME ) == VK_EXT_DEBUG_UTILS_EXTENSION_NAME, "static assert test failed" );
-  static_assert( vk::isPromotedExtension( VK_KHR_SAMPLER_MIRROR_CLAMP_TO_EDGE_EXTENSION_NAME ), "static assert test failed" );
-  static_assert( vk::getExtensionPromotedTo( VK_KHR_SAMPLER_MIRROR_CLAMP_TO_EDGE_EXTENSION_NAME ) == "VK_VERSION_1_2", "static assert test failed" );
-  static_assert( vk::isObsoletedExtension( VK_AMD_NEGATIVE_VIEWPORT_HEIGHT_EXTENSION_NAME ), "static assert test failed" );
-  static_assert( vk::getExtensionObsoletedBy( VK_AMD_NEGATIVE_VIEWPORT_HEIGHT_EXTENSION_NAME ) == VK_KHR_MAINTENANCE_1_EXTENSION_NAME,
+  static_assert( vk::isInstanceExtension( vk::KHRSurfaceExtensionName ), "static_assert test failed" );
+  static_assert( vk::isDeviceExtension( vk::KHRSwapchainExtensionName ), "static assert test failed" );
+  static_assert( vk::isDeprecatedExtension( vk::EXTDebugReportExtensionName ), "static assert test failed" );
+  static_assert( vk::getExtensionDeprecatedBy( vk::EXTDebugReportExtensionName ) == vk::EXTDebugUtilsExtensionName, "static assert test failed" );
+  static_assert( vk::isPromotedExtension( vk::KHRSamplerMirrorClampToEdgeExtensionName ), "static assert test failed" );
+  static_assert( vk::getExtensionPromotedTo( vk::KHRSamplerMirrorClampToEdgeExtensionName ) == "VK_VERSION_1_2", "static assert test failed" );
+  static_assert( vk::isObsoletedExtension( vk::AMDNegativeViewportHeightExtensionName ), "static assert test failed" );
+  static_assert( vk::getExtensionObsoletedBy( vk::AMDNegativeViewportHeightExtensionName ) == vk::KHRMaintenance1ExtensionName,
                  "static assert test failed" );
 #endif
 
   std::set<std::string> const & instanceExtensions = vk::getInstanceExtensions();
-  assert( instanceExtensions.find( VK_KHR_SURFACE_EXTENSION_NAME ) != instanceExtensions.end() );
+  assert( instanceExtensions.find( vk::KHRSurfaceExtensionName ) != instanceExtensions.end() );
 
   std::set<std::string> const & deviceExtensions = vk::getDeviceExtensions();
-  assert( deviceExtensions.find( VK_KHR_SWAPCHAIN_EXTENSION_NAME ) != deviceExtensions.end() );
+  assert( deviceExtensions.find( vk::KHRSwapchainExtensionName ) != deviceExtensions.end() );
 
-  std::map<std::string, std::vector<std::vector<std::string>>> depends = vk::getExtensionDepends( VK_KHR_SWAPCHAIN_EXTENSION_NAME );
+  std::map<std::string, std::vector<std::vector<std::string>>> depends = vk::getExtensionDepends( vk::KHRSwapchainExtensionName );
   assert( ( depends.size() == 1 ) && ( depends.begin()->first == "VK_VERSION_1_0" ) && ( depends.begin()->second.size() == 1 ) &&
-          ( depends.begin()->second[0].size() == 1 ) && ( depends.begin()->second[0][0] == VK_KHR_SURFACE_EXTENSION_NAME ) );
+          ( depends.begin()->second[0].size() == 1 ) && ( depends.begin()->second[0][0] == vk::KHRSurfaceExtensionName ) );
 
-  auto [available0, deps0] = vk::getExtensionDepends( "VK_VERSION_1_0", VK_KHR_SURFACE_EXTENSION_NAME );
+  auto [available0, deps0] = vk::getExtensionDepends( "VK_VERSION_1_0", vk::KHRSurfaceExtensionName );
   assert( available0 && deps0.empty() );
 
-  auto [available1, deps1] = vk::getExtensionDepends( "VK_VERSION_1_0", VK_KHR_SWAPCHAIN_EXTENSION_NAME );
-  assert( available1 && ( deps1.size() == 1 ) && ( deps1[0].size() == 1 ) && ( deps1[0][0] == VK_KHR_SURFACE_EXTENSION_NAME ) );
+  auto [available1, deps1] = vk::getExtensionDepends( "VK_VERSION_1_0", vk::KHRSwapchainExtensionName );
+  assert( available1 && ( deps1.size() == 1 ) && ( deps1[0].size() == 1 ) && ( deps1[0][0] == vk::KHRSurfaceExtensionName ) );
 
-  auto [available2, deps2] = vk::getExtensionDepends( "VK_VERSION_1_1", VK_KHR_SWAPCHAIN_EXTENSION_NAME );
-  assert( available2 && ( deps2.size() == 1 ) && ( deps2[0].size() == 1 ) && ( deps2[0][0] == VK_KHR_SURFACE_EXTENSION_NAME ) );
+  auto [available2, deps2] = vk::getExtensionDepends( "VK_VERSION_1_1", vk::KHRSwapchainExtensionName );
+  assert( available2 && ( deps2.size() == 1 ) && ( deps2[0].size() == 1 ) && ( deps2[0][0] == vk::KHRSurfaceExtensionName ) );
 
-  auto [available3, deps3] = vk::getExtensionDepends( "VK_VERSION_1_1", VK_EXT_SHADER_TILE_IMAGE_EXTENSION_NAME );
+  auto [available3, deps3] = vk::getExtensionDepends( "VK_VERSION_1_1", vk::EXTShaderTileImageExtensionName );
   assert( !available3 );
 
-  auto [available4, deps4] = vk::getExtensionDepends( "VK_VERSION_1_3", VK_EXT_SHADER_TILE_IMAGE_EXTENSION_NAME );
+  auto [available4, deps4] = vk::getExtensionDepends( "VK_VERSION_1_3", vk::EXTShaderTileImageExtensionName );
   assert( available4 && ( deps4.size() == 1 ) && deps4[0].empty() );
 
   std::map<std::string, std::string> const & deprecatedExtensions = vk::getDeprecatedExtensions();
-  auto                                       deprecatedIt         = deprecatedExtensions.find( VK_EXT_DEBUG_REPORT_EXTENSION_NAME );
-  assert( ( deprecatedIt != deprecatedExtensions.end() ) && ( deprecatedIt->second == VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) );
+  auto                                       deprecatedIt         = deprecatedExtensions.find( vk::EXTDebugReportExtensionName );
+  assert( ( deprecatedIt != deprecatedExtensions.end() ) && ( deprecatedIt->second == vk::EXTDebugUtilsExtensionName ) );
 
   std::map<std::string, std::string> const & obsoletedExtensions = vk::getObsoletedExtensions();
-  auto                                       obsoletedIt         = obsoletedExtensions.find( VK_AMD_NEGATIVE_VIEWPORT_HEIGHT_EXTENSION_NAME );
-  assert( ( obsoletedIt != obsoletedExtensions.end() ) && ( obsoletedIt->second == VK_KHR_MAINTENANCE_1_EXTENSION_NAME ) );
+  auto                                       obsoletedIt         = obsoletedExtensions.find( vk::AMDNegativeViewportHeightExtensionName );
+  assert( ( obsoletedIt != obsoletedExtensions.end() ) && ( obsoletedIt->second == vk::KHRMaintenance1ExtensionName ) );
 
   std::map<std::string, std::string> const & promotedExtensions = vk::getPromotedExtensions();
-  auto                                       promotedIt         = promotedExtensions.find( VK_EXT_DEBUG_MARKER_EXTENSION_NAME );
-  assert( ( promotedIt != promotedExtensions.end() ) && ( promotedIt->second == VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) );
+  auto                                       promotedIt         = promotedExtensions.find( vk::EXTDebugMarkerExtensionName );
+  assert( ( promotedIt != promotedExtensions.end() ) && ( promotedIt->second == vk::EXTDebugUtilsExtensionName ) );
 
   return 0;
 }

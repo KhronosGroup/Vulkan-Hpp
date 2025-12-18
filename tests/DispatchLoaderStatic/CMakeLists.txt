@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TODO: override the VULKAN_HPP_DISPATCH_LOADER_DYNAMIC flag to 0
-# vulkan_hpp__setup_test( NAME DispatchLoaderStatic LIBRARIES ${Vulkan_LIBRARIES} )
-if( VULKAN_HPP_ENABLE_CPP20_MODULES )
-    # vulkan_hpp__setup_test( NAME DispatchLoaderStatic CXX_MODULE LIBRARIES ${Vulkan_LIBRARIES} )
-endif()
+cmake_minimum_required( VERSION 3.12 )
+project( VulkanHppTest LANGUAGES CXX )
+
+set(VULKAN_HPP_DISPATCH_LOADER_DYNAMIC OFF)
+include( ${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt )
+vulkan_hpp__setup_test_project()

@@ -16,16 +16,20 @@
 //                     Compile test with VULKAN_HPP_NO_EXCEPTIONS set
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
-#include <vector>
-#include <cstdint>
-#include <cassert>
-#include <iostream>
-#include <algorithm>
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan;
+#include <cstdint>
+#  include <cassert>
+import vulkan;
 #else
-# include "vulkan/vulkan.hpp"
+#  include <vector>
+#  include <cstdint>
+#  include <iostream>
+#  include <algorithm>
+#  include <cassert>
+#  include <vulkan/vulkan.hpp>
 #endif
+
 
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
@@ -51,7 +55,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevices[0].getQueueFamilyProperties();
 
   // get the first index into queueFamiliyProperties which supports graphics
-  size_t graphicsQueueFamilyIndex =
+  std::size_t graphicsQueueFamilyIndex =
     std::distance( queueFamilyProperties.begin(),
                    std::find_if( queueFamilyProperties.begin(),
                                  queueFamilyProperties.end(),

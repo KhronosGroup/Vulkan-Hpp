@@ -15,13 +15,15 @@
 // VulkanHpp Tests : CppType
 //                   Compile test on using vk::CppType
 
-#include <cstdint>
-#include <type_traits>
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan.h>
-#  include <vulkan/vulkan_hpp_macros.hpp>
+#  include <cassert>
 import vulkan;
 #else
+#  include <cstdint>
+#  include <type_traits>
+#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #  include <vulkan/vulkan_raii.hpp>
 #endif
@@ -30,7 +32,7 @@ static_assert( std::is_same<vk::CppType<vk::IndexType, vk::IndexType::eUint16>::
 static_assert( std::is_same<vk::CppType<vk::ObjectType, vk::ObjectType::eInstance>::Type, vk::Instance>::value, "" );
 static_assert( std::is_same<vk::CppType<vk::DebugReportObjectTypeEXT, vk::DebugReportObjectTypeEXT ::eInstance>::Type, vk::Instance>::value, "" );
 
-#if 20 <= VULKAN_HPP_CPP_VERSION
+#if 20 <= VULKAN_HPP_CPP_VERSION || defined( VULKAN_HPP_USE_CXX_MODULE )
 static_assert( std::is_same<vk::CppType<VkAabbPositionsKHR>::Type, vk::AabbPositionsKHR>::value, "" );
 static_assert( std::is_same<vk::CppType<VkDeviceOrHostAddressConstKHR>::Type, vk::DeviceOrHostAddressConstKHR>::value, "" );
 static_assert( std::is_same<vk::CppType<VkAccelerationStructureGeometryTrianglesDataKHR>::Type, vk::AccelerationStructureGeometryTrianglesDataKHR>::value, "" );

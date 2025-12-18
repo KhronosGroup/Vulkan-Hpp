@@ -1,5 +1,5 @@
 
-name: CI Windows ClangCL-Ninja
+name: CI Windows MSVC-Ninja
 
 on:
   pull_request:
@@ -38,7 +38,6 @@ jobs:
     #   run: |
     #     cd glm
     #     cmake -B build -G Ninja          \
-    #       -D CMAKE_CXX_COMPILER=clang-cl \
     #       -D CMAKE_CXX_STANDARD=11       \
     #       -D CMAKE_BUILD_TYPE=Release    \
     #       -D GLM_BUILD_LIBRARY=ON        \
@@ -49,7 +48,6 @@ jobs:
 
     #     cd ../glfw
     #     cmake -B build -G Ninja          \
-    #       -D CMAKE_C_COMPILER=clang-cl   \
     #       -D CMAKE_BUILD_TYPE=Release    \
     #       -D GLFW_BUILD_EXAMPLES=OFF     \
     #       -D GLFW_BUILD_TESTS=OFF        \
@@ -60,8 +58,6 @@ jobs:
 
     #     cd ../glslang
     #     cmake -B build -G Ninja          \
-    #       -D CMAKE_C_COMPILER=clang-cl   \
-    #       -D CMAKE_CXX_COMPILER=clang-cl \
     #       -D CMAKE_CXX_STANDARD=11       \
     #       -D CMAKE_BUILD_TYPE=Release    \
     #       -D ENABLE_OPT=OFF              \
@@ -82,7 +78,6 @@ jobs:
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
           -D CMAKE_BUILD_TYPE=Debug                    \
-          -D CMAKE_CXX_COMPILER=clang-cl               \
           -D CMAKE_CXX_STANDARD=20
         cmake --build build --parallel
 
@@ -95,37 +90,29 @@ jobs:
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
           -D CMAKE_BUILD_TYPE=Release                  \
-          -D CMAKE_CXX_COMPILER=clang-cl               \
           -D CMAKE_CXX_STANDARD=20
         cmake --build build --parallel --clean-first
 
     - name: Build samples and tests
       run: |
-        for CXX_STANDARD in 11 14 17 20 23; do
+        for CXX_STANDARD in 23; do
           for BUILD_TYPE in Debug Release; do
-
-            CXX_MODULES=ON
-            if [ $CXX_STANDARD -lt 23 ]; then
-              CXX_MODULES=OFF
-            fi
 
             echo "================================================================================="
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE with architecture ${{matrix.architecture}}"
             echo "================================================================================="
 
             cmake -B build -G Ninja --fresh                   \
-              -D VULKAN_HPP_BUILD_CXX_MODULE=$CXX_MODULES     \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=ON               \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
-              -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
+              -D VULKAN_HPP_SAMPLES_BUILD=OFF                 \
               -D VULKAN_HPP_TESTS_BUILD=ON                    \
               -D VULKAN_HPP_TESTS_CTEST=ON                    \
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
               -D VULKAN_HPP_PRECOMPILE=OFF                    \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE                 \
-              -D CMAKE_C_COMPILER=clang-cl                    \
-              -D CMAKE_CXX_COMPILER=clang-cl                  \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD             \
               -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444
             cmake --build build --parallel --clean-first

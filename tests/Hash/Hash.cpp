@@ -27,15 +27,20 @@
 #endif
 
 
-#include <iostream>
-#include <unordered_map>
-#include <unordered_set>
 #ifdef VULKAN_HPP_USE_CXX_MODULE
   #include <vulkan/vulkan_hpp_macros.hpp>
-  import vulkan;
+  #include <vulkan/vulkan.h>
+  #  include <cassert>
+import vulkan;
 #else
-# include "vulkan/vulkan_hash.hpp"
+#  include <vector>
+#  include <cstdint>
+#  include <iostream>
+#  include <unordered_map>
+#  include <unordered_set>
+#  include "vulkan/vulkan_hash.hpp"
 #endif
+
 
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 namespace vk {
@@ -94,8 +99,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     {
       std::string         name1 = AppName;
       std::string         name2 = AppName;
-      vk::ApplicationInfo appInfo1( name1.c_str(), 1, EngineName, 1, VK_API_VERSION_1_1 );
-      vk::ApplicationInfo appInfo2( name2.c_str(), 1, EngineName, 1, VK_API_VERSION_1_1 );
+      vk::ApplicationInfo appInfo1( name1.c_str(), 1, EngineName, 1, vk::ApiVersion11 );
+      vk::ApplicationInfo appInfo2( name2.c_str(), 1, EngineName, 1, vk::ApiVersion11 );
       auto                h1 = std::hash<vk::ApplicationInfo>{}( appInfo1 );
       auto                h2 = std::hash<vk::ApplicationInfo>{}( appInfo2 );
       assert( h1 == h2 );
@@ -109,7 +114,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::vector<const char *> enabledLayers1 = { "Layer1", "Layer2", "Layer3" };
       auto                      enabledLayers2 = enabledLayers1;
 
-      vk::ApplicationInfo    appInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+      vk::ApplicationInfo    appInfo( AppName, 1, EngineName, 1, vk::ApiVersion11 );
       vk::InstanceCreateInfo info1( {}, &appInfo, static_cast<uint32_t>( enabledLayers1.size() ), enabledLayers1.data() );
       vk::InstanceCreateInfo info2( {}, &appInfo, static_cast<uint32_t>( enabledLayers2.size() ), enabledLayers2.data() );
       auto                   h1 = std::hash<vk::InstanceCreateInfo>{}( info1 );
@@ -125,12 +130,12 @@ int main( int /*argc*/, char ** /*argv*/ )
   catch ( vk::SystemError const & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
 
   return 0;

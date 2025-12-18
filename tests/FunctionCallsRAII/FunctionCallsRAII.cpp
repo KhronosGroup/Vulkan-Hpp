@@ -27,7 +27,6 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
-
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <cstdint>
 import vulkan;
@@ -393,6 +392,35 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::CommandPool     commandPool = nullptr;
     vk::CommandPoolResetFlags flags       = {};
     commandPool.reset( flags );
+  }
+
+  // Command buffer commands
+  {
+    vk::raii::Device                     device = nullptr;
+    vk::CommandBufferAllocateInfo        commandBufferAllocateInfo;
+    std::vector<vk::raii::CommandBuffer> commandBuffers = device.allocateCommandBuffers( commandBufferAllocateInfo );
+  }
+  {
+    vk::raii::Device              device = nullptr;
+    vk::CommandBufferAllocateInfo commandBufferAllocateInfo;
+    vk::raii::CommandBuffers      commandBuffers( device, commandBufferAllocateInfo );
+  }
+
+  {
+    vk::raii::CommandBuffer    commandBuffer = nullptr;
+    vk::CommandBufferBeginInfo beginInfo;
+    commandBuffer.begin( beginInfo );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    commandBuffer.end();
+  }
+
+  {
+    vk::raii::CommandBuffer     commandBuffer = nullptr;
+    vk::CommandBufferResetFlags flags         = {};
+    commandBuffer.reset( flags );
   }
 
   return 0;

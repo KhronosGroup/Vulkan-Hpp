@@ -82,11 +82,13 @@ struct TypeInfo
 {
   std::string compose( std::string const & prefixToStrip, std::string const & nameSpace = "" ) const
   {
-    return prefix + ( prefix.empty() ? "" : " " ) +
+    return prefix +
+           ( prefix.empty() ? "" : " " ) +
            ( prefixToStrip.empty()
                ? type
                : ( ( ( type.starts_with( prefixToStrip ) && !nameSpace.empty() ) ? ( nameSpace + "::" ) : "" ) + stripPrefix( type, prefixToStrip ) ) ) +
-           ( postfix.empty() ? "" : " " ) + postfix;
+           ( postfix.empty() ? "" : " " ) +
+           postfix;
   }
 
   bool operator==( TypeInfo const & rhs ) const noexcept
@@ -234,11 +236,11 @@ inline void checkElements( std::string const &                               int
     auto encounteredIt = encountered.find( r.first );
     checkForError( intro, encounteredIt != encountered.end(), line, "missing required element <" + r.first + ">" );
     // check: r.second (means: required excactly once) => (encouteredIt->second == 1)
-    checkForError( intro,
-                   !r.second || ( encounteredIt->second == 1 ),
-                   line,
-                   "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " + std::to_string( encounteredIt->second ) +
-                     " times" );
+    checkForError(
+      intro,
+      !r.second || ( encounteredIt->second == 1 ),
+      line,
+      "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " + std::to_string( encounteredIt->second ) + " times" );
   }
 }
 

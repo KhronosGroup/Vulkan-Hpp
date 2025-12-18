@@ -81,7 +81,8 @@ std::vector<std::string>::iterator VideoHppGenerator::addImplicitlyRequiredTypes
       reqIt = addImplicitlyRequiredTypes( memberTypeIt, extensionData, reqIt );
     }
   }
-  assert( typeIt->second.requiredBy.empty() || ( *typeIt->second.requiredBy.begin() == extensionData.name ) ||
+  assert( typeIt->second.requiredBy.empty() ||
+          ( *typeIt->second.requiredBy.begin() == extensionData.name ) ||
           ( *typeIt->second.requiredBy.begin() == extensionData.depends ) );
   if ( typeIt->second.requiredBy.empty() && ( std::find( extensionData.requireData.types.begin(), reqIt, typeIt->first ) == reqIt ) )
   {
@@ -197,8 +198,13 @@ std::string VideoHppGenerator::generateConstants( ExtensionData const & extensio
   std::string str;
   for ( auto const & constant : extensionData.requireData.constants )
   {
-    str += "VULKAN_HPP_CONSTEXPR_INLINE " + constant.second.type + " " + toCamelCase( stripPrefix( constant.first, "STD_VIDEO_" ), true ) + " = " +
-           constant.second.value + ";\n";
+    str += "VULKAN_HPP_CONSTEXPR_INLINE " +
+           constant.second.type +
+           " " +
+           toCamelCase( stripPrefix( constant.first, "STD_VIDEO_" ), true ) +
+           " = " +
+           constant.second.value +
+           ";\n";
   }
   if ( !str.empty() )
   {
@@ -226,8 +232,15 @@ std::string VideoHppGenerator::generateEnum( std::pair<std::string, EnumData> co
     {
       std::string aliasName = "e" + toCamelCase( stripPrefix( alias.first, prefix ), true );
       assert( valueToNameMap.insert( { aliasName, alias.first } ).second );
-      enumValues += "    " + aliasName + " VULKAN_HPP_DEPRECATED_17( \"" + aliasName + " is deprecated, " + valueName +
-                    " should be used instead.\" ) = " + alias.first + ",\n";
+      enumValues += "    " +
+                    aliasName +
+                    " VULKAN_HPP_DEPRECATED_17( \"" +
+                    aliasName +
+                    " is deprecated, " +
+                    valueName +
+                    " should be used instead.\" ) = " +
+                    alias.first +
+                    ",\n";
     }
   }
 

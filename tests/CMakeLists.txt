@@ -44,6 +44,7 @@ vulkan_hpp__setup_test( NAME NoDefaultDispatcher )
 if( ( CMAKE_CXX_STANDARD GREATER_EQUAL 23 ) AND NOT ( ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" ) AND ( CMAKE_CXX_COMPILER_VERSION VERSION_LESS 15.0 ) ) )
 	vulkan_hpp__setup_test( NAME NoExceptionsRAII ) # errors with clang++13 and clang++14
 endif()
+vulkan_hpp__setup_test( NAME NoSmartHandle )
 vulkan_hpp__setup_test( NAME StridedArrayProxy )
 vulkan_hpp__setup_test( NAME StructureChain )
 # add_subdirectory( UniqueHandle ) # really messy setup, test needs to be shortened
@@ -83,6 +84,7 @@ if( VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_BUILD_CXX_MODULE )
 	vulkan_hpp__setup_test( NAME NoDefaultDispatcher CXX_MODULE )
 	vulkan_hpp__setup_test( NAME NoExceptions CXX_MODULE )
 	vulkan_hpp__setup_test( NAME NoExceptionsRAII CXX_MODULE )
+	vulkan_hpp__setup_test( NAME NoSmartHandle CXX_MODULE )
 	if( NOT MSVC ) # MSVC cannot deduct types for structured binding
 		vulkan_hpp__setup_test( NAME StructureChain CXX_MODULE )
 	endif()

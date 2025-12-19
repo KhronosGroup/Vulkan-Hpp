@@ -13,6 +13,7 @@
 
 namespace VULKAN_HPP_NAMESPACE
 {
+
   //===================================
   //=== STRUCT forward declarations ===
   //===================================
@@ -1307,6 +1308,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceCustomBorderColorPropertiesEXT;
   struct PhysicalDeviceCustomBorderColorFeaturesEXT;
 
+  //=== VK_EXT_texture_compression_astc_3d ===
+  struct PhysicalDeviceTextureCompressionASTC3DFeaturesEXT;
+
   //=== VK_KHR_pipeline_library ===
   struct PipelineLibraryCreateInfoKHR;
 
@@ -2185,13 +2189,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct SurfaceCreateInfoOHOS;
 #endif /*VK_USE_PLATFORM_OHOS*/
 
-#if defined( VK_USE_PLATFORM_OHOS )
-  //=== VK_OHOS_native_buffer ===
-  struct NativeBufferOHOS;
-  struct SwapchainImageCreateInfoOHOS;
-  struct PhysicalDevicePresentationPropertiesOHOS;
-#endif /*VK_USE_PLATFORM_OHOS*/
-
   //=== VK_HUAWEI_hdr_vivid ===
   struct PhysicalDeviceHdrVividFeaturesHUAWEI;
   struct HdrVividDynamicMetadataHUAWEI;
@@ -2280,6 +2277,10 @@ namespace VULKAN_HPP_NAMESPACE
   using RenderingEndInfoEXT = RenderingEndInfoKHR;
   struct RenderingAttachmentFlagsInfoKHR;
   struct ResolveImageModeInfoKHR;
+
+  //=== VK_EXT_shader_long_vector ===
+  struct PhysicalDeviceShaderLongVectorFeaturesEXT;
+  struct PhysicalDeviceShaderLongVectorPropertiesEXT;
 
   //=== VK_SEC_pipeline_cache_incremental_mode ===
   struct PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC;
@@ -3405,98 +3406,6 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
 
-  // wrapper class for handle VkImage, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkImage.html
-  class Image
-  {
-  public:
-    using CType      = VkImage;
-    using NativeType = VkImage;
-
-    static VULKAN_HPP_CONST_OR_CONSTEXPR ObjectType               objectType            = ObjectType::eImage;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR DebugReportObjectTypeEXT debugReportObjectType = DebugReportObjectTypeEXT::eImage;
-
-  public:
-    Image() VULKAN_HPP_NOEXCEPT {}  // = default; - try to workaround a compiler issue
-
-    Image( Image const & rhs )             = default;
-    Image & operator=( Image const & rhs ) = default;
-
-#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
-    Image( Image && rhs )             = default;
-    Image & operator=( Image && rhs ) = default;
-#else
-    Image( Image && rhs ) VULKAN_HPP_NOEXCEPT : m_image( exchange( rhs.m_image, {} ) ) {}
-
-    Image & operator=( Image && rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      m_image = exchange( rhs.m_image, {} );
-      return *this;
-    }
-#endif
-
-    VULKAN_HPP_CONSTEXPR Image( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
-
-    VULKAN_HPP_TYPESAFE_EXPLICIT Image( VkImage image ) VULKAN_HPP_NOEXCEPT : m_image( image ) {}
-
-#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
-    Image & operator=( VkImage image ) VULKAN_HPP_NOEXCEPT
-    {
-      m_image = image;
-      return *this;
-    }
-#endif
-
-    Image & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
-    {
-      m_image = {};
-      return *this;
-    }
-
-    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkImage() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_image;
-    }
-
-    explicit operator bool() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_image != VK_NULL_HANDLE;
-    }
-
-    bool operator!() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_image == VK_NULL_HANDLE;
-    }
-
-  private:
-    VkImage m_image = {};
-  };
-
-  template <>
-  struct CppType<ObjectType, ObjectType::eImage>
-  {
-    using Type = Image;
-  };
-
-  template <>
-  struct CppType<DebugReportObjectTypeEXT, DebugReportObjectTypeEXT::eImage>
-  {
-    using Type = Image;
-  };
-
-#if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
-  template <>
-  struct CppType<VkImage, VK_NULL_HANDLE>
-  {
-    using Type = Image;
-  };
-#endif
-
-  template <>
-  struct isVulkanHandleType<Image>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
-  };
-
   // wrapper class for handle VkSemaphore, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkSemaphore.html
   class Semaphore
   {
@@ -4408,6 +4317,98 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct isVulkanHandleType<ShaderEXT>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+  };
+
+  // wrapper class for handle VkImage, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkImage.html
+  class Image
+  {
+  public:
+    using CType      = VkImage;
+    using NativeType = VkImage;
+
+    static VULKAN_HPP_CONST_OR_CONSTEXPR ObjectType               objectType            = ObjectType::eImage;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DebugReportObjectTypeEXT debugReportObjectType = DebugReportObjectTypeEXT::eImage;
+
+  public:
+    Image() VULKAN_HPP_NOEXCEPT {}  // = default; - try to workaround a compiler issue
+
+    Image( Image const & rhs )             = default;
+    Image & operator=( Image const & rhs ) = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    Image( Image && rhs )             = default;
+    Image & operator=( Image && rhs ) = default;
+#else
+    Image( Image && rhs ) VULKAN_HPP_NOEXCEPT : m_image( exchange( rhs.m_image, {} ) ) {}
+
+    Image & operator=( Image && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_image = exchange( rhs.m_image, {} );
+      return *this;
+    }
+#endif
+
+    VULKAN_HPP_CONSTEXPR Image( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT Image( VkImage image ) VULKAN_HPP_NOEXCEPT : m_image( image ) {}
+
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
+    Image & operator=( VkImage image ) VULKAN_HPP_NOEXCEPT
+    {
+      m_image = image;
+      return *this;
+    }
+#endif
+
+    Image & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+    {
+      m_image = {};
+      return *this;
+    }
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkImage() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_image;
+    }
+
+    explicit operator bool() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_image != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_image == VK_NULL_HANDLE;
+    }
+
+  private:
+    VkImage m_image = {};
+  };
+
+  template <>
+  struct CppType<ObjectType, ObjectType::eImage>
+  {
+    using Type = Image;
+  };
+
+  template <>
+  struct CppType<DebugReportObjectTypeEXT, DebugReportObjectTypeEXT::eImage>
+  {
+    using Type = Image;
+  };
+
+#if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
+  template <>
+  struct CppType<VkImage, VK_NULL_HANDLE>
+  {
+    using Type = Image;
+  };
+#endif
+
+  template <>
+  struct isVulkanHandleType<Image>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
@@ -11079,27 +11080,6 @@ namespace VULKAN_HPP_NAMESPACE
     void notifyOutOfBandNV( const OutOfBandQueueTypeInfoNV & queueTypeInfo,
                             Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-
-#if defined( VK_USE_PLATFORM_OHOS )
-    //=== VK_OHOS_native_buffer ===
-
-    // wrapper function for command vkQueueSignalReleaseImageOHOS, see
-    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueSignalReleaseImageOHOS.html
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
-    VULKAN_HPP_NODISCARD Result signalReleaseImageOHOS( uint32_t           waitSemaphoreCount,
-                                                        const Semaphore *  pWaitSemaphores,
-                                                        Image              image,
-                                                        int32_t *          pNativeFenceFd,
-                                                        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    // wrapper function for command vkQueueSignalReleaseImageOHOS, see
-    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueSignalReleaseImageOHOS.html
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
-    VULKAN_HPP_NODISCARD typename ResultValueType<int32_t>::type signalReleaseImageOHOS( ArrayProxy<const Semaphore> const & waitSemaphores,
-                                                                                         Image                               image,
-                                                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-#endif   /*VK_USE_PLATFORM_OHOS*/
 
     operator VkQueue() const VULKAN_HPP_NOEXCEPT
     {
@@ -18666,44 +18646,6 @@ namespace VULKAN_HPP_NAMESPACE
                                               ArrayProxy<const WriteIndirectExecutionSetShaderEXT> const & executionSetWrites,
                                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-
-#if defined( VK_USE_PLATFORM_OHOS )
-    //=== VK_OHOS_native_buffer ===
-
-    // wrapper function for command vkGetSwapchainGrallocUsageOHOS, see
-    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainGrallocUsageOHOS.html
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
-    VULKAN_HPP_NODISCARD Result getSwapchainGrallocUsageOHOS( Format             format,
-                                                              ImageUsageFlags    imageUsage,
-                                                              uint64_t *         grallocUsage,
-                                                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    // wrapper function for command vkGetSwapchainGrallocUsageOHOS, see
-    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainGrallocUsageOHOS.html
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
-    VULKAN_HPP_NODISCARD typename ResultValueType<uint64_t>::type
-      getSwapchainGrallocUsageOHOS( Format format, ImageUsageFlags imageUsage, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-
-#  ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    // wrapper function for command vkAcquireImageOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkAcquireImageOHOS.html
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
-    VULKAN_HPP_NODISCARD Result acquireImageOHOS( Image              image,
-                                                  int32_t            nativeFenceFd,
-                                                  Semaphore          semaphore,
-                                                  Fence              fence,
-                                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
-#  else
-    // wrapper function for command vkAcquireImageOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkAcquireImageOHOS.html
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type = true>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
-      acquireImageOHOS( Image               image,
-                        int32_t             nativeFenceFd,
-                        Semaphore semaphore VULKAN_HPP_DEFAULT_ASSIGNMENT( {} ),
-                        Fence fence         VULKAN_HPP_DEFAULT_ASSIGNMENT( {} ),
-                        Dispatch const & d  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif   /*VK_USE_PLATFORM_OHOS*/
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
     //=== VK_EXT_external_memory_metal ===

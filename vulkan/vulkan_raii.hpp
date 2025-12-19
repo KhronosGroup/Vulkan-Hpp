@@ -1938,13 +1938,6 @@ namespace VULKAN_HPP_NAMESPACE
           vkUpdateIndirectExecutionSetShaderEXT =
             PFN_vkUpdateIndirectExecutionSetShaderEXT( vkGetDeviceProcAddr( device, "vkUpdateIndirectExecutionSetShaderEXT" ) );
 
-#  if defined( VK_USE_PLATFORM_OHOS )
-          //=== VK_OHOS_native_buffer ===
-          vkGetSwapchainGrallocUsageOHOS = PFN_vkGetSwapchainGrallocUsageOHOS( vkGetDeviceProcAddr( device, "vkGetSwapchainGrallocUsageOHOS" ) );
-          vkAcquireImageOHOS             = PFN_vkAcquireImageOHOS( vkGetDeviceProcAddr( device, "vkAcquireImageOHOS" ) );
-          vkQueueSignalReleaseImageOHOS  = PFN_vkQueueSignalReleaseImageOHOS( vkGetDeviceProcAddr( device, "vkQueueSignalReleaseImageOHOS" ) );
-#  endif /*VK_USE_PLATFORM_OHOS*/
-
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
           //=== VK_EXT_external_memory_metal ===
           vkGetMemoryMetalHandleEXT           = PFN_vkGetMemoryMetalHandleEXT( vkGetDeviceProcAddr( device, "vkGetMemoryMetalHandleEXT" ) );
@@ -2968,17 +2961,6 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkUpdateIndirectExecutionSetPipelineEXT     vkUpdateIndirectExecutionSetPipelineEXT     = 0;
         PFN_vkUpdateIndirectExecutionSetShaderEXT       vkUpdateIndirectExecutionSetShaderEXT       = 0;
 
-#  if defined( VK_USE_PLATFORM_OHOS )
-        //=== VK_OHOS_native_buffer ===
-        PFN_vkGetSwapchainGrallocUsageOHOS vkGetSwapchainGrallocUsageOHOS = 0;
-        PFN_vkAcquireImageOHOS             vkAcquireImageOHOS             = 0;
-        PFN_vkQueueSignalReleaseImageOHOS  vkQueueSignalReleaseImageOHOS  = 0;
-#  else
-        PFN_dummy vkGetSwapchainGrallocUsageOHOS_placeholder = 0;
-        PFN_dummy vkAcquireImageOHOS_placeholder             = 0;
-        PFN_dummy vkQueueSignalReleaseImageOHOS_placeholder  = 0;
-#  endif /*VK_USE_PLATFORM_OHOS*/
-
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
         //=== VK_EXT_external_memory_metal ===
         PFN_vkGetMemoryMetalHandleEXT           vkGetMemoryMetalHandleEXT           = 0;
@@ -3000,6 +2982,7 @@ namespace VULKAN_HPP_NAMESPACE
         //=== VK_NV_compute_occupancy_priority ===
         PFN_vkCmdSetComputeOccupancyPriorityNV vkCmdSetComputeOccupancyPriorityNV = 0;
       };
+
     }  // namespace detail
 
     //========================================
@@ -5744,14 +5727,6 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD typename ResultValueType<IndirectExecutionSetEXT>::type
         createIndirectExecutionSetEXT( IndirectExecutionSetCreateInfoEXT const & createInfo,
                                        Optional<const AllocationCallbacks>       allocator = nullptr ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
-
-#  if defined( VK_USE_PLATFORM_OHOS )
-      //=== VK_OHOS_native_buffer ===
-
-      // wrapper function for command vkGetSwapchainGrallocUsageOHOS, see
-      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainGrallocUsageOHOS.html
-      VULKAN_HPP_NODISCARD typename ResultValueType<uint64_t>::type getSwapchainGrallocUsageOHOS( Format format, ImageUsageFlags imageUsage ) const;
-#  endif /*VK_USE_PLATFORM_OHOS*/
 
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
       //=== VK_EXT_external_memory_metal ===
@@ -10876,15 +10851,6 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename X, typename Y, typename... Z>
       VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> getSubresourceLayout2KHR( const ImageSubresource2 & subresource ) const VULKAN_HPP_NOEXCEPT;
 
-#  if defined( VK_USE_PLATFORM_OHOS )
-      //=== VK_OHOS_native_buffer ===
-
-      // wrapper function for command vkAcquireImageOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkAcquireImageOHOS.html
-      typename ResultValueType<void>::type acquireOHOS( int32_t                                   nativeFenceFd,
-                                                        VULKAN_HPP_NAMESPACE::Semaphore semaphore VULKAN_HPP_DEFAULT_ASSIGNMENT( {} ),
-                                                        VULKAN_HPP_NAMESPACE::Fence fence         VULKAN_HPP_DEFAULT_ASSIGNMENT( {} ) ) const;
-#  endif /*VK_USE_PLATFORM_OHOS*/
-
     protected:
       Image( VULKAN_HPP_NAMESPACE::Device     device,
              VULKAN_HPP_NAMESPACE::Image      image,
@@ -13021,15 +12987,6 @@ namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkQueueNotifyOutOfBandNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueNotifyOutOfBandNV.html
       void notifyOutOfBandNV( const OutOfBandQueueTypeInfoNV & queueTypeInfo ) const VULKAN_HPP_NOEXCEPT;
-
-#  if defined( VK_USE_PLATFORM_OHOS )
-      //=== VK_OHOS_native_buffer ===
-
-      // wrapper function for command vkQueueSignalReleaseImageOHOS, see
-      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueSignalReleaseImageOHOS.html
-      VULKAN_HPP_NODISCARD typename ResultValueType<int32_t>::type
-        signalReleaseImageOHOS( ArrayProxy<const VULKAN_HPP_NAMESPACE::Semaphore> const & waitSemaphores, VULKAN_HPP_NAMESPACE::Image image ) const;
-#  endif /*VK_USE_PLATFORM_OHOS*/
 
     private:
       VULKAN_HPP_NAMESPACE::Queue      m_queue      = {};
@@ -27913,59 +27870,6 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_OHOS*/
 
-#  if defined( VK_USE_PLATFORM_OHOS )
-    //=== VK_OHOS_native_buffer ===
-
-    // wrapper function for command vkGetSwapchainGrallocUsageOHOS, see
-    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSwapchainGrallocUsageOHOS.html
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<uint64_t>::type Device::getSwapchainGrallocUsageOHOS( Format          format,
-                                                                                                                          ImageUsageFlags imageUsage ) const
-    {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkGetSwapchainGrallocUsageOHOS && "Function <vkGetSwapchainGrallocUsageOHOS> requires <VK_OHOS_native_buffer>" );
-
-      uint64_t grallocUsage;
-      Result   result = static_cast<Result>( getDispatcher()->vkGetSwapchainGrallocUsageOHOS(
-        static_cast<VkDevice>( m_device ), static_cast<VkFormat>( format ), static_cast<VkImageUsageFlags>( imageUsage ), &grallocUsage ) );
-      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::getSwapchainGrallocUsageOHOS" );
-
-      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( grallocUsage ) );
-    }
-
-    // wrapper function for command vkAcquireImageOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkAcquireImageOHOS.html
-    VULKAN_HPP_INLINE typename ResultValueType<void>::type
-      Image::acquireOHOS( int32_t nativeFenceFd, VULKAN_HPP_NAMESPACE::Semaphore semaphore, VULKAN_HPP_NAMESPACE::Fence fence ) const
-    {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkAcquireImageOHOS && "Function <vkAcquireImageOHOS> requires <VK_OHOS_native_buffer>" );
-
-      Result result = static_cast<Result>( getDispatcher()->vkAcquireImageOHOS( static_cast<VkDevice>( m_device ),
-                                                                                static_cast<VkImage>( m_image ),
-                                                                                nativeFenceFd,
-                                                                                static_cast<VkSemaphore>( semaphore ),
-                                                                                static_cast<VkFence>( fence ) ) );
-      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Image::acquireOHOS" );
-
-      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result );
-    }
-
-    // wrapper function for command vkQueueSignalReleaseImageOHOS, see
-    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueSignalReleaseImageOHOS.html
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<int32_t>::type
-      Queue::signalReleaseImageOHOS( ArrayProxy<const VULKAN_HPP_NAMESPACE::Semaphore> const & waitSemaphores, VULKAN_HPP_NAMESPACE::Image image ) const
-    {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkQueueSignalReleaseImageOHOS && "Function <vkQueueSignalReleaseImageOHOS> requires <VK_OHOS_native_buffer>" );
-
-      int32_t nativeFenceFd;
-      Result  result = static_cast<Result>( getDispatcher()->vkQueueSignalReleaseImageOHOS( static_cast<VkQueue>( m_queue ),
-                                                                                           waitSemaphores.size(),
-                                                                                           reinterpret_cast<const VkSemaphore *>( waitSemaphores.data() ),
-                                                                                           static_cast<VkImage>( image ),
-                                                                                           &nativeFenceFd ) );
-      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Queue::signalReleaseImageOHOS" );
-
-      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( nativeFenceFd ) );
-    }
-#  endif /*VK_USE_PLATFORM_OHOS*/
-
     //=== VK_NV_cooperative_matrix2 ===
 
     // wrapper function for command vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV, see
@@ -28156,6 +28060,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
       return cppTypes;
     }
+
   }  // namespace VULKAN_HPP_RAII_NAMESPACE
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

@@ -1048,12 +1048,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::SurfaceCreateFlagsOHOS;
 #endif /*VK_USE_PLATFORM_OHOS*/
 
-#if defined( VK_USE_PLATFORM_OHOS )
-  //=== VK_OHOS_native_buffer ===
-  using VULKAN_HPP_NAMESPACE::SwapchainImageUsageFlagBitsOHOS;
-  using VULKAN_HPP_NAMESPACE::SwapchainImageUsageFlagsOHOS;
-#endif /*VK_USE_PLATFORM_OHOS*/
-
   //=== VK_ARM_performance_counters_by_region ===
   using VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionFlagBitsARM;
   using VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionFlagsARM;
@@ -2165,6 +2159,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTCustomBorderColorExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTCustomBorderColorSpecVersion;
 
+  //=== VK_EXT_texture_compression_astc_3d ===
+  using VULKAN_HPP_NAMESPACE::EXTTextureCompressionAstc3DExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTTextureCompressionAstc3DSpecVersion;
+
   //=== VK_GOOGLE_user_type ===
   using VULKAN_HPP_NAMESPACE::GOOGLEUserTypeExtensionName;
   using VULKAN_HPP_NAMESPACE::GOOGLEUserTypeSpecVersion;
@@ -2927,12 +2925,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::OHOSSurfaceSpecVersion;
 #endif /*VK_USE_PLATFORM_OHOS*/
 
-#if defined( VK_USE_PLATFORM_OHOS )
-  //=== VK_OHOS_native_buffer ===
-  using VULKAN_HPP_NAMESPACE::OHOSNativeBufferExtensionName;
-  using VULKAN_HPP_NAMESPACE::OHOSNativeBufferSpecVersion;
-#endif /*VK_USE_PLATFORM_OHOS*/
-
   //=== VK_HUAWEI_hdr_vivid ===
   using VULKAN_HPP_NAMESPACE::HUAWEIHdrVividExtensionName;
   using VULKAN_HPP_NAMESPACE::HUAWEIHdrVividSpecVersion;
@@ -3009,6 +3001,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_maintenance10 ===
   using VULKAN_HPP_NAMESPACE::KHRMaintenance10ExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRMaintenance10SpecVersion;
+
+  //=== VK_EXT_shader_long_vector ===
+  using VULKAN_HPP_NAMESPACE::EXTShaderLongVectorExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTShaderLongVectorSpecVersion;
 
   //=== VK_SEC_pipeline_cache_incremental_mode ===
   using VULKAN_HPP_NAMESPACE::SECPipelineCacheIncrementalModeExtensionName;
@@ -4373,6 +4369,9 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceCustomBorderColorPropertiesEXT;
   using VULKAN_HPP_NAMESPACE::SamplerCustomBorderColorCreateInfoEXT;
 
+  //=== VK_EXT_texture_compression_astc_3d ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceTextureCompressionASTC3DFeaturesEXT;
+
   //=== VK_KHR_pipeline_library ===
   using VULKAN_HPP_NAMESPACE::PipelineLibraryCreateInfoKHR;
 
@@ -5251,13 +5250,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS;
 #endif /*VK_USE_PLATFORM_OHOS*/
 
-#if defined( VK_USE_PLATFORM_OHOS )
-  //=== VK_OHOS_native_buffer ===
-  using VULKAN_HPP_NAMESPACE::NativeBufferOHOS;
-  using VULKAN_HPP_NAMESPACE::PhysicalDevicePresentationPropertiesOHOS;
-  using VULKAN_HPP_NAMESPACE::SwapchainImageCreateInfoOHOS;
-#endif /*VK_USE_PLATFORM_OHOS*/
-
   //=== VK_HUAWEI_hdr_vivid ===
   using VULKAN_HPP_NAMESPACE::HdrVividDynamicMetadataHUAWEI;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceHdrVividFeaturesHUAWEI;
@@ -5346,6 +5338,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::RenderingEndInfoEXT;
   using VULKAN_HPP_NAMESPACE::RenderingEndInfoKHR;
   using VULKAN_HPP_NAMESPACE::ResolveImageModeInfoKHR;
+
+  //=== VK_EXT_shader_long_vector ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderLongVectorFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderLongVectorPropertiesEXT;
 
   //=== VK_SEC_pipeline_cache_incremental_mode ===
   using VULKAN_HPP_NAMESPACE::PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC;
@@ -5926,12 +5922,14 @@ export namespace VULKAN_HPP_NAMESPACE
     //=== VK_EXT_device_generated_commands ===
     using VULKAN_HPP_RAII_NAMESPACE::IndirectCommandsLayoutEXT;
     using VULKAN_HPP_RAII_NAMESPACE::IndirectExecutionSetEXT;
+
   }  // namespace VULKAN_HPP_RAII_NAMESPACE
 #endif
 }  // namespace VULKAN_HPP_NAMESPACE
 
 export namespace std
 {
+
   //=======================================
   //=== HASH specialization for Flags types ===
   //=======================================
@@ -7931,6 +7929,10 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceCustomBorderColorFeaturesEXT>;
 
+  //=== VK_EXT_texture_compression_astc_3d ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceTextureCompressionASTC3DFeaturesEXT>;
+
   //=== VK_KHR_pipeline_library ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PipelineLibraryCreateInfoKHR>;
@@ -9329,16 +9331,6 @@ export namespace std
   struct hash<VULKAN_HPP_NAMESPACE::SurfaceCreateInfoOHOS>;
 #endif /*VK_USE_PLATFORM_OHOS*/
 
-#if defined( VK_USE_PLATFORM_OHOS )
-  //=== VK_OHOS_native_buffer ===
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::NativeBufferOHOS>;
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::SwapchainImageCreateInfoOHOS>;
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePresentationPropertiesOHOS>;
-#endif /*VK_USE_PLATFORM_OHOS*/
-
   //=== VK_HUAWEI_hdr_vivid ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceHdrVividFeaturesHUAWEI>;
@@ -9461,6 +9453,12 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::ResolveImageModeInfoKHR>;
 
+  //=== VK_EXT_shader_long_vector ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderLongVectorFeaturesEXT>;
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderLongVectorPropertiesEXT>;
+
   //=== VK_SEC_pipeline_cache_incremental_mode ===
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC>;
@@ -9485,7 +9483,8 @@ export namespace std
 #endif
 }  // namespace std
 
-export {
+export
+{
   // This VkFlags type is used as part of a bitfield in some structures.
   // As it can't be mimicked by vk-data types, we need to export just that.
   using ::VkGeometryInstanceFlagsKHR;
@@ -10657,13 +10656,6 @@ export {
 #if defined( VK_USE_PLATFORM_OHOS )
   //=== VK_OHOS_surface ===
   using ::PFN_vkCreateSurfaceOHOS;
-#endif /*VK_USE_PLATFORM_OHOS*/
-
-#if defined( VK_USE_PLATFORM_OHOS )
-  //=== VK_OHOS_native_buffer ===
-  using ::PFN_vkAcquireImageOHOS;
-  using ::PFN_vkGetSwapchainGrallocUsageOHOS;
-  using ::PFN_vkQueueSignalReleaseImageOHOS;
 #endif /*VK_USE_PLATFORM_OHOS*/
 
   //=== VK_NV_cooperative_matrix2 ===

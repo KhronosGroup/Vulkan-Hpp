@@ -52,12 +52,12 @@ using FARPROC = int64_t( __stdcall * )();
 using FARPROC = int( __stdcall * )();
 #    endif
 extern "C" __declspec( dllimport ) HINSTANCE __stdcall LoadLibraryA( char const * lpLibFileName );
-extern "C" __declspec( dllimport ) int __stdcall       FreeLibrary( HINSTANCE hLibModule );
-extern "C" __declspec( dllimport ) FARPROC __stdcall   GetProcAddress( HINSTANCE hModule, const char * lpProcName );
+extern "C" __declspec( dllimport ) int __stdcall FreeLibrary( HINSTANCE hLibModule );
+extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE hModule, const char * lpProcName );
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 336, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 337, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -150,7 +150,7 @@ namespace VULKAN_HPP_NAMESPACE
   private:
     VULKAN_HPP_CONSTEXPR_14 void copy( char const * data, size_t len ) VULKAN_HPP_NOEXCEPT
     {
-      size_t n = (std::min)( N - 1, len );
+      size_t n = ( std::min )( N - 1, len );
       for ( size_t i = 0; i < n; ++i )
       {
         ( *this )[i] = data[i];
@@ -460,8 +460,7 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename V,
               typename std::enable_if<!std::is_convertible<decltype( std::declval<V>().begin() ), T *>::value &&
                                         std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
-                                        std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value &&
-                                        std::is_lvalue_reference<V>::value,
+                                        std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value && std::is_lvalue_reference<V>::value,
                                       int>::type = 0>
     ArrayProxyNoTemporaries( V && v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
@@ -472,8 +471,7 @@ namespace VULKAN_HPP_NAMESPACE
     // Any l-value reference with a .begin() return type implicitly convertible to T*, and a .size() return type implicitly convertible to size_t.
     template <typename V,
               typename std::enable_if<std::is_convertible<decltype( std::declval<V>().begin() ), T *>::value &&
-                                        std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value &&
-                                        std::is_lvalue_reference<V>::value,
+                                        std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value && std::is_lvalue_reference<V>::value,
                                       int>::type = 0>
     ArrayProxyNoTemporaries( V && v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
@@ -885,6 +883,7 @@ namespace std
 
 namespace VULKAN_HPP_NAMESPACE
 {
+
 #  if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   template <typename Type, typename Dispatch>
   class UniqueHandleTraits;
@@ -6582,27 +6581,6 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_OHOS*/
 
-#  if defined( VK_USE_PLATFORM_OHOS )
-      //=== VK_OHOS_native_buffer ===
-
-      VkResult
-        vkGetSwapchainGrallocUsageOHOS( VkDevice device, VkFormat format, VkImageUsageFlags imageUsage, uint64_t * grallocUsage ) const VULKAN_HPP_NOEXCEPT
-      {
-        return ::vkGetSwapchainGrallocUsageOHOS( device, format, imageUsage, grallocUsage );
-      }
-
-      VkResult vkAcquireImageOHOS( VkDevice device, VkImage image, int32_t nativeFenceFd, VkSemaphore semaphore, VkFence fence ) const VULKAN_HPP_NOEXCEPT
-      {
-        return ::vkAcquireImageOHOS( device, image, nativeFenceFd, semaphore, fence );
-      }
-
-      VkResult vkQueueSignalReleaseImageOHOS(
-        VkQueue queue, uint32_t waitSemaphoreCount, const VkSemaphore * pWaitSemaphores, VkImage image, int32_t * pNativeFenceFd ) const VULKAN_HPP_NOEXCEPT
-      {
-        return ::vkQueueSignalReleaseImageOHOS( queue, waitSemaphoreCount, pWaitSemaphores, image, pNativeFenceFd );
-      }
-#  endif /*VK_USE_PLATFORM_OHOS*/
-
       //=== VK_NV_cooperative_matrix2 ===
 
       VkResult vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(
@@ -6684,6 +6662,7 @@ namespace VULKAN_HPP_NAMESPACE
       return dls;
     }
 #endif
+
   }  // namespace detail
 #if ( 14 <= VULKAN_HPP_CPP_VERSION )
   using std::exchange;
@@ -6904,6 +6883,7 @@ namespace VULKAN_HPP_NAMESPACE
       PoolType         m_pool     = PoolType();
       Dispatch const * m_dispatch = nullptr;
     };
+
   }  // namespace detail
 #endif  // !VULKAN_HPP_NO_SMART_HANDLE
 
@@ -8837,6 +8817,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTCustomBorderColorSpecVersion   = VK_EXT_CUSTOM_BORDER_COLOR_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTCustomBorderColorExtensionName = VK_EXT_CUSTOM_BORDER_COLOR_EXTENSION_NAME;
 
+  //=== VK_EXT_texture_compression_astc_3d ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTTextureCompressionAstc3DSpecVersion   = VK_EXT_TEXTURE_COMPRESSION_ASTC_3D_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTTextureCompressionAstc3DExtensionName = VK_EXT_TEXTURE_COMPRESSION_ASTC_3D_EXTENSION_NAME;
+
   //=== VK_GOOGLE_user_type ===
   VULKAN_HPP_CONSTEXPR_INLINE auto GOOGLEUserTypeSpecVersion   = VK_GOOGLE_USER_TYPE_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto GOOGLEUserTypeExtensionName = VK_GOOGLE_USER_TYPE_EXTENSION_NAME;
@@ -9591,12 +9575,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto OHOSSurfaceExtensionName = VK_OHOS_SURFACE_EXTENSION_NAME;
 #endif /*VK_USE_PLATFORM_OHOS*/
 
-#if defined( VK_USE_PLATFORM_OHOS )
-  //=== VK_OHOS_native_buffer ===
-  VULKAN_HPP_CONSTEXPR_INLINE auto OHOSNativeBufferSpecVersion   = VK_OHOS_NATIVE_BUFFER_SPEC_VERSION;
-  VULKAN_HPP_CONSTEXPR_INLINE auto OHOSNativeBufferExtensionName = VK_OHOS_NATIVE_BUFFER_EXTENSION_NAME;
-#endif /*VK_USE_PLATFORM_OHOS*/
-
   //=== VK_HUAWEI_hdr_vivid ===
   VULKAN_HPP_CONSTEXPR_INLINE auto HUAWEIHdrVividSpecVersion   = VK_HUAWEI_HDR_VIVID_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto HUAWEIHdrVividExtensionName = VK_HUAWEI_HDR_VIVID_EXTENSION_NAME;
@@ -9673,6 +9651,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance10SpecVersion   = VK_KHR_MAINTENANCE_10_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance10ExtensionName = VK_KHR_MAINTENANCE_10_EXTENSION_NAME;
 
+  //=== VK_EXT_shader_long_vector ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderLongVectorSpecVersion   = VK_EXT_SHADER_LONG_VECTOR_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderLongVectorExtensionName = VK_EXT_SHADER_LONG_VECTOR_EXTENSION_NAME;
+
   //=== VK_SEC_pipeline_cache_incremental_mode ===
   VULKAN_HPP_CONSTEXPR_INLINE auto SECPipelineCacheIncrementalModeSpecVersion   = VK_SEC_PIPELINE_CACHE_INCREMENTAL_MODE_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto SECPipelineCacheIncrementalModeExtensionName = VK_SEC_PIPELINE_CACHE_INCREMENTAL_MODE_EXTENSION_NAME;
@@ -9684,6 +9666,7 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_compute_occupancy_priority ===
   VULKAN_HPP_CONSTEXPR_INLINE auto NVComputeOccupancyPrioritySpecVersion   = VK_NV_COMPUTE_OCCUPANCY_PRIORITY_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVComputeOccupancyPriorityExtensionName = VK_NV_COMPUTE_OCCUPANCY_PRIORITY_EXTENSION_NAME;
+
 }  // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off
@@ -14542,6 +14525,25 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceCustomBorderColorFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_texture_compression_astc_3d ===
+  template <>
+  struct StructExtends<PhysicalDeviceTextureCompressionASTC3DFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceTextureCompressionASTC3DFeaturesEXT, DeviceCreateInfo>
   {
     enum
     {
@@ -19491,45 +19493,6 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
-#  if defined( VK_USE_PLATFORM_OHOS )
-  //=== VK_OHOS_native_buffer ===
-  template <>
-  struct StructExtends<NativeBufferOHOS, ImageCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<NativeBufferOHOS, BindImageMemoryInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<SwapchainImageCreateInfoOHOS, ImageCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<PhysicalDevicePresentationPropertiesOHOS, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#  endif /*VK_USE_PLATFORM_OHOS*/
-
   //=== VK_HUAWEI_hdr_vivid ===
   template <>
   struct StructExtends<PhysicalDeviceHdrVividFeaturesHUAWEI, PhysicalDeviceFeatures2>
@@ -20031,6 +19994,34 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<ResolveImageModeInfoKHR, ResolveImageInfo2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_shader_long_vector ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderLongVectorFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderLongVectorFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderLongVectorPropertiesEXT, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -21492,17 +21483,6 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCreateSurfaceOHOS vkCreateSurfaceOHOS = 0;
 #else
       PFN_dummy vkCreateSurfaceOHOS_placeholder = 0;
-#endif /*VK_USE_PLATFORM_OHOS*/
-
-#if defined( VK_USE_PLATFORM_OHOS )
-      //=== VK_OHOS_native_buffer ===
-      PFN_vkGetSwapchainGrallocUsageOHOS vkGetSwapchainGrallocUsageOHOS = 0;
-      PFN_vkAcquireImageOHOS             vkAcquireImageOHOS             = 0;
-      PFN_vkQueueSignalReleaseImageOHOS  vkQueueSignalReleaseImageOHOS  = 0;
-#else
-      PFN_dummy vkGetSwapchainGrallocUsageOHOS_placeholder = 0;
-      PFN_dummy vkAcquireImageOHOS_placeholder             = 0;
-      PFN_dummy vkQueueSignalReleaseImageOHOS_placeholder  = 0;
 #endif /*VK_USE_PLATFORM_OHOS*/
 
       //=== VK_NV_cooperative_matrix2 ===
@@ -23152,13 +23132,6 @@ namespace VULKAN_HPP_NAMESPACE
         vkCreateSurfaceOHOS = PFN_vkCreateSurfaceOHOS( vkGetInstanceProcAddr( instance, "vkCreateSurfaceOHOS" ) );
 #endif /*VK_USE_PLATFORM_OHOS*/
 
-#if defined( VK_USE_PLATFORM_OHOS )
-        //=== VK_OHOS_native_buffer ===
-        vkGetSwapchainGrallocUsageOHOS = PFN_vkGetSwapchainGrallocUsageOHOS( vkGetInstanceProcAddr( instance, "vkGetSwapchainGrallocUsageOHOS" ) );
-        vkAcquireImageOHOS             = PFN_vkAcquireImageOHOS( vkGetInstanceProcAddr( instance, "vkAcquireImageOHOS" ) );
-        vkQueueSignalReleaseImageOHOS  = PFN_vkQueueSignalReleaseImageOHOS( vkGetInstanceProcAddr( instance, "vkQueueSignalReleaseImageOHOS" ) );
-#endif /*VK_USE_PLATFORM_OHOS*/
-
         //=== VK_NV_cooperative_matrix2 ===
         vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(
           vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV" ) );
@@ -24424,13 +24397,6 @@ namespace VULKAN_HPP_NAMESPACE
         vkUpdateIndirectExecutionSetShaderEXT =
           PFN_vkUpdateIndirectExecutionSetShaderEXT( vkGetDeviceProcAddr( device, "vkUpdateIndirectExecutionSetShaderEXT" ) );
 
-#if defined( VK_USE_PLATFORM_OHOS )
-        //=== VK_OHOS_native_buffer ===
-        vkGetSwapchainGrallocUsageOHOS = PFN_vkGetSwapchainGrallocUsageOHOS( vkGetDeviceProcAddr( device, "vkGetSwapchainGrallocUsageOHOS" ) );
-        vkAcquireImageOHOS             = PFN_vkAcquireImageOHOS( vkGetDeviceProcAddr( device, "vkAcquireImageOHOS" ) );
-        vkQueueSignalReleaseImageOHOS  = PFN_vkQueueSignalReleaseImageOHOS( vkGetDeviceProcAddr( device, "vkQueueSignalReleaseImageOHOS" ) );
-#endif /*VK_USE_PLATFORM_OHOS*/
-
 #if defined( VK_USE_PLATFORM_METAL_EXT )
         //=== VK_EXT_external_memory_metal ===
         vkGetMemoryMetalHandleEXT           = PFN_vkGetMemoryMetalHandleEXT( vkGetDeviceProcAddr( device, "vkGetMemoryMetalHandleEXT" ) );
@@ -24477,6 +24443,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
+
   }  // namespace detail
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

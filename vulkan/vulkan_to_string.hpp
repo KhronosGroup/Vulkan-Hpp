@@ -31,6 +31,7 @@
 
 namespace VULKAN_HPP_NAMESPACE
 {
+
   //==========================
   //=== BITMASKs to_string ===
   //==========================
@@ -4301,23 +4302,6 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_OHOS*/
 
-#if defined( VK_USE_PLATFORM_OHOS )
-  //=== VK_OHOS_native_buffer ===
-
-  VULKAN_HPP_INLINE std::string to_string( SwapchainImageUsageFlagsOHOS value )
-  {
-    std::string result = "{";
-    if ( value & SwapchainImageUsageFlagBitsOHOS::eShared )
-      result += " Shared |";
-
-    if ( result.size() > 1 )
-      result.back() = '}';
-    else
-      result = "{}";
-    return result;
-  }
-#endif /*VK_USE_PLATFORM_OHOS*/
-
   //=== VK_ARM_performance_counters_by_region ===
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PerformanceCounterDescriptionFlagsARM )
@@ -5103,6 +5087,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSamplerCustomBorderColorCreateInfoEXT                : return "SamplerCustomBorderColorCreateInfoEXT";
       case StructureType::ePhysicalDeviceCustomBorderColorPropertiesEXT         : return "PhysicalDeviceCustomBorderColorPropertiesEXT";
       case StructureType::ePhysicalDeviceCustomBorderColorFeaturesEXT           : return "PhysicalDeviceCustomBorderColorFeaturesEXT";
+      case StructureType::ePhysicalDeviceTextureCompressionAstc3DFeaturesEXT    : return "PhysicalDeviceTextureCompressionAstc3DFeaturesEXT";
       case StructureType::ePipelineLibraryCreateInfoKHR                         : return "PipelineLibraryCreateInfoKHR";
       case StructureType::ePhysicalDevicePresentBarrierFeaturesNV               : return "PhysicalDevicePresentBarrierFeaturesNV";
       case StructureType::eSurfaceCapabilitiesPresentBarrierNV                  : return "SurfaceCapabilitiesPresentBarrierNV";
@@ -5596,10 +5581,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eVideoDecodeH265InlineSessionParametersInfoKHR             : return "VideoDecodeH265InlineSessionParametersInfoKHR";
       case StructureType::eVideoDecodeAv1InlineSessionParametersInfoKHR              : return "VideoDecodeAv1InlineSessionParametersInfoKHR";
 #if defined( VK_USE_PLATFORM_OHOS )
-      case StructureType::eSurfaceCreateInfoOHOS                   : return "SurfaceCreateInfoOHOS";
-      case StructureType::eNativeBufferOHOS                        : return "NativeBufferOHOS";
-      case StructureType::eSwapchainImageCreateInfoOHOS            : return "SwapchainImageCreateInfoOHOS";
-      case StructureType::ePhysicalDevicePresentationPropertiesOHOS: return "PhysicalDevicePresentationPropertiesOHOS";
+      case StructureType::eSurfaceCreateInfoOHOS: return "SurfaceCreateInfoOHOS";
 #endif /*VK_USE_PLATFORM_OHOS*/
       case StructureType::ePhysicalDeviceHdrVividFeaturesHUAWEI            : return "PhysicalDeviceHdrVividFeaturesHUAWEI";
       case StructureType::eHdrVividDynamicMetadataHUAWEI                   : return "HdrVividDynamicMetadataHUAWEI";
@@ -5645,6 +5627,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eRenderingAttachmentFlagsInfoKHR                         : return "RenderingAttachmentFlagsInfoKHR";
       case StructureType::eRenderingEndInfoKHR                                     : return "RenderingEndInfoKHR";
       case StructureType::eResolveImageModeInfoKHR                                 : return "ResolveImageModeInfoKHR";
+      case StructureType::ePhysicalDeviceShaderLongVectorFeaturesEXT               : return "PhysicalDeviceShaderLongVectorFeaturesEXT";
+      case StructureType::ePhysicalDeviceShaderLongVectorPropertiesEXT             : return "PhysicalDeviceShaderLongVectorPropertiesEXT";
       case StructureType::ePhysicalDevicePipelineCacheIncrementalModeFeaturesSEC   : return "PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC";
       case StructureType::ePhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT: return "PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT";
       case StructureType::eComputeOccupancyPriorityParametersNV                    : return "ComputeOccupancyPriorityParametersNV";
@@ -5992,6 +5976,36 @@ namespace VULKAN_HPP_NAMESPACE
       case Format::ePvrtc14BppSrgbBlockIMG                 : return "Pvrtc14BppSrgbBlockIMG";
       case Format::ePvrtc22BppSrgbBlockIMG                 : return "Pvrtc22BppSrgbBlockIMG";
       case Format::ePvrtc24BppSrgbBlockIMG                 : return "Pvrtc24BppSrgbBlockIMG";
+      case Format::eAstc3x3x3UnormBlockEXT                 : return "Astc3x3x3UnormBlockEXT";
+      case Format::eAstc3x3x3SrgbBlockEXT                  : return "Astc3x3x3SrgbBlockEXT";
+      case Format::eAstc3x3x3SfloatBlockEXT                : return "Astc3x3x3SfloatBlockEXT";
+      case Format::eAstc4x3x3UnormBlockEXT                 : return "Astc4x3x3UnormBlockEXT";
+      case Format::eAstc4x3x3SrgbBlockEXT                  : return "Astc4x3x3SrgbBlockEXT";
+      case Format::eAstc4x3x3SfloatBlockEXT                : return "Astc4x3x3SfloatBlockEXT";
+      case Format::eAstc4x4x3UnormBlockEXT                 : return "Astc4x4x3UnormBlockEXT";
+      case Format::eAstc4x4x3SrgbBlockEXT                  : return "Astc4x4x3SrgbBlockEXT";
+      case Format::eAstc4x4x3SfloatBlockEXT                : return "Astc4x4x3SfloatBlockEXT";
+      case Format::eAstc4x4x4UnormBlockEXT                 : return "Astc4x4x4UnormBlockEXT";
+      case Format::eAstc4x4x4SrgbBlockEXT                  : return "Astc4x4x4SrgbBlockEXT";
+      case Format::eAstc4x4x4SfloatBlockEXT                : return "Astc4x4x4SfloatBlockEXT";
+      case Format::eAstc5x4x4UnormBlockEXT                 : return "Astc5x4x4UnormBlockEXT";
+      case Format::eAstc5x4x4SrgbBlockEXT                  : return "Astc5x4x4SrgbBlockEXT";
+      case Format::eAstc5x4x4SfloatBlockEXT                : return "Astc5x4x4SfloatBlockEXT";
+      case Format::eAstc5x5x4UnormBlockEXT                 : return "Astc5x5x4UnormBlockEXT";
+      case Format::eAstc5x5x4SrgbBlockEXT                  : return "Astc5x5x4SrgbBlockEXT";
+      case Format::eAstc5x5x4SfloatBlockEXT                : return "Astc5x5x4SfloatBlockEXT";
+      case Format::eAstc5x5x5UnormBlockEXT                 : return "Astc5x5x5UnormBlockEXT";
+      case Format::eAstc5x5x5SrgbBlockEXT                  : return "Astc5x5x5SrgbBlockEXT";
+      case Format::eAstc5x5x5SfloatBlockEXT                : return "Astc5x5x5SfloatBlockEXT";
+      case Format::eAstc6x5x5UnormBlockEXT                 : return "Astc6x5x5UnormBlockEXT";
+      case Format::eAstc6x5x5SrgbBlockEXT                  : return "Astc6x5x5SrgbBlockEXT";
+      case Format::eAstc6x5x5SfloatBlockEXT                : return "Astc6x5x5SfloatBlockEXT";
+      case Format::eAstc6x6x5UnormBlockEXT                 : return "Astc6x6x5UnormBlockEXT";
+      case Format::eAstc6x6x5SrgbBlockEXT                  : return "Astc6x6x5SrgbBlockEXT";
+      case Format::eAstc6x6x5SfloatBlockEXT                : return "Astc6x6x5SfloatBlockEXT";
+      case Format::eAstc6x6x6UnormBlockEXT                 : return "Astc6x6x6UnormBlockEXT";
+      case Format::eAstc6x6x6SrgbBlockEXT                  : return "Astc6x6x6SrgbBlockEXT";
+      case Format::eAstc6x6x6SfloatBlockEXT                : return "Astc6x6x6SfloatBlockEXT";
       case Format::eR8BoolARM                              : return "R8BoolARM";
       case Format::eR16G16Sfixed5NV                        : return "R16G16Sfixed5NV";
       case Format::eR10X6UintPack16ARM                     : return "R10X6UintPack16ARM";
@@ -10905,19 +10919,6 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_OHOS*/
 
-#if defined( VK_USE_PLATFORM_OHOS )
-  //=== VK_OHOS_native_buffer ===
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SwapchainImageUsageFlagBitsOHOS value )
-  {
-    switch ( value )
-    {
-      case SwapchainImageUsageFlagBitsOHOS::eShared: return "Shared";
-      default                                      : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-#endif /*VK_USE_PLATFORM_OHOS*/
-
   //=== VK_ARM_performance_counters_by_region ===
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PerformanceCounterDescriptionFlagBitsARM )
@@ -10958,6 +10959,7 @@ namespace VULKAN_HPP_NAMESPACE
       default                                              : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+
 }  // namespace VULKAN_HPP_NAMESPACE
 
 #if defined( __clang__ ) || defined( __GNUC__ )

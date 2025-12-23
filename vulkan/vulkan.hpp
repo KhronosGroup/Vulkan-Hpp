@@ -38,6 +38,9 @@
 #else
 #  include <cassert>
 #  include <cstring>
+#  if defined( __APPLE__ )
+#    include <cstdlib> // getenv
+#  endif
 import std;
 #endif
 

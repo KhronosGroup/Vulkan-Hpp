@@ -62,6 +62,7 @@ option( VULKAN_HPP_RAII_NO_EXCEPTIONS "Do not throw exceptions when vulkan funct
 option( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST "Enable implicit casts from vk::UniqueHandle and vk::SharedHandle to their matching vk::Handle" OFF )
 option( VULKAN_HPP_TYPESAFE_CONVERSION "Enable copy constructors for non-dispatchable handles" ON )
 option( VULKAN_HPP_USE_REFLECT "Adds reflect function to structures, which returns an iterable tuple" OFF )
+option( VULKAN_HPP_USE_STD_EXPECTED "Use std::expected for functions returning VkResult and a value" OFF )
 
 # manually set VK_NO_PROTOTYPES if undefined
 if( NOT DEFINED VK_NO_PROTOTYPES )
@@ -291,6 +292,9 @@ function( vulkan_hpp__setup_vulkan_targets )
 	endif()
 	if( VULKAN_HPP_USE_REFLECT )
 		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_USE_REFLECT" )
+	endif()
+	if( VULKAN_HPP_USE_STD_EXPECTED )
+		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_USE_STD_EXPECTED" )
 	endif()
 	if( NOT VULKAN_HPP_TYPESAFE_CONVERSION )
 		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_TYPESAFE_CONVERSION=0" )

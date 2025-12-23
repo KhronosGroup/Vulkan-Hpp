@@ -84,6 +84,7 @@ The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan
 	- [VULKAN_HPP_TYPESAFE_CONVERSION](#typesafe_conversion)
 	- [VULKAN_HPP_UNEXPECTED](#unexpected)
 	- [VULKAN_HPP_USE_REFLECT](#use_reflect)
+    - [VULKAN_HPP_USE_STD_EXPECTED](#use_std_expected)
 - [See Also](#see_also)
 - [License](#license)
 
@@ -950,7 +951,7 @@ Currently, there are just a couple of such defines:
 - `VULKAN_HPP_NO_SPACESHIP_OPERATOR`, which removes the spaceship operator on structures (available with C++20)
 - `VULKAN_HPP_NO_TO_STRING`, which removes the various `vk::to_string` functions on enums and bitmasks.
 - `VULKAN_HPP_USE_REFLECT`, this one needs to be defined to use the reflection function on structures. It's very slow to compile, though!
-
+- `VULKAN_HPP_USE_STD_EXPECTED`, this one needs to be defined to use `std::expected` for functions that return a value or a vk::Result.
 ### Strict aliasing issue <a id='strict_aliasing_issue'>
 
 As Vulkan-Hpp often needs to switch between C++ vk-types and corresponding bit-identical C-types, using `reinterpret_cast`, it is highly recommended to use the compile option `-fno-strict-aliasing` to prevent potentially breaking compile optimizations.
@@ -1096,6 +1097,12 @@ With this define you can specify whether the `vk::detail::DispatchLoaderDynamic`
 #### VULKAN_HPP_UNEXPECTED <a id='unexpected'>
 
 See [`VULKAN_HPP_EXPECTED`](#expected).
+
+#### VULKAN_HPP_USE_STD_EXPECTED <a id='use_std_expected'>
+
+With this define, you can enable the use of `std::expected` for functions that return a value or a `vk::Result`. This requires C++23 or above.
+
+See [`VULKAN_HPP_EXPECTED`](#expected) and [`VULKAN_HPP_UNEXPECTED`](#unexpected) for more details.
 
 #### VULKAN_HPP_USE_REFLECT <a id='use_reflect'>
 

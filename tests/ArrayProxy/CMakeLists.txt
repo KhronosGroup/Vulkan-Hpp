@@ -12,10 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME ArrayProxy )
-if( VULKAN_HPP_ENABLE_CPP20_MODULES )
-    # gcc versions <= 15.x fail to ignore -Winit-list-lifetime when importing vulkan_hpp
-    if ( NOT (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "16") )
-        vulkan_hpp__setup_test( NAME ArrayProxy CXX_MODULE )
-    endif()
-endif()
+cmake_minimum_required( VERSION 3.12 )
+project( VulkanHppTest LANGUAGES CXX )
+
+include( ${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt )
+vulkan_hpp__setup_test_project()

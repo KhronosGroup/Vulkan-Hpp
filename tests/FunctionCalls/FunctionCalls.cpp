@@ -27,9 +27,20 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <vulkan/vulkan.hpp>
 
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+#  include <vulkan/vulkan.h>
+import vulkan;
+#else
+#  include <cassert>
+#  include <vulkan/vulkan.hpp>
+#endif
+
+namespace vk {
+  namespace detail {
+    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+  }
+}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -770,6 +781,44 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Device    device;
     vk::ImageView imageView;
     device.destroy( imageView );
+  }
+
+  // Command pool commands
+  {
+    vk::Device                device;
+    vk::CommandPoolCreateInfo commandPoolCreateInfo;
+    vk::AllocationCallbacks   allocationCallbacks;
+    vk::CommandPool           commandPool;
+    vk::Result                result = device.createCommandPool( &commandPoolCreateInfo, &allocationCallbacks, &commandPool );
+  }
+  {
+    vk::Device                device;
+    vk::CommandPoolCreateInfo commandPoolCreateInfo;
+    vk::CommandPool           commandPool = device.createCommandPool( commandPoolCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::CommandPool         commandPool;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyCommandPool( commandPool, &allocationCallbacks );
+  }
+  {
+    vk::Device      device;
+    vk::CommandPool commandPool;
+    device.destroyCommandPool( commandPool );
+  }
+  {
+    vk::Device      device;
+    vk::CommandPool commandPool;
+    device.destroy( commandPool );
+  }
+
+  {
+    vk::Device                device;
+    vk::CommandPool           commandPool;
+    vk::CommandPoolResetFlags flags = {};
+    device.resetCommandPool( commandPool, flags );
   }
 
 #if 0

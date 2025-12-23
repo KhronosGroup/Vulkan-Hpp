@@ -31,14 +31,17 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <cassert>
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-# include <compare> // necessary due to MSVC "design": https://developercommunity.visualstudio.com/t/Template-exports-requiring-importing-of-/1425979#T-N1435887
-# include <vulkan/vulkan_core.h>
-  import vulkan;
+#  include <compare> // necessary due to MSVC "design": https://developercommunity.visualstudio.com/t/Template-exports-requiring-importing-of-/1425979#T-N1435887
+#  include <vulkan/vulkan_core.h>
+#  include <cassert>
+import vulkan;
 #else
-# include <vulkan/vulkan.hpp>
+#  include <cassert>
+#  include <vulkan/vulkan.hpp>
 #endif
+
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -57,7 +60,6 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   // error
   // vk::MemoryHeapFlags mhf4( vk::MemoryHeapFlagBits::eDeviceLocal | vk::ImageAspectFlagBits::eDepth );
-
   assert( mhf0 < mhf1 );
   assert( !( mhf1 < mhf2 ) );
 
@@ -83,7 +85,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   assert( mhf1 & vk::MemoryHeapFlagBits::eDeviceLocal );
   assert( !( mhf0 & vk::MemoryHeapFlagBits::eDeviceLocal ) );
-
+  
   assert( ( mhf0 | vk::MemoryHeapFlagBits::eDeviceLocal ) == vk::MemoryHeapFlagBits::eDeviceLocal );
   assert( ( mhf1 | vk::MemoryHeapFlagBits::eDeviceLocal ) == vk::MemoryHeapFlagBits::eDeviceLocal );
 
@@ -91,23 +93,21 @@ int main( int /*argc*/, char ** /*argv*/ )
   assert( ( mhf1 ^ mhf2 ) == mhf0 );
 
   vk::MemoryHeapFlags mhf4( ~mhf0 );
-  assert( mhf4 == ( vk::MemoryHeapFlagBits::eDeviceLocal | vk::MemoryHeapFlagBits::eMultiInstance ) );
+  assert( mhf4 == ( vk::MemoryHeapFlagBits::eDeviceLocal | vk::MemoryHeapFlagBits::eMultiInstance | vk::MemoryHeapFlagBits::eTileMemoryQCOM ) );
 
   mhf0 = mhf1;
   assert( mhf0 == mhf1 );
-
+  
   mhf0 |= vk::MemoryHeapFlagBits::eMultiInstance;
   assert( mhf0 & vk::MemoryHeapFlagBits::eMultiInstance );
-
+  
   mhf0 &= vk::MemoryHeapFlagBits::eDeviceLocal;
   assert( mhf0 & vk::MemoryHeapFlagBits::eDeviceLocal );
-
+  
   mhf0 ^= mhf3;
   assert( mhf0 == ( vk::MemoryHeapFlagBits::eMultiInstance ) );
 
-  assert( mhf0 );
-
-  vkmhf = static_cast<VkMemoryHeapFlags>(mhf0);
+  vkmhf = static_cast<VkMemoryHeapFlags>( mhf0 );
 
   return 0;
 }

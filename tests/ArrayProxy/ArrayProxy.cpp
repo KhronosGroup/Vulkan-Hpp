@@ -26,19 +26,19 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <array>
-#include <vector>
-#include <cassert>
-#include <iostream>
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-# include <vulkan/vulkan_hpp_macros.hpp>
-# ifdef VULKAN_HPP_SUPPORT_SPAN
-#   include <span>
-# endif
-  import vulkan;
+#  include <cassert>
+import vulkan;
 #else
-# include <vulkan/vulkan.hpp>
+#  include <array>
+#  include <vector>
+#  include <iostream>
+#  include <cassert>
+#  include <cassert>
+#  include <vulkan/vulkan.hpp>
 #endif
+
 
 void fct( vk::ArrayProxy<int> /*ap*/ ) {}
 
@@ -237,12 +237,12 @@ int main( int /*argc*/, char ** /*argv*/ )
   catch ( vk::SystemError const & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
 
   return 0;

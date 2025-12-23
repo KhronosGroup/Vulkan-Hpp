@@ -1,0 +1,121 @@
+
+name: CI Windows MSVC-Ninja
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+
+    defaults:
+      run:
+        shell: bash
+
+    strategy:
+      matrix:
+        os: [windows-2022, windows-2025]
+        architecture: [x64]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install CMake and Ninja
+      uses: lukka/get-cmake@latest
+      with:
+        cmakeVersion: 4.1.2
+        ninjaVersion: latest
+        
+    - name: Setup MSVC
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      with:
+        arch: ${{matrix.architecture}}
+
+    # - name: Install glm, glfw and glslang
+    #   run: |
+    #     cd glm
+    #     cmake -B build -G Ninja          \
+    #       -D CMAKE_CXX_STANDARD=11       \
+    #       -D CMAKE_BUILD_TYPE=Release    \
+    #       -D GLM_BUILD_LIBRARY=ON        \
+    #       -D GLM_BUILD_INSTALL=ON        \
+    #       -D GLM_BUILD_TESTS=OFF
+    #     cmake --build build --parallel --config Release
+    #     cmake --install build --config Release
+
+    #     cd ../glfw
+    #     cmake -B build -G Ninja          \
+    #       -D CMAKE_BUILD_TYPE=Release    \
+    #       -D GLFW_BUILD_EXAMPLES=OFF     \
+    #       -D GLFW_BUILD_TESTS=OFF        \
+    #       -D GLFW_BUILD_DOCS=OFF         \
+    #       -D GLFW_INSTALL=ON
+    #     cmake --build build --parallel --config Release
+    #     cmake --install build --config Release
+
+    #     cd ../glslang
+    #     cmake -B build -G Ninja          \
+    #       -D CMAKE_CXX_STANDARD=11       \
+    #       -D CMAKE_BUILD_TYPE=Release    \
+    #       -D ENABLE_OPT=OFF              \
+    #       -D GLSLANG_TESTS_DEFAULT=OFF   \
+    #       -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
+    #     cmake --build build --parallel --config Release
+    #     cmake --install build --config Release
+    #     cd ..
+
+    - name: Generate headers
+      run: |
+        cmake -B build -G Ninja                        \
+          -D VULKAN_HPP_GENERATOR_BUILD=ON             \
+          -D VULKAN_HPP_RUN_GENERATOR=OFF              \
+          -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
+          -D VULKAN_HPP_TESTS_BUILD=OFF                \
+          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
+          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
+          -D VULKAN_HPP_PRECOMPILE=OFF                 \
+          -D CMAKE_BUILD_TYPE=Debug                    \
+          -D CMAKE_CXX_STANDARD=20
+        cmake --build build --parallel
+
+        cmake -B build -G Ninja --fresh                \
+          -D VULKAN_HPP_GENERATOR_BUILD=ON             \
+          -D VULKAN_HPP_RUN_GENERATOR=ON               \
+          -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
+          -D VULKAN_HPP_TESTS_BUILD=OFF                \
+          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
+          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
+          -D VULKAN_HPP_PRECOMPILE=OFF                 \
+          -D CMAKE_BUILD_TYPE=Release                  \
+          -D CMAKE_CXX_STANDARD=20
+        cmake --build build --parallel --clean-first
+
+    - name: Build samples and tests
+      run: |
+        for CXX_STANDARD in 23; do
+          for BUILD_TYPE in Debug Release; do
+
+            echo "================================================================================="
+            echo "Building C++$CXX_STANDARD in $BUILD_TYPE with architecture ${{matrix.architecture}}"
+            echo "================================================================================="
+
+            cmake -B build -G Ninja --fresh                   \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=ON               \
+              -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
+              -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
+              -D VULKAN_HPP_SAMPLES_BUILD=OFF                 \
+              -D VULKAN_HPP_TESTS_BUILD=ON                    \
+              -D VULKAN_HPP_TESTS_CTEST=ON                    \
+              -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
+              -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
+              -D VULKAN_HPP_PRECOMPILE=OFF                    \
+              -D CMAKE_BUILD_TYPE=$BUILD_TYPE                 \
+              -D CMAKE_CXX_STANDARD=$CXX_STANDARD             \
+              -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444
+            cmake --build build --parallel --clean-first
+            ctest -j --output-on-failure --test-dir build
+          done
+        done

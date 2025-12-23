@@ -12,8 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TODO: use VULKAN_HPP_DISPATCH_LOADER_[DYNAMIC|STATIC]_TYPE (PR #2244)
-vulkan_hpp__setup_test( NAME NoExceptions COMPILE_DEFINITIONS VULKAN_HPP_NO_EXCEPTIONS VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
-if( VULKAN_HPP_ENABLE_CPP20_MODULES )
-    vulkan_hpp__setup_test( NAME NoExceptions CXX_MODULE COMPILE_DEFINITIONS VULKAN_HPP_NO_EXCEPTIONS VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+cmake_minimum_required( VERSION 3.12 )
+project( VulkanHppTest LANGUAGES CXX )
+
+set(VULKAN_HPP_NO_EXCEPTIONS ON)
+set(VULKAN_HPP_DISPATCH_LOADER_DYNAMIC ON)
+include( ${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt )
+vulkan_hpp__setup_test_project()
+
+# add_subdirectory cannot use the normal compile definitions
+if( NOT VULKAN_HPP_TESTS_CTEST )
+    target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_NO_EXCEPTIONS )
 endif()

@@ -150,7 +150,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename PhysicalDeviceAllocator::value_type, PhysicalDevice>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<PhysicalDevice, PhysicalDeviceAllocator>>::type
-                       Instance::enumeratePhysicalDevices( PhysicalDeviceAllocator & physicalDeviceAllocator, Dispatch const & d ) const
+                       Instance::enumeratePhysicalDevices( PhysicalDeviceAllocator const & physicalDeviceAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -357,7 +357,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename QueueFamilyPropertiesAllocator::value_type, QueueFamilyProperties>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<QueueFamilyProperties, QueueFamilyPropertiesAllocator>
-    PhysicalDevice::getQueueFamilyProperties( QueueFamilyPropertiesAllocator & queueFamilyPropertiesAllocator, Dispatch const & d ) const
+    PhysicalDevice::getQueueFamilyProperties( QueueFamilyPropertiesAllocator const & queueFamilyPropertiesAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -593,9 +593,9 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename ExtensionPropertiesAllocator::value_type, ExtensionProperties>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<ExtensionProperties, ExtensionPropertiesAllocator>>::type
-                       enumerateInstanceExtensionProperties( Optional<const std::string>    layerName,
-                                                             ExtensionPropertiesAllocator & extensionPropertiesAllocator,
-                                                             Dispatch const &               d )
+                       enumerateInstanceExtensionProperties( Optional<const std::string>          layerName,
+                                                             ExtensionPropertiesAllocator const & extensionPropertiesAllocator,
+                                                             Dispatch const &                     d )
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -683,9 +683,9 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename ExtensionPropertiesAllocator::value_type, ExtensionProperties>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<ExtensionProperties, ExtensionPropertiesAllocator>>::type
-                       PhysicalDevice::enumerateDeviceExtensionProperties( Optional<const std::string>    layerName,
-                                                        ExtensionPropertiesAllocator & extensionPropertiesAllocator,
-                                                        Dispatch const &               d ) const
+                       PhysicalDevice::enumerateDeviceExtensionProperties( Optional<const std::string>          layerName,
+                                                        ExtensionPropertiesAllocator const & extensionPropertiesAllocator,
+                                                        Dispatch const &                     d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -770,7 +770,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename LayerPropertiesAllocator::value_type, LayerProperties>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<LayerProperties, LayerPropertiesAllocator>>::type
-                       enumerateInstanceLayerProperties( LayerPropertiesAllocator & layerPropertiesAllocator, Dispatch const & d )
+                       enumerateInstanceLayerProperties( LayerPropertiesAllocator const & layerPropertiesAllocator, Dispatch const & d )
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -855,7 +855,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename LayerPropertiesAllocator::value_type, LayerProperties>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<LayerProperties, LayerPropertiesAllocator>>::type
-                       PhysicalDevice::enumerateDeviceLayerProperties( LayerPropertiesAllocator & layerPropertiesAllocator, Dispatch const & d ) const
+                       PhysicalDevice::enumerateDeviceLayerProperties( LayerPropertiesAllocator const & layerPropertiesAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -1393,9 +1393,9 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename SparseImageMemoryRequirementsAllocator::value_type, SparseImageMemoryRequirements>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<SparseImageMemoryRequirements, SparseImageMemoryRequirementsAllocator>
-                                         Device::getImageSparseMemoryRequirements( Image                                    image,
-                                              SparseImageMemoryRequirementsAllocator & sparseImageMemoryRequirementsAllocator,
-                                              Dispatch const &                         d ) const
+                                         Device::getImageSparseMemoryRequirements( Image                                          image,
+                                              SparseImageMemoryRequirementsAllocator const & sparseImageMemoryRequirementsAllocator,
+                                              Dispatch const &                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -1495,13 +1495,13 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename SparseImageFormatPropertiesAllocator::value_type, SparseImageFormatProperties>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<SparseImageFormatProperties, SparseImageFormatPropertiesAllocator>
-                                         PhysicalDevice::getSparseImageFormatProperties( Format                                 format,
-                                                    ImageType                              type,
-                                                    SampleCountFlagBits                    samples,
-                                                    ImageUsageFlags                        usage,
-                                                    ImageTiling                            tiling,
-                                                    SparseImageFormatPropertiesAllocator & sparseImageFormatPropertiesAllocator,
-                                                    Dispatch const &                       d ) const
+                                         PhysicalDevice::getSparseImageFormatProperties( Format                                       format,
+                                                    ImageType                                    type,
+                                                    SampleCountFlagBits                          samples,
+                                                    ImageUsageFlags                              usage,
+                                                    ImageTiling                                  tiling,
+                                                    SparseImageFormatPropertiesAllocator const & sparseImageFormatPropertiesAllocator,
+                                                    Dispatch const &                             d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -2559,8 +2559,8 @@ namespace VULKAN_HPP_NAMESPACE
             typename Dispatch,
             typename std::enable_if<std::is_same<typename CommandBufferAllocator::value_type, CommandBuffer>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<CommandBuffer, CommandBufferAllocator>>::type
-    Device::allocateCommandBuffers( const CommandBufferAllocateInfo & allocateInfo, CommandBufferAllocator & commandBufferAllocator, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<CommandBuffer, CommandBufferAllocator>>::type Device::allocateCommandBuffers(
+    const CommandBufferAllocateInfo & allocateInfo, CommandBufferAllocator const & commandBufferAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -2610,7 +2610,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<CommandBuffer, Dispatch>, CommandBufferAllocator>>::type
                        Device::allocateCommandBuffersUnique( const CommandBufferAllocateInfo & allocateInfo,
-                                          CommandBufferAllocator &          commandBufferAllocator,
+                                          CommandBufferAllocator const &    commandBufferAllocator,
                                           Dispatch const &                  d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -3664,7 +3664,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
-                       Device::getPipelineCacheData( PipelineCache pipelineCache, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d ) const
+                       Device::getPipelineCacheData( PipelineCache pipelineCache, Uint8_tAllocator const & uint8_tAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -3787,7 +3787,7 @@ namespace VULKAN_HPP_NAMESPACE
                                          Device::createComputePipelines( PipelineCache                                       pipelineCache,
                                     ArrayProxy<const ComputePipelineCreateInfo> const & createInfos,
                                     Optional<const AllocationCallbacks>                 allocator,
-                                    PipelineAllocator &                                 pipelineAllocator,
+                                    PipelineAllocator const &                           pipelineAllocator,
                                     Dispatch const &                                    d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -3887,7 +3887,7 @@ namespace VULKAN_HPP_NAMESPACE
                                          Device::createComputePipelinesUnique( PipelineCache                                       pipelineCache,
                                           ArrayProxy<const ComputePipelineCreateInfo> const & createInfos,
                                           Optional<const AllocationCallbacks>                 allocator,
-                                          PipelineAllocator &                                 pipelineAllocator,
+                                          PipelineAllocator const &                           pipelineAllocator,
                                           Dispatch const &                                    d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -4494,8 +4494,8 @@ namespace VULKAN_HPP_NAMESPACE
             typename Dispatch,
             typename std::enable_if<std::is_same<typename DescriptorSetAllocator::value_type, DescriptorSet>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DescriptorSet, DescriptorSetAllocator>>::type
-    Device::allocateDescriptorSets( const DescriptorSetAllocateInfo & allocateInfo, DescriptorSetAllocator & descriptorSetAllocator, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DescriptorSet, DescriptorSetAllocator>>::type Device::allocateDescriptorSets(
+    const DescriptorSetAllocateInfo & allocateInfo, DescriptorSetAllocator const & descriptorSetAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -4545,7 +4545,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<DescriptorSet, Dispatch>, DescriptorSetAllocator>>::type
                        Device::allocateDescriptorSetsUnique( const DescriptorSetAllocateInfo & allocateInfo,
-                                          DescriptorSetAllocator &          descriptorSetAllocator,
+                                          DescriptorSetAllocator const &    descriptorSetAllocator,
                                           Dispatch const &                  d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -4961,7 +4961,7 @@ namespace VULKAN_HPP_NAMESPACE
                                          Device::createGraphicsPipelines( PipelineCache                                        pipelineCache,
                                      ArrayProxy<const GraphicsPipelineCreateInfo> const & createInfos,
                                      Optional<const AllocationCallbacks>                  allocator,
-                                     PipelineAllocator &                                  pipelineAllocator,
+                                     PipelineAllocator const &                            pipelineAllocator,
                                      Dispatch const &                                     d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -5061,7 +5061,7 @@ namespace VULKAN_HPP_NAMESPACE
                                          Device::createGraphicsPipelinesUnique( PipelineCache                                        pipelineCache,
                                            ArrayProxy<const GraphicsPipelineCreateInfo> const & createInfos,
                                            Optional<const AllocationCallbacks>                  allocator,
-                                           PipelineAllocator &                                  pipelineAllocator,
+                                           PipelineAllocator const &                            pipelineAllocator,
                                            Dispatch const &                                     d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -5959,7 +5959,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename PhysicalDeviceGroupPropertiesAllocator::value_type, PhysicalDeviceGroupProperties>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<PhysicalDeviceGroupProperties, PhysicalDeviceGroupPropertiesAllocator>>::type
-    Instance::enumeratePhysicalDeviceGroups( PhysicalDeviceGroupPropertiesAllocator & physicalDeviceGroupPropertiesAllocator, Dispatch const & d ) const
+    Instance::enumeratePhysicalDeviceGroups( PhysicalDeviceGroupPropertiesAllocator const & physicalDeviceGroupPropertiesAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -6156,9 +6156,9 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, SparseImageMemoryRequirements2>::value, int>::type,
     typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
-                                         Device::getImageSparseMemoryRequirements2( const ImageSparseMemoryRequirementsInfo2 & info,
-                                               SparseImageMemoryRequirements2Allocator &  sparseImageMemoryRequirements2Allocator,
-                                               Dispatch const &                           d ) const
+                                         Device::getImageSparseMemoryRequirements2( const ImageSparseMemoryRequirementsInfo2 &      info,
+                                               SparseImageMemoryRequirements2Allocator const & sparseImageMemoryRequirements2Allocator,
+                                               Dispatch const &                                d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -6433,7 +6433,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename QueueFamilyProperties2Allocator::value_type, QueueFamilyProperties2>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<QueueFamilyProperties2, QueueFamilyProperties2Allocator>
-    PhysicalDevice::getQueueFamilyProperties2( QueueFamilyProperties2Allocator & queueFamilyProperties2Allocator, Dispatch const & d ) const
+    PhysicalDevice::getQueueFamilyProperties2( QueueFamilyProperties2Allocator const & queueFamilyProperties2Allocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -6643,9 +6643,9 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename SparseImageFormatProperties2Allocator::value_type, SparseImageFormatProperties2>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<SparseImageFormatProperties2, SparseImageFormatProperties2Allocator>
-                                         PhysicalDevice::getSparseImageFormatProperties2( const PhysicalDeviceSparseImageFormatInfo2 & formatInfo,
-                                                     SparseImageFormatProperties2Allocator &      sparseImageFormatProperties2Allocator,
-                                                     Dispatch const &                             d ) const
+                                         PhysicalDevice::getSparseImageFormatProperties2( const PhysicalDeviceSparseImageFormatInfo2 &  formatInfo,
+                                                     SparseImageFormatProperties2Allocator const & sparseImageFormatProperties2Allocator,
+                                                     Dispatch const &                              d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -7584,7 +7584,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename PhysicalDeviceToolPropertiesAllocator::value_type, PhysicalDeviceToolProperties>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<PhysicalDeviceToolProperties, PhysicalDeviceToolPropertiesAllocator>>::type
-    PhysicalDevice::getToolProperties( PhysicalDeviceToolPropertiesAllocator & physicalDeviceToolPropertiesAllocator, Dispatch const & d ) const
+    PhysicalDevice::getToolProperties( PhysicalDeviceToolPropertiesAllocator const & physicalDeviceToolPropertiesAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -8101,9 +8101,9 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, SparseImageMemoryRequirements2>::value, int>::type,
     typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
-                                         Device::getImageSparseMemoryRequirements( const DeviceImageMemoryRequirements &     info,
-                                              SparseImageMemoryRequirements2Allocator & sparseImageMemoryRequirements2Allocator,
-                                              Dispatch const &                          d ) const
+                                         Device::getImageSparseMemoryRequirements( const DeviceImageMemoryRequirements &           info,
+                                              SparseImageMemoryRequirements2Allocator const & sparseImageMemoryRequirements2Allocator,
+                                              Dispatch const &                                d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -9236,7 +9236,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename SurfaceFormatKHRAllocator::value_type, SurfaceFormatKHR>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<SurfaceFormatKHR, SurfaceFormatKHRAllocator>>::type
-    PhysicalDevice::getSurfaceFormatsKHR( SurfaceKHR surface, SurfaceFormatKHRAllocator & surfaceFormatKHRAllocator, Dispatch const & d ) const
+    PhysicalDevice::getSurfaceFormatsKHR( SurfaceKHR surface, SurfaceFormatKHRAllocator const & surfaceFormatKHRAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -9327,7 +9327,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename PresentModeKHRAllocator::value_type, PresentModeKHR>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<PresentModeKHR, PresentModeKHRAllocator>>::type
-    PhysicalDevice::getSurfacePresentModesKHR( SurfaceKHR surface, PresentModeKHRAllocator & presentModeKHRAllocator, Dispatch const & d ) const
+    PhysicalDevice::getSurfacePresentModesKHR( SurfaceKHR surface, PresentModeKHRAllocator const & presentModeKHRAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -9521,7 +9521,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename ImageAllocator::value_type, Image>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<Image, ImageAllocator>>::type
-                       Device::getSwapchainImagesKHR( SwapchainKHR swapchain, ImageAllocator & imageAllocator, Dispatch const & d ) const
+                       Device::getSwapchainImagesKHR( SwapchainKHR swapchain, ImageAllocator const & imageAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -9746,7 +9746,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename Rect2DAllocator::value_type, Rect2D>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<Rect2D, Rect2DAllocator>>::type
-                       PhysicalDevice::getPresentRectanglesKHR( SurfaceKHR surface, Rect2DAllocator & rect2DAllocator, Dispatch const & d ) const
+                       PhysicalDevice::getPresentRectanglesKHR( SurfaceKHR surface, Rect2DAllocator const & rect2DAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -9874,7 +9874,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename DisplayPropertiesKHRAllocator::value_type, DisplayPropertiesKHR>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DisplayPropertiesKHR, DisplayPropertiesKHRAllocator>>::type
-                       PhysicalDevice::getDisplayPropertiesKHR( DisplayPropertiesKHRAllocator & displayPropertiesKHRAllocator, Dispatch const & d ) const
+                       PhysicalDevice::getDisplayPropertiesKHR( DisplayPropertiesKHRAllocator const & displayPropertiesKHRAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -9960,7 +9960,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename DisplayPlanePropertiesKHRAllocator::value_type, DisplayPlanePropertiesKHR>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DisplayPlanePropertiesKHR, DisplayPlanePropertiesKHRAllocator>>::type
-    PhysicalDevice::getDisplayPlanePropertiesKHR( DisplayPlanePropertiesKHRAllocator & displayPlanePropertiesKHRAllocator, Dispatch const & d ) const
+    PhysicalDevice::getDisplayPlanePropertiesKHR( DisplayPlanePropertiesKHRAllocator const & displayPlanePropertiesKHRAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -10047,7 +10047,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename DisplayKHRAllocator::value_type, DisplayKHR>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DisplayKHR, DisplayKHRAllocator>>::type
-    PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR( uint32_t planeIndex, DisplayKHRAllocator & displayKHRAllocator, Dispatch const & d ) const
+    PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR( uint32_t planeIndex, DisplayKHRAllocator const & displayKHRAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -10136,9 +10136,9 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename DisplayModePropertiesKHRAllocator::value_type, DisplayModePropertiesKHR>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DisplayModePropertiesKHR, DisplayModePropertiesKHRAllocator>>::type
-                       PhysicalDevice::getDisplayModePropertiesKHR( DisplayKHR                          display,
-                                                 DisplayModePropertiesKHRAllocator & displayModePropertiesKHRAllocator,
-                                                 Dispatch const &                    d ) const
+                       PhysicalDevice::getDisplayModePropertiesKHR( DisplayKHR                                display,
+                                                 DisplayModePropertiesKHRAllocator const & displayModePropertiesKHRAllocator,
+                                                 Dispatch const &                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -10380,7 +10380,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<SwapchainKHR, SwapchainKHRAllocator>>::type
                        Device::createSharedSwapchainsKHR( ArrayProxy<const SwapchainCreateInfoKHR> const & createInfos,
                                        Optional<const AllocationCallbacks>              allocator,
-                                       SwapchainKHRAllocator &                          swapchainKHRAllocator,
+                                       SwapchainKHRAllocator const &                    swapchainKHRAllocator,
                                        Dispatch const &                                 d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -10461,7 +10461,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<SwapchainKHR, Dispatch>, SwapchainKHRAllocator>>::type
                        Device::createSharedSwapchainsKHRUnique( ArrayProxy<const SwapchainCreateInfoKHR> const & createInfos,
                                              Optional<const AllocationCallbacks>              allocator,
-                                             SwapchainKHRAllocator &                          swapchainKHRAllocator,
+                                             SwapchainKHRAllocator const &                    swapchainKHRAllocator,
                                              Dispatch const &                                 d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -11336,9 +11336,9 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename VideoFormatPropertiesKHRAllocator::value_type, VideoFormatPropertiesKHR>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VideoFormatPropertiesKHR, VideoFormatPropertiesKHRAllocator>>::type
-                       PhysicalDevice::getVideoFormatPropertiesKHR( const PhysicalDeviceVideoFormatInfoKHR & videoFormatInfo,
-                                                 VideoFormatPropertiesKHRAllocator &      videoFormatPropertiesKHRAllocator,
-                                                 Dispatch const &                         d ) const
+                       PhysicalDevice::getVideoFormatPropertiesKHR( const PhysicalDeviceVideoFormatInfoKHR &  videoFormatInfo,
+                                                 VideoFormatPropertiesKHRAllocator const & videoFormatPropertiesKHRAllocator,
+                                                 Dispatch const &                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -11654,9 +11654,9 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VideoSessionMemoryRequirementsKHR, VideoSessionMemoryRequirementsKHRAllocator>>::type
-    Device::getVideoSessionMemoryRequirementsKHR( VideoSessionKHR                              videoSession,
-                                                  VideoSessionMemoryRequirementsKHRAllocator & videoSessionMemoryRequirementsKHRAllocator,
-                                                  Dispatch const &                             d ) const
+    Device::getVideoSessionMemoryRequirementsKHR( VideoSessionKHR                                    videoSession,
+                                                  VideoSessionMemoryRequirementsKHRAllocator const & videoSessionMemoryRequirementsKHRAllocator,
+                                                  Dispatch const &                                   d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -12600,7 +12600,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type Device::getShaderInfoAMD(
-    Pipeline pipeline, ShaderStageFlagBits shaderStage, ShaderInfoTypeAMD infoType, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d ) const
+    Pipeline pipeline, ShaderStageFlagBits shaderStage, ShaderInfoTypeAMD infoType, Uint8_tAllocator const & uint8_tAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -13091,7 +13091,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename QueueFamilyProperties2Allocator::value_type, QueueFamilyProperties2>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<QueueFamilyProperties2, QueueFamilyProperties2Allocator>
-    PhysicalDevice::getQueueFamilyProperties2KHR( QueueFamilyProperties2Allocator & queueFamilyProperties2Allocator, Dispatch const & d ) const
+    PhysicalDevice::getQueueFamilyProperties2KHR( QueueFamilyProperties2Allocator const & queueFamilyProperties2Allocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -13301,9 +13301,9 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename SparseImageFormatProperties2Allocator::value_type, SparseImageFormatProperties2>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<SparseImageFormatProperties2, SparseImageFormatProperties2Allocator>
-                                         PhysicalDevice::getSparseImageFormatProperties2KHR( const PhysicalDeviceSparseImageFormatInfo2 & formatInfo,
-                                                        SparseImageFormatProperties2Allocator &      sparseImageFormatProperties2Allocator,
-                                                        Dispatch const &                             d ) const
+                                         PhysicalDevice::getSparseImageFormatProperties2KHR( const PhysicalDeviceSparseImageFormatInfo2 &  formatInfo,
+                                                        SparseImageFormatProperties2Allocator const & sparseImageFormatProperties2Allocator,
+                                                        Dispatch const &                              d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -13524,7 +13524,8 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename PhysicalDeviceGroupPropertiesAllocator::value_type, PhysicalDeviceGroupProperties>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<PhysicalDeviceGroupProperties, PhysicalDeviceGroupPropertiesAllocator>>::type
-    Instance::enumeratePhysicalDeviceGroupsKHR( PhysicalDeviceGroupPropertiesAllocator & physicalDeviceGroupPropertiesAllocator, Dispatch const & d ) const
+                       Instance::enumeratePhysicalDeviceGroupsKHR( PhysicalDeviceGroupPropertiesAllocator const & physicalDeviceGroupPropertiesAllocator,
+                                                Dispatch const &                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -14647,9 +14648,9 @@ namespace VULKAN_HPP_NAMESPACE
 #  else
     typename ResultValueType<std::vector<PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>::type
 #  endif
-    Device::getPastPresentationTimingGOOGLE( SwapchainKHR                            swapchain,
-                                             PastPresentationTimingGOOGLEAllocator & pastPresentationTimingGOOGLEAllocator,
-                                             Dispatch const &                        d ) const
+    Device::getPastPresentationTimingGOOGLE( SwapchainKHR                                  swapchain,
+                                             PastPresentationTimingGOOGLEAllocator const & pastPresentationTimingGOOGLEAllocator,
+                                             Dispatch const &                              d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -15207,10 +15208,11 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::pair<std::vector<PerformanceCounterKHR, PerformanceCounterKHRAllocator>,
                                        std::vector<PerformanceCounterDescriptionKHR, PerformanceCounterDescriptionKHRAllocator>>>::type
-    PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t                                    queueFamilyIndex,
-                                                                     PerformanceCounterKHRAllocator &            performanceCounterKHRAllocator,
-                                                                     PerformanceCounterDescriptionKHRAllocator & performanceCounterDescriptionKHRAllocator,
-                                                                     Dispatch const &                            d ) const
+    PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR(
+      uint32_t                                          queueFamilyIndex,
+      PerformanceCounterKHRAllocator const &            performanceCounterKHRAllocator,
+      PerformanceCounterDescriptionKHRAllocator const & performanceCounterDescriptionKHRAllocator,
+      Dispatch const &                                  d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -15449,7 +15451,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<SurfaceFormat2KHR, SurfaceFormat2KHRAllocator>>::type
                        PhysicalDevice::getSurfaceFormats2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo,
-                                           SurfaceFormat2KHRAllocator &          surfaceFormat2KHRAllocator,
+                                           SurfaceFormat2KHRAllocator const &    surfaceFormat2KHRAllocator,
                                            Dispatch const &                      d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -15647,7 +15649,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename DisplayProperties2KHRAllocator::value_type, DisplayProperties2KHR>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DisplayProperties2KHR, DisplayProperties2KHRAllocator>>::type
-                       PhysicalDevice::getDisplayProperties2KHR( DisplayProperties2KHRAllocator & displayProperties2KHRAllocator, Dispatch const & d ) const
+    PhysicalDevice::getDisplayProperties2KHR( DisplayProperties2KHRAllocator const & displayProperties2KHRAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -15735,7 +15737,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename DisplayPlaneProperties2KHRAllocator::value_type, DisplayPlaneProperties2KHR>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DisplayPlaneProperties2KHR, DisplayPlaneProperties2KHRAllocator>>::type
-    PhysicalDevice::getDisplayPlaneProperties2KHR( DisplayPlaneProperties2KHRAllocator & displayPlaneProperties2KHRAllocator, Dispatch const & d ) const
+    PhysicalDevice::getDisplayPlaneProperties2KHR( DisplayPlaneProperties2KHRAllocator const & displayPlaneProperties2KHRAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -15825,9 +15827,9 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename DisplayModeProperties2KHRAllocator::value_type, DisplayModeProperties2KHR>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DisplayModeProperties2KHR, DisplayModeProperties2KHRAllocator>>::type
-                       PhysicalDevice::getDisplayModeProperties2KHR( DisplayKHR                           display,
-                                                  DisplayModeProperties2KHRAllocator & displayModeProperties2KHRAllocator,
-                                                  Dispatch const &                     d ) const
+                       PhysicalDevice::getDisplayModeProperties2KHR( DisplayKHR                                 display,
+                                                  DisplayModeProperties2KHRAllocator const & displayModeProperties2KHRAllocator,
+                                                  Dispatch const &                           d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -16630,7 +16632,7 @@ namespace VULKAN_HPP_NAMESPACE
                                          Device::createExecutionGraphPipelinesAMDX( PipelineCache                                                  pipelineCache,
                                                ArrayProxy<const ExecutionGraphPipelineCreateInfoAMDX> const & createInfos,
                                                Optional<const AllocationCallbacks>                            allocator,
-                                               PipelineAllocator &                                            pipelineAllocator,
+                                               PipelineAllocator const &                                      pipelineAllocator,
                                                Dispatch const &                                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -16737,7 +16739,7 @@ namespace VULKAN_HPP_NAMESPACE
                                          Device::createExecutionGraphPipelinesAMDXUnique( PipelineCache                                                  pipelineCache,
                                                      ArrayProxy<const ExecutionGraphPipelineCreateInfoAMDX> const & createInfos,
                                                      Optional<const AllocationCallbacks>                            allocator,
-                                                     PipelineAllocator &                                            pipelineAllocator,
+                                                     PipelineAllocator const &                                      pipelineAllocator,
                                                      Dispatch const &                                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -17200,9 +17202,9 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, SparseImageMemoryRequirements2>::value, int>::type,
     typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
-                                         Device::getImageSparseMemoryRequirements2KHR( const ImageSparseMemoryRequirementsInfo2 & info,
-                                                  SparseImageMemoryRequirements2Allocator &  sparseImageMemoryRequirements2Allocator,
-                                                  Dispatch const &                           d ) const
+                                         Device::getImageSparseMemoryRequirements2KHR( const ImageSparseMemoryRequirementsInfo2 &      info,
+                                                  SparseImageMemoryRequirements2Allocator const & sparseImageMemoryRequirements2Allocator,
+                                                  Dispatch const &                                d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -18076,7 +18078,7 @@ namespace VULKAN_HPP_NAMESPACE
                                           PipelineCache                                             pipelineCache,
                                           ArrayProxy<const RayTracingPipelineCreateInfoKHR> const & createInfos,
                                           Optional<const AllocationCallbacks>                       allocator,
-                                          PipelineAllocator &                                       pipelineAllocator,
+                                          PipelineAllocator const &                                 pipelineAllocator,
                                           Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -18187,7 +18189,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                 PipelineCache                                             pipelineCache,
                                                 ArrayProxy<const RayTracingPipelineCreateInfoKHR> const & createInfos,
                                                 Optional<const AllocationCallbacks>                       allocator,
-                                                PipelineAllocator &                                       pipelineAllocator,
+                                                PipelineAllocator const &                                 pipelineAllocator,
                                                 Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -18832,7 +18834,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
-                       Device::getValidationCacheDataEXT( ValidationCacheEXT validationCache, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d ) const
+    Device::getValidationCacheDataEXT( ValidationCacheEXT validationCache, Uint8_tAllocator const & uint8_tAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -19325,7 +19327,7 @@ namespace VULKAN_HPP_NAMESPACE
                                          Device::createRayTracingPipelinesNV( PipelineCache                                            pipelineCache,
                                          ArrayProxy<const RayTracingPipelineCreateInfoNV> const & createInfos,
                                          Optional<const AllocationCallbacks>                      allocator,
-                                         PipelineAllocator &                                      pipelineAllocator,
+                                         PipelineAllocator const &                                pipelineAllocator,
                                          Dispatch const &                                         d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -19429,7 +19431,7 @@ namespace VULKAN_HPP_NAMESPACE
                                          Device::createRayTracingPipelinesNVUnique( PipelineCache                                            pipelineCache,
                                                ArrayProxy<const RayTracingPipelineCreateInfoNV> const & createInfos,
                                                Optional<const AllocationCallbacks>                      allocator,
-                                               PipelineAllocator &                                      pipelineAllocator,
+                                               PipelineAllocator const &                                pipelineAllocator,
                                                Dispatch const &                                         d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -19901,7 +19903,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename TimeDomainKHRAllocator::value_type, TimeDomainKHR>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<TimeDomainKHR, TimeDomainKHRAllocator>>::type
-                       PhysicalDevice::getCalibrateableTimeDomainsEXT( TimeDomainKHRAllocator & timeDomainKHRAllocator, Dispatch const & d ) const
+                       PhysicalDevice::getCalibrateableTimeDomainsEXT( TimeDomainKHRAllocator const & timeDomainKHRAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -19981,7 +19983,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
                        Device::getCalibratedTimestampsEXT( ArrayProxy<const CalibratedTimestampInfoKHR> const & timestampInfos,
-                                        Uint64_tAllocator &                                  uint64_tAllocator,
+                                        Uint64_tAllocator const &                            uint64_tAllocator,
                                         Dispatch const &                                     d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -20194,7 +20196,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename CheckpointDataNVAllocator::value_type, CheckpointDataNV>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<CheckpointDataNV, CheckpointDataNVAllocator>
-                                         Queue::getCheckpointDataNV( CheckpointDataNVAllocator & checkpointDataNVAllocator, Dispatch const & d ) const
+                                         Queue::getCheckpointDataNV( CheckpointDataNVAllocator const & checkpointDataNVAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -20258,7 +20260,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename CheckpointData2NVAllocator::value_type, CheckpointData2NV>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<CheckpointData2NV, CheckpointData2NVAllocator>
-                                         Queue::getCheckpointData2NV( CheckpointData2NVAllocator & checkpointData2NVAllocator, Dispatch const & d ) const
+                                         Queue::getCheckpointData2NV( CheckpointData2NVAllocator const & checkpointData2NVAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -20994,8 +20996,8 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<PhysicalDeviceFragmentShadingRateKHR, PhysicalDeviceFragmentShadingRateKHRAllocator>>::type
-    PhysicalDevice::getFragmentShadingRatesKHR( PhysicalDeviceFragmentShadingRateKHRAllocator & physicalDeviceFragmentShadingRateKHRAllocator,
-                                                Dispatch const &                                d ) const
+    PhysicalDevice::getFragmentShadingRatesKHR( PhysicalDeviceFragmentShadingRateKHRAllocator const & physicalDeviceFragmentShadingRateKHRAllocator,
+                                                Dispatch const &                                      d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -21203,7 +21205,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename PhysicalDeviceToolPropertiesAllocator::value_type, PhysicalDeviceToolProperties>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<PhysicalDeviceToolProperties, PhysicalDeviceToolPropertiesAllocator>>::type
-    PhysicalDevice::getToolPropertiesEXT( PhysicalDeviceToolPropertiesAllocator & physicalDeviceToolPropertiesAllocator, Dispatch const & d ) const
+    PhysicalDevice::getToolPropertiesEXT( PhysicalDeviceToolPropertiesAllocator const & physicalDeviceToolPropertiesAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -21329,8 +21331,8 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename CooperativeMatrixPropertiesNVAllocator::value_type, CooperativeMatrixPropertiesNV>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<CooperativeMatrixPropertiesNV, CooperativeMatrixPropertiesNVAllocator>>::type
-                       PhysicalDevice::getCooperativeMatrixPropertiesNV( CooperativeMatrixPropertiesNVAllocator & cooperativeMatrixPropertiesNVAllocator,
-                                                      Dispatch const &                         d ) const
+                       PhysicalDevice::getCooperativeMatrixPropertiesNV( CooperativeMatrixPropertiesNVAllocator const & cooperativeMatrixPropertiesNVAllocator,
+                                                      Dispatch const &                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -21426,7 +21428,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<FramebufferMixedSamplesCombinationNV, FramebufferMixedSamplesCombinationNVAllocator>>::type
     PhysicalDevice::getSupportedFramebufferMixedSamplesCombinationsNV(
-      FramebufferMixedSamplesCombinationNVAllocator & framebufferMixedSamplesCombinationNVAllocator, Dispatch const & d ) const
+      FramebufferMixedSamplesCombinationNVAllocator const & framebufferMixedSamplesCombinationNVAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -21525,7 +21527,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<PresentModeKHR, PresentModeKHRAllocator>>::type
                        PhysicalDevice::getSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo,
-                                                PresentModeKHRAllocator &             presentModeKHRAllocator,
+                                                PresentModeKHRAllocator const &       presentModeKHRAllocator,
                                                 Dispatch const &                      d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -22255,9 +22257,9 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<std::is_same<typename PipelineExecutablePropertiesKHRAllocator::value_type, PipelineExecutablePropertiesKHR>::value, int>::type,
     typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<PipelineExecutablePropertiesKHR, PipelineExecutablePropertiesKHRAllocator>>::type
-                       Device::getPipelineExecutablePropertiesKHR( const PipelineInfoKHR &                    pipelineInfo,
-                                                PipelineExecutablePropertiesKHRAllocator & pipelineExecutablePropertiesKHRAllocator,
-                                                Dispatch const &                           d ) const
+                       Device::getPipelineExecutablePropertiesKHR( const PipelineInfoKHR &                          pipelineInfo,
+                                                PipelineExecutablePropertiesKHRAllocator const & pipelineExecutablePropertiesKHRAllocator,
+                                                Dispatch const &                                 d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -22356,9 +22358,9 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<std::is_same<typename PipelineExecutableStatisticKHRAllocator::value_type, PipelineExecutableStatisticKHR>::value, int>::type,
     typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<PipelineExecutableStatisticKHR, PipelineExecutableStatisticKHRAllocator>>::type
-                       Device::getPipelineExecutableStatisticsKHR( const PipelineExecutableInfoKHR &         executableInfo,
-                                                PipelineExecutableStatisticKHRAllocator & pipelineExecutableStatisticKHRAllocator,
-                                                Dispatch const &                          d ) const
+                       Device::getPipelineExecutableStatisticsKHR( const PipelineExecutableInfoKHR &               executableInfo,
+                                                PipelineExecutableStatisticKHRAllocator const & pipelineExecutableStatisticKHRAllocator,
+                                                Dispatch const &                                d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -22465,9 +22467,9 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<PipelineExecutableInternalRepresentationKHR, PipelineExecutableInternalRepresentationKHRAllocator>>::type
     Device::getPipelineExecutableInternalRepresentationsKHR(
-      const PipelineExecutableInfoKHR &                      executableInfo,
-      PipelineExecutableInternalRepresentationKHRAllocator & pipelineExecutableInternalRepresentationKHRAllocator,
-      Dispatch const &                                       d ) const
+      const PipelineExecutableInfoKHR &                            executableInfo,
+      PipelineExecutableInternalRepresentationKHRAllocator const & pipelineExecutableInternalRepresentationKHRAllocator,
+      Dispatch const &                                             d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -23409,7 +23411,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::pair<VideoEncodeSessionParametersFeedbackInfoKHR, std::vector<uint8_t, Uint8_tAllocator>>>::type
     Device::getEncodedVideoSessionParametersKHR( const VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo,
-                                                 Uint8_tAllocator &                             uint8_tAllocator,
+                                                 Uint8_tAllocator const &                       uint8_tAllocator,
                                                  Dispatch const &                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -23504,7 +23506,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::pair<StructureChain<X, Y, Z...>, std::vector<uint8_t, Uint8_tAllocator>>>::type
                        Device::getEncodedVideoSessionParametersKHR( const VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo,
-                                                 Uint8_tAllocator &                             uint8_tAllocator,
+                                                 Uint8_tAllocator const &                       uint8_tAllocator,
                                                  Dispatch const &                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -23678,7 +23680,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
-                       Device::getCudaModuleCacheNV( CudaModuleNV module, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d ) const
+                       Device::getCudaModuleCacheNV( CudaModuleNV module, Uint8_tAllocator const & uint8_tAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -26397,9 +26399,9 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, SparseImageMemoryRequirements2>::value, int>::type,
     typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
-                                         Device::getImageSparseMemoryRequirementsKHR( const DeviceImageMemoryRequirements &     info,
-                                                 SparseImageMemoryRequirements2Allocator & sparseImageMemoryRequirements2Allocator,
-                                                 Dispatch const &                          d ) const
+                                         Device::getImageSparseMemoryRequirementsKHR( const DeviceImageMemoryRequirements &           info,
+                                                 SparseImageMemoryRequirements2Allocator const & sparseImageMemoryRequirements2Allocator,
+                                                 Dispatch const &                                d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -27828,9 +27830,9 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<OpticalFlowImageFormatPropertiesNV, OpticalFlowImageFormatPropertiesNVAllocator>>::type
-    PhysicalDevice::getOpticalFlowImageFormatsNV( const OpticalFlowImageFormatInfoNV &          opticalFlowImageFormatInfo,
-                                                  OpticalFlowImageFormatPropertiesNVAllocator & opticalFlowImageFormatPropertiesNVAllocator,
-                                                  Dispatch const &                              d ) const
+    PhysicalDevice::getOpticalFlowImageFormatsNV( const OpticalFlowImageFormatInfoNV &                opticalFlowImageFormatInfo,
+                                                  OpticalFlowImageFormatPropertiesNVAllocator const & opticalFlowImageFormatPropertiesNVAllocator,
+                                                  Dispatch const &                                    d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -28327,7 +28329,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<ShaderEXT, ShaderEXTAllocator>>
                                          Device::createShadersEXT( ArrayProxy<const ShaderCreateInfoEXT> const & createInfos,
                               Optional<const AllocationCallbacks>           allocator,
-                              ShaderEXTAllocator &                          shaderEXTAllocator,
+                              ShaderEXTAllocator const &                    shaderEXTAllocator,
                               Dispatch const &                              d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -28406,7 +28408,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<ShaderEXT, Dispatch>, ShaderEXTAllocator>>
                                          Device::createShadersEXTUnique( ArrayProxy<const ShaderCreateInfoEXT> const & createInfos,
                                     Optional<const AllocationCallbacks>           allocator,
-                                    ShaderEXTAllocator &                          shaderEXTAllocator,
+                                    ShaderEXTAllocator const &                    shaderEXTAllocator,
                                     Dispatch const &                              d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -28553,7 +28555,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
-                       Device::getShaderBinaryDataEXT( ShaderEXT shader, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d ) const
+                       Device::getShaderBinaryDataEXT( ShaderEXT shader, Uint8_tAllocator const & uint8_tAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -28730,7 +28732,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<PipelineBinaryKHR, PipelineBinaryKHRAllocator>>
                                          Device::createPipelineBinariesKHR( const PipelineBinaryCreateInfoKHR & createInfo,
                                        Optional<const AllocationCallbacks> allocator,
-                                       PipelineBinaryKHRAllocator &        pipelineBinaryKHRAllocator,
+                                       PipelineBinaryKHRAllocator const &  pipelineBinaryKHRAllocator,
                                        Dispatch const &                    d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -28845,7 +28847,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<PipelineBinaryKHR, Dispatch>, PipelineBinaryKHRAllocator>>
                                          Device::createPipelineBinariesKHRUnique( const PipelineBinaryCreateInfoKHR & createInfo,
                                              Optional<const AllocationCallbacks> allocator,
-                                             PipelineBinaryKHRAllocator &        pipelineBinaryKHRAllocator,
+                                             PipelineBinaryKHRAllocator const &  pipelineBinaryKHRAllocator,
                                              Dispatch const &                    d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -29045,7 +29047,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::pair<PipelineBinaryKeyKHR, std::vector<uint8_t, Uint8_tAllocator>>>::type
-                       Device::getPipelineBinaryDataKHR( const PipelineBinaryDataInfoKHR & info, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d ) const
+    Device::getPipelineBinaryDataKHR( const PipelineBinaryDataInfoKHR & info, Uint8_tAllocator const & uint8_tAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -29172,7 +29174,9 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename TilePropertiesQCOMAllocator::value_type, TilePropertiesQCOM>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<TilePropertiesQCOM, TilePropertiesQCOMAllocator>>::type
-    Device::getFramebufferTilePropertiesQCOM( Framebuffer framebuffer, TilePropertiesQCOMAllocator & tilePropertiesQCOMAllocator, Dispatch const & d ) const
+                       Device::getFramebufferTilePropertiesQCOM( Framebuffer                         framebuffer,
+                                              TilePropertiesQCOMAllocator const & tilePropertiesQCOMAllocator,
+                                              Dispatch const &                    d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -29326,8 +29330,8 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename CooperativeVectorPropertiesNVAllocator::value_type, CooperativeVectorPropertiesNV>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<CooperativeVectorPropertiesNV, CooperativeVectorPropertiesNVAllocator>>::type
-                       PhysicalDevice::getCooperativeVectorPropertiesNV( CooperativeVectorPropertiesNVAllocator & cooperativeVectorPropertiesNVAllocator,
-                                                      Dispatch const &                         d ) const
+                       PhysicalDevice::getCooperativeVectorPropertiesNV( CooperativeVectorPropertiesNVAllocator const & cooperativeVectorPropertiesNVAllocator,
+                                                      Dispatch const &                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -29543,8 +29547,8 @@ namespace VULKAN_HPP_NAMESPACE
             typename Dispatch,
             typename std::enable_if<std::is_same<typename LatencyTimingsFrameReportNVAllocator::value_type, LatencyTimingsFrameReportNV>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator>
-    Device::getLatencyTimingsNV( SwapchainKHR swapchain, LatencyTimingsFrameReportNVAllocator & latencyTimingsFrameReportNVAllocator, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator> Device::getLatencyTimingsNV(
+    SwapchainKHR swapchain, LatencyTimingsFrameReportNVAllocator const & latencyTimingsFrameReportNVAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -29645,8 +29649,8 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<std::is_same<typename CooperativeMatrixPropertiesKHRAllocator::value_type, CooperativeMatrixPropertiesKHR>::value, int>::type,
     typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<CooperativeMatrixPropertiesKHR, CooperativeMatrixPropertiesKHRAllocator>>::type
-                       PhysicalDevice::getCooperativeMatrixPropertiesKHR( CooperativeMatrixPropertiesKHRAllocator & cooperativeMatrixPropertiesKHRAllocator,
-                                                       Dispatch const &                          d ) const
+    PhysicalDevice::getCooperativeMatrixPropertiesKHR( CooperativeMatrixPropertiesKHRAllocator const & cooperativeMatrixPropertiesKHRAllocator,
+                                                       Dispatch const &                                d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -29749,7 +29753,7 @@ namespace VULKAN_HPP_NAMESPACE
                                          PipelineCache                                            pipelineCache,
                                          ArrayProxy<const DataGraphPipelineCreateInfoARM> const & createInfos,
                                          Optional<const AllocationCallbacks>                      allocator,
-                                         PipelineAllocator &                                      pipelineAllocator,
+                                         PipelineAllocator const &                                pipelineAllocator,
                                          Dispatch const &                                         d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -29859,7 +29863,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                PipelineCache                                            pipelineCache,
                                                ArrayProxy<const DataGraphPipelineCreateInfoARM> const & createInfos,
                                                Optional<const AllocationCallbacks>                      allocator,
-                                               PipelineAllocator &                                      pipelineAllocator,
+                                               PipelineAllocator const &                                pipelineAllocator,
                                                Dispatch const &                                         d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -30063,9 +30067,9 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<DataGraphPipelineSessionBindPointRequirementARM, DataGraphPipelineSessionBindPointRequirementARMAllocator>>::type
     Device::getDataGraphPipelineSessionBindPointRequirementsARM(
-      const DataGraphPipelineSessionBindPointRequirementsInfoARM & info,
-      DataGraphPipelineSessionBindPointRequirementARMAllocator &   dataGraphPipelineSessionBindPointRequirementARMAllocator,
-      Dispatch const &                                             d ) const
+      const DataGraphPipelineSessionBindPointRequirementsInfoARM &     info,
+      DataGraphPipelineSessionBindPointRequirementARMAllocator const & dataGraphPipelineSessionBindPointRequirementARMAllocator,
+      Dispatch const &                                                 d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -30341,9 +30345,9 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename DataGraphPipelinePropertyARMAllocator::value_type, DataGraphPipelinePropertyARM>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DataGraphPipelinePropertyARM, DataGraphPipelinePropertyARMAllocator>>::type
-                       Device::getDataGraphPipelineAvailablePropertiesARM( const DataGraphPipelineInfoARM &        pipelineInfo,
-                                                        DataGraphPipelinePropertyARMAllocator & dataGraphPipelinePropertyARMAllocator,
-                                                        Dispatch const &                        d ) const
+                       Device::getDataGraphPipelineAvailablePropertiesARM( const DataGraphPipelineInfoARM &              pipelineInfo,
+                                                        DataGraphPipelinePropertyARMAllocator const & dataGraphPipelinePropertyARMAllocator,
+                                                        Dispatch const &                              d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -30463,9 +30467,9 @@ namespace VULKAN_HPP_NAMESPACE
     typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<QueueFamilyDataGraphPropertiesARM, QueueFamilyDataGraphPropertiesARMAllocator>>::type
-    PhysicalDevice::getQueueFamilyDataGraphPropertiesARM( uint32_t                                     queueFamilyIndex,
-                                                          QueueFamilyDataGraphPropertiesARMAllocator & queueFamilyDataGraphPropertiesARMAllocator,
-                                                          Dispatch const &                             d ) const
+    PhysicalDevice::getQueueFamilyDataGraphPropertiesARM( uint32_t                                           queueFamilyIndex,
+                                                          QueueFamilyDataGraphPropertiesARMAllocator const & queueFamilyDataGraphPropertiesARMAllocator,
+                                                          Dispatch const &                                   d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -30677,7 +30681,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename TimeDomainKHRAllocator::value_type, TimeDomainKHR>::value, int>::type,
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<TimeDomainKHR, TimeDomainKHRAllocator>>::type
-                       PhysicalDevice::getCalibrateableTimeDomainsKHR( TimeDomainKHRAllocator & timeDomainKHRAllocator, Dispatch const & d ) const
+                       PhysicalDevice::getCalibrateableTimeDomainsKHR( TimeDomainKHRAllocator const & timeDomainKHRAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -30757,7 +30761,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<detail::isDispatchLoader<Dispatch>::value, bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
                        Device::getCalibratedTimestampsKHR( ArrayProxy<const CalibratedTimestampInfoKHR> const & timestampInfos,
-                                        Uint64_tAllocator &                                  uint64_tAllocator,
+                                        Uint64_tAllocator const &                            uint64_tAllocator,
                                         Dispatch const &                                     d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -32046,7 +32050,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<CooperativeMatrixFlexibleDimensionsPropertiesNV, CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator>>::type
     PhysicalDevice::getCooperativeMatrixFlexibleDimensionsPropertiesNV(
-      CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator & cooperativeMatrixFlexibleDimensionsPropertiesNVAllocator, Dispatch const & d ) const
+      CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator const & cooperativeMatrixFlexibleDimensionsPropertiesNVAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -32239,10 +32243,11 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::pair<std::vector<PerformanceCounterARM, PerformanceCounterARMAllocator>,
                                        std::vector<PerformanceCounterDescriptionARM, PerformanceCounterDescriptionARMAllocator>>>::type
-    PhysicalDevice::enumerateQueueFamilyPerformanceCountersByRegionARM( uint32_t                                    queueFamilyIndex,
-                                                                        PerformanceCounterARMAllocator &            performanceCounterARMAllocator,
-                                                                        PerformanceCounterDescriptionARMAllocator & performanceCounterDescriptionARMAllocator,
-                                                                        Dispatch const &                            d ) const
+    PhysicalDevice::enumerateQueueFamilyPerformanceCountersByRegionARM(
+      uint32_t                                          queueFamilyIndex,
+      PerformanceCounterARMAllocator const &            performanceCounterARMAllocator,
+      PerformanceCounterDescriptionARMAllocator const & performanceCounterDescriptionARMAllocator,
+      Dispatch const &                                  d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )

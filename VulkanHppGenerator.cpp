@@ -2152,13 +2152,13 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
           {
             type = ( params[sp].type.type == "void" ) ? "Uint8_t" : startUpperCase( stripPrefix( params[sp].type.type, "Vk" ) );
           }
-          arguments.push_back( type + "Allocator & " + startLowerCase( type ) + "Allocator" );
+          arguments.push_back( type + "Allocator const & " + startLowerCase( type ) + "Allocator" );
         }
         else if ( vectorParams.contains( sp ) && vectorParams.find( sp )->second.byStructure )
         {
           std::string type = stripPrefix( vectorMemberByStructure( params[sp].type.type ).type.type, "Vk" );
           assert( isupper( type[0] ) );
-          arguments.push_back( type + "Allocator & " + startLowerCase( type ) + "Allocator" );
+          arguments.push_back( type + "Allocator const & " + startLowerCase( type ) + "Allocator" );
         }
       }
     }

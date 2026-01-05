@@ -9843,6 +9843,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
   // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const ${noexcept}
   {
+    ${functionPointerCheck}
+
     ${dataDeclarations}
     ${callSequence}
     ${resultCheck}
@@ -9856,6 +9858,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
                              { "className", className },
                              { "commandName", commandName },
                              { "dataDeclarations", dataDeclarations },
+                             { "functionPointerCheck", generateFunctionPointerCheck( name, commandData.requiredBy, true ) },
                              { "noexcept", noexceptString },
                              { "resultCheck", resultCheck },
                              { "returnStatements", returnStatements },

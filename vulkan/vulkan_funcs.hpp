@@ -13,7 +13,6 @@
 
 namespace VULKAN_HPP_NAMESPACE
 {
-
   //===========================
   //=== COMMAND Definitions ===
   //===========================
@@ -32289,6 +32288,5 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkCmdSetComputeOccupancyPriorityNV( m_commandBuffer, reinterpret_cast<const VkComputeOccupancyPriorityParametersNV *>( &parameters ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

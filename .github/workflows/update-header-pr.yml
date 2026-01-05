@@ -22,9 +22,9 @@ jobs:
       run: |
         wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
         sudo echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy main" | sudo tee -a "/etc/apt/sources.list"
-        sudo echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-15 main" | sudo tee -a "/etc/apt/sources.list"
+        sudo echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-21 main" | sudo tee -a "/etc/apt/sources.list"
         sudo apt-get update
-        sudo apt-get install -y clang-format-15
+        sudo apt-get install -y clang-format-21
 
     - name: Update Submodules
       run: |

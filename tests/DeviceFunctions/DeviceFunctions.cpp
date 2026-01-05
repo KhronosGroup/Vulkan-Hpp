@@ -24,24 +24,32 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-#  include <vulkan/vulkan_hpp_macros.hpp> // VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE
 #  include <cassert>
 #  include <cstdint>
+#  include <vulkan/vulkan_hpp_macros.hpp>  // VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE
 import vulkan;
 #else
-#  include <vector>
-#  include <cstdint>
-#  include <iostream>
 #  include <algorithm>
 #  include <cassert>
+#  include <cstdint>
+#  include <iostream>
+#  include <vector>
 #  include <vulkan/vulkan.hpp>
 #endif
 
-
 static char const * AppName    = "DeviceFunctions";
 static char const * EngineName = "Vulkan.hpp";
+
+template <class Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, class Alloc = std::allocator<vk::UniqueHandle<vk::CommandBuffer, Dispatch>>>
+
+std::vector<vk::UniqueHandle<vk::CommandBuffer, Dispatch>, Alloc> createCommandBuffers( const vk::Device &                    device,
+                                                                                        const vk::CommandBufferAllocateInfo & allocateInfo,
+                                                                                        const Alloc &                         alloc = Alloc(),
+                                                                                        const Dispatch & d = VULKAN_HPP_DEFAULT_DISPATCHER )
+{
+  return device.allocateCommandBuffersUnique( allocateInfo, alloc, d );
+}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -76,11 +84,20 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniqueCommandBuffer                              commandBuffer =
       std::move( device->allocateCommandBuffersUnique( {}, vectorAllocator, VULKAN_HPP_DISPATCH_LOADER_STATIC_TYPE() ).front() );
 
+    std::vector<vk::UniqueCommandBuffer> uniqueCommandBuffers;
+    uniqueCommandBuffers = createCommandBuffers( device.get(), {}, uniqueCommandBuffers.get_allocator(), VULKAN_HPP_DISPATCH_LOADER_STATIC_TYPE() );
+    commandBuffer        = std::move( uniqueCommandBuffers.front() );
+
     commandBuffer->begin( vk::CommandBufferBeginInfo() );
 
     std::vector<vk::UniqueHandle<vk::CommandBuffer, VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE>>::allocator_type dynamicVectorAllocator;
     vk::UniqueHandle<vk::CommandBuffer, VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE>                              dynamicCommandBuffer =
       std::move( device->allocateCommandBuffersUnique( {}, dynamicVectorAllocator, VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE() ).front() );
+
+    std::vector<vk::UniqueHandle<vk::CommandBuffer, VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE>> dynamicUniqueCommandBuffers;
+    dynamicUniqueCommandBuffers =
+      createCommandBuffers( device.get(), {}, dynamicUniqueCommandBuffers.get_allocator(), VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE() );
+    dynamicCommandBuffer = std::move( dynamicUniqueCommandBuffers.front() );
 
     vk::Buffer       buffer       = device->createBuffer( {} );
     vk::UniqueBuffer uniqueBuffer = vk::UniqueBuffer( buffer, *device );

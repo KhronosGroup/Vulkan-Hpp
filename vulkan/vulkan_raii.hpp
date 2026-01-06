@@ -4190,7 +4190,6 @@ namespace VULKAN_HPP_NAMESPACE
       PhysicalDevices & operator=( PhysicalDevices const & ) = delete;
       PhysicalDevices & operator=( PhysicalDevices && rhs )  = default;
 
-    private:
       PhysicalDevices( std::vector<PhysicalDevice> && rhs )
       {
         std::swap( *this, rhs );
@@ -8064,7 +8063,6 @@ namespace VULKAN_HPP_NAMESPACE
       CommandBuffers & operator=( CommandBuffers const & ) = delete;
       CommandBuffers & operator=( CommandBuffers && rhs )  = default;
 
-    private:
       CommandBuffers( std::vector<CommandBuffer> && rhs )
       {
         std::swap( *this, rhs );
@@ -9403,7 +9401,6 @@ namespace VULKAN_HPP_NAMESPACE
       DescriptorSets & operator=( DescriptorSets const & ) = delete;
       DescriptorSets & operator=( DescriptorSets && rhs )  = default;
 
-    private:
       DescriptorSets( std::vector<DescriptorSet> && rhs )
       {
         std::swap( *this, rhs );
@@ -10011,7 +10008,6 @@ namespace VULKAN_HPP_NAMESPACE
       DisplayKHRs & operator=( DisplayKHRs const & ) = delete;
       DisplayKHRs & operator=( DisplayKHRs && rhs )  = default;
 
-    private:
       DisplayKHRs( std::vector<DisplayKHR> && rhs )
       {
         std::swap( *this, rhs );
@@ -12254,7 +12250,6 @@ namespace VULKAN_HPP_NAMESPACE
       Pipelines & operator=( Pipelines const & ) = delete;
       Pipelines & operator=( Pipelines && rhs )  = default;
 
-    private:
       Pipelines( std::vector<Pipeline> && rhs )
       {
         std::swap( *this, rhs );
@@ -12414,7 +12409,6 @@ namespace VULKAN_HPP_NAMESPACE
       PipelineBinaryKHRs & operator=( PipelineBinaryKHRs const & ) = delete;
       PipelineBinaryKHRs & operator=( PipelineBinaryKHRs && rhs )  = default;
 
-    private:
       PipelineBinaryKHRs( std::vector<PipelineBinaryKHR> && rhs )
       {
         std::swap( *this, rhs );
@@ -13692,7 +13686,6 @@ namespace VULKAN_HPP_NAMESPACE
       ShaderEXTs & operator=( ShaderEXTs const & ) = delete;
       ShaderEXTs & operator=( ShaderEXTs && rhs )  = default;
 
-    private:
       ShaderEXTs( std::vector<ShaderEXT> && rhs )
       {
         std::swap( *this, rhs );
@@ -14332,7 +14325,6 @@ namespace VULKAN_HPP_NAMESPACE
       SwapchainKHRs & operator=( SwapchainKHRs const & ) = delete;
       SwapchainKHRs & operator=( SwapchainKHRs && rhs )  = default;
 
-    private:
       SwapchainKHRs( std::vector<SwapchainKHR> && rhs )
       {
         std::swap( *this, rhs );

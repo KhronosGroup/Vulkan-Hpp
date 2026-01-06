@@ -16,18 +16,17 @@
 //                     Compile test with VULKAN_HPP_NO_EXCEPTIONS set and using raii-classes
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
-
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-#  include <cstdint>
 #  include <cassert>
+#  include <cstdint>
 import vulkan;
 #else
-#  include <vector>
-#  include <cstdint>
-#  include <algorithm>
 #  include "vulkan/vulkan_raii.hpp"
-#endif
 
+#  include <algorithm>
+#  include <cstdint>
+#  include <vector>
+#endif
 
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
@@ -66,11 +65,29 @@ int main( int /*argc*/, char ** /*argv*/ )
   auto commandPool = device->createCommandPool( vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlags(), deviceQueueCreateInfo.queueFamilyIndex ) );
   assert( commandPool.has_value() );
 
-  // allocate a CommandBuffer from the CommandPool
-  auto commandBuffers = device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 1 ) );
-  assert( commandBuffers.has_value() );
+  {
+    // allocate a CommandBuffer from the CommandPool
+    auto commandBuffers = device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 1 ) );
+    assert( commandBuffers.has_value() );
 
-  auto commandBuffer = std::move( commandBuffers.value[0] );
+    auto commandBuffer = std::move( commandBuffers.value[0] );
+  }
+
+  {
+    // allocate 10 CommandBuffers from the CommandPool and move them into a std::vector<vk::raii::CommandBuffer>
+    auto rv = device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 10 ) );
+    assert( rv.has_value() );
+    std::vector<vk::raii::CommandBuffer> commandBuffers;
+    commandBuffers = std::move( rv.value );
+  }
+
+  {
+    // allocate 10 CommandBuffers from the CommandPool and move them into a vk::raii::CommandBuffers
+    auto rv = device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 10 ) );
+    assert( rv.has_value() );
+    vk::raii::CommandBuffers commandBuffers = nullptr;
+    commandBuffers                          = std::move( rv.value );
+  }
 #endif
 
   return 0;

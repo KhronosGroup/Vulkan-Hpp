@@ -53,7 +53,6 @@ export namespace VULKAN_HPP_NAMESPACE
     using VULKAN_HPP_NAMESPACE::detail::getDispatchLoaderStatic;
 #endif /*VK_NO_PROTOTYPES*/
     using VULKAN_HPP_NAMESPACE::detail::createResultValueType;
-    using VULKAN_HPP_NAMESPACE::detail::isDispatchLoader;
     using VULKAN_HPP_NAMESPACE::detail::resultCheck;
   }  // namespace detail
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )

@@ -52,8 +52,8 @@ using FARPROC = int64_t( __stdcall * )();
 using FARPROC = int( __stdcall * )();
 #    endif
 extern "C" __declspec( dllimport ) HINSTANCE __stdcall LoadLibraryA( char const * lpLibFileName );
-extern "C" __declspec( dllimport ) int __stdcall FreeLibrary( HINSTANCE hLibModule );
-extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE hModule, const char * lpProcName );
+extern "C" __declspec( dllimport ) int __stdcall       FreeLibrary( HINSTANCE hLibModule );
+extern "C" __declspec( dllimport ) FARPROC __stdcall   GetProcAddress( HINSTANCE hModule, const char * lpProcName );
 #  endif
 #endif
 
@@ -150,7 +150,7 @@ namespace VULKAN_HPP_NAMESPACE
   private:
     VULKAN_HPP_CONSTEXPR_14 void copy( char const * data, size_t len ) VULKAN_HPP_NOEXCEPT
     {
-      size_t n = ( std::min )( N - 1, len );
+      size_t n = (std::min)( N - 1, len );
       for ( size_t i = 0; i < n; ++i )
       {
         ( *this )[i] = data[i];
@@ -460,7 +460,8 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename V,
               typename std::enable_if<!std::is_convertible<decltype( std::declval<V>().begin() ), T *>::value &&
                                         std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
-                                        std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value && std::is_lvalue_reference<V>::value,
+                                        std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value &&
+                                        std::is_lvalue_reference<V>::value,
                                       int>::type = 0>
     ArrayProxyNoTemporaries( V && v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
@@ -471,7 +472,8 @@ namespace VULKAN_HPP_NAMESPACE
     // Any l-value reference with a .begin() return type implicitly convertible to T*, and a .size() return type implicitly convertible to size_t.
     template <typename V,
               typename std::enable_if<std::is_convertible<decltype( std::declval<V>().begin() ), T *>::value &&
-                                        std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value && std::is_lvalue_reference<V>::value,
+                                        std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value &&
+                                        std::is_lvalue_reference<V>::value,
                                       int>::type = 0>
     ArrayProxyNoTemporaries( V && v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
@@ -883,7 +885,6 @@ namespace std
 
 namespace VULKAN_HPP_NAMESPACE
 {
-
 #  if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   template <typename Type, typename Dispatch>
   class UniqueHandleTraits;
@@ -6662,7 +6663,6 @@ namespace VULKAN_HPP_NAMESPACE
       return dls;
     }
 #endif
-
   }  // namespace detail
 #if ( 14 <= VULKAN_HPP_CPP_VERSION )
   using std::exchange;
@@ -6883,7 +6883,6 @@ namespace VULKAN_HPP_NAMESPACE
       PoolType         m_pool     = PoolType();
       Dispatch const * m_dispatch = nullptr;
     };
-
   }  // namespace detail
 #endif  // !VULKAN_HPP_NO_SMART_HANDLE
 
@@ -9666,7 +9665,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_compute_occupancy_priority ===
   VULKAN_HPP_CONSTEXPR_INLINE auto NVComputeOccupancyPrioritySpecVersion   = VK_NV_COMPUTE_OCCUPANCY_PRIORITY_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVComputeOccupancyPriorityExtensionName = VK_NV_COMPUTE_OCCUPANCY_PRIORITY_EXTENSION_NAME;
-
 }  // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off
@@ -24443,7 +24441,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
       static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
-
   }  // namespace detail
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

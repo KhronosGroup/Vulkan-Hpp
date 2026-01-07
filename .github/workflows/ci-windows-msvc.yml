@@ -91,11 +91,11 @@ jobs:
             -D VULKAN_HPP_PRECOMPILE=OFF                    \
             -D CMAKE_CXX_STANDARD=$CXX_STANDARD
           cmake --build build --parallel --clean-first --config Debug
-          ctest -j --output-on-failure --test-dir build
+          ctest -j --output-on-failure --test-dir build -C Debug
 
           echo "================================================================================="
           echo "Building C++$CXX_STANDARD in Release with architecture ${{matrix.architecture}}"
           echo "================================================================================="
           cmake --build build --parallel --config Release
-          ctest -j --output-on-failure --test-dir build
+          ctest -j --output-on-failure --test-dir build -C Release
         done

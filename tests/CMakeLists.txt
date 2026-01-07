@@ -41,7 +41,7 @@ vulkan_hpp__setup_test( NAME Handles )
 vulkan_hpp__setup_test( NAME HandlesMoveExchange )
 vulkan_hpp__setup_test( NAME Hash )
 vulkan_hpp__setup_test( NAME NoDefaultDispatcher )
-if( ( CMAKE_CXX_STANDARD GREATER_EQUAL 23 ) AND NOT ( ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" ) AND ( CMAKE_CXX_COMPILER_VERSION VERSION_LESS 15.0 ) ) )
+if( NOT ( ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" ) AND ( CMAKE_CXX_COMPILER_VERSION VERSION_LESS 15.0 ) ) )
 	vulkan_hpp__setup_test( NAME NoExceptionsRAII ) # errors with clang++13 and clang++14
 endif()
 vulkan_hpp__setup_test( NAME NoSmartHandle )

@@ -9525,7 +9525,6 @@ ${enter}  class ${handleType}s : public std::vector<${handleType}>
     ${handleType}s & operator=( ${handleType}s const & ) = delete;
     ${handleType}s & operator=( ${handleType}s && rhs ) = default;
 
-  private:
     ${handleType}s( std::vector<${handleType}> && rhs )
     {
       std::swap( *this, rhs );

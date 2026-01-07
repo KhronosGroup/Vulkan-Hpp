@@ -112,7 +112,29 @@ jobs:
           -D CMAKE_BUILD_TYPE=Release
         cmake --build build --parallel --clean-first
 
-    - name: Build samples and tests
+    - name: Build samples once
+      run: |
+        echo "================================================================================="
+        echo "Building samples C++23 in Debug with architecture ${{matrix.architecture}}"
+        echo "================================================================================="
+        cmake -E time cmake -B build -G Ninja --fresh             \
+          -D VULKAN_HPP_BUILD_CXX_MODULE=$CXX_MODULES             \
+          -D VULKAN_HPP_GENERATOR_BUILD=OFF                       \
+          -D VULKAN_HPP_RUN_GENERATOR=OFF                         \
+          -D VULKAN_HPP_SAMPLES_BUILD=ON                          \
+          -D VULKAN_HPP_TESTS_BUILD=OFF                           \
+          -D VULKAN_HPP_TESTS_CTEST=ON                            \
+          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                \
+          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON            \
+          -D VULKAN_HPP_PRECOMPILE=OFF                            \
+          -D CMAKE_CXX_COMPILER=clang++-${{matrix.clang_version}} \
+          -D CMAKE_CXX_STANDARD=23                                \
+          -D CMAKE_CXX_FLAGS=-stdlib=libc++                       \
+          -D CMAKE_BUILD_TYPE=Debug                               \
+          -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444
+        cmake -E time cmake --build build --parallel --clean-first
+
+    - name: Build tests
       run: |
         for CXX_STANDARD in 11 14 17 20 23; do
           for BUILD_TYPE in Debug Release; do
@@ -123,14 +145,14 @@ jobs:
             fi
 
             echo "================================================================================="
-            echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
+            echo "Building tests C++$CXX_STANDARD in $BUILD_TYPE"
             echo "================================================================================="
 
             cmake -B build -G Ninja --fresh                           \
               -D VULKAN_HPP_BUILD_CXX_MODULE=$CXX_MODULES             \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF                       \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                         \
-              -D VULKAN_HPP_SAMPLES_BUILD=ON                          \
+              -D VULKAN_HPP_SAMPLES_BUILD=OFF                         \
               -D VULKAN_HPP_TESTS_BUILD=ON                            \
               -D VULKAN_HPP_TESTS_CTEST=ON                            \
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                \

@@ -71,6 +71,7 @@ The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan
 	- [VULKAN_HPP_NAMESPACE](#namespace)
 	- [VULKAN_HPP_NO_CONSTRUCTORS](#no_constructors)
 	- [VULKAN_HPP_NO_EXCEPTIONS](#no_exceptions)
+	- [VULKAN_HPP_NO_FORMAT](#no_format)
 	- [VULKAN_HPP_NO_NODISCARD_WARNINGS](#no_discard_warnings)
 	- [VULKAN_HPP_NO_SETTERS](#no_setters)
 	- [VULKAN_HPP_NO_SMART_HANDLE](#no_smart_handle)
@@ -1047,6 +1048,10 @@ With C++20, designated initializers are available. Their use requires the absenc
 #### VULKAN_HPP_NO_EXCEPTIONS <a id='no_exceptions'>
 
 When a vulkan function returns an error code that is not specified to be a success code, an exception is thrown unless `VULKAN_HPP_NO_EXCEPTIONS` is defined before including `vulkan.hpp`.
+
+#### VULKAN_HPP_NO_FORMAT <a id='no_format'>
+
+Skips formatting of generated files. Useful for saving time in CI workflows that do not require nicely formatted files.
 
 #### VULKAN_HPP_NO_NODISCARD_WARNINGS <a id='no_discard_warnings'>
 

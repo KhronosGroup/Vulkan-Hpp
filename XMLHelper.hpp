@@ -594,7 +594,7 @@ void writeToFile( std::string const & str, std::string const & fileName )
   ofs << str;
   ofs.close();
 
-#if defined( CLANG_FORMAT_EXECUTABLE )
+#if defined( CLANG_FORMAT_EXECUTABLE ) && !defined( VULKAN_HPP_NO_FORMAT )
   // explicitly flush std::cout, as std::system spawns a sub-process
   std::cout.flush();
 

@@ -84,7 +84,7 @@ The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan
 	- [VULKAN_HPP_TYPESAFE_CONVERSION](#typesafe_conversion)
 	- [VULKAN_HPP_UNEXPECTED](#unexpected)
 	- [VULKAN_HPP_USE_REFLECT](#use_reflect)
-    - [VULKAN_HPP_USE_STD_EXPECTED](#use_std_expected)
+	- [VULKAN_HPP_USE_STD_EXPECTED](#use_std_expected)
 - [See Also](#see_also)
 - [License](#license)
 

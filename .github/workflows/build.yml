@@ -118,7 +118,7 @@ jobs:
         sudo cmake --install build --config Release
         cd ..
 
-    - name: Generate Headers with C++20 (TODO: combine with sample step?)
+    - name: Generate Headers with C++20 # (TODO: combine with sample step?)
       run: |
         cmake -B build -G '${{matrix.env.gen}}'        \
           -D VULKAN_HPP_GENERATOR_BUILD=ON             \

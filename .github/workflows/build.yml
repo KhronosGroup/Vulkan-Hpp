@@ -32,16 +32,19 @@ jobs:
           # { os: ubuntu-24.04, cxx: clang++-17, arch: x64, gen: Ninja,                 cxx_max: 20 },
           # { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja,                 cxx_max: 23 },
 
-          # { os: windows-2022, cxx: c++,        arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
+          # { os: windows-2022,                  arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
+          # { os: windows-2022,                  arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
           # { os: windows-2022, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
           # { os: windows-2022, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx_max: 23 },
 
-          # { os: windows-2025, cxx: c++,        arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
+          # { os: windows-2025,                  arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
+          # { os: windows-2025,                  arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
           # { os: windows-2025, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
           # { os: windows-2025, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx_max: 23 },
 
           # { os: macos-26,     cxx: /opt/homebrew/opt/llvm/bin/clang++, arch: x64, gen: Ninja, cxx_max: 23, modules: true },
           # { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja, cxx_max: 23, modules: true },
+          # { os: windows-2025,                  arch: x86, gen: Ninja, cxx_max: 23, modules: true },
           { os: windows-2025, cxx: clang-cl,   arch: x64, gen: Ninja, cxx_max: 23, modules: true },
         ]
 
@@ -57,7 +60,7 @@ jobs:
     - name: Setup MacOS
       if: contains(matrix.env.os, 'macos')
       run: brew install clang-format molten-vk
-    - name: Setup Windows (MSVC)
+    - name: Setup Windows
       if: matrix.env.cxx == 'c++' && contains(matrix.env.os, 'windows')
       uses: TheMrMilchmann/setup-msvc-dev@v4
       with:

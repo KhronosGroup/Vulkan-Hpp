@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: ${{matrix.env.os}} ${{matrix.env.arch}}, ${{matrix.env.gen}}, ${{matrix.env.cxx}} ${{matrix.env.modules && '[modules]' || ''}}
+    name: ${{matrix.env.modules && '[modules] ' || ' '}}${{matrix.env.os}} ${{matrix.env.arch}}, ${{matrix.env.gen}}, ${{matrix.env.cxx}}
     runs-on: ${{matrix.env.os}}
     defaults:
       run:
@@ -61,7 +61,7 @@ jobs:
       if: contains(matrix.env.os, 'macos')
       run: brew install clang-format molten-vk
     - name: Setup Windows
-      if: matrix.env.cxx == 'c++' && contains(matrix.env.os, 'windows')
+      if: contains(matrix.env.os, 'windows')
       uses: TheMrMilchmann/setup-msvc-dev@v4
       with:
         arch: ${{matrix.env.arch}}

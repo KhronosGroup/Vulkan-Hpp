@@ -15,36 +15,36 @@ jobs:
     strategy:
       matrix:
         env: [
-          # { os: macos-14,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx_max: 23 },
-          # { os: macos-15,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx_max: 23 },
-          # { os: macos-26,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: macos-14,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: macos-15,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: macos-26,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx_max: 23 },
 
-          # { os: ubuntu-22.04, cxx: g++-10,     arch: x64, gen: Ninja,                 cxx_max: 17 },
-          # { os: ubuntu-22.04, cxx: g++-11,     arch: x64, gen: Ninja,                 cxx_max: 23 },
-          # { os: ubuntu-22.04, cxx: clang++-13, arch: x64, gen: Ninja,                 cxx_max: 20 },
-          # { os: ubuntu-22.04, cxx: clang++-14, arch: x64, gen: Ninja,                 cxx_max: 20 },
-          # { os: ubuntu-22.04, cxx: clang++-15, arch: x64, gen: Ninja,                 cxx_max: 20 },
+          { os: ubuntu-22.04, cxx: g++-10,     arch: x64, gen: Ninja,                 cxx_max: 17 },
+          { os: ubuntu-22.04, cxx: g++-11,     arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: ubuntu-22.04, cxx: clang++-13, arch: x64, gen: Ninja,                 cxx_max: 20 },
+          { os: ubuntu-22.04, cxx: clang++-14, arch: x64, gen: Ninja,                 cxx_max: 20 },
+          { os: ubuntu-22.04, cxx: clang++-15, arch: x64, gen: Ninja,                 cxx_max: 20 },
 
-          # { os: ubuntu-24.04, cxx: g++-12,     arch: x64, gen: Ninja,                 cxx_max: 23 },
-          # { os: ubuntu-24.04, cxx: g++-13,     arch: x64, gen: Ninja,                 cxx_max: 23 },
-          # { os: ubuntu-24.04, cxx: g++-14,     arch: x64, gen: Ninja,                 cxx_max: 23 },
-          # { os: ubuntu-24.04, cxx: clang++-16, arch: x64, gen: Ninja,                 cxx_max: 20 },
-          # { os: ubuntu-24.04, cxx: clang++-17, arch: x64, gen: Ninja,                 cxx_max: 20 },
-          # { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: ubuntu-24.04, cxx: g++-12,     arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: ubuntu-24.04, cxx: g++-13,     arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: ubuntu-24.04, cxx: g++-14,     arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: ubuntu-24.04, cxx: clang++-16, arch: x64, gen: Ninja,                 cxx_max: 20 },
+          { os: ubuntu-24.04, cxx: clang++-17, arch: x64, gen: Ninja,                 cxx_max: 20 },
+          { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja,                 cxx_max: 23 },
 
-          # { os: windows-2022,                  arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
-          # { os: windows-2022,                  arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
-          # { os: windows-2022, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
-          # { os: windows-2022, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: windows-2022,                  arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
+          { os: windows-2022,                  arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
+          { os: windows-2022, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
+          { os: windows-2022, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx_max: 23 },
 
-          # { os: windows-2025,                  arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
-          # { os: windows-2025,                  arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
-          # { os: windows-2025, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
-          # { os: windows-2025, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: windows-2025,                  arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
+          { os: windows-2025,                  arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
+          { os: windows-2025, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
+          { os: windows-2025, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx_max: 23 },
 
-          # { os: macos-26,     cxx: /opt/homebrew/opt/llvm/bin/clang++, arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-I/opt/homebrew/opt/llvm/include/c++/v1 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk', linker_flags: '-L/opt/homebrew/opt/llvm/lib/c++' },
+          { os: macos-26,     cxx: /opt/homebrew/opt/llvm/bin/clang++, arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-I/opt/homebrew/opt/llvm/include/c++/v1 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk', linker_flags: '-L/opt/homebrew/opt/llvm/lib/c++' },
           { os: ubuntu-24.04, cxx: clang++-21,                         arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-stdlib=libc++', linker_flags: '-stdlib=libc++ -lc++abi' },
-          # { os: windows-2025,                                          arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '//EHsc' },
+          { os: windows-2025,                                          arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '//EHsc' },
         ]
 
     steps:

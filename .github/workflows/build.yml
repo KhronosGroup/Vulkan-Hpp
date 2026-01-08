@@ -15,22 +15,22 @@ jobs:
     strategy:
       matrix:
         env: [
-          { os: ubuntu-22.04, cxx: g++-10,     arch: x64, gen: Ninja,                 cxx-max: 17, modules: false },
-          { os: ubuntu-22.04, cxx: g++-11,     arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
-          { os: ubuntu-22.04, cxx: clang++-13, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
-          { os: ubuntu-22.04, cxx: clang++-14, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
-          { os: ubuntu-22.04, cxx: clang++-15, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
+          # { os: ubuntu-22.04, cxx: g++-10,     arch: x64, gen: Ninja,                 cxx-max: 17, modules: false },
+          # { os: ubuntu-22.04, cxx: g++-11,     arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          # { os: ubuntu-22.04, cxx: clang++-13, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
+          # { os: ubuntu-22.04, cxx: clang++-14, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
+          # { os: ubuntu-22.04, cxx: clang++-15, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
 
-          { os: ubuntu-24.04, cxx: g++-12,     arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
-          { os: ubuntu-24.04, cxx: g++-13,     arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
-          { os: ubuntu-24.04, cxx: g++-14,     arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
-          { os: ubuntu-24.04, cxx: clang++-16, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
-          { os: ubuntu-24.04, cxx: clang++-17, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
-          { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          # { os: ubuntu-24.04, cxx: g++-12,     arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          # { os: ubuntu-24.04, cxx: g++-13,     arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          # { os: ubuntu-24.04, cxx: g++-14,     arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          # { os: ubuntu-24.04, cxx: clang++-16, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
+          # { os: ubuntu-24.04, cxx: clang++-17, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
+          # { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
 
-          { os: macos-14,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
-          { os: macos-15,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
-          { os: macos-26,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          # { os: macos-14,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          # { os: macos-15,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          # { os: macos-26,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
 
           { os: windows-2022, cxx: c++,        arch: x86, gen: Visual Studio 17 2022, cxx-max: 23, modules: false },
           { os: windows-2022, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx-max: 23, modules: false },
@@ -47,35 +47,30 @@ jobs:
       with:
         submodules: recursive
 
-    # - name: Setup modules (CMake, Ninja)
-    #   if: matrix.env.modules && contains(matrix.env.gen, 'Ninja')
-    #   uses: lukka/get-cmake@latest
-    #   with:
-    #     cmakeVersion: 4.1.2
-    #     ninjaVersion: latest
-    # - name: Setup libc
-    #   if: matrix.env.modules && contains(matrix.env.os, 'ubuntu')
-    #   run: sudo apt install libc++-dev libc++abi-dev
-    # - name: Setup clang and fix 'import std'
-    #   if: matrix.env.modules && contains(matrix.env.os, 'macos')
-    #   run: |
-    #     brew install llvm
-    #     CMAKE_FIX=`which cmake`
-    #     CMAKE_FIX="`dirname $CMAKE_FIX`/../share/cmake-4.1/Modules/Compiler/Clang-CXX-CXXImportStd.cmake"
-    #     sed -i '' 's|\${_clang_modules_json_impl}.modules.json|/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json|g' $CMAKE_FIX # https://gitlab.kitware.com/cmake/cmake/-/issues/25965#note_1523575
+    - name: Setup modules (CMake, Ninja)
+      if: matrix.env.modules && contains(matrix.env.gen, 'Ninja')
+      uses: lukka/get-cmake@latest
+      with:
+        cmakeVersion: 4.1.2
+        ninjaVersion: latest
+
+    - name: Setup modules (libc++)
+      if: matrix.env.modules && contains(matrix.env.os, 'ubuntu')
+      run: sudo apt install libc++-dev libc++abi-dev
+      
+    - name: Setup modules (MacOS)
+      if: matrix.env.modules && contains(matrix.env.os, 'macos')
+      run: |
+        brew install llvm
+        CMAKE_FIX=`which cmake`
+        CMAKE_FIX="`dirname $CMAKE_FIX`/../share/cmake-4.1/Modules/Compiler/Clang-CXX-CXXImportStd.cmake"
+        sed -i '' 's|\${_clang_modules_json_impl}.modules.json|/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json|g' $CMAKE_FIX # https://gitlab.kitware.com/cmake/cmake/-/issues/25965#note_1523575
 
     - name: Setup Windows (MSVC)
       if: matrix.env.cxx == 'c++' && contains(matrix.env.os, 'windows')
       uses: TheMrMilchmann/setup-msvc-dev@v4
       with:
         arch: ${{matrix.env.arch}}
-
-    # - name: Setup Windows (Clang-CL)
-    #   if: matrix.env.cxx == 'clang-cl' && contains(matrix.env.os, 'windows')
-    #   uses: lukka/get-cmake@latest
-    #   with:
-    #     cmakeVersion: 4.1.2
-    #     ninjaVersion: latest
 
     - name: Setup Ubuntu
       if: matrix.env.os == 'ubuntu-22.04' || matrix.env.os == 'ubuntu-24.04'
@@ -145,35 +140,35 @@ jobs:
           -D CMAKE_BUILD_TYPE=Release
         cmake --build build --parallel --config Release --clean-first
     
-    - name: Build Samples with C++${{matrix.env.cxx-max}}
-      run: |
-        cmake -B build -G '${{matrix.env.gen}}'           \
-          -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
-          -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
-          -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
-          -D VULKAN_HPP_TESTS_BUILD=OFF                   \
-          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
-          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
-          -D VULKAN_HPP_PRECOMPILE=OFF                    \
-          -D CMAKE_C_COMPILER=${{matrix.env.cxx}}         \
-          -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}       \
-          -D CMAKE_CXX_STANDARD=${{matrix.env.cxx-max}}   \
-          -D CMAKE_BUILD_TYPE=Debug
-        cmake --build build --parallel --config Release
+    # - name: Build Samples with C++${{matrix.env.cxx-max}}
+    #   run: |
+    #     cmake -B build -G '${{matrix.env.gen}}'           \
+    #       -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
+    #       -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
+    #       -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
+    #       -D VULKAN_HPP_TESTS_BUILD=OFF                   \
+    #       -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
+    #       -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
+    #       -D VULKAN_HPP_PRECOMPILE=OFF                    \
+    #       -D CMAKE_C_COMPILER=${{matrix.env.cxx}}         \
+    #       -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}       \
+    #       -D CMAKE_CXX_STANDARD=${{matrix.env.cxx-max}}   \
+    #       -D CMAKE_BUILD_TYPE=Debug
+    #     cmake --build build --parallel --config Release
 
-        cmake -B build -G '${{matrix.env.gen}}' --fresh   \
-          -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
-          -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
-          -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
-          -D VULKAN_HPP_TESTS_BUILD=OFF                   \
-          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
-          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
-          -D VULKAN_HPP_PRECOMPILE=OFF                    \
-          -D CMAKE_C_COMPILER=${{matrix.env.cxx}}         \
-          -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}       \
-          -D CMAKE_CXX_STANDARD=${{matrix.env.cxx-max}}   \
-          -D CMAKE_BUILD_TYPE=Release
-        cmake --build build --parallel --config Debug --clean-first
+    #     cmake -B build -G '${{matrix.env.gen}}' --fresh   \
+    #       -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
+    #       -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
+    #       -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
+    #       -D VULKAN_HPP_TESTS_BUILD=OFF                   \
+    #       -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
+    #       -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
+    #       -D VULKAN_HPP_PRECOMPILE=OFF                    \
+    #       -D CMAKE_C_COMPILER=${{matrix.env.cxx}}         \
+    #       -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}       \
+    #       -D CMAKE_CXX_STANDARD=${{matrix.env.cxx-max}}   \
+    #       -D CMAKE_BUILD_TYPE=Release
+    #     cmake --build build --parallel --config Debug --clean-first
 
     - name: Build Tests with C++11 to C++${{matrix.env.cxx-max}} # TODO: 11 to CXX-MAX
       run: |

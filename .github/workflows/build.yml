@@ -71,7 +71,7 @@ jobs:
         arch: ${{matrix.env.arch}}
 
     - name: Setup Windows (Clang-CL)
-      if: matrix.env.cxx == 'c++' && contains(matrix.env.os, 'windows')
+      if: matrix.env.cxx == 'clang-cl' && contains(matrix.env.os, 'windows')
       uses: lukka/get-cmake@latest
       with:
         cmakeVersion: 4.1.2

@@ -87,6 +87,34 @@ jobs:
         CMAKE_FIX="`dirname $CMAKE_FIX`/../share/cmake-4.1/Modules/Compiler/Clang-CXX-CXXImportStd.cmake"
         sed -i '' 's|\${_clang_modules_json_impl}.modules.json|/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json|g' $CMAKE_FIX # https://gitlab.kitware.com/cmake/cmake/-/issues/25965#note_1523575
 
+    - name: Generate Headers with C++${{matrix.env.cxx_max}} # (TODO: combine with sample step?)
+      run: |
+        cmake -B build -G '${{matrix.env.gen}}'         \
+          -D VULKAN_HPP_GENERATOR_BUILD=ON              \
+          -D VULKAN_HPP_RUN_GENERATOR=OFF               \
+          -D VULKAN_HPP_SAMPLES_BUILD=OFF               \
+          -D VULKAN_HPP_TESTS_BUILD=OFF                 \
+          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON      \
+          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON  \
+          -D VULKAN_HPP_PRECOMPILE=OFF                  \
+          ${{matrix.env.cxx && format('-D CMAKE_CXX_COMPILER={0}', matrix.env.cxx)}} \
+          -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}} \
+          -D CMAKE_BUILD_TYPE=Debug
+        cmake --build build --parallel --config Debug
+
+        cmake -B build -G '${{matrix.env.gen}}' --fresh \
+          -D VULKAN_HPP_GENERATOR_BUILD=ON              \
+          -D VULKAN_HPP_RUN_GENERATOR=ON                \
+          -D VULKAN_HPP_SAMPLES_BUILD=OFF               \
+          -D VULKAN_HPP_TESTS_BUILD=OFF                 \
+          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON      \
+          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON  \
+          -D VULKAN_HPP_PRECOMPILE=OFF                  \
+          ${{matrix.env.cxx && format('-D CMAKE_CXX_COMPILER={0}', matrix.env.cxx)}} \
+          -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}} \
+          -D CMAKE_BUILD_TYPE=Release
+        cmake --build build --parallel --config Release --clean-first
+
     - name: Install glm, glfw and glslang
       if: (!matrix.env.modules && !contains(matrix.env.os, 'windows'))
       run: |
@@ -122,34 +150,6 @@ jobs:
         cmake --build build --parallel
         sudo cmake --install build --config Release
         cd ..
-
-    - name: Generate Headers with C++20 # (TODO: combine with sample step?)
-      run: |
-        cmake -B build -G '${{matrix.env.gen}}'        \
-          -D VULKAN_HPP_GENERATOR_BUILD=ON             \
-          -D VULKAN_HPP_RUN_GENERATOR=OFF              \
-          -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
-          -D VULKAN_HPP_TESTS_BUILD=OFF                \
-          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
-          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
-          -D VULKAN_HPP_PRECOMPILE=OFF                 \
-          ${{matrix.env.cxx && format('-D CMAKE_CXX_COMPILER={0}', matrix.env.cxx)}} \
-          -D CMAKE_CXX_STANDARD=20                     \
-          -D CMAKE_BUILD_TYPE=Debug
-        cmake --build build --parallel --config Debug
-
-        cmake -B build -G '${{matrix.env.gen}}' --fresh \
-          -D VULKAN_HPP_GENERATOR_BUILD=ON              \
-          -D VULKAN_HPP_RUN_GENERATOR=ON                \
-          -D VULKAN_HPP_SAMPLES_BUILD=OFF               \
-          -D VULKAN_HPP_TESTS_BUILD=OFF                 \
-          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON      \
-          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON  \
-          -D VULKAN_HPP_PRECOMPILE=OFF                  \
-          ${{matrix.env.cxx && format('-D CMAKE_CXX_COMPILER={0}', matrix.env.cxx)}} \
-          -D CMAKE_CXX_STANDARD=20                      \
-          -D CMAKE_BUILD_TYPE=Release
-        cmake --build build --parallel --config Release --clean-first
     
     - name: Build Samples with C++${{matrix.env.cxx_max}}
       if: (!matrix.env.modules)

@@ -15,34 +15,34 @@ jobs:
     strategy:
       matrix:
         env: [
-          # { os: macos-14,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx-max: 23 },
-          # { os: macos-15,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx-max: 23 },
-          # { os: macos-26,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx-max: 23 },
+          # { os: macos-14,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx_max: 23 },
+          # { os: macos-15,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx_max: 23 },
+          # { os: macos-26,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx_max: 23 },
 
-          # { os: ubuntu-22.04, cxx: g++-10,     arch: x64, gen: Ninja,                 cxx-max: 17 },
-          # { os: ubuntu-22.04, cxx: g++-11,     arch: x64, gen: Ninja,                 cxx-max: 23 },
-          # { os: ubuntu-22.04, cxx: clang++-13, arch: x64, gen: Ninja,                 cxx-max: 20 },
-          # { os: ubuntu-22.04, cxx: clang++-14, arch: x64, gen: Ninja,                 cxx-max: 20 },
-          # { os: ubuntu-22.04, cxx: clang++-15, arch: x64, gen: Ninja,                 cxx-max: 20 },
+          # { os: ubuntu-22.04, cxx: g++-10,     arch: x64, gen: Ninja,                 cxx_max: 17 },
+          # { os: ubuntu-22.04, cxx: g++-11,     arch: x64, gen: Ninja,                 cxx_max: 23 },
+          # { os: ubuntu-22.04, cxx: clang++-13, arch: x64, gen: Ninja,                 cxx_max: 20 },
+          # { os: ubuntu-22.04, cxx: clang++-14, arch: x64, gen: Ninja,                 cxx_max: 20 },
+          # { os: ubuntu-22.04, cxx: clang++-15, arch: x64, gen: Ninja,                 cxx_max: 20 },
 
-          # { os: ubuntu-24.04, cxx: g++-12,     arch: x64, gen: Ninja,                 cxx-max: 23 },
-          # { os: ubuntu-24.04, cxx: g++-13,     arch: x64, gen: Ninja,                 cxx-max: 23 },
-          # { os: ubuntu-24.04, cxx: g++-14,     arch: x64, gen: Ninja,                 cxx-max: 23 },
-          # { os: ubuntu-24.04, cxx: clang++-16, arch: x64, gen: Ninja,                 cxx-max: 20 },
-          # { os: ubuntu-24.04, cxx: clang++-17, arch: x64, gen: Ninja,                 cxx-max: 20 },
-          # { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja,                 cxx-max: 23 },
+          # { os: ubuntu-24.04, cxx: g++-12,     arch: x64, gen: Ninja,                 cxx_max: 23 },
+          # { os: ubuntu-24.04, cxx: g++-13,     arch: x64, gen: Ninja,                 cxx_max: 23 },
+          # { os: ubuntu-24.04, cxx: g++-14,     arch: x64, gen: Ninja,                 cxx_max: 23 },
+          # { os: ubuntu-24.04, cxx: clang++-16, arch: x64, gen: Ninja,                 cxx_max: 20 },
+          # { os: ubuntu-24.04, cxx: clang++-17, arch: x64, gen: Ninja,                 cxx_max: 20 },
+          # { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja,                 cxx_max: 23 },
 
-          # { os: windows-2022, cxx: c++,        arch: x86, gen: Visual Studio 17 2022, cxx-max: 23 },
-          # { os: windows-2022, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx-max: 23 },
-          # { os: windows-2022, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx-max: 23 },
+          # { os: windows-2022, cxx: c++,        arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
+          # { os: windows-2022, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
+          # { os: windows-2022, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx_max: 23 },
 
-          # { os: windows-2025, cxx: c++,        arch: x86, gen: Visual Studio 17 2022, cxx-max: 23 },
-          # { os: windows-2025, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx-max: 23 },
-          # { os: windows-2025, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx-max: 23 },
+          # { os: windows-2025, cxx: c++,        arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
+          # { os: windows-2025, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
+          # { os: windows-2025, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx_max: 23 },
 
-          # { os: macos-26,     cxx: /opt/homebrew/opt/llvm/bin/clang++, arch: x64, gen: Ninja, cxx-max: 23, modules: true },
-          # { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja, cxx-max: 23, modules: true },
-          { os: windows-2025, cxx: clang-cl,   arch: x64, gen: Ninja, cxx-max: 23, modules: true },
+          # { os: macos-26,     cxx: /opt/homebrew/opt/llvm/bin/clang++, arch: x64, gen: Ninja, cxx_max: 23, modules: true },
+          # { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja, cxx_max: 23, modules: true },
+          { os: windows-2025, cxx: clang-cl,   arch: x64, gen: Ninja, cxx_max: 23, modules: true },
         ]
 
     steps:
@@ -144,7 +144,7 @@ jobs:
     #       -D CMAKE_BUILD_TYPE=Release
     #     cmake --build build --parallel --config Release --clean-first
     
-    # - name: Build Samples with C++${{matrix.env.cxx-max}}
+    # - name: Build Samples with C++${{matrix.env.cxx_max}}
     #   if: (!matrix.env.modules)
     #   run: |
     #     cmake -B build -G '${{matrix.env.gen}}'           \
@@ -157,7 +157,7 @@ jobs:
     #       -D VULKAN_HPP_PRECOMPILE=OFF                    \
     #       -D CMAKE_C_COMPILER=${{matrix.env.cxx}}         \
     #       -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}       \
-    #       -D CMAKE_CXX_STANDARD=${{matrix.env.cxx-max}}   \
+    #       -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}}   \
     #       -D CMAKE_BUILD_TYPE=Debug
     #     cmake --build build --parallel --config Release
 
@@ -171,15 +171,15 @@ jobs:
     #       -D VULKAN_HPP_PRECOMPILE=OFF                    \
     #       -D CMAKE_C_COMPILER=${{matrix.env.cxx}}         \
     #       -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}       \
-    #       -D CMAKE_CXX_STANDARD=${{matrix.env.cxx-max}}   \
+    #       -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}}   \
     #       -D CMAKE_BUILD_TYPE=Release
     #     cmake --build build --parallel --config Debug --clean-first
 
-    - name: Build Tests with C++11 to C++${{matrix.env.cxx-max}}
+    - name: Build Tests with C++11 to C++${{matrix.env.cxx_max}}
       run: |
         for CXX_STANDARD in 11 14 17 20 23; do
           for BUILD_TYPE in Debug Release; do
-            if [ $CXX_STANDARD -ge ${{matrix.env.cxx-max}} ]; then
+            if [ $CXX_STANDARD -gt ${{matrix.env.cxx_max}} ]; then
               continue
             fi
 
@@ -191,19 +191,20 @@ jobs:
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
             echo "================================================================================="
 
-            cmake -B build -G '${{matrix.env.gen}}' --fresh      \
-              -D VULKAN_HPP_GENERATOR_BUILD=OFF                  \
-              -D VULKAN_HPP_RUN_GENERATOR=OFF                    \
-              -D VULKAN_HPP_SAMPLES_BUILD=OFF                    \
-              -D VULKAN_HPP_TESTS_BUILD=ON                       \
-              -D VULKAN_HPP_TESTS_CTEST=ON                       \
-              -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON           \
-              -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON       \
-              -D VULKAN_HPP_PRECOMPILE=OFF                       \
+            cmake -B build -G '${{matrix.env.gen}}' --fresh          \
+              -D VULKAN_HPP_GENERATOR_BUILD=OFF                      \
+              -D VULKAN_HPP_RUN_GENERATOR=OFF                        \
+              -D VULKAN_HPP_SAMPLES_BUILD=OFF                        \
+              -D VULKAN_HPP_TESTS_BUILD=ON                           \
+              -D VULKAN_HPP_TESTS_CTEST=ON                           \
+              -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON               \
+              -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON           \
+              -D VULKAN_HPP_PRECOMPILE=OFF                           \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=${{matrix.env.modules}} \
               ${{matrix.env.modules && '-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444' || ''}} \
-              -D CMAKE_CXX_FLAGS=${{matrix.env.cxx_flags || ''}} \
-              -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}          \
-              -D CMAKE_CXX_STANDARD=$CXX_STANDARD                \
+              -D CMAKE_CXX_FLAGS=${{matrix.env.cxx_flags || ''}}     \
+              -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}              \
+              -D CMAKE_CXX_STANDARD=$CXX_STANDARD                    \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE
             cmake --build build --parallel --config $BUILD_TYPE --clean-first
             ctest -j --output-on-failure --test-dir build -C $BUILD_TYPE

@@ -607,7 +607,7 @@ endfunction()
 # create Vulkan::Hpp and possibly Vulkan::HppModule targets
 vulkan_hpp__setup_vulkan_targets()
 
-if( VULKAN_HPP_SAMPLES_BUILD OR VULKAN_HPP_TESTS_BUILD )
+if( VULKAN_HPP_SAMPLES_BUILD )
 	# external libraries
 	find_package( glm QUIET )
 	if( NOT glm_FOUND )

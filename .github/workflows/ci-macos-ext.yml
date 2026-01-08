@@ -1,0 +1,126 @@
+
+name: CI MacOS (module tests)
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+
+    strategy:
+      matrix:
+        os: [macos-26]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install libraries
+      run: |
+        brew install clang-format molten-vk llvm
+        CMAKE_FIX=`which cmake`
+        CMAKE_FIX="`dirname $CMAKE_FIX`/../share/cmake/Modules/Compiler/Clang-CXX-CXXImportStd.cmake"
+        sed -i '' 's|\${_clang_modules_json_impl}.modules.json|/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json|g' $CMAKE_FIX # https://gitlab.kitware.com/cmake/cmake/-/issues/25965#note_1523575
+
+    - name: Install Ninja
+      uses: ashutoshvarma/setup-ninja@master
+      with:
+        version: 1.11.0
+
+    - name: Install glm, glfw and glslang
+      run: |
+        export LDFLAGS="-L/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib/unwind -lunwind"
+        cd glm
+        cmake -B build -G Ninja                                    \
+          -D CMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ \
+          -D CMAKE_BUILD_TYPE=Release                              \
+          -D GLM_BUILD_LIBRARY=ON                                  \
+          -D GLM_BUILD_INSTALL=ON                                  \
+          -D GLM_BUILD_TESTS=OFF
+        cmake --build build --parallel
+        sudo cmake --install build
+
+        cd ../glfw
+        cmake -B build -G Ninja                                \
+          -D CMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang \
+          -D CMAKE_BUILD_TYPE=Release                          \
+          -D GLFW_BUILD_EXAMPLES=OFF                           \
+          -D GLFW_BUILD_TESTS=OFF                              \
+          -D GLFW_BUILD_DOCS=OFF                               \
+          -D GLFW_INSTALL=ON
+        cmake --build build --parallel
+        sudo cmake --install build
+
+        cd ../glslang
+        cmake -B build -G Ninja                                    \
+          -D CMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang     \
+          -D CMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ \
+          -D CMAKE_CXX_STANDARD=11                                 \
+          -D CMAKE_BUILD_TYPE=Release                              \
+          -D ENABLE_OPT=OFF                                        \
+          -D GLSLANG_TESTS_DEFAULT=OFF                             \
+          -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
+        cmake --build build --parallel
+        sudo cmake --install build
+        cd ..
+
+    - name: Generate headers
+      run: |
+        export LDFLAGS="-L/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib/unwind -lunwind"
+        cmake -B build -G Ninja                                    \
+          -D VULKAN_HPP_GENERATOR_BUILD=ON                         \
+          -D VULKAN_HPP_RUN_GENERATOR=OFF                          \
+          -D VULKAN_HPP_SAMPLES_BUILD=OFF                          \
+          -D VULKAN_HPP_TESTS_BUILD=OFF                            \
+          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                 \
+          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON             \
+          -D VULKAN_HPP_PRECOMPILE=OFF                             \
+          -D CMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ \
+          -D CMAKE_CXX_STANDARD=20                                 \
+          -D CMAKE_BUILD_TYPE=Debug
+        cmake --build build --parallel
+
+        cmake -B build -G Ninja --fresh                            \
+          -D VULKAN_HPP_GENERATOR_BUILD=ON                         \
+          -D VULKAN_HPP_RUN_GENERATOR=ON                           \
+          -D VULKAN_HPP_SAMPLES_BUILD=OFF                          \
+          -D VULKAN_HPP_TESTS_BUILD=OFF                            \
+          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                 \
+          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON             \
+          -D VULKAN_HPP_PRECOMPILE=OFF                             \
+          -D CMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ \
+          -D CMAKE_CXX_STANDARD=20                                 \
+          -D CMAKE_BUILD_TYPE=Release
+        cmake --build build --parallel --clean-first
+
+    - name: Build samples and tests
+      run: |
+        export LDFLAGS="-L/opt/homebrew/opt/llvm/lib/c++ -L/opt/homebrew/opt/llvm/lib/unwind -lunwind"
+        for CXX_STANDARD in 23; do
+          for BUILD_TYPE in Debug Release; do
+            echo "================================================================================="
+            echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
+            echo "================================================================================="
+
+            cmake -B build -G Ninja --fresh                                                       \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=ON                                                   \
+              -D VULKAN_HPP_GENERATOR_BUILD=OFF                                                   \
+              -D VULKAN_HPP_RUN_GENERATOR=OFF                                                     \
+              -D VULKAN_HPP_SAMPLES_BUILD=OFF                                                     \
+              -D VULKAN_HPP_TESTS_BUILD=ON                                                        \
+              -D VULKAN_HPP_TESTS_CTEST=ON                                                        \
+              -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                                            \
+              -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON                                        \
+              -D VULKAN_HPP_PRECOMPILE=OFF                                                        \
+              -D CMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++                            \
+              -D CMAKE_CXX_STANDARD=$CXX_STANDARD                                                 \
+              -D CMAKE_CXX_FLAGS="-I/opt/homebrew/opt/llvm/include/c++/v1 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk" \
+              -D CMAKE_BUILD_TYPE=$BUILD_TYPE                                                     \
+              -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444
+            cmake --build build --parallel --clean-first
+            ctest -j --output-on-failure --test-dir build
+          done
+        done

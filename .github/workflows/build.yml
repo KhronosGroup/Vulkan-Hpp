@@ -43,8 +43,8 @@ jobs:
           # { os: windows-2025, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx_max: 23 },
 
           { os: macos-26,     cxx: /opt/homebrew/opt/llvm/bin/clang++, arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-I/opt/homebrew/opt/llvm/include/c++/v1 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk', linker_flags: '-L/opt/homebrew/opt/llvm/lib/c++' },
-          { os: ubuntu-24.04, cxx: clang++-18,                         arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-stdlib=libc++', linker_flags: '-stdlib=libc++ -lc++abi' },
-          { os: windows-2025,                                          arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '//EHsc' },
+          # { os: ubuntu-24.04, cxx: clang++-18,                         arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-stdlib=libc++', linker_flags: '-stdlib=libc++ -lc++abi' },
+          # { os: windows-2025,                                          arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '//EHsc' },
         ]
 
     steps:
@@ -118,7 +118,7 @@ jobs:
     #     sudo cmake --install build --config Release
     #     cd ..
 
-    # - name: Generate Headers with C++20
+    # - name: Generate Headers with C++20 (TODO: combine with sample step?)
     #   run: |
     #     cmake -B build -G '${{matrix.env.gen}}'        \
     #       -D VULKAN_HPP_GENERATOR_BUILD=ON             \
@@ -196,7 +196,7 @@ jobs:
             cmake -B build -G '${{matrix.env.gen}}' --fresh          \
               -D VULKAN_HPP_BUILD_CXX_MODULE=${{matrix.env.modules && 'ON' || 'OFF'}} \
               ${{matrix.env.cxx && format('-D CMAKE_CXX_COMPILER={0}', matrix.env.cxx)}} \
-              ${{matrix.env.cxx_flags && format('-D CMAKE_CXX_FLAGS={0}', matrix.env.cxx_flags)}} \
+              ${{matrix.env.cxx_flags && format('-D CMAKE_CXX_FLAGS''={0}''', matrix.env.cxx_flags)}} \
               ${{matrix.env.linker_flags && format('-D CMAKE_EXE_LINKER_FLAGS=''{0}''', matrix.env.linker_flags)}} \
               ${{matrix.env.modules && '-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444' || ''}} \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF                      \

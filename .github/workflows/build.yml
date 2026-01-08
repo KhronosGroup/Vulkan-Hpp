@@ -42,10 +42,10 @@ jobs:
           # { os: windows-2025, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
           # { os: windows-2025, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx_max: 23 },
 
-          # { os: macos-26,     cxx: /opt/homebrew/opt/llvm/bin/clang++, arch: x64, gen: Ninja, cxx_max: 23, modules: true },
-          # { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja, cxx_max: 23, modules: true },
-          # { os: windows-2025,                  arch: x86, gen: Ninja, cxx_max: 23, modules: true },
-          { os: windows-2025, cxx: clang-cl,   arch: x64, gen: Ninja, cxx_max: 23, modules: true },
+          # { os: windows-2025,                                          arch: x86, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '//EHsc' },
+          { os: windows-2025, cxx: clang-cl,                           arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '//EHsc' },
+          # { os: macos-26,     cxx: /opt/homebrew/opt/llvm/bin/clang++, arch: x64, gen: Ninja, modules: true, cxx_max: 23 },
+          # { os: ubuntu-24.04, cxx: clang++-18,                         arch: x64, gen: Ninja, modules: true, cxx_max: 23 },
         ]
 
     steps:

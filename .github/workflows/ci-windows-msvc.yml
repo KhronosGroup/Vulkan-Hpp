@@ -68,6 +68,7 @@ jobs:
           -D VULKAN_HPP_TESTS_BUILD=OFF                \
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
+          -D VULKAN_HPP_NO_FORMAT=ON                   \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
           -D CMAKE_CXX_STANDARD=20
         cmake --build build --parallel --config Debug

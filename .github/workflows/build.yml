@@ -70,7 +70,7 @@ jobs:
       run: |
         cd glm
         cmake -B build -G Ninja                      \
-          -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
+          -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}  \
           -D CMAKE_CXX_STANDARD=11                   \
           -D CMAKE_BUILD_TYPE=Release                \
           -D GLM_BUILD_LIBRARY=ON                    \
@@ -91,7 +91,7 @@ jobs:
 
         cd ../glslang
         cmake -B build -G Ninja                      \
-          -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
+          -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}  \
           -D CMAKE_CXX_STANDARD=11                   \
           -D CMAKE_BUILD_TYPE=Release                \
           -D ENABLE_OPT=OFF                          \

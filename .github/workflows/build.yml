@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: ${{matrix.env.os}} ${{matrix.env.name || matrix.env.c}} ${{matrix.env.modules && 'cppm' || 'cpp'}}-${{matrix.standard}}
+    name: ${{matrix.env.os}} ${{matrix.env.name || matrix.env.c}} ${{matrix.env.modules && "cppm" || "cpp"}}-${{matrix.standard}}
     runs-on: ${{matrix.env.os}}
     defaults:
       run:
@@ -39,16 +39,16 @@ jobs:
         submodules: recursive
 
     # - name: Setup modules (CMake, Ninja)
-    #   if: matrix.env.modules && contains(matrix.env.gen, 'Ninja')
+    #   if: matrix.env.modules && contains(matrix.env.gen, "Ninja")
     #   uses: lukka/get-cmake@latest
     #   with:
     #     cmakeVersion: 4.1.2
     #     ninjaVersion: latest
     # - name: Setup libc
-    #   if: matrix.env.modules && contains(matrix.env.os, 'ubuntu')
+    #   if: matrix.env.modules && contains(matrix.env.os, "ubuntu")
     #   run: sudo apt install libc++-dev libc++abi-dev
-    # - name: Setup clang and fix 'import std'
-    #   if: matrix.env.modules && contains(matrix.env.os, 'macos')
+    # - name: Setup clang and fix import std
+    #   if: matrix.env.modules && contains(matrix.env.os, "macos")
     #   run: |
     #     brew install llvm
     #     CMAKE_FIX=`which cmake`
@@ -56,13 +56,13 @@ jobs:
     #     sed -i '' 's|\${_clang_modules_json_impl}.modules.json|/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json|g' $CMAKE_FIX # https://gitlab.kitware.com/cmake/cmake/-/issues/25965#note_1523575
 
     - name: Setup MSVC
-      if: matrix.env.name == 'msvc' && contains(matrix.env.os, 'windows')
+      if: matrix.env.name == "msvc" && contains(matrix.env.os, "windows")
       uses: TheMrMilchmann/setup-msvc-dev@v4
       with:
         arch: ${{matrix.env.arch}}
 
     - name: Setup Ubuntu
-      if: matrix.env.os == 'ubuntu-22.04' || matrix.env.os == ubuntu-24.04
+      if: matrix.env.os == "ubuntu-22.04" || matrix.env.os == "ubuntu-24.04"
       run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
 
     - name: Generate Headers

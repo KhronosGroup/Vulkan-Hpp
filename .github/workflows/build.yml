@@ -203,7 +203,7 @@ jobs:
               -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON               \
               -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON           \
               -D VULKAN_HPP_PRECOMPILE=OFF                           \
-              -D VULKAN_HPP_BUILD_CXX_MODULE=${{matrix.env.modules && ON || OFF}} \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=${{matrix.env.modules && 'ON' || 'OFF'}} \
               ${{matrix.env.modules && '-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444' || ''}} \
               -D CMAKE_CXX_FLAGS=${{matrix.env.cxx_flags || ''}}     \
               -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}              \

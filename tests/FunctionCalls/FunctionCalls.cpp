@@ -27,7 +27,6 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
-
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan.h>
 import vulkan;
@@ -36,11 +35,13 @@ import vulkan;
 #  include <vulkan/vulkan.hpp>
 #endif
 
-namespace vk {
-  namespace detail {
+namespace vk
+{
+  namespace detail
+  {
     DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }
-}
+  }  // namespace detail
+}  // namespace vk
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -819,6 +820,73 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::CommandPool           commandPool;
     vk::CommandPoolResetFlags flags = {};
     device.resetCommandPool( commandPool, flags );
+  }
+
+  // Command buffer commands
+  {
+    vk::Device                     device;
+    vk::CommandBufferAllocateInfo  commandBufferAllocateInfo;
+    std::vector<vk::CommandBuffer> commandBuffers;
+    vk::Result                     result = device.allocateCommandBuffers( &commandBufferAllocateInfo, commandBuffers.data() );
+  }
+  {
+    vk::Device                     device;
+    vk::CommandBufferAllocateInfo  commandBufferAllocateInfo;
+    std::vector<vk::CommandBuffer> commandBuffers = device.allocateCommandBuffers( commandBufferAllocateInfo );
+  }
+  {
+    vk::Device                    device;
+    vk::CommandBufferAllocateInfo commandBufferAllocateInfo;
+    using Allocator = std::allocator<vk::CommandBuffer>;
+    Allocator                                 allocator;
+    std::vector<vk::CommandBuffer, Allocator> commandBuffers = device.allocateCommandBuffers( commandBufferAllocateInfo, allocator );
+  }
+
+  {
+    vk::Device                     device;
+    vk::CommandPool                commandPool;
+    std::vector<vk::CommandBuffer> commandBuffers;
+    device.freeCommandBuffers( commandPool, static_cast<uint32_t>( commandBuffers.size() ), commandBuffers.data() );
+  }
+  {
+    vk::Device                     device;
+    vk::CommandPool                commandPool;
+    std::vector<vk::CommandBuffer> commandBuffers;
+    device.freeCommandBuffers( commandPool, commandBuffers );
+  }
+  {
+    vk::Device                     device;
+    vk::CommandPool                commandPool;
+    std::vector<vk::CommandBuffer> commandBuffers;
+    device.free( commandPool, static_cast<uint32_t>( commandBuffers.size() ), commandBuffers.data() );
+  }
+  {
+    vk::Device                     device;
+    vk::CommandPool                commandPool;
+    std::vector<vk::CommandBuffer> commandBuffers;
+    device.free( commandPool, commandBuffers );
+  }
+
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::CommandBufferBeginInfo beginInfo;
+    vk::Result                 result = commandBuffer.begin( &beginInfo );
+  }
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::CommandBufferBeginInfo beginInfo;
+    commandBuffer.begin( beginInfo );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    commandBuffer.end();
+  }
+
+  {
+    vk::CommandBuffer           commandBuffer;
+    vk::CommandBufferResetFlags flags = {};
+    commandBuffer.reset( flags );
   }
 
 #if 0

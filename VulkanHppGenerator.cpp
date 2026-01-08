@@ -6184,7 +6184,7 @@ std::string VulkanHppGenerator::generateDataDeclarations1Return( CommandData con
       else
       {
         std::string vectorAllocator = ( ( flavourFlags & CommandFlavourFlagBits::withAllocator ) && !( flavourFlags & CommandFlavourFlagBits::unique ) )
-                                      ? ( ", " + startLowerCase( allocator ) )
+                                      ? ( ", {}, " + startLowerCase( allocator ) )
                                       : "";
         std::string vectorSize      = getVectorSize( commandData.params, vectorParams, returnParams[0], dataTypes[0], templatedParams );
 

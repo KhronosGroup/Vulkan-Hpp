@@ -54,18 +54,6 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Setup Ubuntu
-      if: contains(matrix.env.os, 'ubuntu')
-      run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
-    - name: Setup MacOS
-      if: contains(matrix.env.os, 'macos')
-      run: brew install clang-format molten-vk
-    - name: Setup Windows
-      if: contains(matrix.env.os, 'windows')
-      uses: TheMrMilchmann/setup-msvc-dev@v4
-      with:
-        arch: ${{matrix.env.arch}}
-
     - name: Setup Modules (CMake, Ninja)
       if: matrix.env.modules && contains(matrix.env.gen, 'Ninja')
       uses: lukka/get-cmake@latest
@@ -82,6 +70,18 @@ jobs:
         CMAKE_FIX=`which cmake`
         CMAKE_FIX="`dirname $CMAKE_FIX`/../share/cmake-4.1/Modules/Compiler/Clang-CXX-CXXImportStd.cmake"
         sed -i '' 's|\${_clang_modules_json_impl}.modules.json|/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json|g' $CMAKE_FIX # https://gitlab.kitware.com/cmake/cmake/-/issues/25965#note_1523575
+
+    - name: Setup Ubuntu
+      if: contains(matrix.env.os, 'ubuntu')
+      run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
+    - name: Setup MacOS
+      if: contains(matrix.env.os, 'macos')
+      run: brew install clang-format molten-vk
+    - name: Setup Windows
+      if: contains(matrix.env.os, 'windows')
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      with:
+        arch: ${{matrix.env.arch}}
 
     # - name: Install glm, glfw and glslang
     #   if: (!matrix.env.modules && !contains(matrix.env.os, 'windows'))

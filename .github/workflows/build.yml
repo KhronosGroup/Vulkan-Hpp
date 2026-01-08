@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         env: [
-          { os: ubuntu-22.04, cxx: g++-10,     arch: x64, gen: Ninja, cxx-max: 20 },
+          { os: ubuntu-22.04, cxx: g++-10,     arch: x64, gen: Ninja, cxx-max: 17 },
           { os: ubuntu-22.04, cxx: g++-11,     arch: x64, gen: Ninja, cxx-max: 23 },
           { os: ubuntu-22.04, cxx: clang++-13, arch: x64, gen: Ninja, cxx-max: 20 },
           { os: ubuntu-22.04, cxx: clang++-14, arch: x64, gen: Ninja, cxx-max: 20 },

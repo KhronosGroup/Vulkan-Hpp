@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: ${{matrix.env.os}} ${{matrix.env.gen}} ${{matrix.env.cxx}} ${{matrix.env.modules && '(modules)'}}
+    name: ${{matrix.env.os}}, ${{matrix.env.gen}}, ${{matrix.env.cxx}} ${{matrix.env.modules && '[modules]' || ''}}
     runs-on: ${{matrix.env.os}}
     defaults:
       run:
@@ -65,10 +65,17 @@ jobs:
     #     sed -i '' 's|\${_clang_modules_json_impl}.modules.json|/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json|g' $CMAKE_FIX # https://gitlab.kitware.com/cmake/cmake/-/issues/25965#note_1523575
 
     - name: Setup Windows (MSVC)
-      if: matrix.env.name == 'msvc' && contains(matrix.env.os, 'windows')
+      if: matrix.env.cxx == 'c++' && contains(matrix.env.os, 'windows')
       uses: TheMrMilchmann/setup-msvc-dev@v4
       with:
         arch: ${{matrix.env.arch}}
+
+    - name: Setup Windows (Clang-CL)
+      if: matrix.env.cxx == 'c++' && contains(matrix.env.os, 'windows')
+      uses: lukka/get-cmake@latest
+      with:
+        cmakeVersion: 4.1.2
+        ninjaVersion: latest
 
     - name: Setup Ubuntu
       if: matrix.env.os == 'ubuntu-22.04' || matrix.env.os == 'ubuntu-24.04'

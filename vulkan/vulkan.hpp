@@ -20966,7 +20966,7 @@ namespace VULKAN_HPP_NAMESPACE
           }
           // modern versions of macOS don't search /usr/local/lib automatically contrary to what man dlopen says
           // Vulkan SDK uses this as the system-wide installation location, so we're going to fallback to this if all else fails
-          if ( !m_library && ( getenv( "DYLD_FALLBACK_LIBRARY_PATH" ) == NULL ) )
+          if ( !m_library && ( std::getenv( "DYLD_FALLBACK_LIBRARY_PATH" ) == NULL ) )
           {
             m_library = dlopen( "/usr/local/lib/libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
           }

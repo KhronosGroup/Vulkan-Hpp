@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: ${{matrix.env.os}} ${{matrix.env.name || matrix.env.c}} ${{matrix.env.modules && 'cppm' || 'cpp'}}-${{matrix.standard}}
+    name: ${{matrix.env.os}} ${{matrix.env.gen}} ${{matrix.env.cxx}} ${{matrix.env.modules && '(modules)'}}
     runs-on: ${{matrix.env.os}}
     defaults:
       run:
@@ -55,7 +55,7 @@ jobs:
     #     CMAKE_FIX="`dirname $CMAKE_FIX`/../share/cmake-4.1/Modules/Compiler/Clang-CXX-CXXImportStd.cmake"
     #     sed -i '' 's|\${_clang_modules_json_impl}.modules.json|/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json|g' $CMAKE_FIX # https://gitlab.kitware.com/cmake/cmake/-/issues/25965#note_1523575
 
-    - name: Setup MSVC
+    - name: Setup Windows (MSVC)
       if: matrix.env.name == 'msvc' && contains(matrix.env.os, 'windows')
       uses: TheMrMilchmann/setup-msvc-dev@v4
       with:
@@ -65,7 +65,43 @@ jobs:
       if: matrix.env.os == 'ubuntu-22.04' || matrix.env.os == 'ubuntu-24.04'
       run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
 
-    - name: Generate Headers
+    - name: Install glm, glfw and glslang
+      if: matrix.env.gen == 'Ninja'
+      run: |
+        cd glm
+        cmake -B build -G Ninja                      \
+          -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
+          -D CMAKE_CXX_STANDARD=11                   \
+          -D CMAKE_BUILD_TYPE=Release                \
+          -D GLM_BUILD_LIBRARY=ON                    \
+          -D GLM_BUILD_INSTALL=ON                    \
+          -D GLM_BUILD_TESTS=OFF
+        cmake --build build --parallel
+        sudo cmake --install build
+
+        cd ../glfw
+        cmake -B build -G Ninja                      \
+          -D CMAKE_BUILD_TYPE=Release                \
+          -D GLFW_BUILD_EXAMPLES=OFF                 \
+          -D GLFW_BUILD_TESTS=OFF                    \
+          -D GLFW_BUILD_DOCS=OFF                     \
+          -D GLFW_INSTALL=ON
+        cmake --build build --parallel
+        sudo cmake --install build
+
+        cd ../glslang
+        cmake -B build -G Ninja                      \
+          -D CMAKE_CXX_COMPILER=${{matrix.compiler}} \
+          -D CMAKE_CXX_STANDARD=11                   \
+          -D CMAKE_BUILD_TYPE=Release                \
+          -D ENABLE_OPT=OFF                          \
+          -D GLSLANG_TESTS_DEFAULT=OFF               \
+          -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
+        cmake --build build --parallel
+        sudo cmake --install build
+        cd ..
+
+    - name: Generate Headers with C++20
       run: |
         cmake -B build -G ${{matrix.env.gen}}          \
           -D VULKAN_HPP_GENERATOR_BUILD=ON             \

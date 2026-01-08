@@ -15,22 +15,31 @@ jobs:
     strategy:
       matrix:
         env: [
-          { os: ubuntu-22.04, cxx: g++-10,     arch: x64, gen: Ninja, cxx-max: 17 },
-          { os: ubuntu-22.04, cxx: g++-11,     arch: x64, gen: Ninja, cxx-max: 23 },
-          { os: ubuntu-22.04, cxx: clang++-13, arch: x64, gen: Ninja, cxx-max: 20 },
-          { os: ubuntu-22.04, cxx: clang++-14, arch: x64, gen: Ninja, cxx-max: 20 },
-          { os: ubuntu-22.04, cxx: clang++-15, arch: x64, gen: Ninja, cxx-max: 20 },
-              
-          { os: ubuntu-24.04, cxx: g++-12,     arch: x64, gen: Ninja, cxx-max: 23 },
-          { os: ubuntu-24.04, cxx: g++-13,     arch: x64, gen: Ninja, cxx-max: 23 },
-          { os: ubuntu-24.04, cxx: g++-14,     arch: x64, gen: Ninja, cxx-max: 23 },
-          { os: ubuntu-24.04, cxx: clang++-16, arch: x64, gen: Ninja, cxx-max: 20 },
-          { os: ubuntu-24.04, cxx: clang++-17, arch: x64, gen: Ninja, cxx-max: 20 },
-          { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja, cxx-max: 23 },
+          { os: ubuntu-22.04, cxx: g++-10,     arch: x64, gen: Ninja,                 cxx-max: 17, modules: false },
+          { os: ubuntu-22.04, cxx: g++-11,     arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          { os: ubuntu-22.04, cxx: clang++-13, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
+          { os: ubuntu-22.04, cxx: clang++-14, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
+          { os: ubuntu-22.04, cxx: clang++-15, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
+
+          { os: ubuntu-24.04, cxx: g++-12,     arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          { os: ubuntu-24.04, cxx: g++-13,     arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          { os: ubuntu-24.04, cxx: g++-14,     arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          { os: ubuntu-24.04, cxx: clang++-16, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
+          { os: ubuntu-24.04, cxx: clang++-17, arch: x64, gen: Ninja,                 cxx-max: 20, modules: false },
+          { os: ubuntu-24.04, cxx: clang++-18, arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+
+          { os: macos-14,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          { os: macos-15,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+          { os: macos-26,     cxx: clang++,    arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+
+          { os: windows-2022, cxx: c++,        arch: x86, gen: Visual Studio 17 2022, cxx-max: 23, modules: false },
+          { os: windows-2022, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx-max: 23, modules: false },
+          { os: windows-2022, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
+
+          { os: windows-2025, cxx: c++,        arch: x86, gen: Visual Studio 17 2022, cxx-max: 23, modules: false },
+          { os: windows-2025, cxx: c++,        arch: x64, gen: Visual Studio 17 2022, cxx-max: 23, modules: false },
+          { os: windows-2025, cxx: clang-cl,   arch: x64, gen: Ninja,                 cxx-max: 23, modules: false },
         ]
-        # exclude:
-        #   - env:
-        #     TODO
 
     steps:
     - name: Checkout
@@ -66,10 +75,10 @@ jobs:
       run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
 
     - name: Install glm, glfw and glslang
-      if: matrix.env.gen == 'Ninja'
+      if: (!contains(matrix.env.os, 'windows'))
       run: |
         cd glm
-        cmake -B build -G Ninja                      \
+        cmake -B build -G '${{matrix.env.gen}}'      \
           -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}  \
           -D CMAKE_CXX_STANDARD=11                   \
           -D CMAKE_BUILD_TYPE=Release                \
@@ -77,20 +86,20 @@ jobs:
           -D GLM_BUILD_INSTALL=ON                    \
           -D GLM_BUILD_TESTS=OFF
         cmake --build build --parallel
-        sudo cmake --install build
+        sudo cmake --install build --config Release
 
         cd ../glfw
-        cmake -B build -G Ninja                      \
+        cmake -B build -G '${{matrix.env.gen}}'      \
           -D CMAKE_BUILD_TYPE=Release                \
           -D GLFW_BUILD_EXAMPLES=OFF                 \
           -D GLFW_BUILD_TESTS=OFF                    \
           -D GLFW_BUILD_DOCS=OFF                     \
           -D GLFW_INSTALL=ON
         cmake --build build --parallel
-        sudo cmake --install build
+        sudo cmake --install build --config Release
 
         cd ../glslang
-        cmake -B build -G Ninja                      \
+        cmake -B build -G '${{matrix.env.gen}}'      \
           -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}  \
           -D CMAKE_CXX_STANDARD=11                   \
           -D CMAKE_BUILD_TYPE=Release                \
@@ -98,12 +107,12 @@ jobs:
           -D GLSLANG_TESTS_DEFAULT=OFF               \
           -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
         cmake --build build --parallel
-        sudo cmake --install build
+        sudo cmake --install build --config Release
         cd ..
 
     - name: Generate Headers with C++20
       run: |
-        cmake -B build -G ${{matrix.env.gen}}          \
+        cmake -B build -G '${{matrix.env.gen}}'        \
           -D VULKAN_HPP_GENERATOR_BUILD=ON             \
           -D VULKAN_HPP_RUN_GENERATOR=OFF              \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
@@ -114,24 +123,24 @@ jobs:
           -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}    \
           -D CMAKE_CXX_STANDARD=20                     \
           -D CMAKE_BUILD_TYPE=Debug
-        cmake --build build --parallel
+        cmake --build build --parallel --config Debug
 
-        cmake -B build -G ${{matrix.env.gen}} --fresh  \
-          -D VULKAN_HPP_GENERATOR_BUILD=ON             \
-          -D VULKAN_HPP_RUN_GENERATOR=ON               \
-          -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
-          -D VULKAN_HPP_TESTS_BUILD=OFF                \
-          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
-          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
-          -D VULKAN_HPP_PRECOMPILE=OFF                 \
-          -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}    \
-          -D CMAKE_CXX_STANDARD=20                     \
+        cmake -B build -G '${{matrix.env.gen}}' --fresh \
+          -D VULKAN_HPP_GENERATOR_BUILD=ON              \
+          -D VULKAN_HPP_RUN_GENERATOR=ON                \
+          -D VULKAN_HPP_SAMPLES_BUILD=OFF               \
+          -D VULKAN_HPP_TESTS_BUILD=OFF                 \
+          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON      \
+          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON  \
+          -D VULKAN_HPP_PRECOMPILE=OFF                  \
+          -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}     \
+          -D CMAKE_CXX_STANDARD=20                      \
           -D CMAKE_BUILD_TYPE=Release
-        cmake --build build --parallel --clean-first
+        cmake --build build --parallel --config Release --clean-first
     
     - name: Build Samples with C++${{matrix.env.cxx-max}}
       run: |
-        cmake -B build -G ${{matrix.env.gen}}             \
+        cmake -B build -G '${{matrix.env.gen}}'           \
           -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
           -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
           -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
@@ -142,9 +151,9 @@ jobs:
           -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}       \
           -D CMAKE_CXX_STANDARD=${{matrix.env.cxx-max}}   \
           -D CMAKE_BUILD_TYPE=Debug
-        cmake --build build --parallel
+        cmake --build build --parallel --config Release
 
-        cmake -B build -G ${{matrix.env.gen}} --fresh     \
+        cmake -B build -G '${{matrix.env.gen}}' --fresh   \
           -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
           -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
           -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
@@ -155,9 +164,9 @@ jobs:
           -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}       \
           -D CMAKE_CXX_STANDARD=${{matrix.env.cxx-max}}   \
           -D CMAKE_BUILD_TYPE=Release
-        cmake --build build --parallel --clean-first
+        cmake --build build --parallel --config Debug --clean-first
 
-    - name: Build Tests with C++11 to C++${{matrix.env.cxx-max}} # TODO: 11 to 23
+    - name: Build Tests with C++11 to C++${{matrix.env.cxx-max}} # TODO: 11 to CXX-MAX
       run: |
         for CXX_STANDARD in 11; do
           for BUILD_TYPE in Debug Release; do
@@ -165,7 +174,7 @@ jobs:
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
             echo "================================================================================="
 
-            cmake -B build -G ${{matrix.env.gen}} --fresh     \
+            cmake -B build -G '${{matrix.env.gen}}' --fresh   \
               -D VULKAN_HPP_GENERATOR_BUILD=OFF               \
               -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
               -D VULKAN_HPP_SAMPLES_BUILD=OFF                 \
@@ -177,6 +186,7 @@ jobs:
               -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}       \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD             \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE
+            cmake --build build --parallel --config $BUILD_TYPE --clean-first
             ctest -j --output-on-failure --test-dir build -C $BUILD_TYPE
           done
         done

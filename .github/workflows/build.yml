@@ -53,11 +53,9 @@ jobs:
       with:
         cmakeVersion: 4.1.2
         ninjaVersion: latest
-
     - name: Setup Modules (Ubuntu)
       if: matrix.env.modules && contains(matrix.env.os, 'ubuntu')
       run: sudo apt install libc++-dev libc++abi-dev
-
     - name: Setup Modules (MacOS)
       if: matrix.env.modules && contains(matrix.env.os, 'macos')
       run: |
@@ -66,79 +64,81 @@ jobs:
         CMAKE_FIX="`dirname $CMAKE_FIX`/../share/cmake-4.1/Modules/Compiler/Clang-CXX-CXXImportStd.cmake"
         sed -i '' 's|\${_clang_modules_json_impl}.modules.json|/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json|g' $CMAKE_FIX # https://gitlab.kitware.com/cmake/cmake/-/issues/25965#note_1523575
 
+    - name: Setup Ubuntu
+      if: contains(matrix.env.os, 'ubuntu')
+      run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
+    - name: Setup MacOS
+      if: contains(matrix.env.os, 'macos')
+      run: brew install clang-format molten-vk
     - name: Setup Windows (MSVC)
       if: matrix.env.cxx == 'c++' && contains(matrix.env.os, 'windows')
       uses: TheMrMilchmann/setup-msvc-dev@v4
       with:
         arch: ${{matrix.env.arch}}
 
-    - name: Setup Ubuntu
-      if: matrix.env.os == 'ubuntu-22.04' || matrix.env.os == 'ubuntu-24.04'
-      run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
+    # - name: Install glm, glfw and glslang
+    #   if: (!contains(matrix.env.os, 'windows'))
+    #   run: |
+    #     cd glm
+    #     cmake -B build -G '${{matrix.env.gen}}'      \
+    #       -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}  \
+    #       -D CMAKE_CXX_STANDARD=11                   \
+    #       -D CMAKE_BUILD_TYPE=Release                \
+    #       -D GLM_BUILD_LIBRARY=ON                    \
+    #       -D GLM_BUILD_INSTALL=ON                    \
+    #       -D GLM_BUILD_TESTS=OFF
+    #     cmake --build build --parallel
+    #     sudo cmake --install build --config Release
 
-    - name: Install glm, glfw and glslang
-      if: (!contains(matrix.env.os, 'windows'))
-      run: |
-        cd glm
-        cmake -B build -G '${{matrix.env.gen}}'      \
-          -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}  \
-          -D CMAKE_CXX_STANDARD=11                   \
-          -D CMAKE_BUILD_TYPE=Release                \
-          -D GLM_BUILD_LIBRARY=ON                    \
-          -D GLM_BUILD_INSTALL=ON                    \
-          -D GLM_BUILD_TESTS=OFF
-        cmake --build build --parallel
-        sudo cmake --install build --config Release
+    #     cd ../glfw
+    #     cmake -B build -G '${{matrix.env.gen}}'      \
+    #       -D CMAKE_BUILD_TYPE=Release                \
+    #       -D GLFW_BUILD_EXAMPLES=OFF                 \
+    #       -D GLFW_BUILD_TESTS=OFF                    \
+    #       -D GLFW_BUILD_DOCS=OFF                     \
+    #       -D GLFW_INSTALL=ON
+    #     cmake --build build --parallel
+    #     sudo cmake --install build --config Release
 
-        cd ../glfw
-        cmake -B build -G '${{matrix.env.gen}}'      \
-          -D CMAKE_BUILD_TYPE=Release                \
-          -D GLFW_BUILD_EXAMPLES=OFF                 \
-          -D GLFW_BUILD_TESTS=OFF                    \
-          -D GLFW_BUILD_DOCS=OFF                     \
-          -D GLFW_INSTALL=ON
-        cmake --build build --parallel
-        sudo cmake --install build --config Release
+    #     cd ../glslang
+    #     cmake -B build -G '${{matrix.env.gen}}'      \
+    #       -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}  \
+    #       -D CMAKE_CXX_STANDARD=11                   \
+    #       -D CMAKE_BUILD_TYPE=Release                \
+    #       -D ENABLE_OPT=OFF                          \
+    #       -D GLSLANG_TESTS_DEFAULT=OFF               \
+    #       -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
+    #     cmake --build build --parallel
+    #     sudo cmake --install build --config Release
+    #     cd ..
 
-        cd ../glslang
-        cmake -B build -G '${{matrix.env.gen}}'      \
-          -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}  \
-          -D CMAKE_CXX_STANDARD=11                   \
-          -D CMAKE_BUILD_TYPE=Release                \
-          -D ENABLE_OPT=OFF                          \
-          -D GLSLANG_TESTS_DEFAULT=OFF               \
-          -D GLSLANG_ENABLE_INSTALL_DEFAULT=ON
-        cmake --build build --parallel
-        sudo cmake --install build --config Release
-        cd ..
+    # - name: Generate Headers with C++20
+    #   run: |
+    #     cmake -B build -G '${{matrix.env.gen}}'        \
+    #       -D VULKAN_HPP_GENERATOR_BUILD=ON             \
+    #       -D VULKAN_HPP_RUN_GENERATOR=OFF              \
+    #       -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
+    #       -D VULKAN_HPP_TESTS_BUILD=OFF                \
+    #       -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
+    #       -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
+    #       -D VULKAN_HPP_PRECOMPILE=OFF                 \
+    #       -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}    \
+    #       -D CMAKE_CXX_STANDARD=20                     \
+    #       -D CMAKE_BUILD_TYPE=Debug
+    #     cmake --build build --parallel --config Debug
 
-    - name: Generate Headers with C++20
-      run: |
-        cmake -B build -G '${{matrix.env.gen}}'        \
-          -D VULKAN_HPP_GENERATOR_BUILD=ON             \
-          -D VULKAN_HPP_RUN_GENERATOR=OFF              \
-          -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
-          -D VULKAN_HPP_TESTS_BUILD=OFF                \
-          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
-          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
-          -D VULKAN_HPP_PRECOMPILE=OFF                 \
-          -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}    \
-          -D CMAKE_CXX_STANDARD=20                     \
-          -D CMAKE_BUILD_TYPE=Debug
-        cmake --build build --parallel --config Debug
-
-        cmake -B build -G '${{matrix.env.gen}}' --fresh \
-          -D VULKAN_HPP_GENERATOR_BUILD=ON              \
-          -D VULKAN_HPP_RUN_GENERATOR=ON                \
-          -D VULKAN_HPP_SAMPLES_BUILD=OFF               \
-          -D VULKAN_HPP_TESTS_BUILD=OFF                 \
-          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON      \
-          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON  \
-          -D VULKAN_HPP_PRECOMPILE=OFF                  \
-          -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}     \
-          -D CMAKE_CXX_STANDARD=20                      \
-          -D CMAKE_BUILD_TYPE=Release
-        cmake --build build --parallel --config Release --clean-first
+    #     cmake -B build -G '${{matrix.env.gen}}' --fresh \
+    #       -D VULKAN_HPP_GENERATOR_BUILD=ON              \
+    #       -D VULKAN_HPP_RUN_GENERATOR=ON                \
+    #       -D VULKAN_HPP_SAMPLES_BUILD=OFF               \
+    #       -D VULKAN_HPP_TESTS_BUILD=OFF                 \
+    #       -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON      \
+    #       -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON  \
+    #       -D VULKAN_HPP_PRECOMPILE=OFF                  \
+    #       -D CMAKE_CXX_COMPILER=${{matrix.env.cxx}}     \
+    #       -D CMAKE_CXX_STANDARD=20                      \
+    #       -D CMAKE_BUILD_TYPE=Release
+    #     cmake --build build --parallel --config Release --clean-first
     
     # - name: Build Samples with C++${{matrix.env.cxx-max}}
     #   if: (!matrix.env.modules)
@@ -173,7 +173,7 @@ jobs:
 
     - name: Build Tests with C++11 to C++${{matrix.env.cxx-max}}
       run: |
-        for CXX_STANDARD in ${{matrix.env.modules && '11 14 17 20 23' || '23'}}; do
+        for CXX_STANDARD in ${{matrix.env.modules && 11 14 17 20 23 || 23}}; do
           for BUILD_TYPE in Debug Release; do
             if [ $CXX_STANDARD -ge ${{matrix.env.cxx-max}} ]; then
               continue

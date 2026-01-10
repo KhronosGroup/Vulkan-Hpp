@@ -3,15 +3,17 @@
 This document is a usage guide for Vulkan-Hpp.
 It details why Vulkan-Hpp is different from the C API, and how to use its various features.
 
-- [Naming convention for Vulkan-Hpp symbols](#naming-convention-for-vulkan-hpp-symbols)
-- [`vk::CreateInfo` structs](#vkcreateinfo-structs)
-  - [Designated initializers](#designated-initializers)
-  - [Builder pattern with `set` member functions](#builder-pattern-with-set-member-functions)
-- [Handles](#handles)
-  - [C/C++ inter-op for handles](#cc-inter-op-for-handles)
-- [Flag bits and bitwise operations](#flag-bits-and-bitwise-operations)
-- [Passing Arrays to Functions using ArrayProxy](#passing-arrays-to-functions-using-arrayproxy)
-- [Passing Structs to Functions](#passing-structs-to-functions)
+- [Naming convention](#naming-convention)
+- [Vulkan fundamentals](#vulkan-fundamentals)
+  - [Structs](#structs)
+    - [Constructors](#constructors)
+    - [Designated initialisers](#designated-initialisers)
+    - [`ArrayProxy<T>` and `ArrayProxyNoTemporaries<T>`](#arrayproxyt-and-arrayproxynotemporariest)
+    - [Builder pattern with setter member functions](#builder-pattern-with-setter-member-functions)
+  - [Handles and functions](#handles-and-functions)
+    - [Passing structs to functions](#passing-structs-to-functions)
+    - [C/C++ inter-op for handles](#cc-inter-op-for-handles)
+  - [Flags](#flags)
 - [Structure Pointer Chains](#structure-pointer-chains)
 - [Return values, Error Codes \& Exceptions](#return-values-error-codes--exceptions)
 - [C++17: `[[nodiscard]]`](#c17-nodiscard)
@@ -34,7 +36,7 @@ It details why Vulkan-Hpp is different from the C API, and how to use its variou
 - [Compile time issues](#compile-time-issues)
 - [Strict aliasing issue](#strict-aliasing-issue)
 
-## Naming convention for Vulkan-Hpp symbols
+## Naming convention
 
 All symbols (functions, handles, structs, enums) of Vulkan-Hpp are defined in the `vk::` namespace. This can be renamed by end-users to a custom namespace by defining the `VULKAN_HPP_NAMESPACE` macro in the build system.
 
@@ -64,9 +66,13 @@ For example:
 
 Flag bits are handled similarly; additionally, the `_BIT` suffix is removed.
 
-## `vk::CreateInfo` structs
+## Vulkan fundamentals
 
-When constructing a handle in Vulkan, one usually has to prepare some `CreateInfo` struct to configure said handle. This results in the following C-style code:
+### Structs
+
+#### Constructors
+
+In Vulkan, many operations require that an `Info` struct is populated, and then passed as a pointer to some function; possibly a `vkCreateHandle` or `vkOperationWithHandle`. This results in the following C-style code:
 
 ```c++
 VkImageCreateInfo ci;
@@ -88,24 +94,39 @@ ci.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 vkCreateImage(device, &ci, allocator, &image);
 ```
 
-This is long, imperative, and error-prone. When a `CreateInfo` struct is populated field-by-field in this manner, several common mistakes are possible:
+This is long, imperative, and error-prone. This field-by-field initialisation has several pitfalls:
 
-- One or more fields may be left uninitialized;
+- One or more fields may be left uninitialized when a non-default value is intended;
 - the `::sType` field may be incorrect;
-- flag bits and enums may be initialised to unrelated (and hence invalid) values.
+- flag bits and enums may be initialised to unrelated (and hence invalid) values;
+- the pointer-and-count pairs may be inconsistent.
 
-Vulkan-Hpp provides constructors for all `CreateInfo` structs; these accept one parameter for each member variable. This way the compiler throws a compiler error if a value has been forgotten. Additionally, `sType` is automatically set the correct value, and `pNext` is set to `nullptr`. This is how the above code looks with a constructor:
+Instead, Vulkan-Hpp provides structs with constructors. These accept one parameter for each member variable corresponding to their C API, with a few additional rules:
+
+- The `sType` member is omitted, and default-constructed internally;
+- If there is a `pNext` member, it is the _last_ parameter in the constructor and defaults to `nullptr`, so that it may be omitted
+
+This allows for more concise and safer code.
+When an argument is left out, static analysis tools like IDEs and linters will error immediately, and the code will fail to compile.
+For example, the above code may be written with Vulkan-Hpp as:
 
 ```c++
-vk::ImageCreateInfo ci({}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
+vk::ImageCreateInfo ci({}, // flags
+                       vk::ImageType::e2D, // imageType
+                       vk::Format::eR8G8B8A8Unorm,
                        { width, height, 1 },
-                       1, 1, vk::SampleCountFlagBits::e1,
-                       vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eColorAttachment,
-                       vk::SharingMode::eExclusive, 0, nullptr, vk::ImageLayout::eUndefined);
-vk::Image image = device.createImage(ci);
+                       1,
+                       1,
+                       vk::SampleCountFlagBits::e1,
+                       vk::ImageTiling::eOptimal,
+                       vk::ImageUsageFlagBits::eColorAttachment,
+                       vk::SharingMode::eExclusive,
+                       0,
+                       nullptr,
+                       vk::ImageLayout::eUndefined);
 ```
 
-With constructors for `CreateInfo` structures, one may also pass temporaries to Vulkan functions like this:
+Use brace-pairs to create and pass structs as temporaries to Vulkan functions, like this:
 
 ```c++
 vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
@@ -115,12 +136,15 @@ vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B
                                      vk::SharingMode::eExclusive, 0, nullptr, vk::ImageLayout::eUndefined});
 ```
 
-### Designated initializers
+#### Designated initialisers
 
-C++ supports [designated initializers](https://en.cppreference.com/w/cpp/language/aggregate_initialization.html#Designated_initializers) for aggregate types in C++20 and later.
-Such types cannot have user-defined constructors, which can be disabled by defining the [`VULKAN_HPP_NO_CONSTRUCTORS`](./Configuration.md#vulkan_hpp_no_constructors) macro in the build system, or before writing `#include <vulkan/vulkan.hpp>`.
+>[!NOTE]
+> This feature requires a compiler supporting at least C++20, and must be enabled with the `VULKAN_HPP_NO_CONSTRUCTORS` or `VULKAN_HPP_NO_STRUCT_CONSTRUCTORS` macro.
+> This will disable the above-mentioned generated constructors for struct types.
 
-Designated initialisers allow for more expressive code which mentions the member variables immediately in the source code, without having to run code analysers or IntelliSense. The first few lines of Vulkan initialisation might look like the following:
+C++20 and later versions support [designated initializers](https://en.cppreference.com/w/cpp/language/aggregate_initialization.html#Designated_initializers) for aggregate types.
+Designated initialisers allow for more expressive code: member variable names are mentioned immediately in plain-text, without needing any static analysis.
+The first few lines of Vulkan initialisation might look like the following:
 
 ```c++
 // initialize the vk::ApplicationInfo structure
@@ -130,82 +154,41 @@ vk::ApplicationInfo applicationInfo{ .pApplicationName   = AppName,
                                      .engineVersion      = 1,
                                      .apiVersion         = vk::ApiVersion11 };
 
-// initialize the vk::InstanceCreateInfo
+// initialize vk::InstanceCreateInfo
 vk::InstanceCreateInfo instanceCreateInfo{ .pApplicationInfo = &applicationInfo };
 ```
 
 instead of
 
 ```c++
-// initialize the vk::ApplicationInfo structure
+// initialize the vk::ApplicationInfo structure. What are the parameters?
 vk::ApplicationInfo applicationInfo(AppName, 1, EngineName, 1, vk::ApiVersion11);
 
-// initialize the vk::InstanceCreateInfo
+// initialize the vk::InstanceCreateInfo. What is `{}`?
 vk::InstanceCreateInfo instanceCreateInfo({}, &applicationInfo);
 ```
 
 Note that the designator order needs to match the declaration order. Additionally, members may be omitted, in which case they are default-initialized.
 For instance, note how `::sType` and `::pNext` are omitted above; they are automatically default-initialized to the correct values or `nullptr`, respectively.
 
-### Builder pattern with `set` member functions
+#### `ArrayProxy<T>` and `ArrayProxyNoTemporaries<T>`
 
-You might find that having _no_ constructors loses a little flexibility whilst constructing these structs; for instance, constructors that accept [`ArrayProxy`](#passing-arrays-to-functions-using-arrayproxy) parameters cannot be used with designated initializers, which fall back to the C-style pointer-and-count parameters.
+>[!NOTE]
+> This feature may be **disabled** with the `VULKAN_HPP_DISABLE_ENHANCED_MODE` macro.
 
-Vulkan-Hpp provides a solution to this problem by generating `set` member functions for all member variables (pointer-size pairs are generalised to either `ArrayProxy` or `ArrayProxyNoTemporaries`) for all structs. For instance, the above `vk::ImageCreateInfo` struct may be constructed like this:
+The Vulkan API has several instances which require (count, pointer) pairs as two parameters.
+Instead, Vulkan-Hpp provides two class templates, `vk::ArrayProxy<T>` and `vk::ArrayProxyNotTemporaries<T>`, which generalise the following into a single parameter:
 
-```c++
-vk::ImageCreateInfo ci = vk::ImageCreateInfo{}
-  .setImageType(vk::ImageType::e2D)
-  .setFormat(vk::Format::eR8G8B8A8Unorm)
-  .setExtent({ width, height, 1 })
-  .setMipLevels(1)
-  .setArrayLayers(1)
-  .setSamples(vk::SampleCountFlagBits::e1)
-  .setTiling(vk::ImageTiling::eOptimal)
-  .setUsage(vk::ImageUsageFlagBits::eColorAttachment)
-  .setSharingMode(vk::SharingMode::eExclusive)
-  .setInitialLayout(vk::ImageLayout::eUndefined);
-```
+- empty arrays;
+- a single value;
+- STL containers including `std::initializer_list`, `std::array`, `std::span` and `std::vector`;
+- C-style arrays;
+- pointers with counts.
 
-## Handles
+<!-- TODO: more detail. Fill in when NoTemp is typically expected; function out-parameters? Ask @asuessenbach -->
+<!-- Note that `vk::ArrayProxyNoTemporaries<T>` **disallows** temporary values, which may be important for out-parameters. -->
 
-There is a corresponding `vk::` class for each Vulkan handle.
-These classes also provide member functions, where each function corresponds to a function in the C API function which accepts the corresponding handle as the **first** parameter.
-
-For example, instead of `vkBindBufferMemory(device, ...)` one may write `device.bindBufferMemory(...)` or `vk::bindBufferMemory(device, ...)`.
-
-<!-- ## namespace vk::raii
-
-There is an additional header named [`vulkan_raii.hpp`](vulkan/vulkan_raii.hpp) generated. That header holds raii-compliant wrapper classes for the handle types. That is, for e.g. the handle type `VkInstance`, there's a raii-compliant wrapper `vk::raii::Instance`. Please have a look at the samples using those classes in the directory [RAII_Samples](RAII_Samples). -->
-
-### C/C++ inter-op for handles
-
-On 64-bit platforms, Vulkan-Hpp supports implicit conversions between handles provided by the C API and Vulkan-Hpp. On 32-bit platforms, all non-dispatchable handles are defined as `uint64_t`, thus preventing type-conversion checks at compile time which would catch assignments between incompatible handle types. Therefore, Vulkan-Hpp does not enable implicit conversion for 32-bit platforms by default and it is recommended to use a `static_cast`: `VkImage = static_cast<VkImage>(cppImage)` to prevent unintended conversions of untyped integers to handles.
-
-If you are developing on a 64-bit platform but want to compile for a 32-bit platform without adding these verbose explicit casts, define the macro `VULKAN_HPP_TYPESAFE_CONVERSION=1` in your build system, or before writing `#include <vulkan/vulkan.hpp>`. On 64-bit platforms this macro is set to `1` by default and can be set to `0` to disable implicit conversions.
-
-## Flag bits and bitwise operations
-
-Scoped enums add type safety to Vulkan flags, but also prevent bitwise operations with these flag bits.
-
-As a solution, Vulkan-Hpp provides a class template, `vk::Flags<>`. This class is default-initialised to zero, and behaves exactly like a normal bitmask; however, the type safety ensures that it is impossible to set unrelated bits, with errors emitted at compile time.
-
-For example:
-
-```c++
-vk::ImageUsageFlags iu1; // Initialize a bitmask with no bit set
-vk::ImageUsageFlags iu2 = {}; // Default-initialize with no bit set
-vk::ImageUsageFlags iu3 = vk::ImageUsageFlagBits::eColorAttachment; // initialize with a single value
-vk::ImageUsageFlags iu4 = vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage; // or two bits to get a bitmask
-vk::ImageUsageFlags iu5 = iu3 | vk::PipelineStageFlagBits::eVertexShader; // Compile-time error
-PipelineShaderStageCreateInfo ci({} /* pass a flag without any bits set */, ...);
-```
-
-## Passing Arrays to Functions using ArrayProxy
-
-The Vulkan API has several places which require (count, pointer) as two function arguments and C++ has a few containers which map perfectly to this pair. To simplify development the Vulkan-Hpp bindings have replaced those argument pairs with the `vk::ArrayProxy` class template which accepts empty arrays and a single value as well as STL containers `std::initializer_list`, `std::array` and `std::vector` as argument for construction. This way a single generated Vulkan version can accept a variety of inputs without having the combinatoric explosion which would occur when creating a function for each container type.
-
-Here are some code samples on how to use the `vk::ArrayProxy`:
+For example, consider the following calls to `vk::CommandBuffer::setScissor`:
 
 ```c++
 vk::CommandBuffer c;
@@ -244,7 +227,42 @@ vec.push_back(scissorRect2);
 c.setScissor(0, vec);
 ```
 
-## Passing Structs to Functions
+#### Builder pattern with setter member functions
+
+>[!NOTE]
+> This feature may be **disabled** with the `VULKAN_HPP_NO_STRUCT_SETTERS` macro.
+
+Having _no_ constructors means losing a little flexibility compared to the default for instance, [`ArrayProxy`](#arrayproxyt-and-arrayproxynotemporariest) parameters cannot be used with designated initializers, which fall back to (count, pointer) pairs.
+
+Instead, Vulkan-Hpp provides setter member functions for all member variables, and (count, pointer) pairs are generalised to either `ArrayProxy` or `ArrayProxyNoTemporaries` for all structs. For instance, the above `vk::ImageCreateInfo` struct may be constructed like this:
+
+```c++
+std::array const queueFamilies = { 1U, 2U };
+vk::ImageCreateInfo ci = vk::ImageCreateInfo{}
+  .setImageType(vk::ImageType::e2D)
+  .setFormat(vk::Format::eR8G8B8A8Unorm)
+  .setExtent({ width, height, 1 })
+  .setMipLevels(1)
+  .setArrayLayers(1)
+  .setSamples(vk::SampleCountFlagBits::e1)
+  .setTiling(vk::ImageTiling::eOptimal)
+  .setUsage(vk::ImageUsageFlagBits::eColorAttachment)
+  .setSharingMode(vk::SharingMode::eExclusive)
+  .setInitialLayout(vk::ImageLayout::eUndefined);
+  .setQueueFamilyIndices(queueFamilies); // ArrayProxyNoTemporaries<uint32_t>
+```
+
+### Handles and functions
+
+There is a corresponding `vk::` class for each Vulkan handle, such as `vk::Instance`, `vk::Device`, `vk::Buffer`, etc.
+These classes are binary-compatible with their corresponding C handles; they can be freely cast back and forth without any overhead.
+
+Member functions are also defined corresponding to a C API function which accepts the parent handle as the **first** parameter.
+For example, instead of `vkBindBufferMemory(device, ...)` write `device.bindBufferMemory(...)`.
+
+#### Passing structs to functions
+
+<!-- TODO: this section seems poorly worded and titled. -->
 
 Vulkan-Hpp generates references for pointers to structs. This conversion allows passing temporary structs to functions which can result in shorter code. In case the input is optional and thus accepting a null pointer, the parameter type will be `vk::Optional<T> const&`. This type accepts either a reference to `T` or `nullptr` as input and thus allows optional temporary structs.
 
@@ -260,6 +278,31 @@ vkGetImageSubresourceLayout(device, image, &subresource, &layout);
 // C++
 auto layout = device.getImageSubresourceLayout(image, { {} /* flags*/, 0 /* miplevel */, 0 /* arrayLayer */ });
 ```
+
+#### C/C++ inter-op for handles
+
+On 64-bit platforms, Vulkan-Hpp supports implicit conversions between handles provided by the C API and Vulkan-Hpp. On 32-bit platforms, all non-dispatchable handles are defined as `uint64_t`, thus preventing type-conversion checks at compile time which would catch assignments between incompatible handle types. Therefore, Vulkan-Hpp does not enable implicit conversion for 32-bit platforms by default and it is recommended to use a `static_cast`: `VkImage = static_cast<VkImage>(cppImage)` to prevent unintended conversions of untyped integers to handles.
+
+If you are developing on a 64-bit platform but want to compile for a 32-bit platform without adding these verbose explicit casts, define the macro `VULKAN_HPP_TYPESAFE_CONVERSION=1` in your build system, or before writing `#include <vulkan/vulkan.hpp>`. On 64-bit platforms this macro is set to `1` by default and can be set to `0` to disable implicit conversions.
+
+### Flags
+
+Scoped enums add type safety to Vulkan flags, but also prevent bitwise operations with these flag bits.
+
+As a solution, Vulkan-Hpp provides a class template, `vk::Flags<>`. This class is default-initialised to zero, and behaves exactly like a normal bitmask; however, the type safety ensures that it is impossible to set unrelated bits, with errors emitted at compile time.
+
+For example:
+
+```c++
+vk::ImageUsageFlags iu1; // Initialize a bitmask with no bit set
+vk::ImageUsageFlags iu2 = {}; // Default-initialize with no bit set
+vk::ImageUsageFlags iu3 = vk::ImageUsageFlagBits::eColorAttachment; // initialize with a single value
+vk::ImageUsageFlags iu4 = vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage; // or two bits to get a bitmask
+vk::ImageUsageFlags iu5 = iu3 | vk::PipelineStageFlagBits::eVertexShader; // Compile-time error
+PipelineShaderStageCreateInfo ci({} /* pass a flag without any bits set */, ...);
+```
+
+
 
 ## Structure Pointer Chains
 
@@ -598,14 +641,14 @@ Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-
     VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 ```
 
-2. initialize it with a `vk::Instance` to get all the other function pointers:
+1. initialize it with a `vk::Instance` to get all the other function pointers:
 
 ```c++
     vk::Instance instance = vk::createInstance({}, nullptr);
     VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
 ```
 
-3. optionally initialize it with a `vk::Device` to get device-specific function pointers
+1. optionally initialize it with a `vk::Device` to get device-specific function pointers
 
 ```c++
     std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();

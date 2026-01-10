@@ -1,7 +1,6 @@
 # Usage
 
-This document is a usage guide for Vulkan-Hpp.
-It details why Vulkan-Hpp is different from the C API, and how to use its various features.
+This manual assumes familiarity with Vulkan; it details improvements and differences introduced by Vulkan-Hpp.
 
 - [Naming convention](#naming-convention)
 - [Vulkan fundamentals](#vulkan-fundamentals)
@@ -9,13 +8,14 @@ It details why Vulkan-Hpp is different from the C API, and how to use its variou
     - [Constructors](#constructors)
     - [Designated initialisers](#designated-initialisers)
     - [`ArrayProxy<T>` and `ArrayProxyNoTemporaries<T>`](#arrayproxyt-and-arrayproxynotemporariest)
-    - [Builder pattern with setter member functions](#builder-pattern-with-setter-member-functions)
+    - [Builder pattern with setters](#builder-pattern-with-setters)
+    - [Structure pointer chains](#structure-pointer-chains)
   - [Handles and functions](#handles-and-functions)
     - [Passing structs to functions](#passing-structs-to-functions)
     - [C/C++ inter-op for handles](#cc-inter-op-for-handles)
   - [Flags](#flags)
-- [Structure Pointer Chains](#structure-pointer-chains)
-- [Return values, Error Codes \& Exceptions](#return-values-error-codes--exceptions)
+  - [Error-handling](#error-handling)
+    - [Exceptions](#exceptions)
 - [C++17: `[[nodiscard]]`](#c17-nodiscard)
 - [Enumerations](#enumerations)
 - [UniqueHandle for automatic resource management](#uniquehandle-for-automatic-resource-management)
@@ -38,7 +38,8 @@ It details why Vulkan-Hpp is different from the C API, and how to use its variou
 
 ## Naming convention
 
-All symbols (functions, handles, structs, enums) of Vulkan-Hpp are defined in the `vk::` namespace. This can be renamed by end-users to a custom namespace by defining the `VULKAN_HPP_NAMESPACE` macro in the build system.
+All symbols (functions, handles, structs, enums) of Vulkan-Hpp are defined in the `vk::` namespace.
+This can be renamed by end-users to a custom namespace by defining the `VULKAN_HPP_NAMESPACE` macro in the build system.
 
 All symbols have been renamed from the C API in meaningful ways. The following rules apply:
 
@@ -51,7 +52,8 @@ For example:
 - `VkImageTiling` corresponds to `vk::ImageTiling`.
 - `VkImageCreateInfo` corresponds to `vk::ImageCreateInfo`.
 
-Untyped unsigned integer enum values in the C API are mapped to scoped `enum class`es to provide compile-time type safety. There is a slightly different naming convention:
+Untyped unsigned integer enum values in the C API are mapped to scoped `enum class`es to provide compile-time type safety.
+There is a slightly different naming convention:
 
 - The `VK_` prefix and type infix are removed.
 - An `e` prefix is added, and the casing is CamelCase.
@@ -72,7 +74,8 @@ Flag bits are handled similarly; additionally, the `_BIT` suffix is removed.
 
 #### Constructors
 
-In Vulkan, many operations require that an `Info` struct is populated, and then passed as a pointer to some function; possibly a `vkCreateHandle` or `vkOperationWithHandle`. This results in the following C-style code:
+In Vulkan, many operations require that an `Info` struct is populated, and then passed as a pointer to some function; possibly a `vkCreateHandle` or `vkOperationWithHandle`.
+This results in the following C-style code:
 
 ```c++
 VkImageCreateInfo ci;
@@ -101,7 +104,8 @@ This is long, imperative, and error-prone. This field-by-field initialisation ha
 - flag bits and enums may be initialised to unrelated (and hence invalid) values;
 - the pointer-and-count pairs may be inconsistent.
 
-Instead, Vulkan-Hpp provides structs with constructors. These accept one parameter for each member variable corresponding to their C API, with a few additional rules:
+Instead, Vulkan-Hpp provides structs with constructors.
+These accept one parameter for each member variable corresponding to their C API, with a few additional rules:
 
 - The `sType` member is omitted, and default-constructed internally;
 - If there is a `pNext` member, it is the _last_ parameter in the constructor and defaults to `nullptr`, so that it may be omitted
@@ -139,8 +143,8 @@ vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B
 #### Designated initialisers
 
 >[!NOTE]
-> This feature requires a compiler supporting at least C++20, and must be enabled with the `VULKAN_HPP_NO_CONSTRUCTORS` or `VULKAN_HPP_NO_STRUCT_CONSTRUCTORS` macro.
-> This will disable the above-mentioned generated constructors for struct types.
+> This feature requires a compiler supporting at least C++20, and must be **enabled** with the `VULKAN_HPP_NO_CONSTRUCTORS` or `VULKAN_HPP_NO_STRUCT_CONSTRUCTORS` macro.
+> This will disable the above-mentioned generated constructors for structs.
 
 C++20 and later versions support [designated initializers](https://en.cppreference.com/w/cpp/language/aggregate_initialization.html#Designated_initializers) for aggregate types.
 Designated initialisers allow for more expressive code: member variable names are mentioned immediately in plain-text, without needing any static analysis.
@@ -161,14 +165,15 @@ vk::InstanceCreateInfo instanceCreateInfo{ .pApplicationInfo = &applicationInfo 
 instead of
 
 ```c++
-// initialize the vk::ApplicationInfo structure. What are the parameters?
+// initialize the vk::ApplicationInfo structure.
 vk::ApplicationInfo applicationInfo(AppName, 1, EngineName, 1, vk::ApiVersion11);
 
 // initialize the vk::InstanceCreateInfo. What is `{}`?
 vk::InstanceCreateInfo instanceCreateInfo({}, &applicationInfo);
 ```
 
-Note that the designator order needs to match the declaration order. Additionally, members may be omitted, in which case they are default-initialized.
+The designator order needs to match the declaration order.
+Additionally, members may be omitted, in which case they are default-initialized.
 For instance, note how `::sType` and `::pNext` are omitted above; they are automatically default-initialized to the correct values or `nullptr`, respectively.
 
 #### `ArrayProxy<T>` and `ArrayProxyNoTemporaries<T>`
@@ -185,7 +190,7 @@ Instead, Vulkan-Hpp provides two class templates, `vk::ArrayProxy<T>` and `vk::A
 - C-style arrays;
 - pointers with counts.
 
-<!-- TODO: more detail. Fill in when NoTemp is typically expected; function out-parameters? Ask @asuessenbach -->
+<!-- TODO: uncomment with more detail. Fill in when ArrayProxyNoTemporaries is typically expected; function out-parameters? Ask @asuessenbach -->
 <!-- Note that `vk::ArrayProxyNoTemporaries<T>` **disallows** temporary values, which may be important for out-parameters. -->
 
 For example, consider the following calls to `vk::CommandBuffer::setScissor`:
@@ -227,38 +232,95 @@ vec.push_back(scissorRect2);
 c.setScissor(0, vec);
 ```
 
-#### Builder pattern with setter member functions
+#### Builder pattern with setters
 
 >[!NOTE]
 > This feature may be **disabled** with the `VULKAN_HPP_NO_STRUCT_SETTERS` macro.
 
-Having _no_ constructors means losing a little flexibility compared to the default for instance, [`ArrayProxy`](#arrayproxyt-and-arrayproxynotemporariest) parameters cannot be used with designated initializers, which fall back to (count, pointer) pairs.
+Having _no_ constructors means losing a little flexibility compared to the default. For instance, [`ArrayProxy`](#arrayproxyt-and-arrayproxynotemporariest) parameters cannot be used with designated initializers, which fall back to (count, pointer) pairs.
 
-Instead, Vulkan-Hpp provides setter member functions for all member variables, and (count, pointer) pairs are generalised to either `ArrayProxy` or `ArrayProxyNoTemporaries` for all structs. For instance, the above `vk::ImageCreateInfo` struct may be constructed like this:
+Instead, Vulkan-Hpp provides setter member functions for _all_ member variables, and (count, pointer) pairs are generalised to either `ArrayProxy` or `ArrayProxyNoTemporaries` for all structs.
+Combining these and [designated initialisers](#designated-initialisers) might allow for the best balance of readability and ease-of-use, since designated initialisers can be omitted for fields that are irrelevant.
+For instance, `vk::ImageCreateInfo` may be constructed like so:
 
 ```c++
-std::array const queueFamilies = { 1U, 2U };
-vk::ImageCreateInfo ci = vk::ImageCreateInfo{}
-  .setImageType(vk::ImageType::e2D)
-  .setFormat(vk::Format::eR8G8B8A8Unorm)
-  .setExtent({ width, height, 1 })
-  .setMipLevels(1)
-  .setArrayLayers(1)
-  .setSamples(vk::SampleCountFlagBits::e1)
-  .setTiling(vk::ImageTiling::eOptimal)
-  .setUsage(vk::ImageUsageFlagBits::eColorAttachment)
-  .setSharingMode(vk::SharingMode::eExclusive)
-  .setInitialLayout(vk::ImageLayout::eUndefined);
-  .setQueueFamilyIndices(queueFamilies); // ArrayProxyNoTemporaries<uint32_t>
+std::array<uint32_t, 2> const queueFamilies = { 1U, 2U };
+auto ci = vk::ImageCreateInfo{
+  .imageType = vk::ImageType::e2D,
+  .format = vk::Format::eR8G8B8A8Unorm,
+  .extent = { width, height, 1 },
+  .mipLevels = 1,
+  .arrayLayers = 1,
+  .samples = vk::SampleCountFlagBits::e1,
+  .tiling = vk::ImageTiling::eOptimal,
+  .usage = vk::ImageUsageFlagBits::eColorAttachment,
+  .sharingMode = vk::SharingMode::eExclusive,
+  .initialLayout = vk::ImageLayout::eUndefined
+}.setQueueFamilyIndices(queueFamilies); // ArrayProxyNoTemporaries<uint32_t>
+```
+
+Note how `.flags` is omitted, and the word `index` has been pluralised to `indices` for the setter.
+
+#### Structure pointer chains
+
+Vulkan-Hpp provides a variadic class template for structure chains so that `pNext` chains can be created in a type-safe manner: `vk::StructureChain<T1, T2, ..., Tn>`.
+This means only chains which are valid according to the Vulkan specification can be created, which is verified at compile time.
+
+```c++
+// This will compile successfully.
+vk::StructureChain<vk::MemoryAllocateInfo, vk::ImportMemoryFdInfoKHR> c;
+vk::MemoryAllocateInfo &allocInfo = c.get<vk::MemoryAllocateInfo>();
+vk::ImportMemoryFdInfoKHR &fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
+
+// This will fail compilation; vk::MemoryDedicatedRequirementsKHR cannot be part of a pNext-chain.
+vk::StructureChain<vk::MemoryAllocateInfo, vk::MemoryDedicatedRequirementsKHR> c;
+vk::MemoryAllocateInfo &allocInfo = c.get<vk::MemoryAllocateInfo>();
+vk::ImportMemoryFdInfoKHR &fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
+```
+
+Vulkan-Hpp provides a constructor similar to the `CreateInfo`, which accepts a list of all structures part of the chain.
+The `pNext` field of each structure is populated automatically.
+
+```c++
+vk::StructureChain<vk::MemoryAllocateInfo, vk::MemoryDedicatedAllocateInfo> c = {
+  vk::MemoryAllocateInfo(size, type),
+  vk::MemoryDedicatedAllocateInfo(image)
+};
+```
+<!-- TODO: need an example here. Also more info and examples: what about the same type, repeated? I don't use structure chains. @asuessenbach? -->
+To remove a link in a `StructureChain`, use the function `vk::StructureChain::unlink<Type>()`.
+This modifies the chain in-place by modifying the `.pNext` structures, and returns the unlinked structure; note that its memory layout remains unchanged.
+To re-insert the same structure into the chain, use `vk::StructureChain::relink<Type>()`.
+
+Sometimes the user has to pass a preallocated structure chain to query information. For those cases there are two corresponding getter functions. One with a variadic template generating a structure chain of at least two elements to construct the return value:
+
+```c++
+// Query vk::MemoryRequirements2HR and vk::MemoryDedicatedRequirementsKHR when calling Device::getBufferMemoryRequirements2KHR:
+auto result = device.getBufferMemoryRequirements2KHR<vk::MemoryRequirements2KHR, vk::MemoryDedicatedRequirementsKHR>({});
+vk::MemoryRequirements2KHR &memReqs = result.get<vk::MemoryRequirements2KHR>();
+vk::MemoryDedicatedRequirementsKHR &dedMemReqs = result.get<vk::MemoryDedicatedRequirementsKHR>();
+```
+
+To get just the base structure, without chaining, the other getter function provided does not need a template argument for the structure to get:
+
+```c++
+// Query just vk::MemoryRequirements2KHR
+vk::MemoryRequirements2KHR memoryRequirements = device.getBufferMemoryRequirements2KHR({});
 ```
 
 ### Handles and functions
 
-There is a corresponding `vk::` class for each Vulkan handle, such as `vk::Instance`, `vk::Device`, `vk::Buffer`, etc.
-These classes are binary-compatible with their corresponding C handles; they can be freely cast back and forth without any overhead.
+<!-- TODO: maybe move this to ./Handles.md? -->
+
+Vulkan-Hpp provides a `vk::` class for each Vulkan handle, such as `vk::Instance`, `vk::Device`, `vk::Buffer`, and so on.
+These classes are binary-compatible with their corresponding C handles; they can be cast back and forth without any overhead.
 
 Member functions are also defined corresponding to a C API function which accepts the parent handle as the **first** parameter.
 For example, instead of `vkBindBufferMemory(device, ...)` write `device.bindBufferMemory(...)`.
+
+>[!NOTE]
+> Note that these handles do **not** support RAII; their lifetimes need to be manually managed, just like in the C API.
+> For automatic resource management, refer to [Handles](./Handles.md).
 
 #### Passing structs to functions
 
@@ -302,53 +364,9 @@ vk::ImageUsageFlags iu5 = iu3 | vk::PipelineStageFlagBits::eVertexShader; // Com
 PipelineShaderStageCreateInfo ci({} /* pass a flag without any bits set */, ...);
 ```
 
+### Error-handling
 
-
-## Structure Pointer Chains
-
-Vulkan allows chaining of structures through the `pNext` pointer. Vulkan-Hpp has a variadic class template which allows constructing of such structure chains with minimal efforts. In addition to this it checks at compile time if the spec allows the construction of such a `pNext` chain.
-
-```c++
-// This will compile successfully.
-vk::StructureChain<vk::MemoryAllocateInfo, vk::ImportMemoryFdInfoKHR> c;
-vk::MemoryAllocateInfo &allocInfo = c.get<vk::MemoryAllocateInfo>();
-vk::ImportMemoryFdInfoKHR &fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
-
-// This will fail compilation since it's not valid according to the spec.
-vk::StructureChain<vk::MemoryAllocateInfo, vk::MemoryDedicatedRequirementsKHR> c;
-vk::MemoryAllocateInfo &allocInfo = c.get<vk::MemoryAllocateInfo>();
-vk::ImportMemoryFdInfoKHR &fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
-```
-
-Vulkan-Hpp provides a constructor for these chains similar to the `CreateInfo` objects which accepts a list of all structures part of the chain. The `pNext` field is automatically set to the correct value:
-
-```c++
-vk::StructureChain<vk::MemoryAllocateInfo, vk::MemoryDedicatedAllocateInfo> c = {
-  vk::MemoryAllocateInfo(size, type),
-  vk::MemoryDedicatedAllocateInfo(image)
-};
-```
-
-If one of the structures of a StructureChain is to be removed, maybe due to some optional settings, you can use the function `vk::StructureChain::unlink<ClassType>()`. It modifies the StructureChain such that the specified structure isn't part of the pNext-chain any more. Note, that the actual memory layout of the StructureChain is not modified by that function.
-In case that very same structure has to be re-added to the StructureChain again, use `vk::StructureChain::relink<ClassType>()`.
-
-Sometimes the user has to pass a preallocated structure chain to query information. For those cases there are two corresponding getter functions. One with a variadic template generating a structure chain of at least two elements to construct the return value:
-
-```c++
-// Query vk::MemoryRequirements2HR and vk::MemoryDedicatedRequirementsKHR when calling Device::getBufferMemoryRequirements2KHR:
-auto result = device.getBufferMemoryRequirements2KHR<vk::MemoryRequirements2KHR, vk::MemoryDedicatedRequirementsKHR>({});
-vk::MemoryRequirements2KHR &memReqs = result.get<vk::MemoryRequirements2KHR>();
-vk::MemoryDedicatedRequirementsKHR &dedMemReqs = result.get<vk::MemoryDedicatedRequirementsKHR>();
-```
-
-To get just the base structure, without chaining, the other getter function provided does not need a template argument for the structure to get:
-
-```c++
-// Query just vk::MemoryRequirements2KHR
-vk::MemoryRequirements2KHR memoryRequirements = device.getBufferMemoryRequirements2KHR({});
-```
-
-## Return values, Error Codes & Exceptions
+#### Exceptions
 
 By default Vulkan-Hpp has exceptions enabled. This means that Vulkan-Hpp checks the return code of each function call which returns a `vk::Result`. If `vk::Result` is a failure a `std::runtime_error` will be thrown. Since there is no need to return the error code anymore the C++ bindings can now return the actual desired return value, i.e. a vulkan handle. In those cases `vk::ResultValue<SomeType>::type` is defined as the returned type.
 

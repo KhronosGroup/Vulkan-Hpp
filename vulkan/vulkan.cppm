@@ -1,4 +1,4 @@
-// Copyright 2015-2025 The Khronos Group Inc.
+// Copyright 2015-2026 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -5921,12 +5921,14 @@ export namespace VULKAN_HPP_NAMESPACE
     //=== VK_EXT_device_generated_commands ===
     using VULKAN_HPP_RAII_NAMESPACE::IndirectCommandsLayoutEXT;
     using VULKAN_HPP_RAII_NAMESPACE::IndirectExecutionSetEXT;
+
   }  // namespace VULKAN_HPP_RAII_NAMESPACE
 #endif
 }  // namespace VULKAN_HPP_NAMESPACE
 
 export namespace std
 {
+
   //=======================================
   //=== HASH specialization for Flags types ===
   //=======================================
@@ -9480,7 +9482,8 @@ export namespace std
 #endif
 }  // namespace std
 
-export {
+export
+{
   // This VkFlags type is used as part of a bitfield in some structures.
   // As it can't be mimicked by vk-data types, we need to export just that.
   using ::VkGeometryInstanceFlagsKHR;

@@ -1,5 +1,5 @@
 
-name: CI Windows MSVC-Ninja
+name: CI Windows MSVC-Ninja (module tests)
 
 on:
   pull_request:

@@ -1,4 +1,4 @@
-// Copyright 2015-2025 The Khronos Group Inc.
+// Copyright 2015-2026 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -31,6 +31,7 @@
 
 namespace VULKAN_HPP_NAMESPACE
 {
+
   //==========================
   //=== BITMASKs to_string ===
   //==========================
@@ -10958,6 +10959,7 @@ namespace VULKAN_HPP_NAMESPACE
       default                                              : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+
 }  // namespace VULKAN_HPP_NAMESPACE
 
 #if defined( __clang__ ) || defined( __GNUC__ )

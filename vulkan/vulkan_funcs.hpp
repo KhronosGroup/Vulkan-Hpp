@@ -1,4 +1,4 @@
-// Copyright 2015-2025 The Khronos Group Inc.
+// Copyright 2015-2026 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -13,6 +13,7 @@
 
 namespace VULKAN_HPP_NAMESPACE
 {
+
   //===========================
   //=== COMMAND Definitions ===
   //===========================
@@ -32371,5 +32372,6 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkCmdSetComputeOccupancyPriorityNV( m_commandBuffer, reinterpret_cast<const VkComputeOccupancyPriorityParametersNV *>( &parameters ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

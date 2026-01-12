@@ -23,7 +23,11 @@ jobs:
         submodules: recursive
 
     - name: Install libraries
-      run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
+      run: |
+        sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
+        export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+        brew install clang-format@21
+        export PATH="/home/linuxbrew/.linuxbrew/opt/clang-format/bin:$PATH"
 
     - name: Install Ninja
       uses: ashutoshvarma/setup-ninja@master

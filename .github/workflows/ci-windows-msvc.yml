@@ -66,6 +66,7 @@ jobs:
           -D VULKAN_HPP_RUN_GENERATOR=OFF              \
           -D VULKAN_HPP_SAMPLES_BUILD=OFF              \
           -D VULKAN_HPP_TESTS_BUILD=OFF                \
+          -D VULKAN_HPP_TESTS_CTEST=ON                 \
           -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
           -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
           -D VULKAN_HPP_PRECOMPILE=OFF                 \
@@ -84,16 +85,17 @@ jobs:
             -D VULKAN_HPP_RUN_GENERATOR=OFF                 \
             -D VULKAN_HPP_SAMPLES_BUILD=ON                  \
             -D VULKAN_HPP_TESTS_BUILD=ON                    \
+            -D VULKAN_HPP_TESTS_CTEST=ON                    \
             -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON        \
             -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON    \
             -D VULKAN_HPP_PRECOMPILE=OFF                    \
             -D CMAKE_CXX_STANDARD=$CXX_STANDARD
           cmake --build build --parallel --clean-first --config Debug
-          ctest -j --output-on-failure --test-dir build
+          ctest -j --output-on-failure --test-dir build -C Debug
 
           echo "================================================================================="
           echo "Building C++$CXX_STANDARD in Release with architecture ${{matrix.architecture}}"
           echo "================================================================================="
           cmake --build build --parallel --config Release
-          ctest -j --output-on-failure --test-dir build
+          ctest -j --output-on-failure --test-dir build -C Release
         done

@@ -888,6 +888,182 @@ int main( int /*argc*/, char ** /*argv*/ )
     commandBuffer.reset( flags );
   }
 
+  // Command buffer building commands
+  {
+    vk::CommandBuffer           commandBuffer;
+    vk::Buffer                  srcBuffer;
+    vk::Buffer                  dstBuffer;
+    std::vector<vk::BufferCopy> copyRegions;
+    commandBuffer.copyBuffer( srcBuffer, dstBuffer, static_cast<uint32_t>( copyRegions.size() ), copyRegions.data() );
+  }
+  {
+    vk::CommandBuffer           commandBuffer;
+    vk::Buffer                  srcBuffer;
+    vk::Buffer                  dstBuffer;
+    std::vector<vk::BufferCopy> copyRegions;
+    commandBuffer.copyBuffer( srcBuffer, dstBuffer, copyRegions );
+  }
+
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::Image                  srcImage;
+    vk::ImageLayout            srcImageLayout = {};
+    vk::Image                  dstImage;
+    vk::ImageLayout            dstImageLayout = {};
+    std::vector<vk::ImageCopy> regions;
+    commandBuffer.copyImage( srcImage, srcImageLayout, dstImage, dstImageLayout, static_cast<uint32_t>( regions.size() ), regions.data() );
+  }
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::Image                  srcImage;
+    vk::ImageLayout            srcImageLayout = {};
+    vk::Image                  dstImage;
+    vk::ImageLayout            dstImageLayout = {};
+    std::vector<vk::ImageCopy> regions;
+    commandBuffer.copyImage( srcImage, srcImageLayout, dstImage, dstImageLayout, regions );
+  }
+
+  {
+    vk::CommandBuffer                commandBuffer;
+    vk::Buffer                       buffer;
+    vk::Image                        image;
+    vk::ImageLayout                  imageLayout = {};
+    std::vector<vk::BufferImageCopy> regions;
+    commandBuffer.copyBufferToImage( buffer, image, imageLayout, static_cast<uint32_t>( regions.size() ), regions.data() );
+  }
+  {
+    vk::CommandBuffer                commandBuffer;
+    vk::Buffer                       buffer;
+    vk::Image                        image;
+    vk::ImageLayout                  imageLayout = {};
+    std::vector<vk::BufferImageCopy> regions;
+    commandBuffer.copyBufferToImage( buffer, image, imageLayout, regions );
+  }
+
+  {
+    vk::CommandBuffer                commandBuffer;
+    vk::Image                        image;
+    vk::ImageLayout                  imageLayout = {};
+    vk::Buffer                       buffer;
+    std::vector<vk::BufferImageCopy> regions;
+    commandBuffer.copyImageToBuffer( image, imageLayout, buffer, static_cast<uint32_t>( regions.size() ), regions.data() );
+  }
+  {
+    vk::CommandBuffer                commandBuffer;
+    vk::Image                        image;
+    vk::ImageLayout                  imageLayout = {};
+    vk::Buffer                       buffer;
+    std::vector<vk::BufferImageCopy> regions;
+    commandBuffer.copyImageToBuffer( image, imageLayout, buffer, regions );
+  }
+
+  {
+    vk::CommandBuffer    commandBuffer;
+    vk::Buffer           dstBuffer;
+    vk::DeviceSize       dstOffset = 0;
+    std::vector<uint8_t> data( 1024 );
+    commandBuffer.updateBuffer( dstBuffer, dstOffset, static_cast<uint32_t>( data.size() ), data.data() );
+  }
+  {
+    vk::CommandBuffer    commandBuffer;
+    vk::Buffer           dstBuffer;
+    vk::DeviceSize       dstOffset = 0;
+    std::vector<uint8_t> data( 1024 );
+    commandBuffer.updateBuffer<uint8_t>( dstBuffer, dstOffset, data );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::Buffer        buffer;
+    vk::DeviceSize    offset = 0;
+    vk::DeviceSize    size   = vk::WholeSize;
+    commandBuffer.fillBuffer( buffer, offset, size, 0 );
+  }
+
+  {
+    vk::CommandBuffer                    commandBuffer;
+    vk::PipelineStageFlagBits            srcStageMask    = {};
+    vk::PipelineStageFlagBits            dstStageMask    = {};
+    vk::DependencyFlags                  dependencyFlags = {};
+    std::vector<vk::MemoryBarrier>       memoryBarriers;
+    std::vector<vk::BufferMemoryBarrier> bufferMemoryBarriers;
+    std::vector<vk::ImageMemoryBarrier>  imageMemoryBarriers;
+    commandBuffer.pipelineBarrier( srcStageMask,
+                                   dstStageMask,
+                                   dependencyFlags,
+                                   static_cast<uint32_t>( memoryBarriers.size() ),
+                                   memoryBarriers.data(),
+                                   static_cast<uint32_t>( bufferMemoryBarriers.size() ),
+                                   bufferMemoryBarriers.data(),
+                                   static_cast<uint32_t>( imageMemoryBarriers.size() ),
+                                   imageMemoryBarriers.data() );
+  }
+  {
+    vk::CommandBuffer                    commandBuffer;
+    vk::PipelineStageFlagBits            srcStageMask    = {};
+    vk::PipelineStageFlagBits            dstStageMask    = {};
+    vk::DependencyFlags                  dependencyFlags = {};
+    std::vector<vk::MemoryBarrier>       memoryBarriers;
+    std::vector<vk::BufferMemoryBarrier> bufferMemoryBarriers;
+    std::vector<vk::ImageMemoryBarrier>  imageMemoryBarriers;
+    commandBuffer.pipelineBarrier( srcStageMask, dstStageMask, dependencyFlags, memoryBarriers, bufferMemoryBarriers, imageMemoryBarriers );
+  }
+
+  {
+    vk::CommandBuffer     commandBuffer;
+    vk::QueryPool         queryPool;
+    uint32_t              query = 0;
+    vk::QueryControlFlags flags = {};
+    commandBuffer.beginQuery( queryPool, query, flags );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::QueryPool     queryPool;
+    uint32_t          query = 0;
+    commandBuffer.endQuery( queryPool, query );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::QueryPool     queryPool;
+    uint32_t          firstQuery = 0;
+    uint32_t          queryCount = 1;
+    commandBuffer.resetQueryPool( queryPool, firstQuery, queryCount );
+  }
+
+  {
+    vk::CommandBuffer         commandBuffer;
+    vk::PipelineStageFlagBits stage = {};
+    vk::QueryPool             queryPool;
+    uint32_t                  query = 0;
+    commandBuffer.writeTimestamp( stage, queryPool, query );
+  }
+
+  {
+    vk::CommandBuffer    commandBuffer;
+    vk::QueryPool        queryPool;
+    uint32_t             firstQuery = 0;
+    uint32_t             queryCount = 1;
+    vk::Buffer           dstBuffer;
+    vk::DeviceSize       dstOffset = 0;
+    vk::DeviceSize       stride    = 0;
+    vk::QueryResultFlags flags     = {};
+    commandBuffer.copyQueryPoolResults( queryPool, firstQuery, queryCount, dstBuffer, dstOffset, stride, flags );
+  }
+
+  {
+    vk::CommandBuffer              commandBuffer;
+    std::vector<vk::CommandBuffer> secondaryCommandBuffers;
+    commandBuffer.executeCommands( static_cast<uint32_t>( secondaryCommandBuffers.size() ), secondaryCommandBuffers.data() );
+  }
+
+  {
+    vk::CommandBuffer              commandBuffer;
+    std::vector<vk::CommandBuffer> secondaryCommandBuffers;
+    commandBuffer.executeCommands( secondaryCommandBuffers );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

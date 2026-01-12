@@ -423,5 +423,118 @@ int main( int /*argc*/, char ** /*argv*/ )
     commandBuffer.reset( flags );
   }
 
+  // Command buffer building commands
+  {
+    vk::raii::CommandBuffer     commandBuffer = nullptr;
+    vk::Buffer                  srcBuffer;
+    vk::Buffer                  dstBuffer;
+    std::vector<vk::BufferCopy> copyRegions;
+    commandBuffer.copyBuffer( srcBuffer, dstBuffer, copyRegions );
+  }
+
+  {
+    vk::raii::CommandBuffer    commandBuffer = nullptr;
+    vk::Image                  srcImage;
+    vk::ImageLayout            srcImageLayout = {};
+    vk::Image                  dstImage;
+    vk::ImageLayout            dstImageLayout = {};
+    std::vector<vk::ImageCopy> copyRegions;
+    commandBuffer.copyImage( srcImage, srcImageLayout, dstImage, dstImageLayout, copyRegions );
+  }
+
+  {
+    vk::raii::CommandBuffer          commandBuffer = nullptr;
+    vk::Buffer                       buffer;
+    vk::Image                        image;
+    vk::ImageLayout                  imageLayout = {};
+    std::vector<vk::BufferImageCopy> regions;
+    commandBuffer.copyBufferToImage( buffer, image, imageLayout, regions );
+  }
+
+  {
+    vk::raii::CommandBuffer          commandBuffer = nullptr;
+    vk::Image                        image;
+    vk::ImageLayout                  imageLayout = {};
+    vk::Buffer                       buffer;
+    std::vector<vk::BufferImageCopy> regions;
+    commandBuffer.copyImageToBuffer( image, imageLayout, buffer, regions );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::Buffer              dstBuffer;
+    vk::DeviceSize          dstOffset = 0;
+    std::vector<uint8_t>    data( 1024 );
+    commandBuffer.updateBuffer<uint8_t>( dstBuffer, dstOffset, data );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::Buffer              buffer;
+    vk::DeviceSize          offset = 0;
+    vk::DeviceSize          size   = vk::WholeSize;
+    commandBuffer.fillBuffer( buffer, offset, size, 0 );
+  }
+
+  {
+    vk::raii::CommandBuffer              commandBuffer   = nullptr;
+    vk::PipelineStageFlagBits            srcStageMask    = {};
+    vk::PipelineStageFlagBits            dstStageMask    = {};
+    vk::DependencyFlags                  dependencyFlags = {};
+    std::vector<vk::MemoryBarrier>       memoryBarriers;
+    std::vector<vk::BufferMemoryBarrier> bufferMemoryBarriers;
+    std::vector<vk::ImageMemoryBarrier>  imageMemoryBarriers;
+    commandBuffer.pipelineBarrier( srcStageMask, dstStageMask, dependencyFlags, memoryBarriers, bufferMemoryBarriers, imageMemoryBarriers );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::QueryPool           queryPool;
+    uint32_t                query = 0;
+    vk::QueryControlFlags   flags = {};
+    commandBuffer.beginQuery( queryPool, query, flags );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::QueryPool           queryPool;
+    uint32_t                query = 0;
+    commandBuffer.endQuery( queryPool, query );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::QueryPool           queryPool;
+    uint32_t                firstQuery = 0;
+    uint32_t                queryCount = 1;
+    commandBuffer.resetQueryPool( queryPool, firstQuery, queryCount );
+  }
+
+  {
+    vk::raii::CommandBuffer   commandBuffer = nullptr;
+    vk::PipelineStageFlagBits stage         = {};
+    vk::QueryPool             queryPool;
+    uint32_t                  query = 0;
+    commandBuffer.writeTimestamp( stage, queryPool, query );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::QueryPool           queryPool;
+    uint32_t                firstQuery = 0;
+    uint32_t                queryCount = 1;
+    vk::Buffer              dstBuffer;
+    vk::DeviceSize          dstOffset = 0;
+    vk::DeviceSize          stride    = 0;
+    vk::QueryResultFlags    flags     = {};
+    commandBuffer.copyQueryPoolResults( queryPool, firstQuery, queryCount, dstBuffer, dstOffset, stride, flags );
+  }
+
+  {
+    vk::raii::CommandBuffer        commandBuffer = nullptr;
+    std::vector<vk::CommandBuffer> secondaryCommandBuffers;
+    commandBuffer.executeCommands( secondaryCommandBuffers );
+  }
+
   return 0;
 }

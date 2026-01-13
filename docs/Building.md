@@ -39,6 +39,8 @@ The generator, samples, and tests requires a C++11 compiler. The following compi
 
 If a `clang-format` executable is found by CMake, the define `CLANG_FORMAT_EXECUTABLE` is set accordingly. In that case, the generated headers are formatted using the `.clang-format` file located in the root directory of this project; otherwise, the formatting is left as hard-coded in the generator.
 
+Use `clang-format` version 21.1.0 to format the generated files.
+
 ### Custom views of Vulkan-Hpp objects in Visual Studio
 
 [`VulkanHpp.natvis`](../VulkanHpp.natvis) provides a custom view over `vk::Flags` for Visual Studio. Add this file to the directory of your Visual Studio installation (`%USERPROFILE%\Documents\Visual Studio 2022\Visualizers`). `vk::Flags` will be appropriately formatted in the debugger.

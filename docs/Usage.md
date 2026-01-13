@@ -858,6 +858,7 @@ Currently, there are just a couple of such defines:
 - `VULKAN_HPP_NO_SPACESHIP_OPERATOR`, which removes the spaceship operator on structures (available with C++20)
 - `VULKAN_HPP_NO_TO_STRING`, which removes the various `vk::to_string` functions on enums and bitmasks.
 - `VULKAN_HPP_USE_REFLECT`, this one needs to be defined to use the reflection function on structures. It's very slow to compile, though!
+- `VULKAN_HPP_USE_STD_EXPECTED`, this one needs to be defined to use `std::expected` for functions that return a value or a vk::Result.
 
 ## Strict aliasing issue
 

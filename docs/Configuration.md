@@ -33,6 +33,7 @@ Vulkan-Hpp offers several options to configure its behaviour and features, and t
 - [`VULKAN_HPP_TYPESAFE_CONVERSION`](#vulkan_hpp_typesafe_conversion)
 - [`VULKAN_HPP_UNEXPECTED`](#vulkan_hpp_unexpected)
 - [`VULKAN_HPP_USE_REFLECT`](#vulkan_hpp_use_reflect)
+- [`VULKAN_HPP_USE_STD_EXPECTED`](#vulkan_hpp_use_std_expected)
 
 ## `VULKAN_HPP_ASSERT`
 
@@ -172,3 +173,9 @@ See [`VULKAN_HPP_EXPECTED`](#vulkan_hpp_expected).
 ## `VULKAN_HPP_USE_REFLECT`
 
 With this define you can include a reflection mechanism on the vk-structures. It adds a function `reflect` that returns a tuple-version of the structure. That tuple then could easily be iterated. But at least for now, that feature takes lots of compile-time resources, so currently it is recommended to enable that feature only if you're willing to pay that price.
+
+## `VULKAN_HPP_USE_STD_EXPECTED`
+
+With this define, you can enable the use of `std::expected` for functions that return a value or a `vk::Result`. This requires C++23 or above.
+
+See [`VULKAN_HPP_EXPECTED`](#vulkan_hpp_expected) and [`VULKAN_HPP_UNEXPECTED`](#vulkan_hpp_unexpected) for more details.

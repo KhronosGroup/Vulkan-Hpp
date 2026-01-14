@@ -10,6 +10,7 @@ This repository contains the [generators](VulkanHppGenerator.hpp) for Vulkan-Hpp
 
 ## CI/CD status
 
+<!-- TODO: This table is now broken with the recent changes to CI/CD. -->
 | Platform | Build Status |
 |:--------|:------------|
 | **Windows**  | [![CI Windows Clang](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-clang.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-clang.yml) <br> [![CI Windows MSVC](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-msvc.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-msvc.yml) |

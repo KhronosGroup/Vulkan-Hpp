@@ -264,7 +264,7 @@ function( vulkan_hpp__setup_vulkan_targets )
 		target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
 	else()
 		find_package( Vulkan REQUIRED )
-		target_include_directories( ${TARGET_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}" )
+		target_include_directories( VulkanHpp INTERFACE "${Vulkan_INCLUDE_DIRS}" )
 	endif()
 	if( VULKAN_HPP_RUN_GENERATOR )
 		add_dependencies( VulkanHpp build_vulkan_hpp build_video_hpp )
@@ -401,8 +401,18 @@ function( vulkan_hpp__setup_library )
 		endif()
 		vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
 		vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
-		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
 		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON )
+		vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
+		vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
+		if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
+			# Vulkan C headers
+			target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
+			# Vulkan C++ headers
+			target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}" )
+		else()
+			find_package( Vulkan REQUIRED )
+			target_include_directories( ${TARGET_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}" )
+		endif()
 	endif()
 	set_target_properties( ${TARGET_NAME} PROPERTIES FOLDER ${TARGET_FOLDER} )
 endfunction()
@@ -413,18 +423,10 @@ function( vulkan_hpp__setup_sample )
 	set( multiValueArgs HEADERS LIBS PCH SOURCES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
-	if( NOT VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
-		find_package( Vulkan REQUIRED )
-	endif()
-
 	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
-
 	add_executable( ${TARGET_NAME} ${TARGET_HEADERS} ${TARGET_SOURCES} )
-
 	vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
 	vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
-	target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
-
 	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON )
 
 	if( TARGET_FOLDER )
@@ -461,9 +463,7 @@ function( vulkan_hpp__setup_sample_static )
 		FOLDER       Samples
 		PCH_REUSE    utils_static
 		SOURCES      ${TARGET_NAME}.cpp
-		LIBS         utils_static )
-
-	target_compile_definitions( ${TARGET_NAME} PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
+		LIBS         utils_static ${Vulkan_LIBRARIES} )
 endfunction()
 
 function( vulkan_hpp__setup_sample_dynamic )

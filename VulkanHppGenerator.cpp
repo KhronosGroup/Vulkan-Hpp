@@ -15127,7 +15127,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
 
   checkAttributes( line,
                    attributes,
-                   { { "name", {} }, { "number", {} }, { "supported", { "disabled", "vulkan", "vulkansc" } } },
+                   { { "name", {} }, { "number", {} }, { "supported", { "disabled", "vulkan", "vulkanbase", "vulkansc" } } },
                    { { "author", {} },
                      { "comment", {} },
                      { "contact", {} },

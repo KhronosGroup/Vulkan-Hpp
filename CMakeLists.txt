@@ -565,6 +565,7 @@ function( vulkan_hpp__setup_test )
 					-D VULKAN_HPP_TYPESAFE_CONVERSION=${VULKAN_HPP_TYPESAFE_CONVERSION}
 					-D VULKAN_HPP_USE_REFLECT=${VULKAN_HPP_USE_REFLECT}
 					# forward compiler setup
+					-D CMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}
 					-D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 					-D CMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
 					-D CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
@@ -607,7 +608,7 @@ endfunction()
 # create Vulkan::Hpp and possibly Vulkan::HppModule targets
 vulkan_hpp__setup_vulkan_targets()
 
-if( VULKAN_HPP_SAMPLES_BUILD OR VULKAN_HPP_TESTS_BUILD )
+if( VULKAN_HPP_SAMPLES_BUILD )
 	# external libraries
 	find_package( glm QUIET )
 	if( NOT glm_FOUND )

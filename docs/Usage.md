@@ -16,6 +16,7 @@ This manual assumes familiarity with Vulkan; it details improvements and differe
   - [Flags](#flags)
   - [Error handling](#error-handling)
     - [Exceptions](#exceptions)
+    - [Return value transformation with exceptions disabled](#return-value-transformation-with-exceptions-disabled)
     - [`std::expected`](#stdexpected)
 - [C++17: `[[nodiscard]]`](#c17-nodiscard)
 - [Enumerations](#enumerations)
@@ -188,7 +189,7 @@ Instead, Vulkan-Hpp provides two class templates, `vk::ArrayProxy<T>` and `vk::A
 - C-style arrays;
 - pointers with counts.
 
-<!-- TODO: uncomment with more detail. Fill in when ArrayProxyNoTemporaries is typically expected; function out-parameters? Ask @asuessenbach -->
+<!-- TODO: uncomment with more detail. Fill in when `ArrayProxy` vs `ArrayProxyNoTemporaries` is typically expected; function out-parameters? Ask @asuessenbach -->
 <!-- Note that `vk::ArrayProxyNoTemporaries<T>` **disallows** temporary values, which may be important for out-parameters. -->
 
 For example, consider the following calls to `vk::CommandBuffer::setScissor`:
@@ -264,6 +265,8 @@ Note how `.flags` is omitted, and the word `index` has been pluralised to `indic
 Vulkan-Hpp provides a variadic class template for structure chains so that `pNext` chains can be created in a type-safe manner: `vk::StructureChain<T1, T2, ..., Tn>`.
 This means only chains which are valid according to the Vulkan specification can be created, which is verified at compile time.
 
+For instance:
+
 ```c++
 // This will compile successfully.
 vk::StructureChain<vk::MemoryAllocateInfo, vk::ImportMemoryFdInfoKHR> c;
@@ -277,7 +280,7 @@ vk::ImportMemoryFdInfoKHR &fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
 ```
 
 Vulkan-Hpp provides a constructor similar to the `CreateInfo`, which accepts a list of all structures part of the chain.
-The `pNext` field of each structure is populated automatically.
+The `pNext` field of each structure is populated automatically:
 
 ```c++
 vk::StructureChain<vk::MemoryAllocateInfo, vk::MemoryDedicatedAllocateInfo> c = {
@@ -290,7 +293,8 @@ To remove a link in a `StructureChain`, use the function `vk::StructureChain::un
 This modifies the chain in-place by modifying the `.pNext` structures, and returns the unlinked structure; note that its memory layout remains unchanged.
 To re-insert the same structure into the chain, use `vk::StructureChain::relink<Type>()`.
 
-Sometimes the user has to pass a preallocated structure chain to query information. For those cases there are two corresponding getter functions. One with a variadic template generating a structure chain of at least two elements to construct the return value:
+Sometimes the user has to pass a preallocated structure chain to query information. For those cases there are two corresponding getter functions.
+One with a variadic template generating a structure chain of at least two elements to construct the return value:
 
 ```c++
 // Query vk::MemoryRequirements2HR and vk::MemoryDedicatedRequirementsKHR when calling Device::getBufferMemoryRequirements2KHR:
@@ -313,11 +317,11 @@ vk::MemoryRequirements2KHR memoryRequirements = device.getBufferMemoryRequiremen
 Vulkan-Hpp provides a `vk::` class for each Vulkan handle, such as `vk::Instance`, `vk::Device`, `vk::Buffer`, and so on.
 These classes are binary-compatible with their corresponding C handles; they can be cast back and forth without any overhead.
 
-Member functions are also defined corresponding to a C API function which accepts the parent handle as the **first** parameter.
-For example, instead of `vkBindBufferMemory(device, ...)` write `device.bindBufferMemory(...)`.
+Member and free functions are also defined corresponding to a C API function which accepts the parent handle as the **first** parameter.
+For example, instead of `vkBindBufferMemory(device, ...)`, write `device.bindBufferMemory(...)`.
 
 >[!NOTE]
-> Note that these handles do **not** support RAII; their lifetimes need to be manually managed, just like in the C API.
+> Note that these handles do **not** support RAII; their lifetimes need to be manually managed with create-destroy pairs, just like in the C API.
 > For automatic resource management, refer to [Handles](./Handles.md).
 
 #### Passing structs to functions
@@ -358,102 +362,88 @@ vk::ImageUsageFlags iu1; // Initialize a bitmask with no bit set
 vk::ImageUsageFlags iu2 = {}; // Default-initialize with no bit set
 vk::ImageUsageFlags iu3 = vk::ImageUsageFlagBits::eColorAttachment; // initialize with a single value
 vk::ImageUsageFlags iu4 = vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage; // or two bits to get a bitmask
-vk::ImageUsageFlags iu5 = iu3 | vk::PipelineStageFlagBits::eVertexShader; // Compile-time error
+// vk::ImageUsageFlags iu5 = iu3 | vk::PipelineStageFlagBits::eVertexShader; // Compile-time error; unrelated flag bits
 PipelineShaderStageCreateInfo ci({} /* pass a flag without any bits set */, ...);
 ```
 
 ### Error handling
 
+Most Vulkan operations return a `VkResult` type, indicating whether the operation was successful, and if not, what kind of error occurred.
+This is mapped to `vk::Result` in Vulkan-Hpp.
+Vulkan-Hpp provides several ways to handle these result codes.
+There are two class templates, `vk::ResultValue<T>` and `vk::ResultValueType<T>`, which wrap return values along with their corresponding `vk::Result` codes.
+These class templates may be defined differently depending on the error-handling method chosen.
+
+<!-- TODO: Explain the class templates in greater detail. @asuessenbach? -->
+
 #### Exceptions
 
-By default Vulkan-Hpp has exceptions enabled. This means that Vulkan-Hpp checks the return code of each function call which returns a `vk::Result`. If `vk::Result` is a failure a `std::runtime_error` will be thrown. Since there is no need to return the error code anymore the C++ bindings can now return the actual desired return value, i.e. a vulkan handle. In those cases `vk::ResultValue<SomeType>::type` is defined as the returned type.
+>[!NOTE]
+> This feature can be **disabled** with the `VULKAN_HPP_NO_EXCEPTIONS` macro.
 
-To create a device you can now just write:
+By default, Vulkan-Hpp uses exceptions to handle errors.
+Each operation wraps its corresponding C API call returning a `VkResult`.
+This is cast to `vk::Result`.
+On success, the operation returns the desired return value directly: that is, the Vulkan handle or struct.
+In this case, `vk::ResultValue<SomeType>::type` is defined as the returned type.
+If the operation has clearly failed, a `std::runtime_error` will be immediately thrown.
+
+For example, consider creating a `vk::Device` from a `vk::PhysicalDevice`:
 
 ```c++
-vk::Device device = physicalDevice.createDevice(createInfo);
-```
-
-Some functions allow more than just `vk::Result::eSuccess` to be considered as a success code. For those functions, we always return a `vk::ResultValue<SomeType>`. An example is `acquireNextImage2KHR`, that can be used like this:
-
-```c++
-vk::ResultValue<uint32_t> result = device->acquireNextImage2KHR(acquireNextImageInfo);
-switch (result.result)
-{
- case vk::Result::eSuccess:
-  currentBuffer = result.value;
-  break;
- case vk::Result::eTimeout:
- case vk::Result::eNotReady:
- case vk::Result::eSuboptimalKHR:
-  // do something meaningful
-  break;
- default:
-  // should not happen, as other return codes are considered to be an error and throw an exception
-  break;
+try {
+  vk::Device device = physicalDevice.createDevice(createInfo); // `physicalDevice is a `vk::PhysicalDevice`
+}
+catch (std::exception const &e) {
+  // handle error and free resources
 }
 ```
 
-As time passes, some vulkan functions might change, such that they start to support more result codes than `vk::Result::eSuccess` as a success code. That logical change would not be visible in the C API, but in the C++ API, as such a function would now return a `vk::ResultValue<SomeType>` instead of just `SomeType`. In such (rare) cases, you would have to adjust your cpp-sources to reflect that API change.
-
-If exception handling is disabled by defining `VULKAN_HPP_NO_EXCEPTIONS` the type of `vk::ResultValue<SomeType>::type` is a struct holding a `vk::Result` and a `SomeType`. This struct supports unpacking the return values by using `std::tie`.
-
-In case you don’t want to use the `vk::ArrayProxy` and return value transformation, you can still call the plain C-style function. Below are three examples showing the 3 ways to use the API:
-
-The first snippet shows how to use the API without exceptions and the return value transformation:
+Some Vulkan operations such as `vkAcquireNextImageKHR` have **multiple** success states instead of only `vk::Result::eSuccess`.
+Their equivalents in Vulkan-Hpp always return `vk::ResultValue<SomeType>` that needs to be inspected.
+Consider the following example:
 
 ```c++
-// No exceptions, no return value transformation
-vk::ShaderModuleCreateInfo createInfo(...);
-vk::ShaderModule shader1;
-vk::Result result = device.createShaderModule(&createInfo, allocator, &shader1);
-if (result.result != vk::Result::eSuccess)
-{
-  handle error code;
-  cleanup?
-  return?
-}
+try {
+  vk::ResultValue<uint32_t> result = device.acquireNextImage2KHR(acquireNextImageInfo);
+  uint32_t currentBuffer = result.value;
 
-vk::ShaderModule shader2;
-vk::Result result = device.createShaderModule(&createInfo, allocator, &shader2);
-if (result != vk::Result::eSuccess)
-{
-  handle error code;
-  cleanup?
-  return?
+  switch (result.result) {
+    case vk::Result::eSuccess:
+      // do something meaningful
+      break;
+    case vk::Result::eTimeout:
+    case vk::Result::eNotReady:
+    case vk::Result::eSuboptimalKHR:
+      // do something meaningful
+      break;
+    default:
+#ifdef __cpp_lib_unreachable
+      std::unreachable(); // will never get here, as other return codes are errors, and will throw
+#elif defined(__GNUC__) || defined(__clang__)
+      __builtin_unreachable();
+#elif defined(_MSC_VER)
+      __assume(0);
+#endif
+  }
+}
+catch (std::exception const& e) {
+  // handle error and free resources
 }
 ```
 
-The second snippet shows how to use the API using return value transformation, but without exceptions. It’s already a little bit shorter than the original code:
+As Vulkan is updated, some operations m return additional success codes.
+The C API will be transparent to this, but the corresponding Vulkan-Hpp function signatures may change, and this will require updates to user code.
+These changes will be noted in [Breaking Changes](../README.md/#breaking-changes).
 
-```c++
-vk::ResultValue<ShaderModule> shaderResult1 = device.createShaderModule({...} /* createInfo temporary */);
-if (shaderResult1.result != vk::Result::eSuccess)
-{
-  handle error code;
-  cleanup?
-  return?
-}
+#### Return value transformation with exceptions disabled
 
-// std::tie support.
-vk::Result result;
-vk::ShaderModule shaderModule2;
-std::tie(result, shaderModule2) = device.createShaderModule({...} /* createInfo temporary */);
-if (result != vk::Result::eSuccess)
-{
-  handle error code;
-  cleanup?
-  return?
-}
-```
+As noted above, exceptions may be disabled by defining the `VULKAN_HPP_NO_EXCEPTIONS` macro.
+In this case `vk::ResultValue<SomeType>::type` is a struct containing `vk::Result` and `SomeType`.
+This struct may be unpacked as needed.
 
-A nicer way to unpack the result is using structured bindings in C++17. They will allow us to get the result with a single line of code:
-
-```c++
-auto [result, shaderModule2] = device.createShaderModule({...} /* createInfo temporary */);
-```
-
-Finally, the last code example is using exceptions and return value transformation. This is the default mode of the API.
+<!-- TODO: This shader module example needs to do more so that it's a bit more indicative of how to handle errors. -->
+Consider the following code which creates two shader modules in the default mode of Vulkan-Hpp, with exceptions enabled:
 
 ```c++
 vk::ShaderModule shader1;
@@ -469,7 +459,88 @@ catch(std::exception const &e)
 }
 ```
 
+With exceptions disabled, there are a few ways to handle the return values.
+
+1. Manually check the returned `vk::Result` code, and handle errors as needed with the C-style functions:
+
+   ```c++
+   // No exceptions, no return value transformation
+   vk::ShaderModuleCreateInfo createInfo(...);
+   vk::ShaderModule shader1;
+   vk::Result result = device.createShaderModule(&createInfo, allocator, &shader1);
+   if (result.result != vk::Result::eSuccess)
+   {
+     // handle error code;
+     // physicalDevice.destroyDevice(device, allocator); // cleanup; destroy device
+     // do other things
+   }
+
+   vk::ShaderModule shader2;
+   vk::Result result = device.createShaderModule(&createInfo, allocator, &shader2);
+   if (result != vk::Result::eSuccess)
+   {
+     // handle error code;
+     // cleanup?
+     // return?
+   }
+   ```
+
+2. Use the return value transformation provided by Vulkan-Hpp to unpack `vk::ResultValue<T>`.
+   `std::tie` may be used to unpack the return value into its components:
+
+   ```c++
+   vk::ResultValue<ShaderModule> shaderResult1 = device.createShaderModule({...} /* createInfo temporary */);
+   if (shaderResult1.result != vk::Result::eSuccess)
+   {
+     // handle error code;
+     // cleanup?
+     // return?
+   }
+
+   // std::tie support.
+   vk::Result result;
+   vk::ShaderModule shaderModule2;
+   std::tie(result, shaderModule2) = device.createShaderModule({...} /* createInfo temporary */);
+   if (result != vk::Result::eSuccess)
+   {
+     // handle error code;
+     // cleanup?
+     // return?
+   }
+   ```
+
+3. Use structured bindings to unpack `vk::ResultValue<T>`.
+   The binding can even be pushed into an [if-initialiser](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0305r0.html) statement:
+
+   >[!NOTE]
+   > Structured bindings and if-initialiser statements requires a compiler supporting at least C++17.
+
+   ```c++
+   if (auto const [result, shaderModule1] = device.createShaderModule({...} /* createInfo temporary */);
+       result != vk::Result::eSuccess)
+   {
+     // handle error code;
+     // cleanup?
+     // return?
+   }
+   if (auto const [result, shaderModule2] = device.createShaderModule({...} /* createInfo temporary */);
+       result != vk::Result::eSuccess)
+   {
+     // handle error code;
+     // cleanup?
+     // return?
+   }
+   ```
+
 #### `std::expected`
+
+>[!NOTE]
+> This feature requires a compiler and standard library supporting at least C++23, and must be explicitly **enabled** with the `VULKAN_HPP_USE_STD_EXPECTED` macro.
+
+When `std::expected` is available, `vk::ResultValue<T>::type` is defined as `std::expected<T, vk::Result>`.
+The result can then be monadically handled with `and_then`, `transform`, and other member functions of `std::expected`.
+
+<!-- TODO: Need an example. Perhaps use the same shader module. -->
 
 ## C++17: `[[nodiscard]]`
 
@@ -526,7 +597,7 @@ All over `vulkan.hpp`, there are a couple of calls to an assert function. By def
 
 By default, `VULKAN_HPP_ASSERT_ON_RESULT` will be used for checking results when `VULKAN_HPP_NO_EXCEPTIONS` is defined. If you want to handle errors by yourself, you can disable/customize it just like `VULKAN_HPP_ASSERT`.
 
-There are a couple of static assertions for each handle class and each struct in the file [`vulkan_static_assertions.hpp`](vulkan/vulkan_static_assertions.hpp). You might include that file in at least one of your source files. By defining `VULKAN_HPP_STATIC_ASSERT`, you can specify your own custom static assertion to be used for those cases. That is, by defining it to be a NOP, you can reduce your compilation time a little.
+There are a couple of static assertions for each handle class and each struct in [`vulkan_static_assertions.hpp`](../vulkan/vulkan_static_assertions.hpp). You might include that file in at least one of your source files. By defining `VULKAN_HPP_STATIC_ASSERT`, you can specify your own custom static assertion to be used for those cases. That is, by defining it to be a NOP, you can reduce your compilation time a little.
 
 ## Extensions / Per Device function pointers
 

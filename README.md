@@ -77,7 +77,7 @@ All other documentation is in [`docs`](./docs/):
 1. [Building](./docs/Building.md) describes how to configure, build, and generate new headers.
 2. [Usage](./docs/Usage.md) contains a detailed usage guide, and examples for Vulkan-Hpp.
 3. [Configuration](./docs/Configuration.md) lists all the options available to configure the behaviour and features of Vulkan-Hpp.
-4. [Handles](./docs/Handles.md) is an overview of the three different families of handles provided by Vulkan-Hpp. These allow semantics similar to `std::unique_ptr`, `std::shared_ptr`, and also the `vk::raii` handles, which are [RAII](https://en.cppreference.com/w/cpp/language/raii.html) (resource acquisition is initialisation) handles that offer object-oriented semantics for Vulkan handles.
+4. [Handles](./docs/Handles.md) is an overview of the three different families of handles provided by Vulkan-Hpp. These allow semantics similar to `std::unique_ptr`, `std::shared_ptr`, and also `vk::raii` types, which are [RAII](https://en.cppreference.com/w/cpp/language/raii.html) (resource acquisition is initialisation) handles that offer object-oriented semantics for Vulkan handles.
 
 > [!NOTE]
 >

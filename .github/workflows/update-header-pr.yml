@@ -20,12 +20,11 @@ jobs:
     
     - name: Install libraries
       run: |
-        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-        sudo echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy main" | sudo tee -a "/etc/apt/sources.list"
-        sudo echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-21 main" | sudo tee -a "/etc/apt/sources.list"
-        sudo apt-get update
-        sudo apt-get install -y clang-format-21
-
+        sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
+        export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+        brew install clang-format@21
+        export PATH="/home/linuxbrew/.linuxbrew/opt/clang-format/bin:$PATH"
+        
     - name: Update Submodules
       run: |
         cd Vulkan-Headers

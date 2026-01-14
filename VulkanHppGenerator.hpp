@@ -200,6 +200,10 @@ private:
 
   struct ParamData
   {
+    ParamData() = default;
+
+    ParamData( std::string const & name_, TypeInfo const & type_, int line ) : type( type_ ), name( name_ ), xmlLine( line ) {}
+
     TypeInfo                                    type          = {};
     std::string                                 name          = {};
     std::vector<std::string>                    arraySizes    = {};
@@ -218,7 +222,7 @@ private:
     std::string                handle       = {};
     std::vector<ParamData>     params       = {};
     std::set<std::string>      requiredBy   = {};
-    std::string                returnType   = {};
+    TypeInfo                   returnType   = {};
     std::vector<std::string>   successCodes = {};
     int                        xmlLine      = {};
   };
@@ -362,19 +366,12 @@ private:
     int                        xmlLine          = {};
   };
 
-  struct FuncPointerArgumentData
-  {
-    std::string name    = {};
-    TypeInfo    type    = {};
-    int         xmlLine = {};
-  };
-
   struct FuncPointerData
   {
-    std::vector<FuncPointerArgumentData> arguments  = {};
-    std::string                          require    = {};
-    TypeInfo                             returnType = {};
-    int                                  xmlLine    = {};
+    std::vector<ParamData> params     = {};
+    std::string            require    = {};
+    TypeInfo               returnType = {};
+    int                    xmlLine    = {};
   };
 
   struct HandleData
@@ -1359,7 +1356,7 @@ private:
                                                                                std::set<size_t> const &                  skippedParams ) const;
   void                                                   readCommand( tinyxml2::XMLElement const * element );
   std::pair<bool, ParamData>                             readCommandParam( tinyxml2::XMLElement const * element, std::vector<ParamData> const & params );
-  std::pair<std::string, std::string>                    readCommandProto( tinyxml2::XMLElement const * element );
+  std::pair<std::string, TypeInfo>                       readCommandProto( tinyxml2::XMLElement const * element, std::string const & prefix );
   void                                                   readCommands( tinyxml2::XMLElement const * element );
   std::string                                            readComment( tinyxml2::XMLElement const * element ) const;
   DeprecateData                                          readDeprecateData( tinyxml2::XMLElement const * element ) const;

@@ -18195,6 +18195,8 @@ namespace
 
 int main( int argc, char const ** argv )
 {
+  std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+
   if ( ( argc % 2 ) == 0 )
   {
     std::cout << "VulkanHppGenerator usage: VulkanHppGenerator [-f filename][-api [vulkan|vulkanbase|vulkansc]]" << std::endl;
@@ -18229,7 +18231,7 @@ int main( int argc, char const ** argv )
     return -1;
   }
 
-#if defined( CLANG_FORMAT_EXECUTABLE )
+#if defined( CLANG_FORMAT_EXECUTABLE ) && !defined( VULKAN_HPP_NO_FORMAT )
   std::cout << "VulkanHppGenerator: Found ";
   std::string commandString = "\"" CLANG_FORMAT_EXECUTABLE "\" --version ";
   const int   ret           = std::system( commandString.c_str() );
@@ -18273,6 +18275,11 @@ int main( int argc, char const ** argv )
     // this modifies the generator data and needs to be done after all the other generations are done
     generator.distributeSecondLevelCommands();
     generator.generateRAIIHppFile();
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::cout << "VulkanHppGenerator: successfully generated Vulkan-Hpp in "
+              << std::chrono::duration_cast<std::chrono::seconds>( end - start ).count()
+              << " seconds" << std::endl;
   }
   catch ( std::exception const & e )
   {

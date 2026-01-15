@@ -1,4 +1,13 @@
-## UniqueHandle for automatic resource management
+# Handles in Vulkan-Hpp
+
+The default handle types in Vulkan-Hpp are thin wrappers around the Vulkan C handles. They provide type safety and convenience functions, but do not manage the lifetime of the underlying Vulkan resources.
+To facilitate automatic resource management, Vulkan-Hpp provides two additional handle types: `vk::UniqueHandle` and `vk::SharedHandle`. Additionally, there are RAII-style classes in the `vk::raii` namespace that encapsulate resource management.
+
+- [`vk::UniqueHandle`](#vkuniquehandle)
+- [`vk::SharedHandle`](#vksharedhandle)
+- [`vk::raii`](#vkraii)
+
+## `vk::UniqueHandle`
 
 Vulkan-Hpp provides a `vk::UniqueHandle<Type, Deleter>` interface. For each Vulkan handle type `vk::Type` there is a unique handle `vk::UniqueType` which will delete the underlying Vulkan resource upon destruction, e.g. `vk::UniqueBuffer` is the unique handle for `vk::Buffer`.
 
@@ -6,7 +15,7 @@ For each function which constructs a Vulkan handle of type `vk::Type` Vulkan-Hpp
 
 Note that using `vk::UniqueHandle` comes at a cost since most deleters have to store the `vk::AllocationCallbacks` and parent handle used for construction because they are required for automatic destruction.
 
-## SharedHandle
+## `vk::SharedHandle`
 
 Vulkan-Hpp provides a `vk::SharedHandle<Type>` interface. For each Vulkan handle type `vk::Type` there is a shared handle `vk::SharedType` which will delete the underlying Vulkan resource upon destruction, e.g. `vk::SharedBuffer` is the shared handle for `vk::Buffer`.
 
@@ -70,7 +79,7 @@ protected:
 
 The API will be extended to provide creation functions in the future.
 
-## RAII-classes
+## `vk::raii`
 
 In addition to `vk::UniqueHandles` and `vk::SharedHandles`, there's a set of wrapper classes for all the handle types that follow the RAII-paradigm (resource acquisition is initialization), provided in the `vk::raii` namespace.
 

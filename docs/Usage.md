@@ -18,11 +18,10 @@ This manual assumes familiarity with Vulkan; it details improvements and differe
     - [Exceptions](#exceptions)
     - [Return value transformation with exceptions disabled](#return-value-transformation-with-exceptions-disabled)
     - [`std::expected`](#stdexpected)
-- [C++17: `[[nodiscard]]`](#c17-nodiscard)
-- [Enumerations](#enumerations)
+  - [Feature and property enumerations](#feature-and-property-enumerations)
+  - [Extensions and per-device function pointers](#extensions-and-per-device-function-pointers)
 - [Custom allocators](#custom-allocators)
 - [Custom assertions](#custom-assertions)
-- [Extensions / Per Device function pointers](#extensions--per-device-function-pointers)
 - [Type traits](#type-traits)
 - [vk::Format trait functions](#vkformat-trait-functions)
 - [Hashing Vulkan types](#hashing-vulkan-types)
@@ -33,6 +32,7 @@ This manual assumes familiarity with Vulkan; it details improvements and differe
     - [Command-line usage](#command-line-usage)
 - [Samples and Tests](#samples-and-tests)
 - [Compile time issues](#compile-time-issues)
+- [C++17: `[[nodiscard]]`](#c17-nodiscard)
 - [Strict aliasing issue](#strict-aliasing-issue)
 
 ## Naming convention
@@ -68,6 +68,8 @@ For example:
 Flag bits are handled similarly; additionally, the `_BIT` suffix is removed.
 
 ## Vulkan fundamentals
+
+
 
 ### Structs
 
@@ -534,21 +536,17 @@ With exceptions disabled, there are a few ways to handle the return values.
 
 #### `std::expected`
 
+<!-- TODO: Need an example. Perhaps use the same shader module. -->
 >[!NOTE]
 > This feature requires a compiler and standard library supporting at least C++23, and must be explicitly **enabled** with the `VULKAN_HPP_USE_STD_EXPECTED` macro.
 
 When `std::expected` is available, `vk::ResultValue<T>::type` is defined as `std::expected<T, vk::Result>`.
 The result can then be monadically handled with `and_then`, `transform`, and other member functions of `std::expected`.
 
-<!-- TODO: Need an example. Perhaps use the same shader module. -->
+### Feature and property enumerations
 
-## C++17: `[[nodiscard]]`
-
-With C++17 and above, some functions are attributed with `[[nodiscard]]`, resulting in a warning if you don't use the return value in any way. You can switch those warnings off by defining `VULKAN_HPP_NO_NODISCARD_WARNINGS`.
-
-## Enumerations
-
-For the return value transformation, there's one special class of return values which require special handling: Enumerations. For enumerations you usually have to write code like this:
+Related to error-handing, Vulkan enumerations require more careful handling of return values.
+The following code is usually typical:
 
 ```c++
 std::vector<LayerProperties, Allocator> properties;
@@ -566,40 +564,18 @@ do
      <VkLayerProperties*>(properties.data())));
   }
 } while (result == vk::Result::eIncomplete);
-// it's possible that the count has changed, start again if properties was not big enough
+// The count may have changed here, start again if properties was not big enough
 properties.resize(propertyCount);
 ```
 
-Since writing this loop over and over again is tedious and error prone the C++ binding takes care of the enumeration so that you can just write:
+This loop is tedious and error-prone, and therefore Vulkan-Hpp provides a wrapper that directly returns `std::vector`.
+The above code can be replaced by the following single line:
 
 ```c++
-std::vector<LayerProperties> properties = physicalDevice.enumerateDeviceLayerProperties();
+std::vector<vk::LayerProperties> properties = physicalDevice.enumerateDeviceLayerProperties();
 ```
 
-## Custom allocators
-
-Sometimes it is required to use `std::vector` with custom allocators. Vulkan-Hpp supports vectors with custom allocators as input for `vk::ArrayProxy` and for functions which do return a vector. For the latter case, add your favorite custom allocator as template argument to the function call like this:
-
-```c++
-std::vector<LayerProperties, MyCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties<MyCustomAllocator>();
-```
-
-You can also use a stateful custom allocator by providing it as an argument to those functions. Unfortunately, to make the compilers happy, you also need to explicitly set the Dispatch argument. To get the default there, a simple `{}` would suffice:
-
-```c++
-MyStatefulCustomAllocator allocator;
-std::vector<LayerProperties, MyStatefulCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties(allocator, {});
-```
-
-## Custom assertions
-
-All over `vulkan.hpp`, there are a couple of calls to an assert function. By defining `VULKAN_HPP_ASSERT`, you can specifiy your own custom assert function to be called instead.
-
-By default, `VULKAN_HPP_ASSERT_ON_RESULT` will be used for checking results when `VULKAN_HPP_NO_EXCEPTIONS` is defined. If you want to handle errors by yourself, you can disable/customize it just like `VULKAN_HPP_ASSERT`.
-
-There are a couple of static assertions for each handle class and each struct in [`vulkan_static_assertions.hpp`](../vulkan/vulkan_static_assertions.hpp). You might include that file in at least one of your source files. By defining `VULKAN_HPP_STATIC_ASSERT`, you can specify your own custom static assertion to be used for those cases. That is, by defining it to be a NOP, you can reduce your compilation time a little.
-
-## Extensions / Per Device function pointers
+### Extensions and per-device function pointers
 
 The Vulkan loader exposes only the Vulkan core functions and a limited number of extensions. To use Vulkan-Hpp with extensions it's required to have either a library which provides stubs to all used Vulkan functions or to tell Vulkan-Hpp to dispatch those functions pointers. Vulkan-Hpp provides a per-function dispatch mechanism by accepting a dispatch class as last parameter in each function call. The dispatch class must provide a callable type for each used Vulkan function. Vulkan-Hpp provides one implementation, `vk::detail::DispatchLoaderDynamic`, which fetches all function pointers known to the library.
 
@@ -666,6 +642,29 @@ After the second step above, the dispatcher is fully functional. Adding the thir
 In some cases the storage for the `vk::detail::DispatchLoaderDynamic` should be embedded in a DLL. For those cases you need to define `VULKAN_HPP_STORAGE_SHARED` to tell Vulkan-Hpp that the storage resides in a DLL. When compiling the DLL with the storage it is also required to define `VULKAN_HPP_STORAGE_SHARED_EXPORT` to export the required symbols.
 
 For all functions, that `VULKAN_HPP_DEFAULT_DISPATCHER` is the default for the last argument to that function. If you want to explicitly provide the dispatcher for each and every function call (when you have multiple dispatchers for different devices, for example) and you want to make sure, that you don't accidentally miss any function call, you can define `VULKAN_HPP_NO_DEFAULT_DISPATCHER` before you include `vulkan.hpp` to remove that default argument.
+
+## Custom allocators
+
+Sometimes it is required to use `std::vector` with custom allocators. Vulkan-Hpp supports vectors with custom allocators as input for `vk::ArrayProxy` and for functions which do return a vector. For the latter case, add your favorite custom allocator as template argument to the function call like this:
+
+```c++
+std::vector<vk::LayerProperties, MyCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties<MyCustomAllocator>();
+```
+
+You can also use a stateful custom allocator by providing it as an argument to those functions. Unfortunately, to make the compilers happy, you also need to explicitly set the Dispatch argument. To get the default there, a simple `{}` would suffice:
+
+```c++
+MyStatefulCustomAllocator allocator;
+std::vector<LayerProperties, MyStatefulCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties(allocator, {});
+```
+
+## Custom assertions
+
+All over `vulkan.hpp`, there are a couple of calls to an assert function. By defining `VULKAN_HPP_ASSERT`, you can specifiy your own custom assert function to be called instead.
+
+By default, `VULKAN_HPP_ASSERT_ON_RESULT` will be used for checking results when `VULKAN_HPP_NO_EXCEPTIONS` is defined. If you want to handle errors by yourself, you can disable/customize it just like `VULKAN_HPP_ASSERT`.
+
+There are a couple of static assertions for each handle class and each struct in [`vulkan_static_assertions.hpp`](../vulkan/vulkan_static_assertions.hpp). You might include that file in at least one of your source files. By defining `VULKAN_HPP_STATIC_ASSERT`, you can specify your own custom static assertion to be used for those cases. That is, by defining it to be a NOP, you can reduce your compilation time a little.
 
 ## Type traits
 
@@ -930,6 +929,10 @@ Currently, there are just a couple of such defines:
 - `VULKAN_HPP_NO_TO_STRING`, which removes the various `vk::to_string` functions on enums and bitmasks.
 - `VULKAN_HPP_USE_REFLECT`, this one needs to be defined to use the reflection function on structures. It's very slow to compile, though!
 - `VULKAN_HPP_USE_STD_EXPECTED`, this one needs to be defined to use `std::expected` for functions that return a value or a vk::Result.
+
+## C++17: `[[nodiscard]]`
+
+With C++17 and above, some functions are attributed with `[[nodiscard]]`, resulting in a warning if you don't use the return value in any way. You can switch those warnings off by defining `VULKAN_HPP_NO_NODISCARD_WARNINGS`.
 
 ## Strict aliasing issue
 

@@ -33,7 +33,7 @@ This manual assumes familiarity with Vulkan; it details improvements and differe
 - [Samples and Tests](#samples-and-tests)
 - [Compile time issues](#compile-time-issues)
 - [C++17: `[[nodiscard]]`](#c17-nodiscard)
-- [Strict aliasing issue](#strict-aliasing-issue)
+- [Strict aliasing](#strict-aliasing)
 
 ## Naming convention
 
@@ -934,6 +934,6 @@ Currently, there are just a couple of such defines:
 
 With C++17 and above, some functions are attributed with `[[nodiscard]]`, resulting in a warning if you don't use the return value in any way. You can switch those warnings off by defining `VULKAN_HPP_NO_NODISCARD_WARNINGS`.
 
-## Strict aliasing issue
+## Strict aliasing
 
 As Vulkan-Hpp often needs to switch between C++ vk-types and corresponding bit-identical C-types, using `reinterpret_cast`, it is highly recommended to use the compile option `-fno-strict-aliasing` to prevent potentially breaking compile optimizations.

@@ -29,7 +29,9 @@ using namespace std::literals;
 namespace
 {
   template <typename T>
-  bool                                        containsByName( std::vector<T> const & values, std::string const & name );
+  bool containsByName( std::vector<T> const & values, std::string const & name );
+  template <typename T>
+  bool                                        containsByNameOrAlias( std::map<std::string, T> const & values, std::string const & name );
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names );
   template <typename T>
   typename std::vector<T>::const_iterator findByName( std::vector<T> const & values, std::string const & name );
@@ -966,7 +968,7 @@ void VulkanHppGenerator::checkStructMemberSelectorConnection( std::string const 
   {
     auto selectorIt = findByName( members, selector );
     assert( selectorIt != members.end() );
-    auto selectorEnumIt = m_enums.find( selectorIt->type.type );
+    auto selectorEnumIt = findByNameOrAlias( m_enums, selectorIt->type.type );
     assert( selectorEnumIt != m_enums.end() );
     auto unionIt = m_structs.find( memberType );
     assert( ( unionIt != m_structs.end() ) && unionIt->second.isUnion );
@@ -16427,8 +16429,9 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
       memberData.selector = attribute.second;
       auto selectorIt     = findByName( members, memberData.selector );
       checkForError( selectorIt != members.end(), line, "member attribute <selector> holds unknown value <" + memberData.selector + ">" );
-      checkForError(
-        m_enums.contains( selectorIt->type.type ), line, "member attribute <selector> references unknown enum type <" + selectorIt->type.type + ">" );
+      checkForError( containsByNameOrAlias( m_enums, selectorIt->type.type ),
+                     line,
+                     "member attribute <selector> references unknown enum type <" + selectorIt->type.type + ">" );
     }
     else if ( attribute.first == "values" )
     {
@@ -17991,6 +17994,13 @@ namespace
   bool containsByName( std::vector<T> const & values, std::string const & name )
   {
     return std::ranges::any_of( values, [&name]( T const & value ) { return value.name == name; } );
+  }
+
+  template <typename T>
+  bool containsByNameOrAlias( std::map<std::string, T> const & values, std::string const & name )
+  {
+    return std::ranges::any_of( values,
+                                [&name]( std::pair<std::string, T> const & value ) { return value.first == name || value.second.aliases.contains( name ); } );
   }
 
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names )

@@ -579,71 +579,84 @@ std::vector<vk::LayerProperties> properties = physicalDevice.enumerateDeviceLaye
 
 ### Extensions and per-device function pointers
 
-The Vulkan loader exposes only the Vulkan core functions and a limited number of extensions. To use Vulkan-Hpp with extensions it's required to have either a library which provides stubs to all used Vulkan functions or to tell Vulkan-Hpp to dispatch those functions pointers. Vulkan-Hpp provides a per-function dispatch mechanism by accepting a dispatch class as last parameter in each function call. The dispatch class must provide a callable type for each used Vulkan function. Vulkan-Hpp provides one implementation, `vk::detail::DispatchLoaderDynamic`, which fetches all function pointers known to the library.
+The default Vulkan loader, `vulkan-1` exposes only the Vulkan core functions and a limited number of extensions.
+To use Vulkan-Hpp with extensions, a mechanism must be provided such that _all_ Vulkan operations have corresponding stubs, or can be dispatched to function pointers.
+Vulkan-Hpp provides a per-function dispatch mechanism where each function representing a Vulkan operation accepts as its last parameter a dispatch class.
+This class must provide a callable type for each Vulkan function that is required.
 
+<!-- TODO: What is this code sample exactly?  -->
 ```c++
-// Providing a function pointer resolving vkGetInstanceProcAddr, just the few functions not depending an an instance or a device are fetched
+// Function pointer resolving `vkGetInstanceProcAddr`, only the free functions that do not require a VkInstance or a VkDevice are fetched
 vk::detail::DispatchLoaderDynamic dld(getInstanceProcAddr);
 
-// Providing an already created VkInstance and a function pointer resolving vkGetInstanceProcAddr, all functions are fetched
+// Previously-created `VkInstance` and a function pointer resolving `vkGetInstanceProcAddr`, all functions are fetched
 vk::detail::DispatchLoaderDynamic dldi(instance, getInstanceProcAddr);
 
-// Providing also an already created VkDevice and optionally a function pointer resolving vkGetDeviceProcAddr, all functions are fetched as well, but now device-specific functions are fetched via vkDeviceGetProcAddr.
-vk::detail::DispatchLoaderDynamic dldid( nstance, getInstanceProcAddr, device);
+//  Previously-created `VkDevice` and optionally a function pointer resolving `vkGetDeviceProcAddr`, all functions are fetched as well, but now device-specific functions are fetched via `vkDeviceGetProcAddr`.
+vk::detail::DispatchLoaderDynamic dldid(instance, getInstanceProcAddr, device);
 
 // Pass dispatch class to function call as last parameter
 device.getQueue(graphics_queue_family_index, 0, &graphics_queue, dldid);
 ```
 
-To use the `vk::detail::DispatchLoaderDynamic` as the default dispatcher (means: you don't need to explicitly add it to every function call),  you need to  `#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1`, and have the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code to provide storage for that default dispatcher. Then you can use it by the macro `VULKAN_HPP_DEFAULT_DISPATCHER`, as is shown in the code snippets below.
-Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-step process, where you have three choices for the first step:
+Vulkan-Hpp provides a default dispatch loader, `vk::detail::DispatchLoaderDynamic`, which fetches all function pointers known to the library.
+To use this as the default dispatcher (that is, it does not need to be explicitly added to every function call), write `#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1`, and have the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in user source code to provide storage for that default dispatcher.
+Then, the macro `VULKAN_HPP_DEFAULT_DISPATCHER` may be used freely, as demonstrated below.
+Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-step process, with three choices for the first step:
 
-1. Before any call into a vk-function you need to initialize the dynamic dispatcher by one of three methods
+1. Before any call into a vk-function, initialise the dynamic dispatcher:
 
-- Let Vulkan-Hpp do all the work by internally using a little helper class `vk::detail::DynamicLoader`:
+   - Let Vulkan-Hpp do all the work with `vk::detail::DynamicLoader`:
 
-```c++
-    VULKAN_HPP_DEFAULT_DISPATCHER.init();
-```
+     ```c++
+     VULKAN_HPP_DEFAULT_DISPATCHER.init();
+     ```
 
-- Use your own dynamic loader, which just needs to provide a templated function `getProcAddress` (compare with `vk::detail::DynamicLoader` in `vulkan.hpp`):
+   - Use your own dynamic loader, which needs to provide a templated function `getProcAddress`. Refer to the implementation of `vk::detail::DynamicLoader` in `vulkan.hpp` for an example.
 
-```c++
-    YourDynamicLoader ydl;
-    VULKAN_HPP_DEFAULT_DISPATCHER.init(ydl);
-```
+     <!-- TODO: Add a skeleton implementation of `struct YourDynamicLoader`? -->
+     ```c++
+     YourDynamicLoader ydl;
+     VULKAN_HPP_DEFAULT_DISPATCHER.init(ydl);
+     ```
 
-> [!NOTE]
-> You need to keep that dynamic loader object alive until after the last call to a vulkan function in your program. For example by making it static, or storing it globally.
+     > [!NOTE]
+     > You need to keep that dynamic loader object alive until after the last call to a vulkan function in your program. For example by making it static, or storing it globally.
 
-- Use your own initial function pointer of type `PFN_vkGetInstanceProcAddr`:
+   - Use your own initial function pointer with a signature matching `PFN_vkGetInstanceProcAddr`:
 
-```c++
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = your_own_function_pointer_getter();
-    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
-```
+     ```c++
+         PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = your_own_function_pointer_getter();
+         VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+     ```
 
-1. initialize it with a `vk::Instance` to get all the other function pointers:
+1. Initialise it with a `vk::Instance` to get all the other function pointers:
 
-```c++
-    vk::Instance instance = vk::createInstance({}, nullptr);
-    VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
-```
+   ```c++
+       vk::Instance instance = vk::createInstance({}, nullptr);
+       VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
+   ```
 
-1. optionally initialize it with a `vk::Device` to get device-specific function pointers
+1. Optionally initialise it with a `vk::Device` to get device-specific function pointers:
 
-```c++
-    std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
-    assert(!physicalDevices.empty());
-    vk::Device device = physicalDevices[0].createDevice({}, nullptr);
-    VULKAN_HPP_DEFAULT_DISPATCHER.init(device);
-```
+   ```c++
+       std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
+       assert(!physicalDevices.empty());
+       vk::Device device = physicalDevices[0].createDevice({}, nullptr);
+       VULKAN_HPP_DEFAULT_DISPATCHER.init(device);
+   ```
 
-After the second step above, the dispatcher is fully functional. Adding the third step can potentially result in more efficient code. But if you intend to use multiple devices, you could just omit that third step and let the driver do the device-dispatching.
+After step 2, the dispatcher is fully functional.
+Adding the third step can potentially result in more efficient code.
+If you intend to use multiple devices, this last step can be omitted, and delegated to the driver instead.
 
-In some cases the storage for the `vk::detail::DispatchLoaderDynamic` should be embedded in a DLL. For those cases you need to define `VULKAN_HPP_STORAGE_SHARED` to tell Vulkan-Hpp that the storage resides in a DLL. When compiling the DLL with the storage it is also required to define `VULKAN_HPP_STORAGE_SHARED_EXPORT` to export the required symbols.
+<!-- TODO: what cases? -->
+In some cases, `vk::detail::DispatchLoaderDynamic` may need to be stored in a dynamic library.
+To support this use-case, define the macro `VULKAN_HPP_STORAGE_SHARED` so that the storage for the dispatcher is set up appropriately.
+When compiling the dynamic library with the storage, the macro `VULKAN_HPP_STORAGE_SHARED_EXPORT` must additionally be defined to export the required symbols.
 
-For all functions, that `VULKAN_HPP_DEFAULT_DISPATCHER` is the default for the last argument to that function. If you want to explicitly provide the dispatcher for each and every function call (when you have multiple dispatchers for different devices, for example) and you want to make sure, that you don't accidentally miss any function call, you can define `VULKAN_HPP_NO_DEFAULT_DISPATCHER` before you include `vulkan.hpp` to remove that default argument.
+As mentioned above, `VULKAN_HPP_DEFAULT_DISPATCHER` is the defaulted last argument to all Vulkan functions.
+To explicitly provide the dispatcher for every function call (for example, to support multiple dispatchers for different devices), define `VULKAN_HPP_NO_DEFAULT_DISPATCHER` preferably in the build system or command-line invocation of the compiler, or before writing `#include <vulkan/vulkan.hpp>` to disable the default argument.
 
 ## C++ language and library features
 

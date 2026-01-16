@@ -28,9 +28,8 @@ This manual assumes familiarity with Vulkan; it details improvements and differe
     - [`vk::Format` trait functions](#vkformat-trait-functions)
   - [Hashing Vulkan types](#hashing-vulkan-types)
   - [C++20 named module](#c20-named-module)
-  - [Compiler support](#compiler-support)
-    - [Usage with CMake](#usage-with-cmake)
-    - [Command-line usage](#command-line-usage)
+    - [Compiler support](#compiler-support)
+    - [CMake usage](#cmake-usage)
 - [Miscellaneous features and notes](#miscellaneous-features-and-notes)
   - [Extension Inspection](#extension-inspection)
 - [Samples and Tests](#samples-and-tests)
@@ -751,80 +750,103 @@ Define `VULKAN_HPP_HASH_COMBINE` to customise the hash-combining algorithm for s
 
 ### C++20 named module
 
-Vulkan-Hpp provides a [C++ named module](https://en.cppreference.com/w/cpp/language/modules), `vulkan_hpp` in [`vulkan.cppm`](../vulkan/vulkan.cppm).
-C++ modules are intended to supersede header files. Modules tend to considerably improve compile times, as declarations and definitions may be easily shared across translation units without repeatedly parsing headers.
-This is particularly applicable to Vulkan-Hpp, as the generated headers can be very long.
-
-Users who are able to upgrade to a recent toolchain (detailed below) are recommended to use the module instead of the headers, and report bugs and issues.
-
-Vulkan-Hpp provides a [C++ named module](https://en.cppreference.com/w/cpp/language/modules), `vulkan` in [`vulkan.cppm`](vulkan/vulkan.cppm).
-C++ modules are intended to supersede header files. Modules have potential to drastically improve compilation times for large projects, as declarations and definitions may be easily shared across translation units without repeatedly parsing headers.
-Vulkan-Hpp has some extremely long headers (e.g. [`vulkan_structs.hpp`](vulkan/vulkan_structs.hpp)), and the C++ module is likely to shorten compile times for projects currently using it.
-
-### Compiler support
-
-The named module requires a recent compiler with complete C++23 support:
-
-- MSVC compiler version 19.40 or later (as reported by `cl.exe`)
-- Clang 19.0.0 or later
-- GCC 15.1 or later
-
-If you intend to use CMake's C++ module support (and possibly Ninja), then more recent tools are required:
-
-- Visual Studio 2022 17.4 or later (providing `cl.exe` 19.34 or later)
-- Clang 17.0.0 or later
-- GCC 14.0 or later
-- CMake 3.28 or later
-- Ninja 1.10.2 or later
-
 > [!WARNING]
-> The Vulkan-Hpp C++ named module is still experimental. Some suggested ways to use it in your projects are below. The long-term goal is to submit patches to the CMake [`FindVulkan`](https://cmake.org/cmake/help/latest/module/FindVulkan.html) module so that users may transparently configure the named module, without needing to declare it as an additional library in consumer CMake code.
+> The Vulkan-Hpp C++ named module is still **experimental** and its interface and usage may change often and **without prior notice** to support better usability and integration.
+> We strongly suggest using the **latest** possible toolchains and build systems, as older compilers may have incomplete support, or may emit internal compiler errors (ICEs).
 
-#### Usage with CMake
+Vulkan-Hpp provides a [C++ named module](https://clang.llvm.org/docs/StandardCPlusPlusModules.html#standard-c-named-modules), `vulkan` in [`vulkan.cppm`](../vulkan/vulkan.cppm).
+C++ modules are intended to supersede header files.
+Modules tend to considerably improve compile times, as declarations and definitions may be easily shared across translation units without repeatedly parsing headers.
+This is particularly applicable to Vulkan-Hpp, as the generated headers are very large.
+
+Users who are able to upgrade to a recent toolchain (detailed below) should try to use the module instead of the headers, and report bugs and issues.
+
+<!-- TODO: leave this here or move to `Building`? There's already a small warning there. -->
+#### Compiler support
+
+The named module has been tested with the following toolchains:
+
+- MSVC 19.44 or later (as reported by the banner in `cl.exe`)
+- Clang 21.1.8 or later
+- GCC 15.1 or later
+- CMake version 4.2.1 or later
+
+#### CMake usage
 
 CMake is recommended for use with the Vulkan-Hpp named module, as it provides a convenient platform-agnostic way to configure your project.
-CMake version 3.28 or later is required to support C++ modules. Refer to the [CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html) on the topic.
+Version **3.30** or later is required for the Vulkan-Hpp module, which uses the standard library module feature.
+Refer to the [CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html) on the topic.
 
 CMake provides the [FindVulkan module](https://cmake.org/cmake/help/latest/module/FindVulkan.html), which may be used to source the Vulkan SDK and Vulkan headers on your system.
 
-```cmake# find Vulkan SDK
+When invoking CMake, make sure to provide the following UUID to enable CMake's experimental support for the C++ standard library module.
+This may also be set in a [CMake preset file](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#configure-preset), in the `cacheVariables` key for a configure preset.
+
+```bash
+cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 ...
+```
+
+A complete example `vulkan_cxx_module.cmake` file for a project using the Vulkan-Hpp named module is provided below.
+<!-- TODO: @M2-TE, any improvements here? Should we leave this out until CMake lands full support for `module std`? -->
+```cmake
+if( CMAKE_VERSION VERSION_LESS "4.2.1" )
+  message( FATAL_ERROR "CMake version ≥ 4.2.1 is required for C++ modules. "
+           "Found ${CMAKE_VERSION}."
+)
+
+# find Vulkan SDK
 find_package( Vulkan REQUIRED )
 # Require Vulkan version ≥ 1.3.256 (earliest version when the Vulkan module was available)
 if( ${Vulkan_VERSION} VERSION_LESS "1.3.256" )
   message( FATAL_ERROR "Minimum required Vulkan version for C++ modules is 1.3.256. "
            "Found ${Vulkan_VERSION}."
-  )
+)
 endif()
-# set up Vulkan C++ module as a library
-add_library( VulkanHppModule )
+
+# set up Vulkan C++ module as a static library
+add_library( VulkanHppModule STATIC )
 target_sources( VulkanHppModule PRIVATE
   FILE_SET CXX_MODULES
   BASE_DIRS ${Vulkan_INCLUDE_DIR}
-  FILES ${Vulkan_INCLUDE_DIR}/vulkan/vulkan.cppm
+  FILES
+    ${Vulkan_INCLUDE_DIR}/vulkan/vulkan.cppm
+    ${Vulkan_INCLUDE_DIR}/vulkan/vulkan_video.cppm
 )
-target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
+
+# Configure the module target: C++23 standard, link to Vulkan headers, enable C++ standard library module
+target_compile_features( VulkanHppModule PUBLIC cxx_std_23 )
 target_link_libraries( VulkanHppModule PUBLIC Vulkan::Vulkan )
-# link Vulkan C++ module into your project
-add_executable( YourProject main.cpp )
+set_target_properties( VulkanHppModule PROPERTIES
+  CXX_MODULE_STD ON
+)
+
+# link Vulkan C++ module into user project
+add_executable( YourProject main.cpp Engine.cpp ... )
 target_link_libraries( YourProject PRIVATE VulkanHppModule )
 ```
 
-Configuring the named module is straightforward; add any required Vulkan-Hpp feature macros (listed in [Configuration Options](#configuration-options)) to `target_compile_definitions`. For instance:
+Configuring the named module is straightforward; add any required Vulkan-Hpp feature macros listed in [Configuration](./Configuration.md) (or any C macros) to `target_compile_definitions`.
+Ensure the macros are `PUBLIC` so they can be propagated to user code.
+For instance:
 
-```cmake# Disable exceptions, disable smart handles, disable constructors
-target_compile_definitions( VulkanHppModule PRIVATE
+```cmake
+# Disable exceptions, disable smart handles, disable constructors for structs
+target_compile_definitions( VulkanHppModule PUBLIC
   VULKAN_HPP_NO_EXCEPTIONS
   VULKAN_HPP_NO_SMART_HANDLE
   VULKAN_HPP_NO_CONSTRUCTORS
 )
 ```
 
-It is important to have `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` defined equally for both the module and an importing project. To use the [dynamic dispatcher](#extensions--per-device-function-pointers), set it to `1`; otherwise, leave it undefined or set it to `0`. In CMake, do this in a single line with `target_compile_definitions` and the `PUBLIC` scope:
+To use the [dynamic dispatcher](#extensions-and-per-device-function-pointers), define the `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` macro to `1`; otherwise, leave it undefined or set it to `0`.
+This must be defined to the same value for both the module and an importing project.
+In CMake, do this in a single line with `target_compile_definitions` and the `PUBLIC` scope:
 
 ```cmake
 target_compile_definitions( VulkanHppModule PUBLIC
   VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1
-)# ...
+)
+# ...
 target_link_libraries( YourProject PRIVATE VulkanHppModule )
 ```
 
@@ -834,8 +856,10 @@ Furthermore, you may also prefer linking `VulkanHppModule` to just the `Vulkan::
 target_link_libraries( VulkanHppModule PUBLIC Vulkan::Headers )
 ```
 
-Finally, supply the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code, just as in the non-module case. In order to have that macro available, include [`vulkan_hpp_macros.hpp`](vulkan/vulkan_hpp_macros.hpp), a lightweight header providing all Vulkan-Hpp related macros and defines. And as explained above, you need to initialize that dispatcher in two or three steps:
+Finally, supply the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code, just as in the non-module case.
+In order to have that macro available, include [`vulkan_hpp_macros.hpp`](../vulkan/vulkan_hpp_macros.hpp), a lightweight header providing all Vulkan-Hpp related macros and defines.
 
+<!-- TODO: is this example correct? -->
 ```cpp
 import vulkan;
 
@@ -857,37 +881,37 @@ auto main(int argc, char* const argv[]) -> int
 }
 ```
 
-An example is provided in [`tests/Cpp20Modules/Cpp20Modules.cpp`](tests/Cpp20Modules/Cpp20Modules.cpp).
+<!-- TODO: this test is gone. @M2-TE? -->
+<!-- An example is provided in [`tests/Cpp20Modules/Cpp20Modules.cpp`](tests/Cpp20Modules/Cpp20Modules.cpp). -->
 
-Finally, you can configure and build your project as usual.
-Note that CMake currently only supports the Ninja and Visual Studio generators for C++ modules.
+<!-- TODO: this section is massively outdated with `import std`. -->
+<!-- #### Command-line usage
 
-#### Command-line usage
-
-If you want to use the Vulkan-Hpp C++ module without CMake, you must first pre-compile it, and then import it into your project.
+To use the Vulkan-Hpp C++ module without CMake, you must first pre-compile it, and then import it into your project.
 You will also need to define any macros that control various features of Vulkan-Hpp, such as `VULKAN_HPP_NO_EXCEPTIONS` and `VULKAN_HPP_NO_SMART_HANDLE`.
 Different compilers have different command-lines for module pre-compilation; however, for initial use, some examples are provided below, assuming the same `main.cpp` consumer as above.
 
 For MSVC, source `vcvars64.bat` or use a Developer Command Prompt/Developer PowerShell instance, and run the following:
 
-```cmd
-cl.exe /std:c++20 /interface /TP <path-to-vulkan-hpp>\vulkan.cppm
-cl.exe /std:c++20 /reference vulkan=vulkan.ifc main.cpp vulkan.obj
+```powershell
+cl.exe /std:c++23 /interface /TP <path-to-vulkan-hpp>\vulkan.cppm
+cl.exe /std:c++23 /reference vulkan=vulkan.ifc main.cpp vulkan.obj
 .\main.exe
 ```
 
 For Clang, run the following:
 
 ```shell
-clang++ -std=c++20 <path-to-vulkan-hpp>/vulkan.cppm -precompile -o vulkan.pcm
-clang++ -std=c++20 -fprebuilt-module-path=. main.cpp vulkan.pcm -o main
+clang++ -std=c++23 <path-to-vulkan-hpp>/vulkan.cppm -precompile -o vulkan.pcm
+clang++ -std=c++23 -fprebuilt-module-path=. main.cpp vulkan.pcm -o main
 ./main
-```
+``` -->
 
-More information about module compilation may be found at the respective compiler's documentation:
+More information about module compilation may be found in compiler documentation:
 
-- [MSVC](https://learn.microsoft.com/en-us/cpp/cpp/modules-cpp?view=msvc-170)
 - [Clang](https://clang.llvm.org/docs/StandardCPlusPlusModules.html)
+- [GCC](https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Modules.html)
+- [MSVC](https://learn.microsoft.com/en-gb/cpp/cpp/modules-cpp?view=msvc-170)
 
 ## Miscellaneous features and notes
 

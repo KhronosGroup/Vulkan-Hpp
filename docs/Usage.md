@@ -893,56 +893,50 @@ More information about module compilation may be found at the respective compile
 
 ### Extension Inspection
 
-With the additional header [`vulkan_extension_inspection.hpp`](vulkan/vulkan_extension_inspection.hpp), some functions to inspect extensions are provided. With C++20 and above, some of those functions are marked as `constexpr`, that is with appropriate arguments, they are resolved at compile time.
-Each extension is identified by a string holding its name. Note that there exists a define with that name for each extension.
-Some functions might provide information that depends on the vulkan version. As all functions here work solely on strings, the vulkan versions are encoded by a string beginning with "VK_VERSION_", followed by the major and the minor version, separated by an undersore, like this: "VK_VERSION_1_0".
+[`vulkan_extension_inspection.hpp`](../vulkan/vulkan_extension_inspection.hpp) defines functions to inspect Vulkan extensions on the machine.
+With C++20 and above, some of these functions are marked `constexpr`.
 
-- `std::set<std::string> const & getDeviceExtensions();`
- Gets all device extensions specified for the current platform. Note, that not all of them might be supported by the actual devices.
-- `std::set<std::string> const & getInstanceExtensions();`
- Gets all instance extensions specified for the current platform. Note, that not all of them might be supported by the actual instances.
-- `std::map<std::string, std::string> const & getDeprecatedExtensions();`
- Gets a map of all deprecated extensions to the extension or vulkan version that is supposed to replace that functionality.
-- `std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension );`
- Some extensions depend on other extensions. These dependencies might differ for different vulkan versions, and there might be different sets of dependencies for the very same vulkan version. This function gets a vector of vectors of extensions per vulkan version that the given extension depends on.
-- `std::pair<bool, std::vector<std::vector<std::string>> const &> getExtensionDepends( std::string const & version, std::string const & extension );`
- The `first` member of the returned `std::pair` is true, if the given extension is specified for the given vulkan version, otherwise `false`. The `second` member of the returned `std::pair` is a vector of vectors of extensions, listing the separate sets of extensions the given extension depends on for the given vulkan version.
-- `std::map<std::string, std::string> const & getObsoletedExtensions();`
- Gets a map of all obsoleted extensions to the extension or vulkan version that has obsoleted that extension.
-- `std::map<std::string, std::string> const & getPromotedExtensions();`
- Gets a map of all extensions that got promoted to another extension or to a vulkan version to that extension of vulkan version.
-- `VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & extension );`
- Gets the extension or vulkan version the given extension is deprecated by.
-- `VULKAN_HPP_CONSTEXPR_20 std::string getExtensionObsoletedBy( std::string const & extension );`
- Gets the extension or vulkan version the given extension is obsoleted by.
-- `VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & extension );`
- Gets the extension or vulkan version the given extension is promoted to.
-- `VULKAN_HPP_CONSTEXPR_20 bool isDeprecatedExtension( std::string const & extension );`
- Returns `true` if the given extension is deprecated by some other extension or vulkan version.
-- `VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & extension );`
- Returns `true` if the given extension is a device extension.
-- `VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension );`
- Returns `true` if the given extension is an instance extension.
-- `VULKAN_HPP_CONSTEXPR_20 bool isObsoletedExtension( std::string const & extension );`
- Returns `true` if the given extension is obsoleted by some other extension or vulkan version.
-- `VULKAN_HPP_CONSTEXPR_20 bool isPromotedExtension( std::string const & extension );`
- Returns `true` if the given extension is promoted to some other extension or vulkan version.
+In Vulkan, each extension is identified by a string holding its name.
+Note that there exists a macro with that name for each extension.
+Some functions might provide information that depends on the vulkan version.
+As all functions here operate only on strings, the Vulkan versions are encoded by a string prefixed with "VK_VERSION_", followed by the major and the minor version, separated by an underscore, like this: `VK_VERSION_1_0`.
 
+<!-- TODO: the descriptions in this table need to be reworded a bit, it's a little hard to follow. -->
+| <div style="width:40%; display:inline-block;" >Function</div> | <div style="width:58%; display:inline-block;" >Returns</div> |
+| :--- | :--- |
+| `std::set<std::string> const & getDeviceExtensions()` | All device extensions specified for the current platform. Note that not all of them might be supported by the actual devices. |
+| `std::set<std::string> const & getInstanceExtensions()` | All instance extensions specified for the current platform. Note that not all of them might be supported by the actual instances. |
+| `std::map<std::string, std::string> const & getDeprecatedExtensions()` | A map of all deprecated extensions to the extension or Vulkan version that supersedes the extension. |
+| `std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension )` | Some extensions depend on other extensions. These dependencies might differ for different Vulkan versions, and there might be different sets of dependencies for the very same Vulkan version. This function gets a vector of vectors of extensions per Vulkan version that the given extension depends on. |
+| `std::pair<bool, std::vector<std::vector<std::string>> const &> getExtensionDepends( std::string const & version, std::string const & extension )` | The `first` member of the returned `std::pair` is true, if the given extension is specified for the given Vulkan version, otherwise `false`. The `second` member of the returned `std::pair` is a vector of vectors of extensions, listing the separate sets of extensions the given extension depends on for the given Vulkan version. |
+| `std::map<std::string, std::string> const & getObsoletedExtensions()` | A map of all obsoleted extensions to the extension or Vulkan version that has obsoleted that extension. |
+| `std::map<std::string, std::string> const & getPromotedExtensions()` | A map of all extensions that got promoted to another extension or to a Vulkan version to that extension of Vulkan version. |
+| `VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & extension )` | The extension or Vulkan version the given extension is deprecated by. |
+| `VULKAN_HPP_CONSTEXPR_20 std::string getExtensionObsoletedBy( std::string const & extension )` | The extension or Vulkan version the given extension is obsoleted by. |
+| `VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & extension )` | The extension or Vulkan version the given extension is promoted to. |
+| `VULKAN_HPP_CONSTEXPR_20 bool isDeprecatedExtension( std::string const & extension )` | `true` if the given extension is deprecated by some other extension or Vulkan version. |
+| `VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & extension )` | `true` if the given extension is a device extension. |
+| `VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )` | `true` if the given extension is an instance extension. |
+| `VULKAN_HPP_CONSTEXPR_20 bool isObsoletedExtension( std::string const & extension )` | `true` if the given extension is obsoleted by some other extension or Vulkan version. |
+| `VULKAN_HPP_CONSTEXPR_20 bool isPromotedExtension( std::string const & extension )` | `true` if the given extension is promoted to some other extension or Vulkan version. |
+
+<!-- TODO: probably need to be updated after recent CI changes. -->
 ## Samples and Tests
 
 When you configure your project using CMake, you can enable SAMPLES_BUILD to add some sample projects to your solution. Most of them are ports from the LunarG samples, but there are some more, like CreateDebugUtilsMessenger, InstanceVersion, PhysicalDeviceDisplayProperties, PhysicalDeviceExtensions, PhysicalDeviceFeatures, PhysicalDeviceGroups, PhysicalDeviceMemoryProperties, PhysicalDeviceProperties, PhysicalDeviceQueueFamilyProperties, and RayTracing. All those samples should just compile and run.
 When you configure your project using CMake, you can enable TESTS_BUILD to add some test projects to your solution. Those tests are just compilation tests and are not required to run.
 
+<!-- TODO: Should we move this to `Configuration.md`? -->
 ## Compile time issues
 
-As `vulkan.hpp` is pretty big, some compilers might need some time to digest all that stuff. In order to potentially reduce the time needed to compile that header, a couple of defines will be introduced, that allow you to hide certain features. Whenever you don't need that corresponding feature, defining that value might improve your compile time.
-Currently, there are just a couple of such defines:
+As mentioned above, Vulkan-Hpp is a large header, and compilation times may increase drastically.
+There are a few configurable options to disable features that may not be required, and thus reduce compile times:
 
-- `VULKAN_HPP_NO_SPACESHIP_OPERATOR`, which removes the spaceship operator on structures (available with C++20)
-- `VULKAN_HPP_NO_TO_STRING`, which removes the various `vk::to_string` functions on enums and bitmasks.
+- `VULKAN_HPP_NO_SPACESHIP_OPERATOR`, which removes `operator<=>` for structures (available with C++20)
+- `VULKAN_HPP_NO_TO_STRING`, which removes the various `vk::to_string` functions on enums and bitmasks
 - `VULKAN_HPP_USE_REFLECT`, this one needs to be defined to use the reflection function on structures. It's very slow to compile, though!
-- `VULKAN_HPP_USE_STD_EXPECTED`, this one needs to be defined to use `std::expected` for functions that return a value or a vk::Result.
+- `VULKAN_HPP_USE_STD_EXPECTED`, this one needs to be defined to use `std::expected` for functions that return a value or a `vk::Result`.
 
 ## Strict aliasing
 
-As Vulkan-Hpp often needs to switch between C++ vk-types and corresponding bit-identical C-types, using `reinterpret_cast`, it is highly recommended to use the compile option `-fno-strict-aliasing` to prevent potentially breaking compile optimizations.
+As Vulkan-Hpp often needs to switch between C++ vk-types and corresponding bit-identical C-types using `reinterpret_cast`, it is highly recommended to use the compile option `-fno-strict-aliasing` to prevent potentially breaking compiler optimizations.

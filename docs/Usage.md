@@ -621,7 +621,8 @@ Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-
      ```
 
      > [!NOTE]
-     > You need to keep that dynamic loader object alive until after the last call to a vulkan function in your program. For example by making it static, or storing it globally.
+     > This dynamic loader object must be kept alive until after the last call to a Vulkan function in your program.
+     > Use a static/singleton instance or global object, or manage its lifetime manually.
 
    - Use your own initial function pointer with a signature matching `PFN_vkGetInstanceProcAddr`:
 
@@ -630,14 +631,14 @@ Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-
          VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
      ```
 
-1. Initialise it with a `vk::Instance` to get all the other function pointers:
+2. Initialise it with a `vk::Instance` to get all the other function pointers:
 
    ```c++
        vk::Instance instance = vk::createInstance({}, nullptr);
        VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
    ```
 
-1. Optionally initialise it with a `vk::Device` to get device-specific function pointers:
+3. Optionally initialise it with a `vk::Device` to get device-specific function pointers:
 
    ```c++
        std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
@@ -671,98 +672,82 @@ This will raise a warning if the return values from these operations are left un
 
 ### Custom allocators
 
-Sometimes it is required to use `std::vector` with custom allocators. Vulkan-Hpp supports vectors with custom allocators as input for `vk::ArrayProxy` and for functions which do return a vector. For the latter case, add your favorite custom allocator as template argument to the function call like this:
+In some cases, developers may require a custom allocator for `std::vector`.
+Vulkan-Hpp supports this in `vk::ArrayProxy` constructors, and for functions which return `std::vector`.
+In the latter case, add your custom allocator as a template argument to the function call:
 
 ```c++
 std::vector<vk::LayerProperties, MyCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties<MyCustomAllocator>();
 ```
 
-You can also use a stateful custom allocator by providing it as an argument to those functions. Unfortunately, to make the compilers happy, you also need to explicitly set the Dispatch argument. To get the default there, a simple `{}` would suffice:
+A stateful custom allocator **object** may also be used.
+In this case the object is provided as a usual runtime argument to a function; additionally, the `Dispatch` argument must also be defaulted with a pair of braces `{}`.
+Consider the following example:
 
 ```c++
 MyStatefulCustomAllocator allocator;
-std::vector<LayerProperties, MyStatefulCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties(allocator, {});
+std::vector<vk::LayerProperties, MyStatefulCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties(allocator, {});
 ```
 
 ### Custom assertions
 
-All over `vulkan.hpp`, there are a couple of calls to an assert function. By defining `VULKAN_HPP_ASSERT`, you can specifiy your own custom assert function to be called instead.
+Vulkan-Hpp uses assertions liberally to check for programming errors.
+The assert function used may be customised by re-defining the macro `VULKAN_HPP_ASSERT`.
 
-By default, `VULKAN_HPP_ASSERT_ON_RESULT` will be used for checking results when `VULKAN_HPP_NO_EXCEPTIONS` is defined. If you want to handle errors by yourself, you can disable/customize it just like `VULKAN_HPP_ASSERT`.
+By default, `VULKAN_HPP_ASSERT_ON_RESULT` is used to check the results of Vulkan operations, when `VULKAN_HPP_NO_EXCEPTIONS` is defined.
+Redefine this macro to customise this behaviour as well.
 
 There are a couple of static assertions for each handle class and each struct in [`vulkan_static_assertions.hpp`](../vulkan/vulkan_static_assertions.hpp). You might include that file in at least one of your source files. By defining `VULKAN_HPP_STATIC_ASSERT`, you can specify your own custom static assertion to be used for those cases. That is, by defining it to be a NOP, you can reduce your compilation time a little.
 
 ### Type traits
 
-`vulkan.hpp` provides a couple of type traits, easing template metaprogramming:
+Vulkan-Hpp provides several type traits, easing template metaprogramming:
 
-- `template <typename EnumType, EnumType value> struct CppType`
- Maps `IndexType` values (`IndexType::eUint16`, `IndexType::eUint32`, ...) to the corresponding type (`uint16_t`, `uint32_t`, ...) by the member type `Type`;
- Maps `ObjectType` values (`ObjectType::eInstance`, `ObjectType::eDevice`, ...) to the corresponding type (`vk::Instance`, `vk::Device`, ...) by the member type `Type`;
- Maps `DebugReportObjectType` values (`DebugReportObjectTypeEXT::eInstance`, `DebugReportObjectTypeEXT::eDevice`, ...) to the corresponding type (`vk::Instance`, `vk::Device`, ...) by the member type `Type`;
-- `template <typename T> struct IndexTypeValue`
- Maps scalar types (`uint16_t`, `uint32_t`, ...) to the corresponding `IndexType` value (`IndexType::eUint16`, `IndexType::eUint32`, ...).
-- `template <typename T> struct isVulkanHandleType`
- Maps a type to `true` if and only if it's a handle class (`vk::Instance`, `vk::Device`, ...) by the static member `value`.
-- `HandleClass::CType`
- Maps a handle class (`vk::Instance`, `vk::Device`, ...) to the corresponding C-type (`VkInstance`, `VkDevice`, ...) by the member type `CType`.
-- `HandleClass::objectType`
- Maps a handle class (`vk::Instance`, `vk::Device`, ...) to the corresponding `ObjectType` value (`ObjectType::eInstance`, `ObjectType::eDevice`, ...) by the static member `objectType`.
-- `HandleClass::debugReportObjectType`
- Maps a handle class (`vk::Instance`, `vk::Device`, ...) to the corresponding `DebugReportObjectTypeEXT` value (`DebugReportObjectTypeEXT::eInstance`, `DebugReportObjectTypeEXT::eDevice`, ...) by the static member `debugReportObjectType`.
+| Type trait | Maps from type | To |
+| :--- | :--- | :--- |
+| `template <typename EnumType, EnumType value> struct CppType` | `IndexType` value<br>`ObjectType` value<br>`DebugReportObjectType` value | `IndexType` traits: `uint16_t`, `uint32_t`, ...<br>`ObjectType` traits: `vk::Instance`, `vk::Device`, ...<br>`DebugReportObjectType` traits: `vk::Instance`, `vk::Device`, ... |
+| `template <typename T> struct IndexTypeValue` | `uint16_t`, `uint32_t`, ... | `IndexType::eUint16`, `IndexType::eUint32`, ... |
+| `template <typename T> struct isVulkanHandleType` | `vk::Instance`, `vk::Device`, ... | `true` if and only if `T` is a Vulkan handle type, otherwise `false` |
+| `vk::Handle::CType` | `vk::Instance`, `vk::Device`, ... | `VkInstance`, `VkDevice`, ... |
+| `vk::Handle::objectType` | `vk::Instance`, `vk::Device`, ... | `ObjectType::eInstance`, `ObjectType::eDevice`, ... |
+| `vk::Handle::debugReportObjectType` | `vk::Instance`, `vk::Device`, ... | `DebugReportObjectTypeEXT::eInstance`, `DebugReportObjectTypeEXT::eDevice`, ... |
 
 #### `vk::Format` trait functions
 
-With the additional header [`vulkan_format_traits.hpp`](vulkan/vulkan_format_traits.hpp), a couple of trait functions on `vk::Format` are provided. With C++14 and above, all those functions are marked as `constexpr`, that is with appropriate arguments, they are resolved at compile time.
+[`vulkan_format_traits.hpp`](../vulkan/vulkan_format_traits.hpp) defines trait functions on `vk::Format`.
+When compiled as C++14 and above, all these functions are marked as `constexpr`: that is with appropriate arguments, they are resolved at compile time.
 
-- `std::array<uint8_t, 3> blockExtent( vk::Format format );`
- Gets the three-dimensional extent of texel blocks.
-- `uin8_t blockSize( vk::Format format );`
- Gets the texel block size of this format in bytes.
-- `char const * compatibilityClass( VULKAN_HPP_NAMESPACE::Format format );`
- The class of the format (can't be just named "class"!)
-- `uint8_t componentBits( vk::Format format, uint8_t component );`
- Gets the number of bits in this component, if not compressed, otherwise 0.
-- `uint8_t componentCount( vk::Format format );`
- Gets the number of components of this format.
-- `char const * componentName( vk::Format format, uint8_t component );`
- Gets the name of this component as a c-string.
-- `char const * componentNumericFormat( vk::Format format, uint8_t component );`
- Gets the numeric format of this component as a c-string.
-- `uint8_t componentPlaneIndex( vk::Format format, uint8_t component );`
- Gets the plane index, this component lies in.
-- `bool componentsAreCompressed( vk::Format format );`
- True, if the components of this format are compressed, otherwise False.
-- `char const * compressionScheme( vk::Format format );`
- Gets a textual description of the compression scheme of this format, or an empty text if it is not compressed.
-- `std::vector<VULKAN_HPP_NAMESPACE::Format> const & getDepthFormats();`
- Get all formats with a depth component
-- `std::vector<VULKAN_HPP_NAMESPACE::Format> const & getDepthStencilFormats();`
- Get all formats with a depth and a stencil component
-- `std::vector<VULKAN_HPP_NAMESPACE::Format> const & getStencilFormats();`
- Get all formats with a stencil component
-- `bool hasDepthComponent( VULKAN_HPP_NAMESPACE::Format format );`
- True, if this format has a depth component, otherwise false.
-- `hasStencilComponent( VULKAN_HPP_NAMESPACE::Format format );`
- True, if this format has a stencil component, otherwise false.
-- `bool isCompressed( vk::Format format );`
- True, if this format is a compressed one, otherwise false.
-- `uint8_t packed( vk::Format format );`
- Gets the number of bits into which the format is packed. A single image element in this format can be stored in the same space as a scalar type of this bit width.
-- `vk::Format planeCompatibleFormat( vk::Format format, uint8_t plane );`
- Gets a single-plane format compatible with this plane.
-- `uint8_t planeCount( vk::Format format );`
- Gets the number of image planes of this format.
-- `uint8_t planeHeightDivisor( vk::Format format, uint8_t plane );`
- Gets the relative height of this plane. A value of k means that this plane is 1/k the height of the overall format.
-- `uint8_t planeWidthDivisor( vk::Format format, uint8_t plane );`
- Gets the relative width of this plane. A value of k means that this plane is 1/k the width of the overall format.
-- `uint8_t texelsPerBlock( vk::Format format );`
- Gets the number of texels in a texel block.
+<!-- left col 66% of line width -->
+
+| <div style="width:66%; display:inline-block;" >Function</div> | <div style="width:32%; display:inline-block;" >Returns</div> |
+| :--- | :--- |
+| `std::array<uint8_t, 3> blockExtent( vk::Format format )` | Three-dimensional extent of texel blocks. |
+| `uin8_t blockSize( vk::Format format )` | Texel block size of `format` in bytes. |
+| `char const * compatibilityClass( VULKAN_HPP_NAMESPACE::Format format )` | The class of `format`. |
+| `uint8_t componentBits( vk::Format format, uint8_t component )` | Number of bits in `component`, if not compressed, otherwise 0. |
+| `uint8_t componentCount( vk::Format format )` | Number of components of `format`. |
+| `char const * componentName( vk::Format format, uint8_t component )` | Name of `component` as a c-string. |
+| `char const * componentNumericFormat( vk::Format format, uint8_t component )` | Numeric format of `component` as a c-string. |
+| `uint8_t componentPlaneIndex( vk::Format format, uint8_t component )` | Plane index `component` lies in. |
+| `bool componentsAreCompressed( vk::Format format )` | `true`, if the components of `format` are compressed, otherwise `false`. |
+| `char const * compressionScheme( vk::Format format )` | Textual description of the compression scheme of `format`, or `""` if it is not compressed. |
+| `std::vector<VULKAN_HPP_NAMESPACE::Format> const & getDepthFormats()` | All formats with a depth component. |
+| `std::vector<VULKAN_HPP_NAMESPACE::Format> const & getDepthStencilFormats()` | All formats with a depth and a stencil component. |
+| `std::vector<VULKAN_HPP_NAMESPACE::Format> const & getStencilFormats()` | All formats with a stencil component. |
+| `bool hasDepthComponent( VULKAN_HPP_NAMESPACE::Format format )` | `true`, if `format` has a depth component, otherwise `false`. |
+| `hasStencilComponent( VULKAN_HPP_NAMESPACE::Format format )` | `true`, if `format` has a stencil component, otherwise `false`. |
+| `bool isCompressed( vk::Format format )` | `true`, if `format` is a compressed one, otherwise `false`. |
+| `uint8_t packed( vk::Format format )` | Number of bits into which `format` is packed. A single image element in `format` can be stored in the same space as a scalar type of this bit width. |
+| `vk::Format planeCompatibleFormat( vk::Format format, uint8_t plane )` | Single-plane format compatible with `plane`. |
+| `uint8_t planeCount( vk::Format format )` | Number of image planes of `format`. |
+| `uint8_t planeHeightDivisor( vk::Format format, uint8_t plane )` | Relative height of `plane` with respect to `format`. A value of $k$ means that `plane` is $\frac{1}{k}$ the height of `format`. |
+| `uint8_t planeWidthDivisor( vk::Format format, uint8_t plane )` | Relative width of `plane` with respect to `format`. A value of $k$ means that `plane` is $\frac{1}{k}$ the width of `format`. |
+| `uint8_t texelsPerBlock( vk::Format format )` | Number of texels in a texel block. |
 
 ### Hashing Vulkan types
 
-With the additional header [`vulkan_hash.hpp`](vulkan/vulkan_hash.hpp), you get specializations of `std::hash` for the handle wrapper classes and, with C++14, for the structure wrappers. With `VULKAN_HPP_HASH_COMBINE`, you can define your own hash combining algorithm for the structure elements.
+[`vulkan_hash.hpp`](../vulkan/vulkan_hash.hpp) specialises `std::hash` for `vk::Handle` bindings; with C++14, this is extended to the structure bindings too.
+Define `VULKAN_HPP_HASH_COMBINE` to customise the hash-combining algorithm for structure elements.
 
 ### C++20 named module
 

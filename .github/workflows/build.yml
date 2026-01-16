@@ -93,13 +93,14 @@ jobs:
     - name: Generate Headers with C++20
       run: |
         for BUILD_TYPE in Debug Release; do
+          $([ $BUILD_TYPE = Release ] && RUN_GENERATOR="ON" || RUN_GENERATOR="OFF")
           cmake -B build -G '${{matrix.env.gen}}' --fresh                                                        \
             ${{matrix.env.c && format('-D CMAKE_C_COMPILER={0}', matrix.env.c)}}                                 \
             ${{matrix.env.cxx && format('-D CMAKE_CXX_COMPILER={0}', matrix.env.cxx)}}                           \
             ${{matrix.env.cxx_flags && format('-D CMAKE_CXX_FLAGS''={0}''', matrix.env.cxx_flags)}}              \
             ${{matrix.env.linker_flags && format('-D CMAKE_EXE_LINKER_FLAGS=''{0}''', matrix.env.linker_flags)}} \
             -D VULKAN_HPP_GENERATOR_BUILD=ON                                                                     \
-            -D VULKAN_HPP_RUN_GENERATOR=$([ $BUILD_TYPE = Release ] && "ON" || "OFF")                            \
+            -D VULKAN_HPP_RUN_GENERATOR=$RUN_GENERATOR                                                           \
             -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON                                                             \
             -D CMAKE_BUILD_TYPE=$BUILD_TYPE
           cmake --build build --parallel --config $BUILD_TYPE --clean-first

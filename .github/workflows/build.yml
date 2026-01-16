@@ -99,7 +99,7 @@ jobs:
             ${{matrix.env.cxx_flags && format('-D CMAKE_CXX_FLAGS''={0}''', matrix.env.cxx_flags)}}              \
             ${{matrix.env.linker_flags && format('-D CMAKE_EXE_LINKER_FLAGS=''{0}''', matrix.env.linker_flags)}} \
             -D VULKAN_HPP_GENERATOR_BUILD=ON                                                                     \
-            -D VULKAN_HPP_RUN_GENERATOR=ON                                                                       \
+            -D VULKAN_HPP_RUN_GENERATOR=$([ $BUILD_TYPE = Release ] && ON || OFF)                                \
             -D CMAKE_BUILD_TYPE=$BUILD_TYPE
           cmake --build build --parallel --config $BUILD_TYPE --clean-first
         done

@@ -31,6 +31,7 @@
 
 namespace VULKAN_HPP_NAMESPACE
 {
+
   //==========================
   //=== BITMASKs to_string ===
   //==========================
@@ -10958,6 +10959,7 @@ namespace VULKAN_HPP_NAMESPACE
       default                                              : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+
 }  // namespace VULKAN_HPP_NAMESPACE
 
 #if defined( __clang__ ) || defined( __GNUC__ )

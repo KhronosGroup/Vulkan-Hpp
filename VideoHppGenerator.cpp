@@ -36,7 +36,7 @@ VideoHppGenerator::VideoHppGenerator( tinyxml2::XMLDocument const & document )
 void VideoHppGenerator::generateCppmFile() const
 {
   generateFileFromTemplate(
-    "vulkan_video.cppm", "VideoCppmTemplate.hpp", { { "copyrightMessage", m_copyrightMessage }, { "usings", generateCppModuleUsings() } } );
+    "vulkan_video.cppm", "VideoCppmTemplate.hpp", { { "copyrightMessage", m_copyrightMessage }, { "includes", generateIncludes() } } );
 }
 
 void VideoHppGenerator::generateHppFile() const

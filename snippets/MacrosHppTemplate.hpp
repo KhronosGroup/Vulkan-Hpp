@@ -96,6 +96,12 @@ ${licenseHeader}
 #  define VULKAN_HPP_SUPPORT_SPAN
 #endif
 
+#if defined( VULKAN_HPP_CXX_MODULE )
+#  define VULKAN_HPP_EXPORT export
+#else
+#  define VULKAN_HPP_EXPORT
+#endif
+
 #if defined( VULKAN_HPP_CXX_MODULE ) && !( defined( __cpp_modules ) && defined( __cpp_lib_modules ) )
 VULKAN_HPP_COMPILE_WARNING( "This is a non-conforming implementation of C++ named modules and the standard library module." )
 #endif

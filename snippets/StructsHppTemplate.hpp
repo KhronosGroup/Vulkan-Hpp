@@ -10,7 +10,7 @@ ${licenseHeader}
 #  include <cstring>  // strcmp
 #endif
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
 ${structs}
 }   // namespace VULKAN_HPP_NAMESPACE

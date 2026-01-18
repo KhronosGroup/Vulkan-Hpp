@@ -10,7 +10,7 @@ ${licenseHeader}
 #  include <type_traits>    // for std::underlying_type
 #endif
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
 ${Flags}
 

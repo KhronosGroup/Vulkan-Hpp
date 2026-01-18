@@ -8,7 +8,7 @@ VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == ${headerVersion}, "Wrong VK_HEADE
 
 ${defines}
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
   ${ArrayWrapper1D}
   ${ArrayWrapper2D}
@@ -55,7 +55,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
-namespace std
+VULKAN_HPP_EXPORT namespace std
 {
   template <>
   struct is_error_code_enum<VULKAN_HPP_NAMESPACE::Result> : public true_type
@@ -63,7 +63,7 @@ namespace std
 }  // namespace std
 #endif
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
 ${Exceptions}
@@ -83,7 +83,7 @@ ${constexprDefines}
 // clang-format on
 
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   ${structExtendsStructs}

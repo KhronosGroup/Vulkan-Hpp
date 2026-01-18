@@ -1,5 +1,5 @@
-#include <vulkan/${vulkan_h}>
 #if !defined( VULKAN_HPP_CXX_MODULE )
+#  include <vulkan/${vulkan_h}>
 // clang-format off
 #  include <vulkan/vulkan_hpp_macros.hpp>
 // clang-format on
@@ -28,7 +28,6 @@
 #else
 #  include <cassert>
 #  include <cstring>
-import std;
 #endif
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1

@@ -349,7 +349,6 @@ function( vulkan_hpp__setup_vulkan_targets )
 			FILE_SET_NAME vulkan_module_file
 			FILE_SET
 				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan_video.cppm"
 			ALIAS Vulkan::HppModule )
 	endif()
 endfunction()
@@ -591,7 +590,7 @@ function( vulkan_hpp__setup_test_project )
 
 		vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
 		add_executable( ${TARGET_NAME} ${CPP_FILE} )
-		
+
 		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
 		target_compile_definitions( ${TARGET_NAME} PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
 

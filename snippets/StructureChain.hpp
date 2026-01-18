@@ -125,7 +125,7 @@
     {
       return std::forward_as_tuple( std::move( get<T0>() ), std::move( get<T1>() ), std::move( get<Ts>() )... );
     }
-    
+
     // assign a complete structure to the StructureChain without modifying the chaining
     template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
     StructureChain & assign( const T & rhs ) VULKAN_HPP_NOEXCEPT
@@ -258,7 +258,7 @@
   // interupt the VULKAN_HPP_NAMESPACE for a moment to add specializations of std::tuple_size and std::tuple_element for the StructureChain!
 }
 
-namespace std
+VULKAN_HPP_EXPORT namespace std
 {
   template <typename... Elements>
   struct tuple_size<VULKAN_HPP_NAMESPACE::StructureChain<Elements...>>
@@ -273,5 +273,5 @@ namespace std
   };
 }  // namespace std
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {

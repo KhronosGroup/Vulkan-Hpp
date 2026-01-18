@@ -15,7 +15,7 @@
 #  include <type_traits>  // for std::underlying_type
 #endif
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
   template <typename FlagBitsType>
   struct FlagTraits
@@ -10278,5 +10278,6 @@ namespace VULKAN_HPP_NAMESPACE
       default: VULKAN_HPP_ASSERT( false && "unknown ObjectType" ); return DebugReportObjectTypeEXT::eUnknown;
     }
   }
+
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

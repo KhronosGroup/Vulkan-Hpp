@@ -9,9 +9,10 @@ ${includes}
 // clang-format off
 #include <vulkan/vulkan_hpp_macros.hpp>
 // clang-format on
-#include <vulkan/vulkan.hpp>
 
-export module vulkan:video;
+export module vulkan_video;
+
+import vulkan;
 
 #if defined(_MSC_VER)
 #  pragma warning(push)

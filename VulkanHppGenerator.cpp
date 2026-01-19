@@ -12279,8 +12279,8 @@ std::string VulkanHppGenerator::generateStructHashStructure( std::pair<std::stri
   std::string str;
   for ( auto const & member : structure.second.members )
   {
-    auto structIt = m_structs.find( member.type.type );
-    if ( ( structIt != m_structs.end() ) && ( structure.first != member.type.type ) && !listedStructs.contains( member.type.type ) )
+    auto structIt = findByNameOrAlias( m_structs, member.type.type );
+    if ( ( structIt != m_structs.end() ) && ( structure.first != member.type.type ) && !listedStructs.contains( structIt->first ) )
     {
       str += generateStructHashStructure( *structIt, listedStructs );
     }

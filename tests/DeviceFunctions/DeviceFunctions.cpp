@@ -24,6 +24,7 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <cassert>
 #  include <cstdint>
@@ -71,7 +72,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                      std::find_if( queueFamilyProperties.begin(),
                                    queueFamilyProperties.end(),
                                    []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } ) );
-    assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
+    release_assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
     // create a UniqueDevice
     float                     queuePriority = 0.0f;

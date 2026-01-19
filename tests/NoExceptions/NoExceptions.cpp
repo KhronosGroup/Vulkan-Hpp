@@ -16,7 +16,7 @@
 //                     Compile test with VULKAN_HPP_NO_EXCEPTIONS set
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
-
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #include <cstdint>
 #  include <cassert>
@@ -49,7 +49,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   vk::detail::defaultDispatchLoaderDynamic.init( *instance );
 
   std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices().value;
-  assert( !physicalDevices.empty() );
+  release_assert( !physicalDevices.empty() );
 
   // get the QueueFamilyProperties of the first PhysicalDevice
   std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevices[0].getQueueFamilyProperties();
@@ -60,7 +60,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                    std::find_if( queueFamilyProperties.begin(),
                                  queueFamilyProperties.end(),
                                  []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } ) );
-  assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
+  release_assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
   // create a UniqueDevice
   float                     queuePriority = 0.0f;

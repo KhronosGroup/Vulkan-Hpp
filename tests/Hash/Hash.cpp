@@ -41,7 +41,7 @@ import vulkan;
 #  include "vulkan/vulkan_hash.hpp"
 #endif
 
-
+#include "../test_macros.hpp"
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 namespace vk {
   namespace detail {
@@ -63,7 +63,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       auto h1 = std::hash<vk::Instance>{}( *instance );
       auto h2 = std::hash<VkInstance>{}( *instance );
-      assert( h1 == h2 );
+      release_assert( h1 == h2 );
 
       std::unordered_set<vk::Instance> uset;
       uset.insert( *instance );
@@ -80,11 +80,11 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::AabbPositionsKHR aabb0, aabb1;
       auto                 h1 = std::hash<vk::AabbPositionsKHR>{}( aabb0 );
       auto                 h2 = std::hash<vk::AabbPositionsKHR>{}( aabb1 );
-      assert( h1 == h2 );
+      release_assert( h1 == h2 );
 
       aabb0.minX = 1.0f;
       auto h3    = std::hash<vk::AabbPositionsKHR>{}( aabb0 );
-      assert( h1 != h3 );
+      release_assert( h1 != h3 );
 
       std::unordered_set<vk::AabbPositionsKHR> aabbSet;
       aabbSet.insert( aabb0 );
@@ -103,10 +103,10 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::ApplicationInfo appInfo2( name2.c_str(), 1, EngineName, 1, vk::ApiVersion11 );
       auto                h1 = std::hash<vk::ApplicationInfo>{}( appInfo1 );
       auto                h2 = std::hash<vk::ApplicationInfo>{}( appInfo2 );
-      assert( h1 == h2 );
-      assert( appInfo1 == appInfo2 );
+      release_assert( h1 == h2 );
+      release_assert( appInfo1 == appInfo2 );
 #  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-      assert( appInfo1 <= appInfo2 );
+      release_assert( appInfo1 <= appInfo2 );
 #  endif
     }
 
@@ -119,10 +119,10 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::InstanceCreateInfo info2( {}, &appInfo, static_cast<uint32_t>( enabledLayers2.size() ), enabledLayers2.data() );
       auto                   h1 = std::hash<vk::InstanceCreateInfo>{}( info1 );
       auto                   h2 = std::hash<vk::InstanceCreateInfo>{}( info2 );
-      assert( h1 == h2 );
-      assert( info1 == info2 );
+      release_assert( h1 == h2 );
+      release_assert( info1 == info2 );
 #  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-      assert( info1 <= info2 );
+      release_assert( info1 <= info2 );
 #  endif
     }
 #endif

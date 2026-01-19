@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
   #  include <cassert>
 import vulkan;
@@ -37,11 +37,11 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance;
     instance = vk::createInstance( {} );
-    assert( instance != nullptr );
+    release_assert( instance != nullptr );
 
     vk::Instance anotherInstance = std::move( instance );
-    assert( instance == nullptr );
-    assert( anotherInstance != nullptr );
+    release_assert( instance == nullptr );
+    release_assert( anotherInstance != nullptr );
 
     anotherInstance.destroy();
   }

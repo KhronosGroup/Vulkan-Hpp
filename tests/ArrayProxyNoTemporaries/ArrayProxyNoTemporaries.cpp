@@ -26,7 +26,7 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
-
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <cassert>
 import vulkan;
@@ -93,7 +93,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( nullptr );
 
     vk::ArrayProxyNoTemporaries<int> apnt1 = nullptr;
-    assert( apnt1.size() == 0 );
+    release_assert( apnt1.size() == 0 );
 
     // Type
     // fct(2);   // not supported: cannot convert argument 1 from 'int' to 'vk::ArrayProxyNoTemporaries<int>'
@@ -115,9 +115,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     // vk::ArrayProxyNoTemporaries<const int> apnt3 = 1;   // not supported: cannot convert from 'int' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
 
     vk::ArrayProxyNoTemporaries<const int> apnt4 = i0;
-    assert( apnt4.size() == 1 );
+    release_assert( apnt4.size() == 1 );
     vk::ArrayProxyNoTemporaries<const int> apnt5 = i1;
-    assert( apnt5.size() == 1 );
+    release_assert( apnt5.size() == 1 );
 
     // count, T *
     int * i0p = &i0;
@@ -130,9 +130,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( { 1, i1p } );
 
     vk::ArrayProxyNoTemporaries<const int> apnt6 = { 1, i0p };
-    assert( apnt6.size() == 1 );
+    release_assert( apnt6.size() == 1 );
     vk::ArrayProxyNoTemporaries<const int> apnt7 = { 1, i1p };
-    assert( apnt7.size() == 1 );
+    release_assert( apnt7.size() == 1 );
 
     // T[count]
     int ia0[2] = { 0, 1 };
@@ -145,9 +145,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( ia1 );
 
     vk::ArrayProxyNoTemporaries<const int> apnt8 = ia0;
-    assert( apnt8.size() == 2 );
+    release_assert( apnt8.size() == 2 );
     vk::ArrayProxyNoTemporaries<const int> apnt9 = ia1;
-    assert( apnt9.size() == 2 );
+    release_assert( apnt9.size() == 2 );
 
     // getArrayReference
     // fct( getConstArrayReference() );    // not supported: cannot convert argument 1 from 'const int [2]' to 'vk::ArrayProxyNoTemporaries<int>'
@@ -183,7 +183,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // from std::array constructors
     vk::ArrayProxyNoTemporaries<int> apnt10 = sa0;
-    assert( apnt10.size() == 2 );
+    release_assert( apnt10.size() == 2 );
 
     // vk::ArrayProxyNoTemporaries<int> apnt11 = sa1;   // not supported: cannot convert from 'std::array<const int,2>' to 'vk::ArrayProxyNoTemporaries<int>'
     // vk::ArrayProxyNoTemporaries<int> apnt12 = sa2;  // not supported: cannot convert from 'const std::array<int,2>' to 'vk::ArrayProxyNoTemporaries<int>'
@@ -191,13 +191,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     // 'vk::ArrayProxyNoTemporaries<int>'
 
     vk::ArrayProxyNoTemporaries<const int> apnt14 = sa0;
-    assert( apnt14.size() == 2 );
+    release_assert( apnt14.size() == 2 );
     vk::ArrayProxyNoTemporaries<const int> apnt15 = sa1;
-    assert( apnt15.size() == 2 );
+    release_assert( apnt15.size() == 2 );
     vk::ArrayProxyNoTemporaries<const int> apnt16 = sa2;
-    assert( apnt16.size() == 2 );
+    release_assert( apnt16.size() == 2 );
     vk::ArrayProxyNoTemporaries<const int> apnt17 = sa3;
-    assert( apnt17.size() == 2 );
+    release_assert( apnt17.size() == 2 );
 
     // std::vector<T>
     std::vector<int> sv0 = { 0, 1 };
@@ -216,14 +216,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     // fctc( getVector() );        // not supported: cannot convert argument 1 from 'std::vector<int,std::allocator<int>>' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
 
     vk::ArrayProxyNoTemporaries<int> apnt18 = sv0;
-    assert( apnt18.size() == 2 );
+    release_assert( apnt18.size() == 2 );
 
     // vk::ArrayProxyNoTemporaries<int> apnt19 = sv1;  // not supported: cannot convert from 'const std::vector<int,std::allocator<int>>' to 'vk::ArrayProxyNoTemporaries<int>'
 
     vk::ArrayProxyNoTemporaries<const int> apnt20 = sv0;
-    assert( apnt20.size() == 2 );
+    release_assert( apnt20.size() == 2 );
     vk::ArrayProxyNoTemporaries<const int> apnt21 = sv1;
-    assert( apnt21.size() == 2 );
+    release_assert( apnt21.size() == 2 );
 
     // std::initializer_list
     // fct( { 0, 1 } );   // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<int>'
@@ -235,7 +235,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     // fctc( { a, b } );  // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
 
     vk::ArrayProxyNoTemporaries<const int> apnt22 = {};
-    assert( apnt22.size() == 0 );
+    release_assert( apnt22.size() == 0 );
 
     // vk::ArrayProxyNoTemporaries<const int> apnt27 = { 0, 1 };   // not supported: cannot convert from 'initializer list' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
   }

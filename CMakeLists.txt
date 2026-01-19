@@ -128,7 +128,7 @@ if( VULKAN_HPP_GENERATOR_BUILD )
 	set_target_properties( VideoHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
 
 	# find a clang-format version to format the generated header files
-	find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format)
+	find_program(CLANG_FORMAT_EXECUTABLE clang-format HINTS ${VULKAN_HPP_CLANG_FORMAT_PATH})
 	if( CLANG_FORMAT_EXECUTABLE )
 		# get the clang-format version string
 		execute_process( COMMAND ${CLANG_FORMAT_EXECUTABLE} "--version" OUTPUT_VARIABLE clangFormatVersion )
@@ -138,7 +138,7 @@ if( VULKAN_HPP_GENERATOR_BUILD )
 		if( clangFormatVersion VERSION_LESS 7.0.0 )
 			message( WARNING " Found too old clang-format version <" ${clangFormatVersion} ">, we need version 7 and up to nicely format vulkan.hpp and vulkan_raii.hpp" )
 		else()
-			message( STATUS " Found clang-format version <" ${clangFormatVersion} ">." )
+			message( STATUS " Found clang-format version <" ${clangFormatVersion} ">: ${CLANG_FORMAT_EXECUTABLE}." )
 			if( clangFormatVersion VERSION_LESS 11.0.0 )
 				message( STATUS " Using .clang-format version 7." )
 				file( READ ".clang-format_7" clangFormat )

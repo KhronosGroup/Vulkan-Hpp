@@ -72,7 +72,7 @@ if( VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_BUILD_CXX_MODULE )
 	vulkan_hpp__setup_test( NAME EnableBetaExtensions CXX_MODULE )
 	# vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE )
 	vulkan_hpp__setup_test( NAME Flags CXX_MODULE )
-	vulkan_hpp__setup_test( NAME FormatTraits CXX_MODULE ) # module has no access to format traits
+	vulkan_hpp__setup_test( NAME FormatTraits CXX_MODULE )
 	if( NOT( MSVC AND MSVC_VERSION VERSION_LESS "1950" ) )
 		vulkan_hpp__setup_test( NAME FunctionCalls CXX_MODULE )
 	endif()

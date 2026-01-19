@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdlib>
 #include <iostream>
 #define release_assert( x ) \
   do \

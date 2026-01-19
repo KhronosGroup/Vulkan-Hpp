@@ -3,7 +3,12 @@ ${licenseHeader}
 #ifndef VULKAN_FORMAT_TRAITS_HPP
 #  define VULKAN_FORMAT_TRAITS_HPP
 
-#include <vulkan/${api}.hpp>
+#if defined( VULKAN_HPP_CXX_MODULE )
+#  define VULKAN_HPP_EXPORT export
+#else
+#  define VULKAN_HPP_EXPORT
+#  include <vulkan/${api}.hpp>
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {

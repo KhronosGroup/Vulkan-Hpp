@@ -8,8 +8,11 @@
 #ifndef VULKAN_TO_STRING_HPP
 #define VULKAN_TO_STRING_HPP
 
-#if !defined( VULKAN_HPP_CXX_MODULE )
+#if defined( VULKAN_HPP_CXX_MODULE )
+#  define VULKAN_HPP_EXPORT export
+#else
 #  include <vulkan/vulkan.hpp>
+#  define VULKAN_HPP_EXPORT
 #endif
 
 // ignore warnings on using deprecated enum values in this header
@@ -29,7 +32,7 @@
 #  endif
 #endif
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
   //==========================
   //=== BITMASKs to_string ===
@@ -11079,6 +11082,7 @@ namespace VULKAN_HPP_NAMESPACE
       default                                              : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+
 }  // namespace VULKAN_HPP_NAMESPACE
 
 #if defined( __clang__ ) || defined( __GNUC__ )

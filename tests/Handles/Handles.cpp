@@ -22,15 +22,7 @@ import vulkan;
 #else
 #  include <iostream>
 #  include <vulkan/vulkan_raii.hpp>
-#endif
-
-
-#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-namespace vk {
-  namespace detail {
-    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }
-}
+   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
 int main( int /*argc*/, char ** /*argv*/ )
@@ -123,12 +115,12 @@ int main( int /*argc*/, char ** /*argv*/ )
   catch ( vk::SystemError const & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
 
   return 0;

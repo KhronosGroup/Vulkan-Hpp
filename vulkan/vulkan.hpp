@@ -58,6 +58,18 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall   GetProcAddress( HINSTANCE
 
 VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 342, "Wrong VK_HEADER_VERSION!" );
 
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
+{
+  namespace detail
+  {
+    class DispatchLoaderDynamic;
+
+#if !defined( VULKAN_HPP_DEFAULT_DISPATCHER_HANDLED ) && VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+    extern VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+#endif
+  }  // namespace detail
+}  // namespace VULKAN_HPP_NAMESPACE
+
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
 // which is an expression in a constructor initializer list.
@@ -25666,6 +25678,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         init( instance, device, dl );
       }
     };
+
+#if defined( VULKAN_HPP_CXX_MODULE ) && !defined( VULKAN_HPP_DEFAULT_DISPATCHER_HANDLED ) && VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+    VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+#endif
   }  // namespace detail
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

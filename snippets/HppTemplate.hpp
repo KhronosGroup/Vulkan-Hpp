@@ -6,6 +6,18 @@ ${includes}
 
 VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == ${headerVersion}, "Wrong VK_HEADER_VERSION!" );
 
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
+{
+  namespace detail
+  {
+    class DispatchLoaderDynamic;
+
+#  if !defined( VULKAN_HPP_DEFAULT_DISPATCHER_HANDLED ) && VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+    extern VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+#  endif
+  }  // namespace detail
+}  // namespace VULKAN_HPP_NAMESPACE
+
 ${defines}
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
@@ -93,6 +105,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   {
     ${DynamicLoader}
     ${DispatchLoaderDynamic}
+#   if defined( VULKAN_HPP_CXX_MODULE ) && !defined( VULKAN_HPP_DEFAULT_DISPATCHER_HANDLED ) && VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+      VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+#   endif
   }
 }   // namespace VULKAN_HPP_NAMESPACE
 #endif

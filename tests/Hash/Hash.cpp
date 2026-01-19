@@ -39,14 +39,7 @@ import vulkan;
 #  include <unordered_map>
 #  include <unordered_set>
 #  include "vulkan/vulkan_hash.hpp"
-#endif
-
-#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-namespace vk {
-  namespace detail {
-    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }
-}
+   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
 static char const * AppName    = "Hash";

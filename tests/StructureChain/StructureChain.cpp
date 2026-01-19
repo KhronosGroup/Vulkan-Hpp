@@ -34,19 +34,12 @@ import vulkan;
 #else
 #  include <iostream>
 #  include <vulkan/vulkan.hpp>
+   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
 
 static char const * AppName    = "StructureChain";
 static char const * EngineName = "Vulkan.hpp";
-
-namespace vk
-{
-  namespace detail
-  {
-    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }  // namespace detail
-}  // namespace vk
 
 template <typename T>
 void unused( T const & )

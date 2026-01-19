@@ -46,6 +46,7 @@ endif()
 vulkan_hpp__setup_test( NAME NoSmartHandle )
 vulkan_hpp__setup_test( NAME StridedArrayProxy )
 vulkan_hpp__setup_test( NAME StructureChain )
+vulkan_hpp__setup_test( NAME ToString )
 # add_subdirectory( UniqueHandle ) # really messy setup, test needs to be shortened
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	vulkan_hpp__setup_test( NAME UniqueHandleDefaultArguments )
@@ -87,6 +88,7 @@ if( VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_BUILD_CXX_MODULE )
 	if( NOT MSVC ) # MSVC cannot deduct types for structured binding
 		vulkan_hpp__setup_test( NAME StructureChain CXX_MODULE )
 	endif()
+	vulkan_hpp__setup_test( NAME ToString CXX_MODULE )
 	# add_subdirectory( UniqueHandle ) # no CXX_MODULE test version yet
 	vulkan_hpp__setup_test( NAME UniqueHandleDefaultArguments CXX_MODULE )
 	vulkan_hpp__setup_test( NAME Video CXX_MODULE )

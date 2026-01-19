@@ -33,15 +33,8 @@ import vulkan;
 #else
 #  include <cassert>
 #  include <vulkan/vulkan.hpp>
+   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
-
-namespace vk
-{
-  namespace detail
-  {
-    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }  // namespace detail
-}  // namespace vk
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

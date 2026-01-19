@@ -22,7 +22,6 @@ import vulkan;
 #else
 #  include <iostream>
 #  include <map>
-#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #endif
 

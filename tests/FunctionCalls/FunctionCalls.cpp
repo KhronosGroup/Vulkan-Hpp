@@ -31,7 +31,6 @@
 #  include <vulkan/vulkan.h>
 import vulkan;
 #else
-#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #endif
 

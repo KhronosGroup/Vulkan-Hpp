@@ -26,13 +26,11 @@
 
 #include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-#  include <cassert>
 #  include <cstdint>
 #  include <vulkan/vulkan_hpp_macros.hpp>  // VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE
 import vulkan;
 #else
 #  include <algorithm>
-#  include <cassert>
 #  include <cstdint>
 #  include <iostream>
 #  include <vector>

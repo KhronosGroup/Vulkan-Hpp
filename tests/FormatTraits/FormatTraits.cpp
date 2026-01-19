@@ -17,7 +17,6 @@
 
 #include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-#  include <cassert>
 import vulkan;
 #else
 #  include <cstring>

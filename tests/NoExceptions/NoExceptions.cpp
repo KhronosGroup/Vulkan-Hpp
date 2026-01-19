@@ -19,14 +19,12 @@
 #include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #include <cstdint>
-#  include <cassert>
 import vulkan;
 #else
 #  include <vector>
 #  include <cstdint>
 #  include <iostream>
 #  include <algorithm>
-#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #endif
 

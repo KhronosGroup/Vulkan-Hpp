@@ -35,10 +35,8 @@
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <compare> // necessary due to MSVC "design": https://developercommunity.visualstudio.com/t/Template-exports-requiring-importing-of-/1425979#T-N1435887
 #  include <vulkan/vulkan_core.h>
-#  include <cassert>
 import vulkan;
 #else
-#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #endif
 

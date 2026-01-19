@@ -2982,6 +2982,7 @@ namespace VULKAN_HPP_NAMESPACE
         //=== VK_NV_compute_occupancy_priority ===
         PFN_vkCmdSetComputeOccupancyPriorityNV vkCmdSetComputeOccupancyPriorityNV = 0;
       };
+
     }  // namespace detail
 
     //========================================
@@ -28267,6 +28268,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
       return cppTypes;
     }
+
   }  // namespace VULKAN_HPP_RAII_NAMESPACE
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

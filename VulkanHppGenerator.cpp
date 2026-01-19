@@ -3499,6 +3499,20 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors0Vect
                                         false,
                                         { CommandFlavourFlagBits::enhanced } );
   }
+  else if ( isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+  {
+    return generateCommandSetInclusive( name,
+                                        commandData,
+                                        initialSkipCount,
+                                        definition,
+                                        returnParams,
+                                        {},
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained },
+                                        raii,
+                                        false,
+                                        { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
+  }
   return "";
 }
 

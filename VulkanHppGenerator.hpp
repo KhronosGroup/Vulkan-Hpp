@@ -639,8 +639,8 @@ private:
                                                                     bool                                      definition,
                                                                     CommandFlavourFlags                       flavourFlags,
                                                                     bool                                      withDispatcher ) const;
-  std::string
-    generateArgumentListStandard( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams, bool definition, bool withDispatcher ) const;
+  std::string                         generateArgumentListStandard(
+                            std::vector<ParamData> const & params, std::set<size_t> const & skippedParams, bool definition, bool raii, bool withDispatcher ) const;
   std::string generateArgumentTemplates( std::vector<ParamData> const &            params,
                                          std::vector<size_t> const &               returnParams,
                                          std::map<size_t, VectorParamData> const & vectorParams,
@@ -877,7 +877,7 @@ private:
                                            std::vector<CommandFlavourFlags> const & raiiFlags ) const;
   std::string
     generateCommandSetExclusive( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
-  std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
+  std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateCommandVoid( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string
     generateCommandVoid0Vectors( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
@@ -1167,7 +1167,8 @@ private:
                                                             std::set<size_t> const &       skippedParams,
                                                             bool                           definition,
                                                             bool                           singular ) const;
-  std::string generateRAIIHandleCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
+  std::string
+    generateRAIIHandleCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::pair<std::string, std::string> generateRAIIHandleConstructor( std::pair<std::string, HandleData> const &         handle,
                                                                      std::map<std::string, CommandData>::const_iterator constructorIt,
                                                                      std::string const &                                enter,

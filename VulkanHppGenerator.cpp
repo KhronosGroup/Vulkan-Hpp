@@ -141,6 +141,7 @@ void VulkanHppGenerator::generateCppmFile() const
                             { { "api", m_api },
                               { "vulkan_h", ( m_api == "vulkansc" ) ? "vulkan_sc_core.h" : ( m_api + ".h" ) },
                               { "licenseHeader", m_vulkanLicenseHeader },
+                              { "headerVersion", m_version },
                               { "pfnCommands", generateCppModuleCommands() } } );
 }
 

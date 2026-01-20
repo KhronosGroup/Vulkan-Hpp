@@ -2173,10 +2173,8 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
   return generateList( arguments, "", ", " );
 }
 
-std::string VulkanHppGenerator::generateArgumentListStandard( std::vector<ParamData> const & params,
-                                                              std::set<size_t> const &       skippedParams,
-                                                              bool                           definition,
-                                                              bool                           withDispatcher ) const
+std::string VulkanHppGenerator::generateArgumentListStandard(
+  std::vector<ParamData> const & params, std::set<size_t> const & skippedParams, bool definition, bool raii, bool withDispatcher ) const
 {
   std::string argumentList;
   for ( size_t i = 0; i < params.size(); ++i )
@@ -2185,7 +2183,13 @@ std::string VulkanHppGenerator::generateArgumentListStandard( std::vector<ParamD
     {
       // parameters named "objectType" collide with the member variable -> append an _ to here
       std::string paramName = ( definition && ( params[i].name == "objectType" ) ) ? "objectType_" : params[i].name;
-      argumentList += params[i].type.compose( "Vk" ) + " " + paramName + generateCArraySizes( params[i].arraySizes ) + ", ";
+      assert( !( raii && isHandleType( params[i].type.type ) ) || params[i].type.prefix.empty() );
+      argumentList += ( raii && isHandleType( params[i].type.type ) ? "VULKAN_HPP_NAMESPACE::" : "" ) +
+                      params[i].type.compose( "Vk" ) +
+                      " " +
+                      paramName +
+                      generateCArraySizes( params[i].arraySizes ) +
+                      ", ";
     }
   }
   if ( withDispatcher )
@@ -4557,7 +4561,7 @@ std::string VulkanHppGenerator::generateCommandSetExclusive(
   }
   else
   {
-    return generateCommandSet( generateCommandStandard( name, commandData, initialSkipCount, definition ),
+    return generateCommandSet( generateCommandStandard( name, commandData, initialSkipCount, definition, raii ),
                                generateCommandEnhanced( name, commandData, initialSkipCount, definition, {}, {}, {} ) );
   }
 }
@@ -4582,7 +4586,7 @@ std::string VulkanHppGenerator::generateCommandSetInclusive( std::string const &
     if ( raiiFlags.empty() )
     {
       // Functions without enhancements need to have a standard implementation
-      raiiCommands = generateRAIIHandleCommandStandard( name, commandData, initialSkipCount, definition );
+      raiiCommands = generateRAIIHandleCommandStandard( name, commandData, initialSkipCount, definition, raii );
     }
     else
     {
@@ -4617,16 +4621,16 @@ std::string VulkanHppGenerator::generateCommandSetInclusive( std::string const &
           generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, returnParams, flag | CommandFlavourFlagBits::unique ) );
       }
     }
-    return generateCommandSet( definition, generateCommandStandard( name, commandData, initialSkipCount, definition ), enhancedCommands, uniqueCommands );
+    return generateCommandSet( definition, generateCommandStandard( name, commandData, initialSkipCount, definition, raii ), enhancedCommands, uniqueCommands );
   }
 }
 
-std::string
-  VulkanHppGenerator::generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const
+std::string VulkanHppGenerator::generateCommandStandard(
+  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
 {
   std::set<size_t> skippedParams = determineSkippedParams( commandData.params, initialSkipCount, {}, {}, false );
 
-  std::string argumentList = generateArgumentListStandard( commandData.params, skippedParams, definition, true );
+  std::string argumentList = generateArgumentListStandard( commandData.params, skippedParams, definition, raii, true );
   std::string commandName  = generateCommandName( name, commandData.params, initialSkipCount );
   std::string nodiscard    = ( 1 < commandData.successCodes.size() + commandData.errorCodes.size() ) ? "VULKAN_HPP_NODISCARD " : "";
   std::string returnType   = stripPrefix( commandData.returnType.type, "Vk" );
@@ -9948,13 +9952,11 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactoryArgumentList( st
   return generateList( arguments, "", ", " );
 }
 
-std::string VulkanHppGenerator::generateRAIIHandleCommandStandard( std::string const & name,
-                                                                   CommandData const & commandData,
-                                                                   size_t              initialSkipCount,
-                                                                   bool                definition ) const
+std::string VulkanHppGenerator::generateRAIIHandleCommandStandard(
+  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const
 {
   std::set<size_t> skippedParams = determineSkippedParams( commandData.params, initialSkipCount, {}, {}, false );
-  std::string      argumentList  = generateArgumentListStandard( commandData.params, skippedParams, definition, false );
+  std::string      argumentList  = generateArgumentListStandard( commandData.params, skippedParams, definition, raii, false );
   std::string      commandName   = generateCommandName( name, commandData.params, initialSkipCount );
   std::string      nodiscard     = ( commandData.returnType.type != "void" ) ? "VULKAN_HPP_NODISCARD" : "";
   std::string      returnType    = stripPrefix( commandData.returnType.type, "Vk" );

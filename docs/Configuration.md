@@ -1,6 +1,7 @@
 # Configuration Options
 
-Vulkan-Hpp offers several options to configure its behaviour and features, and these are exposed as compiler macros. The following macros may be defined in a build system, or in the command-line invocation of a compiler.
+Vulkan-Hpp has several configurable options and features for consumer projects.
+These are exposed as the following compiler macros, which be defined in a build system, or in the command-line invocation of a compiler.
 
 - [`VULKAN_HPP_ASSERT`](#vulkan_hpp_assert)
 - [`VULKAN_HPP_ASSERT_ON_RESULT`](#vulkan_hpp_assert_on_result)

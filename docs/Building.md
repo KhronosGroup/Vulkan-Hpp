@@ -2,7 +2,7 @@
 
 ## Minimum requirements
 
-The generator, samples, and tests requires a C++11 compiler. The following compilers are known to work, and tested during releases:
+The generator requires a toolchain that supports C++20; the samples and tests may be compiled with C++11. The following compilers are known to work, and tested during releases:
 
 - Visual Studio ≥ 2015
 - GCC ≥ 4.8.2
@@ -16,8 +16,14 @@ The generator, samples, and tests requires a C++11 compiler. The following compi
 
 1. Install dependencies:
    - Install CMake and git; ensure both are available from a shell.
-   - Install the LunarG Vulkan SDK.
    - Optionally install `clang-format` with version at least 11.0 so that any generated headers can be correctly formatted.
+   - Additional dependencies are required to build the samples on Linux.
+     On Ubuntu, install them with:
+
+     ```shell
+     sudo apt update && sudo apt install install lsb-release gpg software-properties-common wget
+     ```
+
 2. In a shell, clone the repository:
 
     ```git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git```
@@ -33,13 +39,14 @@ The generator, samples, and tests requires a C++11 compiler. The following compi
 
     ```cmake --build build --parallel```
 
-## Additional features
+## Additional notes
 
 ### Formatting
 
 If a `clang-format` executable is found by CMake, the variable `CLANG_FORMAT_EXECUTABLE` is set accordingly. In that case, the generated headers are formatted using the `.clang-format` file located in the root directory of this project; otherwise, the formatting is left as hard-coded in the generator.
 
-Use `clang-format` version 21.1.0 to format the generated files.
+When submitting merge requests that modify the generated files in [`vulkan`](../vulkan/), ensure `clang-format` version 21.1.0 is in the `PATH` or specify its location at configure time (command-line, preset file, or shell script) with `CLANG_FORMAT_EXECUTABLE`.
+This ensures that the generated headers and module interfaces are consistently formatted.
 
 ### Custom views of Vulkan-Hpp objects in Visual Studio
 

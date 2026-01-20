@@ -23,7 +23,6 @@ jobs:
         sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
         export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
         brew install clang-format@21
-        export PATH="/home/linuxbrew/.linuxbrew/opt/clang-format/bin:$PATH"
         
     - name: Update Submodules
       run: |
@@ -39,6 +38,7 @@ jobs:
             -DVULKAN_HPP_SAMPLES_BUILD=OFF
             -DVULKAN_HPP_TESTS_BUILD=OFF
             -DVULKAN_HPP_RUN_GENERATOR=ON
+            -DVULKAN_HPP_CLANG_FORMAT_PATH_HINT="/home/linuxbrew/.linuxbrew/opt/clang-format/bin"
             -DCMAKE_CXX_STANDARD=${{matrix.cxx_standard}}
 
     - name: Build

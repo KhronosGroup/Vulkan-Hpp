@@ -87,6 +87,22 @@
 #  define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 1
 #endif
 
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1
+#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined( __Fuchsia__ ) && !defined( VULKAN_HPP_CXX_MODULE )
+#    include <dlfcn.h>
+#  elif defined( _WIN32 ) && !defined( VULKAN_HPP_NO_WIN32_PROTOTYPES )
+using HINSTANCE = struct HINSTANCE__ *;
+#    if defined( _WIN64 )
+using FARPROC = int64_t( __stdcall * )();
+#    else
+using FARPROC = int( __stdcall * )();
+#    endif
+extern "C" __declspec( dllimport ) HINSTANCE __stdcall LoadLibraryA( char const * lpLibFileName );
+extern "C" __declspec( dllimport ) int __stdcall       FreeLibrary( HINSTANCE hLibModule );
+extern "C" __declspec( dllimport ) FARPROC __stdcall   GetProcAddress( HINSTANCE hModule, const char * lpProcName );
+#  endif
+#endif
+
 #if !defined( __has_include )
 #  define __has_include( x ) false
 #endif

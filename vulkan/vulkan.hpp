@@ -35,9 +35,6 @@
 #  if defined( VULKAN_HPP_SUPPORT_SPAN )
 #    include <span>
 #  endif
-#else
-#  include <cassert>
-#  include <cstring>
 #endif
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1

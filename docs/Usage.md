@@ -142,14 +142,14 @@ vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B
                                      vk::SharingMode::eExclusive, 0, nullptr, vk::ImageLayout::eUndefined});
 ```
 
-#### Designated initialisers
+#### Designated initializers
 
 >[!NOTE]
 > This feature requires a compiler supporting at least C++20, and must be **enabled** with the `VULKAN_HPP_NO_CONSTRUCTORS` or `VULKAN_HPP_NO_STRUCT_CONSTRUCTORS` macro.
 > This will disable the above-mentioned generated constructors for structs.
 
 C++20 and later versions support [designated initializers](https://en.cppreference.com/w/cpp/language/aggregate_initialization.html#Designated_initializers) for aggregate types.
-Designated initialisers allow for more expressive code: member variable names are mentioned immediately in plain-text, without needing any static analysis.
+Designated initializers allow for more expressive code: member variable names are mentioned immediately in plain-text, without needing any static analysis.
 The first few lines of Vulkan initialisation might look like the following:
 
 ```c++
@@ -162,6 +162,9 @@ vk::ApplicationInfo applicationInfo{ .pApplicationName   = AppName,
 
 // initialize vk::InstanceCreateInfo
 vk::InstanceCreateInfo instanceCreateInfo{ .pApplicationInfo = &applicationInfo };
+
+// initialize vk::InstanceCreateInfo directly within vk::createInstance
+instance = vk::createInstance({ .pApplicationInfo = &applicationInfo });
 ```
 
 instead of
@@ -547,7 +550,7 @@ The result can then be monadically handled with `and_then`, `transform`, and oth
 ### Feature and property enumerations
 
 Related to error-handing, Vulkan enumerations require more careful handling of return values.
-The following code is usually typical:
+The following code is quite common:
 
 ```c++
 std::vector<LayerProperties, Allocator> properties;

@@ -23,7 +23,7 @@ The generator, samples, and tests requires a C++11 compiler. The following compi
     ```git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git```
 3. Change the shell's working directory to the newly created `Vulkan-Hpp` directory.
 4. Create a build environment with CMake:
-    ```cmake -DVULKAN_HPP_SAMPLES_BUILD=ON -DVULKAN_HPP_SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DVULKAN_HPP_TESTS_BUILD=ON -DVULKAN_HPP_TESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -B build```
+    ```cmake -DVULKAN_HPP_SAMPLES_BUILD=ON -DVULKAN_HPP_TESTS_BUILD=ON -B build```
 
     You may need to specify a generator via `-G`; for a full list of generators execute `cmake -G`.
 
@@ -37,7 +37,7 @@ The generator, samples, and tests requires a C++11 compiler. The following compi
 
 ### Formatting
 
-If a `clang-format` executable is found by CMake, the define `CLANG_FORMAT_EXECUTABLE` is set accordingly. In that case, the generated headers are formatted using the `.clang-format` file located in the root directory of this project; otherwise, the formatting is left as hard-coded in the generator.
+If a `clang-format` executable is found by CMake, the variable `CLANG_FORMAT_EXECUTABLE` is set accordingly. In that case, the generated headers are formatted using the `.clang-format` file located in the root directory of this project; otherwise, the formatting is left as hard-coded in the generator.
 
 Use `clang-format` version 21.1.0 to format the generated files.
 

@@ -9,6 +9,8 @@ module;
 
 #define VULKAN_HPP_CXX_MODULE 1
 
+#include <cassert>
+#include <cstring>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_hpp_macros.hpp>
 

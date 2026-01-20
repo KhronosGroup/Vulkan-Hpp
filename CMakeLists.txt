@@ -128,7 +128,7 @@ if( VULKAN_HPP_GENERATOR_BUILD )
 	set_target_properties( VideoHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
 
 	# find a clang-format version to format the generated header files
-	find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format)
+	find_program(CLANG_FORMAT_EXECUTABLE clang-format HINTS ${VULKAN_HPP_CLANG_FORMAT_PATH_HINT})
 	if( CLANG_FORMAT_EXECUTABLE )
 		# get the clang-format version string
 		execute_process( COMMAND ${CLANG_FORMAT_EXECUTABLE} "--version" OUTPUT_VARIABLE clangFormatVersion )

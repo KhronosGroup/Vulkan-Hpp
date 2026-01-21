@@ -853,24 +853,6 @@ target_compile_definitions( Vulkan-HppModule PUBLIC
 )
 ```
 
-To use the [dynamic dispatcher](#extensions-and-per-device-function-pointers), define the `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` macro to `1`; otherwise, leave it undefined or set it to `0`.
-This must be defined to the same value for both the module and an importing project.
-In CMake, do this in a single line with `target_compile_definitions` and the `PUBLIC` scope:
-
-```cmake
-target_compile_definitions( VulkanHppModule PUBLIC
-  VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1
-)
-# ...
-target_link_libraries( YourProject PRIVATE VulkanHppModule )
-```
-
-Furthermore, you may also prefer linking `VulkanHppModule` to just the `Vulkan::Headers` target with the `PUBLIC` scope instead of `Vulkan::Vulkan`, so that the `vulkan-1` library is not linked in, and the Vulkan headers are available to your consuming project, as detailed further below.
-
-```cmake
-target_link_libraries( VulkanHppModule PUBLIC Vulkan::Headers )
-```
-
 If you are using the dynamic dispatcher, do not forget to supply the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code, just as in the non-module case.
 In order to have that macro available, include [`vulkan_hpp_macros.hpp`](../vulkan/vulkan_hpp_macros.hpp), a lightweight header providing all Vulkan-Hpp related macros and defines.
 

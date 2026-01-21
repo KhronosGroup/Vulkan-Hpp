@@ -624,10 +624,6 @@ Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-
      VULKAN_HPP_DEFAULT_DISPATCHER.init(ydl);
      ```
 
-     > [!NOTE]
-     > This dynamic loader object must be kept alive until after the last call to a Vulkan function in your program.
-     > Use a static/singleton instance or global object, or manage its lifetime manually.
-
    - Use your own initial function pointer with a signature matching `PFN_vkGetInstanceProcAddr`:
 
      ```c++
@@ -650,6 +646,10 @@ Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-
        vk::Device device = physicalDevices[0].createDevice({}, nullptr);
        VULKAN_HPP_DEFAULT_DISPATCHER.init(device);
    ```
+
+> [!NOTE]
+> The dynamic loader object in the example above (`ydl`) must be kept alive until after the last call to a Vulkan function in your program.
+> Use a static/singleton instance or global object, or manage its lifetime manually.
 
 After step 2, the dispatcher is fully functional.
 Adding the third step can potentially result in more efficient code.

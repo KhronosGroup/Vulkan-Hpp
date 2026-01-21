@@ -866,6 +866,10 @@ auto main(int argc, char* const argv[]) -> int
 
   auto appInfo = vk::ApplicationInfo("My App", 1, "My Engine", 1, vk::makeApiVersion(1, 0, 0, 0));
   // ...
+  // load function pointers with created instance
+  VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
+  // OPTIONAL: load function pointers specifically for a vk::device
+  VULKAN_HPP_DEFAULT_DISPATCHER.init(device);
 }
 ```
 

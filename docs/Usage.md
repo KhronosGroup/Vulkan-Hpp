@@ -917,23 +917,23 @@ Some functions might provide information that depends on the vulkan version.
 As all functions here operate only on strings, the Vulkan versions are encoded by a string prefixed with "VK_VERSION_", followed by the major and the minor version, separated by an underscore, like this: `VK_VERSION_1_0`.
 
 <!-- TODO: the descriptions in this table need to be reworded a bit, it's a little hard to follow. -->
-| <div style="width:40%; display:inline-block;" >Function</div> | <div style="width:58%; display:inline-block;" >Returns</div> |
-| :--- | :--- |
-| `std::set<std::string> const & getDeviceExtensions()` | All device extensions specified for the current platform. Note that not all of them might be supported by the actual devices. |
-| `std::set<std::string> const & getInstanceExtensions()` | All instance extensions specified for the current platform. Note that not all of them might be supported by the actual instances. |
-| `std::map<std::string, std::string> const & getDeprecatedExtensions()` | A map of all deprecated extensions to the extension or Vulkan version that supersedes the extension. |
-| `std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension )` | Some extensions depend on other extensions. These dependencies might differ for different Vulkan versions, and there might be different sets of dependencies for the very same Vulkan version. This function gets a vector of vectors of extensions per Vulkan version that the given extension depends on. |
-| `std::pair<bool, std::vector<std::vector<std::string>> const &> getExtensionDepends( std::string const & version, std::string const & extension )` | The `first` member of the returned `std::pair` is true, if the given extension is specified for the given Vulkan version, otherwise `false`. The `second` member of the returned `std::pair` is a vector of vectors of extensions, listing the separate sets of extensions the given extension depends on for the given Vulkan version. |
-| `std::map<std::string, std::string> const & getObsoletedExtensions()` | A map of all obsoleted extensions to the extension or Vulkan version that has obsoleted that extension. |
-| `std::map<std::string, std::string> const & getPromotedExtensions()` | A map of all extensions that got promoted to another extension or to a Vulkan version to that extension of Vulkan version. |
-| `VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & extension )` | The extension or Vulkan version the given extension is deprecated by. |
-| `VULKAN_HPP_CONSTEXPR_20 std::string getExtensionObsoletedBy( std::string const & extension )` | The extension or Vulkan version the given extension is obsoleted by. |
-| `VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & extension )` | The extension or Vulkan version the given extension is promoted to. |
-| `VULKAN_HPP_CONSTEXPR_20 bool isDeprecatedExtension( std::string const & extension )` | `true` if the given extension is deprecated by some other extension or Vulkan version. |
-| `VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & extension )` | `true` if the given extension is a device extension. |
-| `VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )` | `true` if the given extension is an instance extension. |
-| `VULKAN_HPP_CONSTEXPR_20 bool isObsoletedExtension( std::string const & extension )` | `true` if the given extension is obsoleted by some other extension or Vulkan version. |
-| `VULKAN_HPP_CONSTEXPR_20 bool isPromotedExtension( std::string const & extension )` | `true` if the given extension is promoted to some other extension or Vulkan version. |
+| Function | `constexpr` | Returns |
+| :--- | :---: | :--- |
+| `std::set<std::string> const& getDeviceExtensions()` | | All device extensions specified for the current platform. Note that not all of them might be supported by the actual devices. |
+| `std::set<std::string> const& getInstanceExtensions()` | | All instance extensions specified for the current platform. Note that not all of them might be supported by the actual instances. |
+| `std::map<std::string, std::string> const& getDeprecatedExtensions()` | | A map of all deprecated extensions to the extension or Vulkan version that supersedes the extension. |
+| `std::map<std::string, std::vector<std::vector<std::string>>> const& getExtensionDepends( std::string const& extension )` | | Some extensions depend on other extensions. These dependencies might differ for different Vulkan versions, and there might be different sets of dependencies for the very same Vulkan version. This function gets a vector of vectors of extensions per Vulkan version that the given extension depends on. |
+| `std::pair<bool, std::vector<std::vector<std::string>> const&> getExtensionDepends( std::string const& version, std::string const& extension )` | | The `first` member of the returned `std::pair` is true, if the given extension is specified for the given Vulkan version, otherwise `false`. The `second` member of the returned `std::pair` is a vector of vectors of extensions, listing the separate sets of extensions the given extension depends on for the given Vulkan version. |
+| `std::map<std::string, std::string> const& getObsoletedExtensions()` | | A map of all obsoleted extensions to the extension or Vulkan version that has obsoleted that extension. |
+| `std::map<std::string, std::string> const& getPromotedExtensions()` | | A map of all extensions that got promoted to another extension or to a Vulkan version to that extension of Vulkan version. |
+| `std::string getExtensionDeprecatedBy( std::string const& extension )` | ✅ | The extension or Vulkan version the given extension is deprecated by. |
+| `std::string getExtensionObsoletedBy( std::string const& extension )` | ✅ | The extension or Vulkan version the given extension is obsoleted by. |
+| `std::string getExtensionPromotedTo( std::string const& extension )` | ✅ | The extension or Vulkan version the given extension is promoted to. |
+| `bool isDeprecatedExtension( std::string const& extension )` | ✅ | `true` if the given extension is deprecated by some other extension or Vulkan version. |
+| `bool isDeviceExtension( std::string const& extension )` | ✅ | `true` if the given extension is a device extension. |
+| `bool isInstanceExtension( std::string const& extension )` | ✅ | `true` if the given extension is an instance extension. |
+| `bool isObsoletedExtension( std::string const& extension )` | ✅ | `true` if the given extension is obsoleted by some other extension or Vulkan version. |
+| `bool isPromotedExtension( std::string const& extension )` | ✅ | `true` if the given extension is promoted to some other extension or Vulkan version. |
 
 <!-- TODO: probably need to be updated after recent CI changes. -->
 ## Samples and Tests

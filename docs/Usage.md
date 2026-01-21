@@ -6,17 +6,17 @@ This manual assumes familiarity with Vulkan; it details improvements and differe
 - [Vulkan fundamentals](#vulkan-fundamentals)
   - [Structs](#structs)
     - [Constructors](#constructors)
-    - [Designated initialisers](#designated-initialisers)
+    - [Designated initializers](#designated-initializers)
     - [`ArrayProxy<T>` and `ArrayProxyNoTemporaries<T>`](#arrayproxyt-and-arrayproxynotemporariest)
     - [Builder pattern with setters](#builder-pattern-with-setters)
     - [Structure pointer chains](#structure-pointer-chains)
   - [Handles and functions](#handles-and-functions)
-    - [Passing structs to functions](#passing-structs-to-functions)
+    - [Struct parameters in Vulkan-Hpp functions](#struct-parameters-in-vulkan-hpp-functions)
     - [C/C++ inter-op for handles](#cc-inter-op-for-handles)
   - [Flags](#flags)
   - [Error handling](#error-handling)
     - [Exceptions](#exceptions)
-    - [Return value transformation with exceptions disabled](#return-value-transformation-with-exceptions-disabled)
+    - [Return value transformations](#return-value-transformations)
     - [`std::expected`](#stdexpected)
   - [Feature and property enumerations](#feature-and-property-enumerations)
   - [Extensions and per-device function pointers](#extensions-and-per-device-function-pointers)
@@ -318,26 +318,32 @@ vk::MemoryRequirements2KHR memoryRequirements = device.getBufferMemoryRequiremen
 
 ### Handles and functions
 
-<!-- TODO: maybe move this to ./Handles.md? -->
-
 Vulkan-Hpp provides a `vk::` class for each Vulkan handle, such as `vk::Instance`, `vk::Device`, `vk::Buffer`, and so on.
-These classes are binary-compatible with their corresponding C handles; they can be cast back and forth without any overhead.
+When compiled for 64-bit architectures, these classes are binary-compatible with their corresponding C handles; they can be cast back and forth without any overhead.
+
+> [!NOTE]
+> For 32-bit architectures, refer to the guidance in [C/C++ inter-op for handles](#cc-inter-op-for-handles).
 
 Member and free functions are also defined corresponding to a C API function which accepts the parent handle as the **first** parameter.
 For example, instead of `vkBindBufferMemory(device, ...)`, write `device.bindBufferMemory(...)`.
 
 >[!NOTE]
-> Note that these handles do **not** support RAII; their lifetimes need to be manually managed with create-destroy pairs, just like in the C API.
+> Note that the lifetimes of these handles need to be **managed manually** with pairs of `vk::create...` and `vk::destroy...` functions, just like in the C API.
+>
 > For automatic resource management, refer to [Handles](./Handles.md).
 
-#### Passing structs to functions
+#### Struct parameters in Vulkan-Hpp functions
 
-<!-- TODO: this section seems poorly worded and titled. -->
+In Vulkan-Hpp, functions accept structs as `vk::StructType const&` parameters instead of pointers.
+This straightforwardly allows in-line temporaries, which may result in shorter code.
 
-Vulkan-Hpp generates references for pointers to structs. This conversion allows passing temporary structs to functions which can result in shorter code. In case the input is optional and thus accepting a null pointer, the parameter type will be `vk::Optional<T> const&`. This type accepts either a reference to `T` or `nullptr` as input and thus allows optional temporary structs.
+When an input parameter is considered 'optional' in the C API and is documented to accept null pointers, the parameter type is declared as `vk::Optional<T> const&` in the corresponding Vulkan-Hpp function.
+This accepts inputs of type `T&` or `nullptr`, and thus allows _optional_ temporary structs.
+
+Consider the following example:
 
 ```c++
-// C
+// C API
 VkImageSubresource subResource;
 subResource.aspectMask = 0;
 subResource.mipLevel = 0;
@@ -345,21 +351,32 @@ subResource.arrayLayer = 0;
 VkSubresourceLayout layout;
 vkGetImageSubresourceLayout(device, image, &subresource, &layout);
 
-// C++
-auto layout = device.getImageSubresourceLayout(image, { {} /* flags*/, 0 /* miplevel */, 0 /* arrayLayer */ });
+// Vulkan-Hpp: constant named `vk::ImageSubresource` struct
+auto const subResourceCppNamed = { {} /* flags*/, 0 /* miplevel */, 0 /* arrayLayer */ };
+auto layout1 = device.getImageSubresourceLayout(image, subResourceCpp);
+
+// Vulkan-Hpp: temporary `vk::ImageSubresource` struct constructed in-place
+auto layout2 = device.getImageSubresourceLayout(image, { /* everything defaulted, including flags, set to `{}`; same effect as above*/ });
+
+// Vulkan-Hpp: temporary constructed in-place with designated initializers
+auto layout3 = device.getImageSubresourceLayout(image, { .mipLevel = 0, .arrayLayer = 0 });
 ```
 
 #### C/C++ inter-op for handles
 
-On 64-bit platforms, Vulkan-Hpp supports implicit conversions between handles provided by the C API and Vulkan-Hpp. On 32-bit platforms, all non-dispatchable handles are defined as `uint64_t`, thus preventing type-conversion checks at compile time which would catch assignments between incompatible handle types. Therefore, Vulkan-Hpp does not enable implicit conversion for 32-bit platforms by default and it is recommended to use a `static_cast`: `VkImage = static_cast<VkImage>(cppImage)` to prevent unintended conversions of untyped integers to handles.
+On 64-bit platforms, Vulkan-Hpp supports implicit conversions between handles provided by the C API and Vulkan-Hpp.
+On 32-bit platforms, all non-dispatchable handles are defined as `uint64_t`, thus preventing type-conversion checks at compile time which would catch assignments between incompatible handle types.
+Therefore, Vulkan-Hpp does not enable implicit conversion for 32-bit platforms by default, and users should use `static_cast`: `VkImage = static_cast<VkImage>(cppImage)` to prevent unintended conversions of untyped integers to handles.
 
-If you are developing on a 64-bit platform but want to compile for a 32-bit platform without adding these verbose explicit casts, define the macro `VULKAN_HPP_TYPESAFE_CONVERSION=1` in your build system, or before writing `#include <vulkan/vulkan.hpp>`. On 64-bit platforms this macro is set to `1` by default and can be set to `0` to disable implicit conversions.
+If you are developing on a 64-bit platform but want to compile for a 32-bit platform without adding these verbose explicit casts, define the macro `VULKAN_HPP_TYPESAFE_CONVERSION=1` in your build system, or before writing `#include <vulkan/vulkan.hpp>`.
+On 64-bit platforms this macro is set to `1` by default and can be set to `0` to disable implicit conversions.
 
 ### Flags
 
-Scoped enums add type safety to Vulkan flags, but also prevent bitwise operations with these flag bits.
+Scoped enums add type safety to Vulkan-Hpp flags, but also prevent bitwise operations with these flag bits.
 
-As a solution, Vulkan-Hpp provides a class template, `vk::Flags<>`. This class is default-initialised to zero, and behaves exactly like a normal bitmask; however, the type safety ensures that it is impossible to set unrelated bits, with errors emitted at compile time.
+As a solution, Vulkan-Hpp provides a class template, `vk::Flags<>`.
+This class is default-initialised to zero, and behaves exactly like a normal bitmask; however, the type safety ensures that it is impossible to set unrelated bits, with errors emitted at compile time.
 
 For example:
 
@@ -406,7 +423,8 @@ catch (std::exception const &e) {
 ```
 
 Some Vulkan operations such as `vkAcquireNextImageKHR` have **multiple** success states instead of only `vk::Result::eSuccess`.
-Their equivalents in Vulkan-Hpp always return `vk::ResultValue<SomeType>` that needs to be inspected.
+Their equivalents in Vulkan-Hpp always return `vk::ResultValue<SomeType>` which must be inspected, on top of throwing exceptions when 'error states' are reached.
+
 Consider the following example:
 
 ```c++
@@ -425,7 +443,7 @@ try {
       break;
     default:
 #ifdef __cpp_lib_unreachable
-      std::unreachable(); // will never get here, as other return codes are errors, and will throw
+      std::unreachable(); // will never get here, as other return codes are errors, and is guaranteed to throw instead
 #elif defined(__GNUC__) || defined(__clang__)
       __builtin_unreachable();
 #elif defined(_MSC_VER)
@@ -438,26 +456,23 @@ catch (std::exception const& e) {
 }
 ```
 
-As Vulkan is updated, some operations m return additional success codes.
-The C API will be transparent to this, but the corresponding Vulkan-Hpp function signatures may change, and this will require updates to user code.
+As Vulkan is updated, the behaviour of certain operations may be changed; they may specify returning additional success codes compared to previous behaviour.
+The C API will be transparent to this, but corresponding Vulkan-Hpp function signatures may change, and hence consumer code will need to be updated.
 These changes will be noted in [Breaking Changes](../README.md/#breaking-changes).
 
-#### Return value transformation with exceptions disabled
+#### Return value transformations
 
 As noted above, exceptions may be disabled by defining the `VULKAN_HPP_NO_EXCEPTIONS` macro.
-In this case `vk::ResultValue<SomeType>::type` is a struct containing `vk::Result` and `SomeType`.
-This struct may be unpacked as needed.
+In this case `vk::ResultValue<SomeType>::type` is a struct containing `vk::Result` and `vk::SomeType`.
+This struct may be deconstructed as needed.
 
-<!-- TODO: This shader module example needs to do more so that it's a bit more indicative of how to handle errors. -->
-Consider the following code which creates two shader modules in the default mode of Vulkan-Hpp, with exceptions enabled:
+Consider the following code which creates a shader module with exceptions enabled:
 
 ```c++
 vk::ShaderModule shader1;
-vk::ShaderModule shader2;
 try
 {
   shader1 = device.createShaderModule({...});
-  shader2 = device.createShaderModule({...});
 }
 catch(std::exception const &e)
 {
@@ -465,7 +480,7 @@ catch(std::exception const &e)
 }
 ```
 
-With exceptions disabled, there are a few ways to handle the return values.
+The above code may be rewritten without exceptions as follows, by appropriately handling the return values.
 
 1. Manually check the returned `vk::Result` code, and handle errors as needed with the C-style functions:
 
@@ -477,32 +492,26 @@ With exceptions disabled, there are a few ways to handle the return values.
    if (result.result != vk::Result::eSuccess)
    {
      // handle error code;
-     // physicalDevice.destroyDevice(device, allocator); // cleanup; destroy device
+     // cleanup and/or return?
      // do other things
-   }
-
-   vk::ShaderModule shader2;
-   vk::Result result = device.createShaderModule(&createInfo, allocator, &shader2);
-   if (result != vk::Result::eSuccess)
-   {
-     // handle error code;
-     // cleanup?
-     // return?
    }
    ```
 
-2. Use the return value transformation provided by Vulkan-Hpp to unpack `vk::ResultValue<T>`.
-   `std::tie` may be used to unpack the return value into its components:
+2. Use the return value transformation provided by Vulkan-Hpp to deconstruct `vk::ResultValue<T>`:
 
    ```c++
    vk::ResultValue<ShaderModule> shaderResult1 = device.createShaderModule({...} /* createInfo temporary */);
    if (shaderResult1.result != vk::Result::eSuccess)
    {
      // handle error code;
-     // cleanup?
+     // cleanup and/or return?
      // return?
    }
+   ```
 
+   Additionally, `std::tie` may be used to deconstruct the return value into its components:
+
+   ```c++
    // std::tie support.
    vk::Result result;
    vk::ShaderModule shaderModule2;
@@ -510,16 +519,13 @@ With exceptions disabled, there are a few ways to handle the return values.
    if (result != vk::Result::eSuccess)
    {
      // handle error code;
-     // cleanup?
+     // cleanup and/or return?
      // return?
    }
    ```
 
-3. Use structured bindings to unpack `vk::ResultValue<T>`.
-   The binding can even be pushed into an [if-initialiser](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0305r0.html) statement:
-
-   >[!NOTE]
-   > Structured bindings and if-initialiser statements requires a compiler supporting at least C++17.
+3. Use structured bindings to deconstruct `vk::ResultValue<T>`.
+   The binding initialisation can even be pushed into an [if-initialiser](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0305r0.html) statement:
 
    ```c++
    if (auto const [result, shaderModule1] = device.createShaderModule({...} /* createInfo temporary */);
@@ -529,14 +535,10 @@ With exceptions disabled, there are a few ways to handle the return values.
      // cleanup?
      // return?
    }
-   if (auto const [result, shaderModule2] = device.createShaderModule({...} /* createInfo temporary */);
-       result != vk::Result::eSuccess)
-   {
-     // handle error code;
-     // cleanup?
-     // return?
-   }
    ```
+
+>[!NOTE]
+> Structured bindings and if-initialiser statements requires a compiler supporting at least C++17.
 
 #### `std::expected`
 

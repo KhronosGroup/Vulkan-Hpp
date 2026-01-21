@@ -27,6 +27,7 @@
 #endif
 
 
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
   #include <vulkan/vulkan_hpp_macros.hpp>
   #include <vulkan/vulkan.h>
@@ -40,7 +41,6 @@ import vulkan;
 #  include "vulkan/vulkan_hash.hpp"
 #endif
 
-#include "../test_macros.hpp"
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 namespace vk {
   namespace detail {

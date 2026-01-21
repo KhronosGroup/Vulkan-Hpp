@@ -757,7 +757,7 @@ Define `VULKAN_HPP_HASH_COMBINE` to customise the hash-combining algorithm for s
 > The Vulkan-Hpp C++ named module is still **experimental** and its interface and usage may change often and **without prior notice** to support better usability and integration.
 > We strongly suggest using the **latest** possible toolchains and build systems, as older compilers may have incomplete support, or may emit internal compiler errors (ICEs).
 
-Vulkan-Hpp provides a [C++ named module](https://clang.llvm.org/docs/StandardCPlusPlusModules.html#standard-c-named-modules), `vulkan` with [`vulkan.cppm`](../vulkan/vulkan.cppm) and [`vulkan_video.cppm`](../vulkan/vulkan_video.cppm).
+Vulkan-Hpp provides two [C++ named modules](https://clang.llvm.org/docs/StandardCPlusPlusModules.html#standard-c-named-modules), `vulkan` and `vulkan_video` with [`vulkan.cppm`](../vulkan/vulkan.cppm) and [`vulkan_video.cppm`](../vulkan/vulkan_video.cppm) respectively.
 C++ modules are intended to supersede header files.
 Modules tend to considerably improve compile times, as declarations and definitions may be easily shared across translation units without repeatedly parsing headers.
 This is particularly applicable to Vulkan-Hpp, as the generated headers are very large.

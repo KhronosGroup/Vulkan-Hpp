@@ -93,7 +93,7 @@ jobs:
     - name: Generate Headers with C++20
       run: |
         for BUILD_TYPE in Debug Release; do
-          $([ $BUILD_TYPE = Release ] && RUN_GENERATOR="ON" || RUN_GENERATOR="OFF")
+          [ $BUILD_TYPE = Release ] && RUN_GENERATOR="ON" || RUN_GENERATOR="OFF"
           cmake -B build -G '${{matrix.env.gen}}' --fresh                                                        \
             ${{matrix.env.c && format('-D CMAKE_C_COMPILER={0}', matrix.env.c)}}                                 \
             ${{matrix.env.cxx && format('-D CMAKE_CXX_COMPILER={0}', matrix.env.cxx)}}                           \

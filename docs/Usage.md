@@ -764,7 +764,6 @@ This is particularly applicable to Vulkan-Hpp, as the generated headers are very
 
 Users who are able to upgrade to a recent toolchain (detailed below) should try to use the module instead of the headers, and report bugs and issues.
 
-<!-- TODO: leave this here or move to `Building`? There's already a small warning there. -->
 #### Compiler support
 
 The named module has been tested with the following toolchains:
@@ -776,28 +775,31 @@ The named module has been tested with the following toolchains:
 
 #### CMake usage
 
-CMake is recommended for use with the Vulkan-Hpp named module, as it provides a convenient platform-agnostic way to configure your project.
-Version **3.30** or later is required for the Vulkan-Hpp module, which uses the standard library module feature.
+> [!NOTE]
+> The [CI setup](../.github/workflows/) is a useful reference for setting up CMake projects with the Vulkan-Hpp named module.
+
+CMake is recommended to set up the Vulkan-Hpp named module, as it provides a convenient platform-agnostic way to configure your project.
+Version **3.30** or later is required, which uses the standard library module feature.
 Refer to the [CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html) on the topic.
 
 CMake provides the [FindVulkan module](https://cmake.org/cmake/help/latest/module/FindVulkan.html), which may be used to source the Vulkan SDK and Vulkan headers on your system.
 
 When invoking CMake, make sure to provide the following UUID to enable CMake's experimental support for the C++ standard library module.
 This may also be set before your `project()` call, or in a [CMake preset file](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#configure-preset) in the `cacheVariables` key for a configure preset.
-Note that the UUID may change across CMake versions. To find it for your specific version, check out the correct release tag and look for `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` in [Help/dev/experimental.rst](https://gitlab.kitware.com/cmake/cmake/-/blob/master/Help/dev/experimental.rst).
+Note that the UUID may change across CMake versions.
+To find it for your specific version, check out the correct release tag and look for `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` in [Help/dev/experimental.rst](https://gitlab.kitware.com/cmake/cmake/-/blob/master/Help/dev/experimental.rst).
 
 ```bash
 cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 ...
 ```
 
-A complete example `vulkan_cxx_module.cmake` file for a project using the Vulkan-Hpp named module is provided below.
-<!-- TODO: @M2-TE, any improvements here? Should we leave this out until CMake lands full support for `module std`? -->
+A complete example `CMakeLists.txt` file for a project using the Vulkan-Hpp named module is provided below.
+
 ```cmake
 # this UUID is still valid as of CMake 4.2.1
-# remove this variable if you are setting the UUID via commandline
-set( CMAKE_EXPERIMENTAL_CXX_IMPORT_STD d0edc3af-4c50-42ea-a356-e2862fe7a444 )
+set( CMAKE_EXPERIMENTAL_CXX_IMPORT_STD d0edc3af-4c50-42ea-a356-e2862fe7a444 ) # remove this line if you are setting the UUID at the command-line or in a preset
 
-# UUID had to be set before setting up the project
+# UUID has to be set before setting up the project
 project( vulkan_hpp_modules_example LANGUAGES CXX )
 
 # find Vulkan SDK (modules were first made available in 1.3.256)
@@ -835,7 +837,7 @@ set_target_properties( Vulkan-HppModule PROPERTIES
 
 # link Vulkan C++ module into user project
 add_executable( YourProject main.cpp Engine.cpp ... )
-target_link_libraries( YourProject PRIVATE Vulkan::HppModule )
+target_link_libraries( YourProject PRIVATE Vulkan-HppModule )
 ```
 
 Configuring the named module is straightforward; add any required Vulkan-Hpp feature macros listed in [Configuration](./Configuration.md) (or any C macros) to `target_compile_definitions`.

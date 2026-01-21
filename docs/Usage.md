@@ -70,8 +70,6 @@ Flag bits are handled similarly; additionally, the `_BIT` suffix is removed.
 
 ## Vulkan fundamentals
 
-
-
 ### Structs
 
 #### Constructors

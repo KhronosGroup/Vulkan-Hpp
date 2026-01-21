@@ -757,7 +757,7 @@ Define `VULKAN_HPP_HASH_COMBINE` to customise the hash-combining algorithm for s
 > The Vulkan-Hpp C++ named module is still **experimental** and its interface and usage may change often and **without prior notice** to support better usability and integration.
 > We strongly suggest using the **latest** possible toolchains and build systems, as older compilers may have incomplete support, or may emit internal compiler errors (ICEs).
 
-Vulkan-Hpp provides a [C++ named module](https://clang.llvm.org/docs/StandardCPlusPlusModules.html#standard-c-named-modules), `vulkan` in [`vulkan.cppm`](../vulkan/vulkan.cppm).
+Vulkan-Hpp provides a [C++ named module](https://clang.llvm.org/docs/StandardCPlusPlusModules.html#standard-c-named-modules), `vulkan` with [`vulkan.cppm`](../vulkan/vulkan.cppm) and [`vulkan_video.cppm`](../vulkan/vulkan_video.cppm).
 C++ modules are intended to supersede header files.
 Modules tend to considerably improve compile times, as declarations and definitions may be easily shared across translation units without repeatedly parsing headers.
 This is particularly applicable to Vulkan-Hpp, as the generated headers are very large.
@@ -769,7 +769,7 @@ Users who are able to upgrade to a recent toolchain (detailed below) should try 
 
 The named module has been tested with the following toolchains:
 
-- MSVC 19.44 or later (as reported by the banner in `cl.exe`)
+- MSVC 19.44 or later
 - Clang 21.1.8 or later
 - GCC 15.1 or later
 - CMake version 4.2.1 or later
@@ -783,7 +783,8 @@ Refer to the [CMake documentation](https://cmake.org/cmake/help/latest/manual/cm
 CMake provides the [FindVulkan module](https://cmake.org/cmake/help/latest/module/FindVulkan.html), which may be used to source the Vulkan SDK and Vulkan headers on your system.
 
 When invoking CMake, make sure to provide the following UUID to enable CMake's experimental support for the C++ standard library module.
-This may also be set in a [CMake preset file](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#configure-preset), in the `cacheVariables` key for a configure preset.
+This may also be set before your `project()` call, or in a [CMake preset file](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#configure-preset) in the `cacheVariables` key for a configure preset.
+Note that the UUID may change across CMake versions. To find it for your specific version, check out the correct release tag and look for `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` in [Help/dev/experimental.rst](https://gitlab.kitware.com/cmake/cmake/-/blob/master/Help/dev/experimental.rst).
 
 ```bash
 cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 ...
@@ -792,40 +793,49 @@ cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 .
 A complete example `vulkan_cxx_module.cmake` file for a project using the Vulkan-Hpp named module is provided below.
 <!-- TODO: @M2-TE, any improvements here? Should we leave this out until CMake lands full support for `module std`? -->
 ```cmake
-if( CMAKE_VERSION VERSION_LESS "4.2.1" )
-  message( FATAL_ERROR "CMake version ≥ 4.2.1 is required for C++ modules. "
-           "Found ${CMAKE_VERSION}."
-)
+# this UUID is still valid as of CMake 4.2.1
+# remove this variable if you are setting the UUID via commandline
+set( CMAKE_EXPERIMENTAL_CXX_IMPORT_STD d0edc3af-4c50-42ea-a356-e2862fe7a444 )
 
-# find Vulkan SDK
-find_package( Vulkan REQUIRED )
-# Require Vulkan version ≥ 1.3.256 (earliest version when the Vulkan module was available)
-if( ${Vulkan_VERSION} VERSION_LESS "1.3.256" )
-  message( FATAL_ERROR "Minimum required Vulkan version for C++ modules is 1.3.256. "
-           "Found ${Vulkan_VERSION}."
-)
-endif()
+# UUID had to be set before setting up the project
+project( vulkan_hpp_modules_example LANGUAGES CXX )
+
+# find Vulkan SDK (modules were first made available in 1.3.256)
+find_package( Vulkan 1.3.256 REQUIRED )
 
 # set up Vulkan C++ module as a static library
-add_library( VulkanHppModule STATIC )
-target_sources( VulkanHppModule PRIVATE
+add_library( Vulkan-HppModule STATIC )
+add_library( Vulkan::HppModule ALIAS Vulkan-HppModule )
+target_sources( Vulkan-HppModule PRIVATE
   FILE_SET CXX_MODULES
+  TYPE CXX_MODULES
   BASE_DIRS ${Vulkan_INCLUDE_DIR}
   FILES
     ${Vulkan_INCLUDE_DIR}/vulkan/vulkan.cppm
     ${Vulkan_INCLUDE_DIR}/vulkan/vulkan_video.cppm
 )
 
-# Configure the module target: C++23 standard, link to Vulkan headers, enable C++ standard library module
-target_compile_features( VulkanHppModule PUBLIC cxx_std_23 )
-target_link_libraries( VulkanHppModule PUBLIC Vulkan::Vulkan )
-set_target_properties( VulkanHppModule PROPERTIES
+# configure the module target
+target_compile_features( Vulkan-HppModule
+  PRIVATE cxx_std_23 # (currently) requires C++23 for import std
+  INTERFACE cxx_std_20 # can still be consumed as only a C++20 module
+)
+if( TRUE ) # if you want to use the dynamic dispatcher
+  target_link_libraries( Vulkan-HppModule PUBLIC Vulkan::Headers )
+  target_compile_definitions( Vulkan-HppModule PUBLIC
+    VULKAN_HPP_DISPATCH_LOADER_DYNAMIC
+  )
+else() # otherwise, use Vulkan::Vulkan to link to vulkan-1
+  target_link_libraries( Vulkan-HppModule PUBLIC Vulkan::Vulkan )
+endif()
+set_target_properties( Vulkan-HppModule PROPERTIES
+  CXX_SCAN_FOR_MODULES ON
   CXX_MODULE_STD ON
 )
 
 # link Vulkan C++ module into user project
 add_executable( YourProject main.cpp Engine.cpp ... )
-target_link_libraries( YourProject PRIVATE VulkanHppModule )
+target_link_libraries( YourProject PRIVATE Vulkan::HppModule )
 ```
 
 Configuring the named module is straightforward; add any required Vulkan-Hpp feature macros listed in [Configuration](./Configuration.md) (or any C macros) to `target_compile_definitions`.
@@ -834,7 +844,7 @@ For instance:
 
 ```cmake
 # Disable exceptions, disable smart handles, disable constructors for structs
-target_compile_definitions( VulkanHppModule PUBLIC
+target_compile_definitions( Vulkan-HppModule PUBLIC
   VULKAN_HPP_NO_EXCEPTIONS
   VULKAN_HPP_NO_SMART_HANDLE
   VULKAN_HPP_NO_CONSTRUCTORS
@@ -859,25 +869,20 @@ Furthermore, you may also prefer linking `VulkanHppModule` to just the `Vulkan::
 target_link_libraries( VulkanHppModule PUBLIC Vulkan::Headers )
 ```
 
-Finally, supply the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code, just as in the non-module case.
+If you are using the dynamic dispatcher, do not forget to supply the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code, just as in the non-module case.
 In order to have that macro available, include [`vulkan_hpp_macros.hpp`](../vulkan/vulkan_hpp_macros.hpp), a lightweight header providing all Vulkan-Hpp related macros and defines.
 
 <!-- TODO: is this example correct? -->
 ```cpp
+#include <vulkan/vulkan_hpp_macros.hpp>
 import vulkan;
 
-#include <vulkan/vulkan_hpp_macros.hpp>
-
-#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
-#endif
 
 auto main(int argc, char* const argv[]) -> int
 {
-#if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    // initialize minimal set of function pointers
-    VULKAN_HPP_DEFAULT_DISPATCHER.init();
-#endif
+  // initialize minimal set of function pointers
+  VULKAN_HPP_DEFAULT_DISPATCHER.init();
 
   auto appInfo = vk::ApplicationInfo("My App", 1, "My Engine", 1, vk::makeApiVersion(1, 0, 0, 0));
   // ...

@@ -90,6 +90,7 @@ ${licenseHeader}
 #  elif defined( _WIN32 ) && !defined( VULKAN_HPP_NO_WIN32_PROTOTYPES )
 using HINSTANCE = struct HINSTANCE__ *;
 #    if defined( _WIN64 )
+#    include <cstdint>
 using FARPROC = int64_t(__stdcall *)();
 #    else
 using FARPROC = int(__stdcall *)();

@@ -77,7 +77,7 @@ Flag bits are handled similarly; additionally, the `_BIT` suffix is removed.
 In Vulkan, many operations require that an `Info` struct is populated, and then passed as a pointer to some function; possibly a `vkCreateHandle` or `vkOperationWithHandle`.
 This results in the following C-style code:
 
-```c++
+```cpp
 VkImageCreateInfo ci;
 ci.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 ci.pNext = nullptr;
@@ -114,7 +114,7 @@ This allows for more concise and safer code.
 When an argument is left out, static analysis tools like IDEs and linters will error immediately, and the code will fail to compile.
 For example, the above code may be written with Vulkan-Hpp as:
 
-```c++
+```cpp
 vk::ImageCreateInfo ci({}, // flags
                        vk::ImageType::e2D, // imageType
                        vk::Format::eR8G8B8A8Unorm,
@@ -132,7 +132,7 @@ vk::ImageCreateInfo ci({}, // flags
 
 Use brace-pairs to create and pass structs as temporaries to Vulkan functions, like this:
 
-```c++
+```cpp
 vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
                                      { width, height, 1 },
                                      1, 1, vk::SampleCountFlagBits::e1,
@@ -150,7 +150,7 @@ C++20 and later versions support [designated initializers](https://en.cppreferen
 Designated initializers allow for more expressive code: member variable names are mentioned immediately in plain-text, without needing any static analysis.
 The first few lines of Vulkan initialisation might look like the following:
 
-```c++
+```cpp
 // initialize the vk::ApplicationInfo structure
 vk::ApplicationInfo applicationInfo{ .pApplicationName   = AppName,
                                      .applicationVersion = 1,
@@ -167,7 +167,7 @@ instance = vk::createInstance({ .pApplicationInfo = &applicationInfo });
 
 instead of
 
-```c++
+```cpp
 // initialize the vk::ApplicationInfo structure.
 vk::ApplicationInfo applicationInfo(AppName, 1, EngineName, 1, vk::ApiVersion11);
 
@@ -198,7 +198,7 @@ Instead, Vulkan-Hpp provides two class templates, `vk::ArrayProxy<T>` and `vk::A
 
 For example, consider the following calls to `vk::CommandBuffer::setScissor`:
 
-```c++
+```cpp
 vk::CommandBuffer c;
 
 // pass an empty array
@@ -246,7 +246,7 @@ Instead, Vulkan-Hpp provides setter member functions for _all_ member variables,
 Combining these and [designated initialisers](#designated-initialisers) might allow for the best balance of readability and ease-of-use, since designated initialisers can be omitted for fields that are irrelevant.
 For instance, `vk::ImageCreateInfo` may be constructed like so:
 
-```c++
+```cpp
 std::array<uint32_t, 2> const queueFamilies = { 1U, 2U };
 auto ci = vk::ImageCreateInfo{
   .imageType = vk::ImageType::e2D,
@@ -271,7 +271,7 @@ This means only chains which are valid according to the Vulkan specification can
 
 For instance:
 
-```c++
+```cpp
 // This will compile successfully.
 vk::StructureChain<vk::MemoryAllocateInfo, vk::ImportMemoryFdInfoKHR> c;
 vk::MemoryAllocateInfo &allocInfo = c.get<vk::MemoryAllocateInfo>();
@@ -286,7 +286,7 @@ vk::ImportMemoryFdInfoKHR &fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
 Vulkan-Hpp provides a constructor similar to the `CreateInfo`, which accepts a list of all structures part of the chain.
 The `pNext` field of each structure is populated automatically:
 
-```c++
+```cpp
 vk::StructureChain<vk::MemoryAllocateInfo, vk::MemoryDedicatedAllocateInfo> c = {
   vk::MemoryAllocateInfo(size, type),
   vk::MemoryDedicatedAllocateInfo(image)
@@ -300,7 +300,7 @@ To re-insert the same structure into the chain, use `vk::StructureChain::relink<
 Sometimes the user has to pass a preallocated structure chain to query information. For those cases there are two corresponding getter functions.
 One with a variadic template generating a structure chain of at least two elements to construct the return value:
 
-```c++
+```cpp
 // Query vk::MemoryRequirements2HR and vk::MemoryDedicatedRequirementsKHR when calling Device::getBufferMemoryRequirements2KHR:
 auto result = device.getBufferMemoryRequirements2KHR<vk::MemoryRequirements2KHR, vk::MemoryDedicatedRequirementsKHR>({});
 vk::MemoryRequirements2KHR &memReqs = result.get<vk::MemoryRequirements2KHR>();
@@ -309,7 +309,7 @@ vk::MemoryDedicatedRequirementsKHR &dedMemReqs = result.get<vk::MemoryDedicatedR
 
 To get just the base structure, without chaining, the other getter function provided does not need a template argument for the structure to get:
 
-```c++
+```cpp
 // Query just vk::MemoryRequirements2KHR
 vk::MemoryRequirements2KHR memoryRequirements = device.getBufferMemoryRequirements2KHR({});
 ```
@@ -340,7 +340,7 @@ This accepts inputs of type `T&` or `nullptr`, and thus allows _optional_ tempor
 
 Consider the following example:
 
-```c++
+```cpp
 // C API
 VkImageSubresource subResource;
 subResource.aspectMask = 0;
@@ -378,7 +378,7 @@ This class is default-initialised to zero, and behaves exactly like a normal bit
 
 For example:
 
-```c++
+```cpp
 vk::ImageUsageFlags iu1; // Initialize a bitmask with no bit set
 vk::ImageUsageFlags iu2 = {}; // Default-initialize with no bit set
 vk::ImageUsageFlags iu3 = vk::ImageUsageFlagBits::eColorAttachment; // initialize with a single value
@@ -411,7 +411,7 @@ If the operation has clearly failed, a `std::runtime_error` will be immediately 
 
 For example, consider creating a `vk::Device` from a `vk::PhysicalDevice`:
 
-```c++
+```cpp
 try {
   vk::Device device = physicalDevice.createDevice(createInfo); // `physicalDevice is a `vk::PhysicalDevice`
 }
@@ -425,7 +425,7 @@ Their equivalents in Vulkan-Hpp always return `vk::ResultValue<SomeType>` which 
 
 Consider the following example:
 
-```c++
+```cpp
 try {
   vk::ResultValue<uint32_t> result = device.acquireNextImage2KHR(acquireNextImageInfo);
   uint32_t currentBuffer = result.value;
@@ -466,7 +466,7 @@ This struct may be deconstructed as needed.
 
 Consider the following code which creates a shader module with exceptions enabled:
 
-```c++
+```cpp
 vk::ShaderModule shader1;
 try
 {
@@ -482,7 +482,7 @@ The above code may be rewritten without exceptions as follows, by appropriately 
 
 1. Manually check the returned `vk::Result` code, and handle errors as needed with the C-style functions:
 
-   ```c++
+   ```cpp
    // No exceptions, no return value transformation
    vk::ShaderModuleCreateInfo createInfo(...);
    vk::ShaderModule shader1;
@@ -497,7 +497,7 @@ The above code may be rewritten without exceptions as follows, by appropriately 
 
 2. Use the return value transformation provided by Vulkan-Hpp to deconstruct `vk::ResultValue<T>`:
 
-   ```c++
+   ```cpp
    vk::ResultValue<ShaderModule> shaderResult1 = device.createShaderModule({...} /* createInfo temporary */);
    if (shaderResult1.result != vk::Result::eSuccess)
    {
@@ -509,7 +509,7 @@ The above code may be rewritten without exceptions as follows, by appropriately 
 
    Additionally, `std::tie` may be used to deconstruct the return value into its components:
 
-   ```c++
+   ```cpp
    // std::tie support.
    vk::Result result;
    vk::ShaderModule shaderModule2;
@@ -525,7 +525,7 @@ The above code may be rewritten without exceptions as follows, by appropriately 
 3. Use structured bindings to deconstruct `vk::ResultValue<T>`.
    The binding initialisation can even be pushed into an [if-initialiser](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0305r0.html) statement:
 
-   ```c++
+   ```cpp
    if (auto const [result, shaderModule1] = device.createShaderModule({...} /* createInfo temporary */);
        result != vk::Result::eSuccess)
    {
@@ -552,7 +552,7 @@ The result can then be monadically handled with `and_then`, `transform`, and oth
 Related to error-handing, Vulkan enumerations require more careful handling of return values.
 The following code is quite common:
 
-```c++
+```cpp
 std::vector<LayerProperties, Allocator> properties;
 uint32_t propertyCount;
 vk::Result result;
@@ -575,7 +575,7 @@ properties.resize(propertyCount);
 This loop is tedious and error-prone, and therefore Vulkan-Hpp provides a wrapper that directly returns `std::vector`.
 The above code can be replaced by the following single line:
 
-```c++
+```cpp
 std::vector<vk::LayerProperties> properties = physicalDevice.enumerateDeviceLayerProperties();
 ```
 
@@ -587,7 +587,7 @@ Vulkan-Hpp provides a per-function dispatch mechanism where each function repres
 This class must provide a callable type for each Vulkan function that is required.
 
 <!-- TODO: What is this code sample exactly?  -->
-```c++
+```cpp
 // Function pointer resolving `vkGetInstanceProcAddr`, only the free functions that do not require a VkInstance or a VkDevice are fetched
 vk::detail::DispatchLoaderDynamic dld(getInstanceProcAddr);
 
@@ -610,35 +610,35 @@ Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-
 
    - Let Vulkan-Hpp do all the work with `vk::detail::DynamicLoader`:
 
-     ```c++
+     ```cpp
      VULKAN_HPP_DEFAULT_DISPATCHER.init();
      ```
 
    - Use your own dynamic loader, which needs to provide a templated function `getProcAddress`. Refer to the implementation of `vk::detail::DynamicLoader` in `vulkan.hpp` for an example.
 
      <!-- TODO: Add a skeleton implementation of `struct YourDynamicLoader`? -->
-     ```c++
+     ```cpp
      YourDynamicLoader ydl;
      VULKAN_HPP_DEFAULT_DISPATCHER.init(ydl);
      ```
 
    - Use your own initial function pointer with a signature matching `PFN_vkGetInstanceProcAddr`:
 
-     ```c++
+     ```cpp
          PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = your_own_function_pointer_getter();
          VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
      ```
 
 2. Initialise it with a `vk::Instance` to get all the other function pointers:
 
-   ```c++
+   ```cpp
        vk::Instance instance = vk::createInstance({}, nullptr);
        VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
    ```
 
 3. Optionally initialise it with a `vk::Device` to get device-specific function pointers:
 
-   ```c++
+   ```cpp
        std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
        assert(!physicalDevices.empty());
        vk::Device device = physicalDevices[0].createDevice({}, nullptr);
@@ -678,7 +678,7 @@ In some cases, developers may require a custom allocator for `std::vector`.
 Vulkan-Hpp supports this in `vk::ArrayProxy` constructors, and for functions which return `std::vector`.
 In the latter case, add your custom allocator as a template argument to the function call:
 
-```c++
+```cpp
 std::vector<vk::LayerProperties, MyCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties<MyCustomAllocator>();
 ```
 
@@ -686,7 +686,7 @@ A stateful custom allocator **object** may also be used.
 In this case the object is provided as a usual runtime argument to a function; additionally, the `Dispatch` argument must also be defaulted with a pair of braces `{}`.
 Consider the following example:
 
-```c++
+```cpp
 MyStatefulCustomAllocator allocator;
 std::vector<vk::LayerProperties, MyStatefulCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties(allocator, {});
 ```
@@ -853,15 +853,11 @@ target_compile_definitions( Vulkan-HppModule PUBLIC
 )
 ```
 
-If you are using the dynamic dispatcher, do not forget to supply the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code, just as in the non-module case.
-In order to have that macro available, include [`vulkan_hpp_macros.hpp`](../vulkan/vulkan_hpp_macros.hpp), a lightweight header providing all Vulkan-Hpp related macros and defines.
+This may be combined with the following basic `main.cpp` consumer code:
 
-<!-- TODO: is this example correct? -->
 ```cpp
-#include <vulkan/vulkan_hpp_macros.hpp>
+#include <vulkan/vulkan_hpp_macros.hpp> // optional: include Vulkan-Hpp configuration macros
 import vulkan;
-
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
 auto main(int argc, char* const argv[]) -> int
 {
@@ -873,8 +869,7 @@ auto main(int argc, char* const argv[]) -> int
 }
 ```
 
-<!-- TODO: this test is gone. @M2-TE? -->
-<!-- An example is provided in [`tests/Cpp20Modules/Cpp20Modules.cpp`](tests/Cpp20Modules/Cpp20Modules.cpp). -->
+Note that the default dynamic dispatcher is automatically stored in the module, and there is **no need** to use the `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` macro.
 
 <!-- TODO: this section is massively outdated with `import std`. -->
 <!-- #### Command-line usage
@@ -883,7 +878,7 @@ To use the Vulkan-Hpp C++ module without CMake, you must first pre-compile it, a
 You will also need to define any macros that control various features of Vulkan-Hpp, such as `VULKAN_HPP_NO_EXCEPTIONS` and `VULKAN_HPP_NO_SMART_HANDLE`.
 Different compilers have different command-lines for module pre-compilation; however, for initial use, some examples are provided below, assuming the same `main.cpp` consumer as above.
 
-For MSVC, source `vcvars64.bat` or use a Developer Command Prompt/Developer PowerShell instance, and run the following:
+For MSVC, source `vcvars64.bat` or use an `x64 Native Tools Command Prompt for VS`/`Developer PowerShell` instance, and run the following:
 
 ```powershell
 cl.exe /std:c++23 /interface /TP <path-to-vulkan-hpp>\vulkan.cppm
@@ -908,6 +903,10 @@ More information about module compilation may be found in compiler documentation
 ## Miscellaneous features and notes
 
 ### Extension Inspection
+
+> [!WARNING]
+> This feature considerably increases compilation times.
+> Use only when really necessary.
 
 [`vulkan_extension_inspection.hpp`](../vulkan/vulkan_extension_inspection.hpp) defines functions to inspect Vulkan extensions on the machine.
 With C++20 and above, some of these functions are marked `constexpr`.

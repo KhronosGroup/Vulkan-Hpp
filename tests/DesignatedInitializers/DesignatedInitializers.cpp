@@ -18,13 +18,11 @@
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <cstdint>
-#  include <cassert>
 import vulkan;
 #else
 #  include <cstdint>
 #  include <iostream>
 #  include <vector>
-#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #endif
 

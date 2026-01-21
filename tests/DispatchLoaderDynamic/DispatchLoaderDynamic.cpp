@@ -15,15 +15,13 @@
 // VulkanHpp Samples : DispatchLoaderDynamic
 //                     Compile test on DispatchLoaderDynamic functions
 
-
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-#  include <cassert>
 import vulkan;
 #else
 #  include <map>
 #  include <vector>
 #  include <iostream>
-#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #endif
 
@@ -58,7 +56,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // create a dispatcher, based on additional vkDevice/vkGetDeviceProcAddr
     std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
-    assert( !physicalDevices.empty() );
+    release_assert( !physicalDevices.empty() );
 
     vk::Device device = physicalDevices[0].createDevice( {}, nullptr );
 

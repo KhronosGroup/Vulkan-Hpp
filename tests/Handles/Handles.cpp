@@ -15,10 +15,9 @@
 // VulkanHpp Samples : ArrayProxy
 //                     Compile test on using vk::ArrayProxy
 
-
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan.h>
-#  include <cassert>
 import vulkan;
 #else
 #  include <iostream>
@@ -40,21 +39,21 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     // test operator==() with vk-handle and nullptr
     vk::Instance instance;
-    assert( instance == nullptr );
-    assert( nullptr == instance );
+    release_assert( instance == nullptr );
+    release_assert( nullptr == instance );
 
     instance = vk::createInstance( {} );
-    assert( instance != nullptr );
-    assert( nullptr != instance );
+    release_assert( instance != nullptr );
+    release_assert( nullptr != instance );
 
     vk::Instance instance2;
-    assert( instance != instance2 );
-    assert( !( instance == instance2 ) );
+    release_assert( instance != instance2 );
+    release_assert( !( instance == instance2 ) );
 
-    assert( instance2 < instance );
+    release_assert( instance2 < instance );
 
     instance2 = vk::createInstance( {} );
-    assert( instance != instance2 );
+    release_assert( instance != instance2 );
 
     if ( instance == instance2 )
     {
@@ -115,7 +114,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     vk::raii::PhysicalDevices physicalDevices( i0 );
-    assert( physicalDevices.size() == 2 );
+    release_assert( physicalDevices.size() == 2 );
     if ( physicalDevices[0] == physicalDevices[1] )
     {
       std::cout << "fufu";

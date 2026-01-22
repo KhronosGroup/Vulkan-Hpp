@@ -1,0 +1,89 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 22
+  },
+  "configurePresets": [
+    {
+      "name": "base-generator", "hidden": true,
+      "cacheVariables": { "VULKAN_HPP_GENERATOR_BUILD": "ON", "VULKAN_HPP_RUN_GENERATOR": "ON" }
+    },
+    {
+      "name": "base-generator-disabled", "hidden": true,
+      "cacheVariables": { "VULKAN_HPP_GENERATOR_BUILD": "OFF", "VULKAN_HPP_RUN_GENERATOR": "OFF" }
+    },
+    {
+      "name": "base-dynamic", "hidden": true,
+      "cacheVariables": { "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC": "ON" }
+    },
+    {
+      "name": "base-static", "hidden": true,
+      "cacheVariables": { "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC": "OFF" }
+    },
+    {
+      "name": "base-samples", "hidden": true,
+      "cacheVariables": { "VULKAN_HPP_SAMPLES_BUILD": "ON", "VULKAN_HPP_PRECOMPILE": "ON" }
+    },
+    {
+      "name": "base-tests", "hidden": true,
+      "cacheVariables": { "VULKAN_HPP_TESTS_BUILD": "ON", "VULKAN_HPP_TESTS_CTEST": "OFF" }
+    },
+    {
+      "name": "base-tests-ctest", "hidden": true,
+      "cacheVariables": { "VULKAN_HPP_TESTS_BUILD": "ON", "VULKAN_HPP_TESTS_CTEST": "ON" }
+    },
+    
+    {
+      "name": "generator", "displayName": "Standalone: Generator",
+      "inherits": [  "base-dynamic", "base-generator" ]
+    },
+    {
+      "name": "samples", "displayName": "Standalone: Samples",
+      "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples" ]
+    },
+    {
+      "name": "tests", "displayName": "Standalone: Tests",
+      "inherits": [ "base-dynamic", "base-generator-disabled", "base-tests" ]
+    },
+    {
+      "name": "tests-ctest", "displayName": "Standalone: Tests (CTest)",
+      "inherits": [ "base-dynamic", "base-generator-disabled", "base-tests-ctest" ]
+    },
+
+    {
+      "name": "samples-tests", "displayName": "Combination: Samples and Tests",
+      "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples", "base-tests" ]
+    },
+    {
+      "name": "samples-tests-ctest", "displayName": "Combination: Samples and Tests (CTest)",
+      "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples", "base-tests-ctest" ]
+    },
+    {
+      "name": "generator-samples", "displayName": "Combination: Generator + Samples",
+      "inherits": [ "base-dynamic", "base-generator", "base-samples" ]
+    },
+    {
+      "name": "generator-tests", "displayName": "Combination: Generator + Tests",
+      "inherits": [ "base-dynamic", "base-generator", "base-tests" ]
+    },
+    {
+      "name": "generator-tests", "displayName": "Combination: Generator + Tests (CTest)",
+      "inherits": [ "base-dynamic", "base-generator", "base-tests-ctest" ]
+    },
+    {
+      "name": "generator-samples-tests", "displayName": "Combination: Generator + Samples and Tests (CTest)",
+      "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples", "base-tests-ctest" ]
+    }
+  ],
+
+  "testPresets": [
+    {
+      "name": "tests-ctest",
+      "displayName": "TODO: PLACEHOLDER",
+      "configurePreset": "tests-ctest",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error", "stopOnFailure": true, "jobs": 0 }
+    }
+  ]
+}

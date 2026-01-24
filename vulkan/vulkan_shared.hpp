@@ -825,6 +825,17 @@ namespace VULKAN_HPP_NAMESPACE
 
   using SharedDebugUtilsMessengerEXT = SharedHandle<DebugUtilsMessengerEXT>;
 
+  //=== VK_EXT_descriptor_heap ===
+  template <>
+  class SharedHandleTraits<TensorARM>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = detail::ObjectDestroyShared<TensorARM>;
+  };
+
+  using SharedTensorARM = SharedHandle<TensorARM>;
+
   //=== VK_KHR_acceleration_structure ===
   template <>
   class SharedHandleTraits<AccelerationStructureKHR>
@@ -939,16 +950,6 @@ namespace VULKAN_HPP_NAMESPACE
   using SharedMicromapEXT = SharedHandle<MicromapEXT>;
 
   //=== VK_ARM_tensors ===
-  template <>
-  class SharedHandleTraits<TensorARM>
-  {
-  public:
-    using DestructorType = Device;
-    using deleter        = detail::ObjectDestroyShared<TensorARM>;
-  };
-
-  using SharedTensorARM = SharedHandle<TensorARM>;
-
   template <>
   class SharedHandleTraits<TensorViewARM>
   {

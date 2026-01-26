@@ -9,17 +9,16 @@ ${copyrightMessage}
 #  define has_include_was_not_defined
 #endif
 
-// clang-format off
-#include <vulkan/vulkan.hpp>
-// clang-format on
-
+#if !defined( VULKAN_HPP_CXX_MODULE )
+#  include <vulkan/vulkan.hpp>
 ${includes}
+#endif
 
 #if !defined( VULKAN_HPP_VIDEO_NAMESPACE )
 #  define VULKAN_HPP_VIDEO_NAMESPACE video
 #endif
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
 namespace VULKAN_HPP_VIDEO_NAMESPACE
 {

@@ -4,6 +4,9 @@ module;
 
 #define VULKAN_HPP_CXX_MODULE 1
 
+#include <cassert>
+#include <cstring>
+#include <vulkan/${vulkan_h}>
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 #if !defined( VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING )
@@ -15,6 +18,21 @@ module;
   VULKAN_HPP_COMPILE_WARNING( VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING )
 #endif
 
+export module ${api};
+
+export import std;
+
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == ${headerVersion}, "Wrong VK_HEADER_VERSION!" );
+
+#if defined(_MSC_VER)
+#  pragma warning(push)
+#  pragma warning(disable : 5244)
+#elif defined(__clang__)
+#  pragma clang diagnostic push
+#  pragma clang diagnostic ignored "-Winclude-angled-in-module-purview"
+#elif defined(__GNUC__)
+#endif
+
 #include <vulkan/${api}.hpp>
 #include <vulkan/${api}_extension_inspection.hpp>
 #include <vulkan/${api}_format_traits.hpp>
@@ -22,35 +40,12 @@ module;
 #include <vulkan/${api}_raii.hpp>
 #include <vulkan/${api}_shared.hpp>
 
-export module ${api};
-export import :video;
-export import std;
-
-export namespace VULKAN_HPP_NAMESPACE
-{
-  ${usings}
-
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-  namespace VULKAN_HPP_RAII_NAMESPACE
-  {
-    ${raiiUsings}
-  } // namespace VULKAN_HPP_RAII_NAMESPACE
+#if defined(_MSC_VER)
+#  pragma warning(pop)
+#elif defined(__clang__)
+#  pragma clang diagnostic pop
+#elif defined(__GNUC__)
 #endif
-} // namespace VULKAN_HPP_NAMESPACE
-
-export namespace std
-{
-  ${hashSpecializations}
-
-  //=================================================================
-  //=== Required exports for VULKAN_HPP_NAMESPACE::StructureChain ===
-  //=================================================================
-
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-  using std::tuple_size;
-  using std::tuple_element;
-#endif
-}
 
 export
 {

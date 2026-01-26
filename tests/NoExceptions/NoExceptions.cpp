@@ -26,17 +26,12 @@ import vulkan;
 #  include <iostream>
 #  include <algorithm>
 #  include <vulkan/vulkan.hpp>
+   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
 
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
-
-namespace vk {
-  namespace detail {
-    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }
-}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

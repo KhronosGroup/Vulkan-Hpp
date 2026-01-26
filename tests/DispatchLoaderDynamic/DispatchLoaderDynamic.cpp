@@ -23,14 +23,8 @@ import vulkan;
 #  include <vector>
 #  include <iostream>
 #  include <vulkan/vulkan.hpp>
+   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
-
-
-namespace vk {
-  namespace detail {
-    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }
-}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

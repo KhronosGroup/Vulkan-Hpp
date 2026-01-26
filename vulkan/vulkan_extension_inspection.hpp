@@ -16,7 +16,13 @@
 #  include <vulkan/vulkan.hpp>
 #endif
 
-namespace VULKAN_HPP_NAMESPACE
+#if defined( VULKAN_HPP_CXX_MODULE )
+#  define VULKAN_HPP_EXPORT export
+#else
+#  define VULKAN_HPP_EXPORT
+#endif
+
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
   //======================================
   //=== Extension inspection functions ===

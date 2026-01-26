@@ -8,8 +8,8 @@
 #ifndef VULKAN_HPP
 #define VULKAN_HPP
 
-#include <vulkan/vulkan.h>
 #if !defined( VULKAN_HPP_CXX_MODULE )
+#  include <vulkan/vulkan.h>
 // clang-format off
 #  include <vulkan/vulkan_hpp_macros.hpp>
 // clang-format on
@@ -35,29 +35,21 @@
 #  if defined( VULKAN_HPP_SUPPORT_SPAN )
 #    include <span>
 #  endif
-#else
-#  include <cassert>
-#  include <cstring>
-import std;
-#endif
-
-#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1
-#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined( __Fuchsia__ )
-#    include <dlfcn.h>
-#  elif defined( _WIN32 ) && !defined( VULKAN_HPP_NO_WIN32_PROTOTYPES )
-using HINSTANCE = struct HINSTANCE__ *;
-#    if defined( _WIN64 )
-using FARPROC = int64_t( __stdcall * )();
-#    else
-using FARPROC = int( __stdcall * )();
-#    endif
-extern "C" __declspec( dllimport ) HINSTANCE __stdcall LoadLibraryA( char const * lpLibFileName );
-extern "C" __declspec( dllimport ) int __stdcall       FreeLibrary( HINSTANCE hLibModule );
-extern "C" __declspec( dllimport ) FARPROC __stdcall   GetProcAddress( HINSTANCE hModule, const char * lpProcName );
-#  endif
 #endif
 
 VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 341, "Wrong VK_HEADER_VERSION!" );
+
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
+{
+  namespace detail
+  {
+    class DispatchLoaderDynamic;
+
+#if !defined( VULKAN_HPP_DEFAULT_DISPATCHER_HANDLED ) && VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+    extern VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+#endif
+  }  // namespace detail
+}  // namespace VULKAN_HPP_NAMESPACE
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -86,7 +78,7 @@ constexpr int True = 1;
 constexpr int False = 0;
 #endif
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
   template <typename T, size_t N>
   class ArrayWrapper1D : public std::array<T, N>
@@ -868,7 +860,7 @@ namespace VULKAN_HPP_NAMESPACE
   // interupt the VULKAN_HPP_NAMESPACE for a moment to add specializations of std::tuple_size and std::tuple_element for the StructureChain!
 }
 
-namespace std
+VULKAN_HPP_EXPORT namespace std
 {
   template <typename... Elements>
   struct tuple_size<VULKAN_HPP_NAMESPACE::StructureChain<Elements...>>
@@ -883,7 +875,7 @@ namespace std
   };
 }  // namespace std
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
 #  if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   template <typename Type, typename Dispatch>
@@ -7805,7 +7797,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
-namespace std
+VULKAN_HPP_EXPORT namespace std
 {
   template <>
   struct is_error_code_enum<VULKAN_HPP_NAMESPACE::Result> : public true_type
@@ -7814,7 +7806,7 @@ namespace std
 }  // namespace std
 #endif
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
   class ErrorCategoryImpl : public std::error_category
@@ -8659,49 +8651,41 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return ( ( (uint32_t)( version ) >> 22U ) & 0x7FU );
   }
-
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionMinor( T const version )
   {
     return ( ( (uint32_t)( version ) >> 12U ) & 0x3FFU );
   }
-
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionPatch( T const version )
   {
     return ( (uint32_t)( version ) & 0xFFFU );
   }
-
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionVariant( T const version )
   {
     return ( (uint32_t)( version ) >> 29U );
   }
-
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t makeApiVersion( T const variant, T const major, T const minor, T const patch )
   {
     return ( ( ( (uint32_t)( variant ) ) << 29U ) | ( ( (uint32_t)( major ) ) << 22U ) | ( ( (uint32_t)( minor ) ) << 12U ) | ( (uint32_t)( patch ) ) );
   }
-
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t makeVersion( T const major, T const minor, T const patch )
   {
     return ( ( ( (uint32_t)( major ) ) << 22U ) | ( ( (uint32_t)( minor ) ) << 12U ) | ( (uint32_t)( patch ) ) );
   }
-
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t versionMajor( T const version )
   {
     return ( (uint32_t)( version ) >> 22U );
   }
-
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t versionMinor( T const version )
   {
     return ( ( (uint32_t)( version ) >> 12U ) & 0x3FFU );
   }
-
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t versionPatch( T const version )
   {
@@ -10610,6 +10594,7 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_subgroup_partitioned ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderSubgroupPartitionedSpecVersion   = VK_EXT_SHADER_SUBGROUP_PARTITIONED_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderSubgroupPartitionedExtensionName = VK_EXT_SHADER_SUBGROUP_PARTITIONED_EXTENSION_NAME;
+
 }  // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off
@@ -10618,7 +10603,7 @@ namespace VULKAN_HPP_NAMESPACE
 #include <vulkan/vulkan_funcs.hpp>
 // clang-format on
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 
@@ -25650,6 +25635,10 @@ namespace VULKAN_HPP_NAMESPACE
         init( instance, device, dl );
       }
     };
+
+#if defined( VULKAN_HPP_CXX_MODULE ) && !defined( VULKAN_HPP_DEFAULT_DISPATCHER_HANDLED ) && VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+    VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+#endif
   }  // namespace detail
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

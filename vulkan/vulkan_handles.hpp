@@ -944,6 +944,36 @@ namespace VULKAN_HPP_NAMESPACE
   union DeviceOrHostAddressConstAMDX;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
+  //=== VK_EXT_descriptor_heap ===
+  struct HostAddressRangeEXT;
+  struct HostAddressRangeConstEXT;
+  struct DeviceAddressRangeEXT;
+  struct TexelBufferDescriptorInfoEXT;
+  struct ImageDescriptorInfoEXT;
+  struct ResourceDescriptorInfoEXT;
+  union ResourceDescriptorDataEXT;
+  struct BindHeapInfoEXT;
+  struct PushDataInfoEXT;
+  struct DescriptorMappingSourceConstantOffsetEXT;
+  struct DescriptorMappingSourcePushIndexEXT;
+  struct DescriptorMappingSourceIndirectIndexEXT;
+  struct DescriptorMappingSourceHeapDataEXT;
+  struct DescriptorMappingSourceIndirectAddressEXT;
+  struct DescriptorMappingSourceShaderRecordIndexEXT;
+  union DescriptorMappingSourceDataEXT;
+  struct DescriptorMappingSourceIndirectIndexArrayEXT;
+  struct DescriptorSetAndBindingMappingEXT;
+  struct ShaderDescriptorSetAndBindingMappingInfoEXT;
+  struct OpaqueCaptureDataCreateInfoEXT;
+  struct PhysicalDeviceDescriptorHeapFeaturesEXT;
+  struct PhysicalDeviceDescriptorHeapPropertiesEXT;
+  struct CommandBufferInheritanceDescriptorHeapInfoEXT;
+  struct SamplerCustomBorderColorIndexCreateInfoEXT;
+  struct IndirectCommandsLayoutPushDataTokenNV;
+  struct SubsampledImageFormatPropertiesEXT;
+  struct TensorViewCreateInfoARM;
+  struct PhysicalDeviceDescriptorHeapTensorPropertiesARM;
+
   //=== VK_AMD_mixed_attachment_samples ===
   struct AttachmentSampleCountInfoAMD;
   using AttachmentSampleCountInfoNV = AttachmentSampleCountInfoAMD;
@@ -1712,7 +1742,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_ARM_tensors ===
   struct TensorDescriptionARM;
   struct TensorCreateInfoARM;
-  struct TensorViewCreateInfoARM;
   struct TensorMemoryRequirementsInfoARM;
   struct BindTensorMemoryInfoARM;
   struct WriteDescriptorSetTensorARM;
@@ -1879,6 +1908,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_dynamic_rendering_unused_attachments ===
   struct PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT;
+
+  //=== VK_KHR_internally_synchronized_queues ===
+  struct PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR;
 
   //=== VK_NV_low_latency2 ===
   struct LatencySleepModeInfoNV;
@@ -2163,6 +2195,11 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_shader_fma ===
   struct PhysicalDeviceShaderFmaFeaturesKHR;
 
+  //=== VK_NV_push_constant_bank ===
+  struct PushConstantBankInfoNV;
+  struct PhysicalDevicePushConstantBankFeaturesNV;
+  struct PhysicalDevicePushConstantBankPropertiesNV;
+
   //=== VK_EXT_ray_tracing_invocation_reorder ===
   struct PhysicalDeviceRayTracingInvocationReorderPropertiesEXT;
   struct PhysicalDeviceRayTracingInvocationReorderFeaturesEXT;
@@ -2291,6 +2328,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct ComputeOccupancyPriorityParametersNV;
   struct PhysicalDeviceComputeOccupancyPriorityFeaturesNV;
 
+  //=== VK_EXT_shader_subgroup_partitioned ===
+  struct PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT;
+
   //===================================
   //=== HANDLE forward declarations ===
   //===================================
@@ -2352,6 +2392,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_debug_utils ===
   class DebugUtilsMessengerEXT;
+
+  //=== VK_EXT_descriptor_heap ===
+  class TensorARM;
 
   //=== VK_KHR_acceleration_structure ===
   class AccelerationStructureKHR;
@@ -2743,6 +2786,16 @@ namespace VULKAN_HPP_NAMESPACE
 
   using UniqueDebugUtilsMessengerEXT = UniqueHandle<DebugUtilsMessengerEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
+  //=== VK_EXT_descriptor_heap ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<TensorARM, Dispatch>
+  {
+  public:
+    using deleter = detail::ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueTensorARM = UniqueHandle<TensorARM, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   //=== VK_KHR_acceleration_structure ===
   template <typename Dispatch>
   class UniqueHandleTraits<AccelerationStructureKHR, Dispatch>
@@ -2847,15 +2900,6 @@ namespace VULKAN_HPP_NAMESPACE
   using UniqueMicromapEXT = UniqueHandle<MicromapEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
   //=== VK_ARM_tensors ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<TensorARM, Dispatch>
-  {
-  public:
-    using deleter = detail::ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueTensorARM = UniqueHandle<TensorARM, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
   template <typename Dispatch>
   class UniqueHandleTraits<TensorViewARM, Dispatch>
   {
@@ -6523,6 +6567,35 @@ namespace VULKAN_HPP_NAMESPACE
                                          DeviceAddress      countInfo,
                                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+    //=== VK_EXT_descriptor_heap ===
+
+    // wrapper function for command vkCmdBindSamplerHeapEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBindSamplerHeapEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdBindSamplerHeapEXT ), bool>::type = true>
+    void bindSamplerHeapEXT( const BindHeapInfoEXT * pBindInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdBindSamplerHeapEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBindSamplerHeapEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdBindSamplerHeapEXT ), bool>::type = true>
+    void bindSamplerHeapEXT( const BindHeapInfoEXT & bindInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkCmdBindResourceHeapEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBindResourceHeapEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdBindResourceHeapEXT ), bool>::type = true>
+    void bindResourceHeapEXT( const BindHeapInfoEXT * pBindInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdBindResourceHeapEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBindResourceHeapEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdBindResourceHeapEXT ), bool>::type = true>
+    void bindResourceHeapEXT( const BindHeapInfoEXT & bindInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkCmdPushDataEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdPushDataEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdPushDataEXT ), bool>::type = true>
+    void pushDataEXT( const PushDataInfoEXT * pPushDataInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdPushDataEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdPushDataEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdPushDataEXT ), bool>::type = true>
+    void pushDataEXT( const PushDataInfoEXT & pushDataInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_EXT_sample_locations ===
 
@@ -14185,6 +14258,14 @@ namespace VULKAN_HPP_NAMESPACE
       getImageViewAddressNVX( ImageView imageView, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+    // wrapper function for command vkGetDeviceCombinedImageSamplerIndexNVX, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceCombinedImageSamplerIndexNVX.html
+    template <typename Dispatch                                                                             = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkGetDeviceCombinedImageSamplerIndexNVX ), bool>::type = true>
+    uint64_t getCombinedImageSamplerIndexNVX( uint64_t           imageViewIndex,
+                                              uint64_t           samplerIndex,
+                                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
     //=== VK_AMD_shader_info ===
 
     // wrapper function for command vkGetShaderInfoAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetShaderInfoAMD.html
@@ -14920,6 +15001,137 @@ namespace VULKAN_HPP_NAMESPACE
       Pipeline executionGraph, const PipelineShaderStageNodeCreateInfoAMDX & nodeInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_ENABLE_BETA_EXTENSIONS*/
+
+    //=== VK_EXT_descriptor_heap ===
+
+    // wrapper function for command vkWriteSamplerDescriptorsEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkWriteSamplerDescriptorsEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkWriteSamplerDescriptorsEXT ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result writeSamplerDescriptorsEXT( uint32_t                    samplerCount,
+                                                            const SamplerCreateInfo *   pSamplers,
+                                                            const HostAddressRangeEXT * pDescriptors,
+                                                            Dispatch const & d          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkWriteSamplerDescriptorsEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkWriteSamplerDescriptorsEXT.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkWriteSamplerDescriptorsEXT ), bool>::type = true>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      writeSamplerDescriptorsEXT( ArrayProxy<const SamplerCreateInfo> const &   samplers,
+                                  ArrayProxy<const HostAddressRangeEXT> const & descriptors,
+                                  Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkWriteResourceDescriptorsEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkWriteResourceDescriptorsEXT.html
+    template <typename Dispatch                                                                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkWriteResourceDescriptorsEXT ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result writeResourceDescriptorsEXT( uint32_t                          resourceCount,
+                                                             const ResourceDescriptorInfoEXT * pResources,
+                                                             const HostAddressRangeEXT *       pDescriptors,
+                                                             Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkWriteResourceDescriptorsEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkWriteResourceDescriptorsEXT.html
+    template <typename Dispatch                                                                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkWriteResourceDescriptorsEXT ), bool>::type = true>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      writeResourceDescriptorsEXT( ArrayProxy<const ResourceDescriptorInfoEXT> const & resources,
+                                   ArrayProxy<const HostAddressRangeEXT> const &       descriptors,
+                                   Dispatch const & d                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkGetImageOpaqueCaptureDataEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageOpaqueCaptureDataEXT.html
+    template <typename Dispatch                                                                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkGetImageOpaqueCaptureDataEXT ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result getImageOpaqueCaptureDataEXT( uint32_t              imageCount,
+                                                              const Image *         pImages,
+                                                              HostAddressRangeEXT * pDatas,
+                                                              Dispatch const & d    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetImageOpaqueCaptureDataEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageOpaqueCaptureDataEXT.html
+    template <typename HostAddressRangeEXTAllocator = std::allocator<HostAddressRangeEXT>,
+              typename Dispatch                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename HostAddressRangeEXTAllocator::value_type, HostAddressRangeEXT>::value, int>::type = 0,
+              typename std::enable_if<IS_DISPATCHED( vkGetImageOpaqueCaptureDataEXT ), bool>::type                                            = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<HostAddressRangeEXT, HostAddressRangeEXTAllocator>>::type
+      getImageOpaqueCaptureDataEXT( ArrayProxy<const Image> const & images, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    // wrapper function for command vkGetImageOpaqueCaptureDataEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageOpaqueCaptureDataEXT.html
+    template <typename HostAddressRangeEXTAllocator = std::allocator<HostAddressRangeEXT>,
+              typename Dispatch                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename HostAddressRangeEXTAllocator::value_type, HostAddressRangeEXT>::value, int>::type = 0,
+              typename std::enable_if<IS_DISPATCHED( vkGetImageOpaqueCaptureDataEXT ), bool>::type                                            = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<HostAddressRangeEXT, HostAddressRangeEXTAllocator>>::type
+      getImageOpaqueCaptureDataEXT( ArrayProxy<const Image> const &      images,
+                                    HostAddressRangeEXTAllocator const & hostAddressRangeEXTAllocator,
+                                    Dispatch const & d                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    // wrapper function for command vkGetImageOpaqueCaptureDataEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageOpaqueCaptureDataEXT.html
+    template <typename Dispatch                                                                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkGetImageOpaqueCaptureDataEXT ), bool>::type = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<HostAddressRangeEXT>::type
+      getImageOpaqueCaptureDataEXT( const Image & image, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkRegisterCustomBorderColorEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkRegisterCustomBorderColorEXT.html
+    template <typename Dispatch                                                                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkRegisterCustomBorderColorEXT ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result registerCustomBorderColorEXT( const SamplerCustomBorderColorCreateInfoEXT * pBorderColor,
+                                                              Bool32                                        requestIndex,
+                                                              uint32_t *                                    pIndex,
+                                                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkRegisterCustomBorderColorEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkRegisterCustomBorderColorEXT.html
+    template <typename Dispatch                                                                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkRegisterCustomBorderColorEXT ), bool>::type = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<uint32_t>::type registerCustomBorderColorEXT(
+      const SamplerCustomBorderColorCreateInfoEXT & borderColor, Bool32 requestIndex, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkUnregisterCustomBorderColorEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkUnregisterCustomBorderColorEXT.html
+    template <typename Dispatch                                                                      = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkUnregisterCustomBorderColorEXT ), bool>::type = true>
+    void unregisterCustomBorderColorEXT( uint32_t index, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    // wrapper function for command vkGetTensorOpaqueCaptureDataARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDataARM.html
+    template <typename Dispatch                                                                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkGetTensorOpaqueCaptureDataARM ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result getTensorOpaqueCaptureDataARM( uint32_t              tensorCount,
+                                                               const TensorARM *     pTensors,
+                                                               HostAddressRangeEXT * pDatas,
+                                                               Dispatch const & d    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetTensorOpaqueCaptureDataARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDataARM.html
+    template <typename HostAddressRangeEXTAllocator = std::allocator<HostAddressRangeEXT>,
+              typename Dispatch                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename HostAddressRangeEXTAllocator::value_type, HostAddressRangeEXT>::value, int>::type = 0,
+              typename std::enable_if<IS_DISPATCHED( vkGetTensorOpaqueCaptureDataARM ), bool>::type                                           = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<HostAddressRangeEXT, HostAddressRangeEXTAllocator>>::type
+      getTensorOpaqueCaptureDataARM( ArrayProxy<const TensorARM> const & tensors, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    // wrapper function for command vkGetTensorOpaqueCaptureDataARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDataARM.html
+    template <typename HostAddressRangeEXTAllocator = std::allocator<HostAddressRangeEXT>,
+              typename Dispatch                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename HostAddressRangeEXTAllocator::value_type, HostAddressRangeEXT>::value, int>::type = 0,
+              typename std::enable_if<IS_DISPATCHED( vkGetTensorOpaqueCaptureDataARM ), bool>::type                                           = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<HostAddressRangeEXT, HostAddressRangeEXTAllocator>>::type
+      getTensorOpaqueCaptureDataARM( ArrayProxy<const TensorARM> const &  tensors,
+                                     HostAddressRangeEXTAllocator const & hostAddressRangeEXTAllocator,
+                                     Dispatch const & d                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    // wrapper function for command vkGetTensorOpaqueCaptureDataARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDataARM.html
+    template <typename Dispatch                                                                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkGetTensorOpaqueCaptureDataARM ), bool>::type = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<HostAddressRangeEXT>::type
+      getTensorOpaqueCaptureDataARM( const TensorARM & tensor, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_KHR_get_memory_requirements2 ===
 
@@ -20864,6 +21076,14 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD typename ResultValueType<DisplayPlaneCapabilities2KHR>::type
       getDisplayPlaneCapabilities2KHR( const DisplayPlaneInfo2KHR & displayPlaneInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_EXT_descriptor_heap ===
+
+    // wrapper function for command vkGetPhysicalDeviceDescriptorSizeEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceDescriptorSizeEXT.html
+    template <typename Dispatch                                                                          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceDescriptorSizeEXT ), bool>::type = true>
+    DeviceSize getDescriptorSizeEXT( DescriptorType descriptorType, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
     //=== VK_EXT_sample_locations ===
 

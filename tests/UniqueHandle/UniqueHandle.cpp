@@ -14,6 +14,7 @@
 //
 // VulkanHpp Test: Compile test for Unique handles
 
+#include "../test_macros.hpp"
 #include "../../samples/utils/geometries.hpp"
 #include "../../samples/utils/shaders.hpp"
 #include "../../samples/utils/utils.hpp"
@@ -123,7 +124,7 @@ vk::UniqueRenderPass createRenderPassUnique( vk::UniqueDevice const & device,
                                              vk::ImageLayout          colorFinalLayout = vk::ImageLayout::ePresentSrcKHR )
 {
   std::vector<vk::AttachmentDescription> attachmentDescriptions;
-  assert( colorFormat != vk::Format::eUndefined );
+  release_assert( colorFormat != vk::Format::eUndefined );
   attachmentDescriptions.emplace_back( vk::AttachmentDescriptionFlags(),
                                        colorFormat,
                                        vk::SampleCountFlagBits::e1,
@@ -226,7 +227,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                           queueFamilyProperties.end(),
                                           []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );
     size_t graphicsQueueFamilyIndex = std::distance( queueFamilyProperties.begin(), propertyIterator );
-    assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
+    release_assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
     // create a Device
     vk::UniqueDevice device = createDeviceUnique( physicalDevices[0], static_cast<uint32_t>( graphicsQueueFamilyIndex ), vk::su::getDeviceExtensions() );

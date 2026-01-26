@@ -17,10 +17,8 @@
 
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-#  include <cassert>
 import vulkan;
 #else
-#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #  include <vulkan/vulkan_raii.hpp>
 #  include <vulkan/vulkan_shared.hpp>

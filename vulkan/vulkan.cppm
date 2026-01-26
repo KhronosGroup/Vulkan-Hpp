@@ -409,6 +409,7 @@ export {
   using ::PFN_vkDestroyCuModuleNVX;
 
   //=== VK_NVX_image_view_handle ===
+  using ::PFN_vkGetDeviceCombinedImageSamplerIndexNVX;
   using ::PFN_vkGetImageViewAddressNVX;
   using ::PFN_vkGetImageViewHandle64NVX;
   using ::PFN_vkGetImageViewHandleNVX;
@@ -611,6 +612,18 @@ export {
   using ::PFN_vkGetExecutionGraphPipelineNodeIndexAMDX;
   using ::PFN_vkGetExecutionGraphPipelineScratchSizeAMDX;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_EXT_descriptor_heap ===
+  using ::PFN_vkCmdBindResourceHeapEXT;
+  using ::PFN_vkCmdBindSamplerHeapEXT;
+  using ::PFN_vkCmdPushDataEXT;
+  using ::PFN_vkGetImageOpaqueCaptureDataEXT;
+  using ::PFN_vkGetPhysicalDeviceDescriptorSizeEXT;
+  using ::PFN_vkGetTensorOpaqueCaptureDataARM;
+  using ::PFN_vkRegisterCustomBorderColorEXT;
+  using ::PFN_vkUnregisterCustomBorderColorEXT;
+  using ::PFN_vkWriteResourceDescriptorsEXT;
+  using ::PFN_vkWriteSamplerDescriptorsEXT;
 
   //=== VK_EXT_sample_locations ===
   using ::PFN_vkCmdSetSampleLocationsEXT;

@@ -142,12 +142,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       result += " Disjoint |";
     if ( value & ImageCreateFlagBits::eCornerSampledNV )
       result += " CornerSampledNV |";
+    if ( value & ImageCreateFlagBits::eDescriptorHeapCaptureReplayEXT )
+      result += " DescriptorHeapCaptureReplayEXT |";
     if ( value & ImageCreateFlagBits::eSampleLocationsCompatibleDepthEXT )
       result += " SampleLocationsCompatibleDepthEXT |";
     if ( value & ImageCreateFlagBits::eSubsampledEXT )
       result += " SubsampledEXT |";
-    if ( value & ImageCreateFlagBits::eDescriptorBufferCaptureReplayEXT )
-      result += " DescriptorBufferCaptureReplayEXT |";
     if ( value & ImageCreateFlagBits::eMultisampledRenderToSingleSampledEXT )
       result += " MultisampledRenderToSingleSampledEXT |";
     if ( value & ImageCreateFlagBits::e2DViewCompatibleEXT )
@@ -348,6 +348,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     std::string result = "{";
     if ( value & DeviceQueueCreateFlagBits::eProtected )
       result += " Protected |";
+    if ( value & DeviceQueueCreateFlagBits::eInternallySynchronizedKHR )
+      result += " InternallySynchronizedKHR |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -609,6 +611,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     if ( value & BufferUsageFlagBits::eExecutionGraphScratchAMDX )
       result += " ExecutionGraphScratchAMDX |";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    if ( value & BufferUsageFlagBits::eDescriptorHeapEXT )
+      result += " DescriptorHeapEXT |";
     if ( value & BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR )
       result += " AccelerationStructureBuildInputReadOnlyKHR |";
     if ( value & BufferUsageFlagBits::eAccelerationStructureStorageKHR )
@@ -1542,8 +1546,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       result += " Rotate |";
     if ( value & SubgroupFeatureFlagBits::eRotateClustered )
       result += " RotateClustered |";
-    if ( value & SubgroupFeatureFlagBits::ePartitionedNV )
-      result += " PartitionedNV |";
+    if ( value & SubgroupFeatureFlagBits::ePartitionedEXT )
+      result += " PartitionedEXT |";
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -1796,6 +1800,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       result += " VideoDecodeReadKHR |";
     if ( value & AccessFlagBits2::eVideoDecodeWriteKHR )
       result += " VideoDecodeWriteKHR |";
+    if ( value & AccessFlagBits2::eSamplerHeapReadEXT )
+      result += " SamplerHeapReadEXT |";
+    if ( value & AccessFlagBits2::eResourceHeapReadEXT )
+      result += " ResourceHeapReadEXT |";
     if ( value & AccessFlagBits2::eVideoEncodeReadKHR )
       result += " VideoEncodeReadKHR |";
     if ( value & AccessFlagBits2::eVideoEncodeWriteKHR )
@@ -2076,6 +2084,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     if ( value & BufferUsageFlagBits2::eExecutionGraphScratchAMDX )
       result += " ExecutionGraphScratchAMDX |";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    if ( value & BufferUsageFlagBits2::eDescriptorHeapEXT )
+      result += " DescriptorHeapEXT |";
     if ( value & BufferUsageFlagBits2::eConditionalRenderingEXT )
       result += " ConditionalRenderingEXT |";
     if ( value & BufferUsageFlagBits2::eShaderBindingTableKHR )
@@ -2164,6 +2174,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     if ( value & PipelineCreateFlagBits2::eExecutionGraphAMDX )
       result += " ExecutionGraphAMDX |";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    if ( value & PipelineCreateFlagBits2::eDescriptorHeapEXT )
+      result += " DescriptorHeapEXT |";
     if ( value & PipelineCreateFlagBits2::eRayTracingAllowSpheresAndLinearSweptSpheresNV )
       result += " RayTracingAllowSpheresAndLinearSweptSpheresNV |";
     if ( value & PipelineCreateFlagBits2::eEnableLegacyDitheringEXT )
@@ -3087,6 +3099,52 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 
+  //=== VK_EXT_descriptor_heap ===
+
+  VULKAN_HPP_INLINE std::string to_string( SpirvResourceTypeFlagsEXT value )
+  {
+    std::string result = "{";
+    if ( value & SpirvResourceTypeFlagBitsEXT::eSampler )
+      result += " Sampler |";
+    if ( value & SpirvResourceTypeFlagBitsEXT::eSampledImage )
+      result += " SampledImage |";
+    if ( value & SpirvResourceTypeFlagBitsEXT::eReadOnlyImage )
+      result += " ReadOnlyImage |";
+    if ( value & SpirvResourceTypeFlagBitsEXT::eReadWriteImage )
+      result += " ReadWriteImage |";
+    if ( value & SpirvResourceTypeFlagBitsEXT::eCombinedSampledImage )
+      result += " CombinedSampledImage |";
+    if ( value & SpirvResourceTypeFlagBitsEXT::eUniformBuffer )
+      result += " UniformBuffer |";
+    if ( value & SpirvResourceTypeFlagBitsEXT::eReadOnlyStorageBuffer )
+      result += " ReadOnlyStorageBuffer |";
+    if ( value & SpirvResourceTypeFlagBitsEXT::eReadWriteStorageBuffer )
+      result += " ReadWriteStorageBuffer |";
+    if ( value & SpirvResourceTypeFlagBitsEXT::eAccelerationStructure )
+      result += " AccelerationStructure |";
+    if ( value & SpirvResourceTypeFlagBitsEXT::eTensorARM )
+      result += " TensorARM |";
+
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else
+      result = "{}";
+    return result;
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( TensorViewCreateFlagsARM value )
+  {
+    std::string result = "{";
+    if ( value & TensorViewCreateFlagBitsARM::eDescriptorBufferCaptureReplay )
+      result += " DescriptorBufferCaptureReplay |";
+
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else
+      result = "{}";
+    return result;
+  }
+
   //=== VK_NV_fragment_coverage_to_color ===
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( PipelineCoverageToColorStateCreateFlagsNV )
@@ -3821,20 +3879,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       result += " MutableFormat |";
     if ( value & TensorCreateFlagBitsARM::eProtected )
       result += " Protected |";
+    if ( value & TensorCreateFlagBitsARM::eDescriptorHeapCaptureReplay )
+      result += " DescriptorHeapCaptureReplay |";
     if ( value & TensorCreateFlagBitsARM::eDescriptorBufferCaptureReplay )
-      result += " DescriptorBufferCaptureReplay |";
-
-    if ( result.size() > 1 )
-      result.back() = '}';
-    else
-      result = "{}";
-    return result;
-  }
-
-  VULKAN_HPP_INLINE std::string to_string( TensorViewCreateFlagsARM value )
-  {
-    std::string result = "{";
-    if ( value & TensorViewCreateFlagBitsARM::eDescriptorBufferCaptureReplay )
       result += " DescriptorBufferCaptureReplay |";
 
     if ( result.size() > 1 )
@@ -3948,6 +3995,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     std::string result = "{";
     if ( value & ShaderCreateFlagBitsEXT::eLinkStage )
       result += " LinkStage |";
+    if ( value & ShaderCreateFlagBitsEXT::eDescriptorHeap )
+      result += " DescriptorHeap |";
     if ( value & ShaderCreateFlagBitsEXT::eAllowVaryingSubgroupSize )
       result += " AllowVaryingSubgroupSize |";
     if ( value & ShaderCreateFlagBitsEXT::eRequireFullSubgroups )
@@ -4897,6 +4946,21 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case StructureType::eExecutionGraphPipelineCreateInfoAMDX     : return "ExecutionGraphPipelineCreateInfoAMDX";
       case StructureType::ePipelineShaderStageNodeCreateInfoAMDX    : return "PipelineShaderStageNodeCreateInfoAMDX";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case StructureType::eTexelBufferDescriptorInfoEXT                     : return "TexelBufferDescriptorInfoEXT";
+      case StructureType::eImageDescriptorInfoEXT                           : return "ImageDescriptorInfoEXT";
+      case StructureType::eResourceDescriptorInfoEXT                        : return "ResourceDescriptorInfoEXT";
+      case StructureType::eBindHeapInfoEXT                                  : return "BindHeapInfoEXT";
+      case StructureType::ePushDataInfoEXT                                  : return "PushDataInfoEXT";
+      case StructureType::eDescriptorSetAndBindingMappingEXT                : return "DescriptorSetAndBindingMappingEXT";
+      case StructureType::eShaderDescriptorSetAndBindingMappingInfoEXT      : return "ShaderDescriptorSetAndBindingMappingInfoEXT";
+      case StructureType::eOpaqueCaptureDataCreateInfoEXT                   : return "OpaqueCaptureDataCreateInfoEXT";
+      case StructureType::ePhysicalDeviceDescriptorHeapPropertiesEXT        : return "PhysicalDeviceDescriptorHeapPropertiesEXT";
+      case StructureType::ePhysicalDeviceDescriptorHeapFeaturesEXT          : return "PhysicalDeviceDescriptorHeapFeaturesEXT";
+      case StructureType::eCommandBufferInheritanceDescriptorHeapInfoEXT    : return "CommandBufferInheritanceDescriptorHeapInfoEXT";
+      case StructureType::eSamplerCustomBorderColorIndexCreateInfoEXT       : return "SamplerCustomBorderColorIndexCreateInfoEXT";
+      case StructureType::eIndirectCommandsLayoutPushDataTokenNV            : return "IndirectCommandsLayoutPushDataTokenNV";
+      case StructureType::eSubsampledImageFormatPropertiesEXT               : return "SubsampledImageFormatPropertiesEXT";
+      case StructureType::ePhysicalDeviceDescriptorHeapTensorPropertiesARM  : return "PhysicalDeviceDescriptorHeapTensorPropertiesARM";
       case StructureType::eAttachmentSampleCountInfoAMD                     : return "AttachmentSampleCountInfoAMD";
       case StructureType::ePhysicalDeviceShaderBfloat16FeaturesKHR          : return "PhysicalDeviceShaderBfloat16FeaturesKHR";
       case StructureType::eSampleLocationsInfoEXT                           : return "SampleLocationsInfoEXT";
@@ -5409,6 +5473,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceShaderCoreBuiltinsPropertiesARM               : return "PhysicalDeviceShaderCoreBuiltinsPropertiesARM";
       case StructureType::ePhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT        : return "PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT";
       case StructureType::ePhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT  : return "PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT";
+      case StructureType::ePhysicalDeviceInternallySynchronizedQueuesFeaturesKHR       : return "PhysicalDeviceInternallySynchronizedQueuesFeaturesKHR";
       case StructureType::eLatencySleepModeInfoNV                                      : return "LatencySleepModeInfoNV";
       case StructureType::eLatencySleepInfoNV                                          : return "LatencySleepInfoNV";
       case StructureType::eSetLatencyMarkerInfoNV                                      : return "SetLatencyMarkerInfoNV";
@@ -5571,6 +5636,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceImageAlignmentControlPropertiesMESA         : return "PhysicalDeviceImageAlignmentControlPropertiesMESA";
       case StructureType::eImageAlignmentControlCreateInfoMESA                       : return "ImageAlignmentControlCreateInfoMESA";
       case StructureType::ePhysicalDeviceShaderFmaFeaturesKHR                        : return "PhysicalDeviceShaderFmaFeaturesKHR";
+      case StructureType::ePushConstantBankInfoNV                                    : return "PushConstantBankInfoNV";
+      case StructureType::ePhysicalDevicePushConstantBankFeaturesNV                  : return "PhysicalDevicePushConstantBankFeaturesNV";
+      case StructureType::ePhysicalDevicePushConstantBankPropertiesNV                : return "PhysicalDevicePushConstantBankPropertiesNV";
       case StructureType::ePhysicalDeviceRayTracingInvocationReorderFeaturesEXT      : return "PhysicalDeviceRayTracingInvocationReorderFeaturesEXT";
       case StructureType::ePhysicalDeviceRayTracingInvocationReorderPropertiesEXT    : return "PhysicalDeviceRayTracingInvocationReorderPropertiesEXT";
       case StructureType::ePhysicalDeviceDepthClampControlFeaturesEXT                : return "PhysicalDeviceDepthClampControlFeaturesEXT";
@@ -5635,6 +5703,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT: return "PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT";
       case StructureType::eComputeOccupancyPriorityParametersNV                    : return "ComputeOccupancyPriorityParametersNV";
       case StructureType::ePhysicalDeviceComputeOccupancyPriorityFeaturesNV        : return "PhysicalDeviceComputeOccupancyPriorityFeaturesNV";
+      case StructureType::ePhysicalDeviceShaderSubgroupPartitionedFeaturesEXT      : return "PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT";
       default                                                                      : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6085,9 +6154,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case ImageCreateFlagBits::eProtected                           : return "Protected";
       case ImageCreateFlagBits::eDisjoint                            : return "Disjoint";
       case ImageCreateFlagBits::eCornerSampledNV                     : return "CornerSampledNV";
+      case ImageCreateFlagBits::eDescriptorHeapCaptureReplayEXT      : return "DescriptorHeapCaptureReplayEXT";
       case ImageCreateFlagBits::eSampleLocationsCompatibleDepthEXT   : return "SampleLocationsCompatibleDepthEXT";
       case ImageCreateFlagBits::eSubsampledEXT                       : return "SubsampledEXT";
-      case ImageCreateFlagBits::eDescriptorBufferCaptureReplayEXT    : return "DescriptorBufferCaptureReplayEXT";
       case ImageCreateFlagBits::eMultisampledRenderToSingleSampledEXT: return "MultisampledRenderToSingleSampledEXT";
       case ImageCreateFlagBits::e2DViewCompatibleEXT                 : return "2DViewCompatibleEXT";
       case ImageCreateFlagBits::eVideoProfileIndependentKHR          : return "VideoProfileIndependentKHR";
@@ -6264,8 +6333,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   {
     switch ( value )
     {
-      case DeviceQueueCreateFlagBits::eProtected: return "Protected";
-      default                                   : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+      case DeviceQueueCreateFlagBits::eProtected                : return "Protected";
+      case DeviceQueueCreateFlagBits::eInternallySynchronizedKHR: return "InternallySynchronizedKHR";
+      default                                                   : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -6451,6 +6521,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       case BufferUsageFlagBits::eExecutionGraphScratchAMDX: return "ExecutionGraphScratchAMDX";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case BufferUsageFlagBits::eDescriptorHeapEXT                         : return "DescriptorHeapEXT";
       case BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR: return "AccelerationStructureBuildInputReadOnlyKHR";
       case BufferUsageFlagBits::eAccelerationStructureStorageKHR           : return "AccelerationStructureStorageKHR";
       case BufferUsageFlagBits::eShaderBindingTableKHR                     : return "ShaderBindingTableKHR";
@@ -7567,7 +7638,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case SubgroupFeatureFlagBits::eQuad           : return "Quad";
       case SubgroupFeatureFlagBits::eRotate         : return "Rotate";
       case SubgroupFeatureFlagBits::eRotateClustered: return "RotateClustered";
-      case SubgroupFeatureFlagBits::ePartitionedNV  : return "PartitionedNV";
+      case SubgroupFeatureFlagBits::ePartitionedEXT : return "PartitionedEXT";
       default                                       : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7852,6 +7923,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case AccessFlagBits2::eShaderStorageWrite                  : return "ShaderStorageWrite";
       case AccessFlagBits2::eVideoDecodeReadKHR                  : return "VideoDecodeReadKHR";
       case AccessFlagBits2::eVideoDecodeWriteKHR                 : return "VideoDecodeWriteKHR";
+      case AccessFlagBits2::eSamplerHeapReadEXT                  : return "SamplerHeapReadEXT";
+      case AccessFlagBits2::eResourceHeapReadEXT                 : return "ResourceHeapReadEXT";
       case AccessFlagBits2::eVideoEncodeReadKHR                  : return "VideoEncodeReadKHR";
       case AccessFlagBits2::eVideoEncodeWriteKHR                 : return "VideoEncodeWriteKHR";
       case AccessFlagBits2::eShaderTileAttachmentReadQCOM        : return "ShaderTileAttachmentReadQCOM";
@@ -8022,6 +8095,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       case BufferUsageFlagBits2::eExecutionGraphScratchAMDX: return "ExecutionGraphScratchAMDX";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case BufferUsageFlagBits2::eDescriptorHeapEXT                         : return "DescriptorHeapEXT";
       case BufferUsageFlagBits2::eConditionalRenderingEXT                   : return "ConditionalRenderingEXT";
       case BufferUsageFlagBits2::eShaderBindingTableKHR                     : return "ShaderBindingTableKHR";
       case BufferUsageFlagBits2::eTransformFeedbackBufferEXT                : return "TransformFeedbackBufferEXT";
@@ -8073,6 +8147,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       case PipelineCreateFlagBits2::eExecutionGraphAMDX: return "ExecutionGraphAMDX";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case PipelineCreateFlagBits2::eDescriptorHeapEXT                            : return "DescriptorHeapEXT";
       case PipelineCreateFlagBits2::eRayTracingAllowSpheresAndLinearSweptSpheresNV: return "RayTracingAllowSpheresAndLinearSweptSpheresNV";
       case PipelineCreateFlagBits2::eEnableLegacyDitheringEXT                     : return "EnableLegacyDitheringEXT";
       case PipelineCreateFlagBits2::eDeferCompileNV                               : return "DeferCompileNV";
@@ -8998,6 +9073,55 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
+  //=== VK_EXT_descriptor_heap ===
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DescriptorMappingSourceEXT value )
+  {
+    switch ( value )
+    {
+      case DescriptorMappingSourceEXT::eHeapWithConstantOffset    : return "HeapWithConstantOffset";
+      case DescriptorMappingSourceEXT::eHeapWithPushIndex         : return "HeapWithPushIndex";
+      case DescriptorMappingSourceEXT::eHeapWithIndirectIndex     : return "HeapWithIndirectIndex";
+      case DescriptorMappingSourceEXT::eHeapWithIndirectIndexArray: return "HeapWithIndirectIndexArray";
+      case DescriptorMappingSourceEXT::eResourceHeapData          : return "ResourceHeapData";
+      case DescriptorMappingSourceEXT::ePushData                  : return "PushData";
+      case DescriptorMappingSourceEXT::ePushAddress               : return "PushAddress";
+      case DescriptorMappingSourceEXT::eIndirectAddress           : return "IndirectAddress";
+      case DescriptorMappingSourceEXT::eHeapWithShaderRecordIndex : return "HeapWithShaderRecordIndex";
+      case DescriptorMappingSourceEXT::eShaderRecordData          : return "ShaderRecordData";
+      case DescriptorMappingSourceEXT::eShaderRecordAddress       : return "ShaderRecordAddress";
+      default                                                     : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( SpirvResourceTypeFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case SpirvResourceTypeFlagBitsEXT::eAll                   : return "All";
+      case SpirvResourceTypeFlagBitsEXT::eSampler               : return "Sampler";
+      case SpirvResourceTypeFlagBitsEXT::eSampledImage          : return "SampledImage";
+      case SpirvResourceTypeFlagBitsEXT::eReadOnlyImage         : return "ReadOnlyImage";
+      case SpirvResourceTypeFlagBitsEXT::eReadWriteImage        : return "ReadWriteImage";
+      case SpirvResourceTypeFlagBitsEXT::eCombinedSampledImage  : return "CombinedSampledImage";
+      case SpirvResourceTypeFlagBitsEXT::eUniformBuffer         : return "UniformBuffer";
+      case SpirvResourceTypeFlagBitsEXT::eReadOnlyStorageBuffer : return "ReadOnlyStorageBuffer";
+      case SpirvResourceTypeFlagBitsEXT::eReadWriteStorageBuffer: return "ReadWriteStorageBuffer";
+      case SpirvResourceTypeFlagBitsEXT::eAccelerationStructure : return "AccelerationStructure";
+      case SpirvResourceTypeFlagBitsEXT::eTensorARM             : return "TensorARM";
+      default                                                   : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( TensorViewCreateFlagBitsARM value )
+  {
+    switch ( value )
+    {
+      case TensorViewCreateFlagBitsARM::eDescriptorBufferCaptureReplay: return "DescriptorBufferCaptureReplay";
+      default                                                         : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
   //=== VK_EXT_blend_operation_advanced ===
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( BlendOverlapEXT value )
@@ -9521,6 +9645,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case IndirectCommandsTokenTypeNV::eDrawIndexed  : return "DrawIndexed";
       case IndirectCommandsTokenTypeNV::eDraw         : return "Draw";
       case IndirectCommandsTokenTypeNV::eDrawTasks    : return "DrawTasks";
+      case IndirectCommandsTokenTypeNV::ePushData     : return "PushData";
       case IndirectCommandsTokenTypeNV::eDrawMeshTasks: return "DrawMeshTasks";
       case IndirectCommandsTokenTypeNV::ePipeline     : return "Pipeline";
       case IndirectCommandsTokenTypeNV::eDispatch     : return "Dispatch";
@@ -10131,17 +10256,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     {
       case TensorCreateFlagBitsARM::eMutableFormat                : return "MutableFormat";
       case TensorCreateFlagBitsARM::eProtected                    : return "Protected";
+      case TensorCreateFlagBitsARM::eDescriptorHeapCaptureReplay  : return "DescriptorHeapCaptureReplay";
       case TensorCreateFlagBitsARM::eDescriptorBufferCaptureReplay: return "DescriptorBufferCaptureReplay";
       default                                                     : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( TensorViewCreateFlagBitsARM value )
-  {
-    switch ( value )
-    {
-      case TensorViewCreateFlagBitsARM::eDescriptorBufferCaptureReplay: return "DescriptorBufferCaptureReplay";
-      default                                                         : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -10291,6 +10408,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case ShaderCreateFlagBitsEXT::eLinkStage                    : return "LinkStage";
+      case ShaderCreateFlagBitsEXT::eDescriptorHeap               : return "DescriptorHeap";
       case ShaderCreateFlagBitsEXT::eAllowVaryingSubgroupSize     : return "AllowVaryingSubgroupSize";
       case ShaderCreateFlagBitsEXT::eRequireFullSubgroups         : return "RequireFullSubgroups";
       case ShaderCreateFlagBitsEXT::eNoTaskShader                 : return "NoTaskShader";
@@ -10816,22 +10934,24 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   {
     switch ( value )
     {
-      case IndirectCommandsTokenTypeEXT::eExecutionSet        : return "ExecutionSet";
-      case IndirectCommandsTokenTypeEXT::ePushConstant        : return "PushConstant";
-      case IndirectCommandsTokenTypeEXT::eSequenceIndex       : return "SequenceIndex";
-      case IndirectCommandsTokenTypeEXT::eIndexBuffer         : return "IndexBuffer";
-      case IndirectCommandsTokenTypeEXT::eVertexBuffer        : return "VertexBuffer";
-      case IndirectCommandsTokenTypeEXT::eDrawIndexed         : return "DrawIndexed";
-      case IndirectCommandsTokenTypeEXT::eDraw                : return "Draw";
-      case IndirectCommandsTokenTypeEXT::eDrawIndexedCount    : return "DrawIndexedCount";
-      case IndirectCommandsTokenTypeEXT::eDrawCount           : return "DrawCount";
-      case IndirectCommandsTokenTypeEXT::eDispatch            : return "Dispatch";
-      case IndirectCommandsTokenTypeEXT::eDrawMeshTasksNV     : return "DrawMeshTasksNV";
-      case IndirectCommandsTokenTypeEXT::eDrawMeshTasksCountNV: return "DrawMeshTasksCountNV";
-      case IndirectCommandsTokenTypeEXT::eDrawMeshTasks       : return "DrawMeshTasks";
-      case IndirectCommandsTokenTypeEXT::eDrawMeshTasksCount  : return "DrawMeshTasksCount";
-      case IndirectCommandsTokenTypeEXT::eTraceRays2          : return "TraceRays2";
-      default                                                 : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+      case IndirectCommandsTokenTypeEXT::eExecutionSet         : return "ExecutionSet";
+      case IndirectCommandsTokenTypeEXT::ePushConstant         : return "PushConstant";
+      case IndirectCommandsTokenTypeEXT::eSequenceIndex        : return "SequenceIndex";
+      case IndirectCommandsTokenTypeEXT::eIndexBuffer          : return "IndexBuffer";
+      case IndirectCommandsTokenTypeEXT::eVertexBuffer         : return "VertexBuffer";
+      case IndirectCommandsTokenTypeEXT::eDrawIndexed          : return "DrawIndexed";
+      case IndirectCommandsTokenTypeEXT::eDraw                 : return "Draw";
+      case IndirectCommandsTokenTypeEXT::eDrawIndexedCount     : return "DrawIndexedCount";
+      case IndirectCommandsTokenTypeEXT::eDrawCount            : return "DrawCount";
+      case IndirectCommandsTokenTypeEXT::eDispatch             : return "Dispatch";
+      case IndirectCommandsTokenTypeEXT::ePushData             : return "PushData";
+      case IndirectCommandsTokenTypeEXT::ePushDataSequenceIndex: return "PushDataSequenceIndex";
+      case IndirectCommandsTokenTypeEXT::eDrawMeshTasksNV      : return "DrawMeshTasksNV";
+      case IndirectCommandsTokenTypeEXT::eDrawMeshTasksCountNV : return "DrawMeshTasksCountNV";
+      case IndirectCommandsTokenTypeEXT::eDrawMeshTasks        : return "DrawMeshTasks";
+      case IndirectCommandsTokenTypeEXT::eDrawMeshTasksCount   : return "DrawMeshTasksCount";
+      case IndirectCommandsTokenTypeEXT::eTraceRays2           : return "TraceRays2";
+      default                                                  : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 

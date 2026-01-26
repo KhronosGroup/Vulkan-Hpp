@@ -16,8 +16,8 @@
 //                     Compile test with VULKAN_HPP_NO_EXCEPTIONS set and using raii-classes
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-#  include <cassert>
 #  include <cstdint>
 import vulkan;
 #else
@@ -38,10 +38,10 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, vk::ApiVersion11 );
   auto                instance = context.createInstance( { {}, &appInfo } );
-  assert( instance.has_value() );
+  release_assert( instance.has_value() );
 
   auto physicalDevices = instance->enumeratePhysicalDevices();
-  assert( physicalDevices.has_value() );
+  release_assert( physicalDevices.has_value() );
   auto physicalDevice = physicalDevices->front();
 
   // get the QueueFamilyProperties of the first PhysicalDevice
@@ -53,22 +53,22 @@ int main( int /*argc*/, char ** /*argv*/ )
                    std::find_if( queueFamilyProperties.begin(),
                                  queueFamilyProperties.end(),
                                  []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } ) );
-  assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
+  release_assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
   // create a Device
   float                     queuePriority = 0.0f;
   vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
   auto                      device = physicalDevice.createDevice( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
-  assert( device.has_value() );
+  release_assert( device.has_value() );
 
   // create a CommandPool to allocate a CommandBuffer from
   auto commandPool = device->createCommandPool( vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlags(), deviceQueueCreateInfo.queueFamilyIndex ) );
-  assert( commandPool.has_value() );
+  release_assert( commandPool.has_value() );
 
   {
     // allocate a CommandBuffer from the CommandPool
     auto commandBuffers = device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 1 ) );
-    assert( commandBuffers.has_value() );
+    release_assert( commandBuffers.has_value() );
 
     auto commandBuffer = std::move( commandBuffers.value[0] );
   }
@@ -76,7 +76,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     // allocate 10 CommandBuffers from the CommandPool and move them into a std::vector<vk::raii::CommandBuffer>
     auto rv = device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 10 ) );
-    assert( rv.has_value() );
+    release_assert( rv.has_value() );
     std::vector<vk::raii::CommandBuffer> commandBuffers;
     commandBuffers = std::move( rv.value );
   }
@@ -84,7 +84,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     // allocate 10 CommandBuffers from the CommandPool and move them into a vk::raii::CommandBuffers
     auto rv = device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 10 ) );
-    assert( rv.has_value() );
+    release_assert( rv.has_value() );
     vk::raii::CommandBuffers commandBuffers = nullptr;
     commandBuffers                          = std::move( rv.value );
   }

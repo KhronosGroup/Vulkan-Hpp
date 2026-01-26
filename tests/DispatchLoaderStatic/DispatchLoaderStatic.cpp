@@ -15,14 +15,13 @@
 // VulkanHpp Samples : DispatchLoaderStatic
 //                     Compile test on DispatchLoaderStatic functions
 
-
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #include <cassert>
 import vulkan;
 #else
 #  include <iostream>
 #  include <map>
-#  include <cassert>
 #  include <vulkan/vulkan.hpp>
 #endif
 
@@ -34,7 +33,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Instance instance = vk::createInstance( {} );
 
     std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
-    assert( !physicalDevices.empty() );
+    release_assert( !physicalDevices.empty() );
 
     vk::Device device = physicalDevices[0].createDevice( {} );
 

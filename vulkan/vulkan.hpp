@@ -3423,6 +3423,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCmdSetRenderingInputAttachmentIndices( commandBuffer, pInputAttachmentIndexInfo );
       }
+#  if defined( VK_ONLY_EXPORTED_PROTOTYPES )
 
       //=== VK_KHR_surface ===
 
@@ -3589,7 +3590,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCreateSharedSwapchainsKHR( device, swapchainCount, pCreateInfos, pAllocator, pSwapchains );
       }
 
-#  if defined( VK_USE_PLATFORM_XLIB_KHR )
+#    if defined( VK_USE_PLATFORM_XLIB_KHR )
       //=== VK_KHR_xlib_surface ===
 
       VkResult vkCreateXlibSurfaceKHR( VkInstance                         instance,
@@ -3607,9 +3608,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetPhysicalDeviceXlibPresentationSupportKHR( physicalDevice, queueFamilyIndex, dpy, visualID );
       }
-#  endif /*VK_USE_PLATFORM_XLIB_KHR*/
+#    endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
-#  if defined( VK_USE_PLATFORM_XCB_KHR )
+#    if defined( VK_USE_PLATFORM_XCB_KHR )
       //=== VK_KHR_xcb_surface ===
 
       VkResult vkCreateXcbSurfaceKHR( VkInstance                        instance,
@@ -3627,9 +3628,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetPhysicalDeviceXcbPresentationSupportKHR( physicalDevice, queueFamilyIndex, connection, visual_id );
       }
-#  endif /*VK_USE_PLATFORM_XCB_KHR*/
+#    endif /*VK_USE_PLATFORM_XCB_KHR*/
 
-#  if defined( VK_USE_PLATFORM_WAYLAND_KHR )
+#    if defined( VK_USE_PLATFORM_WAYLAND_KHR )
       //=== VK_KHR_wayland_surface ===
 
       VkResult vkCreateWaylandSurfaceKHR( VkInstance                            instance,
@@ -3646,9 +3647,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetPhysicalDeviceWaylandPresentationSupportKHR( physicalDevice, queueFamilyIndex, display );
       }
-#  endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
+#    endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
-#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
+#    if defined( VK_USE_PLATFORM_ANDROID_KHR )
       //=== VK_KHR_android_surface ===
 
       VkResult vkCreateAndroidSurfaceKHR( VkInstance                            instance,
@@ -3658,9 +3659,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCreateAndroidSurfaceKHR( instance, pCreateInfo, pAllocator, pSurface );
       }
-#  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+#    endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+#    if defined( VK_USE_PLATFORM_WIN32_KHR )
       //=== VK_KHR_win32_surface ===
 
       VkResult vkCreateWin32SurfaceKHR( VkInstance                          instance,
@@ -3675,7 +3676,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetPhysicalDeviceWin32PresentationSupportKHR( physicalDevice, queueFamilyIndex );
       }
-#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#    endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
       //=== VK_EXT_debug_report ===
 
@@ -3978,7 +3979,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdEndRenderingKHR( commandBuffer );
       }
 
-#  if defined( VK_USE_PLATFORM_GGP )
+#    if defined( VK_USE_PLATFORM_GGP )
       //=== VK_GGP_stream_descriptor_surface ===
 
       VkResult vkCreateStreamDescriptorSurfaceGGP( VkInstance                                     instance,
@@ -3988,7 +3989,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCreateStreamDescriptorSurfaceGGP( instance, pCreateInfo, pAllocator, pSurface );
       }
-#  endif /*VK_USE_PLATFORM_GGP*/
+#    endif /*VK_USE_PLATFORM_GGP*/
 
       //=== VK_NV_external_memory_capabilities ===
 
@@ -4006,7 +4007,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
           physicalDevice, format, type, tiling, usage, flags, externalHandleType, pExternalImageFormatProperties );
       }
 
-#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+#    if defined( VK_USE_PLATFORM_WIN32_KHR )
       //=== VK_NV_external_memory_win32 ===
 
       VkResult vkGetMemoryWin32HandleNV( VkDevice                          device,
@@ -4016,7 +4017,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetMemoryWin32HandleNV( device, memory, handleType, pHandle );
       }
-#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#    endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
       //=== VK_KHR_get_physical_device_properties2 ===
 
@@ -4092,7 +4093,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdDispatchBaseKHR( commandBuffer, baseGroupX, baseGroupY, baseGroupZ, groupCountX, groupCountY, groupCountZ );
       }
 
-#  if defined( VK_USE_PLATFORM_VI_NN )
+#    if defined( VK_USE_PLATFORM_VI_NN )
       //=== VK_NN_vi_surface ===
 
       VkResult vkCreateViSurfaceNN( VkInstance                      instance,
@@ -4102,7 +4103,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCreateViSurfaceNN( instance, pCreateInfo, pAllocator, pSurface );
       }
-#  endif /*VK_USE_PLATFORM_VI_NN*/
+#    endif /*VK_USE_PLATFORM_VI_NN*/
 
       //=== VK_KHR_maintenance1 ===
 
@@ -4129,7 +4130,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetPhysicalDeviceExternalBufferPropertiesKHR( physicalDevice, pExternalBufferInfo, pExternalBufferProperties );
       }
 
-#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+#    if defined( VK_USE_PLATFORM_WIN32_KHR )
       //=== VK_KHR_external_memory_win32 ===
 
       VkResult
@@ -4145,7 +4146,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetMemoryWin32HandlePropertiesKHR( device, handleType, handle, pMemoryWin32HandleProperties );
       }
-#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#    endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
       //=== VK_KHR_external_memory_fd ===
 
@@ -4171,7 +4172,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetPhysicalDeviceExternalSemaphorePropertiesKHR( physicalDevice, pExternalSemaphoreInfo, pExternalSemaphoreProperties );
       }
 
-#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+#    if defined( VK_USE_PLATFORM_WIN32_KHR )
       //=== VK_KHR_external_semaphore_win32 ===
 
       VkResult vkImportSemaphoreWin32HandleKHR( VkDevice                                    device,
@@ -4186,7 +4187,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetSemaphoreWin32HandleKHR( device, pGetWin32HandleInfo, pHandle );
       }
-#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#    endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
       //=== VK_KHR_external_semaphore_fd ===
 
@@ -4276,7 +4277,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkReleaseDisplayEXT( physicalDevice, display );
       }
 
-#  if defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )
+#    if defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )
       //=== VK_EXT_acquire_xlib_display ===
 
       VkResult vkAcquireXlibDisplayEXT( VkPhysicalDevice physicalDevice, Display * dpy, VkDisplayKHR display ) const VULKAN_HPP_NOEXCEPT
@@ -4289,7 +4290,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetRandROutputDisplayEXT( physicalDevice, dpy, rrOutput, pDisplay );
       }
-#  endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
+#    endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 
       //=== VK_EXT_display_surface_counter ===
 
@@ -4424,7 +4425,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetPhysicalDeviceExternalFencePropertiesKHR( physicalDevice, pExternalFenceInfo, pExternalFenceProperties );
       }
 
-#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+#    if defined( VK_USE_PLATFORM_WIN32_KHR )
       //=== VK_KHR_external_fence_win32 ===
 
       VkResult vkImportFenceWin32HandleKHR( VkDevice device, const VkImportFenceWin32HandleInfoKHR * pImportFenceWin32HandleInfo ) const VULKAN_HPP_NOEXCEPT
@@ -4436,7 +4437,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetFenceWin32HandleKHR( device, pGetWin32HandleInfo, pHandle );
       }
-#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#    endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
       //=== VK_KHR_external_fence_fd ===
 
@@ -4528,7 +4529,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetDisplayPlaneCapabilities2KHR( physicalDevice, pDisplayPlaneInfo, pCapabilities );
       }
 
-#  if defined( VK_USE_PLATFORM_IOS_MVK )
+#    if defined( VK_USE_PLATFORM_IOS_MVK )
       //=== VK_MVK_ios_surface ===
 
       VkResult vkCreateIOSSurfaceMVK( VkInstance                        instance,
@@ -4538,9 +4539,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCreateIOSSurfaceMVK( instance, pCreateInfo, pAllocator, pSurface );
       }
-#  endif /*VK_USE_PLATFORM_IOS_MVK*/
+#    endif /*VK_USE_PLATFORM_IOS_MVK*/
 
-#  if defined( VK_USE_PLATFORM_MACOS_MVK )
+#    if defined( VK_USE_PLATFORM_MACOS_MVK )
       //=== VK_MVK_macos_surface ===
 
       VkResult vkCreateMacOSSurfaceMVK( VkInstance                          instance,
@@ -4550,7 +4551,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCreateMacOSSurfaceMVK( instance, pCreateInfo, pAllocator, pSurface );
       }
-#  endif /*VK_USE_PLATFORM_MACOS_MVK*/
+#    endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
       //=== VK_EXT_debug_utils ===
 
@@ -4617,7 +4618,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkSubmitDebugUtilsMessageEXT( instance, messageSeverity, messageTypes, pCallbackData );
       }
 
-#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
+#    if defined( VK_USE_PLATFORM_ANDROID_KHR )
       //=== VK_ANDROID_external_memory_android_hardware_buffer ===
 
       VkResult vkGetAndroidHardwareBufferPropertiesANDROID( VkDevice                                   device,
@@ -4633,9 +4634,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetMemoryAndroidHardwareBufferANDROID( device, pInfo, pBuffer );
       }
-#  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+#    endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+#    if defined( VK_ENABLE_BETA_EXTENSIONS )
       //=== VK_AMDX_shader_enqueue ===
 
       VkResult vkCreateExecutionGraphPipelinesAMDX( VkDevice                                       device,
@@ -4694,7 +4695,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCmdDispatchGraphIndirectCountAMDX( commandBuffer, scratch, scratchSize, countInfo );
       }
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#    endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
       //=== VK_EXT_descriptor_heap ===
 
@@ -5447,7 +5448,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkSetLocalDimmingAMD( device, swapChain, localDimmingEnable );
       }
 
-#  if defined( VK_USE_PLATFORM_FUCHSIA )
+#    if defined( VK_USE_PLATFORM_FUCHSIA )
       //=== VK_FUCHSIA_imagepipe_surface ===
 
       VkResult vkCreateImagePipeSurfaceFUCHSIA( VkInstance                                  instance,
@@ -5457,9 +5458,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCreateImagePipeSurfaceFUCHSIA( instance, pCreateInfo, pAllocator, pSurface );
       }
-#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+#    endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-#  if defined( VK_USE_PLATFORM_METAL_EXT )
+#    if defined( VK_USE_PLATFORM_METAL_EXT )
       //=== VK_EXT_metal_surface ===
 
       VkResult vkCreateMetalSurfaceEXT( VkInstance                          instance,
@@ -5469,7 +5470,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCreateMetalSurfaceEXT( instance, pCreateInfo, pAllocator, pSurface );
       }
-#  endif /*VK_USE_PLATFORM_METAL_EXT*/
+#    endif /*VK_USE_PLATFORM_METAL_EXT*/
 
       //=== VK_KHR_fragment_shading_rate ===
 
@@ -5541,7 +5542,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV( physicalDevice, pCombinationCount, pCombinations );
       }
 
-#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+#    if defined( VK_USE_PLATFORM_WIN32_KHR )
       //=== VK_EXT_full_screen_exclusive ===
 
       VkResult vkGetPhysicalDeviceSurfacePresentModes2EXT( VkPhysicalDevice                        physicalDevice,
@@ -5568,7 +5569,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetDeviceGroupSurfacePresentModes2EXT( device, pSurfaceInfo, pModes );
       }
-#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#    endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
       //=== VK_EXT_headless_surface ===
 
@@ -5906,7 +5907,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdEncodeVideoKHR( commandBuffer, pEncodeInfo );
       }
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+#    if defined( VK_ENABLE_BETA_EXTENSIONS )
       //=== VK_NV_cuda_kernel_launch ===
 
       VkResult vkCreateCudaModuleNV( VkDevice                         device,
@@ -5944,7 +5945,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCmdCudaLaunchKernelNV( commandBuffer, pLaunchInfo );
       }
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#    endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
       //=== VK_QCOM_tile_shading ===
 
@@ -5963,14 +5964,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdEndPerTileExecutionQCOM( commandBuffer, pPerTileEndInfo );
       }
 
-#  if defined( VK_USE_PLATFORM_METAL_EXT )
+#    if defined( VK_USE_PLATFORM_METAL_EXT )
       //=== VK_EXT_metal_objects ===
 
       void vkExportMetalObjectsEXT( VkDevice device, VkExportMetalObjectsInfoEXT * pMetalObjectsInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkExportMetalObjectsEXT( device, pMetalObjectsInfo );
       }
-#  endif /*VK_USE_PLATFORM_METAL_EXT*/
+#    endif /*VK_USE_PLATFORM_METAL_EXT*/
 
       //=== VK_KHR_synchronization2 ===
 
@@ -6159,7 +6160,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetDeviceFaultInfoEXT( device, pFaultCounts, pFaultInfo );
       }
 
-#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+#    if defined( VK_USE_PLATFORM_WIN32_KHR )
       //=== VK_NV_acquire_winrt_display ===
 
       VkResult vkAcquireWinrtDisplayNV( VkPhysicalDevice physicalDevice, VkDisplayKHR display ) const VULKAN_HPP_NOEXCEPT
@@ -6171,9 +6172,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetWinrtDisplayNV( physicalDevice, deviceRelativeId, pDisplay );
       }
-#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#    endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#  if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
+#    if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
       //=== VK_EXT_directfb_surface ===
 
       VkResult vkCreateDirectFBSurfaceEXT( VkInstance                             instance,
@@ -6190,7 +6191,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetPhysicalDeviceDirectFBPresentationSupportEXT( physicalDevice, queueFamilyIndex, dfb );
       }
-#  endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
+#    endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
 
       //=== VK_EXT_vertex_input_dynamic_state ===
 
@@ -6204,7 +6205,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
           commandBuffer, vertexBindingDescriptionCount, pVertexBindingDescriptions, vertexAttributeDescriptionCount, pVertexAttributeDescriptions );
       }
 
-#  if defined( VK_USE_PLATFORM_FUCHSIA )
+#    if defined( VK_USE_PLATFORM_FUCHSIA )
       //=== VK_FUCHSIA_external_memory ===
 
       VkResult vkGetMemoryZirconHandleFUCHSIA( VkDevice                                   device,
@@ -6221,9 +6222,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetMemoryZirconHandlePropertiesFUCHSIA( device, handleType, zirconHandle, pMemoryZirconHandleProperties );
       }
-#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+#    endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-#  if defined( VK_USE_PLATFORM_FUCHSIA )
+#    if defined( VK_USE_PLATFORM_FUCHSIA )
       //=== VK_FUCHSIA_external_semaphore ===
 
       VkResult
@@ -6239,9 +6240,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetSemaphoreZirconHandleFUCHSIA( device, pGetZirconHandleInfo, pZirconHandle );
       }
-#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+#    endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-#  if defined( VK_USE_PLATFORM_FUCHSIA )
+#    if defined( VK_USE_PLATFORM_FUCHSIA )
       //=== VK_FUCHSIA_buffer_collection ===
 
       VkResult vkCreateBufferCollectionFUCHSIA( VkDevice                                    device,
@@ -6279,7 +6280,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetBufferCollectionPropertiesFUCHSIA( device, collection, pProperties );
       }
-#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+#    endif /*VK_USE_PLATFORM_FUCHSIA*/
 
       //=== VK_HUAWEI_subpass_shading ===
 
@@ -6346,7 +6347,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdSetPrimitiveRestartEnableEXT( commandBuffer, primitiveRestartEnable );
       }
 
-#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
+#    if defined( VK_USE_PLATFORM_SCREEN_QNX )
       //=== VK_QNX_screen_surface ===
 
       VkResult vkCreateScreenSurfaceQNX( VkInstance                           instance,
@@ -6363,7 +6364,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetPhysicalDeviceScreenPresentationSupportQNX( physicalDevice, queueFamilyIndex, window );
       }
-#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+#    endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
       //=== VK_EXT_color_write_enable ===
 
@@ -6616,7 +6617,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetPipelineIndirectDeviceAddressNV( device, pInfo );
       }
 
-#  if defined( VK_USE_PLATFORM_OHOS )
+#    if defined( VK_USE_PLATFORM_OHOS )
       //=== VK_OHOS_external_memory ===
 
       VkResult vkGetNativeBufferPropertiesOHOS( VkDevice                       device,
@@ -6632,7 +6633,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetMemoryNativeBufferOHOS( device, pInfo, pBuffer );
       }
-#  endif /*VK_USE_PLATFORM_OHOS*/
+#    endif /*VK_USE_PLATFORM_OHOS*/
 
       //=== VK_EXT_extended_dynamic_state3 ===
 
@@ -7232,7 +7233,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdSetAttachmentFeedbackLoopEnableEXT( commandBuffer, aspectMask );
       }
 
-#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
+#    if defined( VK_USE_PLATFORM_SCREEN_QNX )
       //=== VK_QNX_external_memory_screen_buffer ===
 
       VkResult vkGetScreenBufferPropertiesQNX( VkDevice                      device,
@@ -7241,7 +7242,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetScreenBufferPropertiesQNX( device, buffer, pProperties );
       }
-#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+#    endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
       //=== VK_KHR_line_rasterization ===
 
@@ -7465,7 +7466,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkUpdateIndirectExecutionSetShaderEXT( device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites );
       }
 
-#  if defined( VK_USE_PLATFORM_OHOS )
+#    if defined( VK_USE_PLATFORM_OHOS )
       //=== VK_OHOS_surface ===
 
       VkResult vkCreateSurfaceOHOS( VkInstance                      instance,
@@ -7475,7 +7476,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCreateSurfaceOHOS( instance, pCreateInfo, pAllocator, pSurface );
       }
-#  endif /*VK_USE_PLATFORM_OHOS*/
+#    endif /*VK_USE_PLATFORM_OHOS*/
 
       //=== VK_NV_cooperative_matrix2 ===
 
@@ -7485,7 +7486,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV( physicalDevice, pPropertyCount, pProperties );
       }
 
-#  if defined( VK_USE_PLATFORM_METAL_EXT )
+#    if defined( VK_USE_PLATFORM_METAL_EXT )
       //=== VK_EXT_external_memory_metal ===
 
       VkResult
@@ -7501,7 +7502,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkGetMemoryMetalHandlePropertiesEXT( device, handleType, pHandle, pMemoryMetalHandleProperties );
       }
-#  endif /*VK_USE_PLATFORM_METAL_EXT*/
+#    endif /*VK_USE_PLATFORM_METAL_EXT*/
 
       //=== VK_ARM_performance_counters_by_region ===
 
@@ -7544,6 +7545,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCmdSetComputeOccupancyPriorityNV( commandBuffer, pParameters );
       }
+#  endif /*VK_ONLY_EXPORTED_PROTOTYPES*/
     };
 
     inline DispatchLoaderStatic & getDispatchLoaderStatic()

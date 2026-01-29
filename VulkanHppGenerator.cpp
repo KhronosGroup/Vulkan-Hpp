@@ -6367,10 +6367,15 @@ ${commands}
   {
     commands += generateDispatchLoaderStaticCommands( feature.requireData, listedCommands, feature.name );
   }
+
+  auto const [onlyexportedEnter, onlyexportedLeave] = generateProtection( "VK_ONLY_EXPORTED_PROTOTYPES", true );
+  commands += onlyexportedEnter;
+
   for ( auto const & extension : m_extensions )
   {
     commands += generateDispatchLoaderStaticCommands( extension.requireData, listedCommands, extension.name );
   }
+  commands += onlyexportedLeave;
 
   return replaceWithMap( dispatchLoaderStaticTemplate, { { "commands", commands } } );
 }

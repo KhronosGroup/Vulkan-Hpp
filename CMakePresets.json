@@ -39,51 +39,44 @@
       "inherits": [  "base-dynamic", "base-generator" ]
     },
     {
-      "name": "samples", "displayName": "Standalone: Samples",
+      "name": "samples", "displayName": "Validation: Samples",
       "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples" ]
     },
     {
-      "name": "tests", "displayName": "Standalone: Tests",
+      "name": "tests", "displayName": "Validation: Tests",
       "inherits": [ "base-dynamic", "base-generator-disabled", "base-tests" ]
     },
     {
-      "name": "tests-ctest", "displayName": "Standalone: Tests (CTest)",
+      "name": "tests-ctest", "displayName": "Validation: Tests (CTest)",
       "inherits": [ "base-dynamic", "base-generator-disabled", "base-tests-ctest" ]
     },
-
     {
-      "name": "samples-tests", "displayName": "Combination: Samples and Tests",
+      "name": "samples-tests", "displayName": "Validation: Samples and Tests",
       "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples", "base-tests" ]
     },
     {
-      "name": "samples-tests-ctest", "displayName": "Combination: Samples and Tests (CTest)",
+      "name": "samples-tests-ctest", "displayName": "Validation: Samples and Tests (CTest)",
       "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples", "base-tests-ctest" ]
     },
     {
-      "name": "generator-samples", "displayName": "Combination: Generator + Samples",
+      "name": "generator-samples", "displayName": "Fresh Validation: Generator + Samples",
       "inherits": [ "base-dynamic", "base-generator", "base-samples" ]
     },
     {
-      "name": "generator-tests", "displayName": "Combination: Generator + Tests",
+      "name": "generator-tests", "displayName": "Fresh Validation: Generator + Tests",
       "inherits": [ "base-dynamic", "base-generator", "base-tests" ]
     },
     {
-      "name": "generator-tests", "displayName": "Combination: Generator + Tests (CTest)",
+      "name": "generator-tests-ctest", "displayName": "Fresh Validation: Generator + Tests (CTest)",
       "inherits": [ "base-dynamic", "base-generator", "base-tests-ctest" ]
     },
     {
-      "name": "generator-samples-tests", "displayName": "Combination: Generator + Samples and Tests (CTest)",
-      "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples", "base-tests-ctest" ]
-    }
-  ],
-
-  "testPresets": [
+      "name": "generator-samples-tests", "displayName": "Fresh Validation: Generator + Samples and Tests",
+      "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples", "base-tests" ]
+    },
     {
-      "name": "tests-ctest",
-      "displayName": "TODO: PLACEHOLDER",
-      "configurePreset": "tests-ctest",
-      "output": { "outputOnFailure": true },
-      "execution": { "noTestsAction": "error", "stopOnFailure": true, "jobs": 0 }
+      "name": "generator-samples-tests-ctest", "displayName": "Fresh Validation: Generator + Samples and Tests (CTest)",
+      "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples", "base-tests-ctest" ]
     }
   ]
 }

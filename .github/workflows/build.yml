@@ -100,7 +100,7 @@ jobs:
     - name: Generate Headers with C++20
       run: |
         for BUILD_TYPE in Debug Release; do
-          [ $BUILD_TYPE = Release ] && PRESET="generator-build" || PRESET="generator-run"
+          [ $BUILD_TYPE = Release ] && PRESET="generator-run" || PRESET="generator-build"
           cmake -B build -G '${{matrix.env.gen}}' --fresh --preset $PRESET \
             ${{ env.VAR_CMAKE_FLAGS }}                                     \
             -D CMAKE_BUILD_TYPE=$BUILD_TYPE

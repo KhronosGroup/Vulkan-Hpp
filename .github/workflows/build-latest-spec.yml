@@ -29,18 +29,8 @@ jobs:
           
       - name: Generate Vulkan-Hpp and Build Samples/Tests
         run: |
-          cmake -B build -G Ninja                      \
-          -D VULKAN_HPP_GENERATOR_BUILD=ON             \
-          -D VULKAN_HPP_RUN_GENERATOR=ON               \
-          -D VULKAN_HPP_SAMPLES_BUILD=ON               \
-          -D VULKAN_HPP_TESTS_BUILD=ON                 \
-          -D VULKAN_HPP_TESTS_CTEST=ON                 \
-          -D VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=ON     \
-          -D VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON \
-          -D VULKAN_HPP_PRECOMPILE=ON                  \
-          -D CMAKE_C_COMPILER=gcc                      \
-          -D CMAKE_CXX_COMPILER=g++                    \
-          -D CMAKE_CXX_STANDARD=23                     \
+          cmake -B build -G Ninja --preset generator-tests \
+          -D CMAKE_CXX_STANDARD=23                         \
           -D CMAKE_BUILD_TYPE=Release
           cmake --build build --parallel
           ctest -j --output-on-failure --test-dir build

@@ -6,77 +6,71 @@
   },
   "configurePresets": [
     {
-      "name": "base-generator", "hidden": true,
-      "cacheVariables": { "VULKAN_HPP_GENERATOR_BUILD": "ON", "VULKAN_HPP_RUN_GENERATOR": "ON" }
+      "name": "base", "hidden": true,
+      "cacheVariables": { "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC": "ON", "VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP": "ON" }
     },
     {
       "name": "base-generator-disabled", "hidden": true,
       "cacheVariables": { "VULKAN_HPP_GENERATOR_BUILD": "OFF", "VULKAN_HPP_RUN_GENERATOR": "OFF" }
     },
     {
-      "name": "base-dynamic", "hidden": true,
-      "cacheVariables": { "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC": "ON" }
+      "name": "base-generator-build", "hidden": true,
+      "cacheVariables": { "VULKAN_HPP_GENERATOR_BUILD": "ON", "VULKAN_HPP_RUN_GENERATOR": "OFF" }
     },
     {
-      "name": "base-static", "hidden": true,
-      "cacheVariables": { "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC": "OFF" }
+      "name": "base-generator-run", "hidden": true,
+      "cacheVariables": { "VULKAN_HPP_GENERATOR_BUILD": "ON", "VULKAN_HPP_RUN_GENERATOR": "ON" }
     },
     {
       "name": "base-samples", "hidden": true,
       "cacheVariables": { "VULKAN_HPP_SAMPLES_BUILD": "ON", "VULKAN_HPP_PRECOMPILE": "ON" }
     },
     {
-      "name": "base-tests", "hidden": true,
-      "cacheVariables": { "VULKAN_HPP_TESTS_BUILD": "ON", "VULKAN_HPP_TESTS_CTEST": "OFF" }
+      "name": "base-samples-disabled", "hidden": true,
+      "cacheVariables": { "VULKAN_HPP_SAMPLES_BUILD": "OFF", "VULKAN_HPP_PRECOMPILE": "OFF" }
     },
     {
-      "name": "base-tests-ctest", "hidden": true,
+      "name": "base-tests", "hidden": true,
       "cacheVariables": { "VULKAN_HPP_TESTS_BUILD": "ON", "VULKAN_HPP_TESTS_CTEST": "ON" }
     },
-    
     {
-      "name": "generator", "displayName": "Standalone: Generator",
-      "inherits": [  "base-dynamic", "base-generator" ]
+      "name": "base-tests-disabled", "hidden": true,
+      "cacheVariables": { "VULKAN_HPP_TESTS_BUILD": "OFF", "VULKAN_HPP_TESTS_CTEST": "OFF" }
+    },
+
+    {
+      "name": "generator-build", "displayName": "Standalone: Build Generator",
+      "inherits": [  "base", "base-generator-build", "base-samples-disabled", "base-tests-disabled" ]
     },
     {
+      "name": "generator-run", "displayName": "Standalone: Build and Run Generator",
+      "inherits": [  "base", "base-generator-run", "base-samples-disabled", "base-tests-disabled" ]
+    },
+
+    {
       "name": "samples", "displayName": "Validation: Samples",
-      "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples" ]
+      "inherits": [ "base", "base-generator-disabled", "base-samples", "base-tests-disabled" ]
     },
     {
       "name": "tests", "displayName": "Validation: Tests",
-      "inherits": [ "base-dynamic", "base-generator-disabled", "base-tests" ]
-    },
-    {
-      "name": "tests-ctest", "displayName": "Validation: Tests (CTest)",
-      "inherits": [ "base-dynamic", "base-generator-disabled", "base-tests-ctest" ]
+      "inherits": [ "base", "base-generator-disabled", "base-samples-disabled", "base-tests" ]
     },
     {
       "name": "samples-tests", "displayName": "Validation: Samples and Tests",
-      "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples", "base-tests" ]
+      "inherits": [ "base", "base-generator-disabled", "base-samples", "base-tests" ]
     },
-    {
-      "name": "samples-tests-ctest", "displayName": "Validation: Samples and Tests (CTest)",
-      "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples", "base-tests-ctest" ]
-    },
+
     {
       "name": "generator-samples", "displayName": "Fresh Validation: Generator + Samples",
-      "inherits": [ "base-dynamic", "base-generator", "base-samples" ]
+      "inherits": [ "base", "base-generator-run", "base-samples", "base-tests-disabled" ]
     },
     {
       "name": "generator-tests", "displayName": "Fresh Validation: Generator + Tests",
-      "inherits": [ "base-dynamic", "base-generator", "base-tests" ]
-    },
-    {
-      "name": "generator-tests-ctest", "displayName": "Fresh Validation: Generator + Tests (CTest)",
-      "inherits": [ "base-dynamic", "base-generator", "base-tests-ctest" ]
+      "inherits": [ "base", "base-generator-run", "base-samples-disabled", "base-tests" ]
     },
     {
       "name": "generator-samples-tests", "displayName": "Fresh Validation: Generator + Samples and Tests",
-      "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples", "base-tests" ]
-    },
-    {
-      "name": "generator-samples-tests-ctest", "displayName": "Fresh Validation: Generator + Samples and Tests (CTest)",
-      "inherits": [ "base-dynamic", "base-generator-disabled", "base-samples", "base-tests-ctest" ]
+      "inherits": [ "base", "base-generator-run", "base-samples", "base-tests" ]
     }
   ]
 }

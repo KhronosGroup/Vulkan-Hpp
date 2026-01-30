@@ -5756,7 +5756,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRetainLinkTimeOptimizationInfoEXT             = VK_PIPELINE_CREATE_2_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT,
     eLibraryKHR                                    = VK_PIPELINE_CREATE_2_LIBRARY_BIT_KHR,
     eRayTracingSkipTrianglesKHR                    = VK_PIPELINE_CREATE_2_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR,
-    eRayTracingSkipBuiltInPrimitives               = VK_PIPELINE_CREATE_2_RAY_TRACING_SKIP_BUILT_IN_PRIMITIVES_BIT_KHR,
+    eRayTracingSkipBuiltInPrimitivesKHR            = VK_PIPELINE_CREATE_2_RAY_TRACING_SKIP_BUILT_IN_PRIMITIVES_BIT_KHR,
     eRayTracingSkipAabbsKHR                        = VK_PIPELINE_CREATE_2_RAY_TRACING_SKIP_AABBS_BIT_KHR,
     eRayTracingNoNullAnyHitShadersKHR              = VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR,
     eRayTracingNoNullClosestHitShadersKHR          = VK_PIPELINE_CREATE_2_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR,

@@ -30,6 +30,7 @@ This manual assumes familiarity with Vulkan; it details improvements and differe
   - [C++20 named module](#c20-named-module)
     - [Compiler support](#compiler-support)
     - [CMake usage](#cmake-usage)
+    - [Command-line usage](#command-line-usage)
 - [Miscellaneous features and notes](#miscellaneous-features-and-notes)
   - [Extension Inspection](#extension-inspection)
 - [Samples and Tests](#samples-and-tests)
@@ -769,9 +770,13 @@ Users who are able to upgrade to a recent toolchain (detailed below) should try 
 The named module has been tested with the following toolchains:
 
 - MSVC 19.44 or later
-- Clang 21.1.8 or later
+- Clang 19.0 or later
 - GCC 15.1 or later
 - CMake version 4.2.1 or later
+
+>[!NOTE]
+> Other toolchain versions and platforms may work, but have not been tested.
+> Any toolchain **requires** support for `module std` to import the C++ standard library module, which the Vulkan-Hpp module depends on.
 
 #### CMake usage
 
@@ -875,28 +880,45 @@ auto main(int argc, char* const argv[]) -> int
 
 Note that the default dynamic dispatcher is automatically stored in the module, and there is **no need** to use the `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` macro.
 
-<!-- TODO: this section is massively outdated with `import std`. -->
-<!-- #### Command-line usage
+#### Command-line usage
 
 To use the Vulkan-Hpp C++ module without CMake, you must first pre-compile it, and then import it into your project.
 You will also need to define any macros that control various features of Vulkan-Hpp, such as `VULKAN_HPP_NO_EXCEPTIONS` and `VULKAN_HPP_NO_SMART_HANDLE`.
-Different compilers have different command-lines for module pre-compilation; however, for initial use, some examples are provided below, assuming the same `main.cpp` consumer as above.
+Different compilers have different command-lines for module pre-compilation.
+Some examples are provided below, assuming the same `main.cpp` consumer as above.
+You may consider adapting these to your build system of choice.
 
-For MSVC, source `vcvars64.bat` or use an `x64 Native Tools Command Prompt for VS`/`Developer PowerShell` instance, and run the following:
+> [!NOTE]
+> Remember to pass in macro configuration options for Vulkan and Vulkan-Hpp as needed at the command-line, with `-D` for Clang or GCC, and with `/D` for MSVC.
 
-```powershell
-cl.exe /std:c++23 /interface /TP <path-to-vulkan-hpp>\vulkan.cppm
-cl.exe /std:c++23 /reference vulkan=vulkan.ifc main.cpp vulkan.obj
-.\main.exe
-```
-
-For Clang, run the following:
+Clang with LLVM `libc++`:
 
 ```shell
-clang++ -std=c++23 <path-to-vulkan-hpp>/vulkan.cppm -precompile -o vulkan.pcm
-clang++ -std=c++23 -fprebuilt-module-path=. main.cpp vulkan.pcm -o main
+clang++ -std=c++23 -stdlib=libc++ --precompile -o std.pcm /path/to/std.cppm
+clang++ -std=c++23 -stdlib=libc++ -fmodule-file=std=std.pcm --precompile -o vulkan.pcm -isystem "<path/to/Vulkan-Hpp/Vulkan-Headers/include>" -isystem "<path/to/Vulkan-Hpp/vulkan>" <path/to/Vulkan-Hpp>/vulkan/vulkan.cppm
+clang++ -std=c++23 -stdlib=libc++ -fmodule-file=std=std.pcm -fmodule-file=vulkan=vulkan.pcm \
+          main.cpp -o main
 ./main
-``` -->
+```
+
+GCC and the GNU `libstdc++`:
+
+```shell
+g++ -std=c++23 -fmodules -fsearch-include-path -c bits/std.cc
+g++ -std=c++23 -fmodules -fsearch-include-path -c -isystem "<path/to/Vulkan-Hpp/Vulkan-Headers/include>" -isystem "<path/to/Vulkan-Hpp>/vulkan" <path/to/Vulkan-Hpp>/vulkan/vulkan.cppm
+g++ -std=c++23 -fmodules main.cpp -o main
+./main
+```
+
+MSVC, in a `Developer PowerShell` or `x64 Native Tools Command Prompt for VS` instance:
+
+```powershell
+> cl.exe /std:c++latest /EHsc /nologo /W4 /c "$Env:VCToolsInstallDir\modules\std.ixx"
+> cl.exe /c /std:c++latest /EHsc /nologo /W4 /reference "std=std.ifc" /interface /TP "<path\to\Vulkan-Hpp>\vulkan\vulkan.cppm" /I "<path\to\Vulkan-Hpp>" /I "<path\to\Vulkan-Hpp>\Vulkan-Headers\include\"
+> cl.exe /c /std:c++latest /EHsc /nologo /W4 /reference "std=std.ifc" /reference "vulkan=vulkan.ifc" main.cpp
+> link.exe .\std.obj .\vulkan.obj .\main.obj /OUT:main.exe
+> .\main.exe
+```
 
 More information about module compilation may be found in compiler documentation:
 
@@ -909,7 +931,7 @@ More information about module compilation may be found in compiler documentation
 ### Extension Inspection
 
 > [!WARNING]
-> This feature considerably increases compilation times.
+> This feature considerably increases compilation time.
 > Use only when really necessary.
 
 [`vulkan_extension_inspection.hpp`](../vulkan/vulkan_extension_inspection.hpp) defines functions to inspect Vulkan extensions on the machine.
@@ -921,6 +943,7 @@ Some functions might provide information that depends on the vulkan version.
 As all functions here operate only on strings, the Vulkan versions are encoded by a string prefixed with "VK_VERSION_", followed by the major and the minor version, separated by an underscore, like this: `VK_VERSION_1_0`.
 
 <!-- TODO: the descriptions in this table need to be reworded a bit, it's a little hard to follow. -->
+
 | Function | `constexpr` | Returns |
 | :--- | :---: | :--- |
 | `std::set<std::string> const& getDeviceExtensions()` | | All device extensions specified for the current platform. Note that not all of them might be supported by the actual devices. |

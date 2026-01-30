@@ -6368,7 +6368,7 @@ ${commands}
     commands += generateDispatchLoaderStaticCommands( feature.requireData, listedCommands, feature.name );
   }
 
-  auto const [onlyexportedEnter, onlyexportedLeave] = generateProtection( "VK_ONLY_EXPORTED_PROTOTYPES", true );
+  auto const [onlyexportedEnter, onlyexportedLeave] = generateProtection( "VK_ONLY_EXPORTED_PROTOTYPES", false );
   commands += onlyexportedEnter;
 
   for ( auto const & extension : m_extensions )
@@ -6484,7 +6484,7 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
                               parameters.resize( parameters.size() - 2 );
 
                               const std::string commandTemplate = R"(
-    ${returnType} ${commandName}( ${parameterList} ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_INLINE ${returnType} ${commandName}( ${parameterList} ) const VULKAN_HPP_NOEXCEPT
     {
       return ::${commandName}( ${parameters} );
     }

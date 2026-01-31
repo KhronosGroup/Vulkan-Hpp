@@ -57,7 +57,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall   GetProcAddress( HINSTANCE
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 341, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 342, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -9369,6 +9369,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto QCOMRenderPassShaderResolveSpecVersion   = VK_QCOM_RENDER_PASS_SHADER_RESOLVE_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto QCOMRenderPassShaderResolveExtensionName = VK_QCOM_RENDER_PASS_SHADER_RESOLVE_EXTENSION_NAME;
 
+  //=== VK_QCOM_cooperative_matrix_conversion ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto QCOMCooperativeMatrixConversionSpecVersion   = VK_QCOM_COOPERATIVE_MATRIX_CONVERSION_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto QCOMCooperativeMatrixConversionExtensionName = VK_QCOM_COOPERATIVE_MATRIX_CONVERSION_EXTENSION_NAME;
+
   //=== VK_EXT_global_priority ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTGlobalPrioritySpecVersion   = VK_EXT_GLOBAL_PRIORITY_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTGlobalPriorityExtensionName = VK_EXT_GLOBAL_PRIORITY_EXTENSION_NAME;
@@ -9818,7 +9822,9 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRSynchronization2ExtensionName = VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME;
 
   //=== VK_EXT_descriptor_buffer ===
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTDescriptorBufferSpecVersion   = VK_EXT_DESCRIPTOR_BUFFER_SPEC_VERSION;
+  VULKAN_HPP_DEPRECATED( "The VK_EXT_descriptor_buffer extension has been deprecated by VK_EXT_descriptor_heap." )
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTDescriptorBufferSpecVersion = VK_EXT_DESCRIPTOR_BUFFER_SPEC_VERSION;
+  VULKAN_HPP_DEPRECATED( "The VK_EXT_descriptor_buffer extension has been deprecated by VK_EXT_descriptor_heap." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTDescriptorBufferExtensionName = VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME;
 
   //=== VK_EXT_graphics_pipeline_library ===
@@ -14408,6 +14414,25 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<FilterCubicImageViewImageFormatPropertiesEXT, ImageFormatProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_QCOM_cooperative_matrix_conversion ===
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM, DeviceCreateInfo>
   {
     enum
     {

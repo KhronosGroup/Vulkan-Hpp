@@ -4402,6 +4402,16 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::FilterCu
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::FilterCubicImageViewImageFormatPropertiesEXT>::value,
                           "FilterCubicImageViewImageFormatPropertiesEXT is not nothrow_move_constructible!" );
 
+//=== VK_QCOM_cooperative_matrix_conversion ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM ) ==
+                            sizeof( VkPhysicalDeviceCooperativeMatrixConversionFeaturesQCOM ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM>::value,
+                          "PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM is not nothrow_move_constructible!" );
+
 //=== VK_EXT_external_memory_host ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImportMemoryHostPointerInfoEXT ) == sizeof( VkImportMemoryHostPointerInfoEXT ),

@@ -9803,6 +9803,20 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM const &
+                              physicalDeviceCooperativeMatrixConversionFeaturesQCOM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixConversionFeaturesQCOM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixConversionFeaturesQCOM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixConversionFeaturesQCOM.cooperativeMatrixConversion );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixFeaturesKHR>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixFeaturesKHR const & physicalDeviceCooperativeMatrixFeaturesKHR ) const

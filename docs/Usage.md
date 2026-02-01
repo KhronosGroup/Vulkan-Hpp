@@ -327,7 +327,7 @@ Member and free functions are also defined corresponding to a C API function whi
 For example, instead of `vkBindBufferMemory(device, ...)`, write `device.bindBufferMemory(...)`.
 
 >[!NOTE]
-> Note that the lifetimes of these handles need to be **managed manually** with pairs of `vk::create...` and `vk::destroy...` functions, just like in the C API.
+> Note that the lifetimes of these handles need to be **managed manually** with pairs of `vk::createHandle` and `vk::destroyHandle` functions, just like in the C API.
 >
 > For automatic resource management, refer to [Handles](./Handles.md).
 

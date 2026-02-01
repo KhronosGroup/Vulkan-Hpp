@@ -1,29 +1,56 @@
 # Handles in Vulkan-Hpp
 
-The default handle types in Vulkan-Hpp are thin wrappers around the Vulkan C handles. They provide type safety and convenience functions, but do not manage the lifetime of the underlying Vulkan resources.
+The default handle types in Vulkan-Hpp are thin wrappers around the Vulkan C handles.
+They provide type safety and convenience functions, but do not manage the lifetime of the underlying Vulkan resources.
 To facilitate automatic resource management, Vulkan-Hpp provides two additional handle types: `vk::UniqueHandle` and `vk::SharedHandle`. Additionally, there are RAII-style classes in the `vk::raii` namespace that encapsulate resource management.
+
+> [!NOTE]
+> Note that none of the handles listed here are binary-compatible with the underlying Vulkan C handles.
 
 - [`vk::UniqueHandle`](#vkuniquehandle)
 - [`vk::SharedHandle`](#vksharedhandle)
 - [`vk::raii`](#vkraii)
+  - [Programming guide](#programming-guide)
 
 ## `vk::UniqueHandle`
 
-Vulkan-Hpp provides a `vk::UniqueHandle<Type, Deleter>` interface. For each Vulkan handle type `vk::Type` there is a unique handle `vk::UniqueType` which will delete the underlying Vulkan resource upon destruction, e.g. `vk::UniqueBuffer` is the unique handle for `vk::Buffer`.
+Vulkan-Hpp provides a `vk::UniqueHandle<Type, Deleter>` interface.
+This is a smart pointer similar to `std::unique_ptr`, which ensures that the underlying Vulkan handle is automatically destroyed when the `vk::UniqueHandle` goes out of scope.
 
-For each function which constructs a Vulkan handle of type `vk::Type` Vulkan-Hpp provides a second version which returns a `vk::UniqueType`. E.g. for `vk::Device::createBuffer` there is `vk::Device::createBufferUnique` and for `vk::allocateCommandBuffers` there is `vk::allocateCommandBuffersUnique`.
+Vulkan-Hpp defines aliases to this template for each Vulkan handle type.
+Each `vk::Type` (or `VkType` in the C interface), has a corresponding `vk::UniqueType`.
+That is, `vk::UniqueBuffer` is the unique handle for `vk::Buffer`.
+For each function that constructs a `vk::Type`, there is a corresponding function that constructs `vk::UniqueType`.
+For example, `vk::Device::createBuffer` maps to `vk::Device::createBufferUnique`, and `vk::allocateCommandBuffers` maps to `vk::allocateCommandBuffersUnique`.
 
-Note that using `vk::UniqueHandle` comes at a cost since most deleters have to store the `vk::AllocationCallbacks` and parent handle used for construction because they are required for automatic destruction.
+> [!NOTE]
+> `vk::UniqueHandle` is _not_ a 'zero-cost abstraction'.
+> Most deleters have to store `vk::AllocationCallbacks` and the parent handle used for construction, which are required for automatic destruction on scope exit.
+> For example, `vk::UniqueBuffer` stores a reference to the `vk::Device` used to create the buffer.
+>
+> This implies additional memory overhead, and function pointer chain dereferencing during destruction.
 
 ## `vk::SharedHandle`
 
-Vulkan-Hpp provides a `vk::SharedHandle<Type>` interface. For each Vulkan handle type `vk::Type` there is a shared handle `vk::SharedType` which will delete the underlying Vulkan resource upon destruction, e.g. `vk::SharedBuffer` is the shared handle for `vk::Buffer`.
+Vulkan-Hpp provides a `vk::SharedHandle<Type>` interface.
+This is a smart pointer similar to `std::shared_ptr`, which ensures that the underlying Vulkan handle is automatically destroyed when the last `vk::SharedHandle` referencing it goes out of scope.
+Vulkan-Hpp defines aliases to this template for each Vulkan handle type.
+For each Vulkan handle type `vk::Type` there is a shared handle `vk::SharedType` which will delete the underlying Vulkan resource upon destruction, e.g. `vk::SharedBuffer` is the shared handle for `vk::Buffer`.
 
-Unlike `vk::UniqueHandle`, `vk::SharedHandle` takes shared ownership of the resource as well as its parent. This means that the parent handle will not be destroyed until all child resources are deleted. This is useful for resources that are shared between multiple threads or objects.
+Unlike `vk::UniqueHandle`, `vk::SharedHandle` takes shared ownership of the resource as well as its parent.
+This means that the parent handle will not be destroyed until all child resources are deleted.
+For instance, if a `vk::SharedBuffer` is created with a `vk::SharedDevice` as its parent, the `vk::SharedDevice` will not be destroyed until all `vk::SharedBuffer` instances created from it are destroyed.
+This is useful for resources that are shared between multiple threads or objects.
 
-This mechanism ensures correct destruction order even if the parent `vk::SharedHandle` is destroyed before its child handle. Otherwise, the handle behaves like `std::shared_ptr`. `vk::SharedInstance` or any of its child object should be last to delete (first created, first in class declaration).
+> [!WARNING]
+> Shared handles are not thread-safe.
+> Multi-threaded access to the same `vk::SharedHandle` instance must be synchronised by the user.
 
-There are no functions which return a `vk::SharedHandle` directly yet. Instead, you can construct a `vk::SharedHandle` from a `vk::Handle`:
+This mechanism ensures correct destruction order even if destruction of the parent `vk::SharedHandle` is attempted before that of its child handle.
+It follows that a `vk::SharedInstance` will be the last object to be destroyed in a Vulkan application using `vk::SharedHandle`s.
+
+Functions which directly construct a `vk::SharedHandle` have not yet been implemented.
+Instead, construct a `vk::SharedHandle` from a `vk::Handle`:
 
 ```c++
 vk::Buffer buffer = device.createBuffer(...);
@@ -44,16 +71,17 @@ vk::SwapchainKHR swapchain = device.createSwapchainKHR(...);
 vk::SharedSwapchainKHR sharedSwapchain(swapchain, device, surface); // sharedSwapchain now owns the swapchain and surface
 ```
 
-You can create a `vk::SharedHandle` overload for your own handle type or own shared handles by providing several template arguments to `SharedHandleBase`:
+Create a `vk::SharedHandle` overload for custom handle types or shared handles by providing several template arguments to `SharedHandleBase`:
 
 - A handle type
 - A parent handle type or a header structure, that contains the parent
 - A class itself for CRTP
 
-With this, provide a custom static destruction function `internalDestroy`, that takes in a parent handle and a handle to destroy. Don't forget to add a friend declaration for the base class.
+With this, provide a custom static destruction function `internalDestroy`, that takes in a parent handle and a handle to destroy.
+Add a `friend` declaration for the base class.
 
 ```c++
-// Example of a custom shared device, that takes in an instance as a parent
+// Example of a custom shared device, that accepts an instance as a parent
 class shared_handle<VkDevice> : public vk::SharedHandleBase<VkDevice, vk::SharedInstance, shared_handle<VkDevice>>
 {
   using base = vk::SharedHandleBase<VkDevice, vk::SharedInstance, shared_handle<VkDevice>>;
@@ -77,14 +105,19 @@ protected:
 };
 ```
 
-The API will be extended to provide creation functions in the future.
+Vulkan-Hpp will be extended to provide creation functions in the future.
 
 ## `vk::raii`
 
-In addition to `vk::UniqueHandles` and `vk::SharedHandles`, there's a set of wrapper classes for all the handle types that follow the RAII-paradigm (resource acquisition is initialization), provided in the `vk::raii` namespace.
+In addition to `vk::UniqueHandles` and `vk::SharedHandles`, Vulkan-Hpp provides types for Vulkan handles which follow the RAII (Resource Acquisition Is Initialization) idiom, in the `vk::raii` namespace.
 
-While a `vk::UniqueHandle` mimics a handle wrapped by a `std::unique_ptr`, and a `vk::SharedHandle` mimics a handle wrapped by a `std::shared_ptr`, including parent information, a `vk::raii::Handle` is just a class that acquires the underlying vk-handle in its constructor and releases it in its destructor. Thus, you're free to use them as values or wrap them with some smart pointer.
+While a `vk::UniqueHandle` mimics a handle wrapped by a `std::unique_ptr`, and a `vk::SharedHandle` mimics a handle wrapped by a `std::shared_ptr`, including parent information, a `vk::raii::Handle` is just a class that acquires the underlying C handle in its constructor and releases it in its destructor.
+This allows for a more object-oriented approach to Vulkan resource management.
 
-Other than the `vk::Handles`, all those handle wrapper classes need to hold additional data, and thus are not binary identical with the vulkan C-handles.
+`vk::UniqueHandle`, `vk::SharedHandle`, and `vk::Handle` types all use the same dispatcher, and these can be straightforwardly mixed.
+To use them, initialise a global dispatcher as described in [Usage](./Usage.md#extensions-and-per-device-function-pointers).
 
-As the `vk::UniqueHandles` and the `vk::SharedHandles` use the same dispatcher as the `vk::Handles`, they can be easily mixed-and-matched. The `vk::raii::Handles` use some slightly different dispatchers and thus are not compatible with the other handles! That is, for the `vk-Handles`, the `vk::UniqueHandles`, and the `vk::SharedHandles`, you need to instantiate a global dispatcher as described in <https://github.com/KhronosGroup/Vulkan-Hpp#extensions--per-device-function-pointers>. For the `vk::raii-Handles`, this is not needed, as they maintain their own dispatchers. The big advantage here is when you have multiple devices: the functions called via the `vk::raii-Handles` always call the device specific functions.
+`vk::raii` types have a custom dispatcher and are _not_ compatible with the aforementioned types, and maintain their own dispatchers.
+With multiple devices in the same application, this is very useful as `vk::raii` member function calls will always be device-specific.
+
+Refer to the [detailed programming guide](./VkRaiiProgrammingGuide.md) for a tutorial on how to use `vk::raii`.

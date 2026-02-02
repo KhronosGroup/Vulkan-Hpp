@@ -1788,6 +1788,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::QCOMRenderPassShaderResolveExtensionName;
   using VULKAN_HPP_NAMESPACE::QCOMRenderPassShaderResolveSpecVersion;
 
+  //=== VK_QCOM_cooperative_matrix_conversion ===
+  using VULKAN_HPP_NAMESPACE::QCOMCooperativeMatrixConversionExtensionName;
+  using VULKAN_HPP_NAMESPACE::QCOMCooperativeMatrixConversionSpecVersion;
+
   //=== VK_EXT_global_priority ===
   using VULKAN_HPP_NAMESPACE::EXTGlobalPriorityExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTGlobalPrioritySpecVersion;
@@ -4177,6 +4181,9 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_filter_cubic ===
   using VULKAN_HPP_NAMESPACE::FilterCubicImageViewImageFormatPropertiesEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageViewImageFormatInfoEXT;
+
+  //=== VK_QCOM_cooperative_matrix_conversion ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM;
 
   //=== VK_EXT_external_memory_host ===
   using VULKAN_HPP_NAMESPACE::ImportMemoryHostPointerInfoEXT;
@@ -7694,6 +7701,10 @@ export namespace std
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceImageViewImageFormatInfoEXT>;
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::FilterCubicImageViewImageFormatPropertiesEXT>;
+
+  //=== VK_QCOM_cooperative_matrix_conversion ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM>;
 
   //=== VK_EXT_external_memory_host ===
   template <>

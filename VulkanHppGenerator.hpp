@@ -822,22 +822,7 @@ private:
   std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateConstexprString( std::pair<std::string, StructData> const & structData ) const;
   std::string generateConstexprDefines() const;
-  std::string generateConstexprUsings() const;
-  std::string generateCppModuleFuncpointerUsings() const;
-  std::string generateCppModuleHandleUsings() const;
-  std::string generateCppModuleStructUsings() const;
-  std::string generateCppModuleUniqueHandleUsings() const;
-  std::string generateCppModuleFuncsUsings() const;
-  std::string generateCppModuleEnumUsings() const;
-  std::string generateCppModuleFormatTraitsUsings() const;
-  std::string generateCppModuleExtensionInspectionUsings() const;
-  std::string generateCppModuleUsings() const;
   std::string generateCppModuleCommands() const;
-  std::string generateCppModuleRaiiUsings() const;
-  std::string generateCppModuleSharedHandleUsings() const;
-  std::string generateCppModuleHandleHashSpecializations() const;
-  std::string generateCppModuleHashSpecializations() const;
-  std::string generateCppModuleStructHashSpecializations() const;
   std::string generateDataDeclarations( CommandData const &                       commandData,
                                         std::vector<size_t> const &               returnParams,
                                         std::map<size_t, VectorParamData> const & vectorParams,

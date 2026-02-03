@@ -11,7 +11,6 @@
 #if defined( VULKAN_HPP_CXX_MODULE )
 #  define VULKAN_HPP_EXPORT export
 #else
-#  define VULKAN_HPP_EXPORT
 #  include <vulkan/vulkan.hpp>
 #endif
 
@@ -22,12 +21,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=====================
 
   //=== Function Declarations ===
-
-#if defined( VULKAN_HPP_CXX_MODULE )
-#  define VULKAN_HPP_EXPORT export
-#else
-#  define VULKAN_HPP_EXPORT
-#endif
 
   // The three-dimensional extent of a texel block.
   VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 std::array<uint8_t, 3> blockExtent( Format format );

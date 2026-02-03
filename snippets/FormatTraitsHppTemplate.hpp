@@ -6,7 +6,6 @@ ${licenseHeader}
 #if defined( VULKAN_HPP_CXX_MODULE )
 #  define VULKAN_HPP_EXPORT export
 #else
-#  define VULKAN_HPP_EXPORT
 #  include <vulkan/${api}.hpp>
 #endif
 

@@ -5583,6 +5583,8 @@ std::string VulkanHppGenerator::generateDispatchLoaderStatic() const
   class DispatchLoaderStatic : public DispatchLoaderBase
   {
   public:
+  // These commands are listed as `VULKAN_HPP_INLINE` to account for P1779R3: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p1779r3.html
+  // That is, member functions defined in a class definition in a module interface unit are no longer implicitly inline.
 ${commands}
   };
 

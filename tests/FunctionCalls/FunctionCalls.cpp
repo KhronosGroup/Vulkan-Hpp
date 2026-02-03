@@ -544,6 +544,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroyFence( fence );
   }
   {
+    vk::Device              device;
+    vk::Fence               fence;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( fence, &allocationCallbacks );
+  }
+  {
     vk::Device device;
     vk::Fence  fence;
     device.destroy( fence );
@@ -609,6 +615,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroySemaphore( semaphore );
   }
   {
+    vk::Device              device;
+    vk::Semaphore           semaphore;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( semaphore, &allocationCallbacks );
+  }
+  {
     vk::Device    device;
     vk::Semaphore semaphore;
     device.destroy( semaphore );
@@ -638,6 +650,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Device    device;
     vk::QueryPool queryPool;
     device.destroyQueryPool( queryPool );
+  }
+  {
+    vk::Device              device;
+    vk::QueryPool           queryPool;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( queryPool, &allocationCallbacks );
   }
   {
     vk::Device    device;
@@ -702,6 +720,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroyBuffer( buffer );
   }
   {
+    vk::Device              device;
+    vk::Buffer              buffer;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( buffer, &allocationCallbacks );
+  }
+  {
     vk::Device device;
     vk::Buffer buffer;
     device.destroy( buffer );
@@ -731,6 +755,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Device device;
     vk::Image  image;
     device.destroyImage( image );
+  }
+  {
+    vk::Device              device;
+    vk::Image               image;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( image, &allocationCallbacks );
   }
   {
     vk::Device device;
@@ -778,6 +808,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroyImageView( imageView );
   }
   {
+    vk::Device              device;
+    vk::ImageView           imageView;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( imageView, &allocationCallbacks );
+  }
+  {
     vk::Device    device;
     vk::ImageView imageView;
     device.destroy( imageView );
@@ -807,6 +843,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Device      device;
     vk::CommandPool commandPool;
     device.destroyCommandPool( commandPool );
+  }
+  {
+    vk::Device              device;
+    vk::CommandPool         commandPool;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( commandPool, &allocationCallbacks );
   }
   {
     vk::Device      device;
@@ -1062,6 +1104,61 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::CommandBuffer              commandBuffer;
     std::vector<vk::CommandBuffer> secondaryCommandBuffers;
     commandBuffer.executeCommands( secondaryCommandBuffers );
+  }
+
+  // Event commands
+  {
+    vk::Device              device;
+    vk::EventCreateInfo     eventCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::Event               event;
+    vk::Result              result = device.createEvent( &eventCreateInfo, &allocationCallbacks, &event );
+  }
+  {
+    vk::Device          device;
+    vk::EventCreateInfo eventCreateInfo;
+    vk::Event           event = device.createEvent( eventCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Event               event;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyEvent( event, &allocationCallbacks );
+  }
+  {
+    vk::Device device;
+    vk::Event  event;
+    device.destroyEvent( event );
+  }
+  {
+    vk::Device              device;
+    vk::Event               event;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( event, &allocationCallbacks );
+  }
+  {
+    vk::Device device;
+    vk::Event  event;
+    device.destroy( event );
+  }
+
+  {
+    vk::Device device;
+    vk::Event  event;
+    vk::Result result = device.getEventStatus( event );
+  }
+
+  {
+    vk::Device device;
+    vk::Event  event;
+    device.setEvent( event );
+  }
+
+  {
+    vk::Device device;
+    vk::Event  event;
+    device.resetEvent( event );
   }
 
 #if 0

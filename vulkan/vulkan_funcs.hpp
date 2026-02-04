@@ -16844,72 +16844,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       static_cast<VkDevice>( m_device ), imageCount, reinterpret_cast<const VkImage *>( pImages ), reinterpret_cast<VkHostAddressRangeEXT *>( pDatas ) ) );
   }
 
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  // wrapper function for command vkGetImageOpaqueCaptureDataEXT, see
-  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageOpaqueCaptureDataEXT.html
-  template <typename HostAddressRangeEXTAllocator,
-            typename Dispatch,
-            typename std::enable_if<std::is_same<typename HostAddressRangeEXTAllocator::value_type, HostAddressRangeEXT>::value, int>::type,
-            typename std::enable_if<IS_DISPATCHED( vkGetImageOpaqueCaptureDataEXT ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<HostAddressRangeEXT, HostAddressRangeEXTAllocator>>::type
-                       Device::getImageOpaqueCaptureDataEXT( ArrayProxy<const Image> const & images, Dispatch const & d ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    VULKAN_HPP_ASSERT( d.vkGetImageOpaqueCaptureDataEXT && "Function <vkGetImageOpaqueCaptureDataEXT> requires <VK_EXT_descriptor_heap>" );
-#  endif
-
-    std::vector<HostAddressRangeEXT, HostAddressRangeEXTAllocator> datas( images.size() );
-    Result                                                         result = static_cast<Result>( d.vkGetImageOpaqueCaptureDataEXT(
-      m_device, images.size(), reinterpret_cast<const VkImage *>( images.data() ), reinterpret_cast<VkHostAddressRangeEXT *>( datas.data() ) ) );
-    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getImageOpaqueCaptureDataEXT" );
-
-    return detail::createResultValueType( result, std::move( datas ) );
-  }
-
-  // wrapper function for command vkGetImageOpaqueCaptureDataEXT, see
-  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageOpaqueCaptureDataEXT.html
-  template <typename HostAddressRangeEXTAllocator,
-            typename Dispatch,
-            typename std::enable_if<std::is_same<typename HostAddressRangeEXTAllocator::value_type, HostAddressRangeEXT>::value, int>::type,
-            typename std::enable_if<IS_DISPATCHED( vkGetImageOpaqueCaptureDataEXT ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<HostAddressRangeEXT, HostAddressRangeEXTAllocator>>::type
-                       Device::getImageOpaqueCaptureDataEXT(
-      ArrayProxy<const Image> const & images, HostAddressRangeEXTAllocator const & hostAddressRangeEXTAllocator, Dispatch const & d ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    VULKAN_HPP_ASSERT( d.vkGetImageOpaqueCaptureDataEXT && "Function <vkGetImageOpaqueCaptureDataEXT> requires <VK_EXT_descriptor_heap>" );
-#  endif
-
-    std::vector<HostAddressRangeEXT, HostAddressRangeEXTAllocator> datas( images.size(), {}, hostAddressRangeEXTAllocator );
-    Result                                                         result = static_cast<Result>( d.vkGetImageOpaqueCaptureDataEXT(
-      m_device, images.size(), reinterpret_cast<const VkImage *>( images.data() ), reinterpret_cast<VkHostAddressRangeEXT *>( datas.data() ) ) );
-    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getImageOpaqueCaptureDataEXT" );
-
-    return detail::createResultValueType( result, std::move( datas ) );
-  }
-
-  // wrapper function for command vkGetImageOpaqueCaptureDataEXT, see
-  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageOpaqueCaptureDataEXT.html
-  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetImageOpaqueCaptureDataEXT ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<HostAddressRangeEXT>::type Device::getImageOpaqueCaptureDataEXT( const Image &    image,
-                                                                                                                                   Dispatch const & d ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    VULKAN_HPP_ASSERT( d.vkGetImageOpaqueCaptureDataEXT && "Function <vkGetImageOpaqueCaptureDataEXT> requires <VK_EXT_descriptor_heap>" );
-#  endif
-
-    HostAddressRangeEXT data;
-    Result              result = static_cast<Result>(
-      d.vkGetImageOpaqueCaptureDataEXT( m_device, 1, reinterpret_cast<const VkImage *>( &image ), reinterpret_cast<VkHostAddressRangeEXT *>( &data ) ) );
-    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getImageOpaqueCaptureDataEXT" );
-
-    return detail::createResultValueType( result, std::move( data ) );
-  }
-#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-
   // wrapper function for command vkGetPhysicalDeviceDescriptorSizeEXT, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceDescriptorSizeEXT.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceDescriptorSizeEXT ), bool>::type>
@@ -16975,72 +16909,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                    reinterpret_cast<const VkTensorARM *>( pTensors ),
                                                                    reinterpret_cast<VkHostAddressRangeEXT *>( pDatas ) ) );
   }
-
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  // wrapper function for command vkGetTensorOpaqueCaptureDataARM, see
-  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDataARM.html
-  template <typename HostAddressRangeEXTAllocator,
-            typename Dispatch,
-            typename std::enable_if<std::is_same<typename HostAddressRangeEXTAllocator::value_type, HostAddressRangeEXT>::value, int>::type,
-            typename std::enable_if<IS_DISPATCHED( vkGetTensorOpaqueCaptureDataARM ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<HostAddressRangeEXT, HostAddressRangeEXTAllocator>>::type
-                       Device::getTensorOpaqueCaptureDataARM( ArrayProxy<const TensorARM> const & tensors, Dispatch const & d ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    VULKAN_HPP_ASSERT( d.vkGetTensorOpaqueCaptureDataARM && "Function <vkGetTensorOpaqueCaptureDataARM> requires <VK_EXT_descriptor_heap>" );
-#  endif
-
-    std::vector<HostAddressRangeEXT, HostAddressRangeEXTAllocator> datas( tensors.size() );
-    Result                                                         result = static_cast<Result>( d.vkGetTensorOpaqueCaptureDataARM(
-      m_device, tensors.size(), reinterpret_cast<const VkTensorARM *>( tensors.data() ), reinterpret_cast<VkHostAddressRangeEXT *>( datas.data() ) ) );
-    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getTensorOpaqueCaptureDataARM" );
-
-    return detail::createResultValueType( result, std::move( datas ) );
-  }
-
-  // wrapper function for command vkGetTensorOpaqueCaptureDataARM, see
-  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDataARM.html
-  template <typename HostAddressRangeEXTAllocator,
-            typename Dispatch,
-            typename std::enable_if<std::is_same<typename HostAddressRangeEXTAllocator::value_type, HostAddressRangeEXT>::value, int>::type,
-            typename std::enable_if<IS_DISPATCHED( vkGetTensorOpaqueCaptureDataARM ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<HostAddressRangeEXT, HostAddressRangeEXTAllocator>>::type
-                       Device::getTensorOpaqueCaptureDataARM(
-      ArrayProxy<const TensorARM> const & tensors, HostAddressRangeEXTAllocator const & hostAddressRangeEXTAllocator, Dispatch const & d ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    VULKAN_HPP_ASSERT( d.vkGetTensorOpaqueCaptureDataARM && "Function <vkGetTensorOpaqueCaptureDataARM> requires <VK_EXT_descriptor_heap>" );
-#  endif
-
-    std::vector<HostAddressRangeEXT, HostAddressRangeEXTAllocator> datas( tensors.size(), {}, hostAddressRangeEXTAllocator );
-    Result                                                         result = static_cast<Result>( d.vkGetTensorOpaqueCaptureDataARM(
-      m_device, tensors.size(), reinterpret_cast<const VkTensorARM *>( tensors.data() ), reinterpret_cast<VkHostAddressRangeEXT *>( datas.data() ) ) );
-    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getTensorOpaqueCaptureDataARM" );
-
-    return detail::createResultValueType( result, std::move( datas ) );
-  }
-
-  // wrapper function for command vkGetTensorOpaqueCaptureDataARM, see
-  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDataARM.html
-  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetTensorOpaqueCaptureDataARM ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<HostAddressRangeEXT>::type Device::getTensorOpaqueCaptureDataARM( const TensorARM & tensor,
-                                                                                                                                    Dispatch const &  d ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    VULKAN_HPP_ASSERT( d.vkGetTensorOpaqueCaptureDataARM && "Function <vkGetTensorOpaqueCaptureDataARM> requires <VK_EXT_descriptor_heap>" );
-#  endif
-
-    HostAddressRangeEXT data;
-    Result              result = static_cast<Result>(
-      d.vkGetTensorOpaqueCaptureDataARM( m_device, 1, reinterpret_cast<const VkTensorARM *>( &tensor ), reinterpret_cast<VkHostAddressRangeEXT *>( &data ) ) );
-    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getTensorOpaqueCaptureDataARM" );
-
-    return detail::createResultValueType( result, std::move( data ) );
-  }
-#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   //=== VK_EXT_sample_locations ===
 
@@ -29283,54 +29151,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     d.vkGetLatencyTimingsNV(
       static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkGetLatencyMarkerInfoNV *>( pLatencyMarkerInfo ) );
   }
-
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  // wrapper function for command vkGetLatencyTimingsNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetLatencyTimingsNV.html
-  template <typename LatencyTimingsFrameReportNVAllocator,
-            typename Dispatch,
-            typename std::enable_if<std::is_same<typename LatencyTimingsFrameReportNVAllocator::value_type, LatencyTimingsFrameReportNV>::value, int>::type,
-            typename std::enable_if<IS_DISPATCHED( vkGetLatencyTimingsNV ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator> Device::getLatencyTimingsNV(
-    SwapchainKHR swapchain, Dispatch const & d ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    VULKAN_HPP_ASSERT( d.vkGetLatencyTimingsNV && "Function <vkGetLatencyTimingsNV> requires <VK_NV_low_latency2>" );
-#  endif
-
-    std::vector<LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator> timings;
-    GetLatencyMarkerInfoNV                                                         latencyMarkerInfo;
-    d.vkGetLatencyTimingsNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkGetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
-    timings.resize( latencyMarkerInfo.timingCount );
-    latencyMarkerInfo.pTimings = timings.data();
-    d.vkGetLatencyTimingsNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkGetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
-
-    return timings;
-  }
-
-  // wrapper function for command vkGetLatencyTimingsNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetLatencyTimingsNV.html
-  template <typename LatencyTimingsFrameReportNVAllocator,
-            typename Dispatch,
-            typename std::enable_if<std::is_same<typename LatencyTimingsFrameReportNVAllocator::value_type, LatencyTimingsFrameReportNV>::value, int>::type,
-            typename std::enable_if<IS_DISPATCHED( vkGetLatencyTimingsNV ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator> Device::getLatencyTimingsNV(
-    SwapchainKHR swapchain, LatencyTimingsFrameReportNVAllocator const & latencyTimingsFrameReportNVAllocator, Dispatch const & d ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    VULKAN_HPP_ASSERT( d.vkGetLatencyTimingsNV && "Function <vkGetLatencyTimingsNV> requires <VK_NV_low_latency2>" );
-#  endif
-
-    std::vector<LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator> timings( latencyTimingsFrameReportNVAllocator );
-    GetLatencyMarkerInfoNV                                                         latencyMarkerInfo;
-    d.vkGetLatencyTimingsNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkGetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
-    timings.resize( latencyMarkerInfo.timingCount );
-    latencyMarkerInfo.pTimings = timings.data();
-    d.vkGetLatencyTimingsNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkGetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
-
-    return timings;
-  }
-#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   // wrapper function for command vkQueueNotifyOutOfBandNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueNotifyOutOfBandNV.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkQueueNotifyOutOfBandNV ), bool>::type>

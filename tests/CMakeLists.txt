@@ -70,7 +70,7 @@ if( VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_BUILD_CXX_MODULE )
 	# vulkan_hpp__setup_test( NAME DispatchLoaderDynamicSharedLibrary CXX_MODULE ) # no CXX_MODULE test version yet
 	vulkan_hpp__setup_test( NAME DispatchLoaderDynamic CXX_MODULE )
 	vulkan_hpp__setup_test( NAME EnableBetaExtensions CXX_MODULE )
-	# vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE )
+    vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE )
 	vulkan_hpp__setup_test( NAME Flags CXX_MODULE )
 	vulkan_hpp__setup_test( NAME FormatTraits CXX_MODULE )
 	if( NOT( MSVC AND MSVC_VERSION VERSION_LESS "1950" ) )

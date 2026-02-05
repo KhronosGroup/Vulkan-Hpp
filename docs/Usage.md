@@ -876,7 +876,8 @@ auto main(int argc, char* const argv[]) -> int
 }
 ```
 
-Note that the default dynamic dispatcher is automatically stored in the module, and there is **no need** to use the `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` macro.
+> [!NOTE]
+> The default dynamic dispatcher is automatically stored in the module, and there is **no need** to use the `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` macro, contrary to what is described in [§ Extensions and per-device function pointers](#extensions-and-per-device-function-pointers).
 
 #### Command-line usage
 
@@ -893,9 +894,8 @@ Clang with LLVM `libc++`:
 
 ```shell
 clang++ -std=c++23 -stdlib=libc++ --precompile -o std.pcm /path/to/std.cppm
-clang++ -std=c++23 -stdlib=libc++ -fmodule-file=std=std.pcm --precompile -o vulkan.pcm -isystem "<path/to/Vulkan-Hpp/Vulkan-Headers/include>" -isystem "<path/to/Vulkan-Hpp/vulkan>" <path/to/Vulkan-Hpp>/vulkan/vulkan.cppm
-clang++ -std=c++23 -stdlib=libc++ -fmodule-file=std=std.pcm -fmodule-file=vulkan=vulkan.pcm \
-          main.cpp -o main
+clang++ -std=c++23 -stdlib=libc++ -fmodule-file=std=std.pcm --precompile -o vulkan.pcm -isystem "<path/to/Vulkan-Hpp>/Vulkan-Headers/include" -isystem "<path/to/Vulkan-Hpp>/vulkan" <path/to/Vulkan-Hpp>/vulkan/vulkan.cppm
+clang++ -std=c++23 -stdlib=libc++ -fmodule-file=std=std.pcm -fmodule-file=vulkan=vulkan.pcm main.cpp -o main
 ./main
 ```
 
@@ -903,7 +903,7 @@ GCC and the GNU `libstdc++`:
 
 ```shell
 g++ -std=c++23 -fmodules -fsearch-include-path -c bits/std.cc
-g++ -std=c++23 -fmodules -fsearch-include-path -c -isystem "<path/to/Vulkan-Hpp/Vulkan-Headers/include>" -isystem "<path/to/Vulkan-Hpp>/vulkan" <path/to/Vulkan-Hpp>/vulkan/vulkan.cppm
+g++ -std=c++23 -fmodules -fsearch-include-path -c -isystem "<path/to/Vulkan-Hpp>/Vulkan-Headers/include" -isystem "<path/to/Vulkan-Hpp>/vulkan" <path/to/Vulkan-Hpp>/vulkan/vulkan.cppm
 g++ -std=c++23 -fmodules main.cpp -o main
 ./main
 ```
@@ -912,7 +912,7 @@ MSVC, in a `Developer PowerShell` or `x64 Native Tools Command Prompt for VS` in
 
 ```powershell
 > cl.exe /std:c++latest /EHsc /nologo /W4 /c "$Env:VCToolsInstallDir\modules\std.ixx"
-> cl.exe /c /std:c++latest /EHsc /nologo /W4 /reference "std=std.ifc" /interface /TP "<path\to\Vulkan-Hpp>\vulkan\vulkan.cppm" /I "<path\to\Vulkan-Hpp>" /I "<path\to\Vulkan-Hpp>\Vulkan-Headers\include\"
+> cl.exe /c /std:c++latest /EHsc /nologo /W4 /reference "std=std.ifc" /interface /TP "<path\to\Vulkan-Hpp>\vulkan\vulkan.cppm" /external:I "<path\to\Vulkan-Hpp>" /external:I "<path\to\Vulkan-Hpp>\Vulkan-Headers\include\"
 > cl.exe /c /std:c++latest /EHsc /nologo /W4 /reference "std=std.ifc" /reference "vulkan=vulkan.ifc" main.cpp
 > link.exe .\std.obj .\vulkan.obj .\main.obj /OUT:main.exe
 > .\main.exe

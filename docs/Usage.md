@@ -813,9 +813,8 @@ find_package( Vulkan 1.3.256 REQUIRED )
 # set up Vulkan C++ module as a static library
 add_library( Vulkan-HppModule STATIC )
 add_library( Vulkan::HppModule ALIAS Vulkan-HppModule )
-target_sources( Vulkan-HppModule PRIVATE
+target_sources( Vulkan-HppModule PUBLIC
   FILE_SET CXX_MODULES
-  TYPE CXX_MODULES
   BASE_DIRS ${Vulkan_INCLUDE_DIR}
   FILES
     ${Vulkan_INCLUDE_DIR}/vulkan/vulkan.cppm
@@ -824,8 +823,7 @@ target_sources( Vulkan-HppModule PRIVATE
 
 # configure the module target
 target_compile_features( Vulkan-HppModule
-  PRIVATE cxx_std_23 # (currently) requires C++23 for import std
-  INTERFACE cxx_std_20 # can still be consumed as only a C++20 module
+  PUBLIC cxx_std_23
 )
 if( TRUE ) # if you want to use the dynamic dispatcher
   target_link_libraries( Vulkan-HppModule PUBLIC Vulkan::Headers )
@@ -841,7 +839,7 @@ set_target_properties( Vulkan-HppModule PROPERTIES
 )
 
 # link Vulkan C++ module into user project
-add_executable( YourProject main.cpp Engine.cpp ... )
+add_executable( YourProject main.cpp ... )
 target_link_libraries( YourProject PRIVATE Vulkan-HppModule )
 ```
 

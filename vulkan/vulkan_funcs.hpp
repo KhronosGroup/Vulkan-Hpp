@@ -2010,7 +2010,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                   static_cast<VkQueryResultFlags>( flags ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getQueryPoolResults", { Result::eSuccess, Result::eNotReady } );
 
-    return ResultValue<std::vector<DataType, DataTypeAllocator>>( result, std::move( data ) );
+    return { result, data };
   }
 
   // wrapper function for command vkGetQueryPoolResults, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueryPoolResults.html
@@ -2034,7 +2034,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                   static_cast<VkQueryResultFlags>( flags ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getQueryPoolResult", { Result::eSuccess, Result::eNotReady } );
 
-    return ResultValue<DataType>( result, std::move( data ) );
+    return { result, data };
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -3775,7 +3775,7 @@ namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateComputePipelines, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateComputePipelines.html
@@ -3810,7 +3810,7 @@ namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateComputePipelines, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateComputePipelines.html
@@ -3834,7 +3834,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                      reinterpret_cast<VkPipeline *>( &pipeline ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipeline", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<Pipeline>( result, std::move( pipeline ) );
+    return { result, pipeline };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -4949,7 +4949,7 @@ namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateGraphicsPipelines, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateGraphicsPipelines.html
@@ -4984,7 +4984,7 @@ namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateGraphicsPipelines, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateGraphicsPipelines.html
@@ -5008,7 +5008,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                       reinterpret_cast<VkPipeline *>( &pipeline ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipeline", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<Pipeline>( result, std::move( pipeline ) );
+    return { result, pipeline };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -9601,7 +9601,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::acquireNextImageKHR", { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
 #  endif
 
-    return ResultValue<uint32_t>( result, std::move( imageIndex ) );
+    return { result, imageIndex };
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -9824,7 +9824,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::acquireNextImage2KHR", { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
 #  endif
 
-    return ResultValue<uint32_t>( result, std::move( imageIndex ) );
+    return { result, imageIndex };
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -16666,7 +16666,7 @@ namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateExecutionGraphPipelinesAMDX, see
@@ -16703,7 +16703,7 @@ namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateExecutionGraphPipelinesAMDX, see
@@ -16730,7 +16730,7 @@ namespace VULKAN_HPP_NAMESPACE
     detail::resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::createExecutionGraphPipelineAMDX", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<Pipeline>( result, std::move( pipeline ) );
+    return { result, pipeline };
   }
 
 #    ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -18350,7 +18350,7 @@ namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateRayTracingPipelinesKHR, see
@@ -18388,7 +18388,7 @@ namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateRayTracingPipelinesKHR, see
@@ -18417,7 +18417,7 @@ namespace VULKAN_HPP_NAMESPACE
                          VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelineKHR",
                          { Result::eSuccess, Result::eOperationDeferredKHR, Result::eOperationNotDeferredKHR, Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<Pipeline>( result, std::move( pipeline ) );
+    return { result, pipeline };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -19604,7 +19604,7 @@ namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateRayTracingPipelinesNV, see
@@ -19640,7 +19640,7 @@ namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateRayTracingPipelinesNV, see
@@ -19666,7 +19666,7 @@ namespace VULKAN_HPP_NAMESPACE
     detail::resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelineNV", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<Pipeline>( result, std::move( pipeline ) );
+    return { result, pipeline };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -20728,7 +20728,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                               &swapchainTimingPropertiesCounter ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSwapchainTimingPropertiesEXT", { Result::eSuccess, Result::eNotReady } );
 
-    return ResultValue<std::pair<SwapchainTimingPropertiesEXT, uint64_t>>( result, std::move( data_ ) );
+    return { result, data_ };
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -28544,7 +28544,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                reinterpret_cast<VkShaderEXT *>( shaders.data() ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createShadersEXT", { Result::eSuccess, Result::eIncompatibleShaderBinaryEXT } );
 
-    return ResultValue<std::vector<ShaderEXT, ShaderEXTAllocator>>( result, std::move( shaders ) );
+    return { result, shaders };
   }
 
   // wrapper function for command vkCreateShadersEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateShadersEXT.html
@@ -28571,7 +28571,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                reinterpret_cast<VkShaderEXT *>( shaders.data() ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createShadersEXT", { Result::eSuccess, Result::eIncompatibleShaderBinaryEXT } );
 
-    return ResultValue<std::vector<ShaderEXT, ShaderEXTAllocator>>( result, std::move( shaders ) );
+    return { result, shaders };
   }
 
   // wrapper function for command vkCreateShadersEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateShadersEXT.html
@@ -28592,7 +28592,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                reinterpret_cast<VkShaderEXT *>( &shader ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createShaderEXT", { Result::eSuccess, Result::eIncompatibleShaderBinaryEXT } );
 
-    return ResultValue<ShaderEXT>( result, std::move( shader ) );
+    return { result, shader };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -28947,7 +28947,7 @@ namespace VULKAN_HPP_NAMESPACE
     detail::resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::createPipelineBinariesKHR", { Result::eSuccess, Result::eIncomplete, Result::ePipelineBinaryMissingKHR } );
 
-    return ResultValue<std::vector<PipelineBinaryKHR, PipelineBinaryKHRAllocator>>( result, std::move( pipelineBinaries ) );
+    return { result, pipelineBinaries };
   }
 
   // wrapper function for command vkCreatePipelineBinariesKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreatePipelineBinariesKHR.html
@@ -29001,7 +29001,7 @@ namespace VULKAN_HPP_NAMESPACE
     detail::resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::createPipelineBinariesKHR", { Result::eSuccess, Result::eIncomplete, Result::ePipelineBinaryMissingKHR } );
 
-    return ResultValue<std::vector<PipelineBinaryKHR, PipelineBinaryKHRAllocator>>( result, std::move( pipelineBinaries ) );
+    return { result, pipelineBinaries };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -29917,7 +29917,7 @@ namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateDataGraphPipelinesARM, see
@@ -29955,7 +29955,7 @@ namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateDataGraphPipelinesARM, see
@@ -29983,7 +29983,7 @@ namespace VULKAN_HPP_NAMESPACE
     detail::resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::createDataGraphPipelineARM", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<Pipeline>( result, std::move( pipeline ) );
+    return { result, pipeline };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE

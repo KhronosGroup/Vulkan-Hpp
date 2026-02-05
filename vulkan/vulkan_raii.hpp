@@ -15777,7 +15777,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                    static_cast<VkQueryResultFlags>( flags ) ) );
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::QueryPool::getResults", { Result::eSuccess, Result::eNotReady } );
 
-      return ResultValue<std::vector<DataType>>( result, std::move( data ) );
+      return { result, data };
     }
 
     // wrapper function for command vkGetQueryPoolResults, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueryPoolResults.html
@@ -15798,7 +15798,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                    static_cast<VkQueryResultFlags>( flags ) ) );
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::QueryPool::getResult", { Result::eSuccess, Result::eNotReady } );
 
-      return ResultValue<DataType>( result, std::move( data ) );
+      return { result, data };
     }
 
     // wrapper function for command vkCreateBuffer, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateBuffer.html
@@ -18636,7 +18636,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                  { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
 #  endif
 
-      return ResultValue<uint32_t>( result, std::move( imageIndex ) );
+      return { result, imageIndex };
     }
 
     // wrapper function for command vkQueuePresentKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueuePresentKHR.html
@@ -18741,7 +18741,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                  { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
 #  endif
 
-      return ResultValue<uint32_t>( result, std::move( imageIndex ) );
+      return { result, imageIndex };
     }
 
     //=== VK_KHR_display ===
@@ -23415,7 +23415,7 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::detail::resultCheck(
         result, VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::getTimingPropertiesEXT", { Result::eSuccess, Result::eNotReady } );
 
-      return ResultValue<std::pair<SwapchainTimingPropertiesEXT, uint64_t>>( result, std::move( data_ ) );
+      return { result, data_ };
     }
 
     // wrapper function for command vkGetSwapchainTimeDomainPropertiesEXT, see

@@ -5821,9 +5821,9 @@ std::string VulkanHppGenerator::generateDecoratedReturnType( CommandData const &
     assert( ( commandData.returnType.type == "VkResult" ) && !unique );
     decoratedReturnType = "Result";
   }
-  else if ( ( commandData.returnType.type != "VkResult" ) && ( commandData.returnType.type != "void" ) )
+  else if ( ( commandData.returnType.type != "VkResult" ) && ( commandData.returnType.type != "void" ) && returnParams.empty() )
   {
-    assert( returnParams.empty() && !chained && !unique );
+    assert( !chained && !unique );
     if ( commandData.returnType.type.starts_with( "Vk" ) )
     {
       decoratedReturnType = stripPrefix( commandData.returnType.type, "Vk" );
@@ -5844,9 +5844,8 @@ std::string VulkanHppGenerator::generateDecoratedReturnType( CommandData const &
     assert( ( commandData.returnType.type != "void" ) || ( returnParams.size() <= 2 ) );
     decoratedReturnType = returnType;
   }
-  else
+  else if ( commandData.returnType.type == "VkResult" )
   {
-    assert( commandData.returnType.type == "VkResult" );
     assert( !commandData.successCodes.empty() && ( commandData.successCodes[0] == "VK_SUCCESS" ) );
     if ( ( commandData.successCodes.size() == 1 ) ||
          ( ( commandData.successCodes.size() == 2 ) && ( commandData.successCodes[1] == "VK_INCOMPLETE" ) && enumerating ) )
@@ -5880,6 +5879,10 @@ std::string VulkanHppGenerator::generateDecoratedReturnType( CommandData const &
     {
       assert( false );
     }
+  }
+  else
+  {
+    decoratedReturnType = "std::pair<" + commandData.returnType.compose( "Vk" ) + ", " + returnType + ">";
   }
   return decoratedReturnType;
 }
@@ -10510,8 +10513,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
       }
       else
       {
-        assert( decoratedReturnType.starts_with( "ResultValue<" ) && decoratedReturnType.ends_with( ">" ) );
-        returnStatement = "return " + decoratedReturnType + "( result, std::move( " + returnVariable + " ) );";
+        returnStatement = "return { result, " + returnVariable + " };";
       }
     }
   }

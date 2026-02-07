@@ -1065,6 +1065,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ResolveImageFlagBitsKHR;
   using VULKAN_HPP_NAMESPACE::ResolveImageFlagsKHR;
 
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+  //=== VK_SEC_ubm_surface ===
+  using VULKAN_HPP_NAMESPACE::UbmSurfaceCreateFlagBitsSEC;
+  using VULKAN_HPP_NAMESPACE::UbmSurfaceCreateFlagsSEC;
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
+
   //=========================
   //=== Index Type Traits ===
   //=========================
@@ -3044,6 +3050,12 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_subgroup_partitioned ===
   using VULKAN_HPP_NAMESPACE::EXTShaderSubgroupPartitionedExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTShaderSubgroupPartitionedSpecVersion;
+
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+  //=== VK_SEC_ubm_surface ===
+  using VULKAN_HPP_NAMESPACE::SECUbmSurfaceExtensionName;
+  using VULKAN_HPP_NAMESPACE::SECUbmSurfaceSpecVersion;
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
 
   //========================
   //=== CONSTEXPR VALUEs ===
@@ -5419,6 +5431,11 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_shader_subgroup_partitioned ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT;
+
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+  //=== VK_SEC_ubm_surface ===
+  using VULKAN_HPP_NAMESPACE::UbmSurfaceCreateInfoSEC;
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
 
   //===============
   //=== HANDLEs ===
@@ -9632,6 +9649,12 @@ export namespace std
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT>;
 
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+  //=== VK_SEC_ubm_surface ===
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::UbmSurfaceCreateInfoSEC>;
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
+
   //=================================================================
   //=== Required exports for VULKAN_HPP_NAMESPACE::StructureChain ===
   //=================================================================
@@ -10852,4 +10875,10 @@ export {
 
   //=== VK_NV_compute_occupancy_priority ===
   using ::PFN_vkCmdSetComputeOccupancyPriorityNV;
+
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+  //=== VK_SEC_ubm_surface ===
+  using ::PFN_vkCreateUbmSurfaceSEC;
+  using ::PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC;
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
 }

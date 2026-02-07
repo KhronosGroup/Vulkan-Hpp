@@ -57,7 +57,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall   GetProcAddress( HINSTANCE
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 342, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 343, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -1443,6 +1443,7 @@ namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkCreateSwapchainKHR )
     DECLARE_IS_DISPATCHED( vkCreateTensorARM )
     DECLARE_IS_DISPATCHED( vkCreateTensorViewARM )
+    DECLARE_IS_DISPATCHED( vkCreateUbmSurfaceSEC )
     DECLARE_IS_DISPATCHED( vkCreateValidationCacheEXT )
     DECLARE_IS_DISPATCHED( vkCreateViSurfaceNN )
     DECLARE_IS_DISPATCHED( vkCreateVideoSessionKHR )
@@ -1709,6 +1710,7 @@ namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceSurfaceSupportKHR )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceToolProperties )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceToolPropertiesEXT )
+    DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceUbmPresentationSupportSEC )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceVideoCapabilitiesKHR )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceVideoFormatPropertiesKHR )
@@ -7552,6 +7554,25 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return ::vkCmdSetComputeOccupancyPriorityNV( commandBuffer, pParameters );
       }
+
+#  if defined( VK_USE_PLATFORM_UBM_SEC )
+      //=== VK_SEC_ubm_surface ===
+
+      VkResult vkCreateUbmSurfaceSEC( VkInstance                        instance,
+                                      const VkUbmSurfaceCreateInfoSEC * pCreateInfo,
+                                      const VkAllocationCallbacks *     pAllocator,
+                                      VkSurfaceKHR *                    pSurface ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkCreateUbmSurfaceSEC( instance, pCreateInfo, pAllocator, pSurface );
+      }
+
+      VkBool32 vkGetPhysicalDeviceUbmPresentationSupportSEC( VkPhysicalDevice    physicalDevice,
+                                                             uint32_t            queueFamilyIndex,
+                                                             struct ubm_device * ubm_device ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetPhysicalDeviceUbmPresentationSupportSEC( physicalDevice, queueFamilyIndex, ubm_device );
+      }
+#  endif /*VK_USE_PLATFORM_UBM_SEC*/
     };
 
     inline DispatchLoaderStatic & getDispatchLoaderStatic()
@@ -10616,6 +10637,12 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_subgroup_partitioned ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderSubgroupPartitionedSpecVersion   = VK_EXT_SHADER_SUBGROUP_PARTITIONED_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderSubgroupPartitionedExtensionName = VK_EXT_SHADER_SUBGROUP_PARTITIONED_EXTENSION_NAME;
+
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+  //=== VK_SEC_ubm_surface ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto SECUbmSurfaceSpecVersion   = VK_SEC_UBM_SURFACE_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto SECUbmSurfaceExtensionName = VK_SEC_UBM_SURFACE_EXTENSION_NAME;
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
 }  // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off
@@ -22722,6 +22749,15 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_compute_occupancy_priority ===
       PFN_vkCmdSetComputeOccupancyPriorityNV vkCmdSetComputeOccupancyPriorityNV = 0;
 
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+      //=== VK_SEC_ubm_surface ===
+      PFN_vkCreateUbmSurfaceSEC                        vkCreateUbmSurfaceSEC                        = 0;
+      PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC vkGetPhysicalDeviceUbmPresentationSupportSEC = 0;
+#else
+      PFN_dummy vkCreateUbmSurfaceSEC_placeholder                        = 0;
+      PFN_dummy vkGetPhysicalDeviceUbmPresentationSupportSEC_placeholder = 0;
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
+
     public:
       DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT                                    = default;
       DispatchLoaderDynamic( DispatchLoaderDynamic const & rhs ) VULKAN_HPP_NOEXCEPT = default;
@@ -24385,6 +24421,13 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_NV_compute_occupancy_priority ===
         vkCmdSetComputeOccupancyPriorityNV = PFN_vkCmdSetComputeOccupancyPriorityNV( vkGetInstanceProcAddr( instance, "vkCmdSetComputeOccupancyPriorityNV" ) );
+
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+        //=== VK_SEC_ubm_surface ===
+        vkCreateUbmSurfaceSEC = PFN_vkCreateUbmSurfaceSEC( vkGetInstanceProcAddr( instance, "vkCreateUbmSurfaceSEC" ) );
+        vkGetPhysicalDeviceUbmPresentationSupportSEC =
+          PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceUbmPresentationSupportSEC" ) );
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
       }
 
       void init( Device deviceCpp ) VULKAN_HPP_NOEXCEPT

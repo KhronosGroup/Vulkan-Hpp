@@ -887,22 +887,24 @@ target_link_libraries( VulkanHppModule PUBLIC Vulkan::Headers )
 Finally, supply the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code, just as in the non-module case. In order to have that macro available, include [`vulkan_hpp_macros.hpp`](vulkan/vulkan_hpp_macros.hpp), a lightweight header providing all Vulkan-Hpp related macros and defines. And as explained above, you need to initialize that dispatcher in two or three steps:
 
 ```cpp
-import vulkan;
-
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 #if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
-auto main(int argc, char* const argv[]) -> int
+import vulkan;
+
+using vk::ApplicationInfo;
+
+int main(int argc, char* argv[])
 {
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     // initialize minimal set of function pointers
     VULKAN_HPP_DEFAULT_DISPATCHER.init();
 #endif
 
-  auto appInfo = vk::ApplicationInfo("My App", 1, "My Engine", 1, vk::makeApiVersion(1, 0, 0, 0));
+  ApplicationInfo appInfo("My App", 1, "My Engine", 1, vk::makeApiVersion(1, 0, 0, 0));
   // ...
 }
 ```
@@ -1131,3 +1133,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+

@@ -4391,6 +4391,15 @@ namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+  //=== VK_SEC_ubm_surface ===
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( UbmSurfaceCreateFlagsSEC )
+  {
+    return "{}";
+  }
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
+
   //=======================
   //=== ENUMs to_string ===
   //=======================
@@ -5702,7 +5711,10 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eComputeOccupancyPriorityParametersNV                    : return "ComputeOccupancyPriorityParametersNV";
       case StructureType::ePhysicalDeviceComputeOccupancyPriorityFeaturesNV        : return "PhysicalDeviceComputeOccupancyPriorityFeaturesNV";
       case StructureType::ePhysicalDeviceShaderSubgroupPartitionedFeaturesEXT      : return "PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT";
-      default                                                                      : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+      case StructureType::eUbmSurfaceCreateInfoSEC: return "UbmSurfaceCreateInfoSEC";
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
+      default: return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -6076,6 +6088,9 @@ namespace VULKAN_HPP_NAMESPACE
       case Format::eAstc6x6x6SrgbBlockEXT                  : return "Astc6x6x6SrgbBlockEXT";
       case Format::eAstc6x6x6SfloatBlockEXT                : return "Astc6x6x6SfloatBlockEXT";
       case Format::eR8BoolARM                              : return "R8BoolARM";
+      case Format::eR16SfloatFpencodingBfloat16ARM         : return "R16SfloatFpencodingBfloat16ARM";
+      case Format::eR8SfloatFpencodingFloat8E4M3ARM        : return "R8SfloatFpencodingFloat8E4M3ARM";
+      case Format::eR8SfloatFpencodingFloat8E5M2ARM        : return "R8SfloatFpencodingFloat8E5M2ARM";
       case Format::eR16G16Sfixed5NV                        : return "R16G16Sfixed5NV";
       case Format::eR10X6UintPack16ARM                     : return "R10X6UintPack16ARM";
       case Format::eR10X6G10X6Uint2Pack16ARM               : return "R10X6G10X6Uint2Pack16ARM";
@@ -11079,6 +11094,15 @@ namespace VULKAN_HPP_NAMESPACE
       default                                              : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+  //=== VK_SEC_ubm_surface ===
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( UbmSurfaceCreateFlagBitsSEC )
+  {
+    return "(void)";
+  }
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
 }  // namespace VULKAN_HPP_NAMESPACE
 
 #if defined( __clang__ ) || defined( __GNUC__ )

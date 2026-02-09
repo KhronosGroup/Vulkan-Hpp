@@ -11106,6 +11106,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
+
 }  // namespace VULKAN_HPP_NAMESPACE
 
 #if defined( __clang__ ) || defined( __GNUC__ )

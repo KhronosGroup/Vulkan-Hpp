@@ -31853,10 +31853,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   // wrapper function for command vkCreateUbmSurfaceSEC, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateUbmSurfaceSEC.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCreateUbmSurfaceSEC ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Instance::createUbmSurfaceSEC( const UbmSurfaceCreateInfoSEC * pCreateInfo,
-                                                                               const AllocationCallbacks *     pAllocator,
-                                                                               SurfaceKHR *                    pSurface,
-                                                                               Dispatch const &                d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Instance::createUbmSurfaceSEC(
+    const UbmSurfaceCreateInfoSEC * pCreateInfo, const AllocationCallbacks * pAllocator, SurfaceKHR * pSurface, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkCreateUbmSurfaceSEC( static_cast<VkInstance>( m_instance ),
@@ -31868,8 +31866,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkCreateUbmSurfaceSEC, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateUbmSurfaceSEC.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCreateUbmSurfaceSEC ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<SurfaceKHR>::type
-    Instance::createUbmSurfaceSEC( const UbmSurfaceCreateInfoSEC & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<SurfaceKHR>::type Instance::createUbmSurfaceSEC(
+    const UbmSurfaceCreateInfoSEC & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -31889,8 +31887,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #    ifndef VULKAN_HPP_NO_SMART_HANDLE
   // wrapper function for command vkCreateUbmSurfaceSEC, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateUbmSurfaceSEC.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCreateUbmSurfaceSEC ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR, Dispatch>>::type
-    Instance::createUbmSurfaceSECUnique( const UbmSurfaceCreateInfoSEC & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR, Dispatch>>::type Instance::createUbmSurfaceSECUnique(
+    const UbmSurfaceCreateInfoSEC & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #      if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -31913,9 +31911,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // wrapper function for command vkGetPhysicalDeviceUbmPresentationSupportSEC, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceUbmPresentationSupportSEC.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceUbmPresentationSupportSEC ), bool>::type>
-  VULKAN_HPP_INLINE Bool32 PhysicalDevice::getUbmPresentationSupportSEC( uint32_t            queueFamilyIndex,
-                                                                         struct ubm_device * ubm_device,
-                                                                         Dispatch const &    d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE Bool32 PhysicalDevice::getUbmPresentationSupportSEC( uint32_t queueFamilyIndex, struct ubm_device * ubm_device, Dispatch const & d )
+    const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Bool32>(
@@ -31926,8 +31923,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // wrapper function for command vkGetPhysicalDeviceUbmPresentationSupportSEC, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceUbmPresentationSupportSEC.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceUbmPresentationSupportSEC ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<Bool32, struct ubm_device>
-                                         PhysicalDevice::getUbmPresentationSupportSEC( uint32_t queueFamilyIndex, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<Bool32, struct ubm_device> PhysicalDevice::getUbmPresentationSupportSEC(
+    uint32_t queueFamilyIndex, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -31942,5 +31939,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_UBM_SEC*/
+
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

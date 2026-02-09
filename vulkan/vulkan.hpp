@@ -37,7 +37,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 342, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 343, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -50,8 +50,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #endif
   }  // namespace detail
 }  // namespace VULKAN_HPP_NAMESPACE
-
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 343, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -7753,24 +7751,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdSetComputeOccupancyPriorityNV( commandBuffer, pParameters );
       }
 
-#  if defined( VK_USE_PLATFORM_UBM_SEC )
+#    if defined( VK_USE_PLATFORM_UBM_SEC )
       //=== VK_SEC_ubm_surface ===
 
-      VkResult vkCreateUbmSurfaceSEC( VkInstance                        instance,
-                                      const VkUbmSurfaceCreateInfoSEC * pCreateInfo,
-                                      const VkAllocationCallbacks *     pAllocator,
-                                      VkSurfaceKHR *                    pSurface ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkCreateUbmSurfaceSEC( VkInstance                        instance,
+                                                        const VkUbmSurfaceCreateInfoSEC * pCreateInfo,
+                                                        const VkAllocationCallbacks *     pAllocator,
+                                                        VkSurfaceKHR *                    pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateUbmSurfaceSEC( instance, pCreateInfo, pAllocator, pSurface );
       }
 
-      VkBool32 vkGetPhysicalDeviceUbmPresentationSupportSEC( VkPhysicalDevice    physicalDevice,
-                                                             uint32_t            queueFamilyIndex,
-                                                             struct ubm_device * ubm_device ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkBool32 vkGetPhysicalDeviceUbmPresentationSupportSEC( VkPhysicalDevice    physicalDevice,
+                                                                               uint32_t            queueFamilyIndex,
+                                                                               struct ubm_device * ubm_device ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceUbmPresentationSupportSEC( physicalDevice, queueFamilyIndex, ubm_device );
       }
-#  endif /*VK_USE_PLATFORM_UBM_SEC*/
+#    endif /*VK_USE_PLATFORM_UBM_SEC*/
+#  endif   /*VK_ONLY_EXPORTED_PROTOTYPES*/
     };
 
     inline DispatchLoaderStatic & getDispatchLoaderStatic()
@@ -10833,6 +10832,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto SECUbmSurfaceSpecVersion   = VK_SEC_UBM_SURFACE_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto SECUbmSurfaceExtensionName = VK_SEC_UBM_SURFACE_EXTENSION_NAME;
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
+
 }  // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off

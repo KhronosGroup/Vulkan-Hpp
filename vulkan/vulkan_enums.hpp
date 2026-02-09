@@ -1781,7 +1781,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT,
     eComputeOccupancyPriorityParametersNV                     = VK_STRUCTURE_TYPE_COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV,
     ePhysicalDeviceComputeOccupancyPriorityFeaturesNV         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV,
-    ePhysicalDeviceShaderSubgroupPartitionedFeaturesEXT       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT
+    ePhysicalDeviceShaderSubgroupPartitionedFeaturesEXT       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT,
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+    eUbmSurfaceCreateInfoSEC = VK_STRUCTURE_TYPE_UBM_SURFACE_CREATE_INFO_SEC
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
   };
 
   // wrapper class for enum VkObjectType, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkObjectType.html
@@ -2206,6 +2209,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eAstc6x6x6SrgbBlockEXT                   = VK_FORMAT_ASTC_6x6x6_SRGB_BLOCK_EXT,
     eAstc6x6x6SfloatBlockEXT                 = VK_FORMAT_ASTC_6x6x6_SFLOAT_BLOCK_EXT,
     eR8BoolARM                               = VK_FORMAT_R8_BOOL_ARM,
+    eR16SfloatFpencodingBfloat16ARM          = VK_FORMAT_R16_SFLOAT_FPENCODING_BFLOAT16_ARM,
+    eR8SfloatFpencodingFloat8E4M3ARM         = VK_FORMAT_R8_SFLOAT_FPENCODING_FLOAT8E4M3_ARM,
+    eR8SfloatFpencodingFloat8E5M2ARM         = VK_FORMAT_R8_SFLOAT_FPENCODING_FLOAT8E5M2_ARM,
     eR16G16Sfixed5NV                         = VK_FORMAT_R16G16_SFIXED5_NV,
     eR16G16S105NV                            = VK_FORMAT_R16G16_S10_5_NV,
     eR10X6UintPack16ARM                      = VK_FORMAT_R10X6_UINT_PACK16_ARM,
@@ -10128,6 +10134,24 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR ResolveImageFlagsKHR allFlags =
       ResolveImageFlagBitsKHR::eSkipTransferFunction | ResolveImageFlagBitsKHR::eEnableTransferFunction;
   };
+
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+  //=== VK_SEC_ubm_surface ===
+
+  enum class UbmSurfaceCreateFlagBitsSEC : VkUbmSurfaceCreateFlagsSEC
+  {
+  };
+
+  // wrapper using for bitmask VkUbmSurfaceCreateFlagsSEC, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkUbmSurfaceCreateFlagsSEC.html
+  using UbmSurfaceCreateFlagsSEC = Flags<UbmSurfaceCreateFlagBitsSEC>;
+
+  template <>
+  struct FlagTraits<UbmSurfaceCreateFlagBitsSEC>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                     isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR UbmSurfaceCreateFlagsSEC allFlags  = {};
+  };
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
 
   //===========================================================
   //=== Mapping from ObjectType to DebugReportObjectTypeEXT ===

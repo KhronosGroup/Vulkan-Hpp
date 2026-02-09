@@ -403,6 +403,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
           vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM(
             vkGetInstanceProcAddr( instance, "vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM" ) );
 
+#  if defined( VK_USE_PLATFORM_UBM_SEC )
+          //=== VK_SEC_ubm_surface ===
+          vkCreateUbmSurfaceSEC = PFN_vkCreateUbmSurfaceSEC( vkGetInstanceProcAddr( instance, "vkCreateUbmSurfaceSEC" ) );
+          vkGetPhysicalDeviceUbmPresentationSupportSEC =
+            PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceUbmPresentationSupportSEC" ) );
+#  endif /*VK_USE_PLATFORM_UBM_SEC*/
+
           vkGetDeviceProcAddr = PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr" ) );
         }
 
@@ -705,6 +712,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_ARM_performance_counters_by_region ===
         PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM = 0;
+
+#  if defined( VK_USE_PLATFORM_UBM_SEC )
+        //=== VK_SEC_ubm_surface ===
+        PFN_vkCreateUbmSurfaceSEC                        vkCreateUbmSurfaceSEC                        = 0;
+        PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC vkGetPhysicalDeviceUbmPresentationSupportSEC = 0;
+#  else
+        PFN_dummy vkCreateUbmSurfaceSEC_placeholder                        = 0;
+        PFN_dummy vkGetPhysicalDeviceUbmPresentationSupportSEC_placeholder = 0;
+#  endif /*VK_USE_PLATFORM_UBM_SEC*/
 
         PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = 0;
       };
@@ -3528,6 +3544,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                            Optional<const AllocationCallbacks> allocator = nullptr ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
 #  endif /*VK_USE_PLATFORM_OHOS*/
 
+#  if defined( VK_USE_PLATFORM_UBM_SEC )
+      //=== VK_SEC_ubm_surface ===
+
+      // wrapper function for command vkCreateUbmSurfaceSEC, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateUbmSurfaceSEC.html
+      VULKAN_HPP_NODISCARD typename ResultValueType<SurfaceKHR>::type
+        createUbmSurfaceSEC( UbmSurfaceCreateInfoSEC const &     createInfo,
+                             Optional<const AllocationCallbacks> allocator = nullptr ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+#  endif /*VK_USE_PLATFORM_UBM_SEC*/
+
     private:
       VULKAN_HPP_NAMESPACE::Instance              m_instance  = {};
       const AllocationCallbacks *                 m_allocator = {};
@@ -4196,6 +4221,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM.html
       VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<std::vector<PerformanceCounterARM>, std::vector<PerformanceCounterDescriptionARM>>>::type
         enumerateQueueFamilyPerformanceCountersByRegionARM( uint32_t queueFamilyIndex ) const;
+
+#  if defined( VK_USE_PLATFORM_UBM_SEC )
+      //=== VK_SEC_ubm_surface ===
+
+      // wrapper function for command vkGetPhysicalDeviceUbmPresentationSupportSEC, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceUbmPresentationSupportSEC.html
+      VULKAN_HPP_NODISCARD std::pair<Bool32, struct ubm_device> getUbmPresentationSupportSEC( uint32_t queueFamilyIndex ) const VULKAN_HPP_NOEXCEPT;
+#  endif /*VK_USE_PLATFORM_UBM_SEC*/
 
     private:
       VULKAN_HPP_NAMESPACE::PhysicalDevice m_physicalDevice = {};
@@ -14002,6 +14035,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif
 
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+#    if defined( VK_USE_PLATFORM_UBM_SEC )
+      SurfaceKHR( Instance const & instance, UbmSurfaceCreateInfoSEC const & createInfo, Optional<const AllocationCallbacks> allocator = nullptr )
+      {
+        *this = instance.createUbmSurfaceSEC( createInfo, allocator );
+      }
+#    endif /*VK_USE_PLATFORM_UBM_SEC*/
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
 #    if defined( VK_USE_PLATFORM_VI_NN )
       SurfaceKHR( Instance const & instance, ViSurfaceCreateInfoNN const & createInfo, Optional<const AllocationCallbacks> allocator = nullptr )
       {
@@ -15777,7 +15819,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                                    static_cast<VkQueryResultFlags>( flags ) ) );
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::QueryPool::getResults", { Result::eSuccess, Result::eNotReady } );
 
-      return ResultValue<std::vector<DataType>>( result, std::move( data ) );
+      return { result, data };
     }
 
     // wrapper function for command vkGetQueryPoolResults, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueryPoolResults.html
@@ -15798,7 +15840,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                                    static_cast<VkQueryResultFlags>( flags ) ) );
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::QueryPool::getResult", { Result::eSuccess, Result::eNotReady } );
 
-      return ResultValue<DataType>( result, std::move( data ) );
+      return { result, data };
     }
 
     // wrapper function for command vkCreateBuffer, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateBuffer.html
@@ -18636,7 +18678,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                  { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
 #  endif
 
-      return ResultValue<uint32_t>( result, std::move( imageIndex ) );
+      return { result, imageIndex };
     }
 
     // wrapper function for command vkQueuePresentKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueuePresentKHR.html
@@ -18741,7 +18783,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                  { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
 #  endif
 
-      return ResultValue<uint32_t>( result, std::move( imageIndex ) );
+      return { result, imageIndex };
     }
 
     //=== VK_KHR_display ===
@@ -23415,7 +23457,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::detail::resultCheck(
         result, VULKAN_HPP_RAII_NAMESPACE_STRING "::SwapchainKHR::getTimingPropertiesEXT", { Result::eSuccess, Result::eNotReady } );
 
-      return ResultValue<std::pair<SwapchainTimingPropertiesEXT, uint64_t>>( result, std::move( data_ ) );
+      return { result, data_ };
     }
 
     // wrapper function for command vkGetSwapchainTimeDomainPropertiesEXT, see
@@ -28397,6 +28439,41 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkCmdSetComputeOccupancyPriorityNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                            reinterpret_cast<const VkComputeOccupancyPriorityParametersNV *>( &parameters ) );
     }
+
+#  if defined( VK_USE_PLATFORM_UBM_SEC )
+    //=== VK_SEC_ubm_surface ===
+
+    // wrapper function for command vkCreateUbmSurfaceSEC, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateUbmSurfaceSEC.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<SurfaceKHR>::type
+                         Instance::createUbmSurfaceSEC( UbmSurfaceCreateInfoSEC const &     createInfo,
+                                     Optional<const AllocationCallbacks> allocator ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCreateUbmSurfaceSEC && "Function <vkCreateUbmSurfaceSEC> requires <VK_SEC_ubm_surface>" );
+
+      VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
+      Result                           result = static_cast<Result>( getDispatcher()->vkCreateUbmSurfaceSEC( static_cast<VkInstance>( m_instance ),
+                                                                                   reinterpret_cast<const VkUbmSurfaceCreateInfoSEC *>( &createInfo ),
+                                                                                   reinterpret_cast<const VkAllocationCallbacks *>( allocator.get() ),
+                                                                                   reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Instance::createUbmSurfaceSEC" );
+      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, SurfaceKHR( *this, *reinterpret_cast<VkSurfaceKHR *>( &surface ), allocator ) );
+    }
+
+    // wrapper function for command vkGetPhysicalDeviceUbmPresentationSupportSEC, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceUbmPresentationSupportSEC.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<Bool32, struct ubm_device>
+                                           PhysicalDevice::getUbmPresentationSupportSEC( uint32_t queueFamilyIndex ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceUbmPresentationSupportSEC &&
+                         "Function <vkGetPhysicalDeviceUbmPresentationSupportSEC> requires <VK_SEC_ubm_surface>" );
+
+      struct ubm_device ubm_device;
+      VkBool32          result =
+        getDispatcher()->vkGetPhysicalDeviceUbmPresentationSupportSEC( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &ubm_device );
+
+      return { result, ubm_device };
+    }
+#  endif /*VK_USE_PLATFORM_UBM_SEC*/
 
     //====================
     //=== RAII Helpers ===

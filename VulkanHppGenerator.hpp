@@ -571,7 +571,6 @@ private:
   bool containsDeprecated( std::vector<MemberData> const & members ) const;
   bool containsFuncPointer( std::string const & type ) const;
   bool containsFloatingPoints( std::vector<MemberData> const & members ) const;
-  bool containsName( std::vector<EnumValueData> const & enumValues, std::string const & name ) const;
   bool containsUnion( std::string const & type ) const;
   bool describesVector( StructData const & structure, std::string const & type = "" ) const;
   std::vector<size_t>      determineChainedReturnParams( std::vector<ParamData> const & params, std::vector<size_t> const & returnParams ) const;
@@ -1175,7 +1174,6 @@ private:
   bool isFeature( std::string const & name ) const;
   bool isHandleType( std::string const & type ) const;
   bool isHandleTypeByStructure( std::string const & type ) const;
-  bool isLenByParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isLenByStructMember( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isLenByStructMember( std::string const & name, ParamData const & param ) const;
   bool isMultiSuccessCodeConstructor( std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts ) const;
@@ -1185,12 +1183,8 @@ private:
   bool isStructureChainAnchor( std::string const & type ) const;
   bool isStructureType( std::string const & type ) const;
   bool isSupported( std::set<std::string> const & requiredBy ) const;
-  bool isSupportedExtension( std::string const & name ) const;
-  bool isSupportedFeature( std::string const & name ) const;
   bool isTypeRequired( std::string const & type ) const;
   bool isTypeUsed( std::string const & type ) const;
-  bool isUnsupportedExtension( std::string const & name ) const;
-  bool isUnsupportedFeature( std::string const & name ) const;
   bool isVectorByStructure( std::string const & type ) const;
   void markExtendedStructs();
   void mergeInternalFeatures();

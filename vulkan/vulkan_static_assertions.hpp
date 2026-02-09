@@ -9868,4 +9868,14 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT>::value,
                           "PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT is not nothrow_move_constructible!" );
 
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+//=== VK_SEC_ubm_surface ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::UbmSurfaceCreateInfoSEC ) == sizeof( VkUbmSurfaceCreateInfoSEC ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::UbmSurfaceCreateInfoSEC>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::UbmSurfaceCreateInfoSEC>::value,
+                          "UbmSurfaceCreateInfoSEC is not nothrow_move_constructible!" );
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
+
 #endif

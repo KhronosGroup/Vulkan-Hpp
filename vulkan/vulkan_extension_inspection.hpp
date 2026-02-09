@@ -602,8 +602,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                               "VK_EXT_layer_settings",
                                                               "VK_NV_display_stereo",
 #if defined( VK_USE_PLATFORM_OHOS )
-                                                              "VK_OHOS_surface"
+                                                              "VK_OHOS_surface",
 #endif /*VK_USE_PLATFORM_OHOS*/
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+                                                              "VK_SEC_ubm_surface"
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
     };
     return instanceExtensions;
   }
@@ -3076,6 +3079,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } }
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+      ,
+      { "VK_SEC_ubm_surface",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_surface",
+            } } } } }
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
     };
     auto depIt = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
@@ -4411,8 +4422,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_layer_settings" ) ||
            ( extension == "VK_NV_display_stereo" )
 #if defined( VK_USE_PLATFORM_OHOS )
-        || ( extension == "VK_OHOS_surface" )
+        ||
+           ( extension == "VK_OHOS_surface" )
 #endif /*VK_USE_PLATFORM_OHOS*/
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+        || ( extension == "VK_SEC_ubm_surface" )
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
       ;
   }
 

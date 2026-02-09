@@ -9,8 +9,6 @@ module;
 
 #define VULKAN_HPP_CXX_MODULE 1
 
-#include <cassert>
-#include <cstring>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_hpp_macros.hpp>
 
@@ -26,8 +24,6 @@ VULKAN_HPP_COMPILE_WARNING( VULKAN_HPP_CXX_MODULE_EXPERIMENTAL_WARNING )
 export module vulkan;
 
 export import std;
-
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 342, "Wrong VK_HEADER_VERSION!" );
 
 #if defined( _MSC_VER )
 #  pragma warning( push )
@@ -1262,4 +1258,10 @@ export {
 
   //=== VK_NV_compute_occupancy_priority ===
   using ::PFN_vkCmdSetComputeOccupancyPriorityNV;
+
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+  //=== VK_SEC_ubm_surface ===
+  using ::PFN_vkCreateUbmSurfaceSEC;
+  using ::PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC;
+#endif /*VK_USE_PLATFORM_UBM_SEC*/
 }

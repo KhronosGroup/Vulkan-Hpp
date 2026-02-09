@@ -520,6 +520,9 @@ namespace VULKAN_HPP_NAMESPACE
       case Format::eAstc6x6x6SrgbBlockEXT                  : return 16;
       case Format::eAstc6x6x6SfloatBlockEXT                : return 16;
       case Format::eR8BoolARM                              : return 1;
+      case Format::eR16SfloatFpencodingBfloat16ARM         : return 2;
+      case Format::eR8SfloatFpencodingFloat8E4M3ARM        : return 1;
+      case Format::eR8SfloatFpencodingFloat8E5M2ARM        : return 1;
       case Format::eR16G16Sfixed5NV                        : return 4;
       case Format::eR10X6UintPack16ARM                     : return 2;
       case Format::eR10X6G10X6Uint2Pack16ARM               : return 4;
@@ -824,6 +827,9 @@ namespace VULKAN_HPP_NAMESPACE
       case Format::eAstc6x6x6SrgbBlockEXT                  : return "ASTC_6x6x6";
       case Format::eAstc6x6x6SfloatBlockEXT                : return "ASTC_6x6x6";
       case Format::eR8BoolARM                              : return "8-bit";
+      case Format::eR16SfloatFpencodingBfloat16ARM         : return "16-bit";
+      case Format::eR8SfloatFpencodingFloat8E4M3ARM        : return "8-bit";
+      case Format::eR8SfloatFpencodingFloat8E5M2ARM        : return "8-bit";
       case Format::eR16G16Sfixed5NV                        : return "32-bit";
       case Format::eR10X6UintPack16ARM                     : return "16-bit";
       case Format::eR10X6G10X6Uint2Pack16ARM               : return "32-bit";
@@ -2241,6 +2247,24 @@ namespace VULKAN_HPP_NAMESPACE
           case 0 : return 8;
           default: VULKAN_HPP_ASSERT( false ); return 0;
         }
+      case Format::eR16SfloatFpencodingBfloat16ARM:
+        switch ( component )
+        {
+          case 0 : return 16;
+          default: VULKAN_HPP_ASSERT( false ); return 0;
+        }
+      case Format::eR8SfloatFpencodingFloat8E4M3ARM:
+        switch ( component )
+        {
+          case 0 : return 8;
+          default: VULKAN_HPP_ASSERT( false ); return 0;
+        }
+      case Format::eR8SfloatFpencodingFloat8E5M2ARM:
+        switch ( component )
+        {
+          case 0 : return 8;
+          default: VULKAN_HPP_ASSERT( false ); return 0;
+        }
       case Format::eR16G16Sfixed5NV:
         switch ( component )
         {
@@ -2641,6 +2665,9 @@ namespace VULKAN_HPP_NAMESPACE
       case Format::eAstc6x6x6SrgbBlockEXT                  : return 4;
       case Format::eAstc6x6x6SfloatBlockEXT                : return 4;
       case Format::eR8BoolARM                              : return 1;
+      case Format::eR16SfloatFpencodingBfloat16ARM         : return 1;
+      case Format::eR8SfloatFpencodingFloat8E4M3ARM        : return 1;
+      case Format::eR8SfloatFpencodingFloat8E5M2ARM        : return 1;
       case Format::eR16G16Sfixed5NV                        : return 2;
       case Format::eR10X6UintPack16ARM                     : return 1;
       case Format::eR10X6G10X6Uint2Pack16ARM               : return 2;
@@ -4955,6 +4982,24 @@ namespace VULKAN_HPP_NAMESPACE
           default: VULKAN_HPP_ASSERT( false ); return "";
         }
       case Format::eR8BoolARM:
+        switch ( component )
+        {
+          case 0 : return "R";
+          default: VULKAN_HPP_ASSERT( false ); return "";
+        }
+      case Format::eR16SfloatFpencodingBfloat16ARM:
+        switch ( component )
+        {
+          case 0 : return "R";
+          default: VULKAN_HPP_ASSERT( false ); return "";
+        }
+      case Format::eR8SfloatFpencodingFloat8E4M3ARM:
+        switch ( component )
+        {
+          case 0 : return "R";
+          default: VULKAN_HPP_ASSERT( false ); return "";
+        }
+      case Format::eR8SfloatFpencodingFloat8E5M2ARM:
         switch ( component )
         {
           case 0 : return "R";
@@ -7375,6 +7420,24 @@ namespace VULKAN_HPP_NAMESPACE
           case 0 : return "BOOL";
           default: VULKAN_HPP_ASSERT( false ); return "";
         }
+      case Format::eR16SfloatFpencodingBfloat16ARM:
+        switch ( component )
+        {
+          case 0 : return "SFLOAT";
+          default: VULKAN_HPP_ASSERT( false ); return "";
+        }
+      case Format::eR8SfloatFpencodingFloat8E4M3ARM:
+        switch ( component )
+        {
+          case 0 : return "SFLOAT";
+          default: VULKAN_HPP_ASSERT( false ); return "";
+        }
+      case Format::eR8SfloatFpencodingFloat8E5M2ARM:
+        switch ( component )
+        {
+          case 0 : return "SFLOAT";
+          default: VULKAN_HPP_ASSERT( false ); return "";
+        }
       case Format::eR16G16Sfixed5NV:
         switch ( component )
         {
@@ -8218,6 +8281,9 @@ namespace VULKAN_HPP_NAMESPACE
                                               Format::eAstc6x6x6SrgbBlockEXT,
                                               Format::eAstc6x6x6SfloatBlockEXT,
                                               Format::eR8BoolARM,
+                                              Format::eR16SfloatFpencodingBfloat16ARM,
+                                              Format::eR8SfloatFpencodingFloat8E4M3ARM,
+                                              Format::eR8SfloatFpencodingFloat8E5M2ARM,
                                               Format::eR16G16Sfixed5NV,
                                               Format::eR10X6UintPack16ARM,
                                               Format::eR10X6G10X6Uint2Pack16ARM,
@@ -8511,6 +8577,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                 Format::eAstc6x6x6SrgbBlockEXT,
                                                 Format::eAstc6x6x6SfloatBlockEXT,
                                                 Format::eR8BoolARM,
+                                                Format::eR16SfloatFpencodingBfloat16ARM,
+                                                Format::eR8SfloatFpencodingFloat8E4M3ARM,
+                                                Format::eR8SfloatFpencodingFloat8E5M2ARM,
                                                 Format::eR16G16Sfixed5NV,
                                                 Format::eR10X6UintPack16ARM,
                                                 Format::eR10X6G10X6Uint2Pack16ARM,
@@ -9500,6 +9569,9 @@ namespace VULKAN_HPP_NAMESPACE
       case Format::eAstc6x6x6SrgbBlockEXT:
       case Format::eAstc6x6x6SfloatBlockEXT:
       case Format::eR8BoolARM:
+      case Format::eR16SfloatFpencodingBfloat16ARM:
+      case Format::eR8SfloatFpencodingFloat8E4M3ARM:
+      case Format::eR8SfloatFpencodingFloat8E5M2ARM:
       case Format::eR16G16Sfixed5NV:
       case Format::eR10X6UintPack16ARM:
       case Format::eR10X6G10X6Uint2Pack16ARM:
@@ -10556,6 +10628,9 @@ namespace VULKAN_HPP_NAMESPACE
       case Format::eAstc6x6x6SrgbBlockEXT                  : return 216;
       case Format::eAstc6x6x6SfloatBlockEXT                : return 216;
       case Format::eR8BoolARM                              : return 1;
+      case Format::eR16SfloatFpencodingBfloat16ARM         : return 1;
+      case Format::eR8SfloatFpencodingFloat8E4M3ARM        : return 1;
+      case Format::eR8SfloatFpencodingFloat8E5M2ARM        : return 1;
       case Format::eR16G16Sfixed5NV                        : return 1;
       case Format::eR10X6UintPack16ARM                     : return 1;
       case Format::eR10X6G10X6Uint2Pack16ARM               : return 1;

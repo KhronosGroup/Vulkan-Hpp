@@ -1984,7 +1984,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                   static_cast<VkQueryResultFlags>( flags ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getQueryPoolResults", { Result::eSuccess, Result::eNotReady } );
 
-    return ResultValue<std::vector<DataType, DataTypeAllocator>>( result, std::move( data ) );
+    return { result, data };
   }
 
   // wrapper function for command vkGetQueryPoolResults, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueryPoolResults.html
@@ -2008,7 +2008,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                   static_cast<VkQueryResultFlags>( flags ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getQueryPoolResult", { Result::eSuccess, Result::eNotReady } );
 
-    return ResultValue<DataType>( result, std::move( data ) );
+    return { result, data };
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -3710,7 +3710,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateComputePipelines, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateComputePipelines.html
@@ -3745,7 +3745,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateComputePipelines, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateComputePipelines.html
@@ -3767,7 +3767,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                      reinterpret_cast<VkPipeline *>( &pipeline ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipeline", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<Pipeline>( result, std::move( pipeline ) );
+    return { result, pipeline };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -4859,7 +4859,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateGraphicsPipelines, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateGraphicsPipelines.html
@@ -4894,7 +4894,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateGraphicsPipelines, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateGraphicsPipelines.html
@@ -4916,7 +4916,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                       reinterpret_cast<VkPipeline *>( &pipeline ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipeline", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<Pipeline>( result, std::move( pipeline ) );
+    return { result, pipeline };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -9432,7 +9432,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::acquireNextImageKHR", { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
 #  endif
 
-    return ResultValue<uint32_t>( result, std::move( imageIndex ) );
+    return { result, imageIndex };
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -9653,7 +9653,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::acquireNextImage2KHR", { Result::eSuccess, Result::eTimeout, Result::eNotReady, Result::eSuboptimalKHR } );
 #  endif
 
-    return ResultValue<uint32_t>( result, std::move( imageIndex ) );
+    return { result, imageIndex };
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -16344,7 +16344,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateExecutionGraphPipelinesAMDX, see
@@ -16381,7 +16381,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateExecutionGraphPipelinesAMDX, see
@@ -16406,7 +16406,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     detail::resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::createExecutionGraphPipelineAMDX", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<Pipeline>( result, std::move( pipeline ) );
+    return { result, pipeline };
   }
 
 #    ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -17987,7 +17987,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateRayTracingPipelinesKHR, see
@@ -18025,7 +18025,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateRayTracingPipelinesKHR, see
@@ -18054,7 +18054,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelineKHR",
                          { Result::eSuccess, Result::eOperationDeferredKHR, Result::eOperationNotDeferredKHR, Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<Pipeline>( result, std::move( pipeline ) );
+    return { result, pipeline };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -19215,7 +19215,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateRayTracingPipelinesNV, see
@@ -19251,7 +19251,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateRayTracingPipelinesNV, see
@@ -19275,7 +19275,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     detail::resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::createRayTracingPipelineNV", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<Pipeline>( result, std::move( pipeline ) );
+    return { result, pipeline };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -20307,7 +20307,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                               &swapchainTimingPropertiesCounter ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSwapchainTimingPropertiesEXT", { Result::eSuccess, Result::eNotReady } );
 
-    return ResultValue<std::pair<SwapchainTimingPropertiesEXT, uint64_t>>( result, std::move( data_ ) );
+    return { result, data_ };
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -27969,7 +27969,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                reinterpret_cast<VkShaderEXT *>( shaders.data() ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createShadersEXT", { Result::eSuccess, Result::eIncompatibleShaderBinaryEXT } );
 
-    return ResultValue<std::vector<ShaderEXT, ShaderEXTAllocator>>( result, std::move( shaders ) );
+    return { result, shaders };
   }
 
   // wrapper function for command vkCreateShadersEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateShadersEXT.html
@@ -27996,7 +27996,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                reinterpret_cast<VkShaderEXT *>( shaders.data() ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createShadersEXT", { Result::eSuccess, Result::eIncompatibleShaderBinaryEXT } );
 
-    return ResultValue<std::vector<ShaderEXT, ShaderEXTAllocator>>( result, std::move( shaders ) );
+    return { result, shaders };
   }
 
   // wrapper function for command vkCreateShadersEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateShadersEXT.html
@@ -28017,7 +28017,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                reinterpret_cast<VkShaderEXT *>( &shader ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createShaderEXT", { Result::eSuccess, Result::eIncompatibleShaderBinaryEXT } );
 
-    return ResultValue<ShaderEXT>( result, std::move( shader ) );
+    return { result, shader };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -28367,7 +28367,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     detail::resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::createPipelineBinariesKHR", { Result::eSuccess, Result::eIncomplete, Result::ePipelineBinaryMissingKHR } );
 
-    return ResultValue<std::vector<PipelineBinaryKHR, PipelineBinaryKHRAllocator>>( result, std::move( pipelineBinaries ) );
+    return { result, pipelineBinaries };
   }
 
   // wrapper function for command vkCreatePipelineBinariesKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreatePipelineBinariesKHR.html
@@ -28421,7 +28421,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     detail::resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::createPipelineBinariesKHR", { Result::eSuccess, Result::eIncomplete, Result::ePipelineBinaryMissingKHR } );
 
-    return ResultValue<std::vector<PipelineBinaryKHR, PipelineBinaryKHRAllocator>>( result, std::move( pipelineBinaries ) );
+    return { result, pipelineBinaries };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -29324,7 +29324,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateDataGraphPipelinesARM, see
@@ -29362,7 +29362,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          allocator.get(),
                          d );
 
-    return ResultValue<std::vector<Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
+    return { result, pipelines };
   }
 
   // wrapper function for command vkCreateDataGraphPipelinesARM, see
@@ -29390,7 +29390,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     detail::resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::createDataGraphPipelineARM", { Result::eSuccess, Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<Pipeline>( result, std::move( pipeline ) );
+    return { result, pipeline };
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -31848,5 +31848,99 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+#if defined( VK_USE_PLATFORM_UBM_SEC )
+  //=== VK_SEC_ubm_surface ===
+
+  // wrapper function for command vkCreateUbmSurfaceSEC, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateUbmSurfaceSEC.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCreateUbmSurfaceSEC ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Instance::createUbmSurfaceSEC( const UbmSurfaceCreateInfoSEC * pCreateInfo,
+                                                                               const AllocationCallbacks *     pAllocator,
+                                                                               SurfaceKHR *                    pSurface,
+                                                                               Dispatch const &                d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkCreateUbmSurfaceSEC( static_cast<VkInstance>( m_instance ),
+                                                         reinterpret_cast<const VkUbmSurfaceCreateInfoSEC *>( pCreateInfo ),
+                                                         reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ),
+                                                         reinterpret_cast<VkSurfaceKHR *>( pSurface ) ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCreateUbmSurfaceSEC, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateUbmSurfaceSEC.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCreateUbmSurfaceSEC ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<SurfaceKHR>::type
+    Instance::createUbmSurfaceSEC( const UbmSurfaceCreateInfoSEC & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCreateUbmSurfaceSEC && "Function <vkCreateUbmSurfaceSEC> requires <VK_SEC_ubm_surface>" );
+#    endif
+
+    SurfaceKHR surface;
+    Result     result = static_cast<Result>( d.vkCreateUbmSurfaceSEC( m_instance,
+                                                                  reinterpret_cast<const VkUbmSurfaceCreateInfoSEC *>( &createInfo ),
+                                                                  reinterpret_cast<const VkAllocationCallbacks *>( allocator.get() ),
+                                                                  reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Instance::createUbmSurfaceSEC" );
+
+    return detail::createResultValueType( result, std::move( surface ) );
+  }
+
+#    ifndef VULKAN_HPP_NO_SMART_HANDLE
+  // wrapper function for command vkCreateUbmSurfaceSEC, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateUbmSurfaceSEC.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCreateUbmSurfaceSEC ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<SurfaceKHR, Dispatch>>::type
+    Instance::createUbmSurfaceSECUnique( const UbmSurfaceCreateInfoSEC & createInfo, Optional<const AllocationCallbacks> allocator, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#      if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCreateUbmSurfaceSEC && "Function <vkCreateUbmSurfaceSEC> requires <VK_SEC_ubm_surface>" );
+#      endif
+
+    SurfaceKHR surface;
+    Result     result = static_cast<Result>( d.vkCreateUbmSurfaceSEC( m_instance,
+                                                                  reinterpret_cast<const VkUbmSurfaceCreateInfoSEC *>( &createInfo ),
+                                                                  reinterpret_cast<const VkAllocationCallbacks *>( allocator.get() ),
+                                                                  reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Instance::createUbmSurfaceSECUnique" );
+
+    return detail::createResultValueType( result,
+                                          UniqueHandle<SurfaceKHR, Dispatch>( surface, detail::ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
+  }
+#    endif /* VULKAN_HPP_NO_SMART_HANDLE */
+#  endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  // wrapper function for command vkGetPhysicalDeviceUbmPresentationSupportSEC, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceUbmPresentationSupportSEC.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceUbmPresentationSupportSEC ), bool>::type>
+  VULKAN_HPP_INLINE Bool32 PhysicalDevice::getUbmPresentationSupportSEC( uint32_t            queueFamilyIndex,
+                                                                         struct ubm_device * ubm_device,
+                                                                         Dispatch const &    d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Bool32>(
+      d.vkGetPhysicalDeviceUbmPresentationSupportSEC( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, ubm_device ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkGetPhysicalDeviceUbmPresentationSupportSEC, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceUbmPresentationSupportSEC.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceUbmPresentationSupportSEC ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<Bool32, struct ubm_device>
+                                         PhysicalDevice::getUbmPresentationSupportSEC( uint32_t queueFamilyIndex, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetPhysicalDeviceUbmPresentationSupportSEC &&
+                       "Function <vkGetPhysicalDeviceUbmPresentationSupportSEC> requires <VK_SEC_ubm_surface>" );
+#    endif
+
+    struct ubm_device ubm_device;
+    VkBool32          result = d.vkGetPhysicalDeviceUbmPresentationSupportSEC( m_physicalDevice, queueFamilyIndex, &ubm_device );
+
+    return { result, ubm_device };
+  }
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif   /*VK_USE_PLATFORM_UBM_SEC*/
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

@@ -351,13 +351,13 @@ Vulkan allows chaining of structures through the `pNext` pointer. Vulkan-Hpp has
 ```c++
 // This will compile successfully.
 vk::StructureChain<vk::MemoryAllocateInfo, vk::ImportMemoryFdInfoKHR> c;
-vk::MemoryAllocateInfo &allocInfo = c.get<vk::MemoryAllocateInfo>();
-vk::ImportMemoryFdInfoKHR &fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
+vk::MemoryAllocateInfo& allocInfo = c.get<vk::MemoryAllocateInfo>();
+vk::ImportMemoryFdInfoKHR& fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
 
 // This will fail compilation since it's not valid according to the spec.
 vk::StructureChain<vk::MemoryAllocateInfo, vk::MemoryDedicatedRequirementsKHR> c;
-vk::MemoryAllocateInfo &allocInfo = c.get<vk::MemoryAllocateInfo>();
-vk::ImportMemoryFdInfoKHR &fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
+vk::MemoryAllocateInfo& allocInfo = c.get<vk::MemoryAllocateInfo>();
+vk::ImportMemoryFdInfoKHR& fdInfo = c.get<vk::ImportMemoryFdInfoKHR>();
 ```
 
 Vulkan-Hpp provides a constructor for these chains similar to the `CreateInfo` objects which accepts a list of all structures part of the chain. The `pNext` field is automatically set to the correct value:
@@ -377,8 +377,8 @@ Sometimes the user has to pass a preallocated structure chain to query informati
 ```c++
 // Query vk::MemoryRequirements2HR and vk::MemoryDedicatedRequirementsKHR when calling Device::getBufferMemoryRequirements2KHR:
 auto result = device.getBufferMemoryRequirements2KHR<vk::MemoryRequirements2KHR, vk::MemoryDedicatedRequirementsKHR>({});
-vk::MemoryRequirements2KHR &memReqs = result.get<vk::MemoryRequirements2KHR>();
-vk::MemoryDedicatedRequirementsKHR &dedMemReqs = result.get<vk::MemoryDedicatedRequirementsKHR>();
+vk::MemoryRequirements2KHR& memReqs = result.get<vk::MemoryRequirements2KHR>();
+vk::MemoryDedicatedRequirementsKHR& dedMemReqs = result.get<vk::MemoryDedicatedRequirementsKHR>();
 ```
 
 To get just the base structure, without chaining, the other getter function provided does not need a template argument for the structure to get:
@@ -487,7 +487,7 @@ try
   shader1 = device.createShaderModule({...});
   shader2 = device.createShaderModule({...});
 }
-catch(std::exception const &e)
+catch (std::exception const& e)
 {
   // handle error and free resources
 }
@@ -576,15 +576,15 @@ With this, provide a custom static destruction function `internalDestroy`, that 
 
 ```c++
 // Example of a custom shared device, that takes in an instance as a parent
-class shared_handle<VkDevice> : public vk::SharedHandleBase<VkDevice, vk::SharedInstance, shared_handle<VkDevice>>
+class MySharedHandle<VkDevice> : public vk::SharedHandleBase<VkDevice, vk::SharedInstance, MySharedHandle<VkDevice>>
 {
-  using base = vk::SharedHandleBase<VkDevice, vk::SharedInstance, shared_handle<VkDevice>>;
-  friend base;
+  using Base = vk::SharedHandleBase<VkDevice, vk::SharedInstance, MySharedHandle<VkDevice>>;
+  friend Base;
 
 public:
-  shared_handle() = default;
-  explicit shared_handle(VkDevice handle, vk::SharedInstance parent) noexcept
-    : base(handle, std::move(parent)) {}
+  MySharedHandle() = default;
+  explicit MySharedHandle(VkDevice handle, vk::SharedInstance parent) noexcept
+    : Base(handle, std::move(parent)) {}
 
   const auto& getParent() const noexcept
   {
@@ -592,7 +592,7 @@ public:
   }
 
 protected:
-  static void internalDestroy(const vk::SharedInstance& /*control*/, VkDevice handle) noexcept
+  static void internalDestroy([[maybe_unused]] const vk::SharedInstance& control, VkDevice handle) noexcept
   {
     kDestroyDevice(handle);
   }

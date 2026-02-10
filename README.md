@@ -39,8 +39,8 @@ If you need a more recent version than the SDK supports, then Vulkan-Hpp is also
 
 ### vcpkg
 
-As above, Vulkan-Hpp is provided in the [`vulkan-headers` port](https://vcpkg.io/en/package/vulkan-headers) in [vcpkg](https://github.com/Microsoft/vcpkg).
-Otherwise, you can also install the [`vulkan-sdk-components` port](https://vcpkg.io/en/package/vulkan-sdk-components), which is a vcpkg equivalent to the LunarG-distributed Vulkan SDK.
+As above, Vulkan-Hpp is provided in the [`vulkan-headers`](https://vcpkg.io/en/package/vulkan-headers) port in [vcpkg](https://github.com/Microsoft/vcpkg).
+Otherwise, you can also install the [`vulkan-sdk-components`](https://vcpkg.io/en/package/vulkan-sdk-components) port, which is a vcpkg equivalent to the LunarG-distributed Vulkan SDK.
 
 ```bash
 git clone https://github.com/Microsoft/vcpkg.git
@@ -54,7 +54,7 @@ For support, [create an issue or pull request](https://github.com/Microsoft/vcpk
 
 ### Conan
 
-Similar to vcpkg, Vulkan-Hpp can be installed as part of the [`vulkan-headers` recipe](https://conan.io/center/recipes/vulkan-headers).
+Similar to vcpkg, Vulkan-Hpp can be installed as part of the [`vulkan-headers`](https://conan.io/center/recipes/vulkan-headers) recipe.
 
 The vcpkg and Conan packages are kept up to date by Microsoft and members of the community.
 Requests for updates and issues with these packages should be directed to their respective repositories rather than here.

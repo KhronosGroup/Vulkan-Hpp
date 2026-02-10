@@ -1,6 +1,20 @@
 
 # Vulkan-Hpp: C++ bindings for Vulkan
 
+- [Overview](#overview)
+- [CI/CD status](#cicd-status)
+- [Documentation](#documentation)
+- [Installation and usage](#installation-and-usage)
+  - [Vulkan SDK](#vulkan-sdk)
+  - [vcpkg](#vcpkg)
+  - [Conan](#conan)
+- [Breaking Changes](#breaking-changes)
+  - [v1.4.334](#v14334)
+  - [v1.4.324](#v14324)
+  - [v1.4.329](#v14329)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Overview
 
 Vulkan-Hpp provides header-only C++ bindings for the Vulkan C API to improve the developer experience with Vulkan without introducing run-time CPU costs.
@@ -17,18 +31,18 @@ This repository contains the [generators](VulkanHppGenerator.hpp) for Vulkan-Hpp
 | **Linux**    | [![CI Ubuntu 22](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-22.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-22.yml) <br> [![CI Ubuntu 24](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-24.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-24.yml) |
 | **macOS**    | [![CI MacOS](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-macos.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-macos.yml) |
 
-- [Overview](#overview)
-- [CI/CD status](#cicd-status)
-- [Installation and usage](#installation-and-usage)
-  - [Vulkan SDK](#vulkan-sdk)
-  - [vcpkg](#vcpkg)
-  - [Conan](#conan)
-- [Breaking Changes](#breaking-changes)
-  - [v1.4.334](#v14334)
-  - [v1.4.324](#v14324)
-- [Documentation](#documentation)
-- [Contributing](#contributing)
-- [License](#license)
+## Documentation
+
+All other documentation is in [`docs`](./docs/):
+
+1. [Building](./docs/Building.md) describes how to configure, build, and generate new headers.
+2. [Usage](./docs/Usage.md) explains how to use the various features of Vulkan-Hpp with detailed examples.
+3. [Configuration](./docs/Configuration.md) lists all the options available to configure the behaviour and features of Vulkan-Hpp.
+4. [Handles](./docs/Handles.md) is an overview of the three different families of handles provided by Vulkan-Hpp. These allow semantics similar to `std::unique_ptr`, `std::shared_ptr`, and also `vk::raii` types, which are [RAII](https://en.cppreference.com/w/cpp/language/raii.html) (resource acquisition is initialisation) handles that offer object-oriented semantics for Vulkan handles.
+
+> [!NOTE]
+>
+> All macro configuration options [available in the C API](https://docs.vulkan.org/spec/latest/appendices/boilerplate.html) are also available and used in Vulkan-Hpp.
 
 ## Installation and usage
 
@@ -74,19 +88,6 @@ With PR [#2226](https://github.com/KhronosGroup/Vulkan-Hpp/pull/2226), the retur
 ### v1.4.329
 
 With PR [#2303](https://github.com/KhronosGroup/Vulkan-Hpp/pull/2303), `import std` was made mandatory when using the C++ named module.
-
-## Documentation
-
-All other documentation is in [`docs`](./docs/):
-
-1. [Building](./docs/Building.md) describes how to configure, build, and generate new headers.
-2. [Usage](./docs/Usage.md) explains how to use the various features of Vulkan-Hpp with detailed examples.
-3. [Configuration](./docs/Configuration.md) lists all the options available to configure the behaviour and features of Vulkan-Hpp.
-4. [Handles](./docs/Handles.md) is an overview of the three different families of handles provided by Vulkan-Hpp. These allow semantics similar to `std::unique_ptr`, `std::shared_ptr`, and also `vk::raii` types, which are [RAII](https://en.cppreference.com/w/cpp/language/raii.html) (resource acquisition is initialisation) handles that offer object-oriented semantics for Vulkan handles.
-
-> [!NOTE]
->
-> All macro configuration options [available in the C API](https://docs.vulkan.org/spec/latest/appendices/boilerplate.html) are also available and used in Vulkan-Hpp.
 
 ## Contributing
 

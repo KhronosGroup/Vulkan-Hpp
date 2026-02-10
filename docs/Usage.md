@@ -801,45 +801,55 @@ cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 .
 A complete example `CMakeLists.txt` file for a project using the Vulkan-Hpp named module is provided below.
 
 ```cmake
+cmake_minimum_required( VERSION 3.30 )
+
 # this UUID is still valid as of CMake 4.2.1
 set( CMAKE_EXPERIMENTAL_CXX_IMPORT_STD d0edc3af-4c50-42ea-a356-e2862fe7a444 ) # remove this line if you are setting the UUID at the command-line or in a preset
 
 # UUID has to be set before setting up the project
 project( vulkan_hpp_modules_example LANGUAGES CXX )
 
-# find Vulkan SDK (modules were first made available in 1.3.256)
-find_package( Vulkan 1.3.256 REQUIRED )
-
-# set up Vulkan C++ module as a static library
-add_library( Vulkan-HppModule STATIC )
-add_library( Vulkan::HppModule ALIAS Vulkan-HppModule )
-target_sources( Vulkan-HppModule PUBLIC
-  FILE_SET CXX_MODULES
-  BASE_DIRS ${Vulkan_INCLUDE_DIR}
-  FILES
-    ${Vulkan_INCLUDE_DIR}/vulkan/vulkan.cppm
-    ${Vulkan_INCLUDE_DIR}/vulkan/vulkan_video.cppm
-)
-
-# configure the module target
-target_compile_features( Vulkan-HppModule
-  PUBLIC cxx_std_23
-)
-if( TRUE ) # if you want to use the dynamic dispatcher
-  target_link_libraries( Vulkan-HppModule PUBLIC Vulkan::Headers )
-  target_compile_definitions( Vulkan-HppModule PUBLIC
-    VULKAN_HPP_DISPATCH_LOADER_DYNAMIC
-  )
-else() # otherwise, use Vulkan::Vulkan to link to vulkan-1
-  target_link_libraries( Vulkan-HppModule PUBLIC Vulkan::Vulkan )
+# While modules were first made available in 1.3.256,
+# they have changed drastically since then and this example assumes version 1.4.344
+find_package( Vulkan 1.4.344 QUIET )
+if ( Vulkan_FOUND )
+    # set up Vulkan C++ module as a static library
+    add_library( Vulkan-HppModule STATIC )
+    add_library( Vulkan::HppModule ALIAS Vulkan-HppModule )
+    target_sources( Vulkan-HppModule PUBLIC
+        FILE_SET vulkan_modules
+        TYPE CXX_MODULES
+        BASE_DIRS ${Vulkan_INCLUDE_DIR}
+        FILES
+            ${Vulkan_INCLUDE_DIR}/vulkan/vulkan.cppm
+            ${Vulkan_INCLUDE_DIR}/vulkan/vulkan_video.cppm)
+else()
+    # when you do not have the right version installed, just fetch the headers directly
+    include(FetchContent)
+    FetchContent_Declare(vulkan-headers
+        GIT_REPOSITORY "https://github.com/KhronosGroup/Vulkan-Headers.git"
+        GIT_TAG "v1.4.344"
+        GIT_SHALLOW ON
+        OVERRIDE_FIND_PACKAGE
+        SYSTEM)
+    FetchContent_MakeAvailable(vulkan-headers)
+    # make sure to set up the include path for CMake
+    set(Vulkan_INCLUDE_DIR "${vulkan-headers_SOURCE_DIR}/include")
 endif()
-set_target_properties( Vulkan-HppModule PROPERTIES
-  CXX_SCAN_FOR_MODULES ON
-  CXX_MODULE_STD ON
-)
+
+# configure the module target (import std currently requires C++23 with CMake)
+target_compile_features( Vulkan-HppModule PUBLIC cxx_std_23 )
+set_target_properties( Vulkan-HppModule PROPERTIES CXX_MODULE_STD ON )
+
+if( TRUE ) # if you want to use the dynamic dispatcher
+    target_link_libraries( Vulkan-HppModule PUBLIC Vulkan::Headers )
+    target_compile_definitions( Vulkan-HppModule PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+else() # otherwise, use Vulkan::Vulkan to link to vulkan-1
+    target_link_libraries( Vulkan-HppModule PUBLIC Vulkan::Vulkan )
+endif()
 
 # link Vulkan C++ module into user project
-add_executable( YourProject main.cpp ... )
+add_executable( YourProject main.cpp )
 target_link_libraries( YourProject PRIVATE Vulkan-HppModule )
 ```
 
@@ -859,20 +869,29 @@ target_compile_definitions( Vulkan-HppModule PUBLIC
 This may be combined with the following basic `main.cpp` consumer code:
 
 ```cpp
-#include <vulkan/vulkan_hpp_macros.hpp> // optional: include Vulkan-Hpp configuration macros
+// optional include for VULKAN_HPP_DEFAULT_DISPATCHER
+// otherwise, use vk::detail::defaultDispatchLoaderDynamic
+#include <vulkan/vulkan_hpp_macros.hpp>
 import vulkan;
 
 auto main(int argc, char* const argv[]) -> int
 {
-  // initialize minimal set of function pointers
-  VULKAN_HPP_DEFAULT_DISPATCHER.init();
+    // initialize minimal set of function pointers
+    VULKAN_HPP_DEFAULT_DISPATCHER.init();
 
-  auto appInfo = vk::ApplicationInfo("My App", 1, "My Engine", 1, vk::makeApiVersion(1, 0, 0, 0));
-  // ...
-  // load function pointers with created instance
-  VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
-  // OPTIONAL: load function pointers specifically for a vk::device
-  VULKAN_HPP_DEFAULT_DISPATCHER.init(device);
+    auto appInfo = vk::ApplicationInfo("My App", 1, "My Engine", 1, vk::makeApiVersion(1, 0, 0, 0));
+
+    vk::Instance instance;
+    // create vk::Instance instance here
+
+    // load function pointers with created instance
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(instance);
+
+    vk::Device device;
+    // create vk::Device here
+
+    // OPTIONAL: load function pointers for a specific vk::Device
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(device);
 }
 ```
 

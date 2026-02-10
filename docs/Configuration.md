@@ -176,6 +176,9 @@ See [`VULKAN_HPP_EXPECTED`](#vulkan_hpp_expected).
 
 ## `VULKAN_HPP_USE_REFLECT`
 
+> [!WARNING]
+> This feature is extremely slow to compile (on the order of minutes), so only enable it if you absolutely need it.
+
 With this define you can include a reflection mechanism on the vk-structures. It adds a function `reflect` that returns a tuple-version of the structure. That tuple then could easily be iterated. But at least for now, that feature takes lots of compile-time resources, so currently it is recommended to enable that feature only if you're willing to pay that price.
 
 ## `VULKAN_HPP_USE_STD_EXPECTED`

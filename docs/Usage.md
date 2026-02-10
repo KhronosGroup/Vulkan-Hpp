@@ -34,7 +34,6 @@ This manual assumes familiarity with Vulkan; it details improvements and differe
 - [Miscellaneous features and notes](#miscellaneous-features-and-notes)
   - [Extension Inspection](#extension-inspection)
 - [Samples and Tests](#samples-and-tests)
-- [Compile time issues](#compile-time-issues)
 - [Strict aliasing](#strict-aliasing)
 
 ## Naming convention
@@ -1001,17 +1000,6 @@ As all functions here operate only on strings, the Vulkan versions are encoded b
 
 When you configure your project using CMake, you can enable SAMPLES_BUILD to add some sample projects to your solution. Most of them are ports from the LunarG samples, but there are some more, like CreateDebugUtilsMessenger, InstanceVersion, PhysicalDeviceDisplayProperties, PhysicalDeviceExtensions, PhysicalDeviceFeatures, PhysicalDeviceGroups, PhysicalDeviceMemoryProperties, PhysicalDeviceProperties, PhysicalDeviceQueueFamilyProperties, and RayTracing. All those samples should just compile and run.
 When you configure your project using CMake, you can enable TESTS_BUILD to add some test projects to your solution. Those tests are just compilation tests and are not required to run.
-
-<!-- TODO: Should we move this to `Configuration.md`? -->
-## Compile time issues
-
-As mentioned above, Vulkan-Hpp is a large header, and compilation times may increase drastically.
-There are a few configurable options to disable features that may not be required, and thus reduce compile times:
-
-- `VULKAN_HPP_NO_SPACESHIP_OPERATOR`, which removes `operator<=>` for structures (available with C++20)
-- `VULKAN_HPP_NO_TO_STRING`, which removes the various `vk::to_string` functions on enums and bitmasks
-- `VULKAN_HPP_USE_REFLECT`, this one needs to be defined to use the reflection function on structures. It's very slow to compile, though!
-- `VULKAN_HPP_USE_STD_EXPECTED`, this one needs to be defined to use `std::expected` for functions that return a value or a `vk::Result`.
 
 ## Strict aliasing
 

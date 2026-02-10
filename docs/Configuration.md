@@ -57,6 +57,9 @@ This names the default dispatcher type, as specified by `VULKAN_HPP_DEFAULT_DISP
 
 If you have not defined your own `VULKAN_HPP_DEFAULT_DISPATCHER`, and have `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` defined to be `1` (the default), you need to have the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in any of your source files to provide storage for that default dispatcher. `VULKAN_HPP_STORAGE_API` then controls the import/export status of that default dispatcher.
 
+> [!NOTE]
+> The [C++ named module](./Usage.md#c20-named-module) declares its own storage for the dynamic dispatcher, so this macro is not needed.
+
 ## `VULKAN_HPP_DISABLE_ENHANCED_MODE`
 
 When this is defined before including `vulkan.hpp`, you essentially disable all enhanced functionality. All you then get is:

@@ -536,5 +536,32 @@ int main( int /*argc*/, char ** /*argv*/ )
     commandBuffer.executeCommands( secondaryCommandBuffers );
   }
 
+  // Event commands
+  {
+    vk::raii::Device    device = nullptr;
+    vk::EventCreateInfo eventCreateInfo;
+    vk::raii::Event     event = device.createEvent( eventCreateInfo );
+  }
+  {
+    vk::raii::Device    device = nullptr;
+    vk::EventCreateInfo eventCreateInfo;
+    vk::raii::Event     event( device, eventCreateInfo );
+  }
+
+  {
+    vk::raii::Event event  = nullptr;
+    vk::Result      result = event.getStatus();
+  }
+
+  {
+    vk::raii::Event event = nullptr;
+    event.set();
+  }
+
+  {
+    vk::raii::Event event = nullptr;
+    event.reset();
+  }
+
   return 0;
 }

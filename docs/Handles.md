@@ -10,7 +10,6 @@ To facilitate automatic resource management, Vulkan-Hpp provides two additional 
 - [`vk::UniqueHandle`](#vkuniquehandle)
 - [`vk::SharedHandle`](#vksharedhandle)
 - [`vk::raii`](#vkraii)
-  - [Programming guide](#programming-guide)
 
 ## `vk::UniqueHandle`
 
@@ -82,14 +81,14 @@ Add a `friend` declaration for the base class.
 
 ```c++
 // Example of a custom shared device, that accepts an instance as a parent
-class shared_handle<VkDevice> : public vk::SharedHandleBase<VkDevice, vk::SharedInstance, shared_handle<VkDevice>>
+class MySharedHandle<VkDevice> : public vk::SharedHandleBase<VkDevice, vk::SharedInstance, MySharedHandle<VkDevice>>
 {
-  using base = vk::SharedHandleBase<VkDevice, vk::SharedInstance, shared_handle<VkDevice>>;
+  using base = vk::SharedHandleBase<VkDevice, vk::SharedInstance, MySharedHandle<VkDevice>>;
   friend base;
 
 public:
-  shared_handle() = default;
-  explicit shared_handle(VkDevice handle, vk::SharedInstance parent) noexcept
+  MySharedHandle() = default;
+  explicit MySharedHandle(VkDevice handle, vk::SharedInstance parent) noexcept
     : base(handle, std::move(parent)) {}
 
   const auto& getParent() const noexcept
@@ -100,7 +99,7 @@ public:
 protected:
   static void internalDestroy(const vk::SharedInstance& /*control*/, VkDevice handle) noexcept
   {
-    kDestroyDevice(handle);
+    vkDestroyDevice(handle);
   }
 };
 ```

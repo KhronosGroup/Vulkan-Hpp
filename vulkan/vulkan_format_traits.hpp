@@ -8,7 +8,11 @@
 #ifndef VULKAN_FORMAT_TRAITS_HPP
 #define VULKAN_FORMAT_TRAITS_HPP
 
-#include <vulkan/vulkan.hpp>
+#if defined( VULKAN_HPP_CXX_MODULE )
+#  define VULKAN_HPP_EXPORT export
+#else
+#  include <vulkan/vulkan.hpp>
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {
@@ -19,92 +23,92 @@ namespace VULKAN_HPP_NAMESPACE
   //=== Function Declarations ===
 
   // The three-dimensional extent of a texel block.
-  VULKAN_HPP_CONSTEXPR_14 std::array<uint8_t, 3> blockExtent( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 std::array<uint8_t, 3> blockExtent( Format format );
 
   // The texel block size in bytes.
-  VULKAN_HPP_CONSTEXPR_14 uint8_t blockSize( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 uint8_t blockSize( Format format );
 
   // The class of the format (can't be just named "class"!)
-  VULKAN_HPP_CONSTEXPR_14 char const * compatibilityClass( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 char const * compatibilityClass( Format format );
 
   // The number of bits in this component, if not compressed, otherwise 0.
-  VULKAN_HPP_CONSTEXPR_14 uint8_t componentBits( Format format, uint8_t component );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 uint8_t componentBits( Format format, uint8_t component );
 
   // The number of components of this format.
-  VULKAN_HPP_CONSTEXPR_14 uint8_t componentCount( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 uint8_t componentCount( Format format );
 
   // The name of the component
-  VULKAN_HPP_CONSTEXPR_14 char const * componentName( Format format, uint8_t component );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 char const * componentName( Format format, uint8_t component );
 
   // The numeric format of the component
-  VULKAN_HPP_CONSTEXPR_14 char const * componentNumericFormat( Format format, uint8_t component );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 char const * componentNumericFormat( Format format, uint8_t component );
 
   // The plane this component lies in.
-  VULKAN_HPP_CONSTEXPR_14 uint8_t componentPlaneIndex( Format format, uint8_t component );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 uint8_t componentPlaneIndex( Format format, uint8_t component );
 
   // True, if the components of this format are compressed, otherwise false.
-  VULKAN_HPP_CONSTEXPR_14 bool componentsAreCompressed( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 bool componentsAreCompressed( Format format );
 
   // A textual description of the compression scheme, or an empty string if it is not compressed
-  VULKAN_HPP_CONSTEXPR_14 char const * compressionScheme( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 char const * compressionScheme( Format format );
 
   // Get all formats
-  std::vector<Format> const & getAllFormats();
+  VULKAN_HPP_EXPORT std::vector<Format> const & getAllFormats();
 
   // Get all color with a color component
-  std::vector<Format> const & getColorFormats();
+  VULKAN_HPP_EXPORT std::vector<Format> const & getColorFormats();
 
   // Get all formats with a depth component
-  std::vector<Format> const & getDepthFormats();
+  VULKAN_HPP_EXPORT std::vector<Format> const & getDepthFormats();
 
   // Get all formats with a depth and a stencil component
-  std::vector<Format> const & getDepthStencilFormats();
+  VULKAN_HPP_EXPORT std::vector<Format> const & getDepthStencilFormats();
 
   // Get all formats with a stencil component
-  std::vector<Format> const & getStencilFormats();
+  VULKAN_HPP_EXPORT std::vector<Format> const & getStencilFormats();
 
   // True, if this format has an alpha component
-  VULKAN_HPP_CONSTEXPR_14 bool hasAlphaComponent( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 bool hasAlphaComponent( Format format );
 
   // True, if this format has a blue component
-  VULKAN_HPP_CONSTEXPR_14 bool hasBlueComponent( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 bool hasBlueComponent( Format format );
 
   // True, if this format has a depth component
-  VULKAN_HPP_CONSTEXPR_14 bool hasDepthComponent( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 bool hasDepthComponent( Format format );
 
   // True, if this format has a green component
-  VULKAN_HPP_CONSTEXPR_14 bool hasGreenComponent( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 bool hasGreenComponent( Format format );
 
   // True, if this format has a red component
-  VULKAN_HPP_CONSTEXPR_14 bool hasRedComponent( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 bool hasRedComponent( Format format );
 
   // True, if this format has a stencil component
-  VULKAN_HPP_CONSTEXPR_14 bool hasStencilComponent( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 bool hasStencilComponent( Format format );
 
   // True, if the format is a color
-  VULKAN_HPP_CONSTEXPR_14 bool isColor( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 bool isColor( Format format );
 
   // True, if this format is a compressed one.
-  VULKAN_HPP_CONSTEXPR_14 bool isCompressed( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 bool isCompressed( Format format );
 
   // The number of bits into which the format is packed. A single image element in this format can be stored in the same space as a scalar type of this bit
   // width.
-  VULKAN_HPP_CONSTEXPR_14 uint8_t packed( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 uint8_t packed( Format format );
 
   // The single-plane format that this plane is compatible with.
-  VULKAN_HPP_CONSTEXPR_14 Format planeCompatibleFormat( Format format, uint8_t plane );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 Format planeCompatibleFormat( Format format, uint8_t plane );
 
   // The number of image planes of this format.
-  VULKAN_HPP_CONSTEXPR_14 uint8_t planeCount( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 uint8_t planeCount( Format format );
 
   // The relative height of this plane. A value of k means that this plane is 1/k the height of the overall format.
-  VULKAN_HPP_CONSTEXPR_14 uint8_t planeHeightDivisor( Format format, uint8_t plane );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 uint8_t planeHeightDivisor( Format format, uint8_t plane );
 
   // The relative width of this plane. A value of k means that this plane is 1/k the width of the overall format.
-  VULKAN_HPP_CONSTEXPR_14 uint8_t planeWidthDivisor( Format format, uint8_t plane );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 uint8_t planeWidthDivisor( Format format, uint8_t plane );
 
   // The number of texels in a texel block.
-  VULKAN_HPP_CONSTEXPR_14 uint8_t texelsPerBlock( Format format );
+  VULKAN_HPP_EXPORT VULKAN_HPP_CONSTEXPR_14 uint8_t texelsPerBlock( Format format );
 
   //=== Function Definitions ===
 

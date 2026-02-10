@@ -8,13 +8,12 @@
 #ifndef VULKAN_SHARED_HPP
 #define VULKAN_SHARED_HPP
 
-#include <vulkan/vulkan.hpp>
-
 #if !defined( VULKAN_HPP_CXX_MODULE )
 #  include <atomic>  // std::atomic_size_t
+#  include <vulkan/vulkan.hpp>
 #endif
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   template <typename HandleType>

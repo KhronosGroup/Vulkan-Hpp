@@ -5,7 +5,7 @@ ${licenseHeader}
 // include-what-you-use: make sure, vulkan.hpp is used by code-completers
 // IWYU pragma: private, include "vulkan/vulkan.hpp"
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
   ${structForwardDeclarations}
   ${handleForwardDeclarations}

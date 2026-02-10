@@ -116,10 +116,6 @@ private:
   std::string                                      generateStructMembers( std::pair<std::string, StructureData> const & structData ) const;
   std::string                                      generateStructs() const;
   std::string                                      generateStructs( ExtensionData const & extensionData ) const;
-  std::string                                      generateCppModuleConstantUsings() const;
-  std::string                                      generateCppModuleEnumUsings() const;
-  std::string                                      generateCppModuleStructUsings() const;
-  std::string                                      generateCppModuleUsings() const;
   bool                                             isExtension( std::string const & name ) const;
   std::string                                      readComment( tinyxml2::XMLElement const * element ) const;
   void                                             readEnums( tinyxml2::XMLElement const * element );

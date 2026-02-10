@@ -3,13 +3,12 @@ ${licenseHeader}
 #ifndef VULKAN_SHARED_HPP
 #define VULKAN_SHARED_HPP
 
-#include <vulkan/${api}.hpp>
-
 #if !defined( VULKAN_HPP_CXX_MODULE )
-#include <atomic>  // std::atomic_size_t
+#  include <vulkan/${api}.hpp>
+#  include <atomic>  // std::atomic_size_t
 #endif
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   template <typename HandleType>
@@ -467,7 +466,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct ImageHeader : SharedHeader<DestructorTypeOf<Image>, typename SharedHandleTraits<Image>::deleter>
   {
     ImageHeader( SharedHandle<DestructorTypeOf<Image>>       parent,
-                 typename SharedHandleTraits<Image>::deleter deleter 
+                 typename SharedHandleTraits<Image>::deleter deleter
                    VULKAN_HPP_DEFAULT_ASSIGNMENT( typename SharedHandleTraits<Image>::deleter() ),
                  SwapchainOwns                               swapchainOwned = SwapchainOwns::no ) VULKAN_HPP_NOEXCEPT
       : SharedHeader<DestructorTypeOf<Image>, typename SharedHandleTraits<Image>::deleter>( std::move( parent ), std::move( deleter ) )
@@ -510,7 +509,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     SwapchainHeader( SharedHandle<SurfaceKHR>                           surface,
                      SharedHandle<DestructorTypeOf<SwapchainKHR>>       parent,
-                     typename SharedHandleTraits<SwapchainKHR>::deleter deleter 
+                     typename SharedHandleTraits<SwapchainKHR>::deleter deleter
                         VULKAN_HPP_DEFAULT_ASSIGNMENT( typename SharedHandleTraits<SwapchainKHR>::deleter() ) ) VULKAN_HPP_NOEXCEPT
       : surface( std::move( surface ) )
       , parent( std::move( parent ) )

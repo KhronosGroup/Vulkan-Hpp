@@ -8,9 +8,11 @@
 #ifndef VULKAN_HASH_HPP
 #define VULKAN_HASH_HPP
 
-#include <vulkan/vulkan.hpp>
+#if !defined( VULKAN_HPP_CXX_MODULE )
+#  include <vulkan/vulkan.hpp>
+#endif
 
-namespace std
+VULKAN_HPP_EXPORT namespace std
 {
   //=======================================
   //=== HASH structures for Flags types ===
@@ -21450,5 +21452,6 @@ namespace std
 #  endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #endif  // 14 <= VULKAN_HPP_CPP_VERSION
+
 }  // namespace std
 #endif

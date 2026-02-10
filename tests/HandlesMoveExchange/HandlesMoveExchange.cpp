@@ -18,15 +18,7 @@ import vulkan;
 #else
 #  include <iostream>
 #  include <vulkan/vulkan.hpp>
-#endif
-
-
-#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-namespace vk {
-  namespace detail {
-    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }
-}
+   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
 int main( int /*argc*/, char ** /*argv*/ )

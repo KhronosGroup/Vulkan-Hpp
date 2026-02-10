@@ -11,7 +11,7 @@
 // include-what-you-use: make sure, vulkan.hpp is used by code-completers
 // IWYU pragma: private, include "vulkan/vulkan.hpp"
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
   //===================================
   //=== STRUCT forward declarations ===
@@ -22557,17 +22557,17 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkCreateInstance, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateInstance.html
   template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCreateInstance ), bool>::type = true>
-  VULKAN_HPP_NODISCARD typename ResultValueType<Instance>::type
-    createInstance( const InstanceCreateInfo &                    createInfo,
-                    Optional<const AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
-                    Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
+  VULKAN_HPP_NODISCARD typename ResultValueType<Instance>::type createInstance(
+    const InstanceCreateInfo &                    createInfo,
+    Optional<const AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
+    Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
   // wrapper function for command vkCreateInstance, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateInstance.html
   template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCreateInstance ), bool>::type = true>
-  VULKAN_HPP_NODISCARD typename ResultValueType<UniqueHandle<Instance, Dispatch>>::type
-    createInstanceUnique( const InstanceCreateInfo &                    createInfo,
-                          Optional<const AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
-                          Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
+  VULKAN_HPP_NODISCARD typename ResultValueType<UniqueHandle<Instance, Dispatch>>::type createInstanceUnique(
+    const InstanceCreateInfo &                    createInfo,
+    Optional<const AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
+    Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
 #  endif /* VULKAN_HPP_NO_SMART_HANDLE */
 #endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -22575,10 +22575,9 @@ namespace VULKAN_HPP_NAMESPACE
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumerateInstanceExtensionProperties.html
   template <typename Dispatch                                                                            = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
             typename std::enable_if<IS_DISPATCHED( vkEnumerateInstanceExtensionProperties ), bool>::type = true>
-  VULKAN_HPP_NODISCARD Result enumerateInstanceExtensionProperties( const char *          pLayerName,
-                                                                    uint32_t *            pPropertyCount,
-                                                                    ExtensionProperties * pProperties,
-                                                                    Dispatch const & d    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT;
+  VULKAN_HPP_NODISCARD Result enumerateInstanceExtensionProperties(
+    const char * pLayerName, uint32_t * pPropertyCount, ExtensionProperties * pProperties, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+    VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkEnumerateInstanceExtensionProperties, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumerateInstanceExtensionProperties.html
@@ -22586,28 +22585,26 @@ namespace VULKAN_HPP_NAMESPACE
             typename Dispatch                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
             typename std::enable_if<std::is_same<typename ExtensionPropertiesAllocator::value_type, ExtensionProperties>::value, int>::type = 0,
             typename std::enable_if<IS_DISPATCHED( vkEnumerateInstanceExtensionProperties ), bool>::type                                    = true>
-  VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<ExtensionProperties, ExtensionPropertiesAllocator>>::type
-    enumerateInstanceExtensionProperties( Optional<const std::string> layerName VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
-                                          Dispatch const & d                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
+  VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<ExtensionProperties, ExtensionPropertiesAllocator>>::type enumerateInstanceExtensionProperties(
+    Optional<const std::string> layerName VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ), Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
   // wrapper function for command vkEnumerateInstanceExtensionProperties, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumerateInstanceExtensionProperties.html
   template <typename ExtensionPropertiesAllocator = std::allocator<ExtensionProperties>,
             typename Dispatch                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
             typename std::enable_if<std::is_same<typename ExtensionPropertiesAllocator::value_type, ExtensionProperties>::value, int>::type = 0,
             typename std::enable_if<IS_DISPATCHED( vkEnumerateInstanceExtensionProperties ), bool>::type                                    = true>
-  VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<ExtensionProperties, ExtensionPropertiesAllocator>>::type
-    enumerateInstanceExtensionProperties( Optional<const std::string>          layerName,
-                                          ExtensionPropertiesAllocator const & extensionPropertiesAllocator,
-                                          Dispatch const & d                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
+  VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<ExtensionProperties, ExtensionPropertiesAllocator>>::type enumerateInstanceExtensionProperties(
+    Optional<const std::string>          layerName,
+    ExtensionPropertiesAllocator const & extensionPropertiesAllocator,
+    Dispatch const & d                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   // wrapper function for command vkEnumerateInstanceLayerProperties, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumerateInstanceLayerProperties.html
   template <typename Dispatch                                                                        = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
             typename std::enable_if<IS_DISPATCHED( vkEnumerateInstanceLayerProperties ), bool>::type = true>
-  VULKAN_HPP_NODISCARD Result enumerateInstanceLayerProperties( uint32_t *         pPropertyCount,
-                                                                LayerProperties *  pProperties,
-                                                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT;
+  VULKAN_HPP_NODISCARD Result enumerateInstanceLayerProperties(
+    uint32_t * pPropertyCount, LayerProperties * pProperties, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkEnumerateInstanceLayerProperties, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumerateInstanceLayerProperties.html
@@ -22615,24 +22612,24 @@ namespace VULKAN_HPP_NAMESPACE
             typename Dispatch                 = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
             typename std::enable_if<std::is_same<typename LayerPropertiesAllocator::value_type, LayerProperties>::value, int>::type = 0,
             typename std::enable_if<IS_DISPATCHED( vkEnumerateInstanceLayerProperties ), bool>::type                                = true>
-  VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<LayerProperties, LayerPropertiesAllocator>>::type
-    enumerateInstanceLayerProperties( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
+  VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<LayerProperties, LayerPropertiesAllocator>>::type enumerateInstanceLayerProperties(
+    Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
   // wrapper function for command vkEnumerateInstanceLayerProperties, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumerateInstanceLayerProperties.html
   template <typename LayerPropertiesAllocator = std::allocator<LayerProperties>,
             typename Dispatch                 = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
             typename std::enable_if<std::is_same<typename LayerPropertiesAllocator::value_type, LayerProperties>::value, int>::type = 0,
             typename std::enable_if<IS_DISPATCHED( vkEnumerateInstanceLayerProperties ), bool>::type                                = true>
-  VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<LayerProperties, LayerPropertiesAllocator>>::type
-    enumerateInstanceLayerProperties( LayerPropertiesAllocator const & layerPropertiesAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
+  VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<LayerProperties, LayerPropertiesAllocator>>::type enumerateInstanceLayerProperties(
+    LayerPropertiesAllocator const & layerPropertiesAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   //=== VK_VERSION_1_1 ===
 
   // wrapper function for command vkEnumerateInstanceVersion, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumerateInstanceVersion.html
   template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkEnumerateInstanceVersion ), bool>::type = true>
-  VULKAN_HPP_NODISCARD Result enumerateInstanceVersion( uint32_t *         pApiVersion,
-                                                        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT;
+  VULKAN_HPP_NODISCARD Result enumerateInstanceVersion( uint32_t * pApiVersion, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+    VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkEnumerateInstanceVersion, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkEnumerateInstanceVersion.html
   template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkEnumerateInstanceVersion ), bool>::type = true>

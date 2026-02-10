@@ -591,7 +591,7 @@ function( vulkan_hpp__setup_test_project )
 
 		vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
 		add_executable( ${TARGET_NAME} ${CPP_FILE} )
-		
+
 		target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
 		target_compile_definitions( ${TARGET_NAME} PUBLIC ${TARGET_COMPILE_DEFINITIONS} )
 

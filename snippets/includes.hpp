@@ -1,5 +1,5 @@
-#include <vulkan/${vulkan_h}>
 #if !defined( VULKAN_HPP_CXX_MODULE )
+#  include <vulkan/${vulkan_h}>
 // clang-format off
 #  include <vulkan/vulkan_hpp_macros.hpp>
 // clang-format on
@@ -24,25 +24,5 @@
 #  endif
 #  if defined( VULKAN_HPP_SUPPORT_SPAN )
 #    include <span>
-#  endif
-#else
-#  include <cassert>
-#  include <cstring>
-import std;
-#endif
-
-#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1
-#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined( __Fuchsia__ )
-#    include <dlfcn.h>
-#  elif defined( _WIN32 ) && !defined( VULKAN_HPP_NO_WIN32_PROTOTYPES )
-using HINSTANCE = struct HINSTANCE__ *;
-#    if defined( _WIN64 )
-using FARPROC = int64_t(__stdcall *)();
-#    else
-using FARPROC = int(__stdcall *)();
-#    endif
-extern "C" __declspec( dllimport ) HINSTANCE __stdcall LoadLibraryA( char const * lpLibFileName );
-extern "C" __declspec( dllimport ) int __stdcall FreeLibrary( HINSTANCE hLibModule );
-extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE hModule, const char * lpProcName );
 #  endif
 #endif

@@ -71,6 +71,10 @@ The `vulkan_hpp` C++ named module has been renamed to `vulkan`.
 
 With PR [#2226](https://github.com/KhronosGroup/Vulkan-Hpp/pull/2226), the return type of `vk::raii::Device::acquireNextImage2KHR` and `vk::raii::SwapchainKHR::acquireNextImage` has changed from `std::pair<vk::Result,uint32_t>` to the equivalent `vk::ResultValue<uint32_t>`
 
+### v1.4.329
+
+With PR [#2303](https://github.com/KhronosGroup/Vulkan-Hpp/pull/2303), `import std` was made mandatory when using the C++ named module.
+
 ## Documentation
 
 All other documentation is in [`docs`](./docs/):

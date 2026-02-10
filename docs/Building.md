@@ -2,7 +2,7 @@
 
 ## Minimum requirements
 
-The generator requires a toolchain that supports C++20; the samples and tests may be compiled with C++11. The following compilers are known to work, and tested during releases:
+The generator requires a toolchain that supports C++20; the samples and tests may be compiled using at least C++11 with higher versions enabling wider test coverage at up to C++23. The following compilers are known to work, and tested during releases:
 
 - Visual Studio ≥ 2015
 - GCC ≥ 4.8.2
@@ -26,18 +26,32 @@ The generator requires a toolchain that supports C++20; the samples and tests ma
 
 2. In a shell, clone the repository:
 
-    ```git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git```
+    ```shell
+    git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git
+    ```
 3. Change the shell's working directory to the newly created `Vulkan-Hpp` directory.
+    ```shell
+    cd Vulkan-Hpp
+    ```
 4. Create a build environment with CMake:
-    ```cmake -DVULKAN_HPP_SAMPLES_BUILD=ON -DVULKAN_HPP_TESTS_BUILD=ON -B build```
+    ```shell
+    cmake -B build --preset samples-tests
+    ```
 
     You may need to specify a generator via `-G`; for a full list of generators execute `cmake -G`.
 
-    To regenerate `vulkan.hpp` from the `vk.xml` XML registry file, add the
-       `-DVULKAN_HPP_RUN_GENERATOR=ON` option to the CMake command line.
-5. The generated project may be opened with an IDE like Visual Studio or CLion, or the various targets may be built directly from a shell:
-
-    ```cmake --build build --parallel```
+    To compile samples and tests using freshly generated headers from the `vk.xml` XML registry:
+    ```shell
+    cmake -B build --preset generator-samples-tests
+    ```
+5. To actually start building, run the following:
+    ```shell
+    cmake --build build --parallel
+    ```
+    The tests are run via:
+    ```shell
+    ctest -j --output-on-failure --test-dir build
+    ```
 
 ## Additional notes
 

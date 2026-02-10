@@ -541,12 +541,27 @@ The above code may be rewritten without exceptions as follows, by appropriately 
 
 #### `std::expected`
 
-<!-- TODO: Need an example. Perhaps use the same shader module. -->
 >[!NOTE]
 > This feature requires a compiler and standard library supporting at least C++23, and must be explicitly **enabled** with the `VULKAN_HPP_USE_STD_EXPECTED` macro.
 
-When `std::expected` is available, `vk::ResultValue<T>::type` is defined as `std::expected<T, vk::Result>`.
+When `std::expected` is available and enabled, `vk::ResultValue<T>::type` is defined as `std::expected<T, vk::Result>`.
 The result can then be monadically handled with `and_then`, `transform`, and other member functions of `std::expected`.
+
+For instance:
+
+```cpp
+std::expected<vk::ShaderModule, vk::Result> shaderModuleResult = device.createShaderModule({...} /* createInfo temporary */);
+shaderModuleResult
+  .and_then([](vk::ShaderModule const& shaderModule) {
+    // do something with shaderModule, and return another expected if needed
+    return std::expected<void, vk::Result>{};
+  })
+  .or_else([](vk::Result result) {
+    // handle error code;
+    // cleanup and/or return?
+    // return?
+  });
+```
 
 ### Feature and property enumerations
 

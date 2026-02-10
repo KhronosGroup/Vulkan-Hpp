@@ -804,27 +804,30 @@ Refer to the [CMake documentation](https://cmake.org/cmake/help/latest/manual/cm
 
 CMake provides the [FindVulkan module](https://cmake.org/cmake/help/latest/module/FindVulkan.html), which may be used to source the Vulkan SDK and Vulkan headers on your system.
 
-When invoking CMake, make sure to provide the following UUID to enable CMake's experimental support for the C++ standard library module.
-This may also be set before your `project()` call, or in a [CMake preset file](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#configure-preset) in the `cacheVariables` key for a configure preset.
-Note that the UUID may change across CMake versions.
-To find it for your specific version, check out the correct release tag and look for `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` in [Help/dev/experimental.rst](https://gitlab.kitware.com/cmake/cmake/-/blob/master/Help/dev/experimental.rst).
+<details>
+<summary>For CMake versions earlier than 4.3.0</summary>
+
+If you have CMake versions between 3.30 and 4.2, where the [`CXX_MODULE_STD`](https://cmake.org/cmake/help/v4.2/prop_tgt/CXX_MODULE_STD.html) variable is still experimental, then make sure to provide the following UUID to enable CMake's experimental support for the C++ standard library module:
 
 ```bash
 cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 ...
 ```
 
+This may also be set before your `project()` call, or in a [CMake preset file](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#configure-preset) in the `cacheVariables` key for a configure preset.
+To find it for your specific version, check out the correct release tag and look for `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` in [Help/dev/experimental.rst](https://gitlab.kitware.com/cmake/cmake/-/blob/master/Help/dev/experimental.rst).
+
+</details>
+
 A complete example `CMakeLists.txt` file for a project using the Vulkan-Hpp named module is provided below.
 
 ```cmake
-cmake_minimum_required( VERSION 3.30 )
+# CMake 3.30 has experimental support for `import std;`
+# But we recommend using CMake 4.3 or later, which has stable support for this feature
+cmake_minimum_required( VERSION 4.3.0 )
 
-# this UUID is still valid as of CMake 4.2.1
-set( CMAKE_EXPERIMENTAL_CXX_IMPORT_STD d0edc3af-4c50-42ea-a356-e2862fe7a444 ) # remove this line if you are setting the UUID at the command-line or in a preset
-
-# UUID has to be set before setting up the project
 project( vulkan_hpp_modules_example LANGUAGES CXX )
 
-# While modules were first made available in 1.3.256,
+# Although modules were first made available in Vulkan-Headers v1.3.256,
 # they have changed drastically since then and this example assumes version 1.4.344
 find_package( Vulkan 1.4.344 QUIET )
 if ( Vulkan_FOUND )
@@ -832,8 +835,7 @@ if ( Vulkan_FOUND )
     add_library( Vulkan-HppModule STATIC )
     add_library( Vulkan::HppModule ALIAS Vulkan-HppModule )
     target_sources( Vulkan-HppModule PUBLIC
-        FILE_SET vulkan_modules
-        TYPE CXX_MODULES
+        FILE_SET CXX_MODULES
         BASE_DIRS ${Vulkan_INCLUDE_DIR}
         FILES
             ${Vulkan_INCLUDE_DIR}/vulkan/vulkan.cppm
@@ -863,7 +865,7 @@ else() # otherwise, use Vulkan::Vulkan to link to vulkan-1
     target_link_libraries( Vulkan-HppModule PUBLIC Vulkan::Vulkan )
 endif()
 
-# link Vulkan C++ module into user project
+# link Vulkan-Hpp C++ module into user project
 add_executable( YourProject main.cpp )
 target_link_libraries( YourProject PRIVATE Vulkan-HppModule )
 ```

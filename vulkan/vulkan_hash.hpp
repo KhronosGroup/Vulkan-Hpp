@@ -1176,12 +1176,12 @@ VULKAN_HPP_EXPORT namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, applicationInfo.sType );
       VULKAN_HPP_HASH_COMBINE( seed, applicationInfo.pNext );
-      for ( const char * p = applicationInfo.pApplicationName; *p != '\0'; ++p )
+      for ( char const * p = applicationInfo.pApplicationName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
       VULKAN_HPP_HASH_COMBINE( seed, applicationInfo.applicationVersion );
-      for ( const char * p = applicationInfo.pEngineName; *p != '\0'; ++p )
+      for ( char const * p = applicationInfo.pEngineName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -2871,7 +2871,7 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, pipelineShaderStageCreateInfo.flags );
       VULKAN_HPP_HASH_COMBINE( seed, pipelineShaderStageCreateInfo.stage );
       VULKAN_HPP_HASH_COMBINE( seed, pipelineShaderStageCreateInfo.module );
-      for ( const char * p = pipelineShaderStageCreateInfo.pName; *p != '\0'; ++p )
+      for ( char const * p = pipelineShaderStageCreateInfo.pName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -3376,7 +3376,7 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, cuFunctionCreateInfoNVX.sType );
       VULKAN_HPP_HASH_COMBINE( seed, cuFunctionCreateInfoNVX.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, cuFunctionCreateInfoNVX.module );
-      for ( const char * p = cuFunctionCreateInfoNVX.pName; *p != '\0'; ++p )
+      for ( char const * p = cuFunctionCreateInfoNVX.pName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -3445,7 +3445,7 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, cudaFunctionCreateInfoNV.sType );
       VULKAN_HPP_HASH_COMBINE( seed, cudaFunctionCreateInfoNV.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, cudaFunctionCreateInfoNV.module );
-      for ( const char * p = cudaFunctionCreateInfoNV.pName; *p != '\0'; ++p )
+      for ( char const * p = cudaFunctionCreateInfoNV.pName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -3571,7 +3571,7 @@ VULKAN_HPP_EXPORT namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineCompilerControlCreateInfoARM.sType );
       VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineCompilerControlCreateInfoARM.pNext );
-      for ( const char * p = dataGraphPipelineCompilerControlCreateInfoARM.pVendorOptions; *p != '\0'; ++p )
+      for ( char const * p = dataGraphPipelineCompilerControlCreateInfoARM.pVendorOptions; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -3769,7 +3769,7 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineShaderModuleCreateInfoARM.sType );
       VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineShaderModuleCreateInfoARM.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineShaderModuleCreateInfoARM.module );
-      for ( const char * p = dataGraphPipelineShaderModuleCreateInfoARM.pName; *p != '\0'; ++p )
+      for ( char const * p = dataGraphPipelineShaderModuleCreateInfoARM.pName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -3816,7 +3816,7 @@ VULKAN_HPP_EXPORT namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, debugMarkerMarkerInfoEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, debugMarkerMarkerInfoEXT.pNext );
-      for ( const char * p = debugMarkerMarkerInfoEXT.pMarkerName; *p != '\0'; ++p )
+      for ( char const * p = debugMarkerMarkerInfoEXT.pMarkerName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -3838,7 +3838,7 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, debugMarkerObjectNameInfoEXT.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, debugMarkerObjectNameInfoEXT.objectType );
       VULKAN_HPP_HASH_COMBINE( seed, debugMarkerObjectNameInfoEXT.object );
-      for ( const char * p = debugMarkerObjectNameInfoEXT.pObjectName; *p != '\0'; ++p )
+      for ( char const * p = debugMarkerObjectNameInfoEXT.pObjectName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -3886,7 +3886,7 @@ VULKAN_HPP_EXPORT namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsLabelEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsLabelEXT.pNext );
-      for ( const char * p = debugUtilsLabelEXT.pLabelName; *p != '\0'; ++p )
+      for ( char const * p = debugUtilsLabelEXT.pLabelName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -3908,7 +3908,7 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsObjectNameInfoEXT.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsObjectNameInfoEXT.objectType );
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsObjectNameInfoEXT.objectHandle );
-      for ( const char * p = debugUtilsObjectNameInfoEXT.pObjectName; *p != '\0'; ++p )
+      for ( char const * p = debugUtilsObjectNameInfoEXT.pObjectName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -3925,12 +3925,12 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.flags );
-      for ( const char * p = debugUtilsMessengerCallbackDataEXT.pMessageIdName; *p != '\0'; ++p )
+      for ( char const * p = debugUtilsMessengerCallbackDataEXT.pMessageIdName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.messageIdNumber );
-      for ( const char * p = debugUtilsMessengerCallbackDataEXT.pMessage; *p != '\0'; ++p )
+      for ( char const * p = debugUtilsMessengerCallbackDataEXT.pMessage; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -4746,7 +4746,7 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.enabledExtensionCount );
       for ( size_t i = 0; i < deviceCreateInfo.enabledExtensionCount; ++i )
       {
-        for ( const char * p = deviceCreateInfo.ppEnabledExtensionNames[i]; *p != '\0'; ++p )
+        for ( char const * p = deviceCreateInfo.ppEnabledExtensionNames[i]; *p != '\0'; ++p )
         {
           VULKAN_HPP_HASH_COMBINE( seed, *p );
         }
@@ -5502,7 +5502,7 @@ VULKAN_HPP_EXPORT namespace std
     {
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, displayPropertiesKHR.display );
-      for ( const char * p = displayPropertiesKHR.displayName; *p != '\0'; ++p )
+      for ( char const * p = displayPropertiesKHR.displayName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -8091,7 +8091,7 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, instanceCreateInfo.enabledLayerCount );
       for ( size_t i = 0; i < instanceCreateInfo.enabledLayerCount; ++i )
       {
-        for ( const char * p = instanceCreateInfo.ppEnabledLayerNames[i]; *p != '\0'; ++p )
+        for ( char const * p = instanceCreateInfo.ppEnabledLayerNames[i]; *p != '\0'; ++p )
         {
           VULKAN_HPP_HASH_COMBINE( seed, *p );
         }
@@ -8099,7 +8099,7 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, instanceCreateInfo.enabledExtensionCount );
       for ( size_t i = 0; i < instanceCreateInfo.enabledExtensionCount; ++i )
       {
-        for ( const char * p = instanceCreateInfo.ppEnabledExtensionNames[i]; *p != '\0'; ++p )
+        for ( char const * p = instanceCreateInfo.ppEnabledExtensionNames[i]; *p != '\0'; ++p )
         {
           VULKAN_HPP_HASH_COMBINE( seed, *p );
         }
@@ -8190,11 +8190,11 @@ VULKAN_HPP_EXPORT namespace std
     std::size_t operator()( VULKAN_HPP_NAMESPACE::LayerSettingEXT const & layerSettingEXT ) const VULKAN_HPP_NOEXCEPT
     {
       std::size_t seed = 0;
-      for ( const char * p = layerSettingEXT.pLayerName; *p != '\0'; ++p )
+      for ( char const * p = layerSettingEXT.pLayerName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
-      for ( const char * p = layerSettingEXT.pSettingName; *p != '\0'; ++p )
+      for ( char const * p = layerSettingEXT.pSettingName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -16579,7 +16579,7 @@ VULKAN_HPP_EXPORT namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, pipelineShaderStageNodeCreateInfoAMDX.sType );
       VULKAN_HPP_HASH_COMBINE( seed, pipelineShaderStageNodeCreateInfoAMDX.pNext );
-      for ( const char * p = pipelineShaderStageNodeCreateInfoAMDX.pName; *p != '\0'; ++p )
+      for ( char const * p = pipelineShaderStageNodeCreateInfoAMDX.pName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }
@@ -18435,7 +18435,7 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, shaderCreateInfoEXT.codeType );
       VULKAN_HPP_HASH_COMBINE( seed, shaderCreateInfoEXT.codeSize );
       VULKAN_HPP_HASH_COMBINE( seed, shaderCreateInfoEXT.pCode );
-      for ( const char * p = shaderCreateInfoEXT.pName; *p != '\0'; ++p )
+      for ( char const * p = shaderCreateInfoEXT.pName; *p != '\0'; ++p )
       {
         VULKAN_HPP_HASH_COMBINE( seed, *p );
       }

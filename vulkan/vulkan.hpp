@@ -367,23 +367,23 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-    const T * begin() const VULKAN_HPP_NOEXCEPT
+    T const * begin() const VULKAN_HPP_NOEXCEPT
     {
       return m_ptr;
     }
 
-    const T * end() const VULKAN_HPP_NOEXCEPT
+    T const * end() const VULKAN_HPP_NOEXCEPT
     {
       return m_ptr + m_count;
     }
 
-    const T & front() const VULKAN_HPP_NOEXCEPT
+    T const & front() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( m_count && m_ptr );
       return *m_ptr;
     }
 
-    const T & back() const VULKAN_HPP_NOEXCEPT
+    T const & back() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( m_count && m_ptr );
       return *( m_ptr + m_count - 1 );
@@ -473,23 +473,23 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-    const T * begin() const VULKAN_HPP_NOEXCEPT
+    T const * begin() const VULKAN_HPP_NOEXCEPT
     {
       return m_ptr;
     }
 
-    const T * end() const VULKAN_HPP_NOEXCEPT
+    T const * end() const VULKAN_HPP_NOEXCEPT
     {
       return m_ptr + m_count;
     }
 
-    const T & front() const VULKAN_HPP_NOEXCEPT
+    T const & front() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( m_count && m_ptr );
       return *m_ptr;
     }
 
-    const T & back() const VULKAN_HPP_NOEXCEPT
+    T const & back() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( m_count && m_ptr );
       return *( m_ptr + m_count - 1 );
@@ -530,14 +530,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     using ArrayProxy<T>::begin;
 
-    const T * end() const VULKAN_HPP_NOEXCEPT
+    T const * end() const VULKAN_HPP_NOEXCEPT
     {
       return reinterpret_cast<T const *>( static_cast<uint8_t const *>( begin() ) + size() * m_stride );
     }
 
     using ArrayProxy<T>::front;
 
-    const T & back() const VULKAN_HPP_NOEXCEPT
+    T const & back() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( begin() && size() );
       return *reinterpret_cast<T const *>( static_cast<uint8_t const *>( begin() ) + ( size() - 1 ) * m_stride );
@@ -611,33 +611,33 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   template <typename Type, class...>
   struct IsPartOfStructureChain
   {
-    static const bool valid = false;
+    static bool const valid = false;
   };
 
   template <typename Type, typename Head, typename... Tail>
   struct IsPartOfStructureChain<Type, Head, Tail...>
   {
-    static const bool valid = std::is_same<Type, Head>::value || IsPartOfStructureChain<Type, Tail...>::valid;
+    static bool const valid = std::is_same<Type, Head>::value || IsPartOfStructureChain<Type, Tail...>::valid;
   };
 
   template <size_t Index, typename T, typename... ChainElements>
   struct StructureChainContains
   {
-    static const bool value = std::is_same<T, typename std::tuple_element<Index, std::tuple<ChainElements...>>::type>::value ||
+    static bool const value = std::is_same<T, typename std::tuple_element<Index, std::tuple<ChainElements...>>::type>::value ||
                               StructureChainContains<Index - 1, T, ChainElements...>::value;
   };
 
   template <typename T, typename... ChainElements>
   struct StructureChainContains<0, T, ChainElements...>
   {
-    static const bool value = std::is_same<T, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value;
+    static bool const value = std::is_same<T, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value;
   };
 
   template <size_t Index, typename... ChainElements>
   struct StructureChainValidation
   {
     using TestType          = typename std::tuple_element<Index, std::tuple<ChainElements...>>::type;
-    static const bool valid = StructExtends<TestType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value &&
+    static bool const valid = StructExtends<TestType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value &&
                               ( TestType::allowDuplicate || !StructureChainContains<Index - 1, TestType, ChainElements...>::value ) &&
                               StructureChainValidation<Index - 1, ChainElements...>::valid;
   };
@@ -645,7 +645,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   template <typename... ChainElements>
   struct StructureChainValidation<0, ChainElements...>
   {
-    static const bool valid = true;
+    static bool const valid = true;
   };
 
   template <typename... ChainElements>
@@ -729,7 +729,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     // assign a complete structure to the StructureChain without modifying the chaining
     template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
-    StructureChain & assign( const T & rhs ) VULKAN_HPP_NOEXCEPT
+    StructureChain & assign( T const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       T &  lhs   = get<T, Which>();
       auto pNext = lhs.pNext;
@@ -955,7 +955,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return m_value;
     }
 
-    const Type & get() const VULKAN_HPP_NOEXCEPT
+    Type const & get() const VULKAN_HPP_NOEXCEPT
     {
       return m_value;
     }
@@ -1884,14 +1884,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_VERSION_1_0 ===
 
-      VULKAN_HPP_INLINE VkResult vkCreateInstance( const VkInstanceCreateInfo *  pCreateInfo,
-                                                   const VkAllocationCallbacks * pAllocator,
+      VULKAN_HPP_INLINE VkResult vkCreateInstance( VkInstanceCreateInfo const *  pCreateInfo,
+                                                   VkAllocationCallbacks const * pAllocator,
                                                    VkInstance *                  pInstance ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateInstance( pCreateInfo, pAllocator, pInstance );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyInstance( VkInstance instance, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyInstance( VkInstance instance, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyInstance( instance, pAllocator );
       }
@@ -1945,30 +1945,30 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetPhysicalDeviceMemoryProperties( physicalDevice, pMemoryProperties );
       }
 
-      VULKAN_HPP_INLINE PFN_vkVoidFunction vkGetInstanceProcAddr( VkInstance instance, const char * pName ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE PFN_vkVoidFunction vkGetInstanceProcAddr( VkInstance instance, char const * pName ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetInstanceProcAddr( instance, pName );
       }
 
-      VULKAN_HPP_INLINE PFN_vkVoidFunction vkGetDeviceProcAddr( VkDevice device, const char * pName ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE PFN_vkVoidFunction vkGetDeviceProcAddr( VkDevice device, char const * pName ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceProcAddr( device, pName );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateDevice( VkPhysicalDevice              physicalDevice,
-                                                 const VkDeviceCreateInfo *    pCreateInfo,
-                                                 const VkAllocationCallbacks * pAllocator,
+                                                 VkDeviceCreateInfo const *    pCreateInfo,
+                                                 VkAllocationCallbacks const * pAllocator,
                                                  VkDevice *                    pDevice ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDevice( physicalDevice, pCreateInfo, pAllocator, pDevice );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyDevice( VkDevice device, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyDevice( VkDevice device, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyDevice( device, pAllocator );
       }
 
-      VULKAN_HPP_INLINE VkResult vkEnumerateInstanceExtensionProperties( const char *            pLayerName,
+      VULKAN_HPP_INLINE VkResult vkEnumerateInstanceExtensionProperties( char const *            pLayerName,
                                                                          uint32_t *              pPropertyCount,
                                                                          VkExtensionProperties * pProperties ) const VULKAN_HPP_NOEXCEPT
       {
@@ -1976,7 +1976,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkEnumerateDeviceExtensionProperties( VkPhysicalDevice        physicalDevice,
-                                                                       const char *            pLayerName,
+                                                                       char const *            pLayerName,
                                                                        uint32_t *              pPropertyCount,
                                                                        VkExtensionProperties * pProperties ) const VULKAN_HPP_NOEXCEPT
       {
@@ -2000,7 +2000,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetDeviceQueue( device, queueFamilyIndex, queueIndex, pQueue );
       }
 
-      VULKAN_HPP_INLINE VkResult vkQueueSubmit( VkQueue queue, uint32_t submitCount, const VkSubmitInfo * pSubmits, VkFence fence ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkQueueSubmit( VkQueue queue, uint32_t submitCount, VkSubmitInfo const * pSubmits, VkFence fence ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkQueueSubmit( queue, submitCount, pSubmits, fence );
       }
@@ -2016,14 +2016,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkAllocateMemory( VkDevice                      device,
-                                                   const VkMemoryAllocateInfo *  pAllocateInfo,
-                                                   const VkAllocationCallbacks * pAllocator,
+                                                   VkMemoryAllocateInfo const *  pAllocateInfo,
+                                                   VkAllocationCallbacks const * pAllocator,
                                                    VkDeviceMemory *              pMemory ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkAllocateMemory( device, pAllocateInfo, pAllocator, pMemory );
       }
 
-      VULKAN_HPP_INLINE void vkFreeMemory( VkDevice device, VkDeviceMemory memory, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkFreeMemory( VkDevice device, VkDeviceMemory memory, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkFreeMemory( device, memory, pAllocator );
       }
@@ -2041,14 +2041,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkFlushMappedMemoryRanges( VkDevice                    device,
                                                             uint32_t                    memoryRangeCount,
-                                                            const VkMappedMemoryRange * pMemoryRanges ) const VULKAN_HPP_NOEXCEPT
+                                                            VkMappedMemoryRange const * pMemoryRanges ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkFlushMappedMemoryRanges( device, memoryRangeCount, pMemoryRanges );
       }
 
       VULKAN_HPP_INLINE VkResult vkInvalidateMappedMemoryRanges( VkDevice                    device,
                                                                  uint32_t                    memoryRangeCount,
-                                                                 const VkMappedMemoryRange * pMemoryRanges ) const VULKAN_HPP_NOEXCEPT
+                                                                 VkMappedMemoryRange const * pMemoryRanges ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkInvalidateMappedMemoryRanges( device, memoryRangeCount, pMemoryRanges );
       }
@@ -2106,26 +2106,26 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkQueueBindSparse( VkQueue                  queue,
                                                     uint32_t                 bindInfoCount,
-                                                    const VkBindSparseInfo * pBindInfo,
+                                                    VkBindSparseInfo const * pBindInfo,
                                                     VkFence                  fence ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkQueueBindSparse( queue, bindInfoCount, pBindInfo, fence );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateFence( VkDevice                      device,
-                                                const VkFenceCreateInfo *     pCreateInfo,
-                                                const VkAllocationCallbacks * pAllocator,
+                                                VkFenceCreateInfo const *     pCreateInfo,
+                                                VkAllocationCallbacks const * pAllocator,
                                                 VkFence *                     pFence ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateFence( device, pCreateInfo, pAllocator, pFence );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyFence( VkDevice device, VkFence fence, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyFence( VkDevice device, VkFence fence, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyFence( device, fence, pAllocator );
       }
 
-      VULKAN_HPP_INLINE VkResult vkResetFences( VkDevice device, uint32_t fenceCount, const VkFence * pFences ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkResetFences( VkDevice device, uint32_t fenceCount, VkFence const * pFences ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkResetFences( device, fenceCount, pFences );
       }
@@ -2136,33 +2136,33 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult
-        vkWaitForFences( VkDevice device, uint32_t fenceCount, const VkFence * pFences, VkBool32 waitAll, uint64_t timeout ) const VULKAN_HPP_NOEXCEPT
+        vkWaitForFences( VkDevice device, uint32_t fenceCount, VkFence const * pFences, VkBool32 waitAll, uint64_t timeout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkWaitForFences( device, fenceCount, pFences, waitAll, timeout );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateSemaphore( VkDevice                      device,
-                                                    const VkSemaphoreCreateInfo * pCreateInfo,
-                                                    const VkAllocationCallbacks * pAllocator,
+                                                    VkSemaphoreCreateInfo const * pCreateInfo,
+                                                    VkAllocationCallbacks const * pAllocator,
                                                     VkSemaphore *                 pSemaphore ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateSemaphore( device, pCreateInfo, pAllocator, pSemaphore );
       }
 
-      VULKAN_HPP_INLINE void vkDestroySemaphore( VkDevice device, VkSemaphore semaphore, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroySemaphore( VkDevice device, VkSemaphore semaphore, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroySemaphore( device, semaphore, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateQueryPool( VkDevice                      device,
-                                                    const VkQueryPoolCreateInfo * pCreateInfo,
-                                                    const VkAllocationCallbacks * pAllocator,
+                                                    VkQueryPoolCreateInfo const * pCreateInfo,
+                                                    VkAllocationCallbacks const * pAllocator,
                                                     VkQueryPool *                 pQueryPool ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateQueryPool( device, pCreateInfo, pAllocator, pQueryPool );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyQueryPool( VkDevice device, VkQueryPool queryPool, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyQueryPool( VkDevice device, VkQueryPool queryPool, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyQueryPool( device, queryPool, pAllocator );
       }
@@ -2180,62 +2180,62 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateBuffer( VkDevice                      device,
-                                                 const VkBufferCreateInfo *    pCreateInfo,
-                                                 const VkAllocationCallbacks * pAllocator,
+                                                 VkBufferCreateInfo const *    pCreateInfo,
+                                                 VkAllocationCallbacks const * pAllocator,
                                                  VkBuffer *                    pBuffer ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateBuffer( device, pCreateInfo, pAllocator, pBuffer );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyBuffer( VkDevice device, VkBuffer buffer, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyBuffer( VkDevice device, VkBuffer buffer, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyBuffer( device, buffer, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateImage( VkDevice                      device,
-                                                const VkImageCreateInfo *     pCreateInfo,
-                                                const VkAllocationCallbacks * pAllocator,
+                                                VkImageCreateInfo const *     pCreateInfo,
+                                                VkAllocationCallbacks const * pAllocator,
                                                 VkImage *                     pImage ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateImage( device, pCreateInfo, pAllocator, pImage );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyImage( VkDevice device, VkImage image, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyImage( VkDevice device, VkImage image, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyImage( device, image, pAllocator );
       }
 
       VULKAN_HPP_INLINE void vkGetImageSubresourceLayout( VkDevice                   device,
                                                           VkImage                    image,
-                                                          const VkImageSubresource * pSubresource,
+                                                          VkImageSubresource const * pSubresource,
                                                           VkSubresourceLayout *      pLayout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetImageSubresourceLayout( device, image, pSubresource, pLayout );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateImageView( VkDevice                      device,
-                                                    const VkImageViewCreateInfo * pCreateInfo,
-                                                    const VkAllocationCallbacks * pAllocator,
+                                                    VkImageViewCreateInfo const * pCreateInfo,
+                                                    VkAllocationCallbacks const * pAllocator,
                                                     VkImageView *                 pView ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateImageView( device, pCreateInfo, pAllocator, pView );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyImageView( VkDevice device, VkImageView imageView, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyImageView( VkDevice device, VkImageView imageView, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyImageView( device, imageView, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateCommandPool( VkDevice                        device,
-                                                      const VkCommandPoolCreateInfo * pCreateInfo,
-                                                      const VkAllocationCallbacks *   pAllocator,
+                                                      VkCommandPoolCreateInfo const * pCreateInfo,
+                                                      VkAllocationCallbacks const *   pAllocator,
                                                       VkCommandPool *                 pCommandPool ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateCommandPool( device, pCreateInfo, pAllocator, pCommandPool );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyCommandPool( VkDevice device, VkCommandPool commandPool, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyCommandPool( VkDevice device, VkCommandPool commandPool, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyCommandPool( device, commandPool, pAllocator );
       }
@@ -2246,7 +2246,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkAllocateCommandBuffers( VkDevice                            device,
-                                                           const VkCommandBufferAllocateInfo * pAllocateInfo,
+                                                           VkCommandBufferAllocateInfo const * pAllocateInfo,
                                                            VkCommandBuffer *                   pCommandBuffers ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkAllocateCommandBuffers( device, pAllocateInfo, pCommandBuffers );
@@ -2255,12 +2255,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkFreeCommandBuffers( VkDevice                device,
                                                    VkCommandPool           commandPool,
                                                    uint32_t                commandBufferCount,
-                                                   const VkCommandBuffer * pCommandBuffers ) const VULKAN_HPP_NOEXCEPT
+                                                   VkCommandBuffer const * pCommandBuffers ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkFreeCommandBuffers( device, commandPool, commandBufferCount, pCommandBuffers );
       }
 
-      VULKAN_HPP_INLINE VkResult vkBeginCommandBuffer( VkCommandBuffer commandBuffer, const VkCommandBufferBeginInfo * pBeginInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkBeginCommandBuffer( VkCommandBuffer commandBuffer, VkCommandBufferBeginInfo const * pBeginInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkBeginCommandBuffer( commandBuffer, pBeginInfo );
       }
@@ -2276,7 +2276,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void vkCmdCopyBuffer(
-        VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferCopy * pRegions ) const VULKAN_HPP_NOEXCEPT
+        VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkBuffer dstBuffer, uint32_t regionCount, VkBufferCopy const * pRegions ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyBuffer( commandBuffer, srcBuffer, dstBuffer, regionCount, pRegions );
       }
@@ -2287,7 +2287,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                              VkImage             dstImage,
                                              VkImageLayout       dstImageLayout,
                                              uint32_t            regionCount,
-                                             const VkImageCopy * pRegions ) const VULKAN_HPP_NOEXCEPT
+                                             VkImageCopy const * pRegions ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyImage( commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions );
       }
@@ -2297,7 +2297,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                      VkImage                   dstImage,
                                                      VkImageLayout             dstImageLayout,
                                                      uint32_t                  regionCount,
-                                                     const VkBufferImageCopy * pRegions ) const VULKAN_HPP_NOEXCEPT
+                                                     VkBufferImageCopy const * pRegions ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyBufferToImage( commandBuffer, srcBuffer, dstImage, dstImageLayout, regionCount, pRegions );
       }
@@ -2307,13 +2307,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                      VkImageLayout             srcImageLayout,
                                                      VkBuffer                  dstBuffer,
                                                      uint32_t                  regionCount,
-                                                     const VkBufferImageCopy * pRegions ) const VULKAN_HPP_NOEXCEPT
+                                                     VkBufferImageCopy const * pRegions ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyImageToBuffer( commandBuffer, srcImage, srcImageLayout, dstBuffer, regionCount, pRegions );
       }
 
       VULKAN_HPP_INLINE void vkCmdUpdateBuffer(
-        VkCommandBuffer commandBuffer, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void * pData ) const VULKAN_HPP_NOEXCEPT
+        VkCommandBuffer commandBuffer, VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, void const * pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdUpdateBuffer( commandBuffer, dstBuffer, dstOffset, dataSize, pData );
       }
@@ -2329,11 +2329,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                    VkPipelineStageFlags          dstStageMask,
                                                    VkDependencyFlags             dependencyFlags,
                                                    uint32_t                      memoryBarrierCount,
-                                                   const VkMemoryBarrier *       pMemoryBarriers,
+                                                   VkMemoryBarrier const *       pMemoryBarriers,
                                                    uint32_t                      bufferMemoryBarrierCount,
-                                                   const VkBufferMemoryBarrier * pBufferMemoryBarriers,
+                                                   VkBufferMemoryBarrier const * pBufferMemoryBarriers,
                                                    uint32_t                      imageMemoryBarrierCount,
-                                                   const VkImageMemoryBarrier *  pImageMemoryBarriers ) const VULKAN_HPP_NOEXCEPT
+                                                   VkImageMemoryBarrier const *  pImageMemoryBarriers ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPipelineBarrier( commandBuffer,
                                        srcStageMask,
@@ -2385,20 +2385,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void
-        vkCmdExecuteCommands( VkCommandBuffer commandBuffer, uint32_t commandBufferCount, const VkCommandBuffer * pCommandBuffers ) const VULKAN_HPP_NOEXCEPT
+        vkCmdExecuteCommands( VkCommandBuffer commandBuffer, uint32_t commandBufferCount, VkCommandBuffer const * pCommandBuffers ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdExecuteCommands( commandBuffer, commandBufferCount, pCommandBuffers );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateEvent( VkDevice                      device,
-                                                const VkEventCreateInfo *     pCreateInfo,
-                                                const VkAllocationCallbacks * pAllocator,
+                                                VkEventCreateInfo const *     pCreateInfo,
+                                                VkAllocationCallbacks const * pAllocator,
                                                 VkEvent *                     pEvent ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateEvent( device, pCreateInfo, pAllocator, pEvent );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyEvent( VkDevice device, VkEvent event, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyEvent( VkDevice device, VkEvent event, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyEvent( device, event, pAllocator );
       }
@@ -2419,42 +2419,42 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateBufferView( VkDevice                       device,
-                                                     const VkBufferViewCreateInfo * pCreateInfo,
-                                                     const VkAllocationCallbacks *  pAllocator,
+                                                     VkBufferViewCreateInfo const * pCreateInfo,
+                                                     VkAllocationCallbacks const *  pAllocator,
                                                      VkBufferView *                 pView ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateBufferView( device, pCreateInfo, pAllocator, pView );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyBufferView( VkDevice device, VkBufferView bufferView, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyBufferView( VkDevice device, VkBufferView bufferView, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyBufferView( device, bufferView, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateShaderModule( VkDevice                         device,
-                                                       const VkShaderModuleCreateInfo * pCreateInfo,
-                                                       const VkAllocationCallbacks *    pAllocator,
+                                                       VkShaderModuleCreateInfo const * pCreateInfo,
+                                                       VkAllocationCallbacks const *    pAllocator,
                                                        VkShaderModule *                 pShaderModule ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateShaderModule( device, pCreateInfo, pAllocator, pShaderModule );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyShaderModule( VkDevice device, VkShaderModule shaderModule, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyShaderModule( VkDevice device, VkShaderModule shaderModule, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyShaderModule( device, shaderModule, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreatePipelineCache( VkDevice                          device,
-                                                        const VkPipelineCacheCreateInfo * pCreateInfo,
-                                                        const VkAllocationCallbacks *     pAllocator,
+                                                        VkPipelineCacheCreateInfo const * pCreateInfo,
+                                                        VkAllocationCallbacks const *     pAllocator,
                                                         VkPipelineCache *                 pPipelineCache ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreatePipelineCache( device, pCreateInfo, pAllocator, pPipelineCache );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyPipelineCache( VkDevice device, VkPipelineCache pipelineCache, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyPipelineCache( VkDevice device, VkPipelineCache pipelineCache, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyPipelineCache( device, pipelineCache, pAllocator );
       }
@@ -2470,7 +2470,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE VkResult vkMergePipelineCaches( VkDevice                device,
                                                         VkPipelineCache         dstCache,
                                                         uint32_t                srcCacheCount,
-                                                        const VkPipelineCache * pSrcCaches ) const VULKAN_HPP_NOEXCEPT
+                                                        VkPipelineCache const * pSrcCaches ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkMergePipelineCaches( device, dstCache, srcCacheCount, pSrcCaches );
       }
@@ -2478,48 +2478,48 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE VkResult vkCreateComputePipelines( VkDevice                            device,
                                                            VkPipelineCache                     pipelineCache,
                                                            uint32_t                            createInfoCount,
-                                                           const VkComputePipelineCreateInfo * pCreateInfos,
-                                                           const VkAllocationCallbacks *       pAllocator,
+                                                           VkComputePipelineCreateInfo const * pCreateInfos,
+                                                           VkAllocationCallbacks const *       pAllocator,
                                                            VkPipeline *                        pPipelines ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateComputePipelines( device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyPipeline( VkDevice device, VkPipeline pipeline, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyPipeline( VkDevice device, VkPipeline pipeline, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyPipeline( device, pipeline, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreatePipelineLayout( VkDevice                           device,
-                                                         const VkPipelineLayoutCreateInfo * pCreateInfo,
-                                                         const VkAllocationCallbacks *      pAllocator,
+                                                         VkPipelineLayoutCreateInfo const * pCreateInfo,
+                                                         VkAllocationCallbacks const *      pAllocator,
                                                          VkPipelineLayout *                 pPipelineLayout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreatePipelineLayout( device, pCreateInfo, pAllocator, pPipelineLayout );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyPipelineLayout( VkDevice device, VkPipelineLayout pipelineLayout, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyPipelineLayout( VkDevice device, VkPipelineLayout pipelineLayout, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyPipelineLayout( device, pipelineLayout, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateSampler( VkDevice                      device,
-                                                  const VkSamplerCreateInfo *   pCreateInfo,
-                                                  const VkAllocationCallbacks * pAllocator,
+                                                  VkSamplerCreateInfo const *   pCreateInfo,
+                                                  VkAllocationCallbacks const * pAllocator,
                                                   VkSampler *                   pSampler ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateSampler( device, pCreateInfo, pAllocator, pSampler );
       }
 
-      VULKAN_HPP_INLINE void vkDestroySampler( VkDevice device, VkSampler sampler, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroySampler( VkDevice device, VkSampler sampler, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroySampler( device, sampler, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateDescriptorSetLayout( VkDevice                                device,
-                                                              const VkDescriptorSetLayoutCreateInfo * pCreateInfo,
-                                                              const VkAllocationCallbacks *           pAllocator,
+                                                              VkDescriptorSetLayoutCreateInfo const * pCreateInfo,
+                                                              VkAllocationCallbacks const *           pAllocator,
                                                               VkDescriptorSetLayout *                 pSetLayout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDescriptorSetLayout( device, pCreateInfo, pAllocator, pSetLayout );
@@ -2527,21 +2527,21 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroyDescriptorSetLayout( VkDevice                      device,
                                                            VkDescriptorSetLayout         descriptorSetLayout,
-                                                           const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                           VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyDescriptorSetLayout( device, descriptorSetLayout, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateDescriptorPool( VkDevice                           device,
-                                                         const VkDescriptorPoolCreateInfo * pCreateInfo,
-                                                         const VkAllocationCallbacks *      pAllocator,
+                                                         VkDescriptorPoolCreateInfo const * pCreateInfo,
+                                                         VkAllocationCallbacks const *      pAllocator,
                                                          VkDescriptorPool *                 pDescriptorPool ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDescriptorPool( device, pCreateInfo, pAllocator, pDescriptorPool );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyDescriptorPool( VkDevice device, VkDescriptorPool descriptorPool, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyDescriptorPool( VkDevice device, VkDescriptorPool descriptorPool, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyDescriptorPool( device, descriptorPool, pAllocator );
       }
@@ -2554,7 +2554,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkAllocateDescriptorSets( VkDevice                            device,
-                                                           const VkDescriptorSetAllocateInfo * pAllocateInfo,
+                                                           VkDescriptorSetAllocateInfo const * pAllocateInfo,
                                                            VkDescriptorSet *                   pDescriptorSets ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkAllocateDescriptorSets( device, pAllocateInfo, pDescriptorSets );
@@ -2563,16 +2563,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE VkResult vkFreeDescriptorSets( VkDevice                device,
                                                        VkDescriptorPool        descriptorPool,
                                                        uint32_t                descriptorSetCount,
-                                                       const VkDescriptorSet * pDescriptorSets ) const VULKAN_HPP_NOEXCEPT
+                                                       VkDescriptorSet const * pDescriptorSets ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkFreeDescriptorSets( device, descriptorPool, descriptorSetCount, pDescriptorSets );
       }
 
       VULKAN_HPP_INLINE void vkUpdateDescriptorSets( VkDevice                     device,
                                                      uint32_t                     descriptorWriteCount,
-                                                     const VkWriteDescriptorSet * pDescriptorWrites,
+                                                     VkWriteDescriptorSet const * pDescriptorWrites,
                                                      uint32_t                     descriptorCopyCount,
-                                                     const VkCopyDescriptorSet *  pDescriptorCopies ) const VULKAN_HPP_NOEXCEPT
+                                                     VkCopyDescriptorSet const *  pDescriptorCopies ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkUpdateDescriptorSets( device, descriptorWriteCount, pDescriptorWrites, descriptorCopyCount, pDescriptorCopies );
       }
@@ -2588,9 +2588,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                       VkPipelineLayout        layout,
                                                       uint32_t                firstSet,
                                                       uint32_t                descriptorSetCount,
-                                                      const VkDescriptorSet * pDescriptorSets,
+                                                      VkDescriptorSet const * pDescriptorSets,
                                                       uint32_t                dynamicOffsetCount,
-                                                      const uint32_t *        pDynamicOffsets ) const VULKAN_HPP_NOEXCEPT
+                                                      uint32_t const *        pDynamicOffsets ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindDescriptorSets(
           commandBuffer, pipelineBindPoint, layout, firstSet, descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets );
@@ -2599,9 +2599,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdClearColorImage( VkCommandBuffer                 commandBuffer,
                                                    VkImage                         image,
                                                    VkImageLayout                   imageLayout,
-                                                   const VkClearColorValue *       pColor,
+                                                   VkClearColorValue const *       pColor,
                                                    uint32_t                        rangeCount,
-                                                   const VkImageSubresourceRange * pRanges ) const VULKAN_HPP_NOEXCEPT
+                                                   VkImageSubresourceRange const * pRanges ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdClearColorImage( commandBuffer, image, imageLayout, pColor, rangeCount, pRanges );
       }
@@ -2629,15 +2629,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdWaitEvents( VkCommandBuffer               commandBuffer,
                                               uint32_t                      eventCount,
-                                              const VkEvent *               pEvents,
+                                              VkEvent const *               pEvents,
                                               VkPipelineStageFlags          srcStageMask,
                                               VkPipelineStageFlags          dstStageMask,
                                               uint32_t                      memoryBarrierCount,
-                                              const VkMemoryBarrier *       pMemoryBarriers,
+                                              VkMemoryBarrier const *       pMemoryBarriers,
                                               uint32_t                      bufferMemoryBarrierCount,
-                                              const VkBufferMemoryBarrier * pBufferMemoryBarriers,
+                                              VkBufferMemoryBarrier const * pBufferMemoryBarriers,
                                               uint32_t                      imageMemoryBarrierCount,
-                                              const VkImageMemoryBarrier *  pImageMemoryBarriers ) const VULKAN_HPP_NOEXCEPT
+                                              VkImageMemoryBarrier const *  pImageMemoryBarriers ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdWaitEvents( commandBuffer,
                                   eventCount,
@@ -2657,7 +2657,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                  VkShaderStageFlags stageFlags,
                                                  uint32_t           offset,
                                                  uint32_t           size,
-                                                 const void *       pValues ) const VULKAN_HPP_NOEXCEPT
+                                                 void const *       pValues ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPushConstants( commandBuffer, layout, stageFlags, offset, size, pValues );
       }
@@ -2665,36 +2665,36 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE VkResult vkCreateGraphicsPipelines( VkDevice                             device,
                                                             VkPipelineCache                      pipelineCache,
                                                             uint32_t                             createInfoCount,
-                                                            const VkGraphicsPipelineCreateInfo * pCreateInfos,
-                                                            const VkAllocationCallbacks *        pAllocator,
+                                                            VkGraphicsPipelineCreateInfo const * pCreateInfos,
+                                                            VkAllocationCallbacks const *        pAllocator,
                                                             VkPipeline *                         pPipelines ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateGraphicsPipelines( device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateFramebuffer( VkDevice                        device,
-                                                      const VkFramebufferCreateInfo * pCreateInfo,
-                                                      const VkAllocationCallbacks *   pAllocator,
+                                                      VkFramebufferCreateInfo const * pCreateInfo,
+                                                      VkAllocationCallbacks const *   pAllocator,
                                                       VkFramebuffer *                 pFramebuffer ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateFramebuffer( device, pCreateInfo, pAllocator, pFramebuffer );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyFramebuffer( VkDevice device, VkFramebuffer framebuffer, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyFramebuffer( VkDevice device, VkFramebuffer framebuffer, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyFramebuffer( device, framebuffer, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateRenderPass( VkDevice                       device,
-                                                     const VkRenderPassCreateInfo * pCreateInfo,
-                                                     const VkAllocationCallbacks *  pAllocator,
+                                                     VkRenderPassCreateInfo const * pCreateInfo,
+                                                     VkAllocationCallbacks const *  pAllocator,
                                                      VkRenderPass *                 pRenderPass ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateRenderPass( device, pCreateInfo, pAllocator, pRenderPass );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyRenderPass( VkDevice device, VkRenderPass renderPass, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyRenderPass( VkDevice device, VkRenderPass renderPass, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyRenderPass( device, renderPass, pAllocator );
       }
@@ -2707,13 +2707,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdSetViewport( VkCommandBuffer    commandBuffer,
                                                uint32_t           firstViewport,
                                                uint32_t           viewportCount,
-                                               const VkViewport * pViewports ) const VULKAN_HPP_NOEXCEPT
+                                               VkViewport const * pViewports ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetViewport( commandBuffer, firstViewport, viewportCount, pViewports );
       }
 
       VULKAN_HPP_INLINE void
-        vkCmdSetScissor( VkCommandBuffer commandBuffer, uint32_t firstScissor, uint32_t scissorCount, const VkRect2D * pScissors ) const VULKAN_HPP_NOEXCEPT
+        vkCmdSetScissor( VkCommandBuffer commandBuffer, uint32_t firstScissor, uint32_t scissorCount, VkRect2D const * pScissors ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetScissor( commandBuffer, firstScissor, scissorCount, pScissors );
       }
@@ -2731,7 +2731,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdSetDepthBias( commandBuffer, depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor );
       }
 
-      VULKAN_HPP_INLINE void vkCmdSetBlendConstants( VkCommandBuffer commandBuffer, const float blendConstants[4] ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdSetBlendConstants( VkCommandBuffer commandBuffer, float const blendConstants[4] ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetBlendConstants( commandBuffer, blendConstants );
       }
@@ -2768,8 +2768,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdBindVertexBuffers( VkCommandBuffer      commandBuffer,
                                                      uint32_t             firstBinding,
                                                      uint32_t             bindingCount,
-                                                     const VkBuffer *     pBuffers,
-                                                     const VkDeviceSize * pOffsets ) const VULKAN_HPP_NOEXCEPT
+                                                     VkBuffer const *     pBuffers,
+                                                     VkDeviceSize const * pOffsets ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindVertexBuffers( commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets );
       }
@@ -2808,7 +2808,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                              VkImage             dstImage,
                                              VkImageLayout       dstImageLayout,
                                              uint32_t            regionCount,
-                                             const VkImageBlit * pRegions,
+                                             VkImageBlit const * pRegions,
                                              VkFilter            filter ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBlitImage( commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions, filter );
@@ -2817,18 +2817,18 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdClearDepthStencilImage( VkCommandBuffer                  commandBuffer,
                                                           VkImage                          image,
                                                           VkImageLayout                    imageLayout,
-                                                          const VkClearDepthStencilValue * pDepthStencil,
+                                                          VkClearDepthStencilValue const * pDepthStencil,
                                                           uint32_t                         rangeCount,
-                                                          const VkImageSubresourceRange *  pRanges ) const VULKAN_HPP_NOEXCEPT
+                                                          VkImageSubresourceRange const *  pRanges ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdClearDepthStencilImage( commandBuffer, image, imageLayout, pDepthStencil, rangeCount, pRanges );
       }
 
       VULKAN_HPP_INLINE void vkCmdClearAttachments( VkCommandBuffer           commandBuffer,
                                                     uint32_t                  attachmentCount,
-                                                    const VkClearAttachment * pAttachments,
+                                                    VkClearAttachment const * pAttachments,
                                                     uint32_t                  rectCount,
-                                                    const VkClearRect *       pRects ) const VULKAN_HPP_NOEXCEPT
+                                                    VkClearRect const *       pRects ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdClearAttachments( commandBuffer, attachmentCount, pAttachments, rectCount, pRects );
       }
@@ -2839,13 +2839,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                 VkImage                dstImage,
                                                 VkImageLayout          dstImageLayout,
                                                 uint32_t               regionCount,
-                                                const VkImageResolve * pRegions ) const VULKAN_HPP_NOEXCEPT
+                                                VkImageResolve const * pRegions ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdResolveImage( commandBuffer, srcImage, srcImageLayout, dstImage, dstImageLayout, regionCount, pRegions );
       }
 
       VULKAN_HPP_INLINE void vkCmdBeginRenderPass( VkCommandBuffer               commandBuffer,
-                                                   const VkRenderPassBeginInfo * pRenderPassBegin,
+                                                   VkRenderPassBeginInfo const * pRenderPassBegin,
                                                    VkSubpassContents             contents ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBeginRenderPass( commandBuffer, pRenderPassBegin, contents );
@@ -2870,14 +2870,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkBindBufferMemory2( VkDevice                       device,
                                                       uint32_t                       bindInfoCount,
-                                                      const VkBindBufferMemoryInfo * pBindInfos ) const VULKAN_HPP_NOEXCEPT
+                                                      VkBindBufferMemoryInfo const * pBindInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkBindBufferMemory2( device, bindInfoCount, pBindInfos );
       }
 
       VULKAN_HPP_INLINE VkResult vkBindImageMemory2( VkDevice                      device,
                                                      uint32_t                      bindInfoCount,
-                                                     const VkBindImageMemoryInfo * pBindInfos ) const VULKAN_HPP_NOEXCEPT
+                                                     VkBindImageMemoryInfo const * pBindInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkBindImageMemory2( device, bindInfoCount, pBindInfos );
       }
@@ -2904,21 +2904,21 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void vkGetImageMemoryRequirements2( VkDevice                               device,
-                                                            const VkImageMemoryRequirementsInfo2 * pInfo,
+                                                            VkImageMemoryRequirementsInfo2 const * pInfo,
                                                             VkMemoryRequirements2 *                pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetImageMemoryRequirements2( device, pInfo, pMemoryRequirements );
       }
 
       VULKAN_HPP_INLINE void vkGetBufferMemoryRequirements2( VkDevice                                device,
-                                                             const VkBufferMemoryRequirementsInfo2 * pInfo,
+                                                             VkBufferMemoryRequirementsInfo2 const * pInfo,
                                                              VkMemoryRequirements2 *                 pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetBufferMemoryRequirements2( device, pInfo, pMemoryRequirements );
       }
 
       VULKAN_HPP_INLINE void vkGetImageSparseMemoryRequirements2( VkDevice                                     device,
-                                                                  const VkImageSparseMemoryRequirementsInfo2 * pInfo,
+                                                                  VkImageSparseMemoryRequirementsInfo2 const * pInfo,
                                                                   uint32_t *                                   pSparseMemoryRequirementCount,
                                                                   VkSparseImageMemoryRequirements2 * pSparseMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
@@ -2944,7 +2944,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkGetPhysicalDeviceImageFormatProperties2( VkPhysicalDevice                         physicalDevice,
-                                                                            const VkPhysicalDeviceImageFormatInfo2 * pImageFormatInfo,
+                                                                            VkPhysicalDeviceImageFormatInfo2 const * pImageFormatInfo,
                                                                             VkImageFormatProperties2 * pImageFormatProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceImageFormatProperties2( physicalDevice, pImageFormatInfo, pImageFormatProperties );
@@ -2964,7 +2964,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void vkGetPhysicalDeviceSparseImageFormatProperties2( VkPhysicalDevice                               physicalDevice,
-                                                                              const VkPhysicalDeviceSparseImageFormatInfo2 * pFormatInfo,
+                                                                              VkPhysicalDeviceSparseImageFormatInfo2 const * pFormatInfo,
                                                                               uint32_t *                                     pPropertyCount,
                                                                               VkSparseImageFormatProperties2 * pProperties ) const VULKAN_HPP_NOEXCEPT
       {
@@ -2976,20 +2976,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkTrimCommandPool( device, commandPool, flags );
       }
 
-      VULKAN_HPP_INLINE void vkGetDeviceQueue2( VkDevice device, const VkDeviceQueueInfo2 * pQueueInfo, VkQueue * pQueue ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkGetDeviceQueue2( VkDevice device, VkDeviceQueueInfo2 const * pQueueInfo, VkQueue * pQueue ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceQueue2( device, pQueueInfo, pQueue );
       }
 
       VULKAN_HPP_INLINE void vkGetPhysicalDeviceExternalBufferProperties( VkPhysicalDevice                           physicalDevice,
-                                                                          const VkPhysicalDeviceExternalBufferInfo * pExternalBufferInfo,
+                                                                          VkPhysicalDeviceExternalBufferInfo const * pExternalBufferInfo,
                                                                           VkExternalBufferProperties * pExternalBufferProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceExternalBufferProperties( physicalDevice, pExternalBufferInfo, pExternalBufferProperties );
       }
 
       VULKAN_HPP_INLINE void vkGetPhysicalDeviceExternalFenceProperties( VkPhysicalDevice                          physicalDevice,
-                                                                         const VkPhysicalDeviceExternalFenceInfo * pExternalFenceInfo,
+                                                                         VkPhysicalDeviceExternalFenceInfo const * pExternalFenceInfo,
                                                                          VkExternalFenceProperties * pExternalFenceProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceExternalFenceProperties( physicalDevice, pExternalFenceInfo, pExternalFenceProperties );
@@ -2997,7 +2997,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void
         vkGetPhysicalDeviceExternalSemaphoreProperties( VkPhysicalDevice                              physicalDevice,
-                                                        const VkPhysicalDeviceExternalSemaphoreInfo * pExternalSemaphoreInfo,
+                                                        VkPhysicalDeviceExternalSemaphoreInfo const * pExternalSemaphoreInfo,
                                                         VkExternalSemaphoreProperties *               pExternalSemaphoreProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceExternalSemaphoreProperties( physicalDevice, pExternalSemaphoreInfo, pExternalSemaphoreProperties );
@@ -3015,8 +3015,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateDescriptorUpdateTemplate( VkDevice                                     device,
-                                                                   const VkDescriptorUpdateTemplateCreateInfo * pCreateInfo,
-                                                                   const VkAllocationCallbacks *                pAllocator,
+                                                                   VkDescriptorUpdateTemplateCreateInfo const * pCreateInfo,
+                                                                   VkAllocationCallbacks const *                pAllocator,
                                                                    VkDescriptorUpdateTemplate * pDescriptorUpdateTemplate ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDescriptorUpdateTemplate( device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate );
@@ -3024,7 +3024,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroyDescriptorUpdateTemplate( VkDevice                      device,
                                                                 VkDescriptorUpdateTemplate    descriptorUpdateTemplate,
-                                                                const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                                VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyDescriptorUpdateTemplate( device, descriptorUpdateTemplate, pAllocator );
       }
@@ -3032,21 +3032,21 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkUpdateDescriptorSetWithTemplate( VkDevice                   device,
                                                                 VkDescriptorSet            descriptorSet,
                                                                 VkDescriptorUpdateTemplate descriptorUpdateTemplate,
-                                                                const void *               pData ) const VULKAN_HPP_NOEXCEPT
+                                                                void const *               pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkUpdateDescriptorSetWithTemplate( device, descriptorSet, descriptorUpdateTemplate, pData );
       }
 
       VULKAN_HPP_INLINE void vkGetDescriptorSetLayoutSupport( VkDevice                                device,
-                                                              const VkDescriptorSetLayoutCreateInfo * pCreateInfo,
+                                                              VkDescriptorSetLayoutCreateInfo const * pCreateInfo,
                                                               VkDescriptorSetLayoutSupport *          pSupport ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDescriptorSetLayoutSupport( device, pCreateInfo, pSupport );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateSamplerYcbcrConversion( VkDevice                                   device,
-                                                                 const VkSamplerYcbcrConversionCreateInfo * pCreateInfo,
-                                                                 const VkAllocationCallbacks *              pAllocator,
+                                                                 VkSamplerYcbcrConversionCreateInfo const * pCreateInfo,
+                                                                 VkAllocationCallbacks const *              pAllocator,
                                                                  VkSamplerYcbcrConversion *                 pYcbcrConversion ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateSamplerYcbcrConversion( device, pCreateInfo, pAllocator, pYcbcrConversion );
@@ -3054,7 +3054,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroySamplerYcbcrConversion( VkDevice                      device,
                                                               VkSamplerYcbcrConversion      ycbcrConversion,
-                                                              const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                              VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroySamplerYcbcrConversion( device, ycbcrConversion, pAllocator );
       }
@@ -3071,28 +3071,28 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetSemaphoreCounterValue( device, semaphore, pValue );
       }
 
-      VULKAN_HPP_INLINE VkResult vkWaitSemaphores( VkDevice device, const VkSemaphoreWaitInfo * pWaitInfo, uint64_t timeout ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkWaitSemaphores( VkDevice device, VkSemaphoreWaitInfo const * pWaitInfo, uint64_t timeout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkWaitSemaphores( device, pWaitInfo, timeout );
       }
 
-      VULKAN_HPP_INLINE VkResult vkSignalSemaphore( VkDevice device, const VkSemaphoreSignalInfo * pSignalInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkSignalSemaphore( VkDevice device, VkSemaphoreSignalInfo const * pSignalInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkSignalSemaphore( device, pSignalInfo );
       }
 
-      VULKAN_HPP_INLINE VkDeviceAddress vkGetBufferDeviceAddress( VkDevice device, const VkBufferDeviceAddressInfo * pInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkDeviceAddress vkGetBufferDeviceAddress( VkDevice device, VkBufferDeviceAddressInfo const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetBufferDeviceAddress( device, pInfo );
       }
 
-      VULKAN_HPP_INLINE uint64_t vkGetBufferOpaqueCaptureAddress( VkDevice device, const VkBufferDeviceAddressInfo * pInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE uint64_t vkGetBufferOpaqueCaptureAddress( VkDevice device, VkBufferDeviceAddressInfo const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetBufferOpaqueCaptureAddress( device, pInfo );
       }
 
       VULKAN_HPP_INLINE uint64_t vkGetDeviceMemoryOpaqueCaptureAddress( VkDevice                                       device,
-                                                                        const VkDeviceMemoryOpaqueCaptureAddressInfo * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                        VkDeviceMemoryOpaqueCaptureAddressInfo const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceMemoryOpaqueCaptureAddress( device, pInfo );
       }
@@ -3120,28 +3120,28 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateRenderPass2( VkDevice                        device,
-                                                      const VkRenderPassCreateInfo2 * pCreateInfo,
-                                                      const VkAllocationCallbacks *   pAllocator,
+                                                      VkRenderPassCreateInfo2 const * pCreateInfo,
+                                                      VkAllocationCallbacks const *   pAllocator,
                                                       VkRenderPass *                  pRenderPass ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateRenderPass2( device, pCreateInfo, pAllocator, pRenderPass );
       }
 
       VULKAN_HPP_INLINE void vkCmdBeginRenderPass2( VkCommandBuffer               commandBuffer,
-                                                    const VkRenderPassBeginInfo * pRenderPassBegin,
-                                                    const VkSubpassBeginInfo *    pSubpassBeginInfo ) const VULKAN_HPP_NOEXCEPT
+                                                    VkRenderPassBeginInfo const * pRenderPassBegin,
+                                                    VkSubpassBeginInfo const *    pSubpassBeginInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBeginRenderPass2( commandBuffer, pRenderPassBegin, pSubpassBeginInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdNextSubpass2( VkCommandBuffer            commandBuffer,
-                                                const VkSubpassBeginInfo * pSubpassBeginInfo,
-                                                const VkSubpassEndInfo *   pSubpassEndInfo ) const VULKAN_HPP_NOEXCEPT
+                                                VkSubpassBeginInfo const * pSubpassBeginInfo,
+                                                VkSubpassEndInfo const *   pSubpassEndInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdNextSubpass2( commandBuffer, pSubpassBeginInfo, pSubpassEndInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdEndRenderPass2( VkCommandBuffer commandBuffer, const VkSubpassEndInfo * pSubpassEndInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdEndRenderPass2( VkCommandBuffer commandBuffer, VkSubpassEndInfo const * pSubpassEndInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdEndRenderPass2( commandBuffer, pSubpassEndInfo );
       }
@@ -3156,15 +3156,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkCreatePrivateDataSlot( VkDevice                            device,
-                                                          const VkPrivateDataSlotCreateInfo * pCreateInfo,
-                                                          const VkAllocationCallbacks *       pAllocator,
+                                                          VkPrivateDataSlotCreateInfo const * pCreateInfo,
+                                                          VkAllocationCallbacks const *       pAllocator,
                                                           VkPrivateDataSlot *                 pPrivateDataSlot ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreatePrivateDataSlot( device, pCreateInfo, pAllocator, pPrivateDataSlot );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyPrivateDataSlot( VkDevice device, VkPrivateDataSlot privateDataSlot, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyPrivateDataSlot( VkDevice device, VkPrivateDataSlot privateDataSlot, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyPrivateDataSlot( device, privateDataSlot, pAllocator );
       }
@@ -3181,7 +3181,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetPrivateData( device, objectType, objectHandle, privateDataSlot, pData );
       }
 
-      VULKAN_HPP_INLINE void vkCmdPipelineBarrier2( VkCommandBuffer commandBuffer, const VkDependencyInfo * pDependencyInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdPipelineBarrier2( VkCommandBuffer commandBuffer, VkDependencyInfo const * pDependencyInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPipelineBarrier2( commandBuffer, pDependencyInfo );
       }
@@ -3192,56 +3192,56 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdWriteTimestamp2( commandBuffer, stage, queryPool, query );
       }
 
-      VULKAN_HPP_INLINE VkResult vkQueueSubmit2( VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 * pSubmits, VkFence fence ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkQueueSubmit2( VkQueue queue, uint32_t submitCount, VkSubmitInfo2 const * pSubmits, VkFence fence ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkQueueSubmit2( queue, submitCount, pSubmits, fence );
       }
 
-      VULKAN_HPP_INLINE void vkCmdCopyBuffer2( VkCommandBuffer commandBuffer, const VkCopyBufferInfo2 * pCopyBufferInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdCopyBuffer2( VkCommandBuffer commandBuffer, VkCopyBufferInfo2 const * pCopyBufferInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyBuffer2( commandBuffer, pCopyBufferInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdCopyImage2( VkCommandBuffer commandBuffer, const VkCopyImageInfo2 * pCopyImageInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdCopyImage2( VkCommandBuffer commandBuffer, VkCopyImageInfo2 const * pCopyImageInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyImage2( commandBuffer, pCopyImageInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdCopyBufferToImage2( VkCommandBuffer                  commandBuffer,
-                                                      const VkCopyBufferToImageInfo2 * pCopyBufferToImageInfo ) const VULKAN_HPP_NOEXCEPT
+                                                      VkCopyBufferToImageInfo2 const * pCopyBufferToImageInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyBufferToImage2( commandBuffer, pCopyBufferToImageInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdCopyImageToBuffer2( VkCommandBuffer                  commandBuffer,
-                                                      const VkCopyImageToBufferInfo2 * pCopyImageToBufferInfo ) const VULKAN_HPP_NOEXCEPT
+                                                      VkCopyImageToBufferInfo2 const * pCopyImageToBufferInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyImageToBuffer2( commandBuffer, pCopyImageToBufferInfo );
       }
 
       VULKAN_HPP_INLINE void vkGetDeviceBufferMemoryRequirements( VkDevice                                 device,
-                                                                  const VkDeviceBufferMemoryRequirements * pInfo,
+                                                                  VkDeviceBufferMemoryRequirements const * pInfo,
                                                                   VkMemoryRequirements2 *                  pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceBufferMemoryRequirements( device, pInfo, pMemoryRequirements );
       }
 
       VULKAN_HPP_INLINE void vkGetDeviceImageMemoryRequirements( VkDevice                                device,
-                                                                 const VkDeviceImageMemoryRequirements * pInfo,
+                                                                 VkDeviceImageMemoryRequirements const * pInfo,
                                                                  VkMemoryRequirements2 *                 pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceImageMemoryRequirements( device, pInfo, pMemoryRequirements );
       }
 
       VULKAN_HPP_INLINE void vkGetDeviceImageSparseMemoryRequirements( VkDevice                                device,
-                                                                       const VkDeviceImageMemoryRequirements * pInfo,
+                                                                       VkDeviceImageMemoryRequirements const * pInfo,
                                                                        uint32_t *                              pSparseMemoryRequirementCount,
                                                                        VkSparseImageMemoryRequirements2 * pSparseMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceImageSparseMemoryRequirements( device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements );
       }
 
-      VULKAN_HPP_INLINE void vkCmdSetEvent2( VkCommandBuffer commandBuffer, VkEvent event, const VkDependencyInfo * pDependencyInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdSetEvent2( VkCommandBuffer commandBuffer, VkEvent event, VkDependencyInfo const * pDependencyInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetEvent2( commandBuffer, event, pDependencyInfo );
       }
@@ -3253,23 +3253,23 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdWaitEvents2( VkCommandBuffer          commandBuffer,
                                                uint32_t                 eventCount,
-                                               const VkEvent *          pEvents,
-                                               const VkDependencyInfo * pDependencyInfos ) const VULKAN_HPP_NOEXCEPT
+                                               VkEvent const *          pEvents,
+                                               VkDependencyInfo const * pDependencyInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdWaitEvents2( commandBuffer, eventCount, pEvents, pDependencyInfos );
       }
 
-      VULKAN_HPP_INLINE void vkCmdBlitImage2( VkCommandBuffer commandBuffer, const VkBlitImageInfo2 * pBlitImageInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdBlitImage2( VkCommandBuffer commandBuffer, VkBlitImageInfo2 const * pBlitImageInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBlitImage2( commandBuffer, pBlitImageInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdResolveImage2( VkCommandBuffer commandBuffer, const VkResolveImageInfo2 * pResolveImageInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdResolveImage2( VkCommandBuffer commandBuffer, VkResolveImageInfo2 const * pResolveImageInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdResolveImage2( commandBuffer, pResolveImageInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdBeginRendering( VkCommandBuffer commandBuffer, const VkRenderingInfo * pRenderingInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdBeginRendering( VkCommandBuffer commandBuffer, VkRenderingInfo const * pRenderingInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBeginRendering( commandBuffer, pRenderingInfo );
       }
@@ -3295,13 +3295,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void
-        vkCmdSetViewportWithCount( VkCommandBuffer commandBuffer, uint32_t viewportCount, const VkViewport * pViewports ) const VULKAN_HPP_NOEXCEPT
+        vkCmdSetViewportWithCount( VkCommandBuffer commandBuffer, uint32_t viewportCount, VkViewport const * pViewports ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetViewportWithCount( commandBuffer, viewportCount, pViewports );
       }
 
       VULKAN_HPP_INLINE void
-        vkCmdSetScissorWithCount( VkCommandBuffer commandBuffer, uint32_t scissorCount, const VkRect2D * pScissors ) const VULKAN_HPP_NOEXCEPT
+        vkCmdSetScissorWithCount( VkCommandBuffer commandBuffer, uint32_t scissorCount, VkRect2D const * pScissors ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetScissorWithCount( commandBuffer, scissorCount, pScissors );
       }
@@ -3309,10 +3309,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdBindVertexBuffers2( VkCommandBuffer      commandBuffer,
                                                       uint32_t             firstBinding,
                                                       uint32_t             bindingCount,
-                                                      const VkBuffer *     pBuffers,
-                                                      const VkDeviceSize * pOffsets,
-                                                      const VkDeviceSize * pSizes,
-                                                      const VkDeviceSize * pStrides ) const VULKAN_HPP_NOEXCEPT
+                                                      VkBuffer const *     pBuffers,
+                                                      VkDeviceSize const * pOffsets,
+                                                      VkDeviceSize const * pSizes,
+                                                      VkDeviceSize const * pStrides ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindVertexBuffers2( commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes, pStrides );
       }
@@ -3369,18 +3369,18 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_VERSION_1_4 ===
 
-      VULKAN_HPP_INLINE VkResult vkMapMemory2( VkDevice device, const VkMemoryMapInfo * pMemoryMapInfo, void ** ppData ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkMapMemory2( VkDevice device, VkMemoryMapInfo const * pMemoryMapInfo, void ** ppData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkMapMemory2( device, pMemoryMapInfo, ppData );
       }
 
-      VULKAN_HPP_INLINE VkResult vkUnmapMemory2( VkDevice device, const VkMemoryUnmapInfo * pMemoryUnmapInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkUnmapMemory2( VkDevice device, VkMemoryUnmapInfo const * pMemoryUnmapInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkUnmapMemory2( device, pMemoryUnmapInfo );
       }
 
       VULKAN_HPP_INLINE void vkGetDeviceImageSubresourceLayout( VkDevice                             device,
-                                                                const VkDeviceImageSubresourceInfo * pInfo,
+                                                                VkDeviceImageSubresourceInfo const * pInfo,
                                                                 VkSubresourceLayout2 *               pLayout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceImageSubresourceLayout( device, pInfo, pLayout );
@@ -3388,30 +3388,30 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkGetImageSubresourceLayout2( VkDevice                    device,
                                                            VkImage                     image,
-                                                           const VkImageSubresource2 * pSubresource,
+                                                           VkImageSubresource2 const * pSubresource,
                                                            VkSubresourceLayout2 *      pLayout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetImageSubresourceLayout2( device, image, pSubresource, pLayout );
       }
 
-      VULKAN_HPP_INLINE VkResult vkCopyMemoryToImage( VkDevice device, const VkCopyMemoryToImageInfo * pCopyMemoryToImageInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkCopyMemoryToImage( VkDevice device, VkCopyMemoryToImageInfo const * pCopyMemoryToImageInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCopyMemoryToImage( device, pCopyMemoryToImageInfo );
       }
 
-      VULKAN_HPP_INLINE VkResult vkCopyImageToMemory( VkDevice device, const VkCopyImageToMemoryInfo * pCopyImageToMemoryInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkCopyImageToMemory( VkDevice device, VkCopyImageToMemoryInfo const * pCopyImageToMemoryInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCopyImageToMemory( device, pCopyImageToMemoryInfo );
       }
 
-      VULKAN_HPP_INLINE VkResult vkCopyImageToImage( VkDevice device, const VkCopyImageToImageInfo * pCopyImageToImageInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkCopyImageToImage( VkDevice device, VkCopyImageToImageInfo const * pCopyImageToImageInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCopyImageToImage( device, pCopyImageToImageInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkTransitionImageLayout( VkDevice                                device,
                                                           uint32_t                                transitionCount,
-                                                          const VkHostImageLayoutTransitionInfo * pTransitions ) const VULKAN_HPP_NOEXCEPT
+                                                          VkHostImageLayoutTransitionInfo const * pTransitions ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkTransitionImageLayout( device, transitionCount, pTransitions );
       }
@@ -3421,7 +3421,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                      VkPipelineLayout             layout,
                                                      uint32_t                     set,
                                                      uint32_t                     descriptorWriteCount,
-                                                     const VkWriteDescriptorSet * pDescriptorWrites ) const VULKAN_HPP_NOEXCEPT
+                                                     VkWriteDescriptorSet const * pDescriptorWrites ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPushDescriptorSet( commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites );
       }
@@ -3430,31 +3430,31 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                  VkDescriptorUpdateTemplate descriptorUpdateTemplate,
                                                                  VkPipelineLayout           layout,
                                                                  uint32_t                   set,
-                                                                 const void *               pData ) const VULKAN_HPP_NOEXCEPT
+                                                                 void const *               pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPushDescriptorSetWithTemplate( commandBuffer, descriptorUpdateTemplate, layout, set, pData );
       }
 
       VULKAN_HPP_INLINE void vkCmdBindDescriptorSets2( VkCommandBuffer                  commandBuffer,
-                                                       const VkBindDescriptorSetsInfo * pBindDescriptorSetsInfo ) const VULKAN_HPP_NOEXCEPT
+                                                       VkBindDescriptorSetsInfo const * pBindDescriptorSetsInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindDescriptorSets2( commandBuffer, pBindDescriptorSetsInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdPushConstants2( VkCommandBuffer commandBuffer, const VkPushConstantsInfo * pPushConstantsInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdPushConstants2( VkCommandBuffer commandBuffer, VkPushConstantsInfo const * pPushConstantsInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPushConstants2( commandBuffer, pPushConstantsInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdPushDescriptorSet2( VkCommandBuffer                 commandBuffer,
-                                                      const VkPushDescriptorSetInfo * pPushDescriptorSetInfo ) const VULKAN_HPP_NOEXCEPT
+                                                      VkPushDescriptorSetInfo const * pPushDescriptorSetInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPushDescriptorSet2( commandBuffer, pPushDescriptorSetInfo );
       }
 
       VULKAN_HPP_INLINE void
         vkCmdPushDescriptorSetWithTemplate2( VkCommandBuffer                             commandBuffer,
-                                             const VkPushDescriptorSetWithTemplateInfo * pPushDescriptorSetWithTemplateInfo ) const VULKAN_HPP_NOEXCEPT
+                                             VkPushDescriptorSetWithTemplateInfo const * pPushDescriptorSetWithTemplateInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPushDescriptorSetWithTemplate2( commandBuffer, pPushDescriptorSetWithTemplateInfo );
       }
@@ -3472,20 +3472,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void
-        vkGetRenderingAreaGranularity( VkDevice device, const VkRenderingAreaInfo * pRenderingAreaInfo, VkExtent2D * pGranularity ) const VULKAN_HPP_NOEXCEPT
+        vkGetRenderingAreaGranularity( VkDevice device, VkRenderingAreaInfo const * pRenderingAreaInfo, VkExtent2D * pGranularity ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetRenderingAreaGranularity( device, pRenderingAreaInfo, pGranularity );
       }
 
       VULKAN_HPP_INLINE void vkCmdSetRenderingAttachmentLocations( VkCommandBuffer                           commandBuffer,
-                                                                   const VkRenderingAttachmentLocationInfo * pLocationInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                   VkRenderingAttachmentLocationInfo const * pLocationInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetRenderingAttachmentLocations( commandBuffer, pLocationInfo );
       }
 
       VULKAN_HPP_INLINE void
         vkCmdSetRenderingInputAttachmentIndices( VkCommandBuffer                             commandBuffer,
-                                                 const VkRenderingInputAttachmentIndexInfo * pInputAttachmentIndexInfo ) const VULKAN_HPP_NOEXCEPT
+                                                 VkRenderingInputAttachmentIndexInfo const * pInputAttachmentIndexInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetRenderingInputAttachmentIndices( commandBuffer, pInputAttachmentIndexInfo );
       }
@@ -3494,7 +3494,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_surface ===
 
       VULKAN_HPP_INLINE void
-        vkDestroySurfaceKHR( VkInstance instance, VkSurfaceKHR surface, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroySurfaceKHR( VkInstance instance, VkSurfaceKHR surface, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroySurfaceKHR( instance, surface, pAllocator );
       }
@@ -3533,15 +3533,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_swapchain ===
 
       VULKAN_HPP_INLINE VkResult vkCreateSwapchainKHR( VkDevice                         device,
-                                                       const VkSwapchainCreateInfoKHR * pCreateInfo,
-                                                       const VkAllocationCallbacks *    pAllocator,
+                                                       VkSwapchainCreateInfoKHR const * pCreateInfo,
+                                                       VkAllocationCallbacks const *    pAllocator,
                                                        VkSwapchainKHR *                 pSwapchain ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateSwapchainKHR( device, pCreateInfo, pAllocator, pSwapchain );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroySwapchainKHR( VkDevice device, VkSwapchainKHR swapchain, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroySwapchainKHR( VkDevice device, VkSwapchainKHR swapchain, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroySwapchainKHR( device, swapchain, pAllocator );
       }
@@ -3560,7 +3560,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkAcquireNextImageKHR( device, swapchain, timeout, semaphore, fence, pImageIndex );
       }
 
-      VULKAN_HPP_INLINE VkResult vkQueuePresentKHR( VkQueue queue, const VkPresentInfoKHR * pPresentInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkQueuePresentKHR( VkQueue queue, VkPresentInfoKHR const * pPresentInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkQueuePresentKHR( queue, pPresentInfo );
       }
@@ -3587,7 +3587,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkAcquireNextImage2KHR( VkDevice                          device,
-                                                         const VkAcquireNextImageInfoKHR * pAcquireInfo,
+                                                         VkAcquireNextImageInfoKHR const * pAcquireInfo,
                                                          uint32_t *                        pImageIndex ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkAcquireNextImage2KHR( device, pAcquireInfo, pImageIndex );
@@ -3627,8 +3627,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkCreateDisplayModeKHR( VkPhysicalDevice                   physicalDevice,
                                                          VkDisplayKHR                       display,
-                                                         const VkDisplayModeCreateInfoKHR * pCreateInfo,
-                                                         const VkAllocationCallbacks *      pAllocator,
+                                                         VkDisplayModeCreateInfoKHR const * pCreateInfo,
+                                                         VkAllocationCallbacks const *      pAllocator,
                                                          VkDisplayModeKHR *                 pMode ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDisplayModeKHR( physicalDevice, display, pCreateInfo, pAllocator, pMode );
@@ -3643,8 +3643,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateDisplayPlaneSurfaceKHR( VkInstance                            instance,
-                                                                 const VkDisplaySurfaceCreateInfoKHR * pCreateInfo,
-                                                                 const VkAllocationCallbacks *         pAllocator,
+                                                                 VkDisplaySurfaceCreateInfoKHR const * pCreateInfo,
+                                                                 VkAllocationCallbacks const *         pAllocator,
                                                                  VkSurfaceKHR *                        pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDisplayPlaneSurfaceKHR( instance, pCreateInfo, pAllocator, pSurface );
@@ -3654,8 +3654,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkCreateSharedSwapchainsKHR( VkDevice                         device,
                                                               uint32_t                         swapchainCount,
-                                                              const VkSwapchainCreateInfoKHR * pCreateInfos,
-                                                              const VkAllocationCallbacks *    pAllocator,
+                                                              VkSwapchainCreateInfoKHR const * pCreateInfos,
+                                                              VkAllocationCallbacks const *    pAllocator,
                                                               VkSwapchainKHR *                 pSwapchains ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateSharedSwapchainsKHR( device, swapchainCount, pCreateInfos, pAllocator, pSwapchains );
@@ -3665,8 +3665,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_xlib_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateXlibSurfaceKHR( VkInstance                         instance,
-                                                         const VkXlibSurfaceCreateInfoKHR * pCreateInfo,
-                                                         const VkAllocationCallbacks *      pAllocator,
+                                                         VkXlibSurfaceCreateInfoKHR const * pCreateInfo,
+                                                         VkAllocationCallbacks const *      pAllocator,
                                                          VkSurfaceKHR *                     pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateXlibSurfaceKHR( instance, pCreateInfo, pAllocator, pSurface );
@@ -3685,8 +3685,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_xcb_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateXcbSurfaceKHR( VkInstance                        instance,
-                                                        const VkXcbSurfaceCreateInfoKHR * pCreateInfo,
-                                                        const VkAllocationCallbacks *     pAllocator,
+                                                        VkXcbSurfaceCreateInfoKHR const * pCreateInfo,
+                                                        VkAllocationCallbacks const *     pAllocator,
                                                         VkSurfaceKHR *                    pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateXcbSurfaceKHR( instance, pCreateInfo, pAllocator, pSurface );
@@ -3705,8 +3705,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_wayland_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateWaylandSurfaceKHR( VkInstance                            instance,
-                                                            const VkWaylandSurfaceCreateInfoKHR * pCreateInfo,
-                                                            const VkAllocationCallbacks *         pAllocator,
+                                                            VkWaylandSurfaceCreateInfoKHR const * pCreateInfo,
+                                                            VkAllocationCallbacks const *         pAllocator,
                                                             VkSurfaceKHR *                        pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateWaylandSurfaceKHR( instance, pCreateInfo, pAllocator, pSurface );
@@ -3724,8 +3724,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_android_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateAndroidSurfaceKHR( VkInstance                            instance,
-                                                            const VkAndroidSurfaceCreateInfoKHR * pCreateInfo,
-                                                            const VkAllocationCallbacks *         pAllocator,
+                                                            VkAndroidSurfaceCreateInfoKHR const * pCreateInfo,
+                                                            VkAllocationCallbacks const *         pAllocator,
                                                             VkSurfaceKHR *                        pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateAndroidSurfaceKHR( instance, pCreateInfo, pAllocator, pSurface );
@@ -3736,8 +3736,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_win32_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateWin32SurfaceKHR( VkInstance                          instance,
-                                                          const VkWin32SurfaceCreateInfoKHR * pCreateInfo,
-                                                          const VkAllocationCallbacks *       pAllocator,
+                                                          VkWin32SurfaceCreateInfoKHR const * pCreateInfo,
+                                                          VkAllocationCallbacks const *       pAllocator,
                                                           VkSurfaceKHR *                      pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateWin32SurfaceKHR( instance, pCreateInfo, pAllocator, pSurface );
@@ -3753,8 +3753,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_debug_report ===
 
       VULKAN_HPP_INLINE VkResult vkCreateDebugReportCallbackEXT( VkInstance                                 instance,
-                                                                 const VkDebugReportCallbackCreateInfoEXT * pCreateInfo,
-                                                                 const VkAllocationCallbacks *              pAllocator,
+                                                                 VkDebugReportCallbackCreateInfoEXT const * pCreateInfo,
+                                                                 VkAllocationCallbacks const *              pAllocator,
                                                                  VkDebugReportCallbackEXT *                 pCallback ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDebugReportCallbackEXT( instance, pCreateInfo, pAllocator, pCallback );
@@ -3762,7 +3762,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroyDebugReportCallbackEXT( VkInstance                    instance,
                                                               VkDebugReportCallbackEXT      callback,
-                                                              const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                              VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyDebugReportCallbackEXT( instance, callback, pAllocator );
       }
@@ -3773,25 +3773,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                       uint64_t                   object,
                                                       size_t                     location,
                                                       int32_t                    messageCode,
-                                                      const char *               pLayerPrefix,
-                                                      const char *               pMessage ) const VULKAN_HPP_NOEXCEPT
+                                                      char const *               pLayerPrefix,
+                                                      char const *               pMessage ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDebugReportMessageEXT( instance, flags, objectType, object, location, messageCode, pLayerPrefix, pMessage );
       }
 
       //=== VK_EXT_debug_marker ===
 
-      VULKAN_HPP_INLINE VkResult vkDebugMarkerSetObjectTagEXT( VkDevice device, const VkDebugMarkerObjectTagInfoEXT * pTagInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkDebugMarkerSetObjectTagEXT( VkDevice device, VkDebugMarkerObjectTagInfoEXT const * pTagInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDebugMarkerSetObjectTagEXT( device, pTagInfo );
       }
 
-      VULKAN_HPP_INLINE VkResult vkDebugMarkerSetObjectNameEXT( VkDevice device, const VkDebugMarkerObjectNameInfoEXT * pNameInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkDebugMarkerSetObjectNameEXT( VkDevice device, VkDebugMarkerObjectNameInfoEXT const * pNameInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDebugMarkerSetObjectNameEXT( device, pNameInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdDebugMarkerBeginEXT( VkCommandBuffer commandBuffer, const VkDebugMarkerMarkerInfoEXT * pMarkerInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdDebugMarkerBeginEXT( VkCommandBuffer commandBuffer, VkDebugMarkerMarkerInfoEXT const * pMarkerInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdDebugMarkerBeginEXT( commandBuffer, pMarkerInfo );
       }
@@ -3802,7 +3802,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void vkCmdDebugMarkerInsertEXT( VkCommandBuffer                    commandBuffer,
-                                                        const VkDebugMarkerMarkerInfoEXT * pMarkerInfo ) const VULKAN_HPP_NOEXCEPT
+                                                        VkDebugMarkerMarkerInfoEXT const * pMarkerInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdDebugMarkerInsertEXT( commandBuffer, pMarkerInfo );
       }
@@ -3810,14 +3810,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_video_queue ===
 
       VULKAN_HPP_INLINE VkResult vkGetPhysicalDeviceVideoCapabilitiesKHR( VkPhysicalDevice              physicalDevice,
-                                                                          const VkVideoProfileInfoKHR * pVideoProfile,
+                                                                          VkVideoProfileInfoKHR const * pVideoProfile,
                                                                           VkVideoCapabilitiesKHR *      pCapabilities ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceVideoCapabilitiesKHR( physicalDevice, pVideoProfile, pCapabilities );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetPhysicalDeviceVideoFormatPropertiesKHR( VkPhysicalDevice                           physicalDevice,
-                                                                              const VkPhysicalDeviceVideoFormatInfoKHR * pVideoFormatInfo,
+                                                                              VkPhysicalDeviceVideoFormatInfoKHR const * pVideoFormatInfo,
                                                                               uint32_t *                                 pVideoFormatPropertyCount,
                                                                               VkVideoFormatPropertiesKHR * pVideoFormatProperties ) const VULKAN_HPP_NOEXCEPT
       {
@@ -3825,15 +3825,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateVideoSessionKHR( VkDevice                            device,
-                                                          const VkVideoSessionCreateInfoKHR * pCreateInfo,
-                                                          const VkAllocationCallbacks *       pAllocator,
+                                                          VkVideoSessionCreateInfoKHR const * pCreateInfo,
+                                                          VkAllocationCallbacks const *       pAllocator,
                                                           VkVideoSessionKHR *                 pVideoSession ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateVideoSessionKHR( device, pCreateInfo, pAllocator, pVideoSession );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyVideoSessionKHR( VkDevice device, VkVideoSessionKHR videoSession, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyVideoSessionKHR( VkDevice device, VkVideoSessionKHR videoSession, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyVideoSessionKHR( device, videoSession, pAllocator );
       }
@@ -3849,14 +3849,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE VkResult vkBindVideoSessionMemoryKHR( VkDevice                                device,
                                                               VkVideoSessionKHR                       videoSession,
                                                               uint32_t                                bindSessionMemoryInfoCount,
-                                                              const VkBindVideoSessionMemoryInfoKHR * pBindSessionMemoryInfos ) const VULKAN_HPP_NOEXCEPT
+                                                              VkBindVideoSessionMemoryInfoKHR const * pBindSessionMemoryInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkBindVideoSessionMemoryKHR( device, videoSession, bindSessionMemoryInfoCount, pBindSessionMemoryInfos );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateVideoSessionParametersKHR( VkDevice                                      device,
-                                                                    const VkVideoSessionParametersCreateInfoKHR * pCreateInfo,
-                                                                    const VkAllocationCallbacks *                 pAllocator,
+                                                                    VkVideoSessionParametersCreateInfoKHR const * pCreateInfo,
+                                                                    VkAllocationCallbacks const *                 pAllocator,
                                                                     VkVideoSessionParametersKHR * pVideoSessionParameters ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateVideoSessionParametersKHR( device, pCreateInfo, pAllocator, pVideoSessionParameters );
@@ -3864,37 +3864,37 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkUpdateVideoSessionParametersKHR( VkDevice                                      device,
                                                                     VkVideoSessionParametersKHR                   videoSessionParameters,
-                                                                    const VkVideoSessionParametersUpdateInfoKHR * pUpdateInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                    VkVideoSessionParametersUpdateInfoKHR const * pUpdateInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkUpdateVideoSessionParametersKHR( device, videoSessionParameters, pUpdateInfo );
       }
 
       VULKAN_HPP_INLINE void vkDestroyVideoSessionParametersKHR( VkDevice                      device,
                                                                  VkVideoSessionParametersKHR   videoSessionParameters,
-                                                                 const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                                 VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyVideoSessionParametersKHR( device, videoSessionParameters, pAllocator );
       }
 
-      VULKAN_HPP_INLINE void vkCmdBeginVideoCodingKHR( VkCommandBuffer commandBuffer, const VkVideoBeginCodingInfoKHR * pBeginInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdBeginVideoCodingKHR( VkCommandBuffer commandBuffer, VkVideoBeginCodingInfoKHR const * pBeginInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBeginVideoCodingKHR( commandBuffer, pBeginInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdEndVideoCodingKHR( VkCommandBuffer commandBuffer, const VkVideoEndCodingInfoKHR * pEndCodingInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdEndVideoCodingKHR( VkCommandBuffer commandBuffer, VkVideoEndCodingInfoKHR const * pEndCodingInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdEndVideoCodingKHR( commandBuffer, pEndCodingInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdControlVideoCodingKHR( VkCommandBuffer                     commandBuffer,
-                                                         const VkVideoCodingControlInfoKHR * pCodingControlInfo ) const VULKAN_HPP_NOEXCEPT
+                                                         VkVideoCodingControlInfoKHR const * pCodingControlInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdControlVideoCodingKHR( commandBuffer, pCodingControlInfo );
       }
 
       //=== VK_KHR_video_decode_queue ===
 
-      VULKAN_HPP_INLINE void vkCmdDecodeVideoKHR( VkCommandBuffer commandBuffer, const VkVideoDecodeInfoKHR * pDecodeInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdDecodeVideoKHR( VkCommandBuffer commandBuffer, VkVideoDecodeInfoKHR const * pDecodeInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdDecodeVideoKHR( commandBuffer, pDecodeInfo );
       }
@@ -3904,9 +3904,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdBindTransformFeedbackBuffersEXT( VkCommandBuffer      commandBuffer,
                                                                    uint32_t             firstBinding,
                                                                    uint32_t             bindingCount,
-                                                                   const VkBuffer *     pBuffers,
-                                                                   const VkDeviceSize * pOffsets,
-                                                                   const VkDeviceSize * pSizes ) const VULKAN_HPP_NOEXCEPT
+                                                                   VkBuffer const *     pBuffers,
+                                                                   VkDeviceSize const * pOffsets,
+                                                                   VkDeviceSize const * pSizes ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindTransformFeedbackBuffersEXT( commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes );
       }
@@ -3914,8 +3914,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdBeginTransformFeedbackEXT( VkCommandBuffer      commandBuffer,
                                                              uint32_t             firstCounterBuffer,
                                                              uint32_t             counterBufferCount,
-                                                             const VkBuffer *     pCounterBuffers,
-                                                             const VkDeviceSize * pCounterBufferOffsets ) const VULKAN_HPP_NOEXCEPT
+                                                             VkBuffer const *     pCounterBuffers,
+                                                             VkDeviceSize const * pCounterBufferOffsets ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBeginTransformFeedbackEXT( commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets );
       }
@@ -3923,8 +3923,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdEndTransformFeedbackEXT( VkCommandBuffer      commandBuffer,
                                                            uint32_t             firstCounterBuffer,
                                                            uint32_t             counterBufferCount,
-                                                           const VkBuffer *     pCounterBuffers,
-                                                           const VkDeviceSize * pCounterBufferOffsets ) const VULKAN_HPP_NOEXCEPT
+                                                           VkBuffer const *     pCounterBuffers,
+                                                           VkDeviceSize const * pCounterBufferOffsets ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdEndTransformFeedbackEXT( commandBuffer, firstCounterBuffer, counterBufferCount, pCounterBuffers, pCounterBufferOffsets );
       }
@@ -3955,45 +3955,45 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_NVX_binary_import ===
 
       VULKAN_HPP_INLINE VkResult vkCreateCuModuleNVX( VkDevice                        device,
-                                                      const VkCuModuleCreateInfoNVX * pCreateInfo,
-                                                      const VkAllocationCallbacks *   pAllocator,
+                                                      VkCuModuleCreateInfoNVX const * pCreateInfo,
+                                                      VkAllocationCallbacks const *   pAllocator,
                                                       VkCuModuleNVX *                 pModule ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateCuModuleNVX( device, pCreateInfo, pAllocator, pModule );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateCuFunctionNVX( VkDevice                          device,
-                                                        const VkCuFunctionCreateInfoNVX * pCreateInfo,
-                                                        const VkAllocationCallbacks *     pAllocator,
+                                                        VkCuFunctionCreateInfoNVX const * pCreateInfo,
+                                                        VkAllocationCallbacks const *     pAllocator,
                                                         VkCuFunctionNVX *                 pFunction ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateCuFunctionNVX( device, pCreateInfo, pAllocator, pFunction );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyCuModuleNVX( VkDevice device, VkCuModuleNVX module, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyCuModuleNVX( VkDevice device, VkCuModuleNVX module, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyCuModuleNVX( device, module, pAllocator );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyCuFunctionNVX( VkDevice device, VkCuFunctionNVX function, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyCuFunctionNVX( VkDevice device, VkCuFunctionNVX function, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyCuFunctionNVX( device, function, pAllocator );
       }
 
-      VULKAN_HPP_INLINE void vkCmdCuLaunchKernelNVX( VkCommandBuffer commandBuffer, const VkCuLaunchInfoNVX * pLaunchInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdCuLaunchKernelNVX( VkCommandBuffer commandBuffer, VkCuLaunchInfoNVX const * pLaunchInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCuLaunchKernelNVX( commandBuffer, pLaunchInfo );
       }
 
       //=== VK_NVX_image_view_handle ===
 
-      VULKAN_HPP_INLINE uint32_t vkGetImageViewHandleNVX( VkDevice device, const VkImageViewHandleInfoNVX * pInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE uint32_t vkGetImageViewHandleNVX( VkDevice device, VkImageViewHandleInfoNVX const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetImageViewHandleNVX( device, pInfo );
       }
 
-      VULKAN_HPP_INLINE uint64_t vkGetImageViewHandle64NVX( VkDevice device, const VkImageViewHandleInfoNVX * pInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE uint64_t vkGetImageViewHandle64NVX( VkDevice device, VkImageViewHandleInfoNVX const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetImageViewHandle64NVX( device, pInfo );
       }
@@ -4050,7 +4050,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_dynamic_rendering ===
 
-      VULKAN_HPP_INLINE void vkCmdBeginRenderingKHR( VkCommandBuffer commandBuffer, const VkRenderingInfo * pRenderingInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdBeginRenderingKHR( VkCommandBuffer commandBuffer, VkRenderingInfo const * pRenderingInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBeginRenderingKHR( commandBuffer, pRenderingInfo );
       }
@@ -4064,8 +4064,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_GGP_stream_descriptor_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateStreamDescriptorSurfaceGGP( VkInstance                                     instance,
-                                                                     const VkStreamDescriptorSurfaceCreateInfoGGP * pCreateInfo,
-                                                                     const VkAllocationCallbacks *                  pAllocator,
+                                                                     VkStreamDescriptorSurfaceCreateInfoGGP const * pCreateInfo,
+                                                                     VkAllocationCallbacks const *                  pAllocator,
                                                                      VkSurfaceKHR *                                 pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateStreamDescriptorSurfaceGGP( instance, pCreateInfo, pAllocator, pSurface );
@@ -4121,7 +4121,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkGetPhysicalDeviceImageFormatProperties2KHR( VkPhysicalDevice                         physicalDevice,
-                                                                               const VkPhysicalDeviceImageFormatInfo2 * pImageFormatInfo,
+                                                                               VkPhysicalDeviceImageFormatInfo2 const * pImageFormatInfo,
                                                                                VkImageFormatProperties2 * pImageFormatProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceImageFormatProperties2KHR( physicalDevice, pImageFormatInfo, pImageFormatProperties );
@@ -4141,7 +4141,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void vkGetPhysicalDeviceSparseImageFormatProperties2KHR( VkPhysicalDevice                               physicalDevice,
-                                                                                 const VkPhysicalDeviceSparseImageFormatInfo2 * pFormatInfo,
+                                                                                 VkPhysicalDeviceSparseImageFormatInfo2 const * pFormatInfo,
                                                                                  uint32_t *                                     pPropertyCount,
                                                                                  VkSparseImageFormatProperties2 * pProperties ) const VULKAN_HPP_NOEXCEPT
       {
@@ -4179,8 +4179,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_NN_vi_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateViSurfaceNN( VkInstance                      instance,
-                                                      const VkViSurfaceCreateInfoNN * pCreateInfo,
-                                                      const VkAllocationCallbacks *   pAllocator,
+                                                      VkViSurfaceCreateInfoNN const * pCreateInfo,
+                                                      VkAllocationCallbacks const *   pAllocator,
                                                       VkSurfaceKHR *                  pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateViSurfaceNN( instance, pCreateInfo, pAllocator, pSurface );
@@ -4205,7 +4205,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_external_memory_capabilities ===
 
       VULKAN_HPP_INLINE void vkGetPhysicalDeviceExternalBufferPropertiesKHR( VkPhysicalDevice                           physicalDevice,
-                                                                             const VkPhysicalDeviceExternalBufferInfo * pExternalBufferInfo,
+                                                                             VkPhysicalDeviceExternalBufferInfo const * pExternalBufferInfo,
                                                                              VkExternalBufferProperties * pExternalBufferProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceExternalBufferPropertiesKHR( physicalDevice, pExternalBufferInfo, pExternalBufferProperties );
@@ -4215,7 +4215,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_external_memory_win32 ===
 
       VULKAN_HPP_INLINE VkResult vkGetMemoryWin32HandleKHR( VkDevice                              device,
-                                                            const VkMemoryGetWin32HandleInfoKHR * pGetWin32HandleInfo,
+                                                            VkMemoryGetWin32HandleInfoKHR const * pGetWin32HandleInfo,
                                                             HANDLE *                              pHandle ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetMemoryWin32HandleKHR( device, pGetWin32HandleInfo, pHandle );
@@ -4233,7 +4233,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_external_memory_fd ===
 
-      VULKAN_HPP_INLINE VkResult vkGetMemoryFdKHR( VkDevice device, const VkMemoryGetFdInfoKHR * pGetFdInfo, int * pFd ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkGetMemoryFdKHR( VkDevice device, VkMemoryGetFdInfoKHR const * pGetFdInfo, int * pFd ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetMemoryFdKHR( device, pGetFdInfo, pFd );
       }
@@ -4250,7 +4250,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void
         vkGetPhysicalDeviceExternalSemaphorePropertiesKHR( VkPhysicalDevice                              physicalDevice,
-                                                           const VkPhysicalDeviceExternalSemaphoreInfo * pExternalSemaphoreInfo,
+                                                           VkPhysicalDeviceExternalSemaphoreInfo const * pExternalSemaphoreInfo,
                                                            VkExternalSemaphoreProperties * pExternalSemaphoreProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceExternalSemaphorePropertiesKHR( physicalDevice, pExternalSemaphoreInfo, pExternalSemaphoreProperties );
@@ -4260,13 +4260,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_external_semaphore_win32 ===
 
       VULKAN_HPP_INLINE VkResult vkImportSemaphoreWin32HandleKHR(
-        VkDevice device, const VkImportSemaphoreWin32HandleInfoKHR * pImportSemaphoreWin32HandleInfo ) const VULKAN_HPP_NOEXCEPT
+        VkDevice device, VkImportSemaphoreWin32HandleInfoKHR const * pImportSemaphoreWin32HandleInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkImportSemaphoreWin32HandleKHR( device, pImportSemaphoreWin32HandleInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetSemaphoreWin32HandleKHR( VkDevice                                 device,
-                                                               const VkSemaphoreGetWin32HandleInfoKHR * pGetWin32HandleInfo,
+                                                               VkSemaphoreGetWin32HandleInfoKHR const * pGetWin32HandleInfo,
                                                                HANDLE *                                 pHandle ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetSemaphoreWin32HandleKHR( device, pGetWin32HandleInfo, pHandle );
@@ -4275,12 +4275,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_external_semaphore_fd ===
 
-      VULKAN_HPP_INLINE VkResult vkImportSemaphoreFdKHR( VkDevice device, const VkImportSemaphoreFdInfoKHR * pImportSemaphoreFdInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkImportSemaphoreFdKHR( VkDevice device, VkImportSemaphoreFdInfoKHR const * pImportSemaphoreFdInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkImportSemaphoreFdKHR( device, pImportSemaphoreFdInfo );
       }
 
-      VULKAN_HPP_INLINE VkResult vkGetSemaphoreFdKHR( VkDevice device, const VkSemaphoreGetFdInfoKHR * pGetFdInfo, int * pFd ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkGetSemaphoreFdKHR( VkDevice device, VkSemaphoreGetFdInfoKHR const * pGetFdInfo, int * pFd ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetSemaphoreFdKHR( device, pGetFdInfo, pFd );
       }
@@ -4292,7 +4292,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                         VkPipelineLayout             layout,
                                                         uint32_t                     set,
                                                         uint32_t                     descriptorWriteCount,
-                                                        const VkWriteDescriptorSet * pDescriptorWrites ) const VULKAN_HPP_NOEXCEPT
+                                                        VkWriteDescriptorSet const * pDescriptorWrites ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPushDescriptorSetKHR( commandBuffer, pipelineBindPoint, layout, set, descriptorWriteCount, pDescriptorWrites );
       }
@@ -4301,7 +4301,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                     VkDescriptorUpdateTemplate descriptorUpdateTemplate,
                                                                     VkPipelineLayout           layout,
                                                                     uint32_t                   set,
-                                                                    const void *               pData ) const VULKAN_HPP_NOEXCEPT
+                                                                    void const *               pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPushDescriptorSetWithTemplateKHR( commandBuffer, descriptorUpdateTemplate, layout, set, pData );
       }
@@ -4310,7 +4310,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void
         vkCmdBeginConditionalRenderingEXT( VkCommandBuffer                            commandBuffer,
-                                           const VkConditionalRenderingBeginInfoEXT * pConditionalRenderingBegin ) const VULKAN_HPP_NOEXCEPT
+                                           VkConditionalRenderingBeginInfoEXT const * pConditionalRenderingBegin ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBeginConditionalRenderingEXT( commandBuffer, pConditionalRenderingBegin );
       }
@@ -4323,8 +4323,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_descriptor_update_template ===
 
       VULKAN_HPP_INLINE VkResult vkCreateDescriptorUpdateTemplateKHR( VkDevice                                     device,
-                                                                      const VkDescriptorUpdateTemplateCreateInfo * pCreateInfo,
-                                                                      const VkAllocationCallbacks *                pAllocator,
+                                                                      VkDescriptorUpdateTemplateCreateInfo const * pCreateInfo,
+                                                                      VkAllocationCallbacks const *                pAllocator,
                                                                       VkDescriptorUpdateTemplate * pDescriptorUpdateTemplate ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDescriptorUpdateTemplateKHR( device, pCreateInfo, pAllocator, pDescriptorUpdateTemplate );
@@ -4332,7 +4332,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroyDescriptorUpdateTemplateKHR( VkDevice                      device,
                                                                    VkDescriptorUpdateTemplate    descriptorUpdateTemplate,
-                                                                   const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                                   VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyDescriptorUpdateTemplateKHR( device, descriptorUpdateTemplate, pAllocator );
       }
@@ -4340,7 +4340,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkUpdateDescriptorSetWithTemplateKHR( VkDevice                   device,
                                                                    VkDescriptorSet            descriptorSet,
                                                                    VkDescriptorUpdateTemplate descriptorUpdateTemplate,
-                                                                   const void *               pData ) const VULKAN_HPP_NOEXCEPT
+                                                                   void const *               pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkUpdateDescriptorSetWithTemplateKHR( device, descriptorSet, descriptorUpdateTemplate, pData );
       }
@@ -4350,7 +4350,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdSetViewportWScalingNV( VkCommandBuffer              commandBuffer,
                                                          uint32_t                     firstViewport,
                                                          uint32_t                     viewportCount,
-                                                         const VkViewportWScalingNV * pViewportWScalings ) const VULKAN_HPP_NOEXCEPT
+                                                         VkViewportWScalingNV const * pViewportWScalings ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetViewportWScalingNV( commandBuffer, firstViewport, viewportCount, pViewportWScalings );
       }
@@ -4392,14 +4392,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkDisplayPowerControlEXT( VkDevice                      device,
                                                            VkDisplayKHR                  display,
-                                                           const VkDisplayPowerInfoEXT * pDisplayPowerInfo ) const VULKAN_HPP_NOEXCEPT
+                                                           VkDisplayPowerInfoEXT const * pDisplayPowerInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDisplayPowerControlEXT( device, display, pDisplayPowerInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkRegisterDeviceEventEXT( VkDevice                      device,
-                                                           const VkDeviceEventInfoEXT *  pDeviceEventInfo,
-                                                           const VkAllocationCallbacks * pAllocator,
+                                                           VkDeviceEventInfoEXT const *  pDeviceEventInfo,
+                                                           VkAllocationCallbacks const * pAllocator,
                                                            VkFence *                     pFence ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkRegisterDeviceEventEXT( device, pDeviceEventInfo, pAllocator, pFence );
@@ -4407,8 +4407,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkRegisterDisplayEventEXT( VkDevice                      device,
                                                             VkDisplayKHR                  display,
-                                                            const VkDisplayEventInfoEXT * pDisplayEventInfo,
-                                                            const VkAllocationCallbacks * pAllocator,
+                                                            VkDisplayEventInfoEXT const * pDisplayEventInfo,
+                                                            VkAllocationCallbacks const * pAllocator,
                                                             VkFence *                     pFence ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkRegisterDisplayEventEXT( device, display, pDisplayEventInfo, pAllocator, pFence );
@@ -4444,7 +4444,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdSetDiscardRectangleEXT( VkCommandBuffer  commandBuffer,
                                                           uint32_t         firstDiscardRectangle,
                                                           uint32_t         discardRectangleCount,
-                                                          const VkRect2D * pDiscardRectangles ) const VULKAN_HPP_NOEXCEPT
+                                                          VkRect2D const * pDiscardRectangles ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetDiscardRectangleEXT( commandBuffer, firstDiscardRectangle, discardRectangleCount, pDiscardRectangles );
       }
@@ -4464,8 +4464,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkSetHdrMetadataEXT( VkDevice                 device,
                                                   uint32_t                 swapchainCount,
-                                                  const VkSwapchainKHR *   pSwapchains,
-                                                  const VkHdrMetadataEXT * pMetadata ) const VULKAN_HPP_NOEXCEPT
+                                                  VkSwapchainKHR const *   pSwapchains,
+                                                  VkHdrMetadataEXT const * pMetadata ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkSetHdrMetadataEXT( device, swapchainCount, pSwapchains, pMetadata );
       }
@@ -4473,28 +4473,28 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_create_renderpass2 ===
 
       VULKAN_HPP_INLINE VkResult vkCreateRenderPass2KHR( VkDevice                        device,
-                                                         const VkRenderPassCreateInfo2 * pCreateInfo,
-                                                         const VkAllocationCallbacks *   pAllocator,
+                                                         VkRenderPassCreateInfo2 const * pCreateInfo,
+                                                         VkAllocationCallbacks const *   pAllocator,
                                                          VkRenderPass *                  pRenderPass ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateRenderPass2KHR( device, pCreateInfo, pAllocator, pRenderPass );
       }
 
       VULKAN_HPP_INLINE void vkCmdBeginRenderPass2KHR( VkCommandBuffer               commandBuffer,
-                                                       const VkRenderPassBeginInfo * pRenderPassBegin,
-                                                       const VkSubpassBeginInfo *    pSubpassBeginInfo ) const VULKAN_HPP_NOEXCEPT
+                                                       VkRenderPassBeginInfo const * pRenderPassBegin,
+                                                       VkSubpassBeginInfo const *    pSubpassBeginInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBeginRenderPass2KHR( commandBuffer, pRenderPassBegin, pSubpassBeginInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdNextSubpass2KHR( VkCommandBuffer            commandBuffer,
-                                                   const VkSubpassBeginInfo * pSubpassBeginInfo,
-                                                   const VkSubpassEndInfo *   pSubpassEndInfo ) const VULKAN_HPP_NOEXCEPT
+                                                   VkSubpassBeginInfo const * pSubpassBeginInfo,
+                                                   VkSubpassEndInfo const *   pSubpassEndInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdNextSubpass2KHR( commandBuffer, pSubpassBeginInfo, pSubpassEndInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdEndRenderPass2KHR( VkCommandBuffer commandBuffer, const VkSubpassEndInfo * pSubpassEndInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdEndRenderPass2KHR( VkCommandBuffer commandBuffer, VkSubpassEndInfo const * pSubpassEndInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdEndRenderPass2KHR( commandBuffer, pSubpassEndInfo );
       }
@@ -4509,7 +4509,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_external_fence_capabilities ===
 
       VULKAN_HPP_INLINE void vkGetPhysicalDeviceExternalFencePropertiesKHR( VkPhysicalDevice                          physicalDevice,
-                                                                            const VkPhysicalDeviceExternalFenceInfo * pExternalFenceInfo,
+                                                                            VkPhysicalDeviceExternalFenceInfo const * pExternalFenceInfo,
                                                                             VkExternalFenceProperties * pExternalFenceProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceExternalFencePropertiesKHR( physicalDevice, pExternalFenceInfo, pExternalFenceProperties );
@@ -4519,13 +4519,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_external_fence_win32 ===
 
       VULKAN_HPP_INLINE VkResult vkImportFenceWin32HandleKHR( VkDevice                                device,
-                                                              const VkImportFenceWin32HandleInfoKHR * pImportFenceWin32HandleInfo ) const VULKAN_HPP_NOEXCEPT
+                                                              VkImportFenceWin32HandleInfoKHR const * pImportFenceWin32HandleInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkImportFenceWin32HandleKHR( device, pImportFenceWin32HandleInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetFenceWin32HandleKHR( VkDevice                             device,
-                                                           const VkFenceGetWin32HandleInfoKHR * pGetWin32HandleInfo,
+                                                           VkFenceGetWin32HandleInfoKHR const * pGetWin32HandleInfo,
                                                            HANDLE *                             pHandle ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetFenceWin32HandleKHR( device, pGetWin32HandleInfo, pHandle );
@@ -4534,12 +4534,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_external_fence_fd ===
 
-      VULKAN_HPP_INLINE VkResult vkImportFenceFdKHR( VkDevice device, const VkImportFenceFdInfoKHR * pImportFenceFdInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkImportFenceFdKHR( VkDevice device, VkImportFenceFdInfoKHR const * pImportFenceFdInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkImportFenceFdKHR( device, pImportFenceFdInfo );
       }
 
-      VULKAN_HPP_INLINE VkResult vkGetFenceFdKHR( VkDevice device, const VkFenceGetFdInfoKHR * pGetFdInfo, int * pFd ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkGetFenceFdKHR( VkDevice device, VkFenceGetFdInfoKHR const * pGetFdInfo, int * pFd ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetFenceFdKHR( device, pGetFdInfo, pFd );
       }
@@ -4558,13 +4558,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR( VkPhysicalDevice                            physicalDevice,
-                                                                                      const VkQueryPoolPerformanceCreateInfoKHR * pPerformanceQueryCreateInfo,
+                                                                                      VkQueryPoolPerformanceCreateInfoKHR const * pPerformanceQueryCreateInfo,
                                                                                       uint32_t * pNumPasses ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR( physicalDevice, pPerformanceQueryCreateInfo, pNumPasses );
       }
 
-      VULKAN_HPP_INLINE VkResult vkAcquireProfilingLockKHR( VkDevice device, const VkAcquireProfilingLockInfoKHR * pInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkAcquireProfilingLockKHR( VkDevice device, VkAcquireProfilingLockInfoKHR const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkAcquireProfilingLockKHR( device, pInfo );
       }
@@ -4577,14 +4577,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_get_surface_capabilities2 ===
 
       VULKAN_HPP_INLINE VkResult vkGetPhysicalDeviceSurfaceCapabilities2KHR( VkPhysicalDevice                        physicalDevice,
-                                                                             const VkPhysicalDeviceSurfaceInfo2KHR * pSurfaceInfo,
+                                                                             VkPhysicalDeviceSurfaceInfo2KHR const * pSurfaceInfo,
                                                                              VkSurfaceCapabilities2KHR * pSurfaceCapabilities ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceSurfaceCapabilities2KHR( physicalDevice, pSurfaceInfo, pSurfaceCapabilities );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetPhysicalDeviceSurfaceFormats2KHR( VkPhysicalDevice                        physicalDevice,
-                                                                        const VkPhysicalDeviceSurfaceInfo2KHR * pSurfaceInfo,
+                                                                        VkPhysicalDeviceSurfaceInfo2KHR const * pSurfaceInfo,
                                                                         uint32_t *                              pSurfaceFormatCount,
                                                                         VkSurfaceFormat2KHR *                   pSurfaceFormats ) const VULKAN_HPP_NOEXCEPT
       {
@@ -4616,7 +4616,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkGetDisplayPlaneCapabilities2KHR( VkPhysicalDevice                 physicalDevice,
-                                                                    const VkDisplayPlaneInfo2KHR *   pDisplayPlaneInfo,
+                                                                    VkDisplayPlaneInfo2KHR const *   pDisplayPlaneInfo,
                                                                     VkDisplayPlaneCapabilities2KHR * pCapabilities ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDisplayPlaneCapabilities2KHR( physicalDevice, pDisplayPlaneInfo, pCapabilities );
@@ -4626,8 +4626,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_MVK_ios_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateIOSSurfaceMVK( VkInstance                        instance,
-                                                        const VkIOSSurfaceCreateInfoMVK * pCreateInfo,
-                                                        const VkAllocationCallbacks *     pAllocator,
+                                                        VkIOSSurfaceCreateInfoMVK const * pCreateInfo,
+                                                        VkAllocationCallbacks const *     pAllocator,
                                                         VkSurfaceKHR *                    pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateIOSSurfaceMVK( instance, pCreateInfo, pAllocator, pSurface );
@@ -4638,8 +4638,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_MVK_macos_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateMacOSSurfaceMVK( VkInstance                          instance,
-                                                          const VkMacOSSurfaceCreateInfoMVK * pCreateInfo,
-                                                          const VkAllocationCallbacks *       pAllocator,
+                                                          VkMacOSSurfaceCreateInfoMVK const * pCreateInfo,
+                                                          VkAllocationCallbacks const *       pAllocator,
                                                           VkSurfaceKHR *                      pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateMacOSSurfaceMVK( instance, pCreateInfo, pAllocator, pSurface );
@@ -4648,17 +4648,17 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_EXT_debug_utils ===
 
-      VULKAN_HPP_INLINE VkResult vkSetDebugUtilsObjectNameEXT( VkDevice device, const VkDebugUtilsObjectNameInfoEXT * pNameInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkSetDebugUtilsObjectNameEXT( VkDevice device, VkDebugUtilsObjectNameInfoEXT const * pNameInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkSetDebugUtilsObjectNameEXT( device, pNameInfo );
       }
 
-      VULKAN_HPP_INLINE VkResult vkSetDebugUtilsObjectTagEXT( VkDevice device, const VkDebugUtilsObjectTagInfoEXT * pTagInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkSetDebugUtilsObjectTagEXT( VkDevice device, VkDebugUtilsObjectTagInfoEXT const * pTagInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkSetDebugUtilsObjectTagEXT( device, pTagInfo );
       }
 
-      VULKAN_HPP_INLINE void vkQueueBeginDebugUtilsLabelEXT( VkQueue queue, const VkDebugUtilsLabelEXT * pLabelInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkQueueBeginDebugUtilsLabelEXT( VkQueue queue, VkDebugUtilsLabelEXT const * pLabelInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkQueueBeginDebugUtilsLabelEXT( queue, pLabelInfo );
       }
@@ -4668,12 +4668,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkQueueEndDebugUtilsLabelEXT( queue );
       }
 
-      VULKAN_HPP_INLINE void vkQueueInsertDebugUtilsLabelEXT( VkQueue queue, const VkDebugUtilsLabelEXT * pLabelInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkQueueInsertDebugUtilsLabelEXT( VkQueue queue, VkDebugUtilsLabelEXT const * pLabelInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkQueueInsertDebugUtilsLabelEXT( queue, pLabelInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdBeginDebugUtilsLabelEXT( VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT * pLabelInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdBeginDebugUtilsLabelEXT( VkCommandBuffer commandBuffer, VkDebugUtilsLabelEXT const * pLabelInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBeginDebugUtilsLabelEXT( commandBuffer, pLabelInfo );
       }
@@ -4683,14 +4683,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdEndDebugUtilsLabelEXT( commandBuffer );
       }
 
-      VULKAN_HPP_INLINE void vkCmdInsertDebugUtilsLabelEXT( VkCommandBuffer commandBuffer, const VkDebugUtilsLabelEXT * pLabelInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdInsertDebugUtilsLabelEXT( VkCommandBuffer commandBuffer, VkDebugUtilsLabelEXT const * pLabelInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdInsertDebugUtilsLabelEXT( commandBuffer, pLabelInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateDebugUtilsMessengerEXT( VkInstance                                 instance,
-                                                                 const VkDebugUtilsMessengerCreateInfoEXT * pCreateInfo,
-                                                                 const VkAllocationCallbacks *              pAllocator,
+                                                                 VkDebugUtilsMessengerCreateInfoEXT const * pCreateInfo,
+                                                                 VkAllocationCallbacks const *              pAllocator,
                                                                  VkDebugUtilsMessengerEXT *                 pMessenger ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDebugUtilsMessengerEXT( instance, pCreateInfo, pAllocator, pMessenger );
@@ -4698,7 +4698,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroyDebugUtilsMessengerEXT( VkInstance                    instance,
                                                               VkDebugUtilsMessengerEXT      messenger,
-                                                              const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                              VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyDebugUtilsMessengerEXT( instance, messenger, pAllocator );
       }
@@ -4706,7 +4706,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkSubmitDebugUtilsMessageEXT( VkInstance                                   instance,
                                                            VkDebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
                                                            VkDebugUtilsMessageTypeFlagsEXT              messageTypes,
-                                                           const VkDebugUtilsMessengerCallbackDataEXT * pCallbackData ) const VULKAN_HPP_NOEXCEPT
+                                                           VkDebugUtilsMessengerCallbackDataEXT const * pCallbackData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkSubmitDebugUtilsMessageEXT( instance, messageSeverity, messageTypes, pCallbackData );
       }
@@ -4722,7 +4722,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkGetMemoryAndroidHardwareBufferANDROID( VkDevice                                            device,
-                                                                          const VkMemoryGetAndroidHardwareBufferInfoANDROID * pInfo,
+                                                                          VkMemoryGetAndroidHardwareBufferInfoANDROID const * pInfo,
                                                                           struct AHardwareBuffer ** pBuffer ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetMemoryAndroidHardwareBufferANDROID( device, pInfo, pBuffer );
@@ -4735,8 +4735,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE VkResult vkCreateExecutionGraphPipelinesAMDX( VkDevice                                       device,
                                                                       VkPipelineCache                                pipelineCache,
                                                                       uint32_t                                       createInfoCount,
-                                                                      const VkExecutionGraphPipelineCreateInfoAMDX * pCreateInfos,
-                                                                      const VkAllocationCallbacks *                  pAllocator,
+                                                                      VkExecutionGraphPipelineCreateInfoAMDX const * pCreateInfos,
+                                                                      VkAllocationCallbacks const *                  pAllocator,
                                                                       VkPipeline *                                   pPipelines ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateExecutionGraphPipelinesAMDX( device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines );
@@ -4751,7 +4751,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkGetExecutionGraphPipelineNodeIndexAMDX( VkDevice                                        device,
                                                                            VkPipeline                                      executionGraph,
-                                                                           const VkPipelineShaderStageNodeCreateInfoAMDX * pNodeInfo,
+                                                                           VkPipelineShaderStageNodeCreateInfoAMDX const * pNodeInfo,
                                                                            uint32_t * pNodeIndex ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetExecutionGraphPipelineNodeIndexAMDX( device, executionGraph, pNodeInfo, pNodeIndex );
@@ -4768,7 +4768,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdDispatchGraphAMDX( VkCommandBuffer                      commandBuffer,
                                                      VkDeviceAddress                      scratch,
                                                      VkDeviceSize                         scratchSize,
-                                                     const VkDispatchGraphCountInfoAMDX * pCountInfo ) const VULKAN_HPP_NOEXCEPT
+                                                     VkDispatchGraphCountInfoAMDX const * pCountInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdDispatchGraphAMDX( commandBuffer, scratch, scratchSize, pCountInfo );
       }
@@ -4776,7 +4776,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdDispatchGraphIndirectAMDX( VkCommandBuffer                      commandBuffer,
                                                              VkDeviceAddress                      scratch,
                                                              VkDeviceSize                         scratchSize,
-                                                             const VkDispatchGraphCountInfoAMDX * pCountInfo ) const VULKAN_HPP_NOEXCEPT
+                                                             VkDispatchGraphCountInfoAMDX const * pCountInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdDispatchGraphIndirectAMDX( commandBuffer, scratch, scratchSize, pCountInfo );
       }
@@ -4794,38 +4794,38 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkWriteSamplerDescriptorsEXT( VkDevice                      device,
                                                                uint32_t                      samplerCount,
-                                                               const VkSamplerCreateInfo *   pSamplers,
-                                                               const VkHostAddressRangeEXT * pDescriptors ) const VULKAN_HPP_NOEXCEPT
+                                                               VkSamplerCreateInfo const *   pSamplers,
+                                                               VkHostAddressRangeEXT const * pDescriptors ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkWriteSamplerDescriptorsEXT( device, samplerCount, pSamplers, pDescriptors );
       }
 
       VULKAN_HPP_INLINE VkResult vkWriteResourceDescriptorsEXT( VkDevice                            device,
                                                                 uint32_t                            resourceCount,
-                                                                const VkResourceDescriptorInfoEXT * pResources,
-                                                                const VkHostAddressRangeEXT *       pDescriptors ) const VULKAN_HPP_NOEXCEPT
+                                                                VkResourceDescriptorInfoEXT const * pResources,
+                                                                VkHostAddressRangeEXT const *       pDescriptors ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkWriteResourceDescriptorsEXT( device, resourceCount, pResources, pDescriptors );
       }
 
-      VULKAN_HPP_INLINE void vkCmdBindSamplerHeapEXT( VkCommandBuffer commandBuffer, const VkBindHeapInfoEXT * pBindInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdBindSamplerHeapEXT( VkCommandBuffer commandBuffer, VkBindHeapInfoEXT const * pBindInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindSamplerHeapEXT( commandBuffer, pBindInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdBindResourceHeapEXT( VkCommandBuffer commandBuffer, const VkBindHeapInfoEXT * pBindInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdBindResourceHeapEXT( VkCommandBuffer commandBuffer, VkBindHeapInfoEXT const * pBindInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindResourceHeapEXT( commandBuffer, pBindInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdPushDataEXT( VkCommandBuffer commandBuffer, const VkPushDataInfoEXT * pPushDataInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdPushDataEXT( VkCommandBuffer commandBuffer, VkPushDataInfoEXT const * pPushDataInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPushDataEXT( commandBuffer, pPushDataInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetImageOpaqueCaptureDataEXT( VkDevice                device,
                                                                  uint32_t                imageCount,
-                                                                 const VkImage *         pImages,
+                                                                 VkImage const *         pImages,
                                                                  VkHostAddressRangeEXT * pDatas ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetImageOpaqueCaptureDataEXT( device, imageCount, pImages, pDatas );
@@ -4838,7 +4838,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkRegisterCustomBorderColorEXT( VkDevice                                        device,
-                                                                 const VkSamplerCustomBorderColorCreateInfoEXT * pBorderColor,
+                                                                 VkSamplerCustomBorderColorCreateInfoEXT const * pBorderColor,
                                                                  VkBool32                                        requestIndex,
                                                                  uint32_t *                                      pIndex ) const VULKAN_HPP_NOEXCEPT
       {
@@ -4852,7 +4852,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkGetTensorOpaqueCaptureDataARM( VkDevice                device,
                                                                   uint32_t                tensorCount,
-                                                                  const VkTensorARM *     pTensors,
+                                                                  VkTensorARM const *     pTensors,
                                                                   VkHostAddressRangeEXT * pDatas ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetTensorOpaqueCaptureDataARM( device, tensorCount, pTensors, pDatas );
@@ -4861,7 +4861,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_sample_locations ===
 
       VULKAN_HPP_INLINE void vkCmdSetSampleLocationsEXT( VkCommandBuffer                  commandBuffer,
-                                                         const VkSampleLocationsInfoEXT * pSampleLocationsInfo ) const VULKAN_HPP_NOEXCEPT
+                                                         VkSampleLocationsInfoEXT const * pSampleLocationsInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetSampleLocationsEXT( commandBuffer, pSampleLocationsInfo );
       }
@@ -4876,21 +4876,21 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_get_memory_requirements2 ===
 
       VULKAN_HPP_INLINE void vkGetImageMemoryRequirements2KHR( VkDevice                               device,
-                                                               const VkImageMemoryRequirementsInfo2 * pInfo,
+                                                               VkImageMemoryRequirementsInfo2 const * pInfo,
                                                                VkMemoryRequirements2 *                pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetImageMemoryRequirements2KHR( device, pInfo, pMemoryRequirements );
       }
 
       VULKAN_HPP_INLINE void vkGetBufferMemoryRequirements2KHR( VkDevice                                device,
-                                                                const VkBufferMemoryRequirementsInfo2 * pInfo,
+                                                                VkBufferMemoryRequirementsInfo2 const * pInfo,
                                                                 VkMemoryRequirements2 *                 pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetBufferMemoryRequirements2KHR( device, pInfo, pMemoryRequirements );
       }
 
       VULKAN_HPP_INLINE void vkGetImageSparseMemoryRequirements2KHR( VkDevice                                     device,
-                                                                     const VkImageSparseMemoryRequirementsInfo2 * pInfo,
+                                                                     VkImageSparseMemoryRequirementsInfo2 const * pInfo,
                                                                      uint32_t *                                   pSparseMemoryRequirementCount,
                                                                      VkSparseImageMemoryRequirements2 * pSparseMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
@@ -4900,8 +4900,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_acceleration_structure ===
 
       VULKAN_HPP_INLINE VkResult vkCreateAccelerationStructureKHR( VkDevice                                     device,
-                                                                   const VkAccelerationStructureCreateInfoKHR * pCreateInfo,
-                                                                   const VkAllocationCallbacks *                pAllocator,
+                                                                   VkAccelerationStructureCreateInfoKHR const * pCreateInfo,
+                                                                   VkAllocationCallbacks const *                pAllocator,
                                                                    VkAccelerationStructureKHR * pAccelerationStructure ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateAccelerationStructureKHR( device, pCreateInfo, pAllocator, pAccelerationStructure );
@@ -4909,7 +4909,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroyAccelerationStructureKHR( VkDevice                      device,
                                                                 VkAccelerationStructureKHR    accelerationStructure,
-                                                                const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                                VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyAccelerationStructureKHR( device, accelerationStructure, pAllocator );
       }
@@ -4917,18 +4917,18 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void
         vkCmdBuildAccelerationStructuresKHR( VkCommandBuffer                                          commandBuffer,
                                              uint32_t                                                 infoCount,
-                                             const VkAccelerationStructureBuildGeometryInfoKHR *      pInfos,
-                                             const VkAccelerationStructureBuildRangeInfoKHR * const * ppBuildRangeInfos ) const VULKAN_HPP_NOEXCEPT
+                                             VkAccelerationStructureBuildGeometryInfoKHR const *      pInfos,
+                                             VkAccelerationStructureBuildRangeInfoKHR const * const * ppBuildRangeInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBuildAccelerationStructuresKHR( commandBuffer, infoCount, pInfos, ppBuildRangeInfos );
       }
 
       VULKAN_HPP_INLINE void vkCmdBuildAccelerationStructuresIndirectKHR( VkCommandBuffer                                     commandBuffer,
                                                                           uint32_t                                            infoCount,
-                                                                          const VkAccelerationStructureBuildGeometryInfoKHR * pInfos,
-                                                                          const VkDeviceAddress *                             pIndirectDeviceAddresses,
-                                                                          const uint32_t *                                    pIndirectStrides,
-                                                                          const uint32_t * const * ppMaxPrimitiveCounts ) const VULKAN_HPP_NOEXCEPT
+                                                                          VkAccelerationStructureBuildGeometryInfoKHR const * pInfos,
+                                                                          VkDeviceAddress const *                             pIndirectDeviceAddresses,
+                                                                          uint32_t const *                                    pIndirectStrides,
+                                                                          uint32_t const * const * ppMaxPrimitiveCounts ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBuildAccelerationStructuresIndirectKHR(
           commandBuffer, infoCount, pInfos, pIndirectDeviceAddresses, pIndirectStrides, ppMaxPrimitiveCounts );
@@ -4938,36 +4938,36 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         vkBuildAccelerationStructuresKHR( VkDevice                                                 device,
                                           VkDeferredOperationKHR                                   deferredOperation,
                                           uint32_t                                                 infoCount,
-                                          const VkAccelerationStructureBuildGeometryInfoKHR *      pInfos,
-                                          const VkAccelerationStructureBuildRangeInfoKHR * const * ppBuildRangeInfos ) const VULKAN_HPP_NOEXCEPT
+                                          VkAccelerationStructureBuildGeometryInfoKHR const *      pInfos,
+                                          VkAccelerationStructureBuildRangeInfoKHR const * const * ppBuildRangeInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkBuildAccelerationStructuresKHR( device, deferredOperation, infoCount, pInfos, ppBuildRangeInfos );
       }
 
       VULKAN_HPP_INLINE VkResult vkCopyAccelerationStructureKHR( VkDevice                                   device,
                                                                  VkDeferredOperationKHR                     deferredOperation,
-                                                                 const VkCopyAccelerationStructureInfoKHR * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                 VkCopyAccelerationStructureInfoKHR const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCopyAccelerationStructureKHR( device, deferredOperation, pInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkCopyAccelerationStructureToMemoryKHR( VkDevice                                           device,
                                                                          VkDeferredOperationKHR                             deferredOperation,
-                                                                         const VkCopyAccelerationStructureToMemoryInfoKHR * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                         VkCopyAccelerationStructureToMemoryInfoKHR const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCopyAccelerationStructureToMemoryKHR( device, deferredOperation, pInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkCopyMemoryToAccelerationStructureKHR( VkDevice                                           device,
                                                                          VkDeferredOperationKHR                             deferredOperation,
-                                                                         const VkCopyMemoryToAccelerationStructureInfoKHR * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                         VkCopyMemoryToAccelerationStructureInfoKHR const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCopyMemoryToAccelerationStructureKHR( device, deferredOperation, pInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkWriteAccelerationStructuresPropertiesKHR( VkDevice                           device,
                                                                              uint32_t                           accelerationStructureCount,
-                                                                             const VkAccelerationStructureKHR * pAccelerationStructures,
+                                                                             VkAccelerationStructureKHR const * pAccelerationStructures,
                                                                              VkQueryType                        queryType,
                                                                              size_t                             dataSize,
                                                                              void *                             pData,
@@ -4977,32 +4977,32 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void vkCmdCopyAccelerationStructureKHR( VkCommandBuffer                            commandBuffer,
-                                                                const VkCopyAccelerationStructureInfoKHR * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                VkCopyAccelerationStructureInfoKHR const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyAccelerationStructureKHR( commandBuffer, pInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdCopyAccelerationStructureToMemoryKHR( VkCommandBuffer                                    commandBuffer,
-                                                                        const VkCopyAccelerationStructureToMemoryInfoKHR * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                        VkCopyAccelerationStructureToMemoryInfoKHR const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyAccelerationStructureToMemoryKHR( commandBuffer, pInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdCopyMemoryToAccelerationStructureKHR( VkCommandBuffer                                    commandBuffer,
-                                                                        const VkCopyMemoryToAccelerationStructureInfoKHR * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                        VkCopyMemoryToAccelerationStructureInfoKHR const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyMemoryToAccelerationStructureKHR( commandBuffer, pInfo );
       }
 
       VULKAN_HPP_INLINE VkDeviceAddress
-        vkGetAccelerationStructureDeviceAddressKHR( VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR * pInfo ) const VULKAN_HPP_NOEXCEPT
+        vkGetAccelerationStructureDeviceAddressKHR( VkDevice device, VkAccelerationStructureDeviceAddressInfoKHR const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetAccelerationStructureDeviceAddressKHR( device, pInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdWriteAccelerationStructuresPropertiesKHR( VkCommandBuffer                    commandBuffer,
                                                                             uint32_t                           accelerationStructureCount,
-                                                                            const VkAccelerationStructureKHR * pAccelerationStructures,
+                                                                            VkAccelerationStructureKHR const * pAccelerationStructures,
                                                                             VkQueryType                        queryType,
                                                                             VkQueryPool                        queryPool,
                                                                             uint32_t                           firstQuery ) const VULKAN_HPP_NOEXCEPT
@@ -5013,7 +5013,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void
         vkGetDeviceAccelerationStructureCompatibilityKHR( VkDevice                                      device,
-                                                          const VkAccelerationStructureVersionInfoKHR * pVersionInfo,
+                                                          VkAccelerationStructureVersionInfoKHR const * pVersionInfo,
                                                           VkAccelerationStructureCompatibilityKHR *     pCompatibility ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceAccelerationStructureCompatibilityKHR( device, pVersionInfo, pCompatibility );
@@ -5021,8 +5021,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkGetAccelerationStructureBuildSizesKHR( VkDevice                                            device,
                                                                       VkAccelerationStructureBuildTypeKHR                 buildType,
-                                                                      const VkAccelerationStructureBuildGeometryInfoKHR * pBuildInfo,
-                                                                      const uint32_t *                                    pMaxPrimitiveCounts,
+                                                                      VkAccelerationStructureBuildGeometryInfoKHR const * pBuildInfo,
+                                                                      uint32_t const *                                    pMaxPrimitiveCounts,
                                                                       VkAccelerationStructureBuildSizesInfoKHR *          pSizeInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetAccelerationStructureBuildSizesKHR( device, buildType, pBuildInfo, pMaxPrimitiveCounts, pSizeInfo );
@@ -5031,10 +5031,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_ray_tracing_pipeline ===
 
       VULKAN_HPP_INLINE void vkCmdTraceRaysKHR( VkCommandBuffer                         commandBuffer,
-                                                const VkStridedDeviceAddressRegionKHR * pRaygenShaderBindingTable,
-                                                const VkStridedDeviceAddressRegionKHR * pMissShaderBindingTable,
-                                                const VkStridedDeviceAddressRegionKHR * pHitShaderBindingTable,
-                                                const VkStridedDeviceAddressRegionKHR * pCallableShaderBindingTable,
+                                                VkStridedDeviceAddressRegionKHR const * pRaygenShaderBindingTable,
+                                                VkStridedDeviceAddressRegionKHR const * pMissShaderBindingTable,
+                                                VkStridedDeviceAddressRegionKHR const * pHitShaderBindingTable,
+                                                VkStridedDeviceAddressRegionKHR const * pCallableShaderBindingTable,
                                                 uint32_t                                width,
                                                 uint32_t                                height,
                                                 uint32_t                                depth ) const VULKAN_HPP_NOEXCEPT
@@ -5047,8 +5047,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                  VkDeferredOperationKHR                    deferredOperation,
                                                                  VkPipelineCache                           pipelineCache,
                                                                  uint32_t                                  createInfoCount,
-                                                                 const VkRayTracingPipelineCreateInfoKHR * pCreateInfos,
-                                                                 const VkAllocationCallbacks *             pAllocator,
+                                                                 VkRayTracingPipelineCreateInfoKHR const * pCreateInfos,
+                                                                 VkAllocationCallbacks const *             pAllocator,
                                                                  VkPipeline *                              pPipelines ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateRayTracingPipelinesKHR( device, deferredOperation, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines );
@@ -5067,10 +5067,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void vkCmdTraceRaysIndirectKHR( VkCommandBuffer                         commandBuffer,
-                                                        const VkStridedDeviceAddressRegionKHR * pRaygenShaderBindingTable,
-                                                        const VkStridedDeviceAddressRegionKHR * pMissShaderBindingTable,
-                                                        const VkStridedDeviceAddressRegionKHR * pHitShaderBindingTable,
-                                                        const VkStridedDeviceAddressRegionKHR * pCallableShaderBindingTable,
+                                                        VkStridedDeviceAddressRegionKHR const * pRaygenShaderBindingTable,
+                                                        VkStridedDeviceAddressRegionKHR const * pMissShaderBindingTable,
+                                                        VkStridedDeviceAddressRegionKHR const * pHitShaderBindingTable,
+                                                        VkStridedDeviceAddressRegionKHR const * pCallableShaderBindingTable,
                                                         VkDeviceAddress                         indirectDeviceAddress ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdTraceRaysIndirectKHR(
@@ -5093,8 +5093,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_sampler_ycbcr_conversion ===
 
       VULKAN_HPP_INLINE VkResult vkCreateSamplerYcbcrConversionKHR( VkDevice                                   device,
-                                                                    const VkSamplerYcbcrConversionCreateInfo * pCreateInfo,
-                                                                    const VkAllocationCallbacks *              pAllocator,
+                                                                    VkSamplerYcbcrConversionCreateInfo const * pCreateInfo,
+                                                                    VkAllocationCallbacks const *              pAllocator,
                                                                     VkSamplerYcbcrConversion *                 pYcbcrConversion ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateSamplerYcbcrConversionKHR( device, pCreateInfo, pAllocator, pYcbcrConversion );
@@ -5102,7 +5102,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroySamplerYcbcrConversionKHR( VkDevice                      device,
                                                                  VkSamplerYcbcrConversion      ycbcrConversion,
-                                                                 const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                                 VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroySamplerYcbcrConversionKHR( device, ycbcrConversion, pAllocator );
       }
@@ -5111,14 +5111,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkBindBufferMemory2KHR( VkDevice                       device,
                                                          uint32_t                       bindInfoCount,
-                                                         const VkBindBufferMemoryInfo * pBindInfos ) const VULKAN_HPP_NOEXCEPT
+                                                         VkBindBufferMemoryInfo const * pBindInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkBindBufferMemory2KHR( device, bindInfoCount, pBindInfos );
       }
 
       VULKAN_HPP_INLINE VkResult vkBindImageMemory2KHR( VkDevice                      device,
                                                         uint32_t                      bindInfoCount,
-                                                        const VkBindImageMemoryInfo * pBindInfos ) const VULKAN_HPP_NOEXCEPT
+                                                        VkBindImageMemoryInfo const * pBindInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkBindImageMemory2KHR( device, bindInfoCount, pBindInfos );
       }
@@ -5135,15 +5135,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_validation_cache ===
 
       VULKAN_HPP_INLINE VkResult vkCreateValidationCacheEXT( VkDevice                               device,
-                                                             const VkValidationCacheCreateInfoEXT * pCreateInfo,
-                                                             const VkAllocationCallbacks *          pAllocator,
+                                                             VkValidationCacheCreateInfoEXT const * pCreateInfo,
+                                                             VkAllocationCallbacks const *          pAllocator,
                                                              VkValidationCacheEXT *                 pValidationCache ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateValidationCacheEXT( device, pCreateInfo, pAllocator, pValidationCache );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyValidationCacheEXT( VkDevice device, VkValidationCacheEXT validationCache, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyValidationCacheEXT( VkDevice device, VkValidationCacheEXT validationCache, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyValidationCacheEXT( device, validationCache, pAllocator );
       }
@@ -5151,7 +5151,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE VkResult vkMergeValidationCachesEXT( VkDevice                     device,
                                                              VkValidationCacheEXT         dstCache,
                                                              uint32_t                     srcCacheCount,
-                                                             const VkValidationCacheEXT * pSrcCaches ) const VULKAN_HPP_NOEXCEPT
+                                                             VkValidationCacheEXT const * pSrcCaches ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkMergeValidationCachesEXT( device, dstCache, srcCacheCount, pSrcCaches );
       }
@@ -5175,7 +5175,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdSetViewportShadingRatePaletteNV( VkCommandBuffer                commandBuffer,
                                                                    uint32_t                       firstViewport,
                                                                    uint32_t                       viewportCount,
-                                                                   const VkShadingRatePaletteNV * pShadingRatePalettes ) const VULKAN_HPP_NOEXCEPT
+                                                                   VkShadingRatePaletteNV const * pShadingRatePalettes ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetViewportShadingRatePaletteNV( commandBuffer, firstViewport, viewportCount, pShadingRatePalettes );
       }
@@ -5183,7 +5183,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdSetCoarseSampleOrderNV( VkCommandBuffer                     commandBuffer,
                                                           VkCoarseSampleOrderTypeNV           sampleOrderType,
                                                           uint32_t                            customSampleOrderCount,
-                                                          const VkCoarseSampleOrderCustomNV * pCustomSampleOrders ) const VULKAN_HPP_NOEXCEPT
+                                                          VkCoarseSampleOrderCustomNV const * pCustomSampleOrders ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetCoarseSampleOrderNV( commandBuffer, sampleOrderType, customSampleOrderCount, pCustomSampleOrders );
       }
@@ -5191,8 +5191,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_ray_tracing ===
 
       VULKAN_HPP_INLINE VkResult vkCreateAccelerationStructureNV( VkDevice                                    device,
-                                                                  const VkAccelerationStructureCreateInfoNV * pCreateInfo,
-                                                                  const VkAllocationCallbacks *               pAllocator,
+                                                                  VkAccelerationStructureCreateInfoNV const * pCreateInfo,
+                                                                  VkAllocationCallbacks const *               pAllocator,
                                                                   VkAccelerationStructureNV *                 pAccelerationStructure ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateAccelerationStructureNV( device, pCreateInfo, pAllocator, pAccelerationStructure );
@@ -5200,13 +5200,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroyAccelerationStructureNV( VkDevice                      device,
                                                                VkAccelerationStructureNV     accelerationStructure,
-                                                               const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                               VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyAccelerationStructureNV( device, accelerationStructure, pAllocator );
       }
 
       VULKAN_HPP_INLINE void vkGetAccelerationStructureMemoryRequirementsNV( VkDevice                                                device,
-                                                                             const VkAccelerationStructureMemoryRequirementsInfoNV * pInfo,
+                                                                             VkAccelerationStructureMemoryRequirementsInfoNV const * pInfo,
                                                                              VkMemoryRequirements2KHR * pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetAccelerationStructureMemoryRequirementsNV( device, pInfo, pMemoryRequirements );
@@ -5214,13 +5214,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkBindAccelerationStructureMemoryNV( VkDevice                                        device,
                                                                       uint32_t                                        bindInfoCount,
-                                                                      const VkBindAccelerationStructureMemoryInfoNV * pBindInfos ) const VULKAN_HPP_NOEXCEPT
+                                                                      VkBindAccelerationStructureMemoryInfoNV const * pBindInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkBindAccelerationStructureMemoryNV( device, bindInfoCount, pBindInfos );
       }
 
       VULKAN_HPP_INLINE void vkCmdBuildAccelerationStructureNV( VkCommandBuffer                       commandBuffer,
-                                                                const VkAccelerationStructureInfoNV * pInfo,
+                                                                VkAccelerationStructureInfoNV const * pInfo,
                                                                 VkBuffer                              instanceData,
                                                                 VkDeviceSize                          instanceOffset,
                                                                 VkBool32                              update,
@@ -5276,8 +5276,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE VkResult vkCreateRayTracingPipelinesNV( VkDevice                                 device,
                                                                 VkPipelineCache                          pipelineCache,
                                                                 uint32_t                                 createInfoCount,
-                                                                const VkRayTracingPipelineCreateInfoNV * pCreateInfos,
-                                                                const VkAllocationCallbacks *            pAllocator,
+                                                                VkRayTracingPipelineCreateInfoNV const * pCreateInfos,
+                                                                VkAllocationCallbacks const *            pAllocator,
                                                                 VkPipeline *                             pPipelines ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateRayTracingPipelinesNV( device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines );
@@ -5299,7 +5299,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdWriteAccelerationStructuresPropertiesNV( VkCommandBuffer                   commandBuffer,
                                                                            uint32_t                          accelerationStructureCount,
-                                                                           const VkAccelerationStructureNV * pAccelerationStructures,
+                                                                           VkAccelerationStructureNV const * pAccelerationStructures,
                                                                            VkQueryType                       queryType,
                                                                            VkQueryPool                       queryPool,
                                                                            uint32_t                          firstQuery ) const VULKAN_HPP_NOEXCEPT
@@ -5316,7 +5316,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_maintenance3 ===
 
       VULKAN_HPP_INLINE void vkGetDescriptorSetLayoutSupportKHR( VkDevice                                device,
-                                                                 const VkDescriptorSetLayoutCreateInfo * pCreateInfo,
+                                                                 VkDescriptorSetLayoutCreateInfo const * pCreateInfo,
                                                                  VkDescriptorSetLayoutSupport *          pSupport ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDescriptorSetLayoutSupportKHR( device, pCreateInfo, pSupport );
@@ -5351,7 +5351,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE VkResult
         vkGetMemoryHostPointerPropertiesEXT( VkDevice                           device,
                                              VkExternalMemoryHandleTypeFlagBits handleType,
-                                             const void *                       pHostPointer,
+                                             void const *                       pHostPointer,
                                              VkMemoryHostPointerPropertiesEXT * pMemoryHostPointerProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetMemoryHostPointerPropertiesEXT( device, handleType, pHostPointer, pMemoryHostPointerProperties );
@@ -5385,7 +5385,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkGetCalibratedTimestampsEXT( VkDevice                             device,
                                                                uint32_t                             timestampCount,
-                                                               const VkCalibratedTimestampInfoKHR * pTimestampInfos,
+                                                               VkCalibratedTimestampInfoKHR const * pTimestampInfos,
                                                                uint64_t *                           pTimestamps,
                                                                uint64_t *                           pMaxDeviation ) const VULKAN_HPP_NOEXCEPT
       {
@@ -5421,7 +5421,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdSetExclusiveScissorEnableNV( VkCommandBuffer  commandBuffer,
                                                                uint32_t         firstExclusiveScissor,
                                                                uint32_t         exclusiveScissorCount,
-                                                               const VkBool32 * pExclusiveScissorEnables ) const VULKAN_HPP_NOEXCEPT
+                                                               VkBool32 const * pExclusiveScissorEnables ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetExclusiveScissorEnableNV( commandBuffer, firstExclusiveScissor, exclusiveScissorCount, pExclusiveScissorEnables );
       }
@@ -5429,14 +5429,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdSetExclusiveScissorNV( VkCommandBuffer  commandBuffer,
                                                          uint32_t         firstExclusiveScissor,
                                                          uint32_t         exclusiveScissorCount,
-                                                         const VkRect2D * pExclusiveScissors ) const VULKAN_HPP_NOEXCEPT
+                                                         VkRect2D const * pExclusiveScissors ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetExclusiveScissorNV( commandBuffer, firstExclusiveScissor, exclusiveScissorCount, pExclusiveScissors );
       }
 
       //=== VK_NV_device_diagnostic_checkpoints ===
 
-      VULKAN_HPP_INLINE void vkCmdSetCheckpointNV( VkCommandBuffer commandBuffer, const void * pCheckpointMarker ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdSetCheckpointNV( VkCommandBuffer commandBuffer, void const * pCheckpointMarker ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetCheckpointNV( commandBuffer, pCheckpointMarker );
       }
@@ -5460,12 +5460,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetSemaphoreCounterValueKHR( device, semaphore, pValue );
       }
 
-      VULKAN_HPP_INLINE VkResult vkWaitSemaphoresKHR( VkDevice device, const VkSemaphoreWaitInfo * pWaitInfo, uint64_t timeout ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkWaitSemaphoresKHR( VkDevice device, VkSemaphoreWaitInfo const * pWaitInfo, uint64_t timeout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkWaitSemaphoresKHR( device, pWaitInfo, timeout );
       }
 
-      VULKAN_HPP_INLINE VkResult vkSignalSemaphoreKHR( VkDevice device, const VkSemaphoreSignalInfo * pSignalInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkSignalSemaphoreKHR( VkDevice device, VkSemaphoreSignalInfo const * pSignalInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkSignalSemaphoreKHR( device, pSignalInfo );
       }
@@ -5495,7 +5495,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult
         vkGetPastPresentationTimingEXT( VkDevice                                device,
-                                        const VkPastPresentationTimingInfoEXT * pPastPresentationTimingInfo,
+                                        VkPastPresentationTimingInfoEXT const * pPastPresentationTimingInfo,
                                         VkPastPresentationTimingPropertiesEXT * pPastPresentationTimingProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPastPresentationTimingEXT( device, pPastPresentationTimingInfo, pPastPresentationTimingProperties );
@@ -5504,7 +5504,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_INTEL_performance_query ===
 
       VULKAN_HPP_INLINE VkResult vkInitializePerformanceApiINTEL( VkDevice                                    device,
-                                                                  const VkInitializePerformanceApiInfoINTEL * pInitializeInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                  VkInitializePerformanceApiInfoINTEL const * pInitializeInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkInitializePerformanceApiINTEL( device, pInitializeInfo );
       }
@@ -5515,25 +5515,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkCmdSetPerformanceMarkerINTEL( VkCommandBuffer                      commandBuffer,
-                                                                 const VkPerformanceMarkerInfoINTEL * pMarkerInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                 VkPerformanceMarkerInfoINTEL const * pMarkerInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetPerformanceMarkerINTEL( commandBuffer, pMarkerInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkCmdSetPerformanceStreamMarkerINTEL( VkCommandBuffer                            commandBuffer,
-                                                                       const VkPerformanceStreamMarkerInfoINTEL * pMarkerInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                       VkPerformanceStreamMarkerInfoINTEL const * pMarkerInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetPerformanceStreamMarkerINTEL( commandBuffer, pMarkerInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkCmdSetPerformanceOverrideINTEL( VkCommandBuffer                        commandBuffer,
-                                                                   const VkPerformanceOverrideInfoINTEL * pOverrideInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                   VkPerformanceOverrideInfoINTEL const * pOverrideInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetPerformanceOverrideINTEL( commandBuffer, pOverrideInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkAcquirePerformanceConfigurationINTEL( VkDevice                                           device,
-                                                                         const VkPerformanceConfigurationAcquireInfoINTEL * pAcquireInfo,
+                                                                         VkPerformanceConfigurationAcquireInfoINTEL const * pAcquireInfo,
                                                                          VkPerformanceConfigurationINTEL * pConfiguration ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkAcquirePerformanceConfigurationINTEL( device, pAcquireInfo, pConfiguration );
@@ -5569,8 +5569,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_FUCHSIA_imagepipe_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateImagePipeSurfaceFUCHSIA( VkInstance                                  instance,
-                                                                  const VkImagePipeSurfaceCreateInfoFUCHSIA * pCreateInfo,
-                                                                  const VkAllocationCallbacks *               pAllocator,
+                                                                  VkImagePipeSurfaceCreateInfoFUCHSIA const * pCreateInfo,
+                                                                  VkAllocationCallbacks const *               pAllocator,
                                                                   VkSurfaceKHR *                              pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateImagePipeSurfaceFUCHSIA( instance, pCreateInfo, pAllocator, pSurface );
@@ -5581,8 +5581,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_metal_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateMetalSurfaceEXT( VkInstance                          instance,
-                                                          const VkMetalSurfaceCreateInfoEXT * pCreateInfo,
-                                                          const VkAllocationCallbacks *       pAllocator,
+                                                          VkMetalSurfaceCreateInfoEXT const * pCreateInfo,
+                                                          VkAllocationCallbacks const *       pAllocator,
                                                           VkSurfaceKHR *                      pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateMetalSurfaceEXT( instance, pCreateInfo, pAllocator, pSurface );
@@ -5600,8 +5600,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void vkCmdSetFragmentShadingRateKHR( VkCommandBuffer                          commandBuffer,
-                                                             const VkExtent2D *                       pFragmentSize,
-                                                             const VkFragmentShadingRateCombinerOpKHR combinerOps[2] ) const VULKAN_HPP_NOEXCEPT
+                                                             VkExtent2D const *                       pFragmentSize,
+                                                             VkFragmentShadingRateCombinerOpKHR const combinerOps[2] ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetFragmentShadingRateKHR( commandBuffer, pFragmentSize, combinerOps );
       }
@@ -5609,21 +5609,21 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_dynamic_rendering_local_read ===
 
       VULKAN_HPP_INLINE void vkCmdSetRenderingAttachmentLocationsKHR( VkCommandBuffer                           commandBuffer,
-                                                                      const VkRenderingAttachmentLocationInfo * pLocationInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                      VkRenderingAttachmentLocationInfo const * pLocationInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetRenderingAttachmentLocationsKHR( commandBuffer, pLocationInfo );
       }
 
       VULKAN_HPP_INLINE void
         vkCmdSetRenderingInputAttachmentIndicesKHR( VkCommandBuffer                             commandBuffer,
-                                                    const VkRenderingInputAttachmentIndexInfo * pInputAttachmentIndexInfo ) const VULKAN_HPP_NOEXCEPT
+                                                    VkRenderingInputAttachmentIndexInfo const * pInputAttachmentIndexInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetRenderingInputAttachmentIndicesKHR( commandBuffer, pInputAttachmentIndexInfo );
       }
 
       //=== VK_EXT_buffer_device_address ===
 
-      VULKAN_HPP_INLINE VkDeviceAddress vkGetBufferDeviceAddressEXT( VkDevice device, const VkBufferDeviceAddressInfo * pInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkDeviceAddress vkGetBufferDeviceAddressEXT( VkDevice device, VkBufferDeviceAddressInfo const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetBufferDeviceAddressEXT( device, pInfo );
       }
@@ -5668,7 +5668,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_full_screen_exclusive ===
 
       VULKAN_HPP_INLINE VkResult vkGetPhysicalDeviceSurfacePresentModes2EXT( VkPhysicalDevice                        physicalDevice,
-                                                                             const VkPhysicalDeviceSurfaceInfo2KHR * pSurfaceInfo,
+                                                                             VkPhysicalDeviceSurfaceInfo2KHR const * pSurfaceInfo,
                                                                              uint32_t *                              pPresentModeCount,
                                                                              VkPresentModeKHR *                      pPresentModes ) const VULKAN_HPP_NOEXCEPT
       {
@@ -5686,7 +5686,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkGetDeviceGroupSurfacePresentModes2EXT( VkDevice                                device,
-                                                                          const VkPhysicalDeviceSurfaceInfo2KHR * pSurfaceInfo,
+                                                                          VkPhysicalDeviceSurfaceInfo2KHR const * pSurfaceInfo,
                                                                           VkDeviceGroupPresentModeFlagsKHR *      pModes ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceGroupSurfacePresentModes2EXT( device, pSurfaceInfo, pModes );
@@ -5696,8 +5696,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_headless_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateHeadlessSurfaceEXT( VkInstance                             instance,
-                                                             const VkHeadlessSurfaceCreateInfoEXT * pCreateInfo,
-                                                             const VkAllocationCallbacks *          pAllocator,
+                                                             VkHeadlessSurfaceCreateInfoEXT const * pCreateInfo,
+                                                             VkAllocationCallbacks const *          pAllocator,
                                                              VkSurfaceKHR *                         pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateHeadlessSurfaceEXT( instance, pCreateInfo, pAllocator, pSurface );
@@ -5705,18 +5705,18 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_buffer_device_address ===
 
-      VULKAN_HPP_INLINE VkDeviceAddress vkGetBufferDeviceAddressKHR( VkDevice device, const VkBufferDeviceAddressInfo * pInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkDeviceAddress vkGetBufferDeviceAddressKHR( VkDevice device, VkBufferDeviceAddressInfo const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetBufferDeviceAddressKHR( device, pInfo );
       }
 
-      VULKAN_HPP_INLINE uint64_t vkGetBufferOpaqueCaptureAddressKHR( VkDevice device, const VkBufferDeviceAddressInfo * pInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE uint64_t vkGetBufferOpaqueCaptureAddressKHR( VkDevice device, VkBufferDeviceAddressInfo const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetBufferOpaqueCaptureAddressKHR( device, pInfo );
       }
 
       VULKAN_HPP_INLINE uint64_t vkGetDeviceMemoryOpaqueCaptureAddressKHR( VkDevice                                       device,
-                                                                           const VkDeviceMemoryOpaqueCaptureAddressInfo * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                           VkDeviceMemoryOpaqueCaptureAddressInfo const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceMemoryOpaqueCaptureAddressKHR( device, pInfo );
       }
@@ -5754,13 +5754,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void
-        vkCmdSetViewportWithCountEXT( VkCommandBuffer commandBuffer, uint32_t viewportCount, const VkViewport * pViewports ) const VULKAN_HPP_NOEXCEPT
+        vkCmdSetViewportWithCountEXT( VkCommandBuffer commandBuffer, uint32_t viewportCount, VkViewport const * pViewports ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetViewportWithCountEXT( commandBuffer, viewportCount, pViewports );
       }
 
       VULKAN_HPP_INLINE void
-        vkCmdSetScissorWithCountEXT( VkCommandBuffer commandBuffer, uint32_t scissorCount, const VkRect2D * pScissors ) const VULKAN_HPP_NOEXCEPT
+        vkCmdSetScissorWithCountEXT( VkCommandBuffer commandBuffer, uint32_t scissorCount, VkRect2D const * pScissors ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetScissorWithCountEXT( commandBuffer, scissorCount, pScissors );
       }
@@ -5768,10 +5768,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdBindVertexBuffers2EXT( VkCommandBuffer      commandBuffer,
                                                          uint32_t             firstBinding,
                                                          uint32_t             bindingCount,
-                                                         const VkBuffer *     pBuffers,
-                                                         const VkDeviceSize * pOffsets,
-                                                         const VkDeviceSize * pSizes,
-                                                         const VkDeviceSize * pStrides ) const VULKAN_HPP_NOEXCEPT
+                                                         VkBuffer const *     pBuffers,
+                                                         VkDeviceSize const * pOffsets,
+                                                         VkDeviceSize const * pSizes,
+                                                         VkDeviceSize const * pStrides ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindVertexBuffers2EXT( commandBuffer, firstBinding, bindingCount, pBuffers, pOffsets, pSizes, pStrides );
       }
@@ -5814,14 +5814,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_deferred_host_operations ===
 
       VULKAN_HPP_INLINE VkResult vkCreateDeferredOperationKHR( VkDevice                      device,
-                                                               const VkAllocationCallbacks * pAllocator,
+                                                               VkAllocationCallbacks const * pAllocator,
                                                                VkDeferredOperationKHR *      pDeferredOperation ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDeferredOperationKHR( device, pAllocator, pDeferredOperation );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyDeferredOperationKHR( VkDevice device, VkDeferredOperationKHR operation, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyDeferredOperationKHR( VkDevice device, VkDeferredOperationKHR operation, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyDeferredOperationKHR( device, operation, pAllocator );
       }
@@ -5844,7 +5844,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_pipeline_executable_properties ===
 
       VULKAN_HPP_INLINE VkResult vkGetPipelineExecutablePropertiesKHR( VkDevice                            device,
-                                                                       const VkPipelineInfoKHR *           pPipelineInfo,
+                                                                       VkPipelineInfoKHR const *           pPipelineInfo,
                                                                        uint32_t *                          pExecutableCount,
                                                                        VkPipelineExecutablePropertiesKHR * pProperties ) const VULKAN_HPP_NOEXCEPT
       {
@@ -5852,7 +5852,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkGetPipelineExecutableStatisticsKHR( VkDevice                            device,
-                                                                       const VkPipelineExecutableInfoKHR * pExecutableInfo,
+                                                                       VkPipelineExecutableInfoKHR const * pExecutableInfo,
                                                                        uint32_t *                          pStatisticCount,
                                                                        VkPipelineExecutableStatisticKHR *  pStatistics ) const VULKAN_HPP_NOEXCEPT
       {
@@ -5861,7 +5861,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult
         vkGetPipelineExecutableInternalRepresentationsKHR( VkDevice                                        device,
-                                                           const VkPipelineExecutableInfoKHR *             pExecutableInfo,
+                                                           VkPipelineExecutableInfoKHR const *             pExecutableInfo,
                                                            uint32_t *                                      pInternalRepresentationCount,
                                                            VkPipelineExecutableInternalRepresentationKHR * pInternalRepresentations ) const VULKAN_HPP_NOEXCEPT
       {
@@ -5870,31 +5870,31 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_EXT_host_image_copy ===
 
-      VULKAN_HPP_INLINE VkResult vkCopyMemoryToImageEXT( VkDevice device, const VkCopyMemoryToImageInfo * pCopyMemoryToImageInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkCopyMemoryToImageEXT( VkDevice device, VkCopyMemoryToImageInfo const * pCopyMemoryToImageInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCopyMemoryToImageEXT( device, pCopyMemoryToImageInfo );
       }
 
-      VULKAN_HPP_INLINE VkResult vkCopyImageToMemoryEXT( VkDevice device, const VkCopyImageToMemoryInfo * pCopyImageToMemoryInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkCopyImageToMemoryEXT( VkDevice device, VkCopyImageToMemoryInfo const * pCopyImageToMemoryInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCopyImageToMemoryEXT( device, pCopyImageToMemoryInfo );
       }
 
-      VULKAN_HPP_INLINE VkResult vkCopyImageToImageEXT( VkDevice device, const VkCopyImageToImageInfo * pCopyImageToImageInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkCopyImageToImageEXT( VkDevice device, VkCopyImageToImageInfo const * pCopyImageToImageInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCopyImageToImageEXT( device, pCopyImageToImageInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkTransitionImageLayoutEXT( VkDevice                                device,
                                                              uint32_t                                transitionCount,
-                                                             const VkHostImageLayoutTransitionInfo * pTransitions ) const VULKAN_HPP_NOEXCEPT
+                                                             VkHostImageLayoutTransitionInfo const * pTransitions ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkTransitionImageLayoutEXT( device, transitionCount, pTransitions );
       }
 
       VULKAN_HPP_INLINE void vkGetImageSubresourceLayout2EXT( VkDevice                    device,
                                                               VkImage                     image,
-                                                              const VkImageSubresource2 * pSubresource,
+                                                              VkImageSubresource2 const * pSubresource,
                                                               VkSubresourceLayout2 *      pLayout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetImageSubresourceLayout2EXT( device, image, pSubresource, pLayout );
@@ -5902,19 +5902,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_map_memory2 ===
 
-      VULKAN_HPP_INLINE VkResult vkMapMemory2KHR( VkDevice device, const VkMemoryMapInfo * pMemoryMapInfo, void ** ppData ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkMapMemory2KHR( VkDevice device, VkMemoryMapInfo const * pMemoryMapInfo, void ** ppData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkMapMemory2KHR( device, pMemoryMapInfo, ppData );
       }
 
-      VULKAN_HPP_INLINE VkResult vkUnmapMemory2KHR( VkDevice device, const VkMemoryUnmapInfo * pMemoryUnmapInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkUnmapMemory2KHR( VkDevice device, VkMemoryUnmapInfo const * pMemoryUnmapInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkUnmapMemory2KHR( device, pMemoryUnmapInfo );
       }
 
       //=== VK_EXT_swapchain_maintenance1 ===
 
-      VULKAN_HPP_INLINE VkResult vkReleaseSwapchainImagesEXT( VkDevice device, const VkReleaseSwapchainImagesInfoKHR * pReleaseInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkReleaseSwapchainImagesEXT( VkDevice device, VkReleaseSwapchainImagesInfoKHR const * pReleaseInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkReleaseSwapchainImagesEXT( device, pReleaseInfo );
       }
@@ -5922,21 +5922,21 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_device_generated_commands ===
 
       VULKAN_HPP_INLINE void vkGetGeneratedCommandsMemoryRequirementsNV( VkDevice                                            device,
-                                                                         const VkGeneratedCommandsMemoryRequirementsInfoNV * pInfo,
+                                                                         VkGeneratedCommandsMemoryRequirementsInfoNV const * pInfo,
                                                                          VkMemoryRequirements2 * pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetGeneratedCommandsMemoryRequirementsNV( device, pInfo, pMemoryRequirements );
       }
 
       VULKAN_HPP_INLINE void vkCmdPreprocessGeneratedCommandsNV( VkCommandBuffer                   commandBuffer,
-                                                                 const VkGeneratedCommandsInfoNV * pGeneratedCommandsInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                 VkGeneratedCommandsInfoNV const * pGeneratedCommandsInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPreprocessGeneratedCommandsNV( commandBuffer, pGeneratedCommandsInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdExecuteGeneratedCommandsNV( VkCommandBuffer                   commandBuffer,
                                                               VkBool32                          isPreprocessed,
-                                                              const VkGeneratedCommandsInfoNV * pGeneratedCommandsInfo ) const VULKAN_HPP_NOEXCEPT
+                                                              VkGeneratedCommandsInfoNV const * pGeneratedCommandsInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdExecuteGeneratedCommandsNV( commandBuffer, isPreprocessed, pGeneratedCommandsInfo );
       }
@@ -5950,8 +5950,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateIndirectCommandsLayoutNV( VkDevice                                     device,
-                                                                   const VkIndirectCommandsLayoutCreateInfoNV * pCreateInfo,
-                                                                   const VkAllocationCallbacks *                pAllocator,
+                                                                   VkIndirectCommandsLayoutCreateInfoNV const * pCreateInfo,
+                                                                   VkAllocationCallbacks const *                pAllocator,
                                                                    VkIndirectCommandsLayoutNV * pIndirectCommandsLayout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateIndirectCommandsLayoutNV( device, pCreateInfo, pAllocator, pIndirectCommandsLayout );
@@ -5959,14 +5959,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroyIndirectCommandsLayoutNV( VkDevice                      device,
                                                                 VkIndirectCommandsLayoutNV    indirectCommandsLayout,
-                                                                const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                                VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyIndirectCommandsLayoutNV( device, indirectCommandsLayout, pAllocator );
       }
 
       //=== VK_EXT_depth_bias_control ===
 
-      VULKAN_HPP_INLINE void vkCmdSetDepthBias2EXT( VkCommandBuffer commandBuffer, const VkDepthBiasInfoEXT * pDepthBiasInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdSetDepthBias2EXT( VkCommandBuffer commandBuffer, VkDepthBiasInfoEXT const * pDepthBiasInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetDepthBias2EXT( commandBuffer, pDepthBiasInfo );
       }
@@ -5989,15 +5989,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_private_data ===
 
       VULKAN_HPP_INLINE VkResult vkCreatePrivateDataSlotEXT( VkDevice                            device,
-                                                             const VkPrivateDataSlotCreateInfo * pCreateInfo,
-                                                             const VkAllocationCallbacks *       pAllocator,
+                                                             VkPrivateDataSlotCreateInfo const * pCreateInfo,
+                                                             VkAllocationCallbacks const *       pAllocator,
                                                              VkPrivateDataSlot *                 pPrivateDataSlot ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreatePrivateDataSlotEXT( device, pCreateInfo, pAllocator, pPrivateDataSlot );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyPrivateDataSlotEXT( VkDevice device, VkPrivateDataSlot privateDataSlot, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyPrivateDataSlotEXT( VkDevice device, VkPrivateDataSlot privateDataSlot, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyPrivateDataSlotEXT( device, privateDataSlot, pAllocator );
       }
@@ -6018,14 +6018,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult
         vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR( VkPhysicalDevice                                       physicalDevice,
-                                                                 const VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR * pQualityLevelInfo,
+                                                                 VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR const * pQualityLevelInfo,
                                                                  VkVideoEncodeQualityLevelPropertiesKHR * pQualityLevelProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR( physicalDevice, pQualityLevelInfo, pQualityLevelProperties );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetEncodedVideoSessionParametersKHR( VkDevice                                         device,
-                                                                        const VkVideoEncodeSessionParametersGetInfoKHR * pVideoSessionParametersInfo,
+                                                                        VkVideoEncodeSessionParametersGetInfoKHR const * pVideoSessionParametersInfo,
                                                                         VkVideoEncodeSessionParametersFeedbackInfoKHR *  pFeedbackInfo,
                                                                         size_t *                                         pDataSize,
                                                                         void *                                           pData ) const VULKAN_HPP_NOEXCEPT
@@ -6033,7 +6033,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetEncodedVideoSessionParametersKHR( device, pVideoSessionParametersInfo, pFeedbackInfo, pDataSize, pData );
       }
 
-      VULKAN_HPP_INLINE void vkCmdEncodeVideoKHR( VkCommandBuffer commandBuffer, const VkVideoEncodeInfoKHR * pEncodeInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdEncodeVideoKHR( VkCommandBuffer commandBuffer, VkVideoEncodeInfoKHR const * pEncodeInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdEncodeVideoKHR( commandBuffer, pEncodeInfo );
       }
@@ -6042,8 +6042,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_cuda_kernel_launch ===
 
       VULKAN_HPP_INLINE VkResult vkCreateCudaModuleNV( VkDevice                         device,
-                                                       const VkCudaModuleCreateInfoNV * pCreateInfo,
-                                                       const VkAllocationCallbacks *    pAllocator,
+                                                       VkCudaModuleCreateInfoNV const * pCreateInfo,
+                                                       VkAllocationCallbacks const *    pAllocator,
                                                        VkCudaModuleNV *                 pModule ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateCudaModuleNV( device, pCreateInfo, pAllocator, pModule );
@@ -6058,25 +6058,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateCudaFunctionNV( VkDevice                           device,
-                                                         const VkCudaFunctionCreateInfoNV * pCreateInfo,
-                                                         const VkAllocationCallbacks *      pAllocator,
+                                                         VkCudaFunctionCreateInfoNV const * pCreateInfo,
+                                                         VkAllocationCallbacks const *      pAllocator,
                                                          VkCudaFunctionNV *                 pFunction ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateCudaFunctionNV( device, pCreateInfo, pAllocator, pFunction );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyCudaModuleNV( VkDevice device, VkCudaModuleNV module, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyCudaModuleNV( VkDevice device, VkCudaModuleNV module, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyCudaModuleNV( device, module, pAllocator );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyCudaFunctionNV( VkDevice device, VkCudaFunctionNV function, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyCudaFunctionNV( VkDevice device, VkCudaFunctionNV function, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyCudaFunctionNV( device, function, pAllocator );
       }
 
-      VULKAN_HPP_INLINE void vkCmdCudaLaunchKernelNV( VkCommandBuffer commandBuffer, const VkCudaLaunchInfoNV * pLaunchInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdCudaLaunchKernelNV( VkCommandBuffer commandBuffer, VkCudaLaunchInfoNV const * pLaunchInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCudaLaunchKernelNV( commandBuffer, pLaunchInfo );
       }
@@ -6084,19 +6084,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_QCOM_tile_shading ===
 
-      VULKAN_HPP_INLINE void vkCmdDispatchTileQCOM( VkCommandBuffer commandBuffer, const VkDispatchTileInfoQCOM * pDispatchTileInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdDispatchTileQCOM( VkCommandBuffer commandBuffer, VkDispatchTileInfoQCOM const * pDispatchTileInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdDispatchTileQCOM( commandBuffer, pDispatchTileInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdBeginPerTileExecutionQCOM( VkCommandBuffer                commandBuffer,
-                                                             const VkPerTileBeginInfoQCOM * pPerTileBeginInfo ) const VULKAN_HPP_NOEXCEPT
+                                                             VkPerTileBeginInfoQCOM const * pPerTileBeginInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBeginPerTileExecutionQCOM( commandBuffer, pPerTileBeginInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdEndPerTileExecutionQCOM( VkCommandBuffer              commandBuffer,
-                                                           const VkPerTileEndInfoQCOM * pPerTileEndInfo ) const VULKAN_HPP_NOEXCEPT
+                                                           VkPerTileEndInfoQCOM const * pPerTileEndInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdEndPerTileExecutionQCOM( commandBuffer, pPerTileEndInfo );
       }
@@ -6113,7 +6113,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_synchronization2 ===
 
       VULKAN_HPP_INLINE void
-        vkCmdSetEvent2KHR( VkCommandBuffer commandBuffer, VkEvent event, const VkDependencyInfo * pDependencyInfo ) const VULKAN_HPP_NOEXCEPT
+        vkCmdSetEvent2KHR( VkCommandBuffer commandBuffer, VkEvent event, VkDependencyInfo const * pDependencyInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetEvent2KHR( commandBuffer, event, pDependencyInfo );
       }
@@ -6125,13 +6125,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdWaitEvents2KHR( VkCommandBuffer          commandBuffer,
                                                   uint32_t                 eventCount,
-                                                  const VkEvent *          pEvents,
-                                                  const VkDependencyInfo * pDependencyInfos ) const VULKAN_HPP_NOEXCEPT
+                                                  VkEvent const *          pEvents,
+                                                  VkDependencyInfo const * pDependencyInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdWaitEvents2KHR( commandBuffer, eventCount, pEvents, pDependencyInfos );
       }
 
-      VULKAN_HPP_INLINE void vkCmdPipelineBarrier2KHR( VkCommandBuffer commandBuffer, const VkDependencyInfo * pDependencyInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdPipelineBarrier2KHR( VkCommandBuffer commandBuffer, VkDependencyInfo const * pDependencyInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPipelineBarrier2KHR( commandBuffer, pDependencyInfo );
       }
@@ -6144,7 +6144,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkQueueSubmit2KHR( VkQueue               queue,
                                                     uint32_t              submitCount,
-                                                    const VkSubmitInfo2 * pSubmits,
+                                                    VkSubmitInfo2 const * pSubmits,
                                                     VkFence               fence ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkQueueSubmit2KHR( queue, submitCount, pSubmits, fence );
@@ -6167,14 +6167,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void
-        vkGetDescriptorEXT( VkDevice device, const VkDescriptorGetInfoEXT * pDescriptorInfo, size_t dataSize, void * pDescriptor ) const VULKAN_HPP_NOEXCEPT
+        vkGetDescriptorEXT( VkDevice device, VkDescriptorGetInfoEXT const * pDescriptorInfo, size_t dataSize, void * pDescriptor ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDescriptorEXT( device, pDescriptorInfo, dataSize, pDescriptor );
       }
 
       VULKAN_HPP_INLINE void vkCmdBindDescriptorBuffersEXT( VkCommandBuffer                          commandBuffer,
                                                             uint32_t                                 bufferCount,
-                                                            const VkDescriptorBufferBindingInfoEXT * pBindingInfos ) const VULKAN_HPP_NOEXCEPT
+                                                            VkDescriptorBufferBindingInfoEXT const * pBindingInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindDescriptorBuffersEXT( commandBuffer, bufferCount, pBindingInfos );
       }
@@ -6184,8 +6184,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                  VkPipelineLayout     layout,
                                                                  uint32_t             firstSet,
                                                                  uint32_t             setCount,
-                                                                 const uint32_t *     pBufferIndices,
-                                                                 const VkDeviceSize * pOffsets ) const VULKAN_HPP_NOEXCEPT
+                                                                 uint32_t const *     pBufferIndices,
+                                                                 VkDeviceSize const * pOffsets ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetDescriptorBufferOffsetsEXT( commandBuffer, pipelineBindPoint, layout, firstSet, setCount, pBufferIndices, pOffsets );
       }
@@ -6199,35 +6199,35 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkGetBufferOpaqueCaptureDescriptorDataEXT( VkDevice                                     device,
-                                                                            const VkBufferCaptureDescriptorDataInfoEXT * pInfo,
+                                                                            VkBufferCaptureDescriptorDataInfoEXT const * pInfo,
                                                                             void *                                       pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetBufferOpaqueCaptureDescriptorDataEXT( device, pInfo, pData );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetImageOpaqueCaptureDescriptorDataEXT( VkDevice                                    device,
-                                                                           const VkImageCaptureDescriptorDataInfoEXT * pInfo,
+                                                                           VkImageCaptureDescriptorDataInfoEXT const * pInfo,
                                                                            void *                                      pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetImageOpaqueCaptureDescriptorDataEXT( device, pInfo, pData );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetImageViewOpaqueCaptureDescriptorDataEXT( VkDevice                                        device,
-                                                                               const VkImageViewCaptureDescriptorDataInfoEXT * pInfo,
+                                                                               VkImageViewCaptureDescriptorDataInfoEXT const * pInfo,
                                                                                void *                                          pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetImageViewOpaqueCaptureDescriptorDataEXT( device, pInfo, pData );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetSamplerOpaqueCaptureDescriptorDataEXT( VkDevice                                      device,
-                                                                             const VkSamplerCaptureDescriptorDataInfoEXT * pInfo,
+                                                                             VkSamplerCaptureDescriptorDataInfoEXT const * pInfo,
                                                                              void *                                        pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetSamplerOpaqueCaptureDescriptorDataEXT( device, pInfo, pData );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT( VkDevice                                                    device,
-                                                                                           const VkAccelerationStructureCaptureDescriptorDataInfoEXT * pInfo,
+                                                                                           VkAccelerationStructureCaptureDescriptorDataInfoEXT const * pInfo,
                                                                                            void * pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT( device, pInfo, pData );
@@ -6237,7 +6237,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdSetFragmentShadingRateEnumNV( VkCommandBuffer                          commandBuffer,
                                                                 VkFragmentShadingRateNV                  shadingRate,
-                                                                const VkFragmentShadingRateCombinerOpKHR combinerOps[2] ) const VULKAN_HPP_NOEXCEPT
+                                                                VkFragmentShadingRateCombinerOpKHR const combinerOps[2] ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetFragmentShadingRateEnumNV( commandBuffer, shadingRate, combinerOps );
       }
@@ -6269,34 +6269,34 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_copy_commands2 ===
 
-      VULKAN_HPP_INLINE void vkCmdCopyBuffer2KHR( VkCommandBuffer commandBuffer, const VkCopyBufferInfo2 * pCopyBufferInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdCopyBuffer2KHR( VkCommandBuffer commandBuffer, VkCopyBufferInfo2 const * pCopyBufferInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyBuffer2KHR( commandBuffer, pCopyBufferInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdCopyImage2KHR( VkCommandBuffer commandBuffer, const VkCopyImageInfo2 * pCopyImageInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdCopyImage2KHR( VkCommandBuffer commandBuffer, VkCopyImageInfo2 const * pCopyImageInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyImage2KHR( commandBuffer, pCopyImageInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdCopyBufferToImage2KHR( VkCommandBuffer                  commandBuffer,
-                                                         const VkCopyBufferToImageInfo2 * pCopyBufferToImageInfo ) const VULKAN_HPP_NOEXCEPT
+                                                         VkCopyBufferToImageInfo2 const * pCopyBufferToImageInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyBufferToImage2KHR( commandBuffer, pCopyBufferToImageInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdCopyImageToBuffer2KHR( VkCommandBuffer                  commandBuffer,
-                                                         const VkCopyImageToBufferInfo2 * pCopyImageToBufferInfo ) const VULKAN_HPP_NOEXCEPT
+                                                         VkCopyImageToBufferInfo2 const * pCopyImageToBufferInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyImageToBuffer2KHR( commandBuffer, pCopyImageToBufferInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdBlitImage2KHR( VkCommandBuffer commandBuffer, const VkBlitImageInfo2 * pBlitImageInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdBlitImage2KHR( VkCommandBuffer commandBuffer, VkBlitImageInfo2 const * pBlitImageInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBlitImage2KHR( commandBuffer, pBlitImageInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdResolveImage2KHR( VkCommandBuffer commandBuffer, const VkResolveImageInfo2 * pResolveImageInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdResolveImage2KHR( VkCommandBuffer commandBuffer, VkResolveImageInfo2 const * pResolveImageInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdResolveImage2KHR( commandBuffer, pResolveImageInfo );
       }
@@ -6330,8 +6330,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_directfb_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateDirectFBSurfaceEXT( VkInstance                             instance,
-                                                             const VkDirectFBSurfaceCreateInfoEXT * pCreateInfo,
-                                                             const VkAllocationCallbacks *          pAllocator,
+                                                             VkDirectFBSurfaceCreateInfoEXT const * pCreateInfo,
+                                                             VkAllocationCallbacks const *          pAllocator,
                                                              VkSurfaceKHR *                         pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDirectFBSurfaceEXT( instance, pCreateInfo, pAllocator, pSurface );
@@ -6349,9 +6349,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdSetVertexInputEXT( VkCommandBuffer                               commandBuffer,
                                                      uint32_t                                      vertexBindingDescriptionCount,
-                                                     const VkVertexInputBindingDescription2EXT *   pVertexBindingDescriptions,
+                                                     VkVertexInputBindingDescription2EXT const *   pVertexBindingDescriptions,
                                                      uint32_t                                      vertexAttributeDescriptionCount,
-                                                     const VkVertexInputAttributeDescription2EXT * pVertexAttributeDescriptions ) const VULKAN_HPP_NOEXCEPT
+                                                     VkVertexInputAttributeDescription2EXT const * pVertexAttributeDescriptions ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetVertexInputEXT(
           commandBuffer, vertexBindingDescriptionCount, pVertexBindingDescriptions, vertexAttributeDescriptionCount, pVertexAttributeDescriptions );
@@ -6361,7 +6361,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_FUCHSIA_external_memory ===
 
       VULKAN_HPP_INLINE VkResult vkGetMemoryZirconHandleFUCHSIA( VkDevice                                   device,
-                                                                 const VkMemoryGetZirconHandleInfoFUCHSIA * pGetZirconHandleInfo,
+                                                                 VkMemoryGetZirconHandleInfoFUCHSIA const * pGetZirconHandleInfo,
                                                                  zx_handle_t *                              pZirconHandle ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetMemoryZirconHandleFUCHSIA( device, pGetZirconHandleInfo, pZirconHandle );
@@ -6381,13 +6381,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_FUCHSIA_external_semaphore ===
 
       VULKAN_HPP_INLINE VkResult vkImportSemaphoreZirconHandleFUCHSIA(
-        VkDevice device, const VkImportSemaphoreZirconHandleInfoFUCHSIA * pImportSemaphoreZirconHandleInfo ) const VULKAN_HPP_NOEXCEPT
+        VkDevice device, VkImportSemaphoreZirconHandleInfoFUCHSIA const * pImportSemaphoreZirconHandleInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkImportSemaphoreZirconHandleFUCHSIA( device, pImportSemaphoreZirconHandleInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetSemaphoreZirconHandleFUCHSIA( VkDevice                                      device,
-                                                                    const VkSemaphoreGetZirconHandleInfoFUCHSIA * pGetZirconHandleInfo,
+                                                                    VkSemaphoreGetZirconHandleInfoFUCHSIA const * pGetZirconHandleInfo,
                                                                     zx_handle_t *                                 pZirconHandle ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetSemaphoreZirconHandleFUCHSIA( device, pGetZirconHandleInfo, pZirconHandle );
@@ -6398,28 +6398,28 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_FUCHSIA_buffer_collection ===
 
       VULKAN_HPP_INLINE VkResult vkCreateBufferCollectionFUCHSIA( VkDevice                                    device,
-                                                                  const VkBufferCollectionCreateInfoFUCHSIA * pCreateInfo,
-                                                                  const VkAllocationCallbacks *               pAllocator,
+                                                                  VkBufferCollectionCreateInfoFUCHSIA const * pCreateInfo,
+                                                                  VkAllocationCallbacks const *               pAllocator,
                                                                   VkBufferCollectionFUCHSIA *                 pCollection ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateBufferCollectionFUCHSIA( device, pCreateInfo, pAllocator, pCollection );
       }
 
       VULKAN_HPP_INLINE VkResult vkSetBufferCollectionImageConstraintsFUCHSIA(
-        VkDevice device, VkBufferCollectionFUCHSIA collection, const VkImageConstraintsInfoFUCHSIA * pImageConstraintsInfo ) const VULKAN_HPP_NOEXCEPT
+        VkDevice device, VkBufferCollectionFUCHSIA collection, VkImageConstraintsInfoFUCHSIA const * pImageConstraintsInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkSetBufferCollectionImageConstraintsFUCHSIA( device, collection, pImageConstraintsInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkSetBufferCollectionBufferConstraintsFUCHSIA(
-        VkDevice device, VkBufferCollectionFUCHSIA collection, const VkBufferConstraintsInfoFUCHSIA * pBufferConstraintsInfo ) const VULKAN_HPP_NOEXCEPT
+        VkDevice device, VkBufferCollectionFUCHSIA collection, VkBufferConstraintsInfoFUCHSIA const * pBufferConstraintsInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkSetBufferCollectionBufferConstraintsFUCHSIA( device, collection, pBufferConstraintsInfo );
       }
 
       VULKAN_HPP_INLINE void vkDestroyBufferCollectionFUCHSIA( VkDevice                      device,
                                                                VkBufferCollectionFUCHSIA     collection,
-                                                               const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                               VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyBufferCollectionFUCHSIA( device, collection, pAllocator );
       }
@@ -6457,7 +6457,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_external_memory_rdma ===
 
       VULKAN_HPP_INLINE VkResult vkGetMemoryRemoteAddressNV( VkDevice                               device,
-                                                             const VkMemoryGetRemoteAddressInfoNV * pMemoryGetRemoteAddressInfo,
+                                                             VkMemoryGetRemoteAddressInfoNV const * pMemoryGetRemoteAddressInfo,
                                                              VkRemoteAddressNV *                    pAddress ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetMemoryRemoteAddressNV( device, pMemoryGetRemoteAddressInfo, pAddress );
@@ -6466,7 +6466,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_pipeline_properties ===
 
       VULKAN_HPP_INLINE VkResult vkGetPipelinePropertiesEXT( VkDevice                  device,
-                                                             const VkPipelineInfoEXT * pPipelineInfo,
+                                                             VkPipelineInfoEXT const * pPipelineInfo,
                                                              VkBaseOutStructure *      pPipelineProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPipelinePropertiesEXT( device, pPipelineInfo, pPipelineProperties );
@@ -6503,8 +6503,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_QNX_screen_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateScreenSurfaceQNX( VkInstance                           instance,
-                                                           const VkScreenSurfaceCreateInfoQNX * pCreateInfo,
-                                                           const VkAllocationCallbacks *        pAllocator,
+                                                           VkScreenSurfaceCreateInfoQNX const * pCreateInfo,
+                                                           VkAllocationCallbacks const *        pAllocator,
                                                            VkSurfaceKHR *                       pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateScreenSurfaceQNX( instance, pCreateInfo, pAllocator, pSurface );
@@ -6521,7 +6521,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_color_write_enable ===
 
       VULKAN_HPP_INLINE void
-        vkCmdSetColorWriteEnableEXT( VkCommandBuffer commandBuffer, uint32_t attachmentCount, const VkBool32 * pColorWriteEnables ) const VULKAN_HPP_NOEXCEPT
+        vkCmdSetColorWriteEnableEXT( VkCommandBuffer commandBuffer, uint32_t attachmentCount, VkBool32 const * pColorWriteEnables ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetColorWriteEnableEXT( commandBuffer, attachmentCount, pColorWriteEnables );
       }
@@ -6537,7 +6537,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdDrawMultiEXT( VkCommandBuffer            commandBuffer,
                                                 uint32_t                   drawCount,
-                                                const VkMultiDrawInfoEXT * pVertexInfo,
+                                                VkMultiDrawInfoEXT const * pVertexInfo,
                                                 uint32_t                   instanceCount,
                                                 uint32_t                   firstInstance,
                                                 uint32_t                   stride ) const VULKAN_HPP_NOEXCEPT
@@ -6547,11 +6547,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdDrawMultiIndexedEXT( VkCommandBuffer                   commandBuffer,
                                                        uint32_t                          drawCount,
-                                                       const VkMultiDrawIndexedInfoEXT * pIndexInfo,
+                                                       VkMultiDrawIndexedInfoEXT const * pIndexInfo,
                                                        uint32_t                          instanceCount,
                                                        uint32_t                          firstInstance,
                                                        uint32_t                          stride,
-                                                       const int32_t *                   pVertexOffset ) const VULKAN_HPP_NOEXCEPT
+                                                       int32_t const *                   pVertexOffset ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdDrawMultiIndexedEXT( commandBuffer, drawCount, pIndexInfo, instanceCount, firstInstance, stride, pVertexOffset );
       }
@@ -6559,20 +6559,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_opacity_micromap ===
 
       VULKAN_HPP_INLINE VkResult vkCreateMicromapEXT( VkDevice                        device,
-                                                      const VkMicromapCreateInfoEXT * pCreateInfo,
-                                                      const VkAllocationCallbacks *   pAllocator,
+                                                      VkMicromapCreateInfoEXT const * pCreateInfo,
+                                                      VkAllocationCallbacks const *   pAllocator,
                                                       VkMicromapEXT *                 pMicromap ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateMicromapEXT( device, pCreateInfo, pAllocator, pMicromap );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyMicromapEXT( VkDevice device, VkMicromapEXT micromap, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyMicromapEXT( VkDevice device, VkMicromapEXT micromap, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyMicromapEXT( device, micromap, pAllocator );
       }
 
       VULKAN_HPP_INLINE void
-        vkCmdBuildMicromapsEXT( VkCommandBuffer commandBuffer, uint32_t infoCount, const VkMicromapBuildInfoEXT * pInfos ) const VULKAN_HPP_NOEXCEPT
+        vkCmdBuildMicromapsEXT( VkCommandBuffer commandBuffer, uint32_t infoCount, VkMicromapBuildInfoEXT const * pInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBuildMicromapsEXT( commandBuffer, infoCount, pInfos );
       }
@@ -6580,35 +6580,35 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE VkResult vkBuildMicromapsEXT( VkDevice                       device,
                                                       VkDeferredOperationKHR         deferredOperation,
                                                       uint32_t                       infoCount,
-                                                      const VkMicromapBuildInfoEXT * pInfos ) const VULKAN_HPP_NOEXCEPT
+                                                      VkMicromapBuildInfoEXT const * pInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkBuildMicromapsEXT( device, deferredOperation, infoCount, pInfos );
       }
 
       VULKAN_HPP_INLINE VkResult vkCopyMicromapEXT( VkDevice                      device,
                                                     VkDeferredOperationKHR        deferredOperation,
-                                                    const VkCopyMicromapInfoEXT * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                    VkCopyMicromapInfoEXT const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCopyMicromapEXT( device, deferredOperation, pInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkCopyMicromapToMemoryEXT( VkDevice                              device,
                                                             VkDeferredOperationKHR                deferredOperation,
-                                                            const VkCopyMicromapToMemoryInfoEXT * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                            VkCopyMicromapToMemoryInfoEXT const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCopyMicromapToMemoryEXT( device, deferredOperation, pInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkCopyMemoryToMicromapEXT( VkDevice                              device,
                                                             VkDeferredOperationKHR                deferredOperation,
-                                                            const VkCopyMemoryToMicromapInfoEXT * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                            VkCopyMemoryToMicromapInfoEXT const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCopyMemoryToMicromapEXT( device, deferredOperation, pInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkWriteMicromapsPropertiesEXT( VkDevice              device,
                                                                 uint32_t              micromapCount,
-                                                                const VkMicromapEXT * pMicromaps,
+                                                                VkMicromapEXT const * pMicromaps,
                                                                 VkQueryType           queryType,
                                                                 size_t                dataSize,
                                                                 void *                pData,
@@ -6617,26 +6617,26 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkWriteMicromapsPropertiesEXT( device, micromapCount, pMicromaps, queryType, dataSize, pData, stride );
       }
 
-      VULKAN_HPP_INLINE void vkCmdCopyMicromapEXT( VkCommandBuffer commandBuffer, const VkCopyMicromapInfoEXT * pInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdCopyMicromapEXT( VkCommandBuffer commandBuffer, VkCopyMicromapInfoEXT const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyMicromapEXT( commandBuffer, pInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdCopyMicromapToMemoryEXT( VkCommandBuffer                       commandBuffer,
-                                                           const VkCopyMicromapToMemoryInfoEXT * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                           VkCopyMicromapToMemoryInfoEXT const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyMicromapToMemoryEXT( commandBuffer, pInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdCopyMemoryToMicromapEXT( VkCommandBuffer                       commandBuffer,
-                                                           const VkCopyMemoryToMicromapInfoEXT * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                           VkCopyMemoryToMicromapInfoEXT const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyMemoryToMicromapEXT( commandBuffer, pInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdWriteMicromapsPropertiesEXT( VkCommandBuffer       commandBuffer,
                                                                uint32_t              micromapCount,
-                                                               const VkMicromapEXT * pMicromaps,
+                                                               VkMicromapEXT const * pMicromaps,
                                                                VkQueryType           queryType,
                                                                VkQueryPool           queryPool,
                                                                uint32_t              firstQuery ) const VULKAN_HPP_NOEXCEPT
@@ -6645,7 +6645,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void vkGetDeviceMicromapCompatibilityEXT( VkDevice                                  device,
-                                                                  const VkMicromapVersionInfoEXT *          pVersionInfo,
+                                                                  VkMicromapVersionInfoEXT const *          pVersionInfo,
                                                                   VkAccelerationStructureCompatibilityKHR * pCompatibility ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceMicromapCompatibilityEXT( device, pVersionInfo, pCompatibility );
@@ -6653,7 +6653,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkGetMicromapBuildSizesEXT( VkDevice                            device,
                                                          VkAccelerationStructureBuildTypeKHR buildType,
-                                                         const VkMicromapBuildInfoEXT *      pBuildInfo,
+                                                         VkMicromapBuildInfoEXT const *      pBuildInfo,
                                                          VkMicromapBuildSizesInfoEXT *       pSizeInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetMicromapBuildSizesEXT( device, buildType, pBuildInfo, pSizeInfo );
@@ -6682,14 +6682,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_maintenance4 ===
 
       VULKAN_HPP_INLINE void vkGetDeviceBufferMemoryRequirementsKHR( VkDevice                                 device,
-                                                                     const VkDeviceBufferMemoryRequirements * pInfo,
+                                                                     VkDeviceBufferMemoryRequirements const * pInfo,
                                                                      VkMemoryRequirements2 *                  pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceBufferMemoryRequirementsKHR( device, pInfo, pMemoryRequirements );
       }
 
       VULKAN_HPP_INLINE void vkGetDeviceImageMemoryRequirementsKHR( VkDevice                                device,
-                                                                    const VkDeviceImageMemoryRequirements * pInfo,
+                                                                    VkDeviceImageMemoryRequirements const * pInfo,
                                                                     VkMemoryRequirements2 *                 pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceImageMemoryRequirementsKHR( device, pInfo, pMemoryRequirements );
@@ -6697,7 +6697,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void
         vkGetDeviceImageSparseMemoryRequirementsKHR( VkDevice                                device,
-                                                     const VkDeviceImageMemoryRequirements * pInfo,
+                                                     VkDeviceImageMemoryRequirements const * pInfo,
                                                      uint32_t *                              pSparseMemoryRequirementCount,
                                                      VkSparseImageMemoryRequirements2 *      pSparseMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
@@ -6707,7 +6707,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_VALVE_descriptor_set_host_mapping ===
 
       VULKAN_HPP_INLINE void vkGetDescriptorSetLayoutHostMappingInfoVALVE( VkDevice                                     device,
-                                                                           const VkDescriptorSetBindingReferenceVALVE * pBindingReference,
+                                                                           VkDescriptorSetBindingReferenceVALVE const * pBindingReference,
                                                                            VkDescriptorSetLayoutHostMappingInfoVALVE *  pHostMapping ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDescriptorSetLayoutHostMappingInfoVALVE( device, pBindingReference, pHostMapping );
@@ -6734,7 +6734,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                uint32_t                         stride,
                                                                VkImage                          dstImage,
                                                                VkImageLayout                    dstImageLayout,
-                                                               const VkImageSubresourceLayers * pImageSubresources ) const VULKAN_HPP_NOEXCEPT
+                                                               VkImageSubresourceLayers const * pImageSubresources ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyMemoryToImageIndirectNV( commandBuffer, copyBufferAddress, copyCount, stride, dstImage, dstImageLayout, pImageSubresources );
       }
@@ -6743,7 +6743,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdDecompressMemoryNV( VkCommandBuffer                    commandBuffer,
                                                       uint32_t                           decompressRegionCount,
-                                                      const VkDecompressMemoryRegionNV * pDecompressMemoryRegions ) const VULKAN_HPP_NOEXCEPT
+                                                      VkDecompressMemoryRegionNV const * pDecompressMemoryRegions ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdDecompressMemoryNV( commandBuffer, decompressRegionCount, pDecompressMemoryRegions );
       }
@@ -6759,7 +6759,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_device_generated_commands_compute ===
 
       VULKAN_HPP_INLINE void vkGetPipelineIndirectMemoryRequirementsNV( VkDevice                            device,
-                                                                        const VkComputePipelineCreateInfo * pCreateInfo,
+                                                                        VkComputePipelineCreateInfo const * pCreateInfo,
                                                                         VkMemoryRequirements2 *             pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPipelineIndirectMemoryRequirementsNV( device, pCreateInfo, pMemoryRequirements );
@@ -6773,7 +6773,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkDeviceAddress vkGetPipelineIndirectDeviceAddressNV( VkDevice                                      device,
-                                                                              const VkPipelineIndirectDeviceAddressInfoNV * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                              VkPipelineIndirectDeviceAddressInfoNV const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPipelineIndirectDeviceAddressNV( device, pInfo );
       }
@@ -6789,7 +6789,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkGetMemoryNativeBufferOHOS( VkDevice                                device,
-                                                              const VkMemoryGetNativeBufferInfoOHOS * pInfo,
+                                                              VkMemoryGetNativeBufferInfoOHOS const * pInfo,
                                                               struct OH_NativeBuffer **               pBuffer ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetMemoryNativeBufferOHOS( device, pInfo, pBuffer );
@@ -6815,7 +6815,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void
-        vkCmdSetSampleMaskEXT( VkCommandBuffer commandBuffer, VkSampleCountFlagBits samples, const VkSampleMask * pSampleMask ) const VULKAN_HPP_NOEXCEPT
+        vkCmdSetSampleMaskEXT( VkCommandBuffer commandBuffer, VkSampleCountFlagBits samples, VkSampleMask const * pSampleMask ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetSampleMaskEXT( commandBuffer, samples, pSampleMask );
       }
@@ -6838,7 +6838,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdSetColorBlendEnableEXT( VkCommandBuffer  commandBuffer,
                                                           uint32_t         firstAttachment,
                                                           uint32_t         attachmentCount,
-                                                          const VkBool32 * pColorBlendEnables ) const VULKAN_HPP_NOEXCEPT
+                                                          VkBool32 const * pColorBlendEnables ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetColorBlendEnableEXT( commandBuffer, firstAttachment, attachmentCount, pColorBlendEnables );
       }
@@ -6846,7 +6846,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdSetColorBlendEquationEXT( VkCommandBuffer                 commandBuffer,
                                                             uint32_t                        firstAttachment,
                                                             uint32_t                        attachmentCount,
-                                                            const VkColorBlendEquationEXT * pColorBlendEquations ) const VULKAN_HPP_NOEXCEPT
+                                                            VkColorBlendEquationEXT const * pColorBlendEquations ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetColorBlendEquationEXT( commandBuffer, firstAttachment, attachmentCount, pColorBlendEquations );
       }
@@ -6854,7 +6854,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdSetColorWriteMaskEXT( VkCommandBuffer               commandBuffer,
                                                         uint32_t                      firstAttachment,
                                                         uint32_t                      attachmentCount,
-                                                        const VkColorComponentFlags * pColorWriteMasks ) const VULKAN_HPP_NOEXCEPT
+                                                        VkColorComponentFlags const * pColorWriteMasks ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetColorWriteMaskEXT( commandBuffer, firstAttachment, attachmentCount, pColorWriteMasks );
       }
@@ -6896,7 +6896,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdSetColorBlendAdvancedEXT( VkCommandBuffer                 commandBuffer,
                                                             uint32_t                        firstAttachment,
                                                             uint32_t                        attachmentCount,
-                                                            const VkColorBlendAdvancedEXT * pColorBlendAdvanced ) const VULKAN_HPP_NOEXCEPT
+                                                            VkColorBlendAdvancedEXT const * pColorBlendAdvanced ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetColorBlendAdvancedEXT( commandBuffer, firstAttachment, attachmentCount, pColorBlendAdvanced );
       }
@@ -6931,7 +6931,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkCmdSetViewportSwizzleNV( VkCommandBuffer             commandBuffer,
                                                         uint32_t                    firstViewport,
                                                         uint32_t                    viewportCount,
-                                                        const VkViewportSwizzleNV * pViewportSwizzles ) const VULKAN_HPP_NOEXCEPT
+                                                        VkViewportSwizzleNV const * pViewportSwizzles ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetViewportSwizzleNV( commandBuffer, firstViewport, viewportCount, pViewportSwizzles );
       }
@@ -6960,7 +6960,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdSetCoverageModulationTableNV( VkCommandBuffer commandBuffer,
                                                                 uint32_t        coverageModulationTableCount,
-                                                                const float *   pCoverageModulationTable ) const VULKAN_HPP_NOEXCEPT
+                                                                float const *   pCoverageModulationTable ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetCoverageModulationTableNV( commandBuffer, coverageModulationTableCount, pCoverageModulationTable );
       }
@@ -6985,34 +6985,34 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_ARM_tensors ===
 
       VULKAN_HPP_INLINE VkResult vkCreateTensorARM( VkDevice                      device,
-                                                    const VkTensorCreateInfoARM * pCreateInfo,
-                                                    const VkAllocationCallbacks * pAllocator,
+                                                    VkTensorCreateInfoARM const * pCreateInfo,
+                                                    VkAllocationCallbacks const * pAllocator,
                                                     VkTensorARM *                 pTensor ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateTensorARM( device, pCreateInfo, pAllocator, pTensor );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyTensorARM( VkDevice device, VkTensorARM tensor, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyTensorARM( VkDevice device, VkTensorARM tensor, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyTensorARM( device, tensor, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateTensorViewARM( VkDevice                          device,
-                                                        const VkTensorViewCreateInfoARM * pCreateInfo,
-                                                        const VkAllocationCallbacks *     pAllocator,
+                                                        VkTensorViewCreateInfoARM const * pCreateInfo,
+                                                        VkAllocationCallbacks const *     pAllocator,
                                                         VkTensorViewARM *                 pView ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateTensorViewARM( device, pCreateInfo, pAllocator, pView );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyTensorViewARM( VkDevice device, VkTensorViewARM tensorView, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyTensorViewARM( VkDevice device, VkTensorViewARM tensorView, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyTensorViewARM( device, tensorView, pAllocator );
       }
 
       VULKAN_HPP_INLINE void vkGetTensorMemoryRequirementsARM( VkDevice                                  device,
-                                                               const VkTensorMemoryRequirementsInfoARM * pInfo,
+                                                               VkTensorMemoryRequirementsInfoARM const * pInfo,
                                                                VkMemoryRequirements2 *                   pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetTensorMemoryRequirementsARM( device, pInfo, pMemoryRequirements );
@@ -7020,40 +7020,40 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkBindTensorMemoryARM( VkDevice                          device,
                                                         uint32_t                          bindInfoCount,
-                                                        const VkBindTensorMemoryInfoARM * pBindInfos ) const VULKAN_HPP_NOEXCEPT
+                                                        VkBindTensorMemoryInfoARM const * pBindInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkBindTensorMemoryARM( device, bindInfoCount, pBindInfos );
       }
 
       VULKAN_HPP_INLINE void vkGetDeviceTensorMemoryRequirementsARM( VkDevice                                    device,
-                                                                     const VkDeviceTensorMemoryRequirementsARM * pInfo,
+                                                                     VkDeviceTensorMemoryRequirementsARM const * pInfo,
                                                                      VkMemoryRequirements2 *                     pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceTensorMemoryRequirementsARM( device, pInfo, pMemoryRequirements );
       }
 
-      VULKAN_HPP_INLINE void vkCmdCopyTensorARM( VkCommandBuffer commandBuffer, const VkCopyTensorInfoARM * pCopyTensorInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdCopyTensorARM( VkCommandBuffer commandBuffer, VkCopyTensorInfoARM const * pCopyTensorInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyTensorARM( commandBuffer, pCopyTensorInfo );
       }
 
       VULKAN_HPP_INLINE void
         vkGetPhysicalDeviceExternalTensorPropertiesARM( VkPhysicalDevice                              physicalDevice,
-                                                        const VkPhysicalDeviceExternalTensorInfoARM * pExternalTensorInfo,
+                                                        VkPhysicalDeviceExternalTensorInfoARM const * pExternalTensorInfo,
                                                         VkExternalTensorPropertiesARM *               pExternalTensorProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceExternalTensorPropertiesARM( physicalDevice, pExternalTensorInfo, pExternalTensorProperties );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetTensorOpaqueCaptureDescriptorDataARM( VkDevice                                     device,
-                                                                            const VkTensorCaptureDescriptorDataInfoARM * pInfo,
+                                                                            VkTensorCaptureDescriptorDataInfoARM const * pInfo,
                                                                             void *                                       pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetTensorOpaqueCaptureDescriptorDataARM( device, pInfo, pData );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetTensorViewOpaqueCaptureDescriptorDataARM( VkDevice                                         device,
-                                                                                const VkTensorViewCaptureDescriptorDataInfoARM * pInfo,
+                                                                                VkTensorViewCaptureDescriptorDataInfoARM const * pInfo,
                                                                                 void * pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetTensorViewOpaqueCaptureDescriptorDataARM( device, pInfo, pData );
@@ -7068,7 +7068,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void vkGetShaderModuleCreateInfoIdentifierEXT( VkDevice                         device,
-                                                                       const VkShaderModuleCreateInfo * pCreateInfo,
+                                                                       VkShaderModuleCreateInfo const * pCreateInfo,
                                                                        VkShaderModuleIdentifierEXT *    pIdentifier ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetShaderModuleCreateInfoIdentifierEXT( device, pCreateInfo, pIdentifier );
@@ -7078,7 +7078,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult
         vkGetPhysicalDeviceOpticalFlowImageFormatsNV( VkPhysicalDevice                       physicalDevice,
-                                                      const VkOpticalFlowImageFormatInfoNV * pOpticalFlowImageFormatInfo,
+                                                      VkOpticalFlowImageFormatInfoNV const * pOpticalFlowImageFormatInfo,
                                                       uint32_t *                             pFormatCount,
                                                       VkOpticalFlowImageFormatPropertiesNV * pImageFormatProperties ) const VULKAN_HPP_NOEXCEPT
       {
@@ -7086,15 +7086,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateOpticalFlowSessionNV( VkDevice                                 device,
-                                                               const VkOpticalFlowSessionCreateInfoNV * pCreateInfo,
-                                                               const VkAllocationCallbacks *            pAllocator,
+                                                               VkOpticalFlowSessionCreateInfoNV const * pCreateInfo,
+                                                               VkAllocationCallbacks const *            pAllocator,
                                                                VkOpticalFlowSessionNV *                 pSession ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateOpticalFlowSessionNV( device, pCreateInfo, pAllocator, pSession );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyOpticalFlowSessionNV( VkDevice device, VkOpticalFlowSessionNV session, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyOpticalFlowSessionNV( VkDevice device, VkOpticalFlowSessionNV session, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyOpticalFlowSessionNV( device, session, pAllocator );
       }
@@ -7110,7 +7110,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdOpticalFlowExecuteNV( VkCommandBuffer                    commandBuffer,
                                                         VkOpticalFlowSessionNV             session,
-                                                        const VkOpticalFlowExecuteInfoNV * pExecuteInfo ) const VULKAN_HPP_NOEXCEPT
+                                                        VkOpticalFlowExecuteInfoNV const * pExecuteInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdOpticalFlowExecuteNV( commandBuffer, session, pExecuteInfo );
       }
@@ -7124,13 +7124,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void
-        vkGetRenderingAreaGranularityKHR( VkDevice device, const VkRenderingAreaInfo * pRenderingAreaInfo, VkExtent2D * pGranularity ) const VULKAN_HPP_NOEXCEPT
+        vkGetRenderingAreaGranularityKHR( VkDevice device, VkRenderingAreaInfo const * pRenderingAreaInfo, VkExtent2D * pGranularity ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetRenderingAreaGranularityKHR( device, pRenderingAreaInfo, pGranularity );
       }
 
       VULKAN_HPP_INLINE void vkGetDeviceImageSubresourceLayoutKHR( VkDevice                             device,
-                                                                   const VkDeviceImageSubresourceInfo * pInfo,
+                                                                   VkDeviceImageSubresourceInfo const * pInfo,
                                                                    VkSubresourceLayout2 *               pLayout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDeviceImageSubresourceLayoutKHR( device, pInfo, pLayout );
@@ -7138,7 +7138,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkGetImageSubresourceLayout2KHR( VkDevice                    device,
                                                               VkImage                     image,
-                                                              const VkImageSubresource2 * pSubresource,
+                                                              VkImageSubresource2 const * pSubresource,
                                                               VkSubresourceLayout2 *      pLayout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetImageSubresourceLayout2KHR( device, image, pSubresource, pLayout );
@@ -7146,7 +7146,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_AMD_anti_lag ===
 
-      VULKAN_HPP_INLINE void vkAntiLagUpdateAMD( VkDevice device, const VkAntiLagDataAMD * pData ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkAntiLagUpdateAMD( VkDevice device, VkAntiLagDataAMD const * pData ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkAntiLagUpdateAMD( device, pData );
       }
@@ -7155,7 +7155,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkWaitForPresent2KHR( VkDevice                      device,
                                                        VkSwapchainKHR                swapchain,
-                                                       const VkPresentWait2InfoKHR * pPresentWait2Info ) const VULKAN_HPP_NOEXCEPT
+                                                       VkPresentWait2InfoKHR const * pPresentWait2Info ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkWaitForPresent2KHR( device, swapchain, pPresentWait2Info );
       }
@@ -7164,14 +7164,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkCreateShadersEXT( VkDevice                      device,
                                                      uint32_t                      createInfoCount,
-                                                     const VkShaderCreateInfoEXT * pCreateInfos,
-                                                     const VkAllocationCallbacks * pAllocator,
+                                                     VkShaderCreateInfoEXT const * pCreateInfos,
+                                                     VkAllocationCallbacks const * pAllocator,
                                                      VkShaderEXT *                 pShaders ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateShadersEXT( device, createInfoCount, pCreateInfos, pAllocator, pShaders );
       }
 
-      VULKAN_HPP_INLINE void vkDestroyShaderEXT( VkDevice device, VkShaderEXT shader, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkDestroyShaderEXT( VkDevice device, VkShaderEXT shader, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyShaderEXT( device, shader, pAllocator );
       }
@@ -7183,15 +7183,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdBindShadersEXT( VkCommandBuffer               commandBuffer,
                                                   uint32_t                      stageCount,
-                                                  const VkShaderStageFlagBits * pStages,
-                                                  const VkShaderEXT *           pShaders ) const VULKAN_HPP_NOEXCEPT
+                                                  VkShaderStageFlagBits const * pStages,
+                                                  VkShaderEXT const *           pShaders ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindShadersEXT( commandBuffer, stageCount, pStages, pShaders );
       }
 
       VULKAN_HPP_INLINE void vkCmdSetDepthClampRangeEXT( VkCommandBuffer              commandBuffer,
                                                          VkDepthClampModeEXT          depthClampMode,
-                                                         const VkDepthClampRangeEXT * pDepthClampRange ) const VULKAN_HPP_NOEXCEPT
+                                                         VkDepthClampRangeEXT const * pDepthClampRange ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetDepthClampRangeEXT( commandBuffer, depthClampMode, pDepthClampRange );
       }
@@ -7199,28 +7199,28 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_pipeline_binary ===
 
       VULKAN_HPP_INLINE VkResult vkCreatePipelineBinariesKHR( VkDevice                              device,
-                                                              const VkPipelineBinaryCreateInfoKHR * pCreateInfo,
-                                                              const VkAllocationCallbacks *         pAllocator,
+                                                              VkPipelineBinaryCreateInfoKHR const * pCreateInfo,
+                                                              VkAllocationCallbacks const *         pAllocator,
                                                               VkPipelineBinaryHandlesInfoKHR *      pBinaries ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreatePipelineBinariesKHR( device, pCreateInfo, pAllocator, pBinaries );
       }
 
       VULKAN_HPP_INLINE void
-        vkDestroyPipelineBinaryKHR( VkDevice device, VkPipelineBinaryKHR pipelineBinary, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+        vkDestroyPipelineBinaryKHR( VkDevice device, VkPipelineBinaryKHR pipelineBinary, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyPipelineBinaryKHR( device, pipelineBinary, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetPipelineKeyKHR( VkDevice                        device,
-                                                      const VkPipelineCreateInfoKHR * pPipelineCreateInfo,
+                                                      VkPipelineCreateInfoKHR const * pPipelineCreateInfo,
                                                       VkPipelineBinaryKeyKHR *        pPipelineKey ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPipelineKeyKHR( device, pPipelineCreateInfo, pPipelineKey );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetPipelineBinaryDataKHR( VkDevice                            device,
-                                                             const VkPipelineBinaryDataInfoKHR * pInfo,
+                                                             VkPipelineBinaryDataInfoKHR const * pInfo,
                                                              VkPipelineBinaryKeyKHR *            pPipelineBinaryKey,
                                                              size_t *                            pPipelineBinaryDataSize,
                                                              void *                              pPipelineBinaryData ) const VULKAN_HPP_NOEXCEPT
@@ -7229,8 +7229,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkReleaseCapturedPipelineDataKHR( VkDevice                                     device,
-                                                                   const VkReleaseCapturedPipelineDataInfoKHR * pInfo,
-                                                                   const VkAllocationCallbacks *                pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                                   VkReleaseCapturedPipelineDataInfoKHR const * pInfo,
+                                                                   VkAllocationCallbacks const *                pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkReleaseCapturedPipelineDataKHR( device, pInfo, pAllocator );
       }
@@ -7246,7 +7246,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkGetDynamicRenderingTilePropertiesQCOM( VkDevice                device,
-                                                                          const VkRenderingInfo * pRenderingInfo,
+                                                                          VkRenderingInfo const * pRenderingInfo,
                                                                           VkTilePropertiesQCOM *  pProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDynamicRenderingTilePropertiesQCOM( device, pRenderingInfo, pProperties );
@@ -7254,7 +7254,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_swapchain_maintenance1 ===
 
-      VULKAN_HPP_INLINE VkResult vkReleaseSwapchainImagesKHR( VkDevice device, const VkReleaseSwapchainImagesInfoKHR * pReleaseInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE VkResult vkReleaseSwapchainImagesKHR( VkDevice device, VkReleaseSwapchainImagesInfoKHR const * pReleaseInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkReleaseSwapchainImagesKHR( device, pReleaseInfo );
       }
@@ -7269,14 +7269,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkConvertCooperativeVectorMatrixNV( VkDevice                                       device,
-                                                                     const VkConvertCooperativeVectorMatrixInfoNV * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                                     VkConvertCooperativeVectorMatrixInfoNV const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkConvertCooperativeVectorMatrixNV( device, pInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdConvertCooperativeVectorMatrixNV( VkCommandBuffer                                commandBuffer,
                                                                     uint32_t                                       infoCount,
-                                                                    const VkConvertCooperativeVectorMatrixInfoNV * pInfos ) const VULKAN_HPP_NOEXCEPT
+                                                                    VkConvertCooperativeVectorMatrixInfoNV const * pInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdConvertCooperativeVectorMatrixNV( commandBuffer, infoCount, pInfos );
       }
@@ -7285,20 +7285,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkSetLatencySleepModeNV( VkDevice                         device,
                                                           VkSwapchainKHR                   swapchain,
-                                                          const VkLatencySleepModeInfoNV * pSleepModeInfo ) const VULKAN_HPP_NOEXCEPT
+                                                          VkLatencySleepModeInfoNV const * pSleepModeInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkSetLatencySleepModeNV( device, swapchain, pSleepModeInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkLatencySleepNV( VkDevice                     device,
                                                    VkSwapchainKHR               swapchain,
-                                                   const VkLatencySleepInfoNV * pSleepInfo ) const VULKAN_HPP_NOEXCEPT
+                                                   VkLatencySleepInfoNV const * pSleepInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkLatencySleepNV( device, swapchain, pSleepInfo );
       }
 
       VULKAN_HPP_INLINE void
-        vkSetLatencyMarkerNV( VkDevice device, VkSwapchainKHR swapchain, const VkSetLatencyMarkerInfoNV * pLatencyMarkerInfo ) const VULKAN_HPP_NOEXCEPT
+        vkSetLatencyMarkerNV( VkDevice device, VkSwapchainKHR swapchain, VkSetLatencyMarkerInfoNV const * pLatencyMarkerInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkSetLatencyMarkerNV( device, swapchain, pLatencyMarkerInfo );
       }
@@ -7309,7 +7309,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetLatencyTimingsNV( device, swapchain, pLatencyMarkerInfo );
       }
 
-      VULKAN_HPP_INLINE void vkQueueNotifyOutOfBandNV( VkQueue queue, const VkOutOfBandQueueTypeInfoNV * pQueueTypeInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkQueueNotifyOutOfBandNV( VkQueue queue, VkOutOfBandQueueTypeInfoNV const * pQueueTypeInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkQueueNotifyOutOfBandNV( queue, pQueueTypeInfo );
       }
@@ -7329,16 +7329,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                 VkDeferredOperationKHR                   deferredOperation,
                                                                 VkPipelineCache                          pipelineCache,
                                                                 uint32_t                                 createInfoCount,
-                                                                const VkDataGraphPipelineCreateInfoARM * pCreateInfos,
-                                                                const VkAllocationCallbacks *            pAllocator,
+                                                                VkDataGraphPipelineCreateInfoARM const * pCreateInfos,
+                                                                VkAllocationCallbacks const *            pAllocator,
                                                                 VkPipeline *                             pPipelines ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDataGraphPipelinesARM( device, deferredOperation, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateDataGraphPipelineSessionARM( VkDevice                                        device,
-                                                                      const VkDataGraphPipelineSessionCreateInfoARM * pCreateInfo,
-                                                                      const VkAllocationCallbacks *                   pAllocator,
+                                                                      VkDataGraphPipelineSessionCreateInfoARM const * pCreateInfo,
+                                                                      VkAllocationCallbacks const *                   pAllocator,
                                                                       VkDataGraphPipelineSessionARM *                 pSession ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateDataGraphPipelineSessionARM( device, pCreateInfo, pAllocator, pSession );
@@ -7346,7 +7346,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkGetDataGraphPipelineSessionBindPointRequirementsARM(
         VkDevice                                                       device,
-        const VkDataGraphPipelineSessionBindPointRequirementsInfoARM * pInfo,
+        VkDataGraphPipelineSessionBindPointRequirementsInfoARM const * pInfo,
         uint32_t *                                                     pBindPointRequirementCount,
         VkDataGraphPipelineSessionBindPointRequirementARM *            pBindPointRequirements ) const VULKAN_HPP_NOEXCEPT
       {
@@ -7354,34 +7354,34 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE void vkGetDataGraphPipelineSessionMemoryRequirementsARM( VkDevice                                                    device,
-                                                                                 const VkDataGraphPipelineSessionMemoryRequirementsInfoARM * pInfo,
+                                                                                 VkDataGraphPipelineSessionMemoryRequirementsInfoARM const * pInfo,
                                                                                  VkMemoryRequirements2 * pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetDataGraphPipelineSessionMemoryRequirementsARM( device, pInfo, pMemoryRequirements );
       }
 
       VULKAN_HPP_INLINE VkResult vkBindDataGraphPipelineSessionMemoryARM(
-        VkDevice device, uint32_t bindInfoCount, const VkBindDataGraphPipelineSessionMemoryInfoARM * pBindInfos ) const VULKAN_HPP_NOEXCEPT
+        VkDevice device, uint32_t bindInfoCount, VkBindDataGraphPipelineSessionMemoryInfoARM const * pBindInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkBindDataGraphPipelineSessionMemoryARM( device, bindInfoCount, pBindInfos );
       }
 
       VULKAN_HPP_INLINE void vkDestroyDataGraphPipelineSessionARM( VkDevice                      device,
                                                                    VkDataGraphPipelineSessionARM session,
-                                                                   const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                                   VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyDataGraphPipelineSessionARM( device, session, pAllocator );
       }
 
       VULKAN_HPP_INLINE void vkCmdDispatchDataGraphARM( VkCommandBuffer                            commandBuffer,
                                                         VkDataGraphPipelineSessionARM              session,
-                                                        const VkDataGraphPipelineDispatchInfoARM * pInfo ) const VULKAN_HPP_NOEXCEPT
+                                                        VkDataGraphPipelineDispatchInfoARM const * pInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdDispatchDataGraphARM( commandBuffer, session, pInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkGetDataGraphPipelineAvailablePropertiesARM( VkDevice                           device,
-                                                                               const VkDataGraphPipelineInfoARM * pPipelineInfo,
+                                                                               VkDataGraphPipelineInfoARM const * pPipelineInfo,
                                                                                uint32_t *                         pPropertiesCount,
                                                                                VkDataGraphPipelinePropertyARM *   pProperties ) const VULKAN_HPP_NOEXCEPT
       {
@@ -7389,7 +7389,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_INLINE VkResult vkGetDataGraphPipelinePropertiesARM( VkDevice                                    device,
-                                                                      const VkDataGraphPipelineInfoARM *          pPipelineInfo,
+                                                                      VkDataGraphPipelineInfoARM const *          pPipelineInfo,
                                                                       uint32_t                                    propertiesCount,
                                                                       VkDataGraphPipelinePropertyQueryResultARM * pProperties ) const VULKAN_HPP_NOEXCEPT
       {
@@ -7408,7 +7408,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM(
         VkPhysicalDevice                                                    physicalDevice,
-        const VkPhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM * pQueueFamilyDataGraphProcessingEngineInfo,
+        VkPhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM const * pQueueFamilyDataGraphProcessingEngineInfo,
         VkQueueFamilyDataGraphProcessingEnginePropertiesARM *               pQueueFamilyDataGraphProcessingEngineProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM(
@@ -7452,7 +7452,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkResult vkGetCalibratedTimestampsKHR( VkDevice                             device,
                                                                uint32_t                             timestampCount,
-                                                               const VkCalibratedTimestampInfoKHR * pTimestampInfos,
+                                                               VkCalibratedTimestampInfoKHR const * pTimestampInfos,
                                                                uint64_t *                           pTimestamps,
                                                                uint64_t *                           pMaxDeviation ) const VULKAN_HPP_NOEXCEPT
       {
@@ -7462,39 +7462,39 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_maintenance6 ===
 
       VULKAN_HPP_INLINE void vkCmdBindDescriptorSets2KHR( VkCommandBuffer                  commandBuffer,
-                                                          const VkBindDescriptorSetsInfo * pBindDescriptorSetsInfo ) const VULKAN_HPP_NOEXCEPT
+                                                          VkBindDescriptorSetsInfo const * pBindDescriptorSetsInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindDescriptorSets2KHR( commandBuffer, pBindDescriptorSetsInfo );
       }
 
-      VULKAN_HPP_INLINE void vkCmdPushConstants2KHR( VkCommandBuffer commandBuffer, const VkPushConstantsInfo * pPushConstantsInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdPushConstants2KHR( VkCommandBuffer commandBuffer, VkPushConstantsInfo const * pPushConstantsInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPushConstants2KHR( commandBuffer, pPushConstantsInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdPushDescriptorSet2KHR( VkCommandBuffer                 commandBuffer,
-                                                         const VkPushDescriptorSetInfo * pPushDescriptorSetInfo ) const VULKAN_HPP_NOEXCEPT
+                                                         VkPushDescriptorSetInfo const * pPushDescriptorSetInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPushDescriptorSet2KHR( commandBuffer, pPushDescriptorSetInfo );
       }
 
       VULKAN_HPP_INLINE void
         vkCmdPushDescriptorSetWithTemplate2KHR( VkCommandBuffer                             commandBuffer,
-                                                const VkPushDescriptorSetWithTemplateInfo * pPushDescriptorSetWithTemplateInfo ) const VULKAN_HPP_NOEXCEPT
+                                                VkPushDescriptorSetWithTemplateInfo const * pPushDescriptorSetWithTemplateInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPushDescriptorSetWithTemplate2KHR( commandBuffer, pPushDescriptorSetWithTemplateInfo );
       }
 
       VULKAN_HPP_INLINE void
         vkCmdSetDescriptorBufferOffsets2EXT( VkCommandBuffer                             commandBuffer,
-                                             const VkSetDescriptorBufferOffsetsInfoEXT * pSetDescriptorBufferOffsetsInfo ) const VULKAN_HPP_NOEXCEPT
+                                             VkSetDescriptorBufferOffsetsInfoEXT const * pSetDescriptorBufferOffsetsInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetDescriptorBufferOffsets2EXT( commandBuffer, pSetDescriptorBufferOffsetsInfo );
       }
 
       VULKAN_HPP_INLINE void vkCmdBindDescriptorBufferEmbeddedSamplers2EXT(
         VkCommandBuffer                                       commandBuffer,
-        const VkBindDescriptorBufferEmbeddedSamplersInfoEXT * pBindDescriptorBufferEmbeddedSamplersInfo ) const VULKAN_HPP_NOEXCEPT
+        VkBindDescriptorBufferEmbeddedSamplersInfoEXT const * pBindDescriptorBufferEmbeddedSamplersInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindDescriptorBufferEmbeddedSamplers2EXT( commandBuffer, pBindDescriptorBufferEmbeddedSamplersInfo );
       }
@@ -7502,7 +7502,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_QCOM_tile_memory_heap ===
 
       VULKAN_HPP_INLINE void vkCmdBindTileMemoryQCOM( VkCommandBuffer                  commandBuffer,
-                                                      const VkTileMemoryBindInfoQCOM * pTileMemoryBindInfo ) const VULKAN_HPP_NOEXCEPT
+                                                      VkTileMemoryBindInfoQCOM const * pTileMemoryBindInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBindTileMemoryQCOM( commandBuffer, pTileMemoryBindInfo );
       }
@@ -7510,14 +7510,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_copy_memory_indirect ===
 
       VULKAN_HPP_INLINE void vkCmdCopyMemoryIndirectKHR( VkCommandBuffer                     commandBuffer,
-                                                         const VkCopyMemoryIndirectInfoKHR * pCopyMemoryIndirectInfo ) const VULKAN_HPP_NOEXCEPT
+                                                         VkCopyMemoryIndirectInfoKHR const * pCopyMemoryIndirectInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyMemoryIndirectKHR( commandBuffer, pCopyMemoryIndirectInfo );
       }
 
       VULKAN_HPP_INLINE void
         vkCmdCopyMemoryToImageIndirectKHR( VkCommandBuffer                            commandBuffer,
-                                           const VkCopyMemoryToImageIndirectInfoKHR * pCopyMemoryToImageIndirectInfo ) const VULKAN_HPP_NOEXCEPT
+                                           VkCopyMemoryToImageIndirectInfoKHR const * pCopyMemoryToImageIndirectInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdCopyMemoryToImageIndirectKHR( commandBuffer, pCopyMemoryToImageIndirectInfo );
       }
@@ -7525,7 +7525,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_memory_decompression ===
 
       VULKAN_HPP_INLINE void vkCmdDecompressMemoryEXT( VkCommandBuffer                   commandBuffer,
-                                                       const VkDecompressMemoryInfoEXT * pDecompressMemoryInfoEXT ) const VULKAN_HPP_NOEXCEPT
+                                                       VkDecompressMemoryInfoEXT const * pDecompressMemoryInfoEXT ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdDecompressMemoryEXT( commandBuffer, pDecompressMemoryInfoEXT );
       }
@@ -7544,8 +7544,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_external_compute_queue ===
 
       VULKAN_HPP_INLINE VkResult vkCreateExternalComputeQueueNV( VkDevice                                   device,
-                                                                 const VkExternalComputeQueueCreateInfoNV * pCreateInfo,
-                                                                 const VkAllocationCallbacks *              pAllocator,
+                                                                 VkExternalComputeQueueCreateInfoNV const * pCreateInfo,
+                                                                 VkAllocationCallbacks const *              pAllocator,
                                                                  VkExternalComputeQueueNV *                 pExternalQueue ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateExternalComputeQueueNV( device, pCreateInfo, pAllocator, pExternalQueue );
@@ -7553,7 +7553,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroyExternalComputeQueueNV( VkDevice                      device,
                                                               VkExternalComputeQueueNV      externalQueue,
-                                                              const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                              VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyExternalComputeQueueNV( device, externalQueue, pAllocator );
       }
@@ -7568,7 +7568,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_cluster_acceleration_structure ===
 
       VULKAN_HPP_INLINE void vkGetClusterAccelerationStructureBuildSizesNV( VkDevice                                          device,
-                                                                            const VkClusterAccelerationStructureInputInfoNV * pInfo,
+                                                                            VkClusterAccelerationStructureInputInfoNV const * pInfo,
                                                                             VkAccelerationStructureBuildSizesInfoKHR * pSizeInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetClusterAccelerationStructureBuildSizesNV( device, pInfo, pSizeInfo );
@@ -7576,7 +7576,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void
         vkCmdBuildClusterAccelerationStructureIndirectNV( VkCommandBuffer                                      commandBuffer,
-                                                          const VkClusterAccelerationStructureCommandsInfoNV * pCommandInfos ) const VULKAN_HPP_NOEXCEPT
+                                                          VkClusterAccelerationStructureCommandsInfoNV const * pCommandInfos ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBuildClusterAccelerationStructureIndirectNV( commandBuffer, pCommandInfos );
       }
@@ -7585,7 +7585,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void
         vkGetPartitionedAccelerationStructuresBuildSizesNV( VkDevice                                                   device,
-                                                            const VkPartitionedAccelerationStructureInstancesInputNV * pInfo,
+                                                            VkPartitionedAccelerationStructureInstancesInputNV const * pInfo,
                                                             VkAccelerationStructureBuildSizesInfoKHR *                 pSizeInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetPartitionedAccelerationStructuresBuildSizesNV( device, pInfo, pSizeInfo );
@@ -7593,7 +7593,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void
         vkCmdBuildPartitionedAccelerationStructuresNV( VkCommandBuffer                                       commandBuffer,
-                                                       const VkBuildPartitionedAccelerationStructureInfoNV * pBuildInfo ) const VULKAN_HPP_NOEXCEPT
+                                                       VkBuildPartitionedAccelerationStructureInfoNV const * pBuildInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBuildPartitionedAccelerationStructuresNV( commandBuffer, pBuildInfo );
       }
@@ -7601,14 +7601,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_device_generated_commands ===
 
       VULKAN_HPP_INLINE void vkGetGeneratedCommandsMemoryRequirementsEXT( VkDevice                                             device,
-                                                                          const VkGeneratedCommandsMemoryRequirementsInfoEXT * pInfo,
+                                                                          VkGeneratedCommandsMemoryRequirementsInfoEXT const * pInfo,
                                                                           VkMemoryRequirements2 * pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetGeneratedCommandsMemoryRequirementsEXT( device, pInfo, pMemoryRequirements );
       }
 
       VULKAN_HPP_INLINE void vkCmdPreprocessGeneratedCommandsEXT( VkCommandBuffer                    commandBuffer,
-                                                                  const VkGeneratedCommandsInfoEXT * pGeneratedCommandsInfo,
+                                                                  VkGeneratedCommandsInfoEXT const * pGeneratedCommandsInfo,
                                                                   VkCommandBuffer                    stateCommandBuffer ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdPreprocessGeneratedCommandsEXT( commandBuffer, pGeneratedCommandsInfo, stateCommandBuffer );
@@ -7616,14 +7616,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkCmdExecuteGeneratedCommandsEXT( VkCommandBuffer                    commandBuffer,
                                                                VkBool32                           isPreprocessed,
-                                                               const VkGeneratedCommandsInfoEXT * pGeneratedCommandsInfo ) const VULKAN_HPP_NOEXCEPT
+                                                               VkGeneratedCommandsInfoEXT const * pGeneratedCommandsInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdExecuteGeneratedCommandsEXT( commandBuffer, isPreprocessed, pGeneratedCommandsInfo );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateIndirectCommandsLayoutEXT( VkDevice                                      device,
-                                                                    const VkIndirectCommandsLayoutCreateInfoEXT * pCreateInfo,
-                                                                    const VkAllocationCallbacks *                 pAllocator,
+                                                                    VkIndirectCommandsLayoutCreateInfoEXT const * pCreateInfo,
+                                                                    VkAllocationCallbacks const *                 pAllocator,
                                                                     VkIndirectCommandsLayoutEXT * pIndirectCommandsLayout ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateIndirectCommandsLayoutEXT( device, pCreateInfo, pAllocator, pIndirectCommandsLayout );
@@ -7631,14 +7631,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroyIndirectCommandsLayoutEXT( VkDevice                      device,
                                                                  VkIndirectCommandsLayoutEXT   indirectCommandsLayout,
-                                                                 const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                                 VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyIndirectCommandsLayoutEXT( device, indirectCommandsLayout, pAllocator );
       }
 
       VULKAN_HPP_INLINE VkResult vkCreateIndirectExecutionSetEXT( VkDevice                                    device,
-                                                                  const VkIndirectExecutionSetCreateInfoEXT * pCreateInfo,
-                                                                  const VkAllocationCallbacks *               pAllocator,
+                                                                  VkIndirectExecutionSetCreateInfoEXT const * pCreateInfo,
+                                                                  VkAllocationCallbacks const *               pAllocator,
                                                                   VkIndirectExecutionSetEXT *                 pIndirectExecutionSet ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateIndirectExecutionSetEXT( device, pCreateInfo, pAllocator, pIndirectExecutionSet );
@@ -7646,7 +7646,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE void vkDestroyIndirectExecutionSetEXT( VkDevice                      device,
                                                                VkIndirectExecutionSetEXT     indirectExecutionSet,
-                                                               const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+                                                               VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkDestroyIndirectExecutionSetEXT( device, indirectExecutionSet, pAllocator );
       }
@@ -7655,7 +7655,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         vkUpdateIndirectExecutionSetPipelineEXT( VkDevice                                       device,
                                                  VkIndirectExecutionSetEXT                      indirectExecutionSet,
                                                  uint32_t                                       executionSetWriteCount,
-                                                 const VkWriteIndirectExecutionSetPipelineEXT * pExecutionSetWrites ) const VULKAN_HPP_NOEXCEPT
+                                                 VkWriteIndirectExecutionSetPipelineEXT const * pExecutionSetWrites ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkUpdateIndirectExecutionSetPipelineEXT( device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites );
       }
@@ -7663,7 +7663,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE void vkUpdateIndirectExecutionSetShaderEXT( VkDevice                                     device,
                                                                     VkIndirectExecutionSetEXT                    indirectExecutionSet,
                                                                     uint32_t                                     executionSetWriteCount,
-                                                                    const VkWriteIndirectExecutionSetShaderEXT * pExecutionSetWrites ) const VULKAN_HPP_NOEXCEPT
+                                                                    VkWriteIndirectExecutionSetShaderEXT const * pExecutionSetWrites ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkUpdateIndirectExecutionSetShaderEXT( device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites );
       }
@@ -7672,8 +7672,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_OHOS_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateSurfaceOHOS( VkInstance                      instance,
-                                                      const VkSurfaceCreateInfoOHOS * pCreateInfo,
-                                                      const VkAllocationCallbacks *   pAllocator,
+                                                      VkSurfaceCreateInfoOHOS const * pCreateInfo,
+                                                      VkAllocationCallbacks const *   pAllocator,
                                                       VkSurfaceKHR *                  pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateSurfaceOHOS( instance, pCreateInfo, pAllocator, pSurface );
@@ -7692,7 +7692,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_external_memory_metal ===
 
       VULKAN_HPP_INLINE VkResult vkGetMemoryMetalHandleEXT( VkDevice                              device,
-                                                            const VkMemoryGetMetalHandleInfoEXT * pGetMetalHandleInfo,
+                                                            VkMemoryGetMetalHandleInfoEXT const * pGetMetalHandleInfo,
                                                             void **                               pHandle ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetMemoryMetalHandleEXT( device, pGetMetalHandleInfo, pHandle );
@@ -7701,7 +7701,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_INLINE VkResult
         vkGetMemoryMetalHandlePropertiesEXT( VkDevice                           device,
                                              VkExternalMemoryHandleTypeFlagBits handleType,
-                                             const void *                       pHandle,
+                                             void const *                       pHandle,
                                              VkMemoryMetalHandlePropertiesEXT * pMemoryMetalHandleProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetMemoryMetalHandlePropertiesEXT( device, handleType, pHandle, pMemoryMetalHandleProperties );
@@ -7723,7 +7723,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_EXT_fragment_density_map_offset ===
 
-      VULKAN_HPP_INLINE void vkCmdEndRendering2EXT( VkCommandBuffer commandBuffer, const VkRenderingEndInfoKHR * pRenderingEndInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdEndRendering2EXT( VkCommandBuffer commandBuffer, VkRenderingEndInfoKHR const * pRenderingEndInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdEndRendering2EXT( commandBuffer, pRenderingEndInfo );
       }
@@ -7731,14 +7731,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_custom_resolve ===
 
       VULKAN_HPP_INLINE void vkCmdBeginCustomResolveEXT( VkCommandBuffer                     commandBuffer,
-                                                         const VkBeginCustomResolveInfoEXT * pBeginCustomResolveInfo ) const VULKAN_HPP_NOEXCEPT
+                                                         VkBeginCustomResolveInfoEXT const * pBeginCustomResolveInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdBeginCustomResolveEXT( commandBuffer, pBeginCustomResolveInfo );
       }
 
       //=== VK_KHR_maintenance10 ===
 
-      VULKAN_HPP_INLINE void vkCmdEndRendering2KHR( VkCommandBuffer commandBuffer, const VkRenderingEndInfoKHR * pRenderingEndInfo ) const VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_INLINE void vkCmdEndRendering2KHR( VkCommandBuffer commandBuffer, VkRenderingEndInfoKHR const * pRenderingEndInfo ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdEndRendering2KHR( commandBuffer, pRenderingEndInfo );
       }
@@ -7746,7 +7746,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_compute_occupancy_priority ===
 
       VULKAN_HPP_INLINE void vkCmdSetComputeOccupancyPriorityNV( VkCommandBuffer                                commandBuffer,
-                                                                 const VkComputeOccupancyPriorityParametersNV * pParameters ) const VULKAN_HPP_NOEXCEPT
+                                                                 VkComputeOccupancyPriorityParametersNV const * pParameters ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCmdSetComputeOccupancyPriorityNV( commandBuffer, pParameters );
       }
@@ -7755,8 +7755,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_SEC_ubm_surface ===
 
       VULKAN_HPP_INLINE VkResult vkCreateUbmSurfaceSEC( VkInstance                        instance,
-                                                        const VkUbmSurfaceCreateInfoSEC * pCreateInfo,
-                                                        const VkAllocationCallbacks *     pAllocator,
+                                                        VkUbmSurfaceCreateInfoSEC const * pCreateInfo,
+                                                        VkAllocationCallbacks const *     pAllocator,
                                                         VkSurfaceKHR *                    pSurface ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkCreateUbmSurfaceSEC( instance, pCreateInfo, pAllocator, pSurface );
@@ -7804,7 +7804,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       ObjectDestroy() = default;
 
       ObjectDestroy( OwnerType                                               owner,
-                     Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
+                     Optional<AllocationCallbacks const> allocationCallbacks VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
                      Dispatch const & dispatch                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
         : m_owner( owner )
         , m_allocationCallbacks( allocationCallbacks )
@@ -7817,7 +7817,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return m_owner;
       }
 
-      Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+      Optional<AllocationCallbacks const> getAllocator() const VULKAN_HPP_NOEXCEPT
       {
         return m_allocationCallbacks;
       }
@@ -7837,7 +7837,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     private:
       OwnerType                           m_owner               = {};
-      Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+      Optional<AllocationCallbacks const> m_allocationCallbacks = nullptr;
       Dispatch const *                    m_dispatch            = nullptr;
     };
 
@@ -7849,14 +7849,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     public:
       ObjectDestroy() = default;
 
-      ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks,
+      ObjectDestroy( Optional<AllocationCallbacks const> allocationCallbacks,
                      Dispatch const & dispatch           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
         : m_allocationCallbacks( allocationCallbacks )
         , m_dispatch( &dispatch )
       {
       }
 
-      Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+      Optional<AllocationCallbacks const> getAllocator() const VULKAN_HPP_NOEXCEPT
       {
         return m_allocationCallbacks;
       }
@@ -7875,7 +7875,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
     private:
-      Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+      Optional<AllocationCallbacks const> m_allocationCallbacks = nullptr;
       Dispatch const *                    m_dispatch            = nullptr;
     };
 
@@ -7886,7 +7886,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       ObjectFree() = default;
 
       ObjectFree( OwnerType                                               owner,
-                  Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
+                  Optional<AllocationCallbacks const> allocationCallbacks VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
                   Dispatch const & dispatch                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
         : m_owner( owner )
         , m_allocationCallbacks( allocationCallbacks )
@@ -7899,7 +7899,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return m_owner;
       }
 
-      Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+      Optional<AllocationCallbacks const> getAllocator() const VULKAN_HPP_NOEXCEPT
       {
         return m_allocationCallbacks;
       }
@@ -7919,7 +7919,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     private:
       OwnerType                           m_owner               = {};
-      Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+      Optional<AllocationCallbacks const> m_allocationCallbacks = nullptr;
       Dispatch const *                    m_dispatch            = nullptr;
     };
 
@@ -8038,7 +8038,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   class ErrorCategoryImpl : public std::error_category
   {
   public:
-    virtual const char * name() const VULKAN_HPP_NOEXCEPT override
+    virtual char const * name() const VULKAN_HPP_NOEXCEPT override
     {
       return VULKAN_HPP_NAMESPACE_STRING "::Result";
     }
@@ -8057,10 +8057,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   {
   public:
     Error() VULKAN_HPP_NOEXCEPT                = default;
-    Error( const Error & ) VULKAN_HPP_NOEXCEPT = default;
+    Error( Error const & ) VULKAN_HPP_NOEXCEPT = default;
     virtual ~Error() VULKAN_HPP_NOEXCEPT       = default;
 
-    virtual const char * what() const VULKAN_HPP_NOEXCEPT = 0;
+    virtual char const * what() const VULKAN_HPP_NOEXCEPT = 0;
   };
 
   class LogicError
@@ -8068,11 +8068,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     , public std::logic_error
   {
   public:
-    explicit LogicError( const std::string & what ) : Error(), std::logic_error( what ) {}
+    explicit LogicError( std::string const & what ) : Error(), std::logic_error( what ) {}
 
     explicit LogicError( char const * what ) : Error(), std::logic_error( what ) {}
 
-    virtual const char * what() const VULKAN_HPP_NOEXCEPT
+    virtual char const * what() const VULKAN_HPP_NOEXCEPT
     {
       return std::logic_error::what();
     }
@@ -8095,7 +8095,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     SystemError( int ev, std::error_category const & ecat, char const * what ) : Error(), std::system_error( ev, ecat, what ) {}
 
-    virtual const char * what() const VULKAN_HPP_NOEXCEPT
+    virtual char const * what() const VULKAN_HPP_NOEXCEPT
     {
       return std::system_error::what();
     }
@@ -21609,7 +21609,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       template <typename T>
-      T getProcAddress( const char * function ) const VULKAN_HPP_NOEXCEPT
+      T getProcAddress( char const * function ) const VULKAN_HPP_NOEXCEPT
       {
 #  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined( __Fuchsia__ )
         return (T)(void *)dlsym( m_library, function );

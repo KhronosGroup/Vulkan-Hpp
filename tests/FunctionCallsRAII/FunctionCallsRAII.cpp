@@ -563,5 +563,17 @@ int main( int /*argc*/, char ** /*argv*/ )
     event.reset();
   }
 
+  // Buffer view commands
+  {
+    vk::raii::Device         device = nullptr;
+    vk::BufferViewCreateInfo bufferViewCreateInfo;
+    vk::raii::BufferView     bufferView = device.createBufferView( bufferViewCreateInfo );
+  }
+  {
+    vk::raii::Device         device = nullptr;
+    vk::BufferViewCreateInfo bufferViewCreateInfo;
+    vk::raii::BufferView     bufferView( device, bufferViewCreateInfo );
+  }
+
   return 0;
 }

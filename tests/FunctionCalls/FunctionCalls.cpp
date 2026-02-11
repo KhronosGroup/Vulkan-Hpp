@@ -32,7 +32,7 @@
 import vulkan;
 #else
 #  include <vulkan/vulkan.hpp>
-   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
 int main( int /*argc*/, char ** /*argv*/ )
@@ -1152,6 +1152,43 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Device device;
     vk::Event  event;
     device.resetEvent( event );
+  }
+
+  // Buffer view commands
+  {
+    vk::Device               device;
+    vk::BufferViewCreateInfo bufferViewCreateInfo;
+    vk::AllocationCallbacks  allocationCallbacks;
+    vk::BufferView           bufferView;
+    vk::Result               result = device.createBufferView( &bufferViewCreateInfo, &allocationCallbacks, &bufferView );
+  }
+  {
+    vk::Device               device;
+    vk::BufferViewCreateInfo bufferViewCreateInfo;
+    vk::BufferView           bufferView = device.createBufferView( bufferViewCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::BufferView          bufferView;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyBufferView( bufferView, &allocationCallbacks );
+  }
+  {
+    vk::Device     device;
+    vk::BufferView bufferView;
+    device.destroyBufferView( bufferView );
+  }
+  {
+    vk::Device              device;
+    vk::BufferView          bufferView;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( bufferView, &allocationCallbacks );
+  }
+  {
+    vk::Device     device;
+    vk::BufferView bufferView;
+    device.destroy( bufferView );
   }
 
 #if 0

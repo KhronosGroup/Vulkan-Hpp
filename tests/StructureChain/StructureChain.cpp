@@ -28,15 +28,18 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#if !defined( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+#  define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#endif
+
 #include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 import vulkan;
 #else
 #  include <iostream>
 #  include <vulkan/vulkan.hpp>
-   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
-
 
 static char const * AppName    = "StructureChain";
 static char const * EngineName = "Vulkan.hpp";
@@ -64,7 +67,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // some valid StructureChains
     vk::StructureChain<vk::PhysicalDeviceProperties2>                                       sc0;
-    const vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties> sc1;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties> const sc1;
     auto                                                                                    pdp = sc1.get<vk::PhysicalDeviceProperties2>();
     unused( pdp );
     vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMaintenance3Properties>                                      sc2;
@@ -167,15 +170,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     unused( qfd );
 
     // some tests with structures with allowDuplicate == true
-    vk::StructureChain<vk::DeviceCreateInfo, vk::DevicePrivateDataCreateInfoEXT, vk::DevicePrivateDataCreateInfoEXT>
-         dci0;
-    auto dci1( dci0 );
+    vk::StructureChain<vk::DeviceCreateInfo, vk::DevicePrivateDataCreateInfoEXT, vk::DevicePrivateDataCreateInfoEXT> dci0;
+    auto                                                                                                             dci1( dci0 );
 
-    vk::DeviceCreateInfo               dci;
-    vk::DevicePrivateDataCreateInfoEXT dpdci0;
-    vk::DevicePrivateDataCreateInfoEXT dpdci1;
-    vk::StructureChain<vk::DeviceCreateInfo, vk::DevicePrivateDataCreateInfoEXT, vk::DevicePrivateDataCreateInfoEXT>
-      dci2( dci, dpdci0, dpdci1 );
+    vk::DeviceCreateInfo                                                                                             dci;
+    vk::DevicePrivateDataCreateInfoEXT                                                                               dpdci0;
+    vk::DevicePrivateDataCreateInfoEXT                                                                               dpdci1;
+    vk::StructureChain<vk::DeviceCreateInfo, vk::DevicePrivateDataCreateInfoEXT, vk::DevicePrivateDataCreateInfoEXT> dci2( dci, dpdci0, dpdci1 );
 
     dci2 = dci1;
 

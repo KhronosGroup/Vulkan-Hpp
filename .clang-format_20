@@ -102,6 +102,7 @@ NamespaceIndentation : All
 PackConstructorInitializers : NextLine
 PPIndentWidth : -1
 PointerAlignment : Middle
+QualifierAlignment : Right
 ReferenceAlignment : Pointer
 ReflowComments : true
 RemoveBracesLLVM : false

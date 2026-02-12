@@ -1324,7 +1324,7 @@ std::string VulkanHppGenerator::generateFormatTraitsSubCases( FormatData const &
                                                               std::function<std::string( T const & subCaseData )>         generator,
                                                               std::string const &                                         defaultReturn ) const
 {
-  const std::string subCasesTemplate = R"(
+  std::string const subCasesTemplate = R"(
         switch( ${subCaseName} )
         {
 ${subCases}

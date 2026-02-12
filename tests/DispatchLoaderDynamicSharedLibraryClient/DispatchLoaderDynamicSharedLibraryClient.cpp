@@ -15,6 +15,10 @@
 // VulkanHpp Samples : DispatchLoaderDynamicSharedLibraryClient
 //                     Compile test on DispatchLoaderDynamic functions
 
+#if !defined( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+#  define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#endif
+
 #include "../test_macros.hpp"
 #include <iostream>
 #include <map>

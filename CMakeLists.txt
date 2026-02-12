@@ -85,6 +85,27 @@ function( vulkan_hpp__setup_warning_level )
 	endif()
 endfunction()
 
+# Create a .gitignore file that ignores itself to avoid tracking
+if( NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.gitignore" AND PROJECT_IS_TOP_LEVEL )
+	string(CONCAT VULKAN_HPP_GITIGNORE_ENTRIES
+		"builds/\n"
+		"build/\n"
+		"out/\n"
+		"\n"
+		".cache/\n"
+		".vscode/\n"
+		".vs/\n"
+		"\n"
+		".clang-format\n"
+		".gitignore\n"
+		"\n"
+		"*.pdb\n"
+		"*.proj.DotSettings\n"
+		"\n"
+		"Folder.DotSettings.user\n" )
+	file( WRITE ${CMAKE_CURRENT_SOURCE_DIR}/.gitignore ${VULKAN_HPP_GITIGNORE_ENTRIES} )
+endif()
+
 # Build Vulkan-Hpp and Video-Hpp generators
 if( VULKAN_HPP_GENERATOR_BUILD )
 	set_property( GLOBAL PROPERTY USE_FOLDERS ON )

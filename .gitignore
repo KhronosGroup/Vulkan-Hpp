@@ -1,0 +1,13 @@
+build/
+out/
+
+.cache/
+.vscode/
+.vs/
+
+.clang-format
+
+*.pdb
+*.proj.DotSettings
+
+Folder.DotSettings.user

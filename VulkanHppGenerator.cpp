@@ -5815,6 +5815,34 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
                              mapIt->second +
                              ">" );
           }
+
+          if ( ( enumName != enumData.first ) && ( findTag( enumName ) != findTag( enumData.first ) ) )
+          {
+            // the enum value was introduced with a tagged enum, but is now an alias of an enum with a different, potentially empty, tag
+            // even though, there has never been this generated with that tag, we add a tagged version here for consistency reasons
+            assert( findTag( valueAlias.name ) == findTag( enumName ) );
+            aliasName                   = generateEnumValueName( enumData.first, valueAlias.name, enumData.second.isBitmask );
+            std::tie( mapIt, inserted ) = valueToNameMap.insert( { aliasName, valueAlias.name } );
+            if ( inserted )
+            {
+              enumValues += "    " + aliasName + " = " + valueAlias.name + ",\n";
+            }
+            else
+            {
+              // some aliases are so close to the original, that no new entry can be generated!
+              assert( mapIt->second != valueAlias.name );
+              checkForError( ( mapIt->second == value.name ) ||
+                               std::ranges::any_of( value.aliases, [mapIt]( auto const & eav ) { return eav.name == mapIt->second; } ),
+                             valueAlias.xmlLine,
+                             "generated enum alias value name <" +
+                               aliasName +
+                               ">, generated from <" +
+                               valueAlias.name +
+                               "> is already generated from different enum value <" +
+                               mapIt->second +
+                               ">" );
+            }
+          }
         }
       }
 

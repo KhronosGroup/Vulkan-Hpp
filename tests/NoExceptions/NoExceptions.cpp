@@ -16,25 +16,26 @@
 //                     Compile test with VULKAN_HPP_NO_EXCEPTIONS set
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
-#include <vector>
-#include <cstdint>
-#include <cassert>
-#include <iostream>
-#include <algorithm>
-#ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan;
-#else
-# include "vulkan/vulkan.hpp"
+#if !defined( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+#  define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
 #endif
+
+#include "../test_macros.hpp"
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+#include <cstdint>
+import vulkan;
+#else
+#  include <vector>
+#  include <cstdint>
+#  include <iostream>
+#  include <algorithm>
+#  include <vulkan/vulkan.hpp>
+   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+#endif
+
 
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
-
-namespace vk {
-  namespace detail {
-    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }
-}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -45,18 +46,18 @@ int main( int /*argc*/, char ** /*argv*/ )
   vk::detail::defaultDispatchLoaderDynamic.init( *instance );
 
   std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices().value;
-  assert( !physicalDevices.empty() );
+  release_assert( !physicalDevices.empty() );
 
   // get the QueueFamilyProperties of the first PhysicalDevice
   std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevices[0].getQueueFamilyProperties();
 
   // get the first index into queueFamiliyProperties which supports graphics
-  size_t graphicsQueueFamilyIndex =
+  std::size_t graphicsQueueFamilyIndex =
     std::distance( queueFamilyProperties.begin(),
                    std::find_if( queueFamilyProperties.begin(),
                                  queueFamilyProperties.end(),
                                  []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } ) );
-  assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
+  release_assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
   // create a UniqueDevice
   float                     queuePriority = 0.0f;

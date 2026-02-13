@@ -200,6 +200,10 @@ private:
 
   struct ParamData
   {
+    ParamData() = default;
+
+    ParamData( std::string const & name_, TypeInfo const & type_, int line ) : type( type_ ), name( name_ ), xmlLine( line ) {}
+
     TypeInfo                                    type          = {};
     std::string                                 name          = {};
     std::vector<std::string>                    arraySizes    = {};
@@ -218,7 +222,7 @@ private:
     std::string                handle       = {};
     std::vector<ParamData>     params       = {};
     std::set<std::string>      requiredBy   = {};
-    std::string                returnType   = {};
+    TypeInfo                   returnType   = {};
     std::vector<std::string>   successCodes = {};
     int                        xmlLine      = {};
   };
@@ -362,19 +366,12 @@ private:
     int                        xmlLine          = {};
   };
 
-  struct FuncPointerArgumentData
-  {
-    std::string name    = {};
-    TypeInfo    type    = {};
-    int         xmlLine = {};
-  };
-
   struct FuncPointerData
   {
-    std::vector<FuncPointerArgumentData> arguments  = {};
-    std::string                          require    = {};
-    TypeInfo                             returnType = {};
-    int                                  xmlLine    = {};
+    std::vector<ParamData> params     = {};
+    std::string            require    = {};
+    TypeInfo               returnType = {};
+    int                    xmlLine    = {};
   };
 
   struct HandleData
@@ -431,7 +428,7 @@ private:
   {
     std::map<std::string, int> aliases             = {};
     bool                       allowDuplicate      = {};
-    bool                       isExtended          = {};
+    std::set<std::string>      extendedBy          = {};
     bool                       isUnion             = {};
     bool                       requiredLimitType   = {};
     bool                       returnedOnly        = {};
@@ -574,11 +571,9 @@ private:
   bool containsDeprecated( std::vector<MemberData> const & members ) const;
   bool containsFuncPointer( std::string const & type ) const;
   bool containsFloatingPoints( std::vector<MemberData> const & members ) const;
-  bool containsName( std::vector<EnumValueData> const & enumValues, std::string const & name ) const;
   bool containsUnion( std::string const & type ) const;
   bool describesVector( StructData const & structure, std::string const & type = "" ) const;
   std::vector<size_t>      determineChainedReturnParams( std::vector<ParamData> const & params, std::vector<size_t> const & returnParams ) const;
-  std::vector<size_t>      determineConstPointerParams( std::vector<ParamData> const & params ) const;
   std::vector<std::string> determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
                                                std::map<size_t, VectorParamData> const &          vectorParams,
                                                std::vector<size_t> const &                        returnParams,
@@ -591,59 +586,65 @@ private:
   std::vector<std::map<std::string, CommandData>::const_iterator>
     determineRAIIHandleConstructors( std::string const & handleType, std::map<std::string, CommandData>::const_iterator destructorIt ) const;
   std::map<std::string, CommandData>::const_iterator determineRAIIHandleDestructor( std::string const & handleType ) const;
-  std::set<size_t>                    determineSingularParams( size_t returnParam, std::map<size_t, VectorParamData> const & vectorParams ) const;
-  std::set<size_t>                    determineSkippedParams( std::vector<ParamData> const &            params,
-                                                              size_t                                    initialSkipCount,
-                                                              std::map<size_t, VectorParamData> const & vectorParams,
-                                                              std::vector<size_t> const &               returnParam,
-                                                              bool                                      singular ) const;
-  std::string                         determineSubStruct( std::pair<std::string, StructData> const & structure ) const;
-  std::map<size_t, VectorParamData>   determineVectorParams( std::vector<ParamData> const & params ) const;
-  std::set<size_t>                    determineVoidPointerParams( std::vector<ParamData> const & params ) const;
-  void                                distributeEnumValueAliases();
-  void                                distributeRequirements();
-  void                                distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy );
-  void                                distributeStructAliases();
-  void                                extendSpecialCommands( std::string const & name, bool definition, bool raii, std::string & cmd ) const;
-  void                                filterLenMembers();
-  std::string                         findTag( std::string const & name, std::string const & postfix = "" ) const;
-  void                                forEachRequiredBitmask( std::vector<RequireData> const &                                           requireData,
-                                                              std::set<std::string> &                                                    encounteredBitmasks,
-                                                              std::function<void( std::pair<std::string, BitmaskData> const & )> const & bitmaskAction ) const;
-  void                                forEachRequiredCommand( std::vector<RequireData> const &                                                             requireData,
-                                                              std::function<void( NameLine const &, std::pair<std::string, CommandData> const & )> const & commandAction ) const;
-  void                                forEachRequiredConstant( std::vector<RequireData> const &                                            requireData,
-                                                               std::set<std::string> &                                                     encounteredConstants,
-                                                               std::function<void( std::pair<std::string, ConstantData> const & )> const & constantAction ) const;
-  void                                forEachRequiredEnumConstant( std::vector<RequireData> const &                        requireData,
-                                                                   std::set<std::string> &                                 encounteredEnumConstants,
-                                                                   std::function<void( EnumConstantData const & )> const & enumConstantAction ) const;
-  void                                forEachRequiredFuncPointer( std::vector<RequireData> const &                                               requireData,
-                                                                  std::function<void( std::pair<std::string, FuncPointerData> const & )> const & funcPointerAction ) const;
-  void                                forEachRequiredHandle( std::vector<RequireData> const &                                          requireData,
-                                                             std::function<void( std::pair<std::string, HandleData> const & )> const & handleAction ) const;
-  void                                forEachRequiredStruct( std::vector<RequireData> const &                                          requireData,
-                                                             std::function<void( std::pair<std::string, StructData> const & )> const & structAction ) const;
-  std::set<std::string>               gatherResultCodes() const;
-  std::pair<std::string, std::string> generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
-                                                                  std::vector<std::string> const &          returnDataTypes,
+  std::set<size_t>                        determineSingularParams( size_t returnParam, std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::set<size_t>                        determineSkippedParams( std::vector<ParamData> const &            params,
+                                                                  size_t                                    initialSkipCount,
                                                                   std::map<size_t, VectorParamData> const & vectorParams,
-                                                                  std::vector<size_t> const &               chainedReturnParams,
-                                                                  CommandFlavourFlags                       flavourFlags,
-                                                                  bool                                      definition ) const;
-  std::string                         generateArgumentListEnhanced( std::vector<ParamData> const &            params,
-                                                                    std::vector<size_t> const &               returnParams,
-                                                                    std::map<size_t, VectorParamData> const & vectorParams,
-                                                                    std::set<size_t> const &                  skippedParams,
-                                                                    std::set<size_t> const &                  singularParams,
-                                                                    std::set<size_t> const &                  templatedParams,
-                                                                    std::vector<size_t> const &               chainedReturnParams,
-                                                                    bool                                      raii,
-                                                                    bool                                      definition,
-                                                                    CommandFlavourFlags                       flavourFlags,
-                                                                    bool                                      withDispatcher ) const;
-  std::string
-    generateArgumentListStandard( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams, bool definition, bool withDispatcher ) const;
+                                                                  std::vector<size_t> const &               returnParam,
+                                                                  bool                                      singular ) const;
+  std::string                             determineSubStruct( std::pair<std::string, StructData> const & structure ) const;
+  std::map<size_t, VectorParamData>       determineVectorParams( std::vector<ParamData> const & params ) const;
+  std::set<size_t>                        determineVoidPointerParams( std::vector<ParamData> const & params ) const;
+  void                                    distributeEnumValueAliases();
+  void                                    distributeRequirements();
+  void                                    distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy );
+  void                                    distributeStructAliases();
+  bool                                    encodesEnumeration( std::vector<ParamData> const &            params,
+                                                              std::map<size_t, VectorParamData> const & vectorParams,
+                                                              size_t                                    returnParam0,
+                                                              size_t                                    returnParam1 ) const;
+  void                                    extendSpecialCommands( std::string const & name, bool definition, bool raii, std::string & cmd ) const;
+  void                                    filterLenMembers();
+  std::string                             findTag( std::string const & name, std::string const & postfix = "" ) const;
+  std::vector<MemberData>::const_iterator findHandleMember( std::vector<MemberData> const & memberData ) const;
+  std::vector<MemberData>::const_iterator findVectorMember( std::vector<MemberData> const & memberData ) const;
+  void                                    forEachRequiredBitmask( std::vector<RequireData> const &                                           requireData,
+                                                                  std::set<std::string> &                                                    encounteredBitmasks,
+                                                                  std::function<void( std::pair<std::string, BitmaskData> const & )> const & bitmaskAction ) const;
+  void                                    forEachRequiredCommand( std::vector<RequireData> const &                                                             requireData,
+                                                                  std::function<void( NameLine const &, std::pair<std::string, CommandData> const & )> const & commandAction ) const;
+  void                                    forEachRequiredConstant( std::vector<RequireData> const &                                            requireData,
+                                                                   std::set<std::string> &                                                     encounteredConstants,
+                                                                   std::function<void( std::pair<std::string, ConstantData> const & )> const & constantAction ) const;
+  void                                    forEachRequiredEnumConstant( std::vector<RequireData> const &                        requireData,
+                                                                       std::set<std::string> &                                 encounteredEnumConstants,
+                                                                       std::function<void( EnumConstantData const & )> const & enumConstantAction ) const;
+  void                                    forEachRequiredFuncPointer( std::vector<RequireData> const &                                               requireData,
+                                                                      std::function<void( std::pair<std::string, FuncPointerData> const & )> const & funcPointerAction ) const;
+  void                                    forEachRequiredHandle( std::vector<RequireData> const &                                          requireData,
+                                                                 std::function<void( std::pair<std::string, HandleData> const & )> const & handleAction ) const;
+  void                                    forEachRequiredStruct( std::vector<RequireData> const &                                          requireData,
+                                                                 std::function<void( std::pair<std::string, StructData> const & )> const & structAction ) const;
+  std::set<std::string>                   gatherResultCodes() const;
+  std::pair<std::string, std::string>     generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
+                                                                      std::vector<std::string> const &          returnDataTypes,
+                                                                      std::map<size_t, VectorParamData> const & vectorParams,
+                                                                      std::vector<size_t> const &               chainedReturnParams,
+                                                                      CommandFlavourFlags                       flavourFlags,
+                                                                      bool                                      definition ) const;
+  std::string                             generateArgumentListEnhanced( std::vector<ParamData> const &            params,
+                                                                        std::vector<size_t> const &               returnParams,
+                                                                        std::map<size_t, VectorParamData> const & vectorParams,
+                                                                        std::set<size_t> const &                  skippedParams,
+                                                                        std::set<size_t> const &                  singularParams,
+                                                                        std::set<size_t> const &                  templatedParams,
+                                                                        std::vector<size_t> const &               chainedReturnParams,
+                                                                        bool                                      raii,
+                                                                        bool                                      definition,
+                                                                        CommandFlavourFlags                       flavourFlags,
+                                                                        bool                                      withDispatcher ) const;
+  std::string                             generateArgumentListStandard(
+                                std::vector<ParamData> const & params, std::set<size_t> const & skippedParams, bool definition, bool raii, bool withDispatcher ) const;
   std::string generateArgumentTemplates( std::vector<ParamData> const &            params,
                                          std::vector<size_t> const &               returnParams,
                                          std::map<size_t, VectorParamData> const & vectorParams,
@@ -697,6 +698,93 @@ private:
                                     bool                                      raiiFactory ) const;
   std::string generateChainTemplates( std::vector<size_t> const & returnParams, bool chained ) const;
   std::string generateCommand( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
+  std::string generateCommand0Returns( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
+  std::string generateCommand1Returns(
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii, size_t returnParam ) const;
+  std::string generateCommand1ReturnsStruct( std::string const &                               name,
+                                             CommandData const &                               commandData,
+                                             size_t                                            initialSkipCount,
+                                             bool                                              definition,
+                                             bool                                              raii,
+                                             size_t                                            returnParam,
+                                             std::map<size_t, VectorParamData> const &         vectorParams,
+                                             std::map<std::string, StructData>::const_iterator structIt ) const;
+  std::string generateCommand1ReturnsValue( std::string const &                       name,
+                                            CommandData const &                       commandData,
+                                            size_t                                    initialSkipCount,
+                                            bool                                      definition,
+                                            bool                                      raii,
+                                            size_t                                    returnParam,
+                                            std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::string generateCommand1ReturnsVector( std::string const &                       name,
+                                             CommandData const &                       commandData,
+                                             size_t                                    initialSkipCount,
+                                             bool                                      definition,
+                                             bool                                      raii,
+                                             size_t                                    returnParam,
+                                             std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::string generateCommand1ReturnsVectorOfStructs( std::string const &                               name,
+                                                      CommandData const &                               commandData,
+                                                      size_t                                            initialSkipCount,
+                                                      bool                                              definition,
+                                                      bool                                              raii,
+                                                      size_t                                            returnParam,
+                                                      std::map<size_t, VectorParamData> const &         vectorParams,
+                                                      std::map<std::string, StructData>::const_iterator structIt ) const;
+  std::string generateCommand2Returns( std::string const &         name,
+                                       CommandData const &         commandData,
+                                       size_t                      initialSkipCount,
+                                       bool                        definition,
+                                       bool                        raii,
+                                       std::vector<size_t> const & returnParams ) const;
+  std::string generateCommand2ReturnsEnum( std::string const &                       name,
+                                           CommandData const &                       commandData,
+                                           size_t                                    initialSkipCount,
+                                           bool                                      definition,
+                                           bool                                      raii,
+                                           std::vector<size_t> const &               returnParams,
+                                           std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::string generateCommand2ReturnsValueValue( std::string const &                       name,
+                                                 CommandData const &                       commandData,
+                                                 size_t                                    initialSkipCount,
+                                                 bool                                      definition,
+                                                 bool                                      raii,
+                                                 std::vector<size_t> const &               returnParams,
+                                                 std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::string generateCommand2ReturnsVectorValue( std::string const &                       name,
+                                                  CommandData const &                       commandData,
+                                                  size_t                                    initialSkipCount,
+                                                  bool                                      definition,
+                                                  bool                                      raii,
+                                                  std::vector<size_t> const &               returnParams,
+                                                  std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::string generateCommand2ReturnsVectorVector( std::string const &                       name,
+                                                   CommandData const &                       commandData,
+                                                   size_t                                    initialSkipCount,
+                                                   bool                                      definition,
+                                                   bool                                      raii,
+                                                   std::vector<size_t> const &               returnParams,
+                                                   std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::string generateCommand3Returns( std::string const &         name,
+                                       CommandData const &         commandData,
+                                       size_t                      initialSkipCount,
+                                       bool                        definition,
+                                       bool                        raii,
+                                       std::vector<size_t> const & returnParams ) const;
+  std::string generateCommand3ReturnsEnumEnum( std::string const &                       name,
+                                               CommandData const &                       commandData,
+                                               size_t                                    initialSkipCount,
+                                               bool                                      definition,
+                                               bool                                      raii,
+                                               std::vector<size_t> const &               returnParams,
+                                               std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::string generateCommand3ReturnsValueEnum( std::string const &                       name,
+                                                CommandData const &                       commandData,
+                                                size_t                                    initialSkipCount,
+                                                bool                                      definition,
+                                                bool                                      raii,
+                                                std::vector<size_t> const &               returnParams,
+                                                std::map<size_t, VectorParamData> const & vectorParams ) const;
   std::string generateCommandDefinitions() const;
   std::string
     generateCommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;
@@ -712,55 +800,6 @@ private:
                                    std::vector<ParamData> const & params,
                                    size_t                         initialSkipCount,
                                    CommandFlavourFlags            flavourFlags = {} ) const;
-  std::string generateCommandResult( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
-  std::string generateCommandResultMultiSuccessNoErrors(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
-  std::string generateCommandResultMultiSuccessWithErrors(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
-  std::string generateCommandResultMultiSuccessWithErrors1Return(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
-  std::string generateCommandResultMultiSuccessWithErrors2Return( std::string const &         name,
-                                                                  CommandData const &         commandData,
-                                                                  size_t                      initialSkipCount,
-                                                                  bool                        definition,
-                                                                  std::vector<size_t> const & returnParamIndices,
-                                                                  bool                        raii ) const;
-  std::string generateCommandResultMultiSuccessWithErrors3Return( std::string const &         name,
-                                                                  CommandData const &         commandData,
-                                                                  size_t                      initialSkipCount,
-                                                                  bool                        definition,
-                                                                  std::vector<size_t> const & returnParamIndices,
-                                                                  bool                        raii ) const;
-  std::string
-    generateCommandResultSingleSuccess( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
-  std::string generateCommandResultSingleSuccessNoErrors(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
-  std::string generateCommandResultSingleSuccessWithErrors(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
-  std::string generateCommandResultSingleSuccessWithErrors1Return(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
-  std::string generateCommandResultSingleSuccessWithErrors1ReturnChain(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
-  std::string generateCommandResultSingleSuccessWithErrors1ReturnHandle(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
-  std::string generateCommandResultSingleSuccessWithErrors1ReturnValue(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
-  std::string generateCommandResultSingleSuccessWithErrors1ReturnVoid(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
-  std::string generateCommandResultSingleSuccessWithErrors2Return( std::string const &         name,
-                                                                   CommandData const &         commandData,
-                                                                   size_t                      initialSkipCount,
-                                                                   bool                        definition,
-                                                                   std::vector<size_t> const & returnParamIndices,
-                                                                   bool                        raii ) const;
-  std::string generateCommandResultSingleSuccessWithErrors3Return( std::string const &         name,
-                                                                   CommandData const &         commandData,
-                                                                   size_t                      initialSkipCount,
-                                                                   bool                        definition,
-                                                                   std::vector<size_t> const & returnParamIndices,
-                                                                   bool                        raii ) const;
-  std::string generateCommandResultWithErrors0Return(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateCommandSet( bool                             definition,
                                   std::string const &              standard,
                                   std::vector<std::string> const & enhanced = {},
@@ -779,37 +818,10 @@ private:
                                            std::vector<CommandFlavourFlags> const & raiiFlags ) const;
   std::string
     generateCommandSetExclusive( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
-  std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
-  std::string generateCommandVoid( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
-  std::string generateCommandValue( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
-  std::string
-    generateCommandVoid0Return( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
-  std::string generateCommandVoid1Return(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
-  std::string generateCommandVoid2Return( std::string const &         name,
-                                          CommandData const &         commandData,
-                                          size_t                      initialSkipCount,
-                                          bool                        definition,
-                                          std::vector<size_t> const & returnParamIndices,
-                                          bool                        raii ) const;
+  std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateConstexprString( std::pair<std::string, StructData> const & structData ) const;
   std::string generateConstexprDefines() const;
-  std::string generateConstexprUsings() const;
-  std::string generateCppModuleFuncpointerUsings() const;
-  std::string generateCppModuleHandleUsings() const;
-  std::string generateCppModuleStructUsings() const;
-  std::string generateCppModuleUniqueHandleUsings() const;
-  std::string generateCppModuleFuncsUsings() const;
-  std::string generateCppModuleEnumUsings() const;
-  std::string generateCppModuleFormatTraitsUsings() const;
-  std::string generateCppModuleExtensionInspectionUsings() const;
-  std::string generateCppModuleUsings() const;
   std::string generateCppModuleCommands() const;
-  std::string generateCppModuleRaiiUsings() const;
-  std::string generateCppModuleSharedHandleUsings() const;
-  std::string generateCppModuleHandleHashSpecializations() const;
-  std::string generateCppModuleHashSpecializations() const;
-  std::string generateCppModuleStructHashSpecializations() const;
   std::string generateDataDeclarations( CommandData const &                       commandData,
                                         std::vector<size_t> const &               returnParams,
                                         std::map<size_t, VectorParamData> const & vectorParams,
@@ -930,6 +942,7 @@ private:
   std::string generateHandleHashStructures() const;
   std::string generateHandles() const;
   std::string generateIndexTypeTraits( std::pair<std::string, EnumData> const & enumData ) const;
+  std::string generateIsDispatchedList() const;
   std::string generateLayerSettingTypeTraits() const;
   std::string
               generateLenInitializer( std::vector<MemberData>::const_iterator                                                                                 mit,
@@ -996,7 +1009,8 @@ private:
                                                             std::set<size_t> const &       skippedParams,
                                                             bool                           definition,
                                                             bool                           singular ) const;
-  std::string generateRAIIHandleCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
+  std::string
+    generateRAIIHandleCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::pair<std::string, std::string> generateRAIIHandleConstructor( std::pair<std::string, HandleData> const &         handle,
                                                                      std::map<std::string, CommandData>::const_iterator constructorIt,
                                                                      std::string const &                                enter,
@@ -1151,6 +1165,7 @@ private:
   bool                                hasArrayConstructor( HandleData const & handleData ) const;
   bool                                hasLen( MemberData const & md, std::vector<MemberData> const & members ) const;
   bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
+  bool                                hasPointerParams( std::vector<ParamData> const & params ) const;
   bool isConstructorCandidate( std::pair<std::string, VulkanHppGenerator::CommandData> const & command, std::string const & handleType ) const;
   bool isConstructorCandidate( ParamData const & paramData, std::string const & handleType ) const;
   bool isDeviceCommand( CommandData const & commandData ) const;
@@ -1163,16 +1178,13 @@ private:
   bool isLenByStructMember( std::string const & name, ParamData const & param ) const;
   bool isMultiSuccessCodeConstructor( std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts ) const;
   bool isParam( std::string const & name, std::vector<ParamData> const & params ) const;
+  bool isSimpleStructure( std::string const & name ) const;
   bool isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const;
   bool isStructureChainAnchor( std::string const & type ) const;
   bool isStructureType( std::string const & type ) const;
   bool isSupported( std::set<std::string> const & requiredBy ) const;
-  bool isSupportedExtension( std::string const & name ) const;
-  bool isSupportedFeature( std::string const & name ) const;
   bool isTypeRequired( std::string const & type ) const;
   bool isTypeUsed( std::string const & type ) const;
-  bool isUnsupportedExtension( std::string const & name ) const;
-  bool isUnsupportedFeature( std::string const & name ) const;
   bool isVectorByStructure( std::string const & type ) const;
   void markExtendedStructs();
   void mergeInternalFeatures();
@@ -1185,7 +1197,7 @@ private:
                                                                                std::set<size_t> const &                  skippedParams ) const;
   void                                                   readCommand( tinyxml2::XMLElement const * element );
   std::pair<bool, ParamData>                             readCommandParam( tinyxml2::XMLElement const * element, std::vector<ParamData> const & params );
-  std::pair<std::string, std::string>                    readCommandProto( tinyxml2::XMLElement const * element );
+  std::pair<std::string, TypeInfo>                       readCommandProto( tinyxml2::XMLElement const * element, std::string const & prefix );
   void                                                   readCommands( tinyxml2::XMLElement const * element );
   std::string                                            readComment( tinyxml2::XMLElement const * element ) const;
   DeprecateData                                          readDeprecateData( tinyxml2::XMLElement const * element ) const;
@@ -1263,6 +1275,10 @@ private:
                                                    std::set<std::string> &          listedCommands ) const;
   bool                     skipLeadingGrandParent( std::pair<std::string, HandleData> const & handle ) const;
   std::string              stripPluralS( std::string const & name ) const;
+  bool                     structureChainHoldsHandle( std::string const & name ) const;
+  bool                     structureChainHoldsVector( std::string const & name ) const;
+  bool                     structureHoldsHandle( StructData const & structData ) const;
+  bool                     structureHoldsVector( StructData const & structData ) const;
   std::string              toString( TypeCategory category );
   MemberData const &       vectorMemberByStructure( std::string const & structureType ) const;
 
@@ -1297,6 +1313,8 @@ private:
   std::string                                   m_version;
   std::vector<VideoCodec>                       m_videoCodecs;
   std::string                                   m_vulkanLicenseHeader;
+
+  mutable std::set<std::string> m_generatedCommands;
 };
 
 template <typename T>
@@ -1306,7 +1324,7 @@ std::string VulkanHppGenerator::generateFormatTraitsSubCases( FormatData const &
                                                               std::function<std::string( T const & subCaseData )>         generator,
                                                               std::string const &                                         defaultReturn ) const
 {
-  const std::string subCasesTemplate = R"(
+  std::string const subCasesTemplate = R"(
         switch( ${subCaseName} )
         {
 ${subCases}

@@ -12,14 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test(
-	NAME DispatchLoaderDynamicSharedLibraryClient
-	LIBRARIES DispatchLoaderDynamicSharedLibrary )
+cmake_minimum_required( VERSION 3.12 )
+project( VulkanHppTest LANGUAGES CXX )
 
-target_compile_definitions( DispatchLoaderDynamicSharedLibraryClient
-	PRIVATE VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1
-			VULKAN_HPP_STORAGE_SHARED )
+set(VULKAN_HPP_DISPATCH_LOADER_DYNAMIC ON)
+include( ${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt )
 
-if( UNIX )
-	target_link_libraries( DispatchLoaderDynamicSharedLibraryClient PRIVATE ${CMAKE_DL_LIBS} )
-endif()
+vulkan_hpp__setup_library(
+	SHARED
+	NAME DispatchLoaderDynamicSharedLibrary
+	SOURCES DispatchLoaderDynamicSharedLibrary.cpp
+	FOLDER "Tests" )
+target_compile_definitions( DispatchLoaderDynamicSharedLibrary PUBLIC VULKAN_HPP_STORAGE_SHARED VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+target_compile_definitions( DispatchLoaderDynamicSharedLibrary PRIVATE VULKAN_HPP_STORAGE_SHARED_EXPORT )
+
+vulkan_hpp__setup_test_project()
+target_compile_definitions( DispatchLoaderDynamicSharedLibraryClient PRIVATE "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC" )
+target_link_libraries( DispatchLoaderDynamicSharedLibraryClient PRIVATE DispatchLoaderDynamicSharedLibrary )

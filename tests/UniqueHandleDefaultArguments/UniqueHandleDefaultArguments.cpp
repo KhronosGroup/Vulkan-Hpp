@@ -16,21 +16,13 @@
 
 // Should be used on 64 bit only, as on 32 bit the test is ambiguous.
 
-#ifdef VULKAN_HPP_USE_CXX_MODULE
-  #include <vulkan/vulkan.h>
-  import vulkan;
-#else
-#  include "vulkan/vulkan.hpp"
-#endif
 
-#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-namespace vk
-{
-  namespace detail
-  {
-    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }  // namespace detail
-}  // namespace vk
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+#  include <vulkan/vulkan.h>
+import vulkan;
+#else
+#  include <vulkan/vulkan.hpp>
+   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
 int main( int /*argc*/, char ** /*argv*/ )

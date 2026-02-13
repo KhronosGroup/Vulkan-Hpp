@@ -27,7 +27,12 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <vulkan/vulkan_raii.hpp>
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+#  include <cstdint>
+import vulkan;
+#else
+#  include <vulkan/vulkan_raii.hpp>
+#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -315,7 +320,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::QueryPool                    queryPool   = nullptr;
     uint32_t                               firstQuery  = 0;
     uint32_t                               queryCount  = 1;
-    size_t                                 dataSize    = sizeof( uint32_t );
+    std::size_t                            dataSize    = sizeof( uint32_t );
     vk::DeviceSize                         stride      = sizeof( uint32_t );
     vk::QueryResultFlagBits                flags       = {};
     vk::ResultValue<std::vector<uint32_t>> resultValue = queryPool.getResults<uint32_t>( firstQuery, queryCount, dataSize, stride, flags );
@@ -357,6 +362,217 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::Image       image = nullptr;
     vk::ImageSubresource  imageSubresource;
     vk::SubresourceLayout subresourceLayout = image.getSubresourceLayout( imageSubresource );
+  }
+
+  // Image view commands
+  {
+    vk::raii::Device        device = nullptr;
+    vk::ImageViewCreateInfo imageViewCreateInfo;
+    vk::raii::ImageView     imageView = device.createImageView( imageViewCreateInfo );
+  }
+  {
+    vk::raii::Device        device = nullptr;
+    vk::ImageViewCreateInfo imageViewCreateInfo;
+    vk::raii::ImageView     imageView( device, imageViewCreateInfo );
+  }
+
+  // Command pool commands
+  {
+    vk::raii::Device          device = nullptr;
+    vk::CommandPoolCreateInfo commandPoolCreateInfo;
+    vk::raii::CommandPool     commandPool = device.createCommandPool( commandPoolCreateInfo );
+  }
+  {
+    vk::raii::Device          device = nullptr;
+    vk::CommandPoolCreateInfo commandPoolCreateInfo;
+    vk::raii::CommandPool     commandPool( device, commandPoolCreateInfo );
+  }
+
+  {
+    vk::raii::CommandPool     commandPool = nullptr;
+    vk::CommandPoolResetFlags flags       = {};
+    commandPool.reset( flags );
+  }
+
+  // Command buffer commands
+  {
+    vk::raii::Device                     device = nullptr;
+    vk::CommandBufferAllocateInfo        commandBufferAllocateInfo;
+    std::vector<vk::raii::CommandBuffer> commandBuffers = device.allocateCommandBuffers( commandBufferAllocateInfo );
+  }
+  {
+    vk::raii::Device              device = nullptr;
+    vk::CommandBufferAllocateInfo commandBufferAllocateInfo;
+    vk::raii::CommandBuffers      commandBuffers( device, commandBufferAllocateInfo );
+  }
+
+  {
+    vk::raii::CommandBuffer    commandBuffer = nullptr;
+    vk::CommandBufferBeginInfo beginInfo;
+    commandBuffer.begin( beginInfo );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    commandBuffer.end();
+  }
+
+  {
+    vk::raii::CommandBuffer     commandBuffer = nullptr;
+    vk::CommandBufferResetFlags flags         = {};
+    commandBuffer.reset( flags );
+  }
+
+  // Command buffer building commands
+  {
+    vk::raii::CommandBuffer     commandBuffer = nullptr;
+    vk::Buffer                  srcBuffer;
+    vk::Buffer                  dstBuffer;
+    std::vector<vk::BufferCopy> copyRegions;
+    commandBuffer.copyBuffer( srcBuffer, dstBuffer, copyRegions );
+  }
+
+  {
+    vk::raii::CommandBuffer    commandBuffer = nullptr;
+    vk::Image                  srcImage;
+    vk::ImageLayout            srcImageLayout = {};
+    vk::Image                  dstImage;
+    vk::ImageLayout            dstImageLayout = {};
+    std::vector<vk::ImageCopy> copyRegions;
+    commandBuffer.copyImage( srcImage, srcImageLayout, dstImage, dstImageLayout, copyRegions );
+  }
+
+  {
+    vk::raii::CommandBuffer          commandBuffer = nullptr;
+    vk::Buffer                       buffer;
+    vk::Image                        image;
+    vk::ImageLayout                  imageLayout = {};
+    std::vector<vk::BufferImageCopy> regions;
+    commandBuffer.copyBufferToImage( buffer, image, imageLayout, regions );
+  }
+
+  {
+    vk::raii::CommandBuffer          commandBuffer = nullptr;
+    vk::Image                        image;
+    vk::ImageLayout                  imageLayout = {};
+    vk::Buffer                       buffer;
+    std::vector<vk::BufferImageCopy> regions;
+    commandBuffer.copyImageToBuffer( image, imageLayout, buffer, regions );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::Buffer              dstBuffer;
+    vk::DeviceSize          dstOffset = 0;
+    std::vector<uint8_t>    data( 1024 );
+    commandBuffer.updateBuffer<uint8_t>( dstBuffer, dstOffset, data );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::Buffer              buffer;
+    vk::DeviceSize          offset = 0;
+    vk::DeviceSize          size   = vk::WholeSize;
+    commandBuffer.fillBuffer( buffer, offset, size, 0 );
+  }
+
+  {
+    vk::raii::CommandBuffer              commandBuffer   = nullptr;
+    vk::PipelineStageFlagBits            srcStageMask    = {};
+    vk::PipelineStageFlagBits            dstStageMask    = {};
+    vk::DependencyFlags                  dependencyFlags = {};
+    std::vector<vk::MemoryBarrier>       memoryBarriers;
+    std::vector<vk::BufferMemoryBarrier> bufferMemoryBarriers;
+    std::vector<vk::ImageMemoryBarrier>  imageMemoryBarriers;
+    commandBuffer.pipelineBarrier( srcStageMask, dstStageMask, dependencyFlags, memoryBarriers, bufferMemoryBarriers, imageMemoryBarriers );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::QueryPool           queryPool;
+    uint32_t                query = 0;
+    vk::QueryControlFlags   flags = {};
+    commandBuffer.beginQuery( queryPool, query, flags );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::QueryPool           queryPool;
+    uint32_t                query = 0;
+    commandBuffer.endQuery( queryPool, query );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::QueryPool           queryPool;
+    uint32_t                firstQuery = 0;
+    uint32_t                queryCount = 1;
+    commandBuffer.resetQueryPool( queryPool, firstQuery, queryCount );
+  }
+
+  {
+    vk::raii::CommandBuffer   commandBuffer = nullptr;
+    vk::PipelineStageFlagBits stage         = {};
+    vk::QueryPool             queryPool;
+    uint32_t                  query = 0;
+    commandBuffer.writeTimestamp( stage, queryPool, query );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::QueryPool           queryPool;
+    uint32_t                firstQuery = 0;
+    uint32_t                queryCount = 1;
+    vk::Buffer              dstBuffer;
+    vk::DeviceSize          dstOffset = 0;
+    vk::DeviceSize          stride    = 0;
+    vk::QueryResultFlags    flags     = {};
+    commandBuffer.copyQueryPoolResults( queryPool, firstQuery, queryCount, dstBuffer, dstOffset, stride, flags );
+  }
+
+  {
+    vk::raii::CommandBuffer        commandBuffer = nullptr;
+    std::vector<vk::CommandBuffer> secondaryCommandBuffers;
+    commandBuffer.executeCommands( secondaryCommandBuffers );
+  }
+
+  // Event commands
+  {
+    vk::raii::Device    device = nullptr;
+    vk::EventCreateInfo eventCreateInfo;
+    vk::raii::Event     event = device.createEvent( eventCreateInfo );
+  }
+  {
+    vk::raii::Device    device = nullptr;
+    vk::EventCreateInfo eventCreateInfo;
+    vk::raii::Event     event( device, eventCreateInfo );
+  }
+
+  {
+    vk::raii::Event event  = nullptr;
+    vk::Result      result = event.getStatus();
+  }
+
+  {
+    vk::raii::Event event = nullptr;
+    event.set();
+  }
+
+  {
+    vk::raii::Event event = nullptr;
+    event.reset();
+  }
+
+  // Buffer view commands
+  {
+    vk::raii::Device         device = nullptr;
+    vk::BufferViewCreateInfo bufferViewCreateInfo;
+    vk::raii::BufferView     bufferView = device.createBufferView( bufferViewCreateInfo );
+  }
+  {
+    vk::raii::Device         device = nullptr;
+    vk::BufferViewCreateInfo bufferViewCreateInfo;
+    vk::raii::BufferView     bufferView( device, bufferViewCreateInfo );
   }
 
   return 0;

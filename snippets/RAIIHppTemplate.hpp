@@ -2,14 +2,14 @@ ${licenseHeader}
 #ifndef VULKAN_RAII_HPP
 #define VULKAN_RAII_HPP
 
-#include <vulkan/${api}.hpp>
 #if !defined( VULKAN_HPP_CXX_MODULE )
+#  include <vulkan/${api}.hpp>
 #  include <memory>   // std::unique_ptr
 #  include <utility>  // std::forward
 #endif
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
   namespace VULKAN_HPP_RAII_NAMESPACE
   {

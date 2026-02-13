@@ -28,18 +28,12 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan;
+import vulkan;
 #else
 # include <vulkan/vulkan.hpp>
-#endif
-
-#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-namespace vk {
-  namespace detail {
-    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }
-}
+  VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
 int main( int /*argc*/, char ** /*argv*/ )

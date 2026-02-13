@@ -36,7 +36,7 @@ VideoHppGenerator::VideoHppGenerator( tinyxml2::XMLDocument const & document )
 void VideoHppGenerator::generateCppmFile() const
 {
   generateFileFromTemplate(
-    "vulkan_video.cppm", "VideoCppmTemplate.hpp", { { "copyrightMessage", m_copyrightMessage }, { "usings", generateCppModuleUsings() } } );
+    "vulkan_video.cppm", "VideoCppmTemplate.hpp", { { "copyrightMessage", m_copyrightMessage }, { "includes", generateIncludes() } } );
 }
 
 void VideoHppGenerator::generateHppFile() const
@@ -81,7 +81,8 @@ std::vector<std::string>::iterator VideoHppGenerator::addImplicitlyRequiredTypes
       reqIt = addImplicitlyRequiredTypes( memberTypeIt, extensionData, reqIt );
     }
   }
-  assert( typeIt->second.requiredBy.empty() || ( *typeIt->second.requiredBy.begin() == extensionData.name ) ||
+  assert( typeIt->second.requiredBy.empty() ||
+          ( *typeIt->second.requiredBy.begin() == extensionData.name ) ||
           ( *typeIt->second.requiredBy.begin() == extensionData.depends ) );
   if ( typeIt->second.requiredBy.empty() && ( std::find( extensionData.requireData.types.begin(), reqIt, typeIt->first ) == reqIt ) )
   {
@@ -197,8 +198,13 @@ std::string VideoHppGenerator::generateConstants( ExtensionData const & extensio
   std::string str;
   for ( auto const & constant : extensionData.requireData.constants )
   {
-    str += "VULKAN_HPP_CONSTEXPR_INLINE " + constant.second.type + " " + toCamelCase( stripPrefix( constant.first, "STD_VIDEO_" ), true ) + " = " +
-           constant.second.value + ";\n";
+    str += "VULKAN_HPP_CONSTEXPR_INLINE " +
+           constant.second.type +
+           " " +
+           toCamelCase( stripPrefix( constant.first, "STD_VIDEO_" ), true ) +
+           " = " +
+           constant.second.value +
+           ";\n";
   }
   if ( !str.empty() )
   {
@@ -226,8 +232,15 @@ std::string VideoHppGenerator::generateEnum( std::pair<std::string, EnumData> co
     {
       std::string aliasName = "e" + toCamelCase( stripPrefix( alias.first, prefix ), true );
       assert( valueToNameMap.insert( { aliasName, alias.first } ).second );
-      enumValues += "    " + aliasName + " VULKAN_HPP_DEPRECATED_17( \"" + aliasName + " is deprecated, " + valueName +
-                    " should be used instead.\" ) = " + alias.first + ",\n";
+      enumValues += "    " +
+                    aliasName +
+                    " VULKAN_HPP_DEPRECATED_17( \"" +
+                    aliasName +
+                    " is deprecated, " +
+                    valueName +
+                    " should be used instead.\" ) = " +
+                    alias.first +
+                    ",\n";
     }
   }
 
@@ -297,72 +310,6 @@ std::string VideoHppGenerator::generateIncludes() const
   }
 
   return includes;
-}
-
-std::string VideoHppGenerator::generateCppModuleConstantUsings() const
-{
-  const std::string enumsTemplate = R"(
-  //=================
-  //=== CONSTANTs ===
-  //=================
-
-${constants}
-)";
-
-  std::string constants;
-  for ( auto const & extension : m_extensions )
-  {
-    std::string constantsPerExtension;
-    for ( auto const & type : extension.requireData.constants )
-    {
-      constantsPerExtension +=
-        "using VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::" + toCamelCase( stripPrefix( type.first, "STD_VIDEO_" ), true ) + ";\n";
-    }
-    if ( !constantsPerExtension.empty() )
-    {
-      constantsPerExtension = "\n#if defined( " + extension.protect + " )\n  //=== " + extension.name + " ===\n" + constantsPerExtension + "#endif\n";
-    }
-    constants += constantsPerExtension;
-  }
-
-  return replaceWithMap( enumsTemplate, { { "constants", constants } } );
-}
-
-std::string VideoHppGenerator::generateCppModuleEnumUsings() const
-{
-  auto const usingTemplate = std::string{
-    R"(  using VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::${enumName};
-)"
-  };
-
-  const std::string enumsTemplate = R"(
-  //=============
-  //=== ENUMs ===
-  //=============
-
-${enums}
-)";
-
-  std::string enums;
-  for ( auto const & extension : m_extensions )
-  {
-    std::string enumsPerExtension;
-    for ( auto const & type : extension.requireData.types )
-    {
-      auto enumIt = m_enums.find( type );
-      if ( enumIt != m_enums.end() )
-      {
-        enumsPerExtension += replaceWithMap( usingTemplate, { { "enumName", stripPrefix( enumIt->first, "StdVideo" ) } } );
-      }
-    }
-    if ( !enumsPerExtension.empty() )
-    {
-      enumsPerExtension = "\n#if defined( " + extension.protect + " )\n  //=== " + extension.name + " ===\n" + enumsPerExtension + "#endif\n";
-    }
-    enums += enumsPerExtension;
-  }
-
-  return replaceWithMap( enumsTemplate, { { "enums", enums } } );
 }
 
 std::string VideoHppGenerator::generateStruct( std::pair<std::string, StructureData> const & structData ) const
@@ -532,48 +479,6 @@ std::string VideoHppGenerator::generateStructs( ExtensionData const & extensionD
     str = "\n#if defined( " + extensionData.protect + " )\n  //=== " + extensionData.name + " ===\n" + str + "#endif\n";
   }
   return str;
-}
-
-std::string VideoHppGenerator::generateCppModuleStructUsings() const
-{
-  auto const usingTemplate = std::string{
-    R"(  using VULKAN_HPP_NAMESPACE::VULKAN_HPP_VIDEO_NAMESPACE::${structName};
-)"
-  };
-
-  const std::string structsTemplate = R"(
-  //===============
-  //=== STRUCTS ===
-  //===============
-
-${structs}
-)";
-
-  std::string structs;
-  for ( auto const & extension : m_extensions )
-  {
-    std::string structsPerExtension;
-    for ( auto const & type : extension.requireData.types )
-    {
-      auto structIt = m_structs.find( type );
-      if ( structIt != m_structs.end() )
-      {
-        structsPerExtension += replaceWithMap( usingTemplate, { { "structName", stripPrefix( structIt->first, "StdVideo" ) } } );
-      }
-    }
-    if ( !structsPerExtension.empty() )
-    {
-      structsPerExtension = "\n#if defined( " + extension.protect + " )\n  //=== " + extension.name + " ===\n" + structsPerExtension + "#endif\n";
-    }
-    structs += structsPerExtension;
-  }
-
-  return replaceWithMap( structsTemplate, { { "structs", structs } } );
-}
-
-std::string VideoHppGenerator::generateCppModuleUsings() const
-{
-  return generateCppModuleConstantUsings() + generateCppModuleEnumUsings() + generateCppModuleStructUsings();
 }
 
 bool VideoHppGenerator::isExtension( std::string const & name ) const

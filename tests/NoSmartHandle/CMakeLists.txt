@@ -12,5 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_test( NAME VideoCpp20Modules LIBRARIES VulkanVideoHppModule )
-set_target_properties( VideoCpp20Modules PROPERTIES CXX_SCAN_FOR_MODULES ON )
+cmake_minimum_required( VERSION 3.12 )
+project( VulkanHppTest LANGUAGES CXX )
+
+set(VULKAN_HPP_NO_SMART_HANDLE ON)
+include( ${CMAKE_CURRENT_SOURCE_DIR}/../../CMakeLists.txt )
+vulkan_hpp__setup_test_project()

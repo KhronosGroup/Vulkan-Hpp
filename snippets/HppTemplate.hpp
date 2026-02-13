@@ -6,9 +6,21 @@ ${includes}
 
 VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == ${headerVersion}, "Wrong VK_HEADER_VERSION!" );
 
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
+{
+  namespace detail
+  {
+    class DispatchLoaderDynamic;
+
+#  if !defined( VULKAN_HPP_DEFAULT_DISPATCHER_HANDLED ) && VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+    extern VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+#  endif
+  }  // namespace detail
+}  // namespace VULKAN_HPP_NAMESPACE
+
 ${defines}
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
   ${ArrayWrapper1D}
   ${ArrayWrapper2D}
@@ -23,13 +35,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   namespace detail
   {
+    ${IsDispatchedList}
     ${DispatchLoaderBase}
     ${DispatchLoaderStatic}
   }
   ${Exchange}
 
-#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   struct AllocationCallbacks;
+
+#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
 
   namespace detail
   {
@@ -53,7 +67,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
-namespace std
+VULKAN_HPP_EXPORT namespace std
 {
   template <>
   struct is_error_code_enum<VULKAN_HPP_NAMESPACE::Result> : public true_type
@@ -61,7 +75,7 @@ namespace std
 }  // namespace std
 #endif
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
 ${Exceptions}
@@ -81,7 +95,7 @@ ${constexprDefines}
 // clang-format on
 
 
-namespace VULKAN_HPP_NAMESPACE
+VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   ${structExtendsStructs}
@@ -91,6 +105,9 @@ namespace VULKAN_HPP_NAMESPACE
   {
     ${DynamicLoader}
     ${DispatchLoaderDynamic}
+#   if defined( VULKAN_HPP_CXX_MODULE ) && !defined( VULKAN_HPP_DEFAULT_DISPATCHER_HANDLED ) && VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+      VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+#   endif
   }
 }   // namespace VULKAN_HPP_NAMESPACE
 #endif

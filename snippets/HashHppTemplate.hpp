@@ -3,9 +3,11 @@ ${licenseHeader}
 #ifndef VULKAN_HASH_HPP
 #  define VULKAN_HASH_HPP
 
-#include <vulkan/${api}.hpp>
+#if !defined( VULKAN_HPP_CXX_MODULE )
+#  include <vulkan/${api}.hpp>
+#endif
 
-namespace std
+VULKAN_HPP_EXPORT namespace std
 {
   //=======================================
   //=== HASH structures for Flags types ===

@@ -15,21 +15,14 @@
 // VulkanHpp Samples : ArrayProxy
 //                     Compile test on using vk::ArrayProxy
 
-#include <cassert>
-#include <iostream>
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  #include <vulkan/vulkan.h>
-  import vulkan;
+#  include <vulkan/vulkan.h>
+import vulkan;
 #else
-# include <vulkan/vulkan_raii.hpp>
-#endif
-
-#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-namespace vk {
-  namespace detail {
-    DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-  }
-}
+#  include <iostream>
+#  include <vulkan/vulkan_raii.hpp>
+   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
 int main( int /*argc*/, char ** /*argv*/ )
@@ -38,21 +31,21 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     // test operator==() with vk-handle and nullptr
     vk::Instance instance;
-    assert( instance == nullptr );
-    assert( nullptr == instance );
+    release_assert( instance == nullptr );
+    release_assert( nullptr == instance );
 
     instance = vk::createInstance( {} );
-    assert( instance != nullptr );
-    assert( nullptr != instance );
+    release_assert( instance != nullptr );
+    release_assert( nullptr != instance );
 
     vk::Instance instance2;
-    assert( instance != instance2 );
-    assert( !( instance == instance2 ) );
+    release_assert( instance != instance2 );
+    release_assert( !( instance == instance2 ) );
 
-    assert( instance2 < instance );
+    release_assert( instance2 < instance );
 
     instance2 = vk::createInstance( {} );
-    assert( instance != instance2 );
+    release_assert( instance != instance2 );
 
     if ( instance == instance2 )
     {
@@ -113,7 +106,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     vk::raii::PhysicalDevices physicalDevices( i0 );
-    assert( physicalDevices.size() == 2 );
+    release_assert( physicalDevices.size() == 2 );
     if ( physicalDevices[0] == physicalDevices[1] )
     {
       std::cout << "fufu";
@@ -122,12 +115,12 @@ int main( int /*argc*/, char ** /*argv*/ )
   catch ( vk::SystemError const & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
 
   return 0;

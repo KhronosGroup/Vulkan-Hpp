@@ -27,9 +27,13 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <vulkan/vulkan.hpp>
-
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+#  include <vulkan/vulkan.h>
+import vulkan;
+#else
+#  include <vulkan/vulkan.hpp>
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -533,6 +537,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroyFence( fence );
   }
   {
+    vk::Device              device;
+    vk::Fence               fence;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( fence, &allocationCallbacks );
+  }
+  {
     vk::Device device;
     vk::Fence  fence;
     device.destroy( fence );
@@ -598,6 +608,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroySemaphore( semaphore );
   }
   {
+    vk::Device              device;
+    vk::Semaphore           semaphore;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( semaphore, &allocationCallbacks );
+  }
+  {
     vk::Device    device;
     vk::Semaphore semaphore;
     device.destroy( semaphore );
@@ -627,6 +643,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Device    device;
     vk::QueryPool queryPool;
     device.destroyQueryPool( queryPool );
+  }
+  {
+    vk::Device              device;
+    vk::QueryPool           queryPool;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( queryPool, &allocationCallbacks );
   }
   {
     vk::Device    device;
@@ -691,6 +713,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroyBuffer( buffer );
   }
   {
+    vk::Device              device;
+    vk::Buffer              buffer;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( buffer, &allocationCallbacks );
+  }
+  {
     vk::Device device;
     vk::Buffer buffer;
     device.destroy( buffer );
@@ -722,6 +750,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroyImage( image );
   }
   {
+    vk::Device              device;
+    vk::Image               image;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( image, &allocationCallbacks );
+  }
+  {
     vk::Device device;
     vk::Image  image;
     device.destroy( image );
@@ -739,6 +773,422 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Image             image;
     vk::ImageSubresource  subresource;
     vk::SubresourceLayout subresourceLayout = device.getImageSubresourceLayout( image, subresource );
+  }
+
+  // Image view commands
+  {
+    vk::Device              device;
+    vk::ImageViewCreateInfo imageViewCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::ImageView           imageView;
+    vk::Result              result = device.createImageView( &imageViewCreateInfo, &allocationCallbacks, &imageView );
+  }
+  {
+    vk::Device              device;
+    vk::ImageViewCreateInfo imageViewCreateInfo;
+    vk::ImageView           imageView = device.createImageView( imageViewCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::ImageView           imageView;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyImageView( imageView, &allocationCallbacks );
+  }
+  {
+    vk::Device    device;
+    vk::ImageView imageView;
+    device.destroyImageView( imageView );
+  }
+  {
+    vk::Device              device;
+    vk::ImageView           imageView;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( imageView, &allocationCallbacks );
+  }
+  {
+    vk::Device    device;
+    vk::ImageView imageView;
+    device.destroy( imageView );
+  }
+
+  // Command pool commands
+  {
+    vk::Device                device;
+    vk::CommandPoolCreateInfo commandPoolCreateInfo;
+    vk::AllocationCallbacks   allocationCallbacks;
+    vk::CommandPool           commandPool;
+    vk::Result                result = device.createCommandPool( &commandPoolCreateInfo, &allocationCallbacks, &commandPool );
+  }
+  {
+    vk::Device                device;
+    vk::CommandPoolCreateInfo commandPoolCreateInfo;
+    vk::CommandPool           commandPool = device.createCommandPool( commandPoolCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::CommandPool         commandPool;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyCommandPool( commandPool, &allocationCallbacks );
+  }
+  {
+    vk::Device      device;
+    vk::CommandPool commandPool;
+    device.destroyCommandPool( commandPool );
+  }
+  {
+    vk::Device              device;
+    vk::CommandPool         commandPool;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( commandPool, &allocationCallbacks );
+  }
+  {
+    vk::Device      device;
+    vk::CommandPool commandPool;
+    device.destroy( commandPool );
+  }
+
+  {
+    vk::Device                device;
+    vk::CommandPool           commandPool;
+    vk::CommandPoolResetFlags flags = {};
+    device.resetCommandPool( commandPool, flags );
+  }
+
+  // Command buffer commands
+  {
+    vk::Device                     device;
+    vk::CommandBufferAllocateInfo  commandBufferAllocateInfo;
+    std::vector<vk::CommandBuffer> commandBuffers;
+    vk::Result                     result = device.allocateCommandBuffers( &commandBufferAllocateInfo, commandBuffers.data() );
+  }
+  {
+    vk::Device                     device;
+    vk::CommandBufferAllocateInfo  commandBufferAllocateInfo;
+    std::vector<vk::CommandBuffer> commandBuffers = device.allocateCommandBuffers( commandBufferAllocateInfo );
+  }
+  {
+    vk::Device                    device;
+    vk::CommandBufferAllocateInfo commandBufferAllocateInfo;
+    using Allocator = std::allocator<vk::CommandBuffer>;
+    Allocator                                 allocator;
+    std::vector<vk::CommandBuffer, Allocator> commandBuffers = device.allocateCommandBuffers( commandBufferAllocateInfo, allocator );
+  }
+
+  {
+    vk::Device                     device;
+    vk::CommandPool                commandPool;
+    std::vector<vk::CommandBuffer> commandBuffers;
+    device.freeCommandBuffers( commandPool, static_cast<uint32_t>( commandBuffers.size() ), commandBuffers.data() );
+  }
+  {
+    vk::Device                     device;
+    vk::CommandPool                commandPool;
+    std::vector<vk::CommandBuffer> commandBuffers;
+    device.freeCommandBuffers( commandPool, commandBuffers );
+  }
+  {
+    vk::Device                     device;
+    vk::CommandPool                commandPool;
+    std::vector<vk::CommandBuffer> commandBuffers;
+    device.free( commandPool, static_cast<uint32_t>( commandBuffers.size() ), commandBuffers.data() );
+  }
+  {
+    vk::Device                     device;
+    vk::CommandPool                commandPool;
+    std::vector<vk::CommandBuffer> commandBuffers;
+    device.free( commandPool, commandBuffers );
+  }
+
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::CommandBufferBeginInfo beginInfo;
+    vk::Result                 result = commandBuffer.begin( &beginInfo );
+  }
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::CommandBufferBeginInfo beginInfo;
+    commandBuffer.begin( beginInfo );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    commandBuffer.end();
+  }
+
+  {
+    vk::CommandBuffer           commandBuffer;
+    vk::CommandBufferResetFlags flags = {};
+    commandBuffer.reset( flags );
+  }
+
+  // Command buffer building commands
+  {
+    vk::CommandBuffer           commandBuffer;
+    vk::Buffer                  srcBuffer;
+    vk::Buffer                  dstBuffer;
+    std::vector<vk::BufferCopy> copyRegions;
+    commandBuffer.copyBuffer( srcBuffer, dstBuffer, static_cast<uint32_t>( copyRegions.size() ), copyRegions.data() );
+  }
+  {
+    vk::CommandBuffer           commandBuffer;
+    vk::Buffer                  srcBuffer;
+    vk::Buffer                  dstBuffer;
+    std::vector<vk::BufferCopy> copyRegions;
+    commandBuffer.copyBuffer( srcBuffer, dstBuffer, copyRegions );
+  }
+
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::Image                  srcImage;
+    vk::ImageLayout            srcImageLayout = {};
+    vk::Image                  dstImage;
+    vk::ImageLayout            dstImageLayout = {};
+    std::vector<vk::ImageCopy> regions;
+    commandBuffer.copyImage( srcImage, srcImageLayout, dstImage, dstImageLayout, static_cast<uint32_t>( regions.size() ), regions.data() );
+  }
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::Image                  srcImage;
+    vk::ImageLayout            srcImageLayout = {};
+    vk::Image                  dstImage;
+    vk::ImageLayout            dstImageLayout = {};
+    std::vector<vk::ImageCopy> regions;
+    commandBuffer.copyImage( srcImage, srcImageLayout, dstImage, dstImageLayout, regions );
+  }
+
+  {
+    vk::CommandBuffer                commandBuffer;
+    vk::Buffer                       buffer;
+    vk::Image                        image;
+    vk::ImageLayout                  imageLayout = {};
+    std::vector<vk::BufferImageCopy> regions;
+    commandBuffer.copyBufferToImage( buffer, image, imageLayout, static_cast<uint32_t>( regions.size() ), regions.data() );
+  }
+  {
+    vk::CommandBuffer                commandBuffer;
+    vk::Buffer                       buffer;
+    vk::Image                        image;
+    vk::ImageLayout                  imageLayout = {};
+    std::vector<vk::BufferImageCopy> regions;
+    commandBuffer.copyBufferToImage( buffer, image, imageLayout, regions );
+  }
+
+  {
+    vk::CommandBuffer                commandBuffer;
+    vk::Image                        image;
+    vk::ImageLayout                  imageLayout = {};
+    vk::Buffer                       buffer;
+    std::vector<vk::BufferImageCopy> regions;
+    commandBuffer.copyImageToBuffer( image, imageLayout, buffer, static_cast<uint32_t>( regions.size() ), regions.data() );
+  }
+  {
+    vk::CommandBuffer                commandBuffer;
+    vk::Image                        image;
+    vk::ImageLayout                  imageLayout = {};
+    vk::Buffer                       buffer;
+    std::vector<vk::BufferImageCopy> regions;
+    commandBuffer.copyImageToBuffer( image, imageLayout, buffer, regions );
+  }
+
+  {
+    vk::CommandBuffer    commandBuffer;
+    vk::Buffer           dstBuffer;
+    vk::DeviceSize       dstOffset = 0;
+    std::vector<uint8_t> data( 1024 );
+    commandBuffer.updateBuffer( dstBuffer, dstOffset, static_cast<uint32_t>( data.size() ), data.data() );
+  }
+  {
+    vk::CommandBuffer    commandBuffer;
+    vk::Buffer           dstBuffer;
+    vk::DeviceSize       dstOffset = 0;
+    std::vector<uint8_t> data( 1024 );
+    commandBuffer.updateBuffer<uint8_t>( dstBuffer, dstOffset, data );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::Buffer        buffer;
+    vk::DeviceSize    offset = 0;
+    vk::DeviceSize    size   = vk::WholeSize;
+    commandBuffer.fillBuffer( buffer, offset, size, 0 );
+  }
+
+  {
+    vk::CommandBuffer                    commandBuffer;
+    vk::PipelineStageFlagBits            srcStageMask    = {};
+    vk::PipelineStageFlagBits            dstStageMask    = {};
+    vk::DependencyFlags                  dependencyFlags = {};
+    std::vector<vk::MemoryBarrier>       memoryBarriers;
+    std::vector<vk::BufferMemoryBarrier> bufferMemoryBarriers;
+    std::vector<vk::ImageMemoryBarrier>  imageMemoryBarriers;
+    commandBuffer.pipelineBarrier( srcStageMask,
+                                   dstStageMask,
+                                   dependencyFlags,
+                                   static_cast<uint32_t>( memoryBarriers.size() ),
+                                   memoryBarriers.data(),
+                                   static_cast<uint32_t>( bufferMemoryBarriers.size() ),
+                                   bufferMemoryBarriers.data(),
+                                   static_cast<uint32_t>( imageMemoryBarriers.size() ),
+                                   imageMemoryBarriers.data() );
+  }
+  {
+    vk::CommandBuffer                    commandBuffer;
+    vk::PipelineStageFlagBits            srcStageMask    = {};
+    vk::PipelineStageFlagBits            dstStageMask    = {};
+    vk::DependencyFlags                  dependencyFlags = {};
+    std::vector<vk::MemoryBarrier>       memoryBarriers;
+    std::vector<vk::BufferMemoryBarrier> bufferMemoryBarriers;
+    std::vector<vk::ImageMemoryBarrier>  imageMemoryBarriers;
+    commandBuffer.pipelineBarrier( srcStageMask, dstStageMask, dependencyFlags, memoryBarriers, bufferMemoryBarriers, imageMemoryBarriers );
+  }
+
+  {
+    vk::CommandBuffer     commandBuffer;
+    vk::QueryPool         queryPool;
+    uint32_t              query = 0;
+    vk::QueryControlFlags flags = {};
+    commandBuffer.beginQuery( queryPool, query, flags );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::QueryPool     queryPool;
+    uint32_t          query = 0;
+    commandBuffer.endQuery( queryPool, query );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::QueryPool     queryPool;
+    uint32_t          firstQuery = 0;
+    uint32_t          queryCount = 1;
+    commandBuffer.resetQueryPool( queryPool, firstQuery, queryCount );
+  }
+
+  {
+    vk::CommandBuffer         commandBuffer;
+    vk::PipelineStageFlagBits stage = {};
+    vk::QueryPool             queryPool;
+    uint32_t                  query = 0;
+    commandBuffer.writeTimestamp( stage, queryPool, query );
+  }
+
+  {
+    vk::CommandBuffer    commandBuffer;
+    vk::QueryPool        queryPool;
+    uint32_t             firstQuery = 0;
+    uint32_t             queryCount = 1;
+    vk::Buffer           dstBuffer;
+    vk::DeviceSize       dstOffset = 0;
+    vk::DeviceSize       stride    = 0;
+    vk::QueryResultFlags flags     = {};
+    commandBuffer.copyQueryPoolResults( queryPool, firstQuery, queryCount, dstBuffer, dstOffset, stride, flags );
+  }
+
+  {
+    vk::CommandBuffer              commandBuffer;
+    std::vector<vk::CommandBuffer> secondaryCommandBuffers;
+    commandBuffer.executeCommands( static_cast<uint32_t>( secondaryCommandBuffers.size() ), secondaryCommandBuffers.data() );
+  }
+
+  {
+    vk::CommandBuffer              commandBuffer;
+    std::vector<vk::CommandBuffer> secondaryCommandBuffers;
+    commandBuffer.executeCommands( secondaryCommandBuffers );
+  }
+
+  // Event commands
+  {
+    vk::Device              device;
+    vk::EventCreateInfo     eventCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::Event               event;
+    vk::Result              result = device.createEvent( &eventCreateInfo, &allocationCallbacks, &event );
+  }
+  {
+    vk::Device          device;
+    vk::EventCreateInfo eventCreateInfo;
+    vk::Event           event = device.createEvent( eventCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Event               event;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyEvent( event, &allocationCallbacks );
+  }
+  {
+    vk::Device device;
+    vk::Event  event;
+    device.destroyEvent( event );
+  }
+  {
+    vk::Device              device;
+    vk::Event               event;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( event, &allocationCallbacks );
+  }
+  {
+    vk::Device device;
+    vk::Event  event;
+    device.destroy( event );
+  }
+
+  {
+    vk::Device device;
+    vk::Event  event;
+    vk::Result result = device.getEventStatus( event );
+  }
+
+  {
+    vk::Device device;
+    vk::Event  event;
+    device.setEvent( event );
+  }
+
+  {
+    vk::Device device;
+    vk::Event  event;
+    device.resetEvent( event );
+  }
+
+  // Buffer view commands
+  {
+    vk::Device               device;
+    vk::BufferViewCreateInfo bufferViewCreateInfo;
+    vk::AllocationCallbacks  allocationCallbacks;
+    vk::BufferView           bufferView;
+    vk::Result               result = device.createBufferView( &bufferViewCreateInfo, &allocationCallbacks, &bufferView );
+  }
+  {
+    vk::Device               device;
+    vk::BufferViewCreateInfo bufferViewCreateInfo;
+    vk::BufferView           bufferView = device.createBufferView( bufferViewCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::BufferView          bufferView;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyBufferView( bufferView, &allocationCallbacks );
+  }
+  {
+    vk::Device     device;
+    vk::BufferView bufferView;
+    device.destroyBufferView( bufferView );
+  }
+  {
+    vk::Device              device;
+    vk::BufferView          bufferView;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( bufferView, &allocationCallbacks );
+  }
+  {
+    vk::Device     device;
+    vk::BufferView bufferView;
+    device.destroy( bufferView );
   }
 
 #if 0

@@ -24,22 +24,31 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#undef VULKAN_HPP_DISPATCH_LOADER_DYNAMIC
-#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 0
-
-#include <vector>
-#include <cstdint>
-#include <cassert>
-#include <iostream>
-#include <algorithm>
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-  import vulkan;
+#  include <cstdint>
+#  include <vulkan/vulkan_hpp_macros.hpp>  // VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE
+import vulkan;
 #else
-# include <vulkan/vulkan.hpp>
+#  include <algorithm>
+#  include <cstdint>
+#  include <iostream>
+#  include <vector>
+#  include <vulkan/vulkan.hpp>
 #endif
 
 static char const * AppName    = "DeviceFunctions";
 static char const * EngineName = "Vulkan.hpp";
+
+template <class Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, class Alloc = std::allocator<vk::UniqueHandle<vk::CommandBuffer, Dispatch>>>
+
+std::vector<vk::UniqueHandle<vk::CommandBuffer, Dispatch>, Alloc> createCommandBuffers( const vk::Device &                    device,
+                                                                                        const vk::CommandBufferAllocateInfo & allocateInfo,
+                                                                                        const Alloc &                         alloc = Alloc(),
+                                                                                        const Dispatch & d = VULKAN_HPP_DEFAULT_DISPATCHER )
+{
+  return device.allocateCommandBuffersUnique( allocateInfo, alloc, d );
+}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -56,12 +65,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
     // get the first index into queueFamiliyProperties which supports graphics
-    size_t graphicsQueueFamilyIndex =
+    std::size_t graphicsQueueFamilyIndex =
       std::distance( queueFamilyProperties.begin(),
                      std::find_if( queueFamilyProperties.begin(),
                                    queueFamilyProperties.end(),
                                    []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } ) );
-    assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
+    release_assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
     // create a UniqueDevice
     float                     queuePriority = 0.0f;
@@ -74,11 +83,20 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniqueCommandBuffer                              commandBuffer =
       std::move( device->allocateCommandBuffersUnique( {}, vectorAllocator, VULKAN_HPP_DISPATCH_LOADER_STATIC_TYPE() ).front() );
 
+    std::vector<vk::UniqueCommandBuffer> uniqueCommandBuffers;
+    uniqueCommandBuffers = createCommandBuffers( device.get(), {}, uniqueCommandBuffers.get_allocator(), VULKAN_HPP_DISPATCH_LOADER_STATIC_TYPE() );
+    commandBuffer        = std::move( uniqueCommandBuffers.front() );
+
     commandBuffer->begin( vk::CommandBufferBeginInfo() );
 
     std::vector<vk::UniqueHandle<vk::CommandBuffer, VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE>>::allocator_type dynamicVectorAllocator;
     vk::UniqueHandle<vk::CommandBuffer, VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE>                              dynamicCommandBuffer =
       std::move( device->allocateCommandBuffersUnique( {}, dynamicVectorAllocator, VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE() ).front() );
+
+    std::vector<vk::UniqueHandle<vk::CommandBuffer, VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE>> dynamicUniqueCommandBuffers;
+    dynamicUniqueCommandBuffers =
+      createCommandBuffers( device.get(), {}, dynamicUniqueCommandBuffers.get_allocator(), VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE() );
+    dynamicCommandBuffer = std::move( dynamicUniqueCommandBuffers.front() );
 
     vk::Buffer       buffer       = device->createBuffer( {} );
     vk::UniqueBuffer uniqueBuffer = vk::UniqueBuffer( buffer, *device );
@@ -91,12 +109,12 @@ int main( int /*argc*/, char ** /*argv*/ )
   catch ( vk::SystemError const & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
 
   return 0;

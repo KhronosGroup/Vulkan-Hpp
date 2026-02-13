@@ -1,0 +1,36 @@
+name: CI Build with latest Vulkan-Docs
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: khronosgroup/docker-images@sha256:f1ca671f3bdb10ad49e238b9bf28853088a21af49504498fc9084c9b4fea4762
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Generate Vulkan Headers
+        run: |
+          # Generate the headers
+          git clone https://github.com/KhronosGroup/Vulkan-Docs.git --depth 1
+          make -C Vulkan-Docs/xml clean install codec_headers
+
+          # Copy headers and xml registry to Vulkan-Headers (makes it easier for Vulkan-Hpp)
+          rm -rf Vulkan-Headers/include/ Vulkan-Headers/registry
+          cp -r Vulkan-Docs/gen/include/ Vulkan-Headers/include/
+          cp -r Vulkan-Docs/xml Vulkan-Headers/registry/
+          
+      - name: Generate Vulkan-Hpp and Build Samples/Tests
+        run: |
+          cmake -B build -G Ninja --preset generator-tests \
+          -D CMAKE_CXX_STANDARD=23                         \
+          -D CMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel
+          ctest -j --output-on-failure --test-dir build

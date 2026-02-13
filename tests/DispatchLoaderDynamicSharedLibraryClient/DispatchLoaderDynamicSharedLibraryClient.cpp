@@ -15,6 +15,11 @@
 // VulkanHpp Samples : DispatchLoaderDynamicSharedLibraryClient
 //                     Compile test on DispatchLoaderDynamic functions
 
+#if !defined( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+#  define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#endif
+
+#include "../test_macros.hpp"
 #include <iostream>
 #include <map>
 #include <vulkan/vulkan.hpp>
@@ -32,7 +37,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // create a dispatcher, based on additional vkDevice/vkGetDeviceProcAddr
     std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
-    assert( !physicalDevices.empty() );
+    release_assert( !physicalDevices.empty() );
 
     vk::Device device = physicalDevices[0].createDevice( {}, nullptr );
 

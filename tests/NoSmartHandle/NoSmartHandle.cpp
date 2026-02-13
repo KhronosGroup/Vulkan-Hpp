@@ -1,4 +1,4 @@
-// Copyright(c) 2020, NVIDIA CORPORATION. All rights reserved.
+// Copyright(c) 2018, NVIDIA CORPORATION. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,10 +11,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// VulkanHpp Samples : DispatchLoaderDynamicSharedLibrary
-//                     Compile test on DispatchLoaderDynamic functions
 
-#include <vulkan/vulkan.hpp>
 
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+#ifdef VULKAN_HPP_USE_CXX_MODULE
+import vulkan;
+#else
+#  include <vulkan/vulkan.hpp>
+#  include <vulkan/vulkan_raii.hpp>
+#  include <vulkan/vulkan_shared.hpp>
+#endif
+
+int main( int /*argc*/, char ** /*argv*/ )
+{
+  return 0;
+}

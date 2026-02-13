@@ -26,14 +26,17 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <cassert>
-#include <iostream>
+
+#include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
-# include <vulkan/vulkan_hpp_macros.hpp>
-  import vulkan;
+#  include "vulkan/vulkan_hpp_macros.hpp"
+import vulkan;
 #else
-# include "vulkan/vulkan.hpp"
+#  include <vector>
+#  include <iostream>
+#  include <vulkan/vulkan.hpp>
 #endif
+
 
 void fct( vk::StridedArrayProxy<int> /*ap*/ ) {}
 
@@ -48,7 +51,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( nullptr );
 
     vk::StridedArrayProxy<int> ap0 = nullptr;
-    assert( ap0.size() == 0 );
+    release_assert( ap0.size() == 0 );
 
     // Type
     // fct(2);  // not supported: cannot convert argument 1 from 'int' to 'vk::StridedArrayProxy<int>'
@@ -63,11 +66,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( i1 );
 
     vk::StridedArrayProxy<const int> ap1 = 1;
-    assert( ap1.size() == 1 );
+    release_assert( ap1.size() == 1 );
     vk::StridedArrayProxy<const int> ap2 = i0;
-    assert( ap2.size() == 1 );
+    release_assert( ap2.size() == 1 );
     vk::StridedArrayProxy<const int> ap3 = i1;
-    assert( ap3.size() == 1 );
+    release_assert( ap3.size() == 1 );
 
     // count, T *
     int * i0p = &i0;
@@ -80,9 +83,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( { 1, i1p } );
 
     vk::StridedArrayProxy<const int> ap4 = { 1, i0p };
-    assert( ap4.size() == 1 );
+    release_assert( ap4.size() == 1 );
     vk::StridedArrayProxy<const int> ap5 = { 1, i1p };
-    assert( ap5.size() == 1 );
+    release_assert( ap5.size() == 1 );
 
     // T[count]
     int ia0[2] = { 0, 1 };
@@ -95,9 +98,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( ia1 );
 
     vk::StridedArrayProxy<const int> ap6 = ia0;
-    assert( ap6.size() == 2 );
+    release_assert( ap6.size() == 2 );
     vk::StridedArrayProxy<const int> ap7 = ia1;
-    assert( ap7.size() == 2 );
+    release_assert( ap7.size() == 2 );
 
     // std::array<T,N>
     std::array<int, 2> sa0 = { 0, 1 };
@@ -118,19 +121,19 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( sa3 );
 
     vk::StridedArrayProxy<int> ap8 = sa0;
-    assert( ap8.size() == 2 );
+    release_assert( ap8.size() == 2 );
     // vk::StridedArrayProxy<int> ap9 = sa1;  // not supported: cannot convert from 'std::array<const int,2>' to 'vk::StridedArrayProxy<int>'
     // vk::StridedArrayProxy<int> ap10 = sa2;  // not supported: cannot convert from '_Ty *' to 'T *'
     // vk::StridedArrayProxy<int> ap11 = sa3;  // not supported: cannot convert from 'const std::array<const int,2>' to 'vk::StridedArrayProxy<int>'
 
     vk::StridedArrayProxy<const int> ap12 = sa0;
-    assert( ap12.size() == 2 );
+    release_assert( ap12.size() == 2 );
     vk::StridedArrayProxy<const int> ap13 = sa1;
-    assert( ap13.size() == 2 );
+    release_assert( ap13.size() == 2 );
     vk::StridedArrayProxy<const int> ap14 = sa2;
-    assert( ap14.size() == 2 );
+    release_assert( ap14.size() == 2 );
     vk::StridedArrayProxy<const int> ap15 = sa3;
-    assert( ap15.size() == 2 );
+    release_assert( ap15.size() == 2 );
 
     // std::vector<T>
     std::vector<int> sv0 = { 0, 1 };
@@ -142,13 +145,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( sv1 );
 
     vk::StridedArrayProxy<int> ap16 = sv0;
-    assert( ap16.size() == 2 );
+    release_assert( ap16.size() == 2 );
     // vk::StridedArrayProxy<int> ap17 = sv1;  // not supported: cannot convert from '_Ty *' to 'T *'
 
     vk::StridedArrayProxy<const int> ap18 = sv0;
-    assert( ap18.size() == 2 );
+    release_assert( ap18.size() == 2 );
     vk::StridedArrayProxy<const int> ap19 = sv1;
-    assert( ap19.size() == 2 );
+    release_assert( ap19.size() == 2 );
 
     // std::initializer_list
     fct( {} );
@@ -188,17 +191,17 @@ int main( int /*argc*/, char ** /*argv*/ )
     // vk::StridedArrayProxy<int> ap23 = il4;   // not supported: cannot convert from 'const std::initializer_list<T>' to 'vk::StridedArrayProxy<int>'
 
     vk::StridedArrayProxy<const int> ap24 = {};
-    assert( ap24.size() == 0 );
+    release_assert( ap24.size() == 0 );
     vk::StridedArrayProxy<const int> ap25 = { 0, 1 };
-    assert( ap25.size() == 2 );
+    release_assert( ap25.size() == 2 );
     vk::StridedArrayProxy<const int> ap26 = il1;
-    assert( ap26.size() == 2 );
+    release_assert( ap26.size() == 2 );
     vk::StridedArrayProxy<const int> ap27 = il2;
-    assert( ap27.size() == 2 );
+    release_assert( ap27.size() == 2 );
     vk::StridedArrayProxy<const int> ap28 = il3;
-    assert( ap28.size() == 2 );
+    release_assert( ap28.size() == 2 );
     vk::StridedArrayProxy<const int> ap29 = il4;
-    assert( ap29.size() == 2 );
+    release_assert( ap29.size() == 2 );
 
 #if defined( VULKAN_HPP_SUPPORT_SPAN )
     // std::span<T, N>
@@ -220,13 +223,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( ss3 );
 
     vk::StridedArrayProxy<const int> ap30 = ss0;
-    assert( ap30.size() == 2 );
+    release_assert( ap30.size() == 2 );
     vk::StridedArrayProxy<const int> ap31 = ss1;
-    assert( ap31.size() == 2 );
+    release_assert( ap31.size() == 2 );
     vk::StridedArrayProxy<const int> ap32 = ss2;
-    assert( ap32.size() == 2 );
+    release_assert( ap32.size() == 2 );
     vk::StridedArrayProxy<const int> ap33 = ss3;
-    assert( ap33.size() == 2 );
+    release_assert( ap33.size() == 2 );
 #endif
 
     struct Data
@@ -240,12 +243,12 @@ int main( int /*argc*/, char ** /*argv*/ )
   catch ( vk::SystemError const & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
 
   return 0;

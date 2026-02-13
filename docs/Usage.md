@@ -8,6 +8,7 @@ This manual assumes familiarity with Vulkan; it details improvements and differe
     - [Constructors](#constructors)
     - [Designated initializers](#designated-initializers)
     - [`ArrayProxy<T>` and `ArrayProxyNoTemporaries<T>`](#arrayproxyt-and-arrayproxynotemporariest)
+    - [Usage for `ArrayProxy<T>` and `ArrayProxyNoTemporaries<T>`](#usage-for-arrayproxyt-and-arrayproxynotemporariest)
     - [Builder pattern with setters](#builder-pattern-with-setters)
     - [Structure pointer chains](#structure-pointer-chains)
   - [Handles and functions](#handles-and-functions)
@@ -193,8 +194,11 @@ Instead, Vulkan-Hpp provides two class templates, `vk::ArrayProxy<T>` and `vk::A
 - C-style arrays;
 - pointers with counts.
 
-<!-- TODO: uncomment with more detail. Fill in when `ArrayProxy` vs `ArrayProxyNoTemporaries` is typically expected; function out-parameters? Ask @asuessenbach -->
-<!-- Note that `vk::ArrayProxyNoTemporaries<T>` **disallows** temporary values, which may be important for out-parameters. -->
+`ArrayProxyNoTemporaries` is designed to be used with the Vulkan struct constructors (for example, all `CreateInfo` structs).
+Functions that accept a data array can accept temporaries, since the latter's lifetimes are extended to the lifetime of the expression in which those temporaries are uses.
+However, given a structure that holds a count and a pointer to some data, that pointer is assumed to be valid throughout the lifetime of the structure, and hence temporaries are not accepted, as they may be destroyed immediately after the constructor call, leaving dangling pointers in the struct.
+
+#### Usage for `ArrayProxy<T>` and `ArrayProxyNoTemporaries<T>`
 
 For example, consider the following calls to `vk::CommandBuffer::setScissor`:
 
@@ -292,10 +296,27 @@ vk::StructureChain<vk::MemoryAllocateInfo, vk::MemoryDedicatedAllocateInfo> c = 
   vk::MemoryDedicatedAllocateInfo(image)
 };
 ```
-<!-- TODO: need an example here. Also more info and examples: what about the same type, repeated? I don't use structure chains. @asuessenbach? -->
+
 To remove a link in a `StructureChain`, use the function `vk::StructureChain::unlink<Type>()`.
 This modifies the chain in-place by modifying the `.pNext` structures, and returns the unlinked structure; note that its memory layout remains unchanged.
 To re-insert the same structure into the chain, use `vk::StructureChain::relink<Type>()`.
+
+For instance, consider conditionally setting up a structure chain based on some runtime condition, in this case whether to use validation flags or not:
+
+```cpp
+vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT, vk::ValidationFlagsEXT> instanceCreateInfoChain = {
+  { .pApplicationInfo = &applicationInfo },
+  { .messageSeverity = vk::ebugUtilsMessageSeverityFlagBitsEXT::eError },
+  { .disabledValidationCheckCount = 1, .pDisabledValidationChecks = &check }
+};
+
+if ( dontUseValidationFlags )
+{
+  instanceCreateInfoChain.unlink<vk::ValidationFlagsEXT>();
+}
+
+vk::Instance = vk::createInstance( instanceCreateInfoChain.get<vk::InstanceCreateInfo>() );
+```
 
 Sometimes the user has to pass a preallocated structure chain to query information. For those cases there are two corresponding getter functions.
 One with a variadic template generating a structure chain of at least two elements to construct the return value:
@@ -307,12 +328,16 @@ vk::MemoryRequirements2KHR &memReqs = result.get<vk::MemoryRequirements2KHR>();
 vk::MemoryDedicatedRequirementsKHR &dedMemReqs = result.get<vk::MemoryDedicatedRequirementsKHR>();
 ```
 
-To get just the base structure, without chaining, the other getter function provided does not need a template argument for the structure to get:
+To get just the base structure without chaining, the other getter function provided does not need a template argument:
 
 ```cpp
 // Query just vk::MemoryRequirements2KHR
 vk::MemoryRequirements2KHR memoryRequirements = device.getBufferMemoryRequirements2KHR({});
 ```
+
+Certain structs are allowed to occur multiple times in a structure chain, like `vk::LayerSettingsCreateInfoEXT`.
+These are marked as such in the specification, and when used in a `vk::StructureChain`, is also verified at compile time.
+`vk::StructureChain::get` has a template value parameter called `Which`, that allows to address a specific element of the specified type in the chain.
 
 ### Handles and functions
 
@@ -601,22 +626,7 @@ To use Vulkan-Hpp with extensions, a mechanism must be provided such that _all_ 
 Vulkan-Hpp provides a per-function dispatch mechanism where each function representing a Vulkan operation accepts as its last parameter a dispatch class.
 This class must provide a callable type for each Vulkan function that is required.
 
-<!-- TODO: What is this code sample exactly?  -->
-```cpp
-// Function pointer resolving `vkGetInstanceProcAddr`, only the free functions that do not require a VkInstance or a VkDevice are fetched
-vk::detail::DispatchLoaderDynamic dld(getInstanceProcAddr);
-
-// Previously-created `VkInstance` and a function pointer resolving `vkGetInstanceProcAddr`, all functions are fetched
-vk::detail::DispatchLoaderDynamic dldi(instance, getInstanceProcAddr);
-
-//  Previously-created `VkDevice` and optionally a function pointer resolving `vkGetDeviceProcAddr`, all functions are fetched as well, but now device-specific functions are fetched via `vkDeviceGetProcAddr`.
-vk::detail::DispatchLoaderDynamic dldid(instance, getInstanceProcAddr, device);
-
-// Pass dispatch class to function call as last parameter
-device.getQueue(graphics_queue_family_index, 0, &graphics_queue, dldid);
-```
-
-Vulkan-Hpp provides a default dispatch loader, `vk::detail::DispatchLoaderDynamic`, which fetches all function pointers known to the library.
+Vulkan-Hpp provides a default dispatch loader, `vk::detail::DispatchLoaderDynamic`, which fetches _all_ function pointers known to the library.
 To use this as the default dispatcher (that is, it does not need to be explicitly added to every function call), write `#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1`, and have the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in user source code to provide storage for that default dispatcher.
 Then, the macro `VULKAN_HPP_DEFAULT_DISPATCHER` may be used freely, as demonstrated below.
 Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-step process, with three choices for the first step:

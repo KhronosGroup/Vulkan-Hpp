@@ -420,7 +420,11 @@ Vulkan-Hpp provides several ways to handle these result codes.
 There are two class templates, `vk::ResultValue<T>` and `vk::ResultValueType<T>`, which wrap return values along with their corresponding `vk::Result` codes.
 These class templates may be defined differently depending on the error-handling method chosen.
 
-<!-- TODO: Explain the class templates in greater detail. @asuessenbach? -->
+`vk::ResultValue` unconditionally consists of a `result` and a `value`.
+It is returned by functions with more than one possible success code, like `vk::Device::createGraphicsPipeline`.
+
+`vk::ResultValueType` is returned by functions with just one success code, such as `vk::createInstance`.
+If `VULKAN_HPP_NO_EXCEPTIONS` is defined, `vk::ResultValueType` is then defined as `vk::ResultValue`, as it might as well return an error code.
 
 #### Exceptions
 

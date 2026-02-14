@@ -21421,14 +21421,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkSetDebugUtilsObjectNameEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
     template <typename HandleType>
-    VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name ) const
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setDebugUtilsObjectNameEXT( HandleType const & handle, char const * name ) const
     {
       VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
       // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
       VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo;
       nameInfo.objectType   = handle.objectType;
       nameInfo.objectHandle = reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) );
-      nameInfo.pObjectName  = name.c_str();
+      nameInfo.pObjectName  = name;
       return setDebugUtilsObjectNameEXT( nameInfo );
     }
 

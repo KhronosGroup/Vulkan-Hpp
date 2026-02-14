@@ -14824,7 +14824,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               typename Dispatch                                                                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type = true>
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
-      setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      setDebugUtilsObjectNameEXT( HandleType const & handle, char const * name, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkSetDebugUtilsObjectTagEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html

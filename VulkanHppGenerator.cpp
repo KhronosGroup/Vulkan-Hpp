@@ -1653,14 +1653,14 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
     // wrapper function for command vkSetDebugUtilsObjectNameEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
     template <typename HandleType>
-    VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name ) const
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setDebugUtilsObjectNameEXT( HandleType const & handle, char const * name ) const
     {
       VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
       // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
       VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo;
       nameInfo.objectType   = handle.objectType;
       nameInfo.objectHandle = reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) );
-      nameInfo.pObjectName  = name.c_str();
+      nameInfo.pObjectName  = name;
       return setDebugUtilsObjectNameEXT( nameInfo );
     }
 )" );
@@ -1671,7 +1671,7 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
       // wrapper function for command vkSetDebugUtilsObjectNameEXT, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
       template <typename HandleType>
-      typename ResultValueType<void>::type setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name ) const;
+      typename ResultValueType<void>::type setDebugUtilsObjectNameEXT( HandleType const & handle, char const * name ) const;
 )" );
       }
     }
@@ -1687,14 +1687,14 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
           R"(  // wrapper function for command vkSetDebugUtilsObjectNameEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
   template <typename HandleType, typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
-                                          Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d ) const
+                                          Device::setDebugUtilsObjectNameEXT( HandleType const & handle, char const * name, Dispatch const & d ) const
   {
     VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
     // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
     VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo;
     nameInfo.objectType   = handle.objectType;
     nameInfo.objectHandle = reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) );
-    nameInfo.pObjectName  = name.c_str();
+    nameInfo.pObjectName  = name;
     return setDebugUtilsObjectNameEXT( nameInfo, d );
   }
 )" );
@@ -1705,7 +1705,7 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
     template <typename HandleType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type = true>
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
-      setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      setDebugUtilsObjectNameEXT( HandleType const & handle, char const * name, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 )" );
       }
     }

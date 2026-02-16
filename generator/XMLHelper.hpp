@@ -372,7 +372,7 @@ inline std::pair<std::vector<std::string>, std::string> readModifiers( std::stri
 
 inline std::string readSnippet( std::string const & snippetFile )
 {
-  std::ifstream ifs( std::string( BASE_PATH ) + "/snippets/" + snippetFile );
+  std::ifstream ifs( std::string( BASE_PATH ) + "/generator/snippets/" + snippetFile );
   assert( !ifs.fail() );
   std::ostringstream oss;
   oss << ifs.rdbuf();

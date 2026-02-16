@@ -16,6 +16,10 @@
 //                     Compile test with VULKAN_HPP_NO_EXCEPTIONS set
 //                     Note: this is _no_ functional test!! Don't ever code this way!!
 
+#if !defined( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+#  define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#endif
+
 #include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #include <cstdint>

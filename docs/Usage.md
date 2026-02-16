@@ -630,10 +630,10 @@ To use Vulkan-Hpp with extensions, a mechanism must be provided such that _all_ 
 Vulkan-Hpp provides a per-function dispatch mechanism where each function representing a Vulkan operation accepts as its last parameter a dispatch class.
 This class must provide a callable type for each Vulkan function that is required.
 
-Vulkan-Hpp provides a static dispatch loader, `vk::detail::DispatchLoaderStatic`, which contains stubs for all functions known to the library.
-This is the default, and a loader library such as [volk](https://github.com/zeux/volk) can be used to populate the stubs with function pointers.
+Vulkan-Hpp provides a static dispatch loader, `vk::detail::DispatchLoaderStatic`, which contains function declarations for all Vulkan functions, but with no function pointers assigned.
+This is the default, and a loader library such as [volk](https://github.com/zeux/volk) can be used to resolve and populate these functions pointers.
 
-Additionally, there is a dynamic dispatch loader, `vk::detail::DispatchLoaderDynamic`, which fetches _all_ function pointers known to the library.
+Additionally, there is a dynamic dispatch loader, `vk::detail::DispatchLoaderDynamic`, which pre-fetches _all_ function pointers known to the library.
 To use this as the default dispatcher (that is, it does not need to be explicitly added to every function call), write `#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1`, and have the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in user source code to provide storage for that default dispatcher.
 Then, the macro `VULKAN_HPP_DEFAULT_DISPATCHER` may be used freely, as demonstrated below.
 Creating a full featured `vk::detail::DispatchLoaderDynamic` is a two- to three-step process, with three choices for the first step:

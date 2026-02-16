@@ -11227,8 +11227,11 @@ std::tuple<std::string, std::string, std::string, std::string>
     }
     members += ";\n";
 
-    memberNames += member.name + ", ";
-    memberTypes += type + " const &, ";
+    if ( member.deprecated.empty() )
+    {
+      memberNames += member.name + ", ";
+      memberTypes += type + " const &, ";
+    }
   }
   return std::make_tuple( members, stripPostfix( memberNames, ", " ), stripPostfix( memberTypes, ", " ), sTypeValue );
 }

@@ -685,6 +685,43 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#  if defined( VULKAN_HPP_USE_REFLECT ) && ( 14 <= VULKAN_HPP_CPP_VERSION )
+  private:
+    // some helper structs to strip away the first two elements from a tuple
+    template <std::size_t I, std::size_t N, std::size_t... integers>
+    struct makeIndexSequenceHelper
+    {
+      using type = typename makeIndexSequenceHelper<I + 1, N, integers..., I>::type;
+    };
+
+    template <std::size_t N, std::size_t... integers>
+    struct makeIndexSequenceHelper<N, N, integers...>
+    {
+      using type = std::index_sequence<integers...>;
+    };
+
+    template <std::size_t I, std::size_t N>
+    using makeIndexSequence = typename makeIndexSequenceHelper<I, N>::type;
+
+    template <typename Tuple, std::size_t... Is>
+    auto subTuple( Tuple & t, std::index_sequence<Is...> )
+    {
+      return std::make_tuple( std::get<Is>( t )... );
+    }
+
+  public:
+    // compare a complete structure in the StructureChain, ignoring the chaining
+    template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
+    VULKAN_HPP_NODISCARD bool elementEquals( T rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      auto lhsTuple = get<T, Which>().reflect();
+      auto rhsTuple = rhs.reflect();
+      // skip the first two members: sType and pNext
+      auto indexSequence = makeIndexSequence<2, std::tuple_size<decltype( lhsTuple )>{}>{};
+      return subTuple( lhsTuple, indexSequence ) == subTuple( rhsTuple, indexSequence );
+    }
+#  endif
+
     template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
       VULKAN_HPP_NODISCARD T & get() & VULKAN_HPP_NOEXCEPT
     {

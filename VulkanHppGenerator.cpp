@@ -3195,7 +3195,13 @@ std::string VulkanHppGenerator::generateCommand1ReturnsStruct( std::string const
   if ( !structureHoldsHandle( structIt->second ) )
   {
     // the returnType is a struct does not hold a handle
-    if ( !structureHoldsVector( structIt->second ) )
+    if ( structureHoldsVector( structIt->second ) )
+    {
+      // the returned struct specifies a vector of data
+      // can't generate an enhanced version for such a complex command! Just use the standard version
+      return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, { returnParam }, vectorParams, false, {}, raii, true, {} );
+    }
+    else
     {
       // the returnType is a struct does not hold a handle or a vector
       if ( structIt->second.extendedBy.empty() )

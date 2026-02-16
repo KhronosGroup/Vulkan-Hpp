@@ -823,14 +823,14 @@ CMake provides the [FindVulkan module](https://cmake.org/cmake/help/latest/modul
 <details>
 <summary>For CMake versions earlier than 4.3.0</summary>
 
-If you have CMake versions between 3.30 and 4.2, where the [`CXX_MODULE_STD`](https://cmake.org/cmake/help/v4.2/prop_tgt/CXX_MODULE_STD.html) variable is still experimental, then make sure to provide the following UUID to enable CMake's experimental support for the C++ standard library module:
+If you have CMake versions between 3.30 and 4.2, where the [`CXX_MODULE_STD`](https://cmake.org/cmake/help/v4.2/prop_tgt/CXX_MODULE_STD.html) variable is still experimental, then make sure to provide the following UUID to enable CMake's experimental support for the C++ standard library module.
+To find the precise value for your specific version, check out the correct release tag and look for `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` in [Help/dev/experimental.rst](https://gitlab.kitware.com/cmake/cmake/-/blob/master/Help/dev/experimental.rst).
 
 ```bash
 cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 ...
 ```
 
-This may also be set before your `project()` call, or in a [CMake preset file](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#configure-preset) in the `cacheVariables` key for a configure preset.
-To find it for your specific version, check out the correct release tag and look for `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` in [Help/dev/experimental.rst](https://gitlab.kitware.com/cmake/cmake/-/blob/master/Help/dev/experimental.rst).
+This UUID variable may also be set before the `project()` call, or in a [CMake preset file](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#configure-preset) in the `cacheVariables` key for a configure preset.
 
 </details>
 

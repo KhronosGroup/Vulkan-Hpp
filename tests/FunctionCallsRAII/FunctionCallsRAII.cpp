@@ -575,5 +575,17 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::BufferView     bufferView( device, bufferViewCreateInfo );
   }
 
+  // Shader commands
+  {
+    vk::raii::Device           device = nullptr;
+    vk::ShaderModuleCreateInfo shaderModuleCreateInfo;
+    vk::raii::ShaderModule     shaderModule = device.createShaderModule( shaderModuleCreateInfo );
+  }
+  {
+    vk::raii::Device           device = nullptr;
+    vk::ShaderModuleCreateInfo shaderModuleCreateInfo;
+    vk::raii::ShaderModule     shaderModule( device, shaderModuleCreateInfo );
+  }
+
   return 0;
 }

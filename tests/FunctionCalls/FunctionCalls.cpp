@@ -1191,6 +1191,43 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroy( bufferView );
   }
 
+  // Shader commands
+  {
+    vk::Device                 device;
+    vk::ShaderModuleCreateInfo shaderModuleCreateInfo;
+    vk::AllocationCallbacks    allocationCallbacks;
+    vk::ShaderModule           shaderModule;
+    vk::Result                 result = device.createShaderModule( &shaderModuleCreateInfo, &allocationCallbacks, &shaderModule );
+  }
+  {
+    vk::Device                 device;
+    vk::ShaderModuleCreateInfo shaderModuleCreateInfo;
+    vk::ShaderModule           shaderModule = device.createShaderModule( shaderModuleCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::ShaderModule        shaderModule;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyShaderModule( shaderModule, &allocationCallbacks );
+  }
+  {
+    vk::Device       device;
+    vk::ShaderModule shaderModule;
+    device.destroyShaderModule( shaderModule );
+  }
+  {
+    vk::Device              device;
+    vk::ShaderModule        shaderModule;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( shaderModule, &allocationCallbacks );
+  }
+  {
+    vk::Device       device;
+    vk::ShaderModule shaderModule;
+    device.destroy( shaderModule );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

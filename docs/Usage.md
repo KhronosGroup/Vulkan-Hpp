@@ -905,14 +905,15 @@ This may be combined with the following basic `main.cpp` consumer code:
 // optional include for VULKAN_HPP_DEFAULT_DISPATCHER
 // otherwise, use vk::detail::defaultDispatchLoaderDynamic
 #include <vulkan/vulkan_hpp_macros.hpp>
+
 import vulkan;
 
-auto main(int argc, char* const argv[]) -> int
+int main(int argc, char* argv[])
 {
     // initialize minimal set of function pointers
     VULKAN_HPP_DEFAULT_DISPATCHER.init();
 
-    auto appInfo = vk::ApplicationInfo("My App", 1, "My Engine", 1, vk::makeApiVersion(1, 0, 0, 0));
+    vk::ApplicationInfo appInfo("My App", 1, "My Engine", 1, vk::makeApiVersion(1, 0, 0, 0));
 
     vk::Instance instance;
     // create vk::Instance instance here

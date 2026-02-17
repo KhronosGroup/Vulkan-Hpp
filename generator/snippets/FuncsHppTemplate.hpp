@@ -1,4 +1,5 @@
-${licenseHeader}
+${copyrightMessage}
+
 #ifndef VULKAN_FUNCS_HPP
 #  define VULKAN_FUNCS_HPP
 

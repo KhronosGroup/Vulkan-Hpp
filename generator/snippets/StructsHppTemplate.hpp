@@ -1,4 +1,4 @@
-${licenseHeader}
+${copyrightMessage}
 
 #ifndef VULKAN_STRUCTS_HPP
 #  define VULKAN_STRUCTS_HPP

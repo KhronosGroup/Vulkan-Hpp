@@ -1,4 +1,4 @@
-${licenseHeader}
+${copyrightMessage}
 
 #ifndef VULKAN_SHARED_HPP
 #define VULKAN_SHARED_HPP

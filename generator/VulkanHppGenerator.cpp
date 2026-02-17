@@ -14,8 +14,6 @@
 
 #include "VulkanHppGenerator.hpp"
 
-#include "XMLHelper.hpp"
-
 #include <algorithm>
 #include <array>
 #include <cassert>
@@ -29,22 +27,18 @@ using namespace std::literals;
 namespace
 {
   template <typename T>
-  bool containsByName( std::vector<T> const & values, std::string const & name );
-  template <typename T>
   bool containsByNameOrAlias( std::vector<T> const & values, std::string const & name );
   template <typename T>
   bool                                        containsByNameOrAlias( std::map<std::string, T> const & values, std::string const & name );
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names );
-  template <typename T>
-  typename std::vector<T>::const_iterator findByName( std::vector<T> const & values, std::string const & name );
-  template <typename T>
-  typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name );
   template <typename T>
   typename std::map<std::string, T>::const_iterator findByNameOrAlias( std::map<std::string, T> const & values, std::string const & name );
   template <typename T>
   typename std::map<std::string, T>::iterator findByNameOrAlias( std::map<std::string, T> & values, std::string const & name );
   template <typename T>
   typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const & values, std::string const & name );
+  template <typename T>
+  typename std::vector<T>::iterator findByNameOrAlias( std::vector<T> & values, std::string const & name );
   template <typename T>
   typename std::vector<T>::const_iterator findByType( std::vector<T> const & values, std::string const & type );
   std::string                             generateCArraySizes( std::vector<std::string> const & sizes );
@@ -65,8 +59,294 @@ std::set<std::string> const specialPointerTypes = { "Display", "IDirectFB", "wl_
 // VulkanHppGenerator public interface
 //
 
-VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document, std::string const & api ) : m_api( api )
+VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, tinyxml2::XMLDocument const & document, std::string const & api )
+  : m_api( api ), m_vkxml( std::move( vkxml ) )
 {
+  m_copyrightMessage = generateCopyrightMessage( m_vkxml.copyright.text );
+
+  // gather all types from the different categories into one map, to check for duplicates and to have them available for lookups by name
+  std::ranges::for_each( m_vkxml.baseTypes,
+                         [&]( auto const & baseType )
+                         {
+                           checkForError( m_types.insert( { baseType.first, TypeData{ TypeCategory::BaseType, {}, baseType.second.xmlLine } } ).second,
+                                          baseType.second.xmlLine,
+                                          "basetype <" + baseType.first + "> already specified" );
+                         } );
+  std::ranges::for_each( m_vkxml.bitmasks,
+                         [&]( auto const & bitmask )
+                         {
+                           checkForError( m_types.insert( { bitmask.first, TypeData{ TypeCategory::Bitmask, {}, bitmask.second.xmlLine } } ).second,
+                                          bitmask.second.xmlLine,
+                                          "bitmask <" + bitmask.first + "> already specified" );
+                           std::ranges::for_each( bitmask.second.aliases,
+                                                  [&]( auto const & alias )
+                                                  {
+                                                    checkForError(
+                                                      m_types.insert( { alias.first, TypeData{ TypeCategory::Bitmask, {}, alias.second } } ).second,
+                                                      alias.second,
+                                                      "alias <" + alias.first + "> of bitmask <" + bitmask.first + "> already specified" );
+                                                  } );
+                         } );
+  std::ranges::for_each( m_vkxml.constants,
+                         [&]( auto const & constant )
+                         {
+                           checkForError( m_types.insert( { constant.first, TypeData{ TypeCategory::Constant, {}, constant.second.xmlLine } } ).second,
+                                          constant.second.xmlLine,
+                                          "type <" + constant.first + "> already specified" );
+                         } );
+  std::ranges::for_each( m_vkxml.defines,
+                         [&]( auto const & define )
+                         {
+                           checkForError( m_types.insert( { define.first, TypeData{ TypeCategory::Define, {}, define.second.xmlLine } } ).second,
+                                          define.second.xmlLine,
+                                          "type <" + define.first + "> already specified" );
+
+                           // for defines, we compile some more data than is read from the vk.xml, so we insert the defines from the vk.xml into our own map
+                           auto const & [possibleCallee, params, possibleDefinition] = parseMacro( define.second.macro );
+                           m_defines[define.first] = { define.second.require, define.second.xmlLine, possibleCallee, params, possibleDefinition };
+                         } );
+  std::ranges::for_each( m_vkxml.enums,
+                         [&]( auto const & xmlEnum )
+                         {
+                           checkForError( m_types.insert( { xmlEnum.first, TypeData{ TypeCategory::Enum, {}, xmlEnum.second.xmlLine } } ).second,
+                                          xmlEnum.second.xmlLine,
+                                          "type <" + xmlEnum.first + "> already specified" );
+                           std::ranges::for_each( xmlEnum.second.aliases,
+                                                  [&]( auto const & alias )
+                                                  {
+                                                    checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Enum, {}, alias.second } } ).second,
+                                                                   alias.second,
+                                                                   "alias <" + alias.first + "> of handle <" + xmlEnum.first + "> already specified" );
+                                                  } );
+
+                           // for enums, we compile some more data than is read from the vk.xml, so we insert the enums from the vk.xml into our own map
+                           auto [enumIt, inserted] = m_enums.insert( { xmlEnum.first, {} } );
+                           assert( inserted );
+                           enumIt->second.aliases   = xmlEnum.second.aliases;
+                           enumIt->second.bitwidth  = xmlEnum.second.bitwidth;
+                           enumIt->second.isBitmask = xmlEnum.second.type == "bitmask";
+                           enumIt->second.xmlLine   = xmlEnum.second.xmlLine;
+
+                           for ( auto const & enumValue : xmlEnum.second.values )
+                           {
+                             EnumValueData enumValueData;
+                             for ( auto const & alias : enumValue.aliases )
+                             {
+                               enumValueData.aliases.push_back( { enumValue.name, alias.first, "", true, alias.second.xmlLine } );
+                             }
+                             enumValueData.bitpos    = enumValue.bitpos;
+                             enumValueData.name      = enumValue.name;
+                             enumValueData.supported = true;
+                             enumValueData.value     = enumValue.value;
+                             enumValueData.xmlLine   = enumValue.xmlLine;
+                             enumIt->second.values.push_back( std::move( enumValueData ) );
+                           }
+                         } );
+  std::ranges::for_each( m_vkxml.externalTypes,
+                         [&]( auto const & externalType )
+                         {
+                           checkForError(
+                             m_types.insert( { externalType.first, TypeData{ TypeCategory::ExternalType, {}, externalType.second.xmlLine } } ).second,
+                             externalType.second.xmlLine,
+                             "type <" + externalType.first + "> already specified" );
+                         } );
+  std::ranges::for_each( m_vkxml.funcPointers,
+                         [&]( auto const & funcPointer )
+                         {
+                           checkForError( m_types.insert( { funcPointer.first, TypeData{ TypeCategory::FuncPointer, {}, funcPointer.second.xmlLine } } ).second,
+                                          funcPointer.second.xmlLine,
+                                          "funcpointer <" + funcPointer.first + "> already specified" );
+                         } );
+  std::ranges::for_each( m_vkxml.handles,
+                         [&]( auto const & handle )
+                         {
+                           checkForError( m_types.insert( { handle.first, TypeData{ TypeCategory::Handle, {}, handle.second.xmlLine } } ).second,
+                                          handle.second.xmlLine,
+                                          "type <" + handle.first + "> already specified" );
+                           std::ranges::for_each( handle.second.aliases,
+                                                  [&]( auto const & alias )
+                                                  {
+                                                    checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Handle, {}, alias.second } } ).second,
+                                                                   alias.second,
+                                                                   "alias <" + alias.first + "> of handle <" + handle.first + "> already specified" );
+                                                  } );
+
+                           // for handles, we compile some more data than is read from the vk.xml, so we insert the handles from the vk.xml into our own map
+                           auto [handleIt, inserted] = m_handles.insert( { handle.first, {} } );
+                           assert( inserted );
+                           handleIt->second.aliases        = handle.second.aliases;
+                           handleIt->second.objTypeEnum    = handle.second.objTypeEnum;
+                           handleIt->second.parent         = handle.second.parent;
+                           handleIt->second.isDispatchable = ( handle.second.type.name == "VK_DEFINE_HANDLE" );
+                           handleIt->second.xmlLine        = handle.second.xmlLine;
+                         } );
+  std::ranges::for_each( m_vkxml.includes,
+                         [&]( auto const & include )
+                         {
+                           checkForError( m_types.insert( { include.first, TypeData{ TypeCategory::Include, {}, include.second } } ).second,
+                                          include.second,
+                                          "include <" + include.first + "> already specified" );
+                         } );
+  std::ranges::for_each(
+    m_vkxml.structs,
+    [&]( auto const & structure )
+    {
+      checkForError( m_types.insert( { structure.first, TypeData{ TypeCategory::Struct, {}, structure.second.xmlLine } } ).second,
+                     structure.second.xmlLine,
+                     "struct <" + structure.first + "> already specified" );
+      std::ranges::for_each( structure.second.aliases,
+                             [&]( auto const & alias )
+                             {
+                               checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Struct, {}, alias.second } } ).second,
+                                              alias.second,
+                                              "alias <" + alias.first + "> of struc <" + structure.first + "> already specified" );
+                             } );
+
+      // for structs, we compile some more data than is read from the vk.xml, so we insert the structs from the vk.xml into our own map
+      auto [structIt, inserted] = m_structs.insert( { structure.first, {} } );
+      assert( inserted );
+      structIt->second.aliases           = structure.second.aliases;
+      structIt->second.allowDuplicate    = structure.second.allowDuplicate;
+      structIt->second.isUnion           = false;
+      structIt->second.requiredLimitType = structure.second.requiredLimitType;
+      structIt->second.returnedOnly      = structure.second.returnedOnly;
+      structIt->second.structExtends     = structure.second.structExtends;
+      for ( auto const & member : structure.second.members )
+      {
+        MemberData memberData;
+        memberData.type           = member.type;
+        memberData.xmlLine        = member.xmlLine;
+        memberData.name           = member.name;
+        memberData.arraySizes     = member.arraySizes;
+        memberData.bitCount       = member.bitCount;
+        memberData.deprecated     = member.deprecated;
+        memberData.lenExpressions = member.len;
+        memberData.limitType      = member.limitType;
+        memberData.noAutoValidity = member.noAutoValidity;
+        memberData.optional       = member.optional;
+        memberData.selector       = member.selector;
+        memberData.value          = member.values;
+        memberData.xmlLine        = member.xmlLine;
+
+        if ( !member.altLen.empty() )
+        {
+          memberData.lenMembers     = filterNumbers( tokenizeAny( member.altLen, " /()+*" ) );
+          memberData.lenExpressions = { member.altLen };
+        }
+        else if ( !member.len.empty() && ( member.len[0] != "null-terminated" ) )
+        {
+          auto lenMemberIt = findByName( structure.second.members, member.len[0] );
+          checkForError( lenMemberIt != structure.second.members.end(), member.xmlLine, "member attribute <len> holds unknown value <" + member.len[0] + ">" );
+          memberData.lenMembers.push_back( { member.len[0], std::distance( structure.second.members.begin(), lenMemberIt ) } );
+        }
+
+        structIt->second.members.push_back( std::move( memberData ) );
+      }
+      structIt->second.xmlLine   = structure.second.xmlLine;
+      structIt->second.subStruct = determineSubStruct( *structIt );
+
+      // add some default values for some structures here!
+      if ( ( structIt->first == "VkRayTracingShaderGroupCreateInfoNV" ) || ( structIt->first == "VkRayTracingShaderGroupCreateInfoKHR" ) )
+      {
+        assert( ( ( structIt->first != "VkRayTracingShaderGroupCreateInfoNV" ) || ( structIt->second.members.size() == 7 ) ) &&
+                ( ( structIt->first != "VkRayTracingShaderGroupCreateInfoKHR" ) || ( structIt->second.members.size() == 8 ) ) );
+        assert( ( structIt->second.members[3].name == "generalShader" ) &&
+                ( structIt->second.members[4].name == "closestHitShader" ) &&
+                ( structIt->second.members[5].name == "anyHitShader" ) &&
+                ( structIt->second.members[6].name == "intersectionShader" ) );
+        bool const isKHR = ( structIt->first == "VkRayTracingShaderGroupCreateInfoKHR" );
+        for ( size_t const i : { 3, 4, 5, 6 } )
+        {
+          structIt->second.members[i].defaultValue = isKHR ? "VK_SHADER_UNUSED_KHR" : "VK_SHADER_UNUSED_NV";
+        }
+      }
+
+      // check if multiple structure members use the very same (not empty) len attribute
+      // Note: even though the arrays are not marked as optional, they still might be mutually exclusive (like in
+      // VkWriteDescriptorSet)! That is, there's not enough information available in vk.xml to decide on that, so we
+      // need this external knowledge!
+      static std::set<std::string> mutualExclusiveStructs = {
+        "VkAccelerationStructureBuildGeometryInfoKHR", "VkAccelerationStructureTrianglesOpacityMicromapEXT", "VkMicromapBuildInfoEXT", "VkWriteDescriptorSet"
+      };
+      static std::set<std::string> multipleLenStructs = { "VkAccelerationStructureTrianglesDisplacementMicromapNV",
+                                                          "VkImageConstraintsInfoFUCHSIA",
+                                                          "VkIndirectCommandsLayoutTokenNV",
+                                                          "VkIndirectExecutionSetShaderInfoEXT",
+                                                          "VkPipelineBinaryKeysAndDataKHR",
+                                                          "VkPresentInfoKHR",
+                                                          "VkSemaphoreWaitInfo",
+                                                          "VkSetDescriptorBufferOffsetsInfoEXT",
+                                                          "VkSubmitInfo",
+                                                          "VkSubpassDescription",
+                                                          "VkSubpassDescription2",
+                                                          "VkSwapchainTimeDomainPropertiesEXT",
+                                                          "VkTensorCopyARM",
+                                                          "VkTensorDescriptionARM",
+                                                          "VkVideoDecodeAV1PictureInfoKHR",
+                                                          "VkWin32KeyedMutexAcquireReleaseInfoKHR",
+                                                          "VkWin32KeyedMutexAcquireReleaseInfoNV" };
+      bool                         warned             = false;
+      for ( auto m0It = structIt->second.members.begin(); !warned && ( m0It != structIt->second.members.end() ); ++m0It )
+      {
+        if ( !m0It->lenExpressions.empty() && ( m0It->lenExpressions.front() != "null-terminated" ) )
+        {
+          for ( auto m1It = std::next( m0It ); !warned && ( m1It != structIt->second.members.end() ); ++m1It )
+          {
+            if ( !m1It->lenExpressions.empty() && ( m0It->lenExpressions.front() == m1It->lenExpressions.front() ) )
+            {
+              if ( mutualExclusiveStructs.contains( structIt->first ) )
+              {
+                structIt->second.mutualExclusiveLens = true;
+              }
+              else
+              {
+                checkForWarning(
+                  multipleLenStructs.contains( structIt->first ),
+                  structIt->second.xmlLine,
+                  "Encountered structure <" +
+                    structIt->first +
+                    "> with multiple members referencing the same member for len. Need to be checked if they are supposed to be mutually exclusive." );
+                warned = true;
+              }
+            }
+          }
+        }
+      }
+    } );
+  std::ranges::for_each( m_vkxml.unions,
+                         [&]( auto const & u )
+                         {
+                           checkForError( m_types.insert( { u.first, TypeData{ TypeCategory::Struct, {}, u.second.xmlLine } } ).second,
+                                          u.second.xmlLine,
+                                          "union <" + u.first + "> already specified" );
+
+                           // we hold unions in the same map as structs, but mark them as union, to be able to check for correct usage of selectors
+                           auto [structIt, inserted] = m_structs.insert( { u.first, {} } );
+                           assert( inserted );
+                           structIt->second.isUnion      = true;
+                           structIt->second.returnedOnly = u.second.returnedOnly;
+                           for ( auto const & member : u.second.members )
+                           {
+                             MemberData memberData;
+                             memberData.type           = member.type;
+                             memberData.xmlLine        = member.xmlLine;
+                             memberData.name           = member.name;
+                             memberData.arraySizes     = member.arraySizes;
+                             memberData.lenExpressions = { member.len };
+                             memberData.noAutoValidity = member.noAutoValidity;
+                             memberData.optional       = { member.optional };
+                             memberData.selection      = member.selection;
+                             memberData.xmlLine        = member.xmlLine;
+
+                             structIt->second.members.push_back( std::move( memberData ) );
+                           }
+                           structIt->second.xmlLine = u.second.xmlLine;
+                         } );
+
+  auto versionIt = m_defines.find( "VK_HEADER_VERSION" );
+  assert( versionIt != m_defines.end() );
+  m_version = versionIt->second.possibleDefinition;
+
   // insert the default "handle" without class (for createInstance, and such)
   m_handles.insert( { "", {} } );
 
@@ -110,10 +390,10 @@ void VulkanHppGenerator::distributeSecondLevelCommands()
       {
         auto commandIt = findByNameOrAlias( m_commands, *command );
         assert( commandIt != m_commands.end() );
-        assert( commandIt->second.params.front().type.type == handleIt->first );
-        if ( ( 1 < commandIt->second.params.size() ) && ( isHandleType( commandIt->second.params[1].type.type ) ) && !commandIt->second.params[1].optional )
+        assert( commandIt->second.params.front().type.name == handleIt->first );
+        if ( ( 1 < commandIt->second.params.size() ) && ( isHandleType( commandIt->second.params[1].type.name ) ) && !commandIt->second.params[1].optional )
         {
-          auto secondLevelHandleIt = m_handles.find( commandIt->second.params[1].type.type );
+          auto secondLevelHandleIt = m_handles.find( commandIt->second.params[1].type.name );
           assert( secondLevelHandleIt != m_handles.end() );
           // filter out functions that seem to fit due to taking handles as first and second argument, but the first argument is not the
           // type to create the second one, and so it's unknown to the raii handle!
@@ -141,8 +421,8 @@ void VulkanHppGenerator::generateCppmFile() const
   generateFileFromTemplate( m_api + ".cppm",
                             "CppmTemplate.hpp",
                             { { "api", m_api },
+                              { "copyrightMessage", m_copyrightMessage },
                               { "vulkan_h", ( m_api == "vulkansc" ) ? "vulkan_sc_core.h" : ( m_api + ".h" ) },
-                              { "licenseHeader", m_vulkanLicenseHeader },
                               { "headerVersion", m_version },
                               { "pfnCommands", generateCppModuleCommands() } } );
 }
@@ -151,9 +431,9 @@ void VulkanHppGenerator::generateEnumsHppFile() const
 {
   generateFileFromTemplate( m_api + "_enums.hpp",
                             "EnumsHppTemplate.hpp",
-                            { { "enums", generateEnums() },
+                            { { "copyrightMessage", m_copyrightMessage },
+                              { "enums", generateEnums() },
                               { "Flags", readSnippet( "Flags.hpp" ) },
-                              { "licenseHeader", m_vulkanLicenseHeader },
                               { "objectTypeToDebugReportObjectType", generateObjectTypeToDebugReportObjectType() } } );
 }
 
@@ -163,6 +443,7 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
     m_api + "_extension_inspection.hpp",
     "ExtensionInspectionHppTemplate.hpp",
     { { "api", m_api },
+      { "copyrightMessage", m_copyrightMessage },
       { "deprecatedExtensions",
         generateReplacedExtensionsList( []( ExtensionData const & extension ) { return extension.isDeprecated; },
                                         []( ExtensionData const & extension ) { return extension.deprecatedBy; } ) },
@@ -175,7 +456,6 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
       { "extensionDependencies", generateExtensionDependencies() },
       { "instanceExtensions", generateExtensionsList( "instance" ) },
       { "instanceTest", generateExtensionTypeTest( "instance" ) },
-      { "licenseHeader", m_vulkanLicenseHeader },
       { "obsoletedBy",
         generateExtensionReplacedBy( []( ExtensionData const & extension ) { return !extension.obsoletedBy.empty(); },
                                      []( ExtensionData const & extension ) { return extension.obsoletedBy; } ) },
@@ -202,23 +482,23 @@ void VulkanHppGenerator::generateFormatTraitsHppFile() const
 {
   generateFileFromTemplate( m_api + "_format_traits.hpp",
                             "FormatTraitsHppTemplate.hpp",
-                            { { "api", m_api }, { "formatTraits", generateFormatTraits() }, { "licenseHeader", m_vulkanLicenseHeader } } );
+                            { { "api", m_api }, { "copyrightMessage", m_copyrightMessage }, { "formatTraits", generateFormatTraits() } } );
 }
 
 void VulkanHppGenerator::generateFuncsHppFile() const
 {
   generateFileFromTemplate(
-    m_api + "_funcs.hpp", "FuncsHppTemplate.hpp", { { "commandDefinitions", generateCommandDefinitions() }, { "licenseHeader", m_vulkanLicenseHeader } } );
+    m_api + "_funcs.hpp", "FuncsHppTemplate.hpp", { { "commandDefinitions", generateCommandDefinitions() }, { "copyrightMessage", m_copyrightMessage } } );
 }
 
 void VulkanHppGenerator::generateHandlesHppFile() const
 {
   generateFileFromTemplate( m_api + "_handles.hpp",
                             "HandlesHppTemplate.hpp",
-                            { { "funcPointerReturns", generateFuncPointerReturns() },
+                            { { "copyrightMessage", m_copyrightMessage },
+                              { "funcPointerReturns", generateFuncPointerReturns() },
                               { "handles", generateHandles() },
                               { "handleForwardDeclarations", generateHandleForwardDeclarations() },
-                              { "licenseHeader", m_vulkanLicenseHeader },
                               { "structForwardDeclarations", generateStructForwardDeclarations() },
                               { "uniqueHandles", generateUniqueHandles() } } );
 }
@@ -228,8 +508,8 @@ void VulkanHppGenerator::generateHashHppFile() const
   generateFileFromTemplate( m_api + "_hash.hpp",
                             "HashHppTemplate.hpp",
                             { { "api", m_api },
+                              { "copyrightMessage", m_copyrightMessage },
                               { "handleHashStructures", generateHandleHashStructures() },
-                              { "licenseHeader", m_vulkanLicenseHeader },
                               { "structHashStructures", generateStructHashStructures() } } );
 }
 
@@ -245,6 +525,7 @@ void VulkanHppGenerator::generateHppFile() const
       { "ArrayWrapper2D", readSnippet( "ArrayWrapper2D.hpp" ) },
       { "baseTypes", generateBaseTypes() },
       { "constexprDefines", generateConstexprDefines() },
+      { "copyrightMessage", m_copyrightMessage },
       { "defines", readSnippet( "defines.hpp" ) },
       { "DispatchLoaderBase", readSnippet( "DispatchLoaderBase.hpp" ) },
       { "DispatchLoaderDynamic", generateDispatchLoaderDynamic() },
@@ -255,7 +536,6 @@ void VulkanHppGenerator::generateHppFile() const
       { "headerVersion", m_version },
       { "includes", replaceWithMap( readSnippet( "includes.hpp" ), { { "vulkan_h", ( m_api == "vulkansc" ) ? "vulkan_sc_core.h" : ( m_api + ".h" ) } } ) },
       { "IsDispatchedList", generateIsDispatchedList() },
-      { "licenseHeader", m_vulkanLicenseHeader },
       { "ObjectDestroy", readSnippet( "ObjectDestroy.hpp" ) },
       { "ObjectFree", readSnippet( "ObjectFree.hpp" ) },
       { "ObjectRelease", readSnippet( "ObjectRelease.hpp" ) },
@@ -275,7 +555,7 @@ void VulkanHppGenerator::generateMacrosFile() const
 {
   generateFileFromTemplate( m_api + "_hpp_macros.hpp",
                             "MacrosHppTemplate.hpp",
-                            { { "licenseHeader", m_vulkanLicenseHeader },
+                            { { "copyrightMessage", m_copyrightMessage },
                               { "vulkan_hpp", m_api + ".hpp" },
                               { "vulkan_64_bit_ptr_defines", m_defines.at( "VK_USE_64_BIT_PTR_DEFINES" ).possibleDefinition } } );
 }
@@ -285,7 +565,7 @@ void VulkanHppGenerator::generateRAIIHppFile() const
   generateFileFromTemplate( m_api + "_raii.hpp",
                             "RAIIHppTemplate.hpp",
                             { { "api", m_api },
-                              { "licenseHeader", m_vulkanLicenseHeader },
+                              { "copyrightMessage", m_copyrightMessage },
                               { "RAIICommandDefinitions", generateRAIICommandDefinitions() },
                               { "RAIIDispatchers", generateRAIIDispatchers() },
                               { "RAIIHandles", generateRAIIHandles() } } );
@@ -296,7 +576,7 @@ void VulkanHppGenerator::generateSharedHppFile() const
   generateFileFromTemplate( m_api + "_shared.hpp",
                             "SharedHppTemplate.hpp",
                             { { "api", m_api },
-                              { "licenseHeader", m_vulkanLicenseHeader },
+                              { "copyrightMessage", m_copyrightMessage },
                               { "sharedHandles", generateSharedHandles() },
                               { "sharedHandlesNoDestroy", generateSharedHandlesNoDestroy() } } );
 }
@@ -305,13 +585,13 @@ void VulkanHppGenerator::generateStaticAssertionsHppFile() const
 {
   generateFileFromTemplate( m_api + "_static_assertions.hpp",
                             "StaticAssertionsHppTemplate.hpp",
-                            { { "api", m_api }, { "licenseHeader", m_vulkanLicenseHeader }, { "staticAssertions", generateStaticAssertions() } } );
+                            { { "api", m_api }, { "copyrightMessage", m_copyrightMessage }, { "staticAssertions", generateStaticAssertions() } } );
 }
 
 void VulkanHppGenerator::generateStructsHppFile() const
 {
   generateFileFromTemplate(
-    m_api + "_structs.hpp", "StructsHppTemplate.hpp", { { "licenseHeader", m_vulkanLicenseHeader }, { "structs", generateStructs() } } );
+    m_api + "_structs.hpp", "StructsHppTemplate.hpp", { { "copyrightMessage", m_copyrightMessage }, { "structs", generateStructs() } } );
 }
 
 void VulkanHppGenerator::generateToStringHppFile() const
@@ -320,8 +600,8 @@ void VulkanHppGenerator::generateToStringHppFile() const
                             "ToStringHppTemplate.hpp",
                             { { "api", m_api },
                               { "bitmasksToString", generateBitmasksToString() },
-                              { "enumsToString", generateEnumsToString() },
-                              { "licenseHeader", m_vulkanLicenseHeader } } );
+                              { "copyrightMessage", m_copyrightMessage },
+                              { "enumsToString", generateEnumsToString() } } );
 }
 
 void VulkanHppGenerator::prepareRAIIHandles()
@@ -352,7 +632,7 @@ void VulkanHppGenerator::addCommand( std::string const & name, CommandData && co
   checkForError( inserted, commandData.xmlLine, "already encountered command <" + name + ">" );
 
   // find the handle this command is going to be associated to
-  auto handleIt = m_handles.find( commandIt->second.params[0].type.type );
+  auto handleIt = m_handles.find( commandIt->second.params[0].type.name );
   if ( handleIt == m_handles.end() )
   {
     handleIt = m_handles.begin();
@@ -379,8 +659,8 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
     std::vector<NameLine> newTypes;
     for ( auto const & type : require.types )
     {
-      auto bitmaskIt = m_bitmasks.find( type.name );
-      if ( bitmaskIt != m_bitmasks.end() )
+      auto bitmaskIt = m_vkxml.bitmasks.find( type.name );
+      if ( bitmaskIt != m_vkxml.bitmasks.end() )
       {
         if ( bitmaskIt->second.require.empty() )
         {
@@ -442,7 +722,7 @@ bool VulkanHppGenerator::allVectorSizesSupported( std::vector<ParamData> const &
                               [&params]( auto const & vpi )
                               {
                                 static std::set<std::string> const sizeTypes = { "size_t", "uint32_t", "VkDeviceSize", "VkSampleCountFlagBits" };
-                                return sizeTypes.contains( params[vpi.second.lenParam].type.type );
+                                return sizeTypes.contains( params[vpi.second.lenParam].type.name );
                               } );
 }
 
@@ -473,7 +753,7 @@ void VulkanHppGenerator::checkAttributes( int                                   
 
 void VulkanHppGenerator::checkBitmaskCorrectness() const
 {
-  for ( auto const & bitmask : m_bitmasks )
+  for ( auto const & bitmask : m_vkxml.bitmasks )
   {
     // check that a bitmask is required somewhere
     // I think, it's not forbidden to not reference a bitmask, but it would probably be not intended?
@@ -521,7 +801,7 @@ void VulkanHppGenerator::checkCommandCorrectness() const
     }
 
     // check that functions returning a VkResult specify successcodes
-    if ( ( command.second.returnType.type == "VkResult" ) && command.second.successCodes.empty() )
+    if ( ( command.second.returnType.name == "VkResult" ) && command.second.successCodes.empty() )
     {
       // emit an error if this function is required in at least one supported feature or extension
       // disabled or not supported features/extensions are still listed in requiredBy, but not in m_features/m_extensions
@@ -539,16 +819,15 @@ void VulkanHppGenerator::checkCommandCorrectness() const
     // check that all parameter types as well as the return type are known types
     for ( auto const & p : command.second.params )
     {
-      checkForError( m_types.contains( p.type.type ), p.xmlLine, "comand uses parameter of unknown type <" + p.type.type + ">" );
+      checkForError( m_types.contains( p.type.name ), p.xmlLine, "comand uses parameter of unknown type <" + p.type.name + ">" );
     }
     checkForError(
-      m_types.contains( command.second.returnType.type ), command.second.xmlLine, "command uses unknown return type <" + command.second.returnType.type + ">" );
+      m_types.contains( command.second.returnType.name ), command.second.xmlLine, "command uses unknown return type <" + command.second.returnType.name + ">" );
   }
 }
 
 void VulkanHppGenerator::checkCorrectness() const
 {
-  checkForError( !m_vulkanLicenseHeader.empty(), -1, "missing license header" );
   checkBitmaskCorrectness();
   checkCommandCorrectness();
   checkDefineCorrectness();
@@ -566,7 +845,7 @@ void VulkanHppGenerator::checkCorrectness() const
 void VulkanHppGenerator::checkDefineCorrectness() const
 {
   // check that any requirements of a define is known
-  for ( auto const & d : m_defines )
+  for ( auto const & d : m_vkxml.defines )
   {
     checkForError( d.second.require.empty() || m_types.contains( d.second.require ),
                    d.second.xmlLine,
@@ -597,13 +876,13 @@ void VulkanHppGenerator::checkEnumCorrectness() const
       if ( std::ranges::any_of( e.second.values, []( auto const & v ) { return v.supported; } ) )
       {
         // check that any enum of a bitmask with supported values is listed as "require" or "bitvalues" for a bitmask
-        auto bitmaskIt = std::ranges::find_if( m_bitmasks, [&e]( auto const & bitmask ) { return bitmask.second.require == e.first; } );
-        checkForError( bitmaskIt != m_bitmasks.end(),
+        auto bitmaskIt = std::ranges::find_if( m_vkxml.bitmasks, [&e]( auto const & bitmask ) { return bitmask.second.require == e.first; } );
+        checkForError( bitmaskIt != m_vkxml.bitmasks.end(),
                        e.second.xmlLine,
                        "enum <" + e.first + "> is not listed as an requires or bitvalues for any bitmask in the types section" );
 
         // check that bitwidth of the enum and type of the corresponding bitmask are equal
-        checkForError( ( e.second.bitwidth != "64" ) || ( bitmaskIt->second.type == "VkFlags64" ),
+        checkForError( ( e.second.bitwidth != "64" ) || ( bitmaskIt->second.type.name == "VkFlags64" ),
                        e.second.xmlLine,
                        "enum <" + e.first + "> is marked with bitwidth <64> but corresponding bitmask <" + bitmaskIt->first + "> is not of type <VkFlags64>" );
       }
@@ -645,7 +924,7 @@ bool VulkanHppGenerator::checkEquivalentSingularConstructor( std::vector<std::ma
       {
         ++j;
       }
-      if ( it->second.params[i].type.type != constructorIt->second.params[j].type.type )
+      if ( it->second.params[i].type.name != constructorIt->second.params[j].type.name )
       {
         return false;
       }
@@ -708,14 +987,14 @@ void VulkanHppGenerator::checkForWarning( bool condition, int line, std::string 
 
 void VulkanHppGenerator::checkFuncPointerCorrectness() const
 {
-  for ( auto const & funcPointer : m_funcPointers )
+  for ( auto const & funcPointer : m_vkxml.funcPointers )
   {
     checkForError( funcPointer.second.require.empty() || m_types.contains( funcPointer.second.require ),
                    funcPointer.second.xmlLine,
                    "funcpointer requires unknown <" + funcPointer.second.require + ">" );
     for ( auto const & param : funcPointer.second.params )
     {
-      checkForError( m_types.contains( param.type.type ), param.xmlLine, "funcpointer param of unknown type <" + param.type.type + ">" );
+      checkForError( m_types.contains( param.type.name ), param.xmlLine, "funcpointer param of unknown type <" + param.type.name + ">" );
     }
   }
 }
@@ -814,18 +1093,18 @@ void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & requi
     switch ( typeIt->second.category )
     {
       case TypeCategory::Bitmask:
-        checkForError( findByNameOrAlias( m_bitmasks, type.name ) != m_bitmasks.end(),
+        checkForError( findByNameOrAlias( m_vkxml.bitmasks, type.name ) != m_vkxml.bitmasks.end(),
                        typeIt->second.xmlLine,
                        "required bitmask type <" + type.name + "> is not listed as bitmask" );
         break;
       case TypeCategory::BaseType:
-        checkForError( m_baseTypes.contains( type.name ), typeIt->second.xmlLine, "required base type <" + type.name + "> is not listed as a base type" );
+        checkForError( m_vkxml.baseTypes.contains( type.name ), typeIt->second.xmlLine, "required base type <" + type.name + "> is not listed as a base type" );
         break;
       case TypeCategory::Constant:
-        checkForError( m_constants.contains( type.name ), typeIt->second.xmlLine, "required constant <" + type.name + "> is not listed as a constant" );
+        checkForError( m_vkxml.constants.contains( type.name ), typeIt->second.xmlLine, "required constant <" + type.name + "> is not listed as a constant" );
         break;
       case TypeCategory::Define:
-        checkForError( m_defines.contains( type.name ), typeIt->second.xmlLine, "required define <" + type.name + "> is not listed as a define" );
+        checkForError( m_vkxml.defines.contains( type.name ), typeIt->second.xmlLine, "required define <" + type.name + "> is not listed as a define" );
         break;
       case TypeCategory::Enum:
         checkForError(
@@ -833,11 +1112,11 @@ void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & requi
         break;
       case TypeCategory::ExternalType:
         checkForError(
-          m_externalTypes.contains( type.name ), typeIt->second.xmlLine, "required external type <" + type.name + "> is not listed as an external type" );
+          m_vkxml.externalTypes.contains( type.name ), typeIt->second.xmlLine, "required external type <" + type.name + "> is not listed as an external type" );
         break;
       case TypeCategory::FuncPointer:
         checkForError(
-          m_funcPointers.contains( type.name ), typeIt->second.xmlLine, "required funcpointer <" + type.name + "> is not listed as a funcpointer" );
+          m_vkxml.funcPointers.contains( type.name ), typeIt->second.xmlLine, "required funcpointer <" + type.name + "> is not listed as a funcpointer" );
         break;
       case TypeCategory::Handle:
         checkForError( findByNameOrAlias( m_handles, type.name ) != m_handles.end(),
@@ -845,7 +1124,7 @@ void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & requi
                        "required handle type <" + type.name + "> is not listed as a handle" );
         break;
       case TypeCategory::Include:
-        checkForError( m_includes.contains( type.name ), typeIt->second.xmlLine, "required include <" + type.name + "> is not listed as an include" );
+        checkForError( m_vkxml.includes.contains( type.name ), typeIt->second.xmlLine, "required include <" + type.name + "> is not listed as an include" );
         break;
       case TypeCategory::Struct:
       case TypeCategory::Union:
@@ -932,7 +1211,7 @@ void VulkanHppGenerator::checkStructMemberArraySizesAreValid( std::vector<std::s
   // check that any array size is either a number or a known constant
   for ( auto const & arraySize : arraySizes )
   {
-    if ( !isNumber( arraySize ) && !m_constants.contains( arraySize ) )
+    if ( !isNumber( arraySize ) && !m_vkxml.constants.contains( arraySize ) )
     {
       auto typeIt = m_types.find( arraySize );
       checkForError( ( typeIt != m_types.end() ) && isUpperCase( arraySize ) && ( typeIt->second.category == TypeCategory::ExternalType ),
@@ -952,10 +1231,10 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
   for ( auto const & member : members )
   {
     checkStructMemberArraySizesAreValid( member.arraySizes, member.xmlLine );
-    checkStructMemberSelectorConnection( member.selector, members, member.type.type );
-    checkStructMemberTypeIsKnown( member.type.type, member.xmlLine );
-    checkStructMemberTypeIsRequired( member.type.type, member.xmlLine, structureName );
-    checkStructMemberValueIsValid( member.value, member.type.type, member.name, member.xmlLine, structUsed, structureName, sTypeValues );
+    checkStructMemberSelectorConnection( member.selector, members, member.type.name );
+    checkStructMemberTypeIsKnown( member.type.name, member.xmlLine );
+    checkStructMemberTypeIsRequired( member.type.name, member.xmlLine, structureName );
+    checkStructMemberValueIsValid( member.value, member.type.name, member.name, member.xmlLine, structUsed, structureName, sTypeValues );
   }
 }
 
@@ -969,7 +1248,7 @@ void VulkanHppGenerator::checkStructMemberSelectorConnection( std::string const 
   {
     auto selectorIt = findByName( members, selector );
     assert( selectorIt != members.end() );
-    auto selectorEnumIt = findByNameOrAlias( m_enums, selectorIt->type.type );
+    auto selectorEnumIt = findByNameOrAlias( m_enums, selectorIt->type.name );
     assert( selectorEnumIt != m_enums.end() );
     auto unionIt = m_structs.find( memberType );
     assert( ( unionIt != m_structs.end() ) && unionIt->second.isUnion );
@@ -982,7 +1261,7 @@ void VulkanHppGenerator::checkStructMemberSelectorConnection( std::string const 
         checkForError(
           containsByNameOrAlias( selectorEnumIt->second.values, selection ),
           unionMember.xmlLine,
-          "union member <" + unionMember.name + "> uses selection <" + selection + "> that is not part of the selector type <" + selectorIt->type.type + ">" );
+          "union member <" + unionMember.name + "> uses selection <" + selection + "> that is not part of the selector type <" + selectorIt->type.name + ">" );
       }
     }
   }
@@ -1123,7 +1402,7 @@ bool VulkanHppGenerator::containsArray( std::string const & type ) const
   auto structureIt = m_structs.find( type );
   return ( ( structureIt != m_structs.end() ) &&
            std::ranges::any_of( structureIt->second.members,
-                                [this]( auto const & member ) { return !member.arraySizes.empty() || containsArray( member.type.type ); } ) );
+                                [this]( auto const & member ) { return !member.arraySizes.empty() || containsArray( member.type.name ); } ) );
 }
 
 bool VulkanHppGenerator::containsDeprecated( std::vector<MemberData> const & members ) const
@@ -1139,7 +1418,7 @@ bool VulkanHppGenerator::containsFuncPointer( std::string const & type ) const
          std::ranges::any_of(
            structureIt->second.members,
            [this, &type]( auto const & member )
-           { return m_funcPointers.contains( member.type.type ) || ( ( member.type.type != type ) && containsFuncPointer( member.type.type ) ); } );
+           { return m_vkxml.funcPointers.contains( member.type.name ) || ( ( member.type.name != type ) && containsFuncPointer( member.type.name ) ); } );
 }
 
 bool VulkanHppGenerator::containsFloatingPoints( std::vector<MemberData> const & members ) const
@@ -1147,10 +1426,10 @@ bool VulkanHppGenerator::containsFloatingPoints( std::vector<MemberData> const &
   return std::ranges::any_of( members,
                               [this]( auto const & member )
                               {
-                                auto structureIt = m_structs.find( member.type.type );
+                                auto structureIt = m_structs.find( member.type.name );
                                 return member.type.isValue() &&
-                                       ( ( member.type.type == "float" ) ||
-                                         ( member.type.type == "double" ) ||
+                                       ( ( member.type.name == "float" ) ||
+                                         ( member.type.name == "double" ) ||
                                          ( ( structureIt != m_structs.end() ) && containsFloatingPoints( structureIt->second.members ) ) );
                               } );
 }
@@ -1162,7 +1441,7 @@ bool VulkanHppGenerator::containsUnion( std::string const & type ) const
   return ( structureIt != m_structs.end() ) &&
          ( structureIt->second.isUnion ||
            std::ranges::any_of( structureIt->second.members,
-                                [this]( auto const & member ) { return member.type.isValue() && containsUnion( member.type.type ); } ) );
+                                [this]( auto const & member ) { return member.type.isValue() && containsUnion( member.type.name ); } ) );
 }
 
 bool VulkanHppGenerator::describesVector( StructData const & structure, std::string const & type ) const
@@ -1170,11 +1449,11 @@ bool VulkanHppGenerator::describesVector( StructData const & structure, std::str
   return std::ranges::any_of( structure.members,
                               [&structure, &type]( auto const & member )
                               {
-                                if ( ( type.empty() || ( member.type.type == type ) ) && member.type.isNonConstPointer() && ( member.lenMembers.size() == 1 ) )
+                                if ( ( type.empty() || ( member.type.name == type ) ) && member.type.isNonConstPointer() && ( member.lenMembers.size() == 1 ) )
                                 {
                                   assert( member.lenMembers[0].second < structure.members.size() );
                                   auto const & lenMember = structure.members[member.lenMembers[0].second];
-                                  return lenMember.type.isValue() && ( ( lenMember.type.type == "size_t" ) || ( lenMember.type.type == "uint32_t" ) );
+                                  return lenMember.type.isValue() && ( ( lenMember.type.name == "size_t" ) || ( lenMember.type.name == "uint32_t" ) );
                                 }
                                 return false;
                               } );
@@ -1184,7 +1463,7 @@ std::vector<size_t> VulkanHppGenerator::determineChainedReturnParams( std::vecto
 {
   std::vector<size_t> chainedParams;
   std::ranges::copy_if(
-    returnParams, std::back_inserter( chainedParams ), [this, &params]( size_t rp ) { return isStructureChainAnchor( params[rp].type.type ); } );
+    returnParams, std::back_inserter( chainedParams ), [this, &params]( size_t rp ) { return isStructureChainAnchor( params[rp].type.name ); } );
   return chainedParams;
 }
 
@@ -1202,7 +1481,7 @@ std::vector<std::string> VulkanHppGenerator::determineDataTypes( std::vector<Vul
     {
       assert( ( vectorParamIt == vectorParams.end() ) || !vectorParamIt->second.byStructure );
       if ( ( vectorParamIt != vectorParams.end() ) &&
-           ( params[rp].type.type == "void" ) &&
+           ( params[rp].type.name == "void" ) &&
            std::ranges::any_of( returnParams, [&vectorParamIt]( size_t rp ) noexcept { return rp == vectorParamIt->first; } ) &&
            std::ranges::any_of( returnParams, [&vectorParamIt]( size_t rp ) noexcept { return rp == vectorParamIt->second.lenParam; } ) )
       {
@@ -1219,12 +1498,12 @@ std::vector<std::string> VulkanHppGenerator::determineDataTypes( std::vector<Vul
     {
       // for non-templated vector parameters, we have to distinguish between those specified by a structure and those specified by a simple length parameter
       dataTypes.push_back(
-        trimEnd( stripPostfix( vectorMemberByStructure( params[rp].type.type ).type.compose( "Vk", raii ? "VULKAN_HPP_NAMESPACE" : "" ), "*" ) ) );
+        trimEnd( stripPostfix( vectorMemberByStructure( params[rp].type.name ).type.compose( "Vk", raii ? "VULKAN_HPP_NAMESPACE" : "" ), "*" ) ) );
     }
     else
     {
       dataTypes.push_back(
-        trimEnd( stripPostfix( params[rp].type.compose( "Vk", ( raii && m_handles.contains( params[rp].type.type ) ) ? "VULKAN_HPP_NAMESPACE" : "" ), "*" ) ) );
+        trimEnd( stripPostfix( params[rp].type.compose( "Vk", ( raii && m_handles.contains( params[rp].type.name ) ) ? "VULKAN_HPP_NAMESPACE" : "" ), "*" ) ) );
     }
   }
   return dataTypes;
@@ -1267,7 +1546,7 @@ size_t VulkanHppGenerator::determineInitialSkipCount( std::string const & comman
   if ( !handleIt->second.commands.contains( command ) )
   {
     assert( 1 < commandIt->second.params.size() );
-    assert( m_handles.contains( commandIt->second.params[1].type.type ) );
+    assert( m_handles.contains( commandIt->second.params[1].type.name ) );
     return 2;
   }
   else
@@ -1284,7 +1563,7 @@ std::vector<size_t> VulkanHppGenerator::determineReturnParams( std::vector<Param
   {
     // very special handling of parameters of some types, which always come as a non-const pointer but are not meant
     // to be a potential return value!
-    if ( params[i].type.isNonConstPointer() && !specialPointerTypes.contains( params[i].type.type ) )
+    if ( params[i].type.isNonConstPointer() && !specialPointerTypes.contains( params[i].type.name ) )
     {
       returnParams.push_back( i );
     }
@@ -1302,13 +1581,13 @@ bool VulkanHppGenerator::isConstructorCandidate( ParamData const & paramData, st
 {
   if ( paramData.type.isNonConstPointer() )
   {
-    if ( paramData.type.type == handleType )
+    if ( paramData.type.name == handleType )
     {
       return true;
     }
     else
     {
-      auto structIt = m_structs.find( paramData.type.type );
+      auto structIt = m_structs.find( paramData.type.name );
       if ( structIt != m_structs.end() )
       {
         return describesVector( structIt->second, handleType );
@@ -1332,7 +1611,7 @@ std::vector<std::map<std::string, VulkanHppGenerator::CommandData>::const_iterat
       {
         // get the destructors parameter to the handleType
         auto destructorHandleParamIt =
-          std::ranges::find_if( destructorIt->second.params, [&handleType]( ParamData const & pd ) { return pd.type.type == handleType; } );
+          std::ranges::find_if( destructorIt->second.params, [&handleType]( ParamData const & pd ) { return pd.type.name == handleType; } );
         assert( destructorHandleParamIt != destructorIt->second.params.end() );
 
         // lambda to check if a destructor parameter is a parameter of the constructor candidate
@@ -1343,12 +1622,12 @@ std::vector<std::map<std::string, VulkanHppGenerator::CommandData>::const_iterat
           // that struct
           auto isDestructorParamType = [&destructorParam, this]( ParamData const & pd )
           {
-            if ( pd.type.type != destructorParam.type.type )
+            if ( pd.type.name != destructorParam.type.name )
             {
               // check if the destructor param type equals a structure member type
-              auto structureIt = m_structs.find( pd.type.type );
+              auto structureIt = m_structs.find( pd.type.name );
               return ( structureIt != m_structs.end() ) &&
-                     ( findByType( structureIt->second.members, destructorParam.type.type ) != structureIt->second.members.end() );
+                     ( findByType( structureIt->second.members, destructorParam.type.name ) != structureIt->second.members.end() );
             }
             return true;
           };
@@ -1476,7 +1755,9 @@ std::string VulkanHppGenerator::determineSubStruct( std::pair<std::string, Struc
         return false;
       };
 
-      return ( sd.second.members.size() < structure.second.members.size() ) && std::ranges::all_of( sd.second.members, isMember );
+      return ( sd.second.xmlLine < structure.second.xmlLine ) &&
+             ( sd.second.members.size() < structure.second.members.size() ) &&
+             std::ranges::all_of( sd.second.members, isMember );
     };
 
     // look for a struct in m_structs that starts identically to structure
@@ -1517,8 +1798,8 @@ std::map<size_t, VulkanHppGenerator::VectorParamData> VulkanHppGenerator::determ
     }
     else
     {
-      auto structIt = m_structs.find( params[i].type.type );
-      if ( ( structIt != m_structs.end() ) && !isStructureChainAnchor( params[i].type.type ) && describesVector( structIt->second ) )
+      auto structIt = m_structs.find( params[i].type.name );
+      if ( ( structIt != m_structs.end() ) && !isStructureChainAnchor( params[i].type.name ) && describesVector( structIt->second ) )
       {
         VectorParamData & vpd = vectorParams[i];
         vpd.byStructure       = true;
@@ -1535,7 +1816,7 @@ std::set<size_t> VulkanHppGenerator::determineVoidPointerParams( std::vector<Par
 
   for ( size_t i = 0; i < params.size(); i++ )
   {
-    if ( !params[i].type.isValue() && ( params[i].type.type == "void" ) && ( params[i].type.postfix != "**" ) )
+    if ( !params[i].type.isValue() && ( params[i].type.name == "void" ) && ( params[i].type.postfix != "**" ) )
     {
       voidPointerParams.insert( i );
     }
@@ -1549,7 +1830,7 @@ void VulkanHppGenerator::distributeEnumValueAliases()
   {
     for ( auto & a : e.second.valueAliases )
     {
-      auto valueIt = findByName( e.second.values, a.alias );
+      auto valueIt = findByNameOrAlias( e.second.values, a.alias );
       if ( valueIt == e.second.values.end() )
       {
         auto aliasIt = findByName( e.second.valueAliases, a.alias );
@@ -1610,20 +1891,6 @@ void VulkanHppGenerator::distributeRequirements( std::vector<RequireData> const 
   }
 }
 
-void VulkanHppGenerator::distributeStructAliases()
-{
-  for ( auto const & alias : m_structsAliases )
-  {
-    auto structIt = findByNameOrAlias( m_structs, alias.second.name );
-    checkForError(
-      structIt != m_structs.end(), alias.second.xmlLine, "struct alias <" + alias.first + "> references an unknown struct <" + alias.second.name + ">" );
-    checkForError( structIt->second.aliases.insert( { alias.first, alias.second.xmlLine } ).second,
-                   alias.second.xmlLine,
-                   "struct alias <" + alias.first + "> already listed as an alias for struct <" + alias.second.name + ">" );
-  }
-  m_structsAliases.clear();
-}
-
 bool VulkanHppGenerator::encodesEnumeration( std::vector<ParamData> const &            params,
                                              std::map<size_t, VectorParamData> const & vectorParams,
                                              size_t                                    returnParam0,
@@ -1631,7 +1898,7 @@ bool VulkanHppGenerator::encodesEnumeration( std::vector<ParamData> const &     
 {
   auto vpIt = vectorParams.find( returnParam1 );
   return params[returnParam0].type.isNonConstPointer() &&
-         ( ( params[returnParam0].type.type == "size_t" ) || ( params[returnParam0].type.type == "uint32_t" ) ) &&
+         ( ( params[returnParam0].type.name == "size_t" ) || ( params[returnParam0].type.name == "uint32_t" ) ) &&
          params[returnParam1].type.isNonConstPointer() &&
          ( params[returnParam1].lenExpression == params[returnParam0].name ) &&
          ( vpIt != vectorParams.end() ) &&
@@ -1807,7 +2074,7 @@ void VulkanHppGenerator::filterLenMembers()
   {
     for ( auto & member : sd.second.members )
     {
-      std::erase_if( member.lenMembers, [this]( std::pair<std::string, size_t> const & nameIndex ) { return m_constants.contains( nameIndex.first ); } );
+      std::erase_if( member.lenMembers, [this]( std::pair<std::string, size_t> const & nameIndex ) { return m_vkxml.constants.contains( nameIndex.first ); } );
 
       for ( auto & lenMember : member.lenMembers )
       {
@@ -1832,13 +2099,14 @@ void VulkanHppGenerator::filterLenMembers()
 
 std::string VulkanHppGenerator::findTag( std::string const & name, std::string const & postfix ) const
 {
-  auto tagIt = std::ranges::find_if( m_tags, [&name, &postfix]( std::pair<std::string, TagData> const & t ) { return name.ends_with( t.first + postfix ); } );
-  return ( tagIt != m_tags.end() ) ? tagIt->first : "";
+  auto tagIt =
+    std::ranges::find_if( m_vkxml.tags, [&name, &postfix]( std::pair<std::string const, Tag> const & t ) { return name.ends_with( t.first + postfix ); } );
+  return ( tagIt != m_vkxml.tags.end() ) ? tagIt->first : "";
 }
 
 std::vector<VulkanHppGenerator::MemberData>::const_iterator VulkanHppGenerator::findHandleMember( std::vector<MemberData> const & memberData ) const
 {
-  return std::ranges::find_if( memberData, [this]( auto const & md ) { return isHandleType( md.type.type ); } );
+  return std::ranges::find_if( memberData, [this]( auto const & md ) { return isHandleType( md.type.name ); } );
 }
 
 std::vector<VulkanHppGenerator::MemberData>::const_iterator VulkanHppGenerator::findVectorMember( std::vector<MemberData> const & memberData ) const
@@ -1846,15 +2114,16 @@ std::vector<VulkanHppGenerator::MemberData>::const_iterator VulkanHppGenerator::
   return std::ranges::find_if( memberData, []( auto const & md ) { return md.arraySizes.empty() && !md.lenMembers.empty(); } );
 }
 
-void VulkanHppGenerator::forEachRequiredBitmask( std::vector<RequireData> const &                                           requireData,
-                                                 std::set<std::string> &                                                    encounteredBitmasks,
-                                                 std::function<void( std::pair<std::string, BitmaskData> const & )> const & bitmaskAction ) const
+void VulkanHppGenerator::forEachRequiredBitmask( std::vector<RequireData> const &                                       requireData,
+                                                 std::set<std::string> &                                                encounteredBitmasks,
+                                                 std::function<void( std::pair<std::string, Bitmask> const & )> const & bitmaskAction ) const
 {
   for ( auto const & require : requireData )
   {
     for ( auto const & type : require.types )
     {
-      if ( auto bitmaskIt = m_bitmasks.find( type.name ); ( bitmaskIt != m_bitmasks.end() ) && encounteredBitmasks.insert( bitmaskIt->first ).second )
+      if ( auto bitmaskIt = m_vkxml.bitmasks.find( type.name );
+           ( bitmaskIt != m_vkxml.bitmasks.end() ) && encounteredBitmasks.insert( bitmaskIt->first ).second )
       {
         bitmaskAction( *bitmaskIt );
       }
@@ -1877,16 +2146,16 @@ void
   }
 }
 
-void VulkanHppGenerator::forEachRequiredConstant( std::vector<RequireData> const &                                            requireData,
-                                                  std::set<std::string> &                                                     encounteredConstants,
-                                                  std::function<void( std::pair<std::string, ConstantData> const & )> const & constantAction ) const
+void VulkanHppGenerator::forEachRequiredConstant( std::vector<RequireData> const &                                        requireData,
+                                                  std::set<std::string> &                                                 encounteredConstants,
+                                                  std::function<void( std::pair<std::string, Constant> const & )> const & constantAction ) const
 {
   for ( auto const & require : requireData )
   {
     for ( auto const & constant : require.constants )
     {
-      auto constantIt = m_constants.find( constant.name );
-      checkForError( constantIt != m_constants.end(), constant.xmlLine, "unknown required constant <" + constant.name + ">" );
+      auto constantIt = m_vkxml.constants.find( constant.name );
+      checkForError( constantIt != m_vkxml.constants.end(), constant.xmlLine, "unknown required constant <" + constant.name + ">" );
       if ( encounteredConstants.insert( constantIt->first ).second )
       {
         constantAction( *constantIt );
@@ -1911,14 +2180,14 @@ void VulkanHppGenerator::forEachRequiredEnumConstant( std::vector<RequireData> c
   }
 }
 
-void VulkanHppGenerator::forEachRequiredFuncPointer( std::vector<RequireData> const &                                               requireData,
-                                                     std::function<void( std::pair<std::string, FuncPointerData> const & )> const & funcPointerAction ) const
+void VulkanHppGenerator::forEachRequiredFuncPointer( std::vector<RequireData> const &                                           requireData,
+                                                     std::function<void( std::pair<std::string, FuncPointer> const & )> const & funcPointerAction ) const
 {
   for ( auto const & require : requireData )
   {
     for ( auto const & type : require.types )
     {
-      if ( auto funcPointerIt = m_funcPointers.find( type.name ); funcPointerIt != m_funcPointers.end() )
+      if ( auto funcPointerIt = m_vkxml.funcPointers.find( type.name ); funcPointerIt != m_vkxml.funcPointers.end() )
       {
         funcPointerAction( *funcPointerIt );
       }
@@ -2056,7 +2325,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
     {
       bool hasDefaultAssignment = false;
 
-      std::string composedType = params[i].type.compose( "Vk", ( raii && m_handles.contains( params[i].type.type ) ) ? "VULKAN_HPP_NAMESPACE" : "" );
+      std::string composedType = params[i].type.compose( "Vk", ( raii && m_handles.contains( params[i].type.name ) ) ? "VULKAN_HPP_NAMESPACE" : "" );
 
       if ( singularParams.contains( i ) )
       {
@@ -2064,7 +2333,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
         assert( params[i].type.isConstPointer() &&
                 !params[i].lenExpression.empty() &&
                 !isLenByStructMember( params[i].lenExpression, params ) &&
-                params[i].type.type.starts_with( "Vk" ) );
+                params[i].type.name.starts_with( "Vk" ) );
         assert( composedType.ends_with( " *" ) );
         arguments.push_back( stripPostfix( composedType, " *" ) + " & " + stripPluralS( startLowerCase( stripPrefix( params[i].name, "p" ) ) ) );
       }
@@ -2074,9 +2343,9 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
         std::string name = startLowerCase( stripPrefix( params[i].name, "p" ) );
         if ( params[i].lenExpression.empty() )
         {
-          assert( withDispatcher || !isHandleType( params[i].type.type ) );
+          assert( withDispatcher || !isHandleType( params[i].type.name ) );
           assert( params[i].arraySizes.empty() );
-          if ( params[i].type.type == "void" )
+          if ( params[i].type.name == "void" )
           {
             arguments.push_back( templatedParams.contains( i ) ? ( stripPrefix( params[i].name, "p" ) + "Type const & " + name )
                                                                : ( composedType + " " + params[i].name ) );
@@ -2102,7 +2371,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
           assert( params[i].arraySizes.empty() );
           if ( params[i].lenExpression == "null-terminated" )
           {
-            assert( params[i].type.type == "char" );
+            assert( params[i].type.name == "char" );
             if ( params[i].optional )
             {
               arguments.push_back(
@@ -2135,13 +2404,13 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
       }
       else if ( params[i].type.isNonConstPointer() )
       {
-        if ( ( params[i].type.type == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) )
+        if ( ( params[i].type.name == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) )
         {
           arguments.push_back( composedType + " " + params[i].name );
         }
         else
         {
-          assert( withDispatcher || !isHandleType( params[i].type.type ) );
+          assert( withDispatcher || !isHandleType( params[i].type.name ) );
           assert( params[i].lenExpression.empty() && !params[i].optional );
           assert( composedType.ends_with( " *" ) );
           arguments.push_back( stripPostfix( composedType, " *" ) + " & " + startLowerCase( stripPrefix( params[i].name, "p" ) ) );
@@ -2187,7 +2456,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
           }
           else
           {
-            type = ( params[sp].type.type == "void" ) ? "Uint8_t" : startUpperCase( stripPrefix( params[sp].type.type, "Vk" ) );
+            type = ( params[sp].type.name == "void" ) ? "Uint8_t" : startUpperCase( stripPrefix( params[sp].type.name, "Vk" ) );
           }
           if ( allocatorTypes.insert( type ).second )
           {
@@ -2196,7 +2465,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
         }
         else if ( vectorParams.contains( sp ) && vectorParams.find( sp )->second.byStructure )
         {
-          std::string type = stripPrefix( vectorMemberByStructure( params[sp].type.type ).type.type, "Vk" );
+          std::string type = stripPrefix( vectorMemberByStructure( params[sp].type.name ).type.name, "Vk" );
           assert( isupper( type[0] ) );
           if ( allocatorTypes.insert( type ).second )
           {
@@ -2223,7 +2492,7 @@ std::string VulkanHppGenerator::generateArgumentListStandard(
     {
       // parameters named "objectType" collide with the member variable -> append an _ to here
       std::string paramName = ( definition && ( params[i].name == "objectType" ) ) ? "objectType_" : params[i].name;
-      argumentList += params[i].type.compose( "Vk", ( raii && isHandleType( params[i].type.type ) ? "VULKAN_HPP_NAMESPACE" : "" ) ) +
+      argumentList += params[i].type.compose( "Vk", ( raii && isHandleType( params[i].type.name ) ? "VULKAN_HPP_NAMESPACE" : "" ) ) +
                       " " +
                       paramName +
                       generateCArraySizes( params[i].arraySizes ) +
@@ -2280,7 +2549,7 @@ std::string VulkanHppGenerator::generateArgumentTemplates( std::vector<ParamData
 
 std::string VulkanHppGenerator::generateBaseTypes() const
 {
-  assert( !m_baseTypes.empty() );
+  assert( !m_vkxml.baseTypes.empty() );
   std::string const basetypesTemplate = R"(
   //==================
   //=== BASE TYPEs ===
@@ -2290,19 +2559,19 @@ ${basetypes}
 )";
 
   std::string basetypes;
-  for ( auto const & baseType : m_baseTypes )
+  for ( auto const & baseType : m_vkxml.baseTypes )
   {
     // filter out VkFlags and VkFlags64, as they are mapped to our own Flags class, and basetypes without any type information
-    if ( ( baseType.first != "VkFlags" ) && ( baseType.first != "VkFlags64" ) && !baseType.second.typeInfo.type.empty() )
+    if ( ( baseType.first != "VkFlags" ) && ( baseType.first != "VkFlags64" ) && !baseType.second.type.name.empty() )
     {
-      basetypes += "  using " + stripPrefix( baseType.first, "Vk" ) + " = " + baseType.second.typeInfo.compose( "Vk", "VULKAN_HPP_NAMESPACE" ) + ";\n";
+      basetypes += "  using " + stripPrefix( baseType.first, "Vk" ) + " = " + baseType.second.type.compose( "" ) + ";\n";
     }
   }
 
   return replaceWithMap( basetypesTemplate, { { "basetypes", basetypes } } );
 }
 
-std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt, std::string const & surroundingProtect ) const
+std::string VulkanHppGenerator::generateBitmask( std::map<std::string, Bitmask>::const_iterator bitmaskIt, std::string const & surroundingProtect ) const
 {
   auto bitmaskBitsIt = m_enums.find( bitmaskIt->second.require );
   assert( bitmaskBitsIt != m_enums.end() );
@@ -2404,11 +2673,11 @@ std::string VulkanHppGenerator::generateBitmasksToString( std::vector<RequireDat
 {
   std::string str;
   forEachRequiredBitmask(
-    requireData, listedBitmasks, [&str, this]( std::pair<std::string, BitmaskData> const & bitmaskData ) { str += generateBitmaskToString( bitmaskData ); } );
+    requireData, listedBitmasks, [&str, this]( std::pair<std::string, Bitmask> const & bitmaskData ) { str += generateBitmaskToString( bitmaskData ); } );
   return addTitleAndProtection( title, str );
 }
 
-std::string VulkanHppGenerator::generateBitmaskToString( std::pair<std::string, BitmaskData> const & bitmaskData ) const
+std::string VulkanHppGenerator::generateBitmaskToString( std::pair<std::string, Bitmask> const & bitmaskData ) const
 {
   auto bitmaskBitsIt = m_enums.find( bitmaskData.second.require );
   assert( bitmaskBitsIt != m_enums.end() );
@@ -2500,22 +2769,22 @@ std::string VulkanHppGenerator::generateCallArgumentsEnhanced( CommandData const
     {
       case 0: break;
       case 1:
-        assert( isHandleType( commandData.params[0].type.type ) && commandData.params[0].type.isValue() );
+        assert( isHandleType( commandData.params[0].type.name ) && commandData.params[0].type.isValue() );
         assert( commandData.params[0].arraySizes.empty() && commandData.params[0].lenExpression.empty() );
-        assert( commandData.params[0].type.type == commandData.handle );
+        assert( commandData.params[0].type.name == commandData.handle );
         arguments.push_back( "static_cast<" + commandData.handle + ">( m_" + startLowerCase( stripPrefix( commandData.handle, "Vk" ) ) + " )" );
         break;
       case 2:
         {
-          assert( isHandleType( commandData.params[0].type.type ) && commandData.params[0].type.isValue() );
+          assert( isHandleType( commandData.params[0].type.name ) && commandData.params[0].type.isValue() );
           assert( commandData.params[0].arraySizes.empty() && commandData.params[0].lenExpression.empty() );
-          assert( commandData.params[0].type.type == commandData.handle );
-          auto handleIt = m_handles.find( commandData.params[1].type.type );
+          assert( commandData.params[0].type.name == commandData.handle );
+          auto handleIt = m_handles.find( commandData.params[1].type.name );
           assert( handleIt != m_handles.end() );
           arguments.push_back( "static_cast<" + commandData.handle + ">( m_" + startLowerCase( stripPrefix( commandData.handle, "Vk" ) ) + " )" );
 
           assert( commandData.params[1].type.isValue() && commandData.params[1].arraySizes.empty() && commandData.params[1].lenExpression.empty() );
-          arguments.push_back( "static_cast<" + commandData.params[1].type.type + ">( m_" + startLowerCase( stripPrefix( handleIt->first, "Vk" ) ) + " )" );
+          arguments.push_back( "static_cast<" + commandData.params[1].type.name + ">( m_" + startLowerCase( stripPrefix( handleIt->first, "Vk" ) ) + " )" );
         }
         break;
       default: assert( false ); break;
@@ -2525,9 +2794,9 @@ std::string VulkanHppGenerator::generateCallArgumentsEnhanced( CommandData const
   {
     for ( size_t i = 0; i < initialSkipCount; ++i )
     {
-      assert( isHandleType( commandData.params[i].type.type ) && commandData.params[i].type.isValue() );
+      assert( isHandleType( commandData.params[i].type.name ) && commandData.params[i].type.isValue() );
       assert( commandData.params[i].arraySizes.empty() && commandData.params[i].lenExpression.empty() );
-      arguments.push_back( "m_" + startLowerCase( stripPrefix( commandData.params[i].type.type, "Vk" ) ) );
+      arguments.push_back( "m_" + startLowerCase( stripPrefix( commandData.params[i].type.name, "Vk" ) ) );
     }
   }
   for ( size_t i = initialSkipCount; i < commandData.params.size(); ++i )
@@ -2544,15 +2813,15 @@ std::string VulkanHppGenerator::generateCallArgumentsStandard( std::vector<Param
   for ( size_t i = 0; i < initialSkipCount; ++i )
   {
     auto const & param = params[i];
-    assert( isHandleType( param.type.type ) && param.type.isValue() );
+    assert( isHandleType( param.type.name ) && param.type.isValue() );
     assert( param.arraySizes.empty() && param.lenExpression.empty() );
-    arguments.push_back( "static_cast<" + param.type.type + ">( m_" + startLowerCase( stripPrefix( param.type.type, "Vk" ) ) + " )" );
+    arguments.push_back( "static_cast<" + param.type.name + ">( m_" + startLowerCase( stripPrefix( param.type.name, "Vk" ) ) + " )" );
   }
   for ( size_t i = initialSkipCount; i < params.size(); ++i )
   {
     auto const & param    = params[i];
     std::string  argument = param.name;
-    if ( param.type.type.starts_with( "Vk" ) )
+    if ( param.type.name.starts_with( "Vk" ) )
     {
       if ( !param.arraySizes.empty() )
       {
@@ -2568,7 +2837,7 @@ std::string VulkanHppGenerator::generateCallArgumentsStandard( std::vector<Param
         {
           argument += "_";
         }
-        argument = "static_cast<" + param.type.type + ">( " + argument + " )";
+        argument = "static_cast<" + param.type.name + ">( " + argument + " )";
       }
       else
       {
@@ -2591,14 +2860,14 @@ std::string VulkanHppGenerator::generateCallArgumentEnhanced( std::vector<ParamD
 {
   std::string       argument;
   ParamData const & param = params[paramIndex];
-  if ( param.type.isConstPointer() || specialPointerTypes.contains( param.type.type ) )
+  if ( param.type.isConstPointer() || specialPointerTypes.contains( param.type.name ) )
   {
     // parameter is a const-pointer or one of the special pointer types that are considered to be const-pointers
     argument = generateCallArgumentEnhancedConstPointer( param, paramIndex, singularParams, templatedParams );
   }
   else if ( param.type.isNonConstPointer() &&
-            !specialPointerTypes.contains( param.type.type ) &&
-            !( ( param.type.type == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) ) )
+            !specialPointerTypes.contains( param.type.name ) &&
+            !( ( param.type.name == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) ) )
   {
     // parameter is a non-const pointer, none of the special pointer types, that are considered const-pointers, and no void-ptr to keep
     argument = generateCallArgumentEnhancedNonConstPointer( param, paramIndex, nonConstPointerAsNullptr, singularParams );
@@ -2618,18 +2887,18 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedConstPointer( ParamD
 {
   std::string argument;
   std::string name = startLowerCase( stripPrefix( param.name, "p" ) );
-  if ( isHandleType( param.type.type ) && param.type.isValue() )
+  if ( isHandleType( param.type.name ) && param.type.isValue() )
   {
     assert( !param.optional );
     // if at all, this is the first argument, and it's the implicitly provided member handle
     assert( paramIndex == 0 );
     assert( param.arraySizes.empty() && param.lenExpression.empty() );
-    argument = "m_" + startLowerCase( stripPrefix( param.type.type, "Vk" ) );
+    argument = "m_" + startLowerCase( stripPrefix( param.type.name, "Vk" ) );
   }
   else if ( param.lenExpression.empty() )
   {
     // this const-pointer parameter has no length, that is it's a const-pointer to a single value
-    if ( param.type.type == "void" )
+    if ( param.type.name == "void" )
     {
       argument =
         templatedParams.contains( paramIndex ) ? "reinterpret_cast<" + param.type.compose( "Vk", "VULKAN_HPP_NAMESPACE" ) + ">( &" + name + " )" : param.name;
@@ -2642,7 +2911,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedConstPointer( ParamD
     {
       argument = "&" + name;
     }
-    if ( param.type.type.starts_with( "Vk" ) )
+    if ( param.type.name.starts_with( "Vk" ) )
     {
       argument = "reinterpret_cast<" + param.type.compose( "" ) + ">( " + argument + " )";
     }
@@ -2650,7 +2919,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedConstPointer( ParamD
   else if ( param.lenExpression == "null-terminated" )
   {
     // this const-pointer parameter is "null-terminated", that is it's a string
-    assert( ( param.type.type == "char" ) && param.arraySizes.empty() );
+    assert( ( param.type.name == "char" ) && param.arraySizes.empty() );
     if ( param.optional )
     {
       argument = name + " ? " + name + "->c_str() : nullptr";
@@ -2673,7 +2942,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedConstPointer( ParamD
       // this const-parameter is represented by some array, where data() also works with no data (optional)
       argument = name + ".data()";
     }
-    if ( param.type.type.starts_with( "Vk" ) || ( param.type.type == "void" ) )
+    if ( param.type.name.starts_with( "Vk" ) || ( param.type.name == "void" ) )
     {
       argument = "reinterpret_cast<" + param.type.compose( "" ) + ">( " + argument + " )";
     }
@@ -2691,7 +2960,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedNonConstPointer( Par
   if ( param.lenExpression.empty() || ( param.lenExpression == "1" ) )
   {
     assert( param.arraySizes.empty() );
-    if ( param.type.type.starts_with( "Vk" ) )
+    if ( param.type.name.starts_with( "Vk" ) )
     {
       argument = "reinterpret_cast<" + param.type.compose( "" ) + ">( &" + name + " )";
     }
@@ -2719,7 +2988,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedNonConstPointer( Par
         // get the data of the array, which also covers no data -> no need to look at param.optional
         argument = name + ".data()";
       }
-      if ( param.type.type.starts_with( "Vk" ) || ( param.type.type == "void" ) )
+      if ( param.type.name.starts_with( "Vk" ) || ( param.type.name == "void" ) )
       {
         argument = "reinterpret_cast<" + param.type.compose( "" ) + ">( " + argument + " )";
       }
@@ -2734,7 +3003,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue(
   std::string       argument;
   ParamData const & param = params[paramIndex];
   assert( ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) || param.lenExpression.empty() );  // !keepVoidPtr -> no lenExpression
-  if ( param.type.type.starts_with( "Vk" ) )
+  if ( param.type.name.starts_with( "Vk" ) )
   {
     if ( param.arraySizes.empty() )
     {
@@ -2744,21 +3013,21 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue(
       {
         assert( !param.optional );
         argument = startLowerCase( stripPrefix( pointerIt->name, "p" ) ) + ".size()";
-        if ( pointerIt->type.type == "void" )
+        if ( pointerIt->type.name == "void" )
         {
           argument += " * sizeof( " + stripPrefix( pointerIt->name, "p" ) + "Type )";
         }
       }
-      else if ( raiiFactory && m_handles.contains( param.type.type ) )
+      else if ( raiiFactory && m_handles.contains( param.type.name ) )
       {
         assert( param.type.isValue() && param.lenExpression.empty() );
         if ( param.optional )
         {
-          argument = param.name + " ? static_cast<" + param.type.type + ">( **" + param.name + " ) : 0";
+          argument = param.name + " ? static_cast<" + param.type.name + ">( **" + param.name + " ) : 0";
         }
         else
         {
-          argument = "static_cast<" + param.type.type + ">( *" + param.name + " )";
+          argument = "static_cast<" + param.type.name + ">( *" + param.name + " )";
         }
       }
       else
@@ -2766,7 +3035,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue(
         assert( param.type.isValue() );
         // parameters named "objectType" collide with the member variable -> append an _ to here
         std::string paramName = ( param.name == "objectType" ) ? "objectType_" : param.name;
-        argument              = "static_cast<" + param.type.type + ">( " + paramName + " )";
+        argument              = "static_cast<" + param.type.name + ">( " + paramName + " )";
       }
       // check if this param is used as the stride of an other param
       assert( std::ranges::none_of( params, [paramIndex]( ParamData const & pd ) { return pd.strideParam.second == paramIndex; } ) );
@@ -2782,14 +3051,14 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue(
   else
   {
     auto pointerIt = std::ranges::find_if( params, [&param]( ParamData const & pd ) { return pd.lenExpression == param.name; } );
-    if ( ( pointerIt != params.end() ) && !( ( pointerIt->type.type == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) ) )
+    if ( ( pointerIt != params.end() ) && !( ( pointerIt->type.name == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) ) )
     {
       // this parameter is the len of some other -> replace it with that parameter's size
       assert( param.arraySizes.empty() );
-      assert( ( param.type.type == "size_t" ) || ( param.type.type == "uint32_t" ) );
+      assert( ( param.type.name == "size_t" ) || ( param.type.name == "uint32_t" ) );
       if ( singularParams.contains( paramIndex ) )
       {
-        if ( pointerIt->type.type == "void" )
+        if ( pointerIt->type.name == "void" )
         {
           argument = "sizeof( " + stripPrefix( pointerIt->name, "p" ) + "Type )";
         }
@@ -2801,7 +3070,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue(
       else
       {
         argument = startLowerCase( stripPrefix( pointerIt->name, "p" ) ) + ".size()";
-        if ( pointerIt->type.type == "void" )
+        if ( pointerIt->type.name == "void" )
         {
           argument += " * sizeof( " + stripPrefix( pointerIt->name, "p" ) + "Type )";
         }
@@ -2815,7 +3084,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue(
       {
         // this parameter is the stride of some other -> replace it with that parameter's stride
         assert( param.arraySizes.empty() );
-        assert( param.type.type == "uint32_t" );
+        assert( param.type.name == "uint32_t" );
         assert( pointerIt->strideParam.first == param.name );
         argument = startLowerCase( stripPrefix( pointerIt->name, "p" ) ) + ".stride()";
       }
@@ -2847,13 +3116,13 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
   {
 #if !defined( NDEBUG )
     auto paramIt = std::ranges::find_if( commandData.params, []( ParamData const & pd ) { return pd.name == "pCreateInfo"; } );
-    assert( paramIt != commandData.params.end() && ( paramIt->type.type == "VkPipelineBinaryCreateInfoKHR" ) );
+    assert( paramIt != commandData.params.end() && ( paramIt->type.name == "VkPipelineBinaryCreateInfoKHR" ) );
     auto structIt = m_structs.find( "VkPipelineBinaryCreateInfoKHR" );
     assert( ( structIt != m_structs.end() ) &&
             std::ranges::any_of( structIt->second.members, []( MemberData const & md ) { return md.name == "pipeline"; } ) &&
             std::ranges::any_of( structIt->second.members, []( MemberData const & md ) { return md.name == "pPipelineCreateInfo"; } ) );
     auto memberIt = std::ranges::find_if( structIt->second.members, []( MemberData const & md ) { return md.name == "pKeysAndDataInfo"; } );
-    assert( memberIt != structIt->second.members.end() && ( memberIt->type.type == "VkPipelineBinaryKeysAndDataKHR" ) );
+    assert( memberIt != structIt->second.members.end() && ( memberIt->type.name == "VkPipelineBinaryKeysAndDataKHR" ) );
     structIt = m_structs.find( "VkPipelineBinaryKeysAndDataKHR" );
     assert( ( structIt != m_structs.end() ) &&
             std::ranges::any_of( structIt->second.members, []( MemberData const & md ) { return md.name == "binaryCount"; } ) );
@@ -2907,7 +3176,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
     std::string vectorName, vectorSize;
     if ( vectorParamIt->second.byStructure )
     {
-      auto structIt = m_structs.find( commandData.params[vectorParamIt->first].type.type );
+      auto structIt = m_structs.find( commandData.params[vectorParamIt->first].type.name );
       assert( structIt != m_structs.end() );
       vectorName = structIt->second.members.back().name;
       vectorSize = startLowerCase( stripPrefix( commandData.params[vectorParamIt->first].name, "p" ) ) +
@@ -2927,7 +3196,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
       // chained data needs some more handling!!
       std::string vectorElementType = stripPostfix( commandData.params[vectorParamIt->first].type.compose( "Vk" ), " *" );
 
-      if ( commandData.returnType.type == "VkResult" )
+      if ( commandData.returnType.name == "VkResult" )
       {
         std::string const callSequenceTemplate = R"(Result result;
     do
@@ -2947,7 +3216,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
 
         return replaceWithMap( callSequenceTemplate,
                                { { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIt->second.lenParam].name, "p" ) ) },
-                                 { "counterType", commandData.params[vectorParamIt->second.lenParam].type.type },
+                                 { "counterType", commandData.params[vectorParamIt->second.lenParam].type.name },
                                  { "dispatcher", dispatcher },
                                  { "firstCallArguments", firstCallArguments },
                                  { "secondCallArguments", secondCallArguments },
@@ -2969,7 +3238,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
 
         return replaceWithMap( callSequenceTemplate,
                                { { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIt->second.lenParam].name, "p" ) ) },
-                                 { "counterType", commandData.params[vectorParamIt->second.lenParam].type.type },
+                                 { "counterType", commandData.params[vectorParamIt->second.lenParam].type.name },
                                  { "dispatcher", dispatcher },
                                  { "firstCallArguments", firstCallArguments },
                                  { "secondCallArguments", secondCallArguments },
@@ -2978,7 +3247,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
                                  { "vkCommand", name } } );
       }
     }
-    else if ( commandData.returnType.type == "VkResult" )
+    else if ( commandData.returnType.name == "VkResult" )
     {
       std::string resizes;
       for ( auto const & vp : vectorParams )
@@ -3075,7 +3344,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
       }
 
       // no need to enumerate here, just two calls
-      assert( commandData.returnType.type == "void" );
+      assert( commandData.returnType.name == "void" );
       std::string const callSequenceTemplate = R"(${dispatcher}${vkCommand}( ${firstCallArguments} );
     ${resizeInstructions}
     ${dispatcher}${vkCommand}( ${secondCallArguments} );)";
@@ -3088,7 +3357,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
                                { "vkCommand", name } } );
     }
   }
-  else if ( ( commandData.returnType.type == "VkResult" ) && ( ( 1 < commandData.successCodes.size() ) || !commandData.errorCodes.empty() ) )
+  else if ( ( commandData.returnType.name == "VkResult" ) && ( ( 1 < commandData.successCodes.size() ) || !commandData.errorCodes.empty() ) )
   {
     std::string const callSequenceTemplate = R"(Result result = static_cast<Result>( ${dispatcher}${vkCommand}( ${callArguments} ) );)";
 
@@ -3191,7 +3460,7 @@ std::string VulkanHppGenerator::generateCommand0Returns(
                                         false,
                                         { CommandFlavourFlagBits::enhanced } );
   }
-  else if ( commandData.returnType.type != "VkResult" )
+  else if ( commandData.returnType.name != "VkResult" )
   {
     // command has no pointer parameters and does not return a VkResult
     return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, {}, {}, false, {}, raii, false, { CommandFlavourFlagBits::enhanced } );
@@ -3256,7 +3525,7 @@ std::string VulkanHppGenerator::generateCommand1ReturnsStruct( std::string const
       else
       {
         // the returnType is an extendable struct (without a handle or a vector)
-        std::string const & returnType = commandData.params[returnParam].type.type;
+        std::string const & returnType = commandData.params[returnParam].type.name;
         if ( !structureChainHoldsHandle( returnType ) )
         {
           // there's no handle in the structure chain of the returnType struct
@@ -3303,15 +3572,15 @@ std::string VulkanHppGenerator::generateCommand1ReturnsValue( std::string const 
                                                               size_t                                    returnParam,
                                                               std::map<size_t, VectorParamData> const & vectorParams ) const
 {
-  std::string const & returnType = commandData.params[returnParam].type.type;
+  std::string const & returnType = commandData.params[returnParam].type.name;
   if ( bool isHandle = isHandleType( returnType ); isHandle ||
-                                                   m_baseTypes.contains( returnType ) ||
-                                                   m_bitmasks.contains( returnType ) ||
+                                                   m_vkxml.baseTypes.contains( returnType ) ||
+                                                   m_vkxml.bitmasks.contains( returnType ) ||
                                                    m_enums.contains( returnType ) ||
-                                                   m_externalTypes.contains( returnType ) )
+                                                   m_vkxml.externalTypes.contains( returnType ) )
   {
     // the returnType is a handle or some basic type
-    bool unique = isHandle && ( commandData.returnType.type == "VkResult" );  // only if the return type is VkResult, we need to have a unique version
+    bool unique = isHandle && ( commandData.returnType.name == "VkResult" );  // only if the return type is VkResult, we need to have a unique version
     return generateCommandSetInclusive( name,
                                         commandData,
                                         initialSkipCount,
@@ -3340,7 +3609,7 @@ std::string VulkanHppGenerator::generateCommand1ReturnsVector( std::string const
                                                                size_t                                    returnParam,
                                                                std::map<size_t, VectorParamData> const & vectorParams ) const
 {
-  std::string const & returnType = commandData.params[returnParam].type.type;
+  std::string const & returnType = commandData.params[returnParam].type.name;
   if ( returnType == "void" )
   {
     // the retunType is a vector of void
@@ -3359,7 +3628,7 @@ std::string VulkanHppGenerator::generateCommand1ReturnsVector( std::string const
   else if ( isHandleType( returnType ) )
   {
     // the returnType is a vector of handles
-    bool unique = ( commandData.returnType.type == "VkResult" );  // only if the return type is VkResult, we need to have a unique version
+    bool unique = ( commandData.returnType.name == "VkResult" );  // only if the return type is VkResult, we need to have a unique version
     std::vector<CommandFlavourFlags> flavourFlags     = { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator };
     std::vector<CommandFlavourFlags> raiiFlavourFlags = { CommandFlavourFlagBits::enhanced };
     if ( containsByName( commandData.params, commandData.params[returnParam].lenExpression ) )
@@ -3479,7 +3748,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsEnum( std::string const &
                                                              std::vector<size_t> const &               returnParams,
                                                              std::map<size_t, VectorParamData> const & vectorParams ) const
 {
-  std::string const & returnType1 = commandData.params[returnParams[1]].type.type;
+  std::string const & returnType1 = commandData.params[returnParams[1]].type.name;
   if ( isHandleType( returnType1 ) )
   {
     // the return params specify an enumaration of handles
@@ -3577,11 +3846,11 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
                                                                    std::vector<size_t> const &               returnParams,
                                                                    std::map<size_t, VectorParamData> const & vectorParams ) const
 {
-  std::string const & returnType0 = commandData.params[returnParams[0]].type.type;
-  std::string const & returnType1 = commandData.params[returnParams[1]].type.type;
-  if ( m_baseTypes.contains( returnType0 ) )
+  std::string const & returnType0 = commandData.params[returnParams[0]].type.name;
+  std::string const & returnType1 = commandData.params[returnParams[1]].type.name;
+  if ( m_vkxml.baseTypes.contains( returnType0 ) )
   {
-    if ( m_baseTypes.contains( returnType1 ) )
+    if ( m_vkxml.baseTypes.contains( returnType1 ) )
     {
       // both types are just base types -> create a standard and an enhanced version
       return generateCommandSetInclusive( name,
@@ -3597,7 +3866,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
                                           { CommandFlavourFlagBits::enhanced } );
     }
   }
-  else if ( m_externalTypes.contains( returnType0 ) )
+  else if ( m_vkxml.externalTypes.contains( returnType0 ) )
   {
     if ( returnType1 == "void" )
     {
@@ -3618,7 +3887,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
         if ( !isStructureChainAnchor( returnType0 ) )
         {
           // the first return param is a single, not extendable struct without handles or vectors
-          if ( m_externalTypes.contains( returnType1 ) )
+          if ( m_vkxml.externalTypes.contains( returnType1 ) )
           {
             // the second return param is just some basic type
             return generateCommandSetInclusive( name,
@@ -3648,10 +3917,10 @@ std::string VulkanHppGenerator::generateCommand2ReturnsVectorValue( std::string 
                                                                     std::vector<size_t> const &               returnParams,
                                                                     std::map<size_t, VectorParamData> const & vectorParams ) const
 {
-  if ( commandData.params[returnParams[0]].type.type == "uint64_t" )
+  if ( commandData.params[returnParams[0]].type.name == "uint64_t" )
   {
     // the first return param is a vector of uint64_t
-    if ( commandData.params[returnParams[1]].type.type == "uint64_t" )
+    if ( commandData.params[returnParams[1]].type.name == "uint64_t" )
     {
       // the second return param is a uint64_t
       return generateCommandSetInclusive( name,
@@ -3667,7 +3936,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsVectorValue( std::string 
                                           { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
     }
   }
-  else if ( auto structIt = findByNameOrAlias( m_structs, commandData.params[returnParams[0]].type.type ); structIt != m_structs.end() )
+  else if ( auto structIt = findByNameOrAlias( m_structs, commandData.params[returnParams[0]].type.name ); structIt != m_structs.end() )
   {
     // the first return param is a vector of structs
     if ( !structureHoldsHandle( structIt->second ) )
@@ -3693,7 +3962,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsVectorVector( std::string
                                                                      std::vector<size_t> const &               returnParams,
                                                                      std::map<size_t, VectorParamData> const & vectorParams ) const
 {
-  if ( auto structIt = findByNameOrAlias( m_structs, commandData.params[returnParams[0]].type.type ); structIt != m_structs.end() )
+  if ( auto structIt = findByNameOrAlias( m_structs, commandData.params[returnParams[0]].type.name ); structIt != m_structs.end() )
   {
     // the first return param is a vector of structs
     if ( !structureHoldsHandle( structIt->second ) )
@@ -3753,10 +4022,10 @@ std::string VulkanHppGenerator::generateCommand3ReturnsEnumEnum( std::string con
 {
   assert( returnParams.size() == 3 );
 
-  if ( m_externalTypes.contains( commandData.params[returnParams[1]].type.type ) )
+  if ( m_vkxml.externalTypes.contains( commandData.params[returnParams[1]].type.name ) )
   {
     // the first enumerated type is some external type
-    if ( m_externalTypes.contains( commandData.params[returnParams[2]].type.type ) )
+    if ( m_vkxml.externalTypes.contains( commandData.params[returnParams[2]].type.name ) )
     {
       // both enumerated types are some external types
       return generateCommandSetInclusive( name,
@@ -3772,7 +4041,7 @@ std::string VulkanHppGenerator::generateCommand3ReturnsEnumEnum( std::string con
                                           { CommandFlavourFlagBits::enhanced } );
     }
   }
-  else if ( auto structIt1 = findByNameOrAlias( m_structs, commandData.params[returnParams[1]].type.type ); structIt1 != m_structs.end() )
+  else if ( auto structIt1 = findByNameOrAlias( m_structs, commandData.params[returnParams[1]].type.name ); structIt1 != m_structs.end() )
   {
     // the first enumerated return param is a vector of structs
     if ( !structureHoldsHandle( structIt1->second ) )
@@ -3784,7 +4053,7 @@ std::string VulkanHppGenerator::generateCommand3ReturnsEnumEnum( std::string con
         if ( structIt1->second.extendedBy.empty() )
         {
           // the first enumerated return param is a vector of non-extendable structs without handles or vectors
-          if ( auto structIt2 = findByNameOrAlias( m_structs, commandData.params[returnParams[2]].type.type ); structIt2 != m_structs.end() )
+          if ( auto structIt2 = findByNameOrAlias( m_structs, commandData.params[returnParams[2]].type.name ); structIt2 != m_structs.end() )
           {
             if ( !structureHoldsHandle( structIt2->second ) )
             {
@@ -3827,10 +4096,10 @@ std::string VulkanHppGenerator::generateCommand3ReturnsEnumValue( std::string co
 {
   assert( returnParams.size() == 3 );
 
-  if ( m_enums.contains( commandData.params[returnParams[1]].type.type ) )
+  if ( m_enums.contains( commandData.params[returnParams[1]].type.name ) )
   {
     // the enumerated type is an enum
-    if ( m_bitmasks.contains( commandData.params[returnParams[2]].type.type ) )
+    if ( m_vkxml.bitmasks.contains( commandData.params[returnParams[2]].type.name ) )
     {
       // the third return type is a bitmask
       return generateCommandSetInclusive( name,
@@ -3859,8 +4128,8 @@ std::string VulkanHppGenerator::generateCommand3ReturnsValueEnum( std::string co
 {
   assert( returnParams.size() == 3 );
 
-  std::string const & returnType2 = commandData.params[returnParams[2]].type.type;
-  if ( auto structIt0 = findByNameOrAlias( m_structs, commandData.params[returnParams[0]].type.type ); structIt0 != m_structs.end() )
+  std::string const & returnType2 = commandData.params[returnParams[2]].type.name;
+  if ( auto structIt0 = findByNameOrAlias( m_structs, commandData.params[returnParams[0]].type.name ); structIt0 != m_structs.end() )
   {
     // the first return param is a struct
     if ( !structureHoldsHandle( structIt0->second ) )
@@ -3969,7 +4238,7 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::string const & 
                                             ( command == "vkReleaseDisplayEXT" ) ) )
   {
     CommandData specialCommandData = commandIt->second;
-    assert( ( 1 < specialCommandData.params.size() ) && ( specialCommandData.params[0].type.type == handle ) );
+    assert( ( 1 < specialCommandData.params.size() ) && ( specialCommandData.params[0].type.name == handle ) );
     specialCommandData.params[1].optional = false;  // make sure, the object to destroy/free/release is not optional in the shortened version!
 
     std::string destroyCommandString = generateCommand( command, specialCommandData, handle.empty() ? 0 : 1, true, false );
@@ -4062,7 +4331,7 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
   std::string nodiscard           = generateNoDiscard( !returnParams.empty(), 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
   std::string returnType          = generateReturnType( returnParams, vectorParams, flavourFlags, false, dataTypes );
   std::string decoratedReturnType = generateDecoratedReturnType( commandData, returnParams, vectorParams, enumerating, flavourFlags, returnType );
-  std::string className           = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "";
+  std::string className           = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.name, "Vk" ) : "";
   std::string classSeparator      = commandData.handle.empty() ? "" : "::";
   std::string commandName         = generateCommandName( name, commandData.params, initialSkipCount, flavourFlags );
   std::string argumentList        = generateArgumentListEnhanced( commandData.params,
@@ -4097,7 +4366,7 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
                            classSeparator,
                            commandName,
                            enumerating,
-                           ( returnParams.size() == 1 ) && ( commandData.params[returnParams[0]].type.type == "VkPipeline" ) && !singular,
+                           ( returnParams.size() == 1 ) && ( commandData.params[returnParams[0]].type.name == "VkPipeline" ) && !singular,
                            false );
     std::string returnStatement = generateReturnStatement( name,
                                                            commandData,
@@ -4182,7 +4451,7 @@ std::string VulkanHppGenerator::generateCommandName( std::string const &        
   std::string commandName( startLowerCase( stripPrefix( vulkanCommandName, "vk" ) ) );
   for ( size_t i = initialSkipCount - 1; i < initialSkipCount; --i )  // count down to zero, then wrap around and stop
   {
-    std::string const & argumentType = params[i].type.type;
+    std::string const & argumentType = params[i].type.name;
     std::string         searchName   = stripPrefix( argumentType, "Vk" );
     std::string         argumentTag  = findTag( argumentType );
     if ( !argumentTag.empty() )
@@ -4328,7 +4597,7 @@ std::string VulkanHppGenerator::generateCommandSetInclusive( std::string const &
       if ( std::ranges::any_of( vectorParams,
                                 [&commandData, &returnParams]( std::pair<size_t, VectorParamData> const & vpd )
                                 {
-                                  return ( commandData.params[vpd.first].type.type == "void" ) &&
+                                  return ( commandData.params[vpd.first].type.name == "void" ) &&
                                          std::ranges::none_of( returnParams, [&vpd]( size_t returnParam ) { return vpd.second.lenParam == returnParam; } );
                                 } ) )
       {
@@ -4378,16 +4647,16 @@ std::string VulkanHppGenerator::generateCommandStandard(
   std::string argumentList = generateArgumentListStandard( commandData.params, skippedParams, definition, raii, true );
   std::string commandName  = generateCommandName( name, commandData.params, initialSkipCount );
   std::string nodiscard    = ( 1 < commandData.successCodes.size() + commandData.errorCodes.size() ) ? "VULKAN_HPP_NODISCARD " : "";
-  std::string returnType   = stripPrefix( commandData.returnType.type, "Vk" );
+  std::string returnType   = stripPrefix( commandData.returnType.name, "Vk" );
 
   if ( definition )
   {
     std::string functionBody = "d." + name + "( " + generateCallArgumentsStandard( commandData.params, initialSkipCount ) + " )";
-    if ( commandData.returnType.type.starts_with( "Vk" ) )
+    if ( commandData.returnType.name.starts_with( "Vk" ) )
     {
       functionBody = "return static_cast<" + returnType + ">( " + functionBody + " )";
     }
-    else if ( commandData.returnType.type != "void" )
+    else if ( commandData.returnType.name != "void" )
     {
       functionBody = "return " + functionBody;
     }
@@ -4403,7 +4672,7 @@ std::string VulkanHppGenerator::generateCommandStandard(
 
     return replaceWithMap( functionTemplate,
                            { { "argumentList", argumentList },
-                             { "className", initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "" },
+                             { "className", initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.name, "Vk" ) : "" },
                              { "classSeparator", commandData.handle.empty() ? "" : "::" },
                              { "commandName", commandName },
                              { "const", commandData.handle.empty() ? "" : " const" },
@@ -4445,16 +4714,15 @@ std::string VulkanHppGenerator::generateConstexprString( std::pair<std::string, 
 std::string VulkanHppGenerator::generateConstexprDefines() const
 {
   auto const constexprFunctionTemplate = std::string{ R"(  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
-  ${deprecated}VULKAN_HPP_CONSTEXPR uint32_t ${constName}( ${arguments} )
+  VULKAN_HPP_CONSTEXPR uint32_t ${constName}( ${arguments} )
   {
     return ${implementation};
   }
 )" };
-  auto const constexprCallTemplate     = std::string{ R"(  ${deprecated}VULKAN_HPP_CONSTEXPR_INLINE auto ${constName} = ${callee}( ${arguments} );
+  auto const constexprCallTemplate     = std::string{ R"(  VULKAN_HPP_CONSTEXPR_INLINE auto ${constName} = ${callee}( ${arguments} );
 )" };
-  auto const constexprValueTemplate    = std::string{ R"(  ${deprecated}VULKAN_HPP_CONSTEXPR_INLINE ${type} ${constName} = ${value};
+  auto const constexprValueTemplate    = std::string{ R"(  VULKAN_HPP_CONSTEXPR_INLINE ${type} ${constName} = ${value};
 )" };
-  auto const deprecatedAttribute       = std::string{ R"(VULKAN_HPP_DEPRECATED("${reason}") )" };
 
   // handle the value and callee macros first so they are visible for use in functions below.
 
@@ -4471,12 +4739,11 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
       std::string constants;
       forEachRequiredConstant( requireData,
                                listedConstants,
-                               [&constants, &constexprValueTemplate, this]( std::pair<std::string, ConstantData> const & constantData )
+                               [&constants, &constexprValueTemplate, this]( std::pair<std::string, Constant> const & constantData )
                                {
                                  constants += replaceWithMap( constexprValueTemplate,
                                                               { { "type", constantData.second.type },
                                                                 { "constName", generateTaggedCamelCase( constantData.first ) },
-                                                                { "deprecated", "" },
                                                                 { "value", constantData.first } } );
                                } );
       return addTitleAndProtection( title, constants );
@@ -4501,12 +4768,9 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
 )";
   for ( auto const & [macro, data] : m_definesPartition.values )
   {
-    auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
-
     // make `macro` PascalCase and strip the `Vk` prefix
-    auto const constName = stripPrefix( toCamelCase( macro ), "Vk" );
-    auto const valueString =
-      replaceWithMap( constexprValueTemplate, { { "type", "uint32_t" }, { "constName", constName }, { "deprecated", deprecated }, { "value", macro } } );
+    auto const constName   = stripPrefix( toCamelCase( macro ), "Vk" );
+    auto const valueString = replaceWithMap( constexprValueTemplate, { { "type", "uint32_t" }, { "constName", constName }, { "value", macro } } );
 
     constexprDefines += valueString;
   }
@@ -4519,7 +4783,6 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
 )";
   for ( auto const & [macro, data] : m_definesPartition.callees )
   {
-    auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
     // make `macro` camelCase and strip the `Vk` prefix
     auto const constName = startLowerCase( stripPrefix( toCamelCase( macro ), "Vk" ) );
     // for every parameter, need to use auto const and append a comma if needed (i.e. has more than one parameter, and not for the last one)
@@ -4532,8 +4795,7 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     parametersString.resize( parametersString.size() - 2 );
 
     auto const functionString = replaceWithMap(
-      constexprFunctionTemplate,
-      { { "arguments", parametersString }, { "constName", constName }, { "deprecated", deprecated }, { "implementation", data.possibleDefinition } } );
+      constexprFunctionTemplate, { { "arguments", parametersString }, { "constName", constName }, { "implementation", data.possibleDefinition } } );
 
     constexprDefines += functionString;
   }
@@ -4546,7 +4808,6 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
 )";
   for ( auto const & [macro, data] : m_definesPartition.callers )
   {
-    auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
     // make `macro` PascalCase and strip the `Vk` prefix
     auto const constName       = stripPrefix( toCamelCase( macro ), "Vk" );
     auto       argumentsString = std::string{};
@@ -4560,8 +4821,7 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     argumentsString.resize( argumentsString.size() - 2 );
 
     auto const callerString = replaceWithMap(
-      constexprCallTemplate,
-      { { "arguments", argumentsString }, { "callee", startLowerCase( data.possibleCallee ) }, { "constName", constName }, { "deprecated", deprecated } } );
+      constexprCallTemplate, { { "arguments", argumentsString }, { "callee", startLowerCase( data.possibleCallee ) }, { "constName", constName } } );
     constexprDefines += callerString;
   }
 
@@ -4733,7 +4993,7 @@ std::string VulkanHppGenerator::generateDataDeclarations1Return( CommandData con
     return replaceWithMap( dataDeclarationsTemplate,
                            { { "dataType", dataTypes[0] },
                              { "dataVariable", dataVariable },
-                             { "returnType", ( commandData.returnType.type == "void" ) ? returnType : "StructureChain<X, Y, Z...>" },
+                             { "returnType", ( commandData.returnType.name == "void" ) ? returnType : "StructureChain<X, Y, Z...>" },
                              { "returnVariable", returnVariable } } );
   }
 }
@@ -5052,7 +5312,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
 
         return replaceWithMap( dataPreparationTemplate,
                                { { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIt->second.lenParam].name, "p" ) ) },
-                                 { "counterType", commandData.params[vectorParamIt->second.lenParam].type.type },
+                                 { "counterType", commandData.params[vectorParamIt->second.lenParam].type.name },
                                  { "vectorElementType", vectorElementType },
                                  { "vectorName", vectorName } } );
       }
@@ -5066,7 +5326,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
 
         return replaceWithMap( dataPreparationTemplate,
                                { { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIt->second.lenParam].name, "p" ) ) },
-                                 { "counterType", commandData.params[vectorParamIt->second.lenParam].type.type },
+                                 { "counterType", commandData.params[vectorParamIt->second.lenParam].type.name },
                                  { "vectorElementType", vectorElementType },
                                  { "vectorName", vectorName } } );
       }
@@ -5106,13 +5366,13 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
   }
   else if ( unique && !singular && ( returnParams.size() == 1 ) && vectorParams.contains( returnParams[0] ) )
   {
-    std::string className = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "";
+    std::string className = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.name, "Vk" ) : "";
     std::string deleterDefinition, vectorName, vectorSize;
     vectorParamIt = vectorParams.find( returnParams[0] );
     if ( vectorParamIt != vectorParams.end() && vectorParamIt->second.byStructure )
     {
       deleterDefinition = "detail::ObjectDestroy<" + className + ", Dispatch> deleter( *this, allocator, d )";
-      auto structIt     = m_structs.find( commandData.params[returnParams[0]].type.type );
+      auto structIt     = m_structs.find( commandData.params[returnParams[0]].type.name );
       assert( structIt != m_structs.end() );
       vectorName = startLowerCase( stripPrefix( structIt->second.members.back().name, "p" ) );
       vectorSize = vectorName + ".size()";
@@ -5128,7 +5388,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
             auto vpiIt = vectorParams.find( returnParams[0] );
             assert( vpiIt != vectorParams.end() );
             std::string poolType, poolName;
-            std::tie( poolType, poolName ) = getPoolTypeAndName( commandData.params[vpiIt->second.lenParam].type.type );
+            std::tie( poolType, poolName ) = getPoolTypeAndName( commandData.params[vpiIt->second.lenParam].type.name );
             assert( !poolType.empty() );
             poolType          = stripPrefix( poolType, "Vk" );
             poolName          = startLowerCase( stripPrefix( lenParts[0], "p" ) ) + "." + poolName;
@@ -5138,7 +5398,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
         default: assert( false ); break;
       }
       vectorName = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
-      vectorSize = getVectorSize( commandData.params, vectorParams, returnParams[0], commandData.params[returnParams[0]].type.type, templatedParams );
+      vectorSize = getVectorSize( commandData.params, vectorParams, returnParams[0], commandData.params[returnParams[0]].type.name, templatedParams );
     }
 
     std::string handleType       = stripPrefix( dataTypes[0], "VULKAN_HPP_NAMESPACE::" );
@@ -5221,33 +5481,33 @@ std::string VulkanHppGenerator::generateDecoratedReturnType( CommandData const &
   std::string decoratedReturnType;
   if ( ( 1 < commandData.successCodes.size() ) && returnParams.empty() && !chained )
   {
-    assert( ( commandData.returnType.type == "VkResult" ) && !unique );
+    assert( ( commandData.returnType.name == "VkResult" ) && !unique );
     decoratedReturnType = "Result";
   }
-  else if ( ( commandData.returnType.type != "VkResult" ) && ( commandData.returnType.type != "void" ) && returnParams.empty() )
+  else if ( ( commandData.returnType.name != "VkResult" ) && ( commandData.returnType.name != "void" ) && returnParams.empty() )
   {
     assert( !chained && !unique );
-    if ( commandData.returnType.type.starts_with( "Vk" ) )
+    if ( commandData.returnType.name.starts_with( "Vk" ) )
     {
-      decoratedReturnType = stripPrefix( commandData.returnType.type, "Vk" );
+      decoratedReturnType = stripPrefix( commandData.returnType.name, "Vk" );
     }
-    else if ( commandData.returnType.type.starts_with( "PFN_vk" ) )
+    else if ( commandData.returnType.name.starts_with( "PFN_vk" ) )
     {
-      decoratedReturnType = "PFN_" + stripPrefix( commandData.returnType.type, "PFN_vk" );
+      decoratedReturnType = "PFN_" + stripPrefix( commandData.returnType.name, "PFN_vk" );
     }
     else
     {
-      decoratedReturnType = commandData.returnType.type;
+      decoratedReturnType = commandData.returnType.name;
     }
   }
-  else if ( ( commandData.returnType.type == "void" ) ||
-            ( ( commandData.returnType.type == "VkResult" ) && ( commandData.successCodes.size() == 1 ) && commandData.errorCodes.empty() ) )
+  else if ( ( commandData.returnType.name == "void" ) ||
+            ( ( commandData.returnType.name == "VkResult" ) && ( commandData.successCodes.size() == 1 ) && commandData.errorCodes.empty() ) )
   {
     assert( !unique );
-    assert( ( commandData.returnType.type != "void" ) || ( returnParams.size() <= 2 ) );
+    assert( ( commandData.returnType.name != "void" ) || ( returnParams.size() <= 2 ) );
     decoratedReturnType = returnType;
   }
-  else if ( commandData.returnType.type == "VkResult" )
+  else if ( commandData.returnType.name == "VkResult" )
   {
     assert( !commandData.successCodes.empty() && ( commandData.successCodes[0] == "VK_SUCCESS" ) );
     if ( ( commandData.successCodes.size() == 1 ) ||
@@ -5904,7 +6164,7 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
                                                      { { "commandName", command.name },
                                                        { "parameterList", parameterList },
                                                        { "parameters", parameters },
-                                                       { "returnType", commandData.second.returnType.type } } );
+                                                       { "returnType", commandData.second.returnType.name } } );
                             }
                           } );
   return addTitleAndProtection( title, str );
@@ -5915,8 +6175,8 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
   std::string baseType, bitmask;
   if ( enumData.second.isBitmask )
   {
-    auto bitmaskIt = std::ranges::find_if( m_bitmasks, [&enumData]( auto const & bitmask ) { return bitmask.second.require == enumData.first; } );
-    assert( bitmaskIt != m_bitmasks.end() );
+    auto bitmaskIt = std::ranges::find_if( m_vkxml.bitmasks, [&enumData]( auto const & bitmask ) { return bitmask.second.require == enumData.first; } );
+    assert( bitmaskIt != m_vkxml.bitmasks.end() );
     baseType = " : " + bitmaskIt->first;
     bitmask  = generateBitmask( bitmaskIt, surroundingProtect );
   }
@@ -5928,8 +6188,7 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
     if ( value.supported )
     {
       std::string valueName = generateEnumValueName( enumData.first, value.name, enumData.second.isBitmask );
-      checkForError( !valueName.empty(),
-                     value.xmlLine, "generated enum value name for <" + value.name + "> is empty for enum <" + enumData.first + ">" );
+      checkForError( !valueName.empty(), value.xmlLine, "generated enum value name for <" + value.name + "> is empty for enum <" + enumData.first + ">" );
       checkForError( valueToNameMap.insert( { valueName, value.name } ).second,
                      value.xmlLine,
                      "generated enum value name <" + valueName + "> already listed for enum <" + enumData.first + ">" );
@@ -6181,15 +6440,15 @@ std::string VulkanHppGenerator::generateEnumsToString( std::vector<RequireData> 
   return addTitleAndProtection( title, str );
 }
 
-std::string VulkanHppGenerator::generateEnumInitializer( TypeInfo const &                   type,
+std::string VulkanHppGenerator::generateEnumInitializer( Type const &                       type,
                                                          std::vector<std::string> const &   arraySizes,
                                                          std::vector<EnumValueData> const & values,
                                                          bool                               bitmask ) const
 {
   // enum arguments might need special initialization
   assert( type.prefix.empty() && !values.empty() );
-  std::string valueName = generateEnumValueName( type.type, values.front().name, bitmask );
-  std::string value     = stripPrefix( type.type, "Vk" ) + "::" + valueName;
+  std::string valueName = generateEnumValueName( type.name, values.front().name, bitmask );
+  std::string value     = stripPrefix( type.name, "Vk" ) + "::" + valueName;
   std::string str;
   if ( arraySizes.empty() )
   {
@@ -6198,8 +6457,8 @@ std::string VulkanHppGenerator::generateEnumInitializer( TypeInfo const &       
   else
   {
     assert( arraySizes.size() == 1 );
-    auto      constIt = m_constants.find( arraySizes[0] );
-    int const count   = std::stoi( ( constIt == m_constants.end() ) ? arraySizes[0] : constIt->second.value );
+    auto      constIt = m_vkxml.constants.find( arraySizes[0] );
+    int const count   = std::stoi( ( constIt == m_vkxml.constants.end() ) ? arraySizes[0] : constIt->second.value );
     assert( 1 < count );
     str += "{ { " + value;
     for ( int i = 1; i < count; i++ )
@@ -6293,7 +6552,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateEnumSuffixes( st
 
     // if the enum name contains a tag move it from the prefix to the postfix to generate correct enum value
     // names.
-    for ( auto const & tag : m_tags )
+    for ( auto const & tag : m_vkxml.tags )
     {
       if ( prefix.ends_with( tag.first + "_" ) )
       {
@@ -6797,18 +7056,18 @@ std::string VulkanHppGenerator::generateFormatTraitsList( EnumData const & enumD
   return list;
 }
 
-std::string VulkanHppGenerator::generateFuncPointer( std::pair<std::string, FuncPointerData> const & funcPointer, std::set<std::string> & listedStructs ) const
+std::string VulkanHppGenerator::generateFuncPointer( std::pair<std::string, FuncPointer> const & funcPointer, std::set<std::string> & listedStructs ) const
 {
   std::string str;
   for ( auto const & param : funcPointer.second.params )
   {
-    auto typeIt = m_types.find( param.type.type );
+    auto typeIt = m_types.find( param.type.name );
     assert( typeIt != m_types.end() );
     if ( ( typeIt->second.category == TypeCategory::Struct ) || ( typeIt->second.category == TypeCategory::Union ) )
     {
-      auto structIt = findByNameOrAlias( m_structs, param.type.type );
+      auto structIt = findByNameOrAlias( m_structs, param.type.name );
       assert( structIt != m_structs.end() );
-      if ( !listedStructs.contains( param.type.type ) )
+      if ( !listedStructs.contains( param.type.name ) )
       {
         str += generateStruct( *structIt, listedStructs );
       }
@@ -6860,8 +7119,8 @@ std::string VulkanHppGenerator::generateFuncPointerReturns() const
     {
       auto commandIt = findByNameOrAlias( m_commands, command );
       assert( commandIt != m_commands.end() );
-      auto funcPointerIt = m_funcPointers.find( commandIt->second.returnType.type );
-      if ( ( funcPointerIt != m_funcPointers.end() ) && !listedFuncPointers.contains( commandIt->second.returnType.type ) )
+      auto funcPointerIt = m_vkxml.funcPointers.find( commandIt->second.returnType.name );
+      if ( ( funcPointerIt != m_vkxml.funcPointers.end() ) && !listedFuncPointers.contains( commandIt->second.returnType.name ) )
       {
         assert( funcPointerIt->second.params.empty() );
         str += generateFuncPointer( *funcPointerIt, listedFuncPointers );
@@ -7103,8 +7362,8 @@ std::string VulkanHppGenerator::generateHandleDependencies( std::pair<std::strin
     assert( commandIt != m_commands.end() );
     for ( auto const & parameter : commandIt->second.params )
     {
-      auto handleIt = m_handles.find( parameter.type.type );
-      if ( ( handleIt != m_handles.end() ) && ( parameter.type.type != handleData.first ) && !listedHandles.contains( parameter.type.type ) )
+      auto handleIt = m_handles.find( parameter.type.name );
+      if ( ( handleIt != m_handles.end() ) && ( parameter.type.name != handleData.first ) && !listedHandles.contains( parameter.type.name ) )
       {
         str += generateHandle( *handleIt, listedHandles );
       }
@@ -7470,15 +7729,15 @@ std::string VulkanHppGenerator::generateLenInitializer(
     {
       initializer += " * 4";
     }
-    if ( ( arrayIt->type.type == "void" ) &&
+    if ( ( arrayIt->type.name == "void" ) &&
          ( std::count_if( arrayIt->type.postfix.begin(), arrayIt->type.postfix.end(), []( char c ) { return c == '*'; } ) < 2 ) )
     {
       initializer += " * sizeof(T)";
     }
   }
-  if ( mit->type.type != "size_t" )
+  if ( mit->type.name != "size_t" )
   {
-    initializer = "static_cast<" + mit->type.type + ">( " + initializer + " )";
+    initializer = "static_cast<" + mit->type.name + ">( " + initializer + " )";
   }
   if ( !litit->second.front()->arraySizes.empty() )
   {
@@ -7488,13 +7747,13 @@ std::string VulkanHppGenerator::generateLenInitializer(
   return initializer;
 }
 
-std::string VulkanHppGenerator::generateName( TypeInfo const & typeInfo ) const
+std::string VulkanHppGenerator::generateName( Type const & type ) const
 {
-  std::string name = stripPrefix( typeInfo.type, "Vk" );
-  assert( typeInfo.prefix.find( '*' ) == std::string::npos );
-  if ( typeInfo.postfix.find( '*' ) != std::string::npos )
+  std::string name = stripPrefix( type.name, "Vk" );
+  assert( type.prefix.find( '*' ) == std::string::npos );
+  if ( type.postfix.find( '*' ) != std::string::npos )
   {
-    assert( typeInfo.postfix.find_first_of( '*' ) == typeInfo.postfix.find_last_of( '*' ) );
+    assert( type.postfix.find_first_of( '*' ) == type.postfix.find_last_of( '*' ) );
     name = "p" + name;
   }
   else
@@ -7541,7 +7800,7 @@ std::string VulkanHppGenerator::generateObjectDeleter( std::string const & comma
   }
   else
   {
-    auto handleIt = m_handles.find( commandData.params[returnParam].type.type );
+    auto handleIt = m_handles.find( commandData.params[returnParam].type.name );
     assert( handleIt != m_handles.end() );
 
     if ( handleIt->second.deleteCommand.empty() )
@@ -7560,8 +7819,8 @@ std::string VulkanHppGenerator::generateObjectDeleter( std::string const & comma
     allocator = "allocator, ";
   }
 
-  std::string className  = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "";
-  std::string parentName = ( className.empty() || ( commandData.params[returnParam].type.type == "VkDevice" ) ) ? "detail::NoParent" : className;
+  std::string className  = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.name, "Vk" ) : "";
+  std::string parentName = ( className.empty() || ( commandData.params[returnParam].type.name == "VkDevice" ) ) ? "detail::NoParent" : className;
   return objectDeleter + "<" + parentName + ", Dispatch>( " + ( ( parentName == "detail::NoParent" ) ? "" : "*this, " ) + allocator + "d )";
 }
 
@@ -7970,7 +8229,7 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
     std::string debugReportObjectType =
       containsByNameOrAlias( enumIt->second.values, valueName ) ? generateEnumValueName( enumIt->first, valueName, false ) : "eUnknown";
 
-    std::string dispatcherType = ( ( handle.first == "VkDevice" ) || ( handle.second.constructorIts.front()->second.params.front().type.type == "VkDevice" ) )
+    std::string dispatcherType = ( ( handle.first == "VkDevice" ) || ( handle.second.constructorIts.front()->second.params.front().type.name == "VkDevice" ) )
                                  ? "detail::DeviceDispatcher"
                                  : "detail::InstanceDispatcher";
 
@@ -7978,7 +8237,7 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
     if ( ( handle.first != "VkInstance" ) && ( handle.first != "VkDevice" ) && ( handle.second.destructorIt != m_commands.end() ) )
     {
       assert( !handle.second.destructorIt->second.params.empty() );
-      std::string parentType = stripPrefix( handle.second.destructorIt->second.params.front().type.type, "Vk" );
+      std::string parentType = stripPrefix( handle.second.destructorIt->second.params.front().type.name, "Vk" );
       getParent              = "    VULKAN_HPP_NAMESPACE::" + parentType + " get" + parentType + "() const\n";
       getParent += "    {\n";
       getParent += "      return m_" + handle.second.destructorIt->second.params.front().name + ";\n";
@@ -8319,7 +8578,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandEnhanced( std::string c
                                                                 false );
   std::string commandName       = generateCommandName( name, commandData.params, initialSkipCount, flavourFlags );
   std::string nodiscard =
-    generateNoDiscard( !returnParams.empty() || ( ( commandData.returnType.type != "VkResult" ) && ( commandData.returnType.type != "void" ) ),
+    generateNoDiscard( !returnParams.empty() || ( ( commandData.returnType.name != "VkResult" ) && ( commandData.returnType.name != "void" ) ),
                        1 < commandData.successCodes.size(),
                        false );
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck =
@@ -8348,7 +8607,7 @@ ${vectorSizeCheck}
 
     std::string callSequence = generateCallSequence(
       name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, templatedParams, chainedReturnParams, flavourFlags, true, false );
-    std::string className        = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "Context";
+    std::string className        = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.name, "Vk" ) : "Context";
     std::string returnVariable   = generateReturnVariable( commandData, returnParams, vectorParams, flavourFlags );
     std::string dataDeclarations = generateDataDeclarations(
       commandData, returnParams, vectorParams, templatedParams, flavourFlags, true, dataTypes, returnDataType, returnType, returnVariable );
@@ -8361,7 +8620,7 @@ ${vectorSizeCheck}
                            "::",
                            commandName,
                            enumerating,
-                           ( returnParams.size() == 1 ) && ( commandData.params[returnParams[0]].type.type == "VkPipeline" ) && !singular,
+                           ( returnParams.size() == 1 ) && ( commandData.params[returnParams[0]].type.name == "VkPipeline" ) && !singular,
                            true );
     std::string returnStatement = generateReturnStatement( name,
                                                            commandData,
@@ -8422,10 +8681,10 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
                                                                   bool                                      definition,
                                                                   CommandFlavourFlags                       flavourFlags ) const
 {
-  assert( isHandleType( commandData.params[returnParams.back()].type.type ) ||
+  assert( isHandleType( commandData.params[returnParams.back()].type.name ) ||
           ( vectorParams.contains( returnParams.back() ) &&
             vectorParams.find( returnParams.back() )->second.byStructure &&
-            isHandleType( vectorMemberByStructure( commandData.params[returnParams.back()].type.type ).type.type ) ) );
+            isHandleType( vectorMemberByStructure( commandData.params[returnParams.back()].type.name ).type.name ) ) );
   assert( ( returnParams.size() == 1 ) || ( ( returnParams.size() == 2 ) &&
                                             ( vectorParams.size() == 1 ) &&
                                             ( returnParams[0] == vectorParams.begin()->second.lenParam ) &&
@@ -8443,11 +8702,11 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
   if ( ( vectorParams.size() == 1 ) && vectorParams.begin()->second.byStructure )
   {
     assert( vectorParams.begin()->first == returnParams.back() );
-    handleType = vectorMemberByStructure( commandData.params.back().type.type ).type.type;
+    handleType = vectorMemberByStructure( commandData.params.back().type.name ).type.name;
   }
   else
   {
-    handleType = commandData.params[returnParams.back()].type.type;
+    handleType = commandData.params[returnParams.back()].type.name;
   }
   auto handleIt = findByNameOrAlias( m_handles, handleType );
   assert( handleIt != m_handles.end() );
@@ -8475,7 +8734,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
 
   if ( definition )
   {
-    std::string              className      = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "Context";
+    std::string              className      = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.name, "Vk" ) : "Context";
     std::vector<std::string> dataTypes      = determineDataTypes( commandData.params, vectorParams, returnParams, {}, true );
     std::string              returnDataType = generateReturnDataType( vectorParams, returnParams, enumerating, dataTypes, flavourFlags, true );
     std::string              returnVariable = generateReturnVariable( commandData, returnParams, vectorParams, flavourFlags );
@@ -8483,11 +8742,11 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
     auto                     vectorParamIt = vectorParams.find( returnParams.back() );
     if ( ( vectorParamIt != vectorParams.end() ) && vectorParamIt->second.byStructure )
     {
-      vulkanType = vectorMemberByStructure( commandData.params[returnParams.back()].type.type ).type.type;
+      vulkanType = vectorMemberByStructure( commandData.params[returnParams.back()].type.name ).type.name;
     }
     else
     {
-      vulkanType = commandData.params[returnParams.back()].type.type;
+      vulkanType = commandData.params[returnParams.back()].type.name;
     }
 
     std::string dataDeclarations =
@@ -8563,17 +8822,17 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandStandard(
   std::set<size_t> skippedParams = determineSkippedParams( commandData.params, initialSkipCount, {}, {}, false );
   std::string      argumentList  = generateArgumentListStandard( commandData.params, skippedParams, definition, raii, false );
   std::string      commandName   = generateCommandName( name, commandData.params, initialSkipCount );
-  std::string      nodiscard     = ( commandData.returnType.type != "void" ) ? "VULKAN_HPP_NODISCARD" : "";
-  std::string      returnType    = stripPrefix( commandData.returnType.type, "Vk" );
+  std::string      nodiscard     = ( commandData.returnType.name != "void" ) ? "VULKAN_HPP_NODISCARD" : "";
+  std::string      returnType    = stripPrefix( commandData.returnType.name, "Vk" );
 
   if ( definition )
   {
     std::string functionBody = "getDispatcher()->" + name + "( " + generateCallArgumentsStandard( commandData.params, initialSkipCount ) + " )";
-    if ( commandData.returnType.type.starts_with( "Vk" ) )
+    if ( commandData.returnType.name.starts_with( "Vk" ) )
     {
       functionBody = "return static_cast<" + returnType + ">( " + functionBody + " )";
     }
-    else if ( commandData.returnType.type != "void" )
+    else if ( commandData.returnType.name != "void" )
     {
       functionBody = "return " + functionBody;
     }
@@ -8588,7 +8847,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandStandard(
 
     return replaceWithMap( functionTemplate,
                            { { "argumentList", argumentList },
-                             { "className", initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "Context" },
+                             { "className", initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.name, "Vk" ) : "Context" },
                              { "commandName", commandName },
                              { "functionBody", functionBody },
                              { "functionPointerCheck", generateFunctionPointerCheck( name, commandData.requiredBy, true ) },
@@ -8619,11 +8878,11 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
                                                                                        std::string const &                                leave ) const
 {
   std::string singularConstructor, arrayConstructor;
-  if ( constructorIt->second.returnType.type == "VkResult" )
+  if ( constructorIt->second.returnType.name == "VkResult" )
   {
     std::tie( singularConstructor, arrayConstructor ) = generateRAIIHandleConstructorResult( handle, constructorIt, enter, leave );
   }
-  else if ( constructorIt->second.returnType.type == "void" )
+  else if ( constructorIt->second.returnType.name == "void" )
   {
     std::tie( singularConstructor, arrayConstructor ) = generateRAIIHandleConstructorVoid( handle, constructorIt, enter, leave );
   }
@@ -8646,10 +8905,10 @@ std::pair<std::string, std::string>
   {
     if ( vectorParams.begin()->second.lenParam == std::next( vectorParams.begin() )->second.lenParam )
     {
-      if ( constructorIt->second.params[vectorParams.begin()->second.lenParam].type.type == "uint32_t" )
+      if ( constructorIt->second.params[vectorParams.begin()->second.lenParam].type.name == "uint32_t" )
       {
-        if ( ( constructorIt->second.params[vectorParams.begin()->first].type.type != "void" ) &&
-             !isHandleType( constructorIt->second.params[vectorParams.begin()->first].type.type ) )
+        if ( ( constructorIt->second.params[vectorParams.begin()->first].type.name != "void" ) &&
+             !isHandleType( constructorIt->second.params[vectorParams.begin()->first].type.name ) )
         {
           std::string singularConstructor;
           auto        lenParamIt = constructorIt->second.params.begin() + vectorParams.begin()->second.lenParam;
@@ -8695,10 +8954,10 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArgument( ParamData
   std::string argument;
   if ( param.type.isConstPointer() )
   {
-    assert( param.type.type.starts_with( "Vk" ) );
+    assert( param.type.name.starts_with( "Vk" ) );
     assert( param.name.starts_with( "p" ) );
     std::string argumentName = startLowerCase( stripPrefix( param.name, "p" ) );
-    std::string argumentType = stripPrefix( param.type.type, "Vk" );
+    std::string argumentType = stripPrefix( param.type.name, "Vk" );
     if ( param.optional )
     {
       assert( param.lenExpression.empty() );
@@ -8717,22 +8976,22 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArgument( ParamData
       argument = "ArrayProxy<" + argumentType + "> const & " + argumentName;
     }
   }
-  else if ( specialPointerTypes.contains( param.type.type ) )
+  else if ( specialPointerTypes.contains( param.type.name ) )
   {
     assert( !param.optional );
     assert( param.type.isNonConstPointer() );
-    argument = param.type.type + " & " + param.name;
+    argument = param.type.name + " & " + param.name;
   }
-  else if ( ( param.type.isValue() ) && isHandleType( param.type.type ) )
+  else if ( ( param.type.isValue() ) && isHandleType( param.type.name ) )
   {
     if ( takesOwnership )
     {
       assert( !param.optional );
-      argument = param.type.type + " " + param.name;
+      argument = param.type.name + " " + param.name;
     }
     else
     {
-      argument = stripPrefix( param.type.type, "Vk" );
+      argument = stripPrefix( param.type.name, "Vk" );
       if ( param.optional )
       {
         argument = "Optional<" + argument + " const>";
@@ -8777,22 +9036,22 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArguments( std::pai
     {
       ParamData const & param = constructorIt->second.params[i];
       // filter parent and handle type
-      if ( ( param.type.type != parentType ) && ( param.type.type != handle.first ) )
+      if ( ( param.type.name != parentType ) && ( param.type.name != handle.first ) )
       {
         // the specialPointerTypes are considered const-pointers!
-        if ( param.type.isNonConstPointer() && !specialPointerTypes.contains( param.type.type ) )
+        if ( param.type.isNonConstPointer() && !specialPointerTypes.contains( param.type.name ) )
         {
           // this is supposed to be the returned size on an enumeration function!
 #if !defined( NDEBUG )
-          if ( ( param.type.type == "size_t" ) || ( param.type.type == "uint32_t" ) )
+          if ( ( param.type.name == "size_t" ) || ( param.type.name == "uint32_t" ) )
           {
-            auto typeIt = std::ranges::find_if( constructorIt->second.params, [&handle]( ParamData const & pd ) { return pd.type.type == handle.first; } );
+            auto typeIt = std::ranges::find_if( constructorIt->second.params, [&handle]( ParamData const & pd ) { return pd.type.name == handle.first; } );
             assert( typeIt != constructorIt->second.params.end() );
             assert( typeIt->lenExpression == param.name );
           }
           else
           {
-            assert( vectorMemberByStructure( param.type.type ).type.type == handle.first );
+            assert( vectorMemberByStructure( param.type.name ).type.name == handle.first );
           }
 #endif
           continue;
@@ -8800,7 +9059,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArguments( std::pai
         else if ( std::ranges::any_of( constructorIt->second.params, [&param]( ParamData const & pd ) { return pd.lenExpression == param.name; } ) )
         {
           // this is the len of an other parameter, which will be mapped to an ArrayProxy
-          assert( param.type.isValue() && ( param.type.type == "uint32_t" ) );
+          assert( param.type.isValue() && ( param.type.name == "uint32_t" ) );
           assert( param.arraySizes.empty() && param.lenExpression.empty() && !param.optional );
           continue;
         }
@@ -8825,36 +9084,36 @@ std::string
   {
     for ( auto destructorParam : destructorIt->second.params )
     {
-      if ( destructorParam.type.type == "Vk" + parentType )
+      if ( destructorParam.type.name == "Vk" + parentType )
       {
         initializationList += "m_" + parentName + "( " + parentName + " ), ";
       }
-      else if ( destructorParam.type.type == handle.first )
+      else if ( destructorParam.type.name == handle.first )
       {
         if ( takesOwnership )
         {
           initializationList += "m_" + startLowerCase( stripPrefix( handle.first, "Vk" ) ) + "( " + handleName + " ), ";
         }
       }
-      else if ( destructorParam.type.type == "VkAllocationCallbacks" )
+      else if ( destructorParam.type.name == "VkAllocationCallbacks" )
       {
         assert(
           destructorParam.type.isConstPointer() && destructorParam.arraySizes.empty() && destructorParam.lenExpression.empty() && destructorParam.optional );
         initializationList += "m_allocator( static_cast<const AllocationCallbacks *>( allocator ) ), ";
       }
-      else if ( isHandleType( destructorParam.type.type ) )
+      else if ( isHandleType( destructorParam.type.name ) )
       {
         assert( destructorParam.type.isValue() && destructorParam.arraySizes.empty() && destructorParam.lenExpression.empty() && !destructorParam.optional );
         initializationList += "m_" + destructorParam.name + "( ";
         auto constructorParamIt = std::ranges::find_if( constructorIt->second.params,
-                                                        [&destructorParam]( ParamData const & pd ) { return pd.type.type == destructorParam.type.type; } );
+                                                        [&destructorParam]( ParamData const & pd ) { return pd.type.name == destructorParam.type.name; } );
         if ( constructorParamIt != constructorIt->second.params.end() )
         {
           assert( constructorParamIt->type.isValue() &&
                   constructorParamIt->arraySizes.empty() &&
                   constructorParamIt->lenExpression.empty() &&
                   !constructorParamIt->optional );
-          if ( constructorParamIt->type.type == "Vk" + parentType )
+          if ( constructorParamIt->type.name == "Vk" + parentType )
           {
             initializationList += "*";
           }
@@ -8867,10 +9126,10 @@ std::string
 #endif
           for ( auto constructorParam : constructorIt->second.params )
           {
-            auto structureIt = m_structs.find( constructorParam.type.type );
+            auto structureIt = m_structs.find( constructorParam.type.name );
             if ( structureIt != m_structs.end() )
             {
-              auto structureMemberIt = findByType( structureIt->second.members, destructorParam.type.type );
+              auto structureMemberIt = findByType( structureIt->second.members, destructorParam.type.name );
               if ( structureMemberIt != structureIt->second.members.end() )
               {
                 assert( constructorParam.type.isConstPointer() &&
@@ -8902,20 +9161,20 @@ std::string
       assert( !handle.second.constructorIts.empty() );
       auto constructorCommandIt = m_commands.find( handle.second.constructorIts.front()->first );
       assert( ( constructorCommandIt != m_commands.end() ) && ( 1 < constructorCommandIt->second.params.size() ) );
-      if ( std::next( constructorCommandIt->second.params.begin() )->type.type == "Vk" + parentType )
+      if ( std::next( constructorCommandIt->second.params.begin() )->type.name == "Vk" + parentType )
       {
         auto commandIt = m_commands.find( *handle.second.secondLevelCommands.begin() );
         assert( ( commandIt != m_commands.end() ) && ( 1 < commandIt->second.params.size() ) );
-        assert( commandIt->second.params.front().type.type == constructorCommandIt->second.params.front().type.type );
-        assert( std::next( commandIt->second.params.begin() )->type.type == handle.first );
+        assert( commandIt->second.params.front().type.name == constructorCommandIt->second.params.front().type.name );
+        assert( std::next( commandIt->second.params.begin() )->type.name == handle.first );
 
-        std::string grandParentType = stripPrefix( commandIt->second.params.front().type.type, "Vk" );
+        std::string grandParentType = stripPrefix( commandIt->second.params.front().type.name, "Vk" );
         initializationList += "m_" + startLowerCase( grandParentType ) + "( " + parentName + ".get" + grandParentType + "() ), ";
       }
 #if !defined( NDEBUG )
       else
       {
-        assert( constructorCommandIt->second.params.front().type.type == "Vk" + parentType );
+        assert( constructorCommandIt->second.params.front().type.name == "Vk" + parentType );
       }
 #endif
     }
@@ -8933,12 +9192,12 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorParamName( std::str
   if ( destructorIt != m_commands.end() )
   {
     auto destructorParamIt =
-      std::ranges::find_if( destructorIt->second.params, [&type]( ParamData const & destructorParam ) { return destructorParam.type.type == type; } );
+      std::ranges::find_if( destructorIt->second.params, [&type]( ParamData const & destructorParam ) { return destructorParam.type.name == type; } );
     if ( destructorParamIt != destructorIt->second.params.end() )
     {
       assert( std::none_of( std::next( destructorParamIt ),
                             destructorIt->second.params.end(),
-                            [&type]( ParamData const & destructorParam ) { return destructorParam.type.type == type; } ) );
+                            [&type]( ParamData const & destructorParam ) { return destructorParam.type.name == type; } ) );
       if ( !destructorParamIt->type.isValue() )
       {
         return startLowerCase( stripPrefix( stripPluralS( destructorParamIt->name ), "p" ) );
@@ -8967,7 +9226,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
         std::vector<size_t> returnParams = determineReturnParams( constructorIt->second.params );
         if ( returnParams.size() == 1 )
         {
-          assert( isHandleType( constructorIt->second.params[returnParams[0]].type.type ) );
+          assert( isHandleType( constructorIt->second.params[returnParams[0]].type.name ) );
           std::map<size_t, VectorParamData> vectorParams = determineVectorParams( constructorIt->second.params );
           switch ( vectorParams.size() )
           {
@@ -8998,7 +9257,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
           case 1:
             {
               std::map<size_t, VectorParamData> vectorParams = determineVectorParams( constructorIt->second.params );
-              if ( isHandleType( constructorIt->second.params[returnParams[0]].type.type ) )
+              if ( isHandleType( constructorIt->second.params[returnParams[0]].type.name ) )
               {
                 if ( vectorParams.size() == 2 )
                 {
@@ -9007,16 +9266,16 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
               }
               else if ( ( vectorParams.size() == 1 ) && ( vectorParams.begin()->first == returnParams[0] ) && vectorParams.begin()->second.byStructure )
               {
-                assert( isHandleTypeByStructure( constructorIt->second.params[returnParams[0]].type.type ) );
+                assert( isHandleTypeByStructure( constructorIt->second.params[returnParams[0]].type.name ) );
                 return { "", generateRAIIHandleConstructorByCall( handle, constructorIt, enter, leave, true, false ) };
               }
             }
             break;
           case 2:
-            if ( ( constructorIt->second.params[returnParams[0]].type.type == "size_t" ) ||
-                 ( constructorIt->second.params[returnParams[0]].type.type == "uint32_t" ) )
+            if ( ( constructorIt->second.params[returnParams[0]].type.name == "size_t" ) ||
+                 ( constructorIt->second.params[returnParams[0]].type.name == "uint32_t" ) )
             {
-              assert( isHandleType( constructorIt->second.params[returnParams[1]].type.type ) );
+              assert( isHandleType( constructorIt->second.params[returnParams[1]].type.name ) );
               std::map<size_t, VectorParamData> vectorParams = determineVectorParams( constructorIt->second.params );
               if ( vectorParams.size() == 1 )
               {
@@ -9039,7 +9298,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
         std::vector<size_t> returnParams = determineReturnParams( constructorIt->second.params );
         if ( returnParams.size() == 1 )
         {
-          assert( isHandleType( constructorIt->second.params[returnParams[0]].type.type ) );
+          assert( isHandleType( constructorIt->second.params[returnParams[0]].type.name ) );
           std::map<size_t, VectorParamData> vectorParams = determineVectorParams( constructorIt->second.params );
           if ( vectorParams.size() == 2 )
           {
@@ -9063,11 +9322,11 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorByCall( std::pair<s
   auto const [parentType, parentName] = getParentTypeAndName( handle );
 
   size_t skipCount = 0;
-  if ( constructorIt->second.handle == constructorIt->second.params[skipCount].type.type )
+  if ( constructorIt->second.handle == constructorIt->second.params[skipCount].type.name )
   {
     ++skipCount;
   }
-  if ( handle.second.parent == constructorIt->second.params[skipCount].type.type )
+  if ( handle.second.parent == constructorIt->second.params[skipCount].type.name )
   {
     ++skipCount;
   }
@@ -9078,7 +9337,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorByCall( std::pair<s
   std::string createArguments;
   for ( size_t i = skipCount; i < constructorIt->second.params.size() - 1; ++i )
   {
-    if ( constructorIt->second.params[i].type.isValue() || specialPointerTypes.contains( constructorIt->second.params[i].type.type ) )
+    if ( constructorIt->second.params[i].type.isValue() || specialPointerTypes.contains( constructorIt->second.params[i].type.name ) )
     {
       createArguments += constructorIt->second.params[i].name + ", ";
     }
@@ -9109,8 +9368,8 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorByCall( std::pair<s
   {
     createArguments = stripPostfix( createArguments, ", " );
   }
-  assert( ( constructorIt->second.params.back().type.type == handle.first ) ||
-          ( vectorMemberByStructure( constructorIt->second.params.back().type.type ).type.type == handle.first ) );
+  assert( ( constructorIt->second.params.back().type.name == handle.first ) ||
+          ( vectorMemberByStructure( constructorIt->second.params.back().type.name ).type.name == handle.first ) );
 
   std::string const constructorTemplate =
     R"(
@@ -9209,7 +9468,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
   std::vector<size_t> returnParams = determineReturnParams( constructorIt->second.params );
   if ( returnParams.size() == 1 )
   {
-    assert( isHandleType( constructorIt->second.params[returnParams[0]].type.type ) );
+    assert( isHandleType( constructorIt->second.params[returnParams[0]].type.name ) );
     std::map<size_t, VectorParamData> vectorParams = determineVectorParams( constructorIt->second.params );
     if ( vectorParams.empty() )
     {
@@ -9291,7 +9550,7 @@ std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::
   std::vector<std::string> arguments;
   for ( auto param : destructorIt->second.params )
   {
-    if ( param.type.type == handleType )
+    if ( param.type.name == handleType )
     {
       std::string handleName = startLowerCase( stripPrefix( handleType, "Vk" ) );
       if ( param.type.isValue() )
@@ -9303,30 +9562,30 @@ std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::
         arguments.push_back( "reinterpret_cast<" + handleType + " const *>( &m_" + handleName + " )" );
       }
     }
-    else if ( param.type.type == "VkAllocationCallbacks" )
+    else if ( param.type.name == "VkAllocationCallbacks" )
     {
       // VULKAN_HPP_NAMESPACE::AllocationCallbacks is stored as a member of the handle class
       arguments.push_back( "reinterpret_cast<VkAllocationCallbacks const *>( m_allocator )" );
     }
-    else if ( isHandleType( param.type.type ) )
+    else if ( isHandleType( param.type.name ) )
     {
       assert( param.arraySizes.empty() );
       std::string argument = "m_" + param.name;
       if ( param.type.isValue() )
       {
-        arguments.push_back( "static_cast<" + param.type.type + ">( " + argument + " )" );
+        arguments.push_back( "static_cast<" + param.type.name + ">( " + argument + " )" );
       }
       else
       {
         assert( param.type.isConstPointer() );
         assert( !param.lenExpression.empty() &&
                 std::ranges::any_of( destructorIt->second.params, [&param]( ParamData const & pd ) { return pd.name == param.lenExpression; } ) );
-        arguments.push_back( "reinterpret_cast<" + param.type.type + " const *>( &" + argument + " )" );
+        arguments.push_back( "reinterpret_cast<" + param.type.name + " const *>( &" + argument + " )" );
       }
     }
     else
     {
-      assert( ( param.type.type == "uint32_t" ) && param.type.isValue() && param.arraySizes.empty() && param.lenExpression.empty() && !param.optional );
+      assert( ( param.type.name == "uint32_t" ) && param.type.isValue() && param.arraySizes.empty() && param.lenExpression.empty() && !param.optional );
       assert( std::ranges::any_of( destructorIt->second.params, [&param]( ParamData const & pd ) { return pd.lenExpression == param.name; } ) );
       arguments.push_back( "1" );
     }
@@ -9369,12 +9628,12 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
     for ( auto const & destructorParam : handle.second.destructorIt->second.params )
     {
       std::string memberName, memberType;
-      if ( destructorParam.type.type == "Vk" + parentType )
+      if ( destructorParam.type.name == "Vk" + parentType )
       {
         memberName = parentName;
         memberType = "VULKAN_HPP_NAMESPACE::" + parentType;
       }
-      else if ( destructorParam.type.type == handle.first )
+      else if ( destructorParam.type.name == handle.first )
       {
         assert( handle.first.starts_with( "Vk" ) );
         memberName = handleName;
@@ -9389,7 +9648,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
           name = startLowerCase( stripPrefix( name, "p" ) );
         }
         memberName = name;
-        memberType = destructorParam.type.compose( "Vk", m_handles.contains( destructorParam.type.type ) ? "VULKAN_HPP_NAMESPACE" : "" );
+        memberType = destructorParam.type.compose( "Vk", m_handles.contains( destructorParam.type.name ) ? "VULKAN_HPP_NAMESPACE" : "" );
       }
       if ( !memberName.empty() )
       {
@@ -9400,7 +9659,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
         moveAssignmentInstructions += "\n          std::swap( m_" + memberName + ", rhs.m_" + memberName + " );";
         memberVariables += "\n    " + memberType + " m_" + memberName + " = {};";
         swapMembers += "\n      std::swap( m_" + memberName + ", rhs.m_" + memberName + " );";
-        if ( destructorParam.type.type != handle.first )
+        if ( destructorParam.type.name != handle.first )
         {
           releaseMembers += "\n      m_" + memberName + " = nullptr;";
         }
@@ -9413,7 +9672,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
     {
       assert( !handle.second.constructorIts.empty() );
       assert( !handle.second.constructorIts.front()->second.params.empty() );
-      auto const & frontType = handle.second.constructorIts.front()->second.params.front().type.type;
+      auto const & frontType = handle.second.constructorIts.front()->second.params.front().type.name;
       assert( isHandleType( frontType ) );
 #if !defined( NDEBUG )
       auto handleIt = m_handles.find( "Vk" + parentType );
@@ -9462,7 +9721,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
     memberVariables += "\n      std::unique_ptr<detail::DeviceDispatcher> m_dispatcher;";
     rawConstructorParams += "std::unique_ptr<detail::DeviceDispatcher> dispatcher";
   }
-  else if ( handle.second.constructorIts.front()->second.params.front().type.type == "VkDevice" )
+  else if ( handle.second.constructorIts.front()->second.params.front().type.name == "VkDevice" )
   {
     memberVariables += "\n      detail::DeviceDispatcher const * m_dispatcher = nullptr;";
     rawConstructorParams += "detail::DeviceDispatcher const * dispatcher";
@@ -9626,21 +9885,21 @@ std::string VulkanHppGenerator::generateRAIIHandleSingularConstructorArguments( 
     parentType                    = "Vk" + parentType;
     for ( auto const & destructorParam : handle.second.destructorIt->second.params )
     {
-      if ( ( destructorParam.type.type != parentType ) &&
-           ( destructorParam.type.type != handle.first ) &&
+      if ( ( destructorParam.type.name != parentType ) &&
+           ( destructorParam.type.name != handle.first ) &&
            std::ranges::none_of( handle.second.destructorIt->second.params,
                                  [&destructorParam]( ParamData const & pd ) { return pd.lenExpression == destructorParam.name; } ) )
       {
-        if ( std::ranges::any_of( params, [&destructorParam]( ParamData const & pd ) { return pd.type.type == destructorParam.type.type; } ) )
+        if ( std::ranges::any_of( params, [&destructorParam]( ParamData const & pd ) { return pd.type.name == destructorParam.type.name; } ) )
         {
-          if ( isHandleType( destructorParam.type.type ) )
+          if ( isHandleType( destructorParam.type.name ) )
           {
             assert( destructorParam.type.isValue() );
-            arguments += ", static_cast<" + destructorParam.type.type + ">( *" + destructorParam.name + " )";
+            arguments += ", static_cast<" + destructorParam.type.name + ">( *" + destructorParam.name + " )";
           }
           else
           {
-            assert( destructorParam.type.type == "VkAllocationCallbacks" );
+            assert( destructorParam.type.name == "VkAllocationCallbacks" );
             arguments += ", allocator";
           }
         }
@@ -9651,10 +9910,10 @@ std::string VulkanHppGenerator::generateRAIIHandleSingularConstructorArguments( 
 #endif
           for ( auto const & param : params )
           {
-            auto structureIt = m_structs.find( param.type.type );
+            auto structureIt = m_structs.find( param.type.name );
             if ( structureIt != m_structs.end() )
             {
-              auto memberIt = findByType( structureIt->second.members, destructorParam.type.type );
+              auto memberIt = findByType( structureIt->second.members, destructorParam.type.name );
               if ( memberIt != structureIt->second.members.end() )
               {
 #if !defined( NDEBUG )
@@ -9662,9 +9921,9 @@ std::string VulkanHppGenerator::generateRAIIHandleSingularConstructorArguments( 
 #endif
                 assert( !param.type.isValue() );
                 std::string argument = startLowerCase( stripPrefix( param.name, "p" ) ) + "." + memberIt->name;
-                if ( isHandleType( memberIt->type.type ) )
+                if ( isHandleType( memberIt->type.name ) )
                 {
-                  argument = "static_cast<" + memberIt->type.type + ">( " + argument + " )";
+                  argument = "static_cast<" + memberIt->type.name + ">( " + argument + " )";
                 }
                 arguments += ", " + argument;
                 break;
@@ -9709,10 +9968,10 @@ std::string VulkanHppGenerator::generateReplacedExtensionsList( Predicate p, Ext
 std::string VulkanHppGenerator::generateResultAssignment( CommandData const & commandData ) const
 {
   std::string resultAssignment;
-  if ( ( commandData.returnType.type != "void" ) &&
-       !( ( commandData.returnType.type == "VkResult" ) && ( commandData.successCodes.size() == 1 ) && commandData.errorCodes.empty() ) )
+  if ( ( commandData.returnType.name != "void" ) &&
+       !( ( commandData.returnType.name == "VkResult" ) && ( commandData.successCodes.size() == 1 ) && commandData.errorCodes.empty() ) )
   {
-    resultAssignment = commandData.returnType.type + " result = ";
+    resultAssignment = commandData.returnType.name + " result = ";
   }
   return resultAssignment;
 }
@@ -9900,7 +10159,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
   bool const unique = flavourFlags & CommandFlavourFlagBits::unique;
 
   std::string returnStatement;
-  if ( commandData.returnType.type.starts_with( "Vk" ) )
+  if ( commandData.returnType.name.starts_with( "Vk" ) )
   {
     if ( ( commandData.successCodes.size() == 1 ) || ( enumerating && ( commandData.successCodes.size() == 2 ) ) )
     {
@@ -9964,7 +10223,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
       if ( returnVariable.empty() )
       {
         assert( !unique );
-        returnStatement = "return static_cast<" + stripPrefix( commandData.returnType.type, "Vk" ) + ">( result );";
+        returnStatement = "return static_cast<" + stripPrefix( commandData.returnType.name, "Vk" ) + ">( result );";
       }
       else if ( unique )
       {
@@ -9998,7 +10257,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
     assert( !unique );
     if ( returnVariable.empty() )
     {
-      if ( commandData.returnType.type != "void" )
+      if ( commandData.returnType.name != "void" )
       {
         returnStatement = "return result;";
       }
@@ -10201,7 +10460,7 @@ std::string VulkanHppGenerator::generateReturnVariable( CommandData const &     
         auto vectorParamIt = vectorParams.find( returnParams[0] );
         if ( ( vectorParamIt != vectorParams.end() ) && vectorParamIt->second.byStructure )
         {
-          returnVariable = startLowerCase( stripPrefix( vectorMemberByStructure( commandData.params[returnParams[0]].type.type ).name, "p" ) );
+          returnVariable = startLowerCase( stripPrefix( vectorMemberByStructure( commandData.params[returnParams[0]].type.name ).name, "p" ) );
         }
         else
         {
@@ -10359,22 +10618,22 @@ std::string VulkanHppGenerator::generateStruct( std::pair<std::string, StructDat
   std::string str;
   for ( auto const & member : structure.second.members )
   {
-    auto typeIt = m_types.find( member.type.type );
+    auto typeIt = m_types.find( member.type.name );
     assert( typeIt != m_types.end() );
     if ( ( typeIt->second.category == TypeCategory::Struct ) || ( typeIt->second.category == TypeCategory::Union ) )
     {
-      auto structIt = findByNameOrAlias( m_structs, member.type.type );
+      auto structIt = findByNameOrAlias( m_structs, member.type.name );
       assert( structIt != m_structs.end() );
-      if ( ( structure.first != member.type.type ) && !listedStructs.contains( structIt->first ) )
+      if ( ( structure.first != member.type.name ) && !listedStructs.contains( structIt->first ) )
       {
         str += generateStruct( *structIt, listedStructs );
       }
     }
     else if ( typeIt->second.category == TypeCategory::FuncPointer )
     {
-      auto funcPtrIt = m_funcPointers.find( member.type.type );
-      assert( funcPtrIt != m_funcPointers.end() );
-      if ( !listedStructs.contains( member.type.type ) )
+      auto funcPtrIt = m_vkxml.funcPointers.find( member.type.name );
+      assert( funcPtrIt != m_vkxml.funcPointers.end() );
+      if ( !listedStructs.contains( member.type.name ) )
       {
         str += generateFuncPointer( *funcPtrIt, listedStructs );
       }
@@ -10410,13 +10669,13 @@ std::string VulkanHppGenerator::generateStructCastAssignments( std::pair<std::st
   {
     for ( auto const & member : structData.second.members )
     {
-      if ( member.deprecated.empty() && ( member.type.type != "VkStructureType" ) )
+      if ( member.deprecated.empty() && ( member.type.name != "VkStructureType" ) )
       {
-        if ( member.type.type.starts_with( "Vk" ) )
+        if ( member.type.name.starts_with( "Vk" ) )
         {
           if ( member.type.isValue() )
           {
-            castAssignments += member.name + " = static_cast<" + stripPrefix( member.type.type, "Vk" ) + ">( rhs." + member.name + " );\n";
+            castAssignments += member.name + " = static_cast<" + stripPrefix( member.type.name, "Vk" ) + ">( rhs." + member.name + " );\n";
           }
           else
           {
@@ -10454,22 +10713,22 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
     MemberData const & member = structData.second.members[i];
     if ( member.deprecated.empty() )
     {
-      auto typeIt = m_types.find( member.type.type );
+      auto typeIt = m_types.find( member.type.name );
       assert( typeIt != m_types.end() );
-      if ( ( typeIt->second.category == TypeCategory::ExternalType ) && member.type.postfix.empty() && !simpleTypes.contains( member.type.type ) )
+      if ( ( typeIt->second.category == TypeCategory::ExternalType ) && member.type.postfix.empty() && !simpleTypes.contains( member.type.name ) )
       {
         nonDefaultCompare = true;
         // this type might support operator==() or operator<=>()... that is, use memcmp
-        compareMembers += intro + "( memcmp( &" + member.name + ", &rhs." + member.name + ", sizeof( " + member.type.type + " ) ) == 0 )";
+        compareMembers += intro + "( memcmp( &" + member.name + ", &rhs." + member.name + ", sizeof( " + member.type.name + " ) ) == 0 )";
 
         static std::string const spaceshipMemberTemplate =
           R"(      if ( auto cmp = memcmp( &${name}, &rhs.${name}, sizeof( ${type} ) ); cmp != 0 )
         return ( cmp < 0 ) ? ${ordering}::less : ${ordering}::greater;
 )";
         spaceshipMembers +=
-          replaceWithMap( spaceshipMemberTemplate, { { "name", member.name }, { "ordering", spaceshipOrdering }, { "type", member.type.type } } );
+          replaceWithMap( spaceshipMemberTemplate, { { "name", member.name }, { "ordering", spaceshipOrdering }, { "type", member.type.name } } );
       }
-      else if ( member.type.type == "char" && !member.lenExpressions.empty() )
+      else if ( member.type.name == "char" && !member.lenExpressions.empty() )
       {
         // compare null-terminated strings
         nonDefaultCompare = true;
@@ -10504,7 +10763,7 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
         else
         {
           assert( member.lenExpressions[1] == "null-terminated" );
-          assert( member.type.prefix.empty() && ( member.type.postfix == "const * const *" ) );
+          assert( member.type.prefix.empty() && ( member.type.postfix == "const * const*" ) );
           static std::string const compareMemberTemplate =
             R"(std::equal( ${name}, ${name} + ${count}, rhs.${name}, []( char const * left, char const * right ) { return ( left == right ) || ( strcmp( left, right ) == 0 ); } ))";
           compareMembers += intro + replaceWithMap( compareMemberTemplate, { { "count", member.lenExpressions[0] }, { "name", member.name } } );
@@ -10759,7 +11018,7 @@ ${byString}
           {
             argumentType = trimEnd( stripPostfix( argumentType, "*" ) );
           }
-          if ( ( mit->type.type == "void" ) && ( argumentType.find( '*' ) == std::string::npos ) )
+          if ( ( mit->type.name == "void" ) && ( argumentType.find( '*' ) == std::string::npos ) )
           {
             // the argument after stripping one pointer is just void
             assert( templateHeader.empty() );
@@ -10772,7 +11031,7 @@ ${byString}
 
           if ( mit->lenExpressions[0] == "null-terminated" )
           {
-            assert( ( mit->type.type == "char" ) && ( mit->arraySizes.size() == 1 ) );
+            assert( ( mit->type.name == "char" ) && ( mit->arraySizes.size() == 1 ) );
             arguments.push_back( "std::string const & " + argumentName );
           }
           else if ( mit->arraySizes.empty() )
@@ -10875,9 +11134,9 @@ std::string VulkanHppGenerator::generateStructConstructorArgument( MemberData co
   std::string str;
   if ( ( memberData.name != "pNext" ) && memberData.value.empty() )
   {
-    if ( memberData.type.type.starts_with( "PFN_vk" ) )
+    if ( memberData.type.name.starts_with( "PFN_vk" ) )
     {
-      str += "PFN_" + stripPrefix( memberData.type.type, "PFN_vk" ) + " ";
+      str += "PFN_" + stripPrefix( memberData.type.name, "PFN_vk" ) + " ";
     }
     else if ( memberData.arraySizes.empty() )
     {
@@ -10892,7 +11151,7 @@ std::string VulkanHppGenerator::generateStructConstructorArgument( MemberData co
     if ( withDefault )
     {
       str += " = ";
-      auto enumIt = m_enums.find( memberData.type.type );
+      auto enumIt = m_enums.find( memberData.type.name );
       if ( enumIt != m_enums.end() && memberData.type.postfix.empty() )
       {
         str += generateEnumInitializer( memberData.type, memberData.arraySizes, enumIt->second.values, enumIt->second.isBitmask );
@@ -10918,8 +11177,8 @@ std::string VulkanHppGenerator::generateStructHashStructure( std::pair<std::stri
   std::string str;
   for ( auto const & member : structure.second.members )
   {
-    auto structIt = findByNameOrAlias( m_structs, member.type.type );
-    if ( ( structIt != m_structs.end() ) && ( structure.first != member.type.type ) && !listedStructs.contains( structIt->first ) )
+    auto structIt = findByNameOrAlias( m_structs, member.type.name );
+    if ( ( structIt != m_structs.end() ) && ( structure.first != member.type.name ) && !listedStructs.contains( structIt->first ) )
     {
       str += generateStructHashStructure( *structIt, listedStructs );
     }
@@ -11010,7 +11269,7 @@ std::string VulkanHppGenerator::generateStructHashSum( std::string const & struc
         }
         hashSum += "    }\n";
       }
-      else if ( member.type.type == "char" && !member.lenExpressions.empty() )
+      else if ( member.type.name == "char" && !member.lenExpressions.empty() )
       {
         assert( member.lenExpressions.size() < 3 );
         if ( member.lenExpressions.size() == 1 )
@@ -11373,15 +11632,15 @@ std::tuple<std::string, std::string, std::string, std::string>
     }
 
     std::string type;
-    if ( !member.bitCount.empty() && member.type.type.starts_with( "Vk" ) )
+    if ( !member.bitCount.empty() && member.type.name.starts_with( "Vk" ) )
     {
       assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encounterd a different case
-      type = member.type.type;
+      type = member.type.name;
     }
-    else if ( member.type.type.starts_with( "PFN_vk" ) )
+    else if ( member.type.name.starts_with( "PFN_vk" ) )
     {
       assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encounterd a different case
-      type = "PFN_" + stripPrefix( member.type.type, "PFN_vk" );
+      type = "PFN_" + stripPrefix( member.type.name, "PFN_vk" );
     }
     else if ( member.arraySizes.empty() )
     {
@@ -11397,17 +11656,17 @@ std::tuple<std::string, std::string, std::string, std::string>
     {
       // special handling for members with legal value: use it as the default
       members += " = ";
-      if ( member.type.type == "uint32_t" )
+      if ( member.type.name == "uint32_t" )
       {
         members += member.value;
       }
       else
       {
-        auto enumIt = m_enums.find( member.type.type );
+        auto enumIt = m_enums.find( member.type.name );
         assert( enumIt != m_enums.end() );
         assert( containsByNameOrAlias( enumIt->second.values, member.value ) );
         std::string valueName = generateEnumValueName( enumIt->first, member.value, enumIt->second.isBitmask );
-        members += stripPrefix( member.type.type, "Vk" ) + "::" + valueName;
+        members += stripPrefix( member.type.name, "Vk" ) + "::" + valueName;
         if ( member.name == "sType" )
         {
           sTypeValue = valueName;
@@ -11427,7 +11686,7 @@ std::tuple<std::string, std::string, std::string, std::string>
       else
       {
         members += " = ";
-        auto enumIt = m_enums.find( member.type.type );
+        auto enumIt = m_enums.find( member.type.name );
         if ( member.arraySizes.empty() && ( enumIt != m_enums.end() ) && member.type.postfix.empty() )
         {
           members += generateEnumInitializer( member.type, member.arraySizes, enumIt->second.values, enumIt->second.isBitmask );
@@ -11457,7 +11716,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
 {
   std::string        str;
   MemberData const & member = memberData[index];
-  if ( member.type.type != "VkStructureType" )  // filter out StructureType, which is supposed to be immutable !
+  if ( member.type.name != "VkStructureType" )  // filter out StructureType, which is supposed to be immutable !
   {
     static std::string const templateString = R"(
     ${deprecated}${constexpr}${structureName} & set${MemberName}( ${memberType} ${reference}${memberName}_ ) & VULKAN_HPP_NOEXCEPT
@@ -11474,16 +11733,16 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
 )";
 
     std::string memberType =
-      member.type.type.starts_with( "PFN_vk" )
-        ? "PFN_" + stripPrefix( member.type.type, "PFN_vk" )
+      member.type.name.starts_with( "PFN_vk" )
+        ? "PFN_" + stripPrefix( member.type.name, "PFN_vk" )
         : ( member.arraySizes.empty() ? member.type.compose( "Vk" ) : generateStandardArray( member.type.compose( "Vk" ), member.arraySizes ) );
-    bool const  isReinterpretation = !member.bitCount.empty() && member.type.type.starts_with( "Vk" );
+    bool const  isReinterpretation = !member.bitCount.empty() && member.type.name.starts_with( "Vk" );
     std::string assignment;
     if ( member.deprecated.empty() )
     {
       if ( isReinterpretation )
       {
-        assignment = member.name + " = " + "*reinterpret_cast<" + member.type.type + "*>(&" + member.name + "_)";
+        assignment = member.name + " = " + "*reinterpret_cast<" + member.type.name + "*>(&" + member.name + "_)";
       }
       else
       {
@@ -11502,7 +11761,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
                              { "memberName", member.name },
                              { "MemberName", startUpperCase( member.name ) },
                              { "memberType", memberType },
-                             { "reference", ( member.type.postfix.empty() && m_structs.contains( member.type.type ) ) ? "const & " : "" },
+                             { "reference", ( member.type.postfix.empty() && m_structs.contains( member.type.name ) ) ? "const & " : "" },
                              { "structureName", structureName } } );
 
     if ( hasLen( member, memberData ) )
@@ -11516,7 +11775,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
                 member.lenMembers.empty() &&
                 ( member.lenExpressions.size() == 1 ) &&
                 ( member.arraySizes.size() == 1 ) &&
-                ( member.type.type == "char" ) );
+                ( member.type.name == "char" ) );
 
         static std::string const setStringTemplate = R"(
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
@@ -11596,7 +11855,7 @@ ${byString}
         }
 
         std::string templateHeader;
-        if ( ( member.type.type == "void" ) && ( memberType.find( '*' ) == std::string::npos ) )
+        if ( ( member.type.name == "void" ) && ( memberType.find( '*' ) == std::string::npos ) )
         {
           assert( templateHeader.empty() );
           templateHeader = "template <typename T>\n    ";
@@ -11610,9 +11869,9 @@ ${byString}
 
         auto lenMember = findByName( memberData, lenName );
         assert( lenMember != memberData.end() && lenMember->type.prefix.empty() && lenMember->type.postfix.empty() );
-        if ( lenMember->type.type != "size_t" )
+        if ( lenMember->type.name != "size_t" )
         {
-          lenValue = "static_cast<" + lenMember->type.type + ">( " + lenValue + " )";
+          lenValue = "static_cast<" + lenMember->type.name + ">( " + lenValue + " )";
         }
 
         if ( !member.arraySizes.empty() )
@@ -11859,16 +12118,16 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructData
   auto [enter, leave]   = generateProtection( getProtectFromType( structure.first ) );
   std::string unionName = stripPrefix( structure.first, "Vk" );
 
-  bool               firstMember = true;
-  std::set<TypeInfo> listedTypes;  // create just one constructor per different type !
-  std::string        constructors;
+  bool           firstMember = true;
+  std::set<Type> listedTypes;  // create just one constructor per different type !
+  std::string    constructors;
   for ( auto memberIt = structure.second.members.begin(); memberIt != structure.second.members.end(); ++memberIt )
   {
     if ( listedTypes.insert( memberIt->type ).second )
     {
       // VkBool32 is aliased to uint32_t. Don't create a VkBool32 constructor if the union also contains a
       // uint32_t constructor.
-      if ( memberIt->type.type == "VkBool32" )
+      if ( memberIt->type.name == "VkBool32" )
       {
         if ( findByType( structure.second.members, "uint32_t" ) != structure.second.members.end() )
         {
@@ -11907,7 +12166,7 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructData
         for ( int i = 0; i < size; i++ )
         {
           std::string argumentIndex = std::to_string( i );
-          arguments.push_back( memberIt->type.type + " " + memberIt->name + "_" + argumentIndex );
+          arguments.push_back( memberIt->type.name + " " + memberIt->name + "_" + argumentIndex );
           callArguments.push_back( memberIt->name + "_" + argumentIndex );
         }
 
@@ -11938,7 +12197,7 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructData
   std::string members;
   // if there's at least one Vk... type in this union, check for unrestricted unions support
   bool const needsUnrestrictedUnions =
-    std::ranges::any_of( structure.second.members, []( MemberData const & member ) { return member.type.type.starts_with( "Vk" ); } );
+    std::ranges::any_of( structure.second.members, []( MemberData const & member ) { return member.type.name.starts_with( "Vk" ); } );
   if ( needsUnrestrictedUnions )
   {
     members += "#ifdef VULKAN_HPP_HAS_UNRESTRICTED_UNIONS\n";
@@ -12238,7 +12497,7 @@ std::string VulkanHppGenerator::generateTaggedCamelCase( std::string const & nam
   assert( name.starts_with( "VK_" ) );
   std::string taggedName = stripPrefix( name, "VK_" );
   std::string leadingTag = taggedName.substr( 0, taggedName.find_first_of( '_' ) );
-  if ( m_tags.contains( leadingTag ) )
+  if ( m_vkxml.tags.contains( leadingTag ) )
   {
     taggedName = stripPrefix( taggedName, leadingTag + "_" );
   }
@@ -12247,7 +12506,7 @@ std::string VulkanHppGenerator::generateTaggedCamelCase( std::string const & nam
     leadingTag = "";
   }
   std::string trailingTag = taggedName.substr( taggedName.find_last_of( '_' ) + 1 );
-  if ( m_tags.contains( trailingTag ) )
+  if ( m_vkxml.tags.contains( trailingTag ) )
   {
     taggedName = stripPostfix( taggedName, "_" + trailingTag );
   }
@@ -12284,7 +12543,7 @@ std::string VulkanHppGenerator::generateVectorSizeCheck( std::string const &    
       throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}: ${vectorName}.size() != ${sizeValue}" );
     })#";
 
-  std::string className   = stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" );
+  std::string className   = stripPrefix( commandData.params[initialSkipCount - 1].type.name, "Vk" );
   std::string commandName = generateCommandName( name, commandData.params, initialSkipCount );
 
   std::string assertions, throws;
@@ -12305,7 +12564,7 @@ std::string VulkanHppGenerator::generateVectorSizeCheck( std::string const &    
       else
       {
         assert( !commandData.params[cvm.second[0]].lenParams.empty() );
-        if ( commandData.params[cvm.first].type.type == "VkSampleCountFlagBits" )
+        if ( commandData.params[cvm.first].type.name == "VkSampleCountFlagBits" )
         {
           assert( commandData.params[cvm.second[0]].lenExpression == "(" + commandData.params[cvm.second[0]].lenParams[0].first + " + 31) / 32" );
           sizeValue = "( static_cast<uint32_t>( " + commandData.params[cvm.second[0]].lenParams[0].first + " ) + 31 ) / 32";
@@ -12325,9 +12584,9 @@ std::string VulkanHppGenerator::generateVectorSizeCheck( std::string const &    
       {
         std::string secondVectorName  = startLowerCase( stripPrefix( commandData.params[cvm.second[i]].name, "p" ) );
         bool const  withZeroSizeCheck = commandData.params[cvm.second[i]].optional && ( defaultStartIndex <= cvm.second[i] );
-        if ( commandData.params[cvm.second[0]].type.type == "void" )
+        if ( commandData.params[cvm.second[0]].type.name == "void" )
         {
-          assert( commandData.params[cvm.second[i]].type.type == "void" );
+          assert( commandData.params[cvm.second[i]].type.name == "void" );
           std::string firstDataType  = stripPrefix( commandData.params[cvm.second[0]].name, "p" ) + "Type";
           std::string secondDataType = stripPrefix( commandData.params[cvm.second[i]].name, "p" ) + "Type";
           assertions += replaceWithMap( assertTemplateVoid,
@@ -12390,8 +12649,8 @@ std::pair<std::string, std::string> VulkanHppGenerator::getParentTypeAndName( st
     bool const skip = skipLeadingGrandParent( handle );
     assert( !handle.second.constructorIts.empty() && ( ( skip ? 1u : 0u ) < handle.second.constructorIts.front()->second.params.size() ) );
     auto const & param = handle.second.constructorIts.front()->second.params[skip ? 1 : 0];
-    assert( isHandleType( param.type.type ) && param.type.isValue() );
-    parentType = stripPrefix( param.type.type, "Vk" );
+    assert( isHandleType( param.type.name ) && param.type.isValue() );
+    parentType = stripPrefix( param.type.name, "Vk" );
     parentName = param.name;
   }
   return { parentType, parentName };
@@ -12416,13 +12675,13 @@ std::pair<std::string, std::string> VulkanHppGenerator::getPoolTypeAndName( std:
   assert( memberIt != structIt->second.members.end() );
   assert( std::none_of(
     std::next( memberIt ), structIt->second.members.end(), []( MemberData const & md ) { return md.name.find( "Pool" ) != std::string::npos; } ) );
-  return { memberIt->type.type, memberIt->name };
+  return { memberIt->type.name, memberIt->name };
 }
 
-std::string VulkanHppGenerator::getProtectFromPlatform( std::string const & platform ) const
+std::string VulkanHppGenerator::getProtectFromPlatform( std::string const & platformName ) const
 {
-  auto platformIt = m_platforms.find( platform );
-  return ( platformIt != m_platforms.end() ) ? platformIt->second.protect : "";
+  auto platformIt = m_vkxml.platforms.find( platformName );
+  return ( platformIt != m_vkxml.platforms.end() ) ? platformIt->second.protect : "";
 }
 
 std::string VulkanHppGenerator::getProtectFromTitle( std::string const & title ) const
@@ -12473,7 +12732,7 @@ std::string VulkanHppGenerator::getVectorSize( std::vector<ParamData> const &   
   assert( returnVectorIt != vectorParams.end() );
   if ( returnVectorIt->second.byStructure )
   {
-    auto structIt = m_structs.find( params[returnParam].type.type );
+    auto structIt = m_structs.find( params[returnParam].type.name );
     assert( structIt != m_structs.end() );
     vectorSize = startLowerCase( stripPrefix( params[returnParam].name, "p" ) ) + "." + structIt->second.members[returnVectorIt->second.lenParam].name;
   }
@@ -12705,9 +12964,9 @@ bool VulkanHppGenerator::isDeviceCommand( CommandData const & commandData ) cons
 {
   return !commandData.handle.empty() &&
          !commandData.params.empty() &&
-         m_handles.contains( commandData.params[0].type.type ) &&
-         ( commandData.params[0].type.type != "VkInstance" ) &&
-         ( commandData.params[0].type.type != "VkPhysicalDevice" );
+         m_handles.contains( commandData.params[0].type.name ) &&
+         ( commandData.params[0].type.name != "VkInstance" ) &&
+         ( commandData.params[0].type.name != "VkPhysicalDevice" );
 }
 
 bool VulkanHppGenerator::isEnumerated( std::string const & type ) const
@@ -12744,7 +13003,7 @@ bool VulkanHppGenerator::isHandleType( std::string const & type ) const
 bool VulkanHppGenerator::isHandleTypeByStructure( std::string const & type ) const
 {
   auto structIt = m_structs.find( type );
-  return ( structIt != m_structs.end() ) && describesVector( structIt->second ) && isHandleType( structIt->second.members[3].type.type );
+  return ( structIt != m_structs.end() ) && describesVector( structIt->second ) && isHandleType( structIt->second.members[3].type.name );
 }
 
 bool VulkanHppGenerator::isLenByStructMember( std::string const & name, std::vector<ParamData> const & params ) const
@@ -12757,7 +13016,7 @@ bool VulkanHppGenerator::isLenByStructMember( std::string const & name, std::vec
     if ( paramIt != params.end() )
     {
 #if !defined( NDEBUG )
-      auto structureIt = m_structs.find( paramIt->type.type );
+      auto structureIt = m_structs.find( paramIt->type.name );
       assert( structureIt != m_structs.end() );
       assert( isStructMember( nameParts[1], structureIt->second.members ) );
 #endif
@@ -12779,7 +13038,7 @@ bool VulkanHppGenerator::isLenByStructMember( std::string const & name, ParamDat
   if ( ( nameParts.size() == 2 ) && ( nameParts[0] == param.name ) )
   {
 #if !defined( NDEBUG )
-    auto structureIt = m_structs.find( param.type.type );
+    auto structureIt = m_structs.find( param.type.name );
     assert( structureIt != m_structs.end() );
     assert( isStructMember( nameParts[1], structureIt->second.members ) );
 #endif
@@ -13128,10 +13387,10 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
     }
 
     assert( !name.empty() );
-    checkForError( ( commandData.returnType.type == "VkResult" ) || commandData.errorCodes.empty(),
+    checkForError( ( commandData.returnType.name == "VkResult" ) || commandData.errorCodes.empty(),
                    line,
                    "command <" + name + "> does not return a VkResult but specifies errorcodes" );
-    checkForError( ( commandData.returnType.type == "VkResult" ) || commandData.successCodes.empty(),
+    checkForError( ( commandData.returnType.name == "VkResult" ) || commandData.successCodes.empty(),
                    line,
                    "command <" + name + "> does not return a VkResult but specifies successcodes" );
 
@@ -13236,19 +13495,19 @@ std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandPa
   return { valid, paramData };
 }
 
-std::pair<std::string, TypeInfo> VulkanHppGenerator::readCommandProto( tinyxml2::XMLElement const * element, std::string const & prefix )
+std::pair<std::string, Type> VulkanHppGenerator::readCommandProto( tinyxml2::XMLElement const * element, std::string const & prefix )
 {
   int const line = element->GetLineNum();
   checkAttributes( line, getAttributes( element ), {}, {} );
 
-  auto [nameData, typeInfo] = readNameAndType( element );
+  auto [nameData, type] = readNameAndType( element );
 
   checkForError( nameData.name.starts_with( prefix ), line, "name <" + nameData.name + "> does not begin with <" + prefix + ">" );
   checkForError( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
-  checkForError( m_types.contains( typeInfo.type ), line, "unknown type <" + typeInfo.type + ">" );
-  checkForError( typeInfo.prefix.empty(), line, "unexpected type prefix <" + typeInfo.prefix + ">" );
+  checkForError( m_types.contains( type.name ), line, "unknown type <" + type.name + ">" );
+  checkForError( type.prefix.empty(), line, "unexpected type prefix <" + type.prefix + ">" );
 
-  return { nameData.name, typeInfo };
+  return { nameData.name, type };
 }
 
 void VulkanHppGenerator::readCommands( tinyxml2::XMLElement const * element )
@@ -13365,199 +13624,6 @@ VulkanHppGenerator::DeprecateData VulkanHppGenerator::readDeprecateData( tinyxml
     }
   }
   return deprecateData;
-}
-
-void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "bitwidth", { "64" } }, { "comment", {} }, { "type", { "bitmask", "constants", "enum" } } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-
-  std::string bitwidth, name;
-  std::string type = "constants";  // hard-coded fallback for older versions, where "API Constants" did not have a type attribute, yet
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "bitwidth" )
-    {
-      bitwidth = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else if ( attribute.first == "type" )
-    {
-      type = attribute.second;
-    }
-  }
-  assert( !name.empty() );
-
-  if ( type == "constants" )
-  {
-    assert( name == "API Constants" );
-    checkElements( line, children, { { "enum", MultipleAllowed::Yes } } );
-    for ( auto const & child : children )
-    {
-      readEnumsConstants( child );
-    }
-  }
-  else
-  {
-    checkElements( line, children, {}, { { "comment", MultipleAllowed::Yes }, { "enum", MultipleAllowed::Yes }, { "unused", MultipleAllowed::No } } );
-    checkForError( !type.empty(), line, "enum without type" );
-
-    // get the EnumData entry in enum map
-    auto enumIt = findByNameOrAlias( m_enums, name );
-    checkForError( enumIt != m_enums.end(), line, "enum <" + name + "> is not listed as enum in the types section" );
-    checkForError( enumIt->second.values.empty(), line, "enum <" + name + "> already holds values" );
-
-    // mark it as a bitmask, if it is one
-    bool const bitmask = ( type == "bitmask" );
-    if ( bitmask )
-    {
-      checkForError( name.find( "FlagBits" ) != std::string::npos, line, "bitmask <" + name + "> does not contain \"FlagBits\"" );
-    }
-    enumIt->second.isBitmask = bitmask;
-    enumIt->second.bitwidth  = bitwidth;
-
-    // read the names of the enum values
-    for ( auto child : children )
-    {
-      std::string value = child->Value();
-      if ( value == "enum" )
-      {
-        readEnumsEnum( child, enumIt );
-      }
-    }
-  }
-}
-
-void VulkanHppGenerator::readEnumsConstants( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name, type, value;
-  auto        aliasIt = attributes.find( "alias" );
-  if ( aliasIt != attributes.end() )
-  {
-    checkAttributes( line, attributes, { { "alias", {} }, { "name", {} } }, {} );
-
-    std::string alias;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "alias" )
-      {
-        alias = attribute.second;
-      }
-      else if ( attribute.first == "name" )
-      {
-        name = attribute.second;
-        checkForError( !m_constants.contains( name ), line, "already specified enum constant <" + name + ">" );
-      }
-    }
-
-    auto constIt = m_constants.find( alias );
-    checkForError( constIt != m_constants.end(), line, "constant alias <" + name + "> is an alias of an unknown constant <" + alias + ">." );
-    type  = constIt->second.type;
-    value = constIt->second.value;
-  }
-  else
-  {
-    checkAttributes( line, attributes, { { "name", {} }, { "type", {} }, { "value", {} } }, { { "comment", {} } } );
-
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "name" )
-      {
-        name = attribute.second;
-        checkForError( !m_constants.contains( name ), line, "already specified enum constant <" + name + ">" );
-      }
-      else if ( attribute.first == "type" )
-      {
-        type = attribute.second;
-      }
-      else if ( attribute.first == "value" )
-      {
-        value = attribute.second;
-      }
-    }
-  }
-  checkForError( m_types.insert( { name, TypeData{ TypeCategory::Constant, {}, line } } ).second, line, "enum <" + name + "> already specified" );
-  m_constants[name] = { type, value, line };
-}
-
-void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt )
-{
-  int const                          line       = element->GetLineNum();
-  bool                               deprecated = false;
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  if ( attributes.contains( "alias" ) )
-  {
-    checkAttributes(
-      line, attributes, { { "alias", {} }, { "name", {} } }, { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "deprecated", { "aliased" } } } );
-    checkElements( line, getChildElements( element ), {} );
-
-    std::string alias, api, bitpos, name, value;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "alias" )
-      {
-        alias = attribute.second;
-      }
-      else if ( attribute.first == "api" )
-      {
-        api = attribute.second;
-      }
-      else if ( attribute.first == "deprecated" )
-      {
-        deprecated = true;
-      }
-      else if ( attribute.first == "name" )
-      {
-        name = attribute.second;
-      }
-    }
-    assert( !name.empty() );
-
-    if ( api.empty() || ( api == m_api ) )
-    {
-      checkForError(
-        enumIt->second.addEnumAlias( line, name, alias, "", true ), line, "enum value alias <" + name + "> already listed with different properties" );
-    }
-  }
-  else
-  {
-    checkAttributes( line, attributes, { { "name", {} } }, { { "bitpos", {} }, { "comment", {} }, { "value", {} } } );
-    checkElements( line, getChildElements( element ), {} );
-
-    std::string alias, bitpos, name, value;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "bitpos" )
-      {
-        bitpos = attribute.second;
-      }
-      else if ( attribute.first == "name" )
-      {
-        name = attribute.second;
-      }
-      else if ( attribute.first == "value" )
-      {
-        value = attribute.second;
-      }
-    }
-
-    std::string prefix = generateEnumSuffixes( enumIt->first, enumIt->second.isBitmask ).first;
-    checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
-
-    checkForError( bitpos.empty() ^ value.empty(), line, "both or none of \"bitpos\" and \"value\" are set for enum <" + name + "> which is invalid" );
-    checkForError( enumIt->second.addEnumValue( line, name, "", bitpos, value, true, deprecated ),
-                   line,
-                   "enum value <" + name + "> already listed with different properties" );
-  }
 }
 
 void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData, bool extensionSupported )
@@ -13943,7 +14009,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     else if ( attribute.first == "platform" )
     {
       extensionData.platform = attribute.second;
-      checkForError( m_platforms.contains( extensionData.platform ), line, "unknown platform <" + extensionData.platform + ">" );
+      checkForError( m_vkxml.platforms.contains( extensionData.platform ), line, "unknown platform <" + extensionData.platform + ">" );
     }
     else if ( attribute.first == "promotedto" )
     {
@@ -14004,7 +14070,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     size_t const tagEnd = extensionData.name.find( '_', tagStart + 1 );
     checkForError( tagEnd != std::string::npos, line, "name <" + extensionData.name + "> is missing an underscore '_'" );
     std::string tag = extensionData.name.substr( tagStart + 1, tagEnd - tagStart - 1 );
-    checkForError( ( m_tags.find( tag ) != m_tags.end() ), line, "name <" + extensionData.name + "> is using an unknown tag <" + tag + ">" );
+    checkForError( ( m_vkxml.tags.find( tag ) != m_vkxml.tags.end() ), line, "name <" + extensionData.name + "> is using an unknown tag <" + tag + ">" );
   }
 
   if ( extensionSupported )
@@ -14395,14 +14461,14 @@ std::string VulkanHppGenerator::readName( tinyxml2::XMLElement const * element )
   return attributes.find( "name" )->second;
 }
 
-std::pair<VulkanHppGenerator::NameData, TypeInfo> VulkanHppGenerator::readNameAndType( tinyxml2::XMLElement const * element )
+std::pair<VulkanHppGenerator::NameData, Type> VulkanHppGenerator::readNameAndType( tinyxml2::XMLElement const * element )
 {
   int                                       line     = element->GetLineNum();
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, { { "name", MultipleAllowed::No } }, { { "enum", MultipleAllowed::No }, { "type", MultipleAllowed::No } } );
 
   NameData nameData;
-  TypeInfo typeInfo;
+  Type     type;
   for ( auto child : children )
   {
     line = child->GetLineNum();
@@ -14419,7 +14485,7 @@ std::pair<VulkanHppGenerator::NameData, TypeInfo> VulkanHppGenerator::readNameAn
                        ( strcmp( child->NextSibling()->Value(), "]" ) == 0 ),
                      line,
                      std::string( "array specifiation is ill-formatted: <" ) + nameData.arraySizes.back() + ">" );
-      checkForError( m_constants.contains( nameData.arraySizes.back() ), line, "using unknown enum value <" + nameData.arraySizes.back() + ">" );
+      checkForError( m_vkxml.constants.contains( nameData.arraySizes.back() ), line, "using unknown enum value <" + nameData.arraySizes.back() + ">" );
     }
     else if ( value == "name" )
     {
@@ -14430,49 +14496,10 @@ std::pair<VulkanHppGenerator::NameData, TypeInfo> VulkanHppGenerator::readNameAn
     }
     else if ( value == "type" )
     {
-      typeInfo = readTypeInfo( child );
+      type = readType( child );
     }
   }
-  return { nameData, typeInfo };
-}
-
-void VulkanHppGenerator::readPlatform( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "comment", {} }, { "name", {} }, { "protect", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name, protect;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else if ( attribute.first == "protect" )
-    {
-      protect = attribute.second;
-    }
-  }
-
-  checkForError( std::ranges::none_of( m_platforms, [&protect]( std::pair<std::string, PlatformData> const & p ) { return p.second.protect == protect; } ),
-                 line,
-                 "protect <" + protect + "> of platform <" + name + "> is already used with some other platform" );
-  checkForError( m_platforms.insert( { name, { protect, line } } ).second, line, "platform <" + name + "> is already specified" );
-}
-
-void VulkanHppGenerator::readPlatforms( tinyxml2::XMLElement const * element )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), { { "comment", {} } }, {} );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "platform", MultipleAllowed::Yes } } );
-
-  for ( auto child : children )
-  {
-    readPlatform( child );
-  }
+  return { nameData, type };
 }
 
 void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
@@ -14503,18 +14530,6 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     {
       readCommands( child );
     }
-    else if ( value == "comment" )
-    {
-      std::string comment = readComment( child );
-      if ( comment.find( "\nCopyright" ) == 0 )
-      {
-        m_vulkanLicenseHeader = generateCopyrightMessage( comment );
-      }
-    }
-    else if ( value == "enums" )
-    {
-      readEnums( child );
-    }
     else if ( value == "extensions" )
     {
       readExtensions( child );
@@ -14526,10 +14541,6 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     else if ( value == "formats" )
     {
       readFormats( child );
-    }
-    else if ( value == "platforms" )
-    {
-      readPlatforms( child );
     }
     else if ( value == "spirvcapabilities" )
     {
@@ -14543,14 +14554,6 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     {
       readSync( child );
     }
-    else if ( value == "tags" )
-    {
-      readTags( child );
-    }
-    else if ( value == "types" )
-    {
-      readTypes( child );
-    }
     else if ( value == "videocodecs" )
     {
       readVideoCodecs( child );
@@ -14563,7 +14566,6 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     mergeInternalFeatures();
   }
   distributeEnumValueAliases();
-  distributeStructAliases();
   distributeRequirements();
   markExtendedStructs();
 }
@@ -14573,11 +14575,14 @@ VulkanHppGenerator::RemoveData VulkanHppGenerator::readRemoveData( tinyxml2::XML
   int const line = element->GetLineNum();
   checkAttributes( line, getAttributes( element ), {}, { { "comment", {} }, { "reasonlink", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements(
-    line,
-    children,
-    {},
-    { { "command", MultipleAllowed::Yes }, { "enum", MultipleAllowed::Yes }, { "feature", MultipleAllowed::Yes }, { "type", MultipleAllowed::Yes } } );
+  checkElements( line,
+                 children,
+                 {},
+                 { { "command", MultipleAllowed::Yes },
+                   { "comment", MultipleAllowed::Yes },
+                   { "enum", MultipleAllowed::Yes },
+                   { "feature", MultipleAllowed::Yes },
+                   { "type", MultipleAllowed::Yes } } );
 
   RemoveData removeData;
   removeData.xmlLine = line;
@@ -14668,12 +14673,12 @@ void VulkanHppGenerator::readRequireEnum(
       checkForError(
         m_types.insert( { name, TypeData{ TypeCategory::Constant, { requiredBy }, line } } ).second, line, "required enum <" + name + "> already specified" );
 
-      auto constIt = m_constants.find( alias );
-      if ( constIt != m_constants.end() )
+      auto constIt = m_vkxml.constants.find( alias );
+      if ( constIt != m_vkxml.constants.end() )
       {
         typeIt = m_types.find( name );
         typeIt->second.requiredBy.insert( requiredBy );
-        m_constants[name] = { constIt->second.type, constIt->second.value, line };
+        m_vkxml.constants[name] = { constIt->second.type, constIt->second.value, line };
         requireData.constants.push_back( { name, line } );
       }
     }
@@ -14775,8 +14780,8 @@ void VulkanHppGenerator::readRequireEnum(
                          "required enum <" + name + "> specified by value <" + value + "> is already specified" );
           if ( !type.empty() )
           {
-            assert( !m_constants.contains( name ) );
-            m_constants[name] = { type, value, line };
+            assert( !m_vkxml.constants.contains( name ) );
+            m_vkxml.constants[name] = { type, value, line };
           }
         }
 
@@ -14830,30 +14835,15 @@ VulkanHppGenerator::RequireFeature VulkanHppGenerator::readRequireFeature( tinyx
   }
   assert( !name.empty() && !structure.empty() );
 
-  auto structIt = m_structs.find( structure );
-  if ( structIt == m_structs.end() )
-  {
-    auto aliasIt = std::ranges::find_if( m_structsAliases, [&structure]( std::pair<std::string, NameLine> const & ad ) { return ad.first == structure; } );
-    checkForError( aliasIt != m_structsAliases.end(), line, "encountered unknown required feature struct <" + structure + ">" );
-    auto nextAliasIt = aliasIt;
-    do
-    {
-      nextAliasIt = std::ranges::find_if(
-        m_structsAliases, [&structure = aliasIt->second.name]( std::pair<std::string, NameLine> const & ad ) { return ad.first == structure; } );
-      if ( nextAliasIt != m_structsAliases.end() )
-      {
-        aliasIt = nextAliasIt;
-      }
-    } while ( nextAliasIt != m_structsAliases.end() );
-    structIt = m_structs.find( aliasIt->second.name );
-    assert( structIt != m_structs.end() );
-  }
+  auto structIt = findByNameOrAlias( m_structs, structure );
+  checkForError( structIt != m_structs.end(), line, "encountered unknown required feature struct <" + structure + ">" );
+
   for ( auto const & n : name )
   {
     auto memberIt = std::ranges::find_if( structIt->second.members, [&n]( MemberData const & md ) { return md.name == n; } );
     checkForError(
       memberIt != structIt->second.members.end(), line, "required feature name <" + n + "> not part of the required feature struct <" + structure + ">" );
-    checkForError( ( memberIt->type.isValue() && ( memberIt->type.type == "VkBool32" ) ),
+    checkForError( ( memberIt->type.isValue() && ( memberIt->type.name == "VkBool32" ) ),
                    line,
                    "required feature name <" + n + "> is not a VkBool32 member of the required feature struct <" + structure + ">" );
   }
@@ -14935,7 +14925,7 @@ void VulkanHppGenerator::readSPIRVCapabilityEnable( tinyxml2::XMLElement const *
     checkForError( propertyIt != m_structs.end(), line, "unknown property <" + property + "> specified for SPIR-V capability" );
     auto memberIt = findByName( propertyIt->second.members, member );
     checkForError( memberIt != propertyIt->second.members.end(), line, "unknown member <" + member + "> specified for SPIR-V capability" );
-    if ( memberIt->type.type == "VkBool32" )
+    if ( memberIt->type.name == "VkBool32" )
     {
       checkForError( ( value == "VK_FALSE" ) || ( value == "VK_TRUE" ),
                      line,
@@ -14943,8 +14933,8 @@ void VulkanHppGenerator::readSPIRVCapabilityEnable( tinyxml2::XMLElement const *
     }
     else
     {
-      auto bitmaskIt = m_bitmasks.find( memberIt->type.type );
-      checkForError( bitmaskIt != m_bitmasks.end(), line, "member <" + member + "> specified for SPIR-V capability is not a bitmask" );
+      auto bitmaskIt = m_vkxml.bitmasks.find( memberIt->type.name );
+      checkForError( bitmaskIt != m_vkxml.bitmasks.end(), line, "member <" + member + "> specified for SPIR-V capability is not a bitmask" );
       checkForError( !bitmaskIt->second.require.empty(), line, "member <" + member + "> specified for SPIR-V capability has no required enum" );
       auto const enumIt = m_enums.find( bitmaskIt->second.require );
       checkForError(
@@ -15062,161 +15052,6 @@ void VulkanHppGenerator::readSPIRVExtensions( tinyxml2::XMLElement const * eleme
   for ( auto child : children )
   {
     readSPIRVExtension( child );
-  }
-}
-
-void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element, std::vector<MemberData> & members, bool isUnion )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line,
-                   attributes,
-                   {},
-                   { { "altlen", {} },
-                     { "api", { "vulkan", "vulkanbase", "vulkansc" } },
-                     { "deprecated", { "ignored", "unused" } },
-                     { "externsync", { "maybe", "true" } },
-                     { "featurelink", {} },
-                     { "len", {} },
-                     { "limittype", { "bitmask", "bits", "exact", "max", "min", "mul", "noauto", "not", "pot", "range", "struct" } },
-                     { "noautovalidity", { "true" } },
-                     { "objecttype", { "objectType" } },
-                     { "optional", { "false", "true" } },
-                     { "selection", {} },
-                     { "selector", {} },
-                     { "values", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line,
-                 children,
-                 { { "name", MultipleAllowed::No }, { "type", MultipleAllowed::No } },
-                 { { "comment", MultipleAllowed::No }, { "enum", MultipleAllowed::No } } );
-
-  MemberData memberData;
-  memberData.xmlLine = line;
-
-  std::vector<std::string> api;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "api" )
-    {
-      api = tokenize( attribute.second, "," );
-    }
-    else if ( attribute.first == "altlen" )
-    {
-      assert( memberData.lenExpressions.empty() );
-      memberData.lenExpressions = tokenize( attribute.second, "," );
-      checkForError( memberData.lenExpressions.size() == 1,
-                     line,
-                     "member attribute <altlen> holds unknown number of data: " + std::to_string( memberData.lenExpressions.size() ) );
-      memberData.lenMembers = filterNumbers( tokenizeAny( attribute.second, " /()+*" ) );
-    }
-    else if ( attribute.first == "deprecated" )
-    {
-      memberData.deprecated = attribute.second;
-    }
-    else if ( attribute.first == "len" )
-    {
-      if ( memberData.lenExpressions.empty() )
-      {
-        memberData.lenExpressions = tokenize( attribute.second, "," );
-        checkForError( !memberData.lenExpressions.empty() && ( memberData.lenExpressions.size() <= 2 ),
-                       line,
-                       "member attribute <len> holds unknown number of data: " + std::to_string( memberData.lenExpressions.size() ) );
-        if ( 1 < memberData.lenExpressions.size() )
-        {
-          checkForError( ( memberData.lenExpressions[1] == "1" ) || ( memberData.lenExpressions[1] == "null-terminated" ),
-                         line,
-                         "member attribute <len> holds unknown second value <" + memberData.lenExpressions[1] + ">" );
-        }
-      }
-    }
-    else if ( attribute.first == "limitype" )
-    {
-      memberData.limitType = attribute.second;
-    }
-    else if ( attribute.first == "noautovalidity" )
-    {
-      memberData.noAutoValidity = ( attribute.second == "true" );
-    }
-    else if ( attribute.first == "optional" )
-    {
-      std::vector<std::string> optional = tokenize( attribute.second, "," );
-      memberData.optional.reserve( optional.size() );
-      for ( auto const & o : optional )
-      {
-        memberData.optional.push_back( o == "true" );
-      }
-    }
-    else if ( attribute.first == "selection" )
-    {
-      checkForError( isUnion, line, "attribute <selection> is used with a non-union structure." );
-      memberData.selection = tokenize( attribute.second, "," );
-    }
-    else if ( attribute.first == "selector" )
-    {
-      memberData.selector = attribute.second;
-      auto selectorIt     = findByName( members, memberData.selector );
-      checkForError( selectorIt != members.end(), line, "member attribute <selector> holds unknown value <" + memberData.selector + ">" );
-      checkForError( containsByNameOrAlias( m_enums, selectorIt->type.type ),
-                     line,
-                     "member attribute <selector> references unknown enum type <" + selectorIt->type.type + ">" );
-    }
-    else if ( attribute.first == "values" )
-    {
-      std::vector<std::string> values = tokenize( attribute.second, "," );
-      checkForError( values.size() == 1, line, "attribute \"values\" holds multiple values <" + attribute.first + ">, but it's expected to hold just one" );
-      memberData.value = values[0];
-    }
-  }
-
-  std::string name;
-  for ( auto child : children )
-  {
-    int const childLine = child->GetLineNum();
-    checkAttributes( childLine, getAttributes( child ), {}, {} );
-    checkElements( childLine, getChildElements( child ), {} );
-
-    std::string value = child->Value();
-    if ( value == "enum" )
-    {
-      std::string enumString = child->GetText();
-
-      checkForError( child->PreviousSibling() &&
-                       ( strcmp( child->PreviousSibling()->Value(), "[" ) == 0 ) &&
-                       child->NextSibling() &&
-                       ( strcmp( child->NextSibling()->Value(), "]" ) == 0 ),
-                     line,
-                     std::string( "struct member array specifiation is ill-formatted: <" ) + enumString + ">" );
-
-      memberData.arraySizes.push_back( enumString );
-    }
-    else if ( value == "name" )
-    {
-      name                                                   = child->GetText();
-      std::tie( memberData.arraySizes, memberData.bitCount ) = readModifiers( child->NextSibling() );
-    }
-    else if ( value == "type" )
-    {
-      memberData.type = readTypeInfo( child );
-    }
-  }
-
-  // `ppEnabledLayerNames` needs to be special-cased with old attributes to maintain API compatibility
-  // See https://github.com/KhronosGroup/Vulkan-Hpp/issues/2531
-  if ( name == "ppEnabledLayerNames" )
-  {
-    memberData.lenExpressions = { "enabledLayerCount", "null-terminated" };
-  }
-  assert( !name.empty() );
-
-  checkForError( ( memberData.type.postfix.length() < 3 ) || !memberData.type.postfix.starts_with( "[" ) || !memberData.type.postfix.ends_with( "]" ),
-                 line,
-                 "struct member <" + name + "> has its array size <" + memberData.type.postfix + "> at the wrong position" );
-  if ( api.empty() || std::ranges::any_of( api, [this]( auto const & a ) { return a == m_api; } ) )
-  {
-    checkForError( !containsByName( members, name ), line, "struct member name <" + name + "> already used" );
-    memberData.name = name;
-    members.push_back( memberData );
   }
 }
 
@@ -15414,135 +15249,6 @@ void VulkanHppGenerator::readSyncStageSupport( tinyxml2::XMLElement const * elem
   }
 }
 
-void VulkanHppGenerator::readTag( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "author", {} }, { "contact", {} }, { "name", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name = attributes.find( "name" )->second;
-  checkForError( m_tags.insert( { name, { line } } ).second, line, "tag <" + name + "> already specified" );
-}
-
-void VulkanHppGenerator::readTags( tinyxml2::XMLElement const * element )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), { { "comment", {} } }, {} );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "tag", MultipleAllowed::Yes } } );
-
-  for ( auto child : children )
-  {
-    readTag( child );
-  }
-}
-
-void VulkanHppGenerator::readTypeBasetype( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "category", { "basetype" } } }, {} );
-
-  NameData nameData;
-  TypeInfo typeInfo;
-  std::tie( nameData, typeInfo ) = readNameAndType( element );
-
-  if ( typeInfo.prefix == "typedef" )
-  {
-    // remove redundant typeInfo.prefix "typedef"
-    typeInfo.prefix.clear();
-  }
-
-  checkForError( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
-  checkForError( typeInfo.prefix.empty(), line, "unexpected type prefix <" + typeInfo.prefix + ">" );
-  checkForError( typeInfo.postfix.empty() || ( typeInfo.postfix == "*" ), line, "unexpected type postfix <" + typeInfo.postfix + ">" );
-
-  checkForError(
-    m_types.insert( { nameData.name, TypeData{ TypeCategory::BaseType, {}, line } } ).second, line, "basetype <" + nameData.name + "> already specified" );
-  assert( !m_baseTypes.contains( nameData.name ) );
-  m_baseTypes[nameData.name] = { typeInfo, line };
-}
-
-void VulkanHppGenerator::readTypeBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-
-  if ( attributes.contains( "alias" ) )
-  {
-    checkAttributes( line, attributes, { { "alias", {} }, { "category", { "bitmask" } }, { "name", {} } }, {} );
-    checkElements( line, getChildElements( element ), {} );
-
-    std::string alias, name;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "alias" )
-      {
-        alias = attribute.second;
-      }
-      else if ( attribute.first == "name" )
-      {
-        name = attribute.second;
-      }
-    }
-
-    checkForError( m_types.insert( { name, TypeData{ TypeCategory::Bitmask, {}, line } } ).second, line, "bitmask <" + name + "> already specified" );
-
-    auto bitmaskIt = m_bitmasks.find( alias );
-    checkForError( bitmaskIt != m_bitmasks.end(), line, "bitmask <" + name + "> is an alias of an unknown bitmask <" + alias + ">." );
-    checkForError( bitmaskIt->second.aliases.insert( { name, line } ).second,
-                   line,
-                   "bitmask alias <" + name + "> is already listed as an alias for bitmask <" + alias + ">" );
-  }
-  else
-  {
-    checkAttributes(
-      line, attributes, { { "category", { "bitmask" } } }, { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "bitvalues", {} }, { "requires", {} } } );
-
-    std::vector<std::string> api;
-    std::string              bitvalues, require;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "api" )
-      {
-        api = tokenize( attribute.second, "," );
-      }
-      else if ( attribute.first == "bitvalues" )
-      {
-        bitvalues = attribute.second;
-      }
-      else if ( attribute.first == "requires" )
-      {
-        require = attribute.second;
-      }
-    }
-
-    NameData nameData;
-    TypeInfo typeInfo;
-    std::tie( nameData, typeInfo ) = readNameAndType( element );
-
-    checkForError( nameData.name.starts_with( "Vk" ), line, "name <" + nameData.name + "> does not begin with <Vk>" );
-    checkForError( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
-    checkForWarning( ( typeInfo.type == "VkFlags" ) || ( typeInfo.type == "VkFlags64" ), line, "unexpected bitmask type <" + typeInfo.type + ">" );
-    checkForError( typeInfo.prefix == "typedef", line, "unexpected type prefix <" + typeInfo.prefix + ">" );
-    checkForError( typeInfo.postfix.empty(), line, "unexpected type postfix <" + typeInfo.postfix + ">" );
-    checkForError( bitvalues.empty() || require.empty(), line, "attributes <bitvalues> and <requires> are both specified" );
-    checkForError( ( typeInfo.type != "VkFlags64" ) || !bitvalues.empty(), line, "bitmask of type <VkFlags64> needs attribute bitvalues to be set" );
-
-    if ( !bitvalues.empty() )
-    {
-      require = bitvalues;
-    }
-
-    if ( api.empty() || std::ranges::any_of( api, [this]( auto const & a ) { return a == m_api; } ) )
-    {
-      checkForError(
-        m_types.insert( { nameData.name, TypeData{ TypeCategory::Bitmask, {}, line } } ).second, line, "bitmask <" + nameData.name + "> already specified" );
-      assert( !m_bitmasks.contains( nameData.name ) );
-      m_bitmasks[nameData.name] = { {}, require, typeInfo.type, line };
-    }
-  }
-}
-
 VulkanHppGenerator::DefinesPartition VulkanHppGenerator::partitionDefines( std::map<std::string, DefineData> const & defines )
 {
   DefinesPartition partition{};
@@ -15557,7 +15263,7 @@ VulkanHppGenerator::DefinesPartition VulkanHppGenerator::partitionDefines( std::
         if ( define.second.possibleDefinition.empty() )
         {
 #if !defined( NDEBUG )
-          const std::set<std::string> ignoredDefines{ "VK_DEFINE_NON_DISPATCHABLE_HANDLE", "VK_NULL_HANDLE", "VK_USE_64_BIT_PTR_DEFINES" };
+          const std::set<std::string> ignoredDefines{ "VK_DEFINE_NON_DISPATCHABLE_HANDLE", "VK_NULL_HANDLE" };
 #endif
           assert( ignoredDefines.contains( define.first ) );
         }
@@ -15581,576 +15287,6 @@ VulkanHppGenerator::DefinesPartition VulkanHppGenerator::partitionDefines( std::
     }
   }
   return partition;
-}
-
-void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line,
-                   attributes,
-                   { { "category", { "define" } } },
-                   { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "comment", {} }, { "deprecated", { "true" } }, { "name", {} }, { "requires", {} } } );
-
-  std::vector<std::string> api;
-  std::string              name, require;
-  bool                     deprecated = false;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "api" )
-    {
-      api = tokenize( attribute.second, "," );
-    }
-    else if ( attribute.first == "deprecated" )
-    {
-      deprecated = true;
-    }
-    else if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else if ( attribute.first == "requires" )
-    {
-      require = attribute.second;
-    }
-  }
-
-  if ( !name.empty() )
-  {
-    checkForError( !element->FirstChildElement(), line, "unknown formatting of type category=define name <" + name + ">" );
-    checkForError( element->LastChild() && element->LastChild()->ToText() && element->LastChild()->ToText()->Value(),
-                   line,
-                   "unknown formatting of type category=define named <" + name + ">" );
-  }
-  else if ( element->GetText() )
-  {
-    std::string text = element->GetText();
-    if ( ( text.find( "class" ) != std::string::npos ) || ( text.find( "struct" ) != std::string::npos ) )
-    {
-      // here are a couple of structs as defines, which really are types!
-      assert( false );
-      tinyxml2::XMLElement const * child = element->FirstChildElement();
-      checkForError( child && ( strcmp( child->Value(), "name" ) == 0 ) && child->GetText(), line, "unexpected formatting of type category=define" );
-      name = child->GetText();
-      checkForError( m_types.insert( { name, TypeData{ .category = TypeCategory::Define } } ).second, line, "type <" + name + "> has already been speficied" );
-    }
-    else
-    {
-      tinyxml2::XMLElement const * child = element->FirstChildElement();
-      checkForError( child && !child->FirstAttribute() && ( strcmp( child->Value(), "name" ) == 0 ) && child->GetText(),
-                     line,
-                     "unknown formatting of type category define" );
-      name = trim( child->GetText() );
-      if ( ( name == "VK_HEADER_VERSION" ) && ( api.empty() || std::ranges::any_of( api, [this]( auto const & a ) { return a == m_api; } ) ) )
-      {
-        m_version = trimEnd( element->LastChild()->ToText()->Value() );
-      }
-      // ignore all the other defines
-      checkForWarning( !child->NextSiblingElement() || ( child->NextSiblingElement() &&
-                                                         !child->NextSiblingElement()->FirstAttribute() &&
-                                                         ( strcmp( child->NextSiblingElement()->Value(), "type" ) == 0 ) &&
-                                                         !child->NextSiblingElement()->NextSiblingElement() ),
-                       line,
-                       "unknown formatting of type category define" );
-    }
-  }
-  assert( !name.empty() );
-
-  if ( api.empty() || std::ranges::any_of( api, [this]( auto const & a ) { return a == m_api; } ) )
-  {
-    MacroVisitor definesVisitor{};
-    element->Accept( &definesVisitor );
-    auto const & [deprecatedReason, possibleCallee, params, possibleDefinition] = parseMacro( definesVisitor.macro );
-
-    checkForError( m_types.insert( { name, TypeData{ TypeCategory::Define, {}, line } } ).second, line, "define <" + name + "> already specified" );
-    assert( !m_defines.contains( name ) );
-    m_defines[name] = { deprecated, require, line, deprecatedReason, possibleCallee, params, possibleDefinition };
-  }
-}
-
-void VulkanHppGenerator::readTypeEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "category", { "enum" } }, { "name", {} } }, { { "alias", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string alias, name;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "alias" )
-    {
-      alias = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-  }
-
-  checkForError( m_types.insert( { name, TypeData{ TypeCategory::Enum, {}, line } } ).second, line, "enum <" + name + "> already specified" );
-  if ( alias.empty() )
-  {
-    assert( !m_enums.contains( name ) );
-    m_enums[name] = EnumData{ .xmlLine = line };
-  }
-  else
-  {
-    auto enumIt = m_enums.find( alias );
-    checkForError( enumIt != m_enums.end(), line, "enum <" + name + "> is an alias of an unknown enum <" + alias + ">" );
-    checkForError( enumIt->second.aliases.insert( { name, line } ).second, line, "enum <" + name + "> already specified as some alias" );
-  }
-}
-
-void VulkanHppGenerator::readTypeFuncpointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "category", { "funcpointer" } } }, { { "requires", {} } } );
-
-  std::string require;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "requires" )
-    {
-      require = attribute.second;
-    }
-  }
-
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-
-  std::string            name;
-  std::vector<ParamData> params;
-  TypeInfo               returnType;
-
-  auto nameIt = std::ranges::find_if( children, []( tinyxml2::XMLElement const * e ) { return std::string( e->Value() ) == "name"; } );
-  if ( nameIt != children.end() )
-  {
-    // found the old fashioned funcpointer specification via "name" and "type"
-    checkElements( line, children, { { "name", MultipleAllowed::No }, { "type", MultipleAllowed::No } } );
-
-    std::string text = element->GetText();
-    assert( text.starts_with( "typedef " ) && text.ends_with( " (VKAPI_PTR *" ) );
-    text = stripPostfix( stripPrefix( text, "typedef " ), " (VKAPI_PTR *" );
-    if ( text.ends_with( "*" ) )
-    {
-      returnType.postfix = "*";
-      text               = stripPostfix( text, "*" );
-    }
-    returnType.type = text;
-
-    for ( auto const & child : children )
-    {
-      std::string value = child->Value();
-      if ( value == "name" )
-      {
-        name = child->GetText();
-      }
-      else if ( value == "type" )
-      {
-        int const paramLine = child->GetLineNum();
-        TypeInfo  typeInfo;
-        typeInfo.type = child->GetText();
-
-        auto previousSibling = child->PreviousSibling();
-        assert( previousSibling );
-        char const * previousSiblingValue = previousSibling->Value();
-        assert( previousSiblingValue );
-        std::string previousSiblingText = previousSiblingValue;
-        if ( previousSiblingText.ends_with( "const " ) )
-        {
-          typeInfo.prefix = "const";
-        }
-
-        auto nextSibling = child->NextSibling();
-        assert( nextSibling );
-        char const * nextSiblingValue = nextSibling->Value();
-        assert( nextSiblingValue != nullptr );
-        std::string paramName = nextSiblingValue;
-        if ( paramName.front() == '*' )
-        {
-          typeInfo.postfix = "*";
-        }
-        paramName = paramName.substr( paramName.find_first_not_of( "* " ) );
-        paramName = paramName.substr( 0, paramName.find_first_of( ",)" ) );
-
-        checkForError( std::ranges::none_of( params, [&paramName]( ParamData const & param ) { return param.name == paramName; } ),
-                       line,
-                       "param <" + paramName + "> already listed in funcpointer <" + name + ">" );
-        params.push_back( { paramName, typeInfo, paramLine } );
-      }
-    }
-  }
-  else
-  {
-    // found the new funcpointer specification via "proto" and "param"
-    checkElements( line, children, { { "proto", MultipleAllowed::No } }, { { "param", MultipleAllowed::Yes } } );
-
-    for ( auto child : children )
-    {
-      std::string value = child->Value();
-      if ( value == "param" )
-      {
-        std::pair<bool, ParamData> result = readCommandParam( child, params );
-        assert( result.first );
-        params.push_back( result.second );
-      }
-      else if ( value == "proto" )
-      {
-        std::tie( name, returnType ) = readCommandProto( child, "PFN_vk" );
-      }
-    }
-  }
-  assert( !name.empty() );
-
-  checkForError( m_types.insert( { name, TypeData{ TypeCategory::FuncPointer, {}, line } } ).second, line, "funcpointer <" + name + "> already specified" );
-  assert( !m_funcPointers.contains( name ) );
-  m_funcPointers[name] = { params, require, returnType, line };
-}
-
-void VulkanHppGenerator::readTypeHandle( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-
-  auto aliasIt = attributes.find( "alias" );
-  if ( aliasIt != attributes.end() )
-  {
-    checkAttributes( line, attributes, { { "alias", {} }, { "category", { "handle" } }, { "name", {} } }, {} );
-    checkElements( line, getChildElements( element ), {} );
-
-    std::string alias = aliasIt->second;
-    std::string name  = attributes.find( "name" )->second;
-
-    checkForError( m_types.insert( { name, TypeData{ TypeCategory::Handle, {}, line } } ).second, line, "handle <" + name + "> already specified" );
-
-    auto handleIt = m_handles.find( alias );
-    checkForError( handleIt != m_handles.end(), line, "handle <" + name + "> uses unknown alias <" + alias + ">." );
-    checkForError( handleIt->second.aliases.insert( { name, line } ).second, line, "handle <" + name + "> already listed as alias for handle <" + alias + ">" );
-  }
-  else
-  {
-    checkAttributes( line, attributes, { { "category", { "handle" } }, { "objtypeenum", {} } }, { { "parent", {} } } );
-
-    HandleData handleData;
-    handleData.xmlLine = line;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "objtypeenum" )
-      {
-        handleData.objTypeEnum = attribute.second;
-      }
-      else if ( attribute.first == "parent" )
-      {
-        handleData.parent = attribute.second;
-      }
-    }
-
-    NameData nameData;
-    TypeInfo typeInfo;
-    std::tie( nameData, typeInfo ) = readNameAndType( element );
-    handleData.isDispatchable      = typeInfo.type == "VK_DEFINE_HANDLE";
-
-    checkForError( nameData.name.starts_with( "Vk" ), line, "name <" + nameData.name + "> does not begin with <Vk>" );
-    checkForError( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
-    checkForError( ( typeInfo.type == "VK_DEFINE_HANDLE" ) || ( typeInfo.type == "VK_DEFINE_NON_DISPATCHABLE_HANDLE" ),
-                   line,
-                   "handle with invalid type <" + typeInfo.type + ">" );
-    checkForError( typeInfo.prefix.empty(), line, "unexpected type prefix <" + typeInfo.prefix + ">" );
-    checkForError( typeInfo.postfix == "(", line, "unexpected type postfix <" + typeInfo.postfix + ">" );
-    checkForError( !handleData.objTypeEnum.empty(), line, "handle <" + nameData.name + "> does not specify attribute \"objtypeenum\"" );
-
-    checkForError(
-      m_types.insert( { nameData.name, TypeData{ TypeCategory::Handle, {}, line } } ).second, line, "handle <" + nameData.name + "> already specified" );
-    assert( !m_handles.contains( nameData.name ) );
-    m_handles.insert( { nameData.name, handleData } );
-  }
-}
-
-void VulkanHppGenerator::readTypeInclude( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "category", { "include" } }, { "name", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name = attributes.find( "name" )->second;
-  checkForError( m_types.insert( { name, TypeData{ TypeCategory::Include, {}, line } } ).second, line, "type <" + name + "> already specified" );
-  assert( !m_includes.contains( name ) );
-  m_includes[name] = { line };
-}
-
-void VulkanHppGenerator::readTypeRequires( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "name", {} }, { "requires", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name, require;
-  for ( auto attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else
-    {
-      assert( attribute.first == "requires" );
-      require = attribute.second;
-    }
-  }
-
-  checkForError( m_includes.contains( require ), line, "type <" + name + "> requires unknown <" + require + ">" );
-  checkForError( m_types.insert( { name, TypeData{ TypeCategory::ExternalType, {}, line } } ).second, line, "type <" + name + "> already specified" );
-  assert( !m_externalTypes.contains( name ) );
-  m_externalTypes[name] = { require, line };
-}
-
-void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, bool isUnion, std::map<std::string, std::string> const & attributes )
-{
-  int const line    = element->GetLineNum();
-  auto      aliasIt = attributes.find( "alias" );
-  if ( aliasIt != attributes.end() )
-  {
-    checkAttributes( line, attributes, { { "alias", {} }, { "category", { "struct" } }, { "name", {} } }, {} );
-    checkElements( line, getChildElements( element ), {} );
-
-    std::string alias = aliasIt->second;
-    std::string name  = attributes.find( "name" )->second;
-
-    checkForError( m_types.insert( { name, TypeData{ TypeCategory::Struct, {}, line } } ).second, line, "struct <" + name + "> already specified" );
-    checkForError( std::ranges::none_of( m_structsAliases, [&name]( std::pair<std::string, NameLine> const & ad ) { return ad.first == name; } ),
-                   line,
-                   "struct alias <" + name + "> already listed" );
-    m_structsAliases.push_back( { name, { alias, line } } );
-  }
-  else
-  {
-    checkAttributes( line,
-                     attributes,
-                     { { "category", { isUnion ? "union" : "struct" } }, { "name", {} } },
-                     { { "allowduplicate", { "false", "true" } },
-                       { "comment", {} },
-                       { "requiredlimittype", { "true" } },
-                       { "returnedonly", { "true" } },
-                       { "structextends", {} } } );
-    std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-    checkElements( line, children, { { "member", MultipleAllowed::Yes } }, { { "comment", MultipleAllowed::Yes } } );
-
-    StructData structureData;
-    structureData.xmlLine = line;
-    structureData.isUnion = isUnion;
-
-    std::string name;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "allowduplicate" )
-      {
-        structureData.allowDuplicate = ( attribute.second == "true" );
-      }
-      else if ( attribute.first == "category" )
-      {
-        assert( isUnion ? ( attribute.second == "union" ) : ( attribute.second == "struct" ) );
-      }
-      else if ( attribute.first == "name" )
-      {
-        name = attribute.second;
-      }
-      else if ( attribute.first == "requiredlimittype" )
-      {
-        assert( attribute.second == "true" );
-        structureData.requiredLimitType = true;
-      }
-      else if ( attribute.first == "returnedonly" )
-      {
-        assert( attribute.second == "true" );
-        structureData.returnedOnly = true;
-      }
-      else if ( attribute.first == "structextends" )
-      {
-        structureData.structExtends = tokenize( attribute.second, "," );
-      }
-    }
-    assert( !name.empty() );
-
-    checkForError( !structureData.allowDuplicate || !structureData.structExtends.empty(),
-                   line,
-                   "attribute <allowduplicate> is true, but no structures are listed in <structextends>" );
-
-    checkForError( m_types.insert( { name, TypeData{ isUnion ? TypeCategory::Union : TypeCategory::Struct, {}, line } } ).second,
-                   line,
-                   "struct <" + name + "> already specified" );
-    assert( !m_structs.contains( name ) );
-
-    std::map<std::string, StructData>::iterator it = m_structs.insert( { name, structureData } ).first;
-
-    for ( auto child : children )
-    {
-      std::string value = child->Value();
-      if ( value == "member" )
-      {
-        readStructMember( child, it->second.members, isUnion );
-      }
-    }
-    // check for any "len" references needs to be done after all members are read, as the len might name a member that's listed after the array member
-    for ( auto & member : it->second.members )
-    {
-      if ( !member.lenExpressions.empty() && ( member.lenExpressions[0] != "null-terminated" ) && member.lenMembers.empty() )
-      {
-        auto lenMemberIt = findByName( it->second.members, member.lenExpressions[0] );
-        checkForError( lenMemberIt != it->second.members.end(), line, "member attribute <len> holds unknown value <" + member.lenExpressions[0] + ">" );
-        member.lenMembers.push_back( { member.lenExpressions[0], std::distance( it->second.members.begin(), lenMemberIt ) } );
-      }
-    }
-    checkForError( !structureData.requiredLimitType ||
-                     std::ranges::all_of( structureData.members,
-                                          []( MemberData const & member )
-                                          { return ( member.name == "sType" ) || ( member.name == "pNext" ) || !member.limitType.empty(); } ),
-                   line,
-                   "struct <" + name + "> requires all members to have a limittype" );
-
-    it->second.subStruct = determineSubStruct( *it );
-
-    // add some default values for some structures here!
-    if ( ( it->first == "VkRayTracingShaderGroupCreateInfoNV" ) || ( it->first == "VkRayTracingShaderGroupCreateInfoKHR" ) )
-    {
-      assert( ( ( it->first != "VkRayTracingShaderGroupCreateInfoNV" ) || ( it->second.members.size() == 7 ) ) &&
-              ( ( it->first != "VkRayTracingShaderGroupCreateInfoKHR" ) || ( it->second.members.size() == 8 ) ) );
-      assert( ( it->second.members[3].name == "generalShader" ) &&
-              ( it->second.members[4].name == "closestHitShader" ) &&
-              ( it->second.members[5].name == "anyHitShader" ) &&
-              ( it->second.members[6].name == "intersectionShader" ) );
-      bool const isKHR = ( it->first == "VkRayTracingShaderGroupCreateInfoKHR" );
-      for ( size_t const i : { 3, 4, 5, 6 } )
-      {
-        it->second.members[i].defaultValue = isKHR ? "VK_SHADER_UNUSED_KHR" : "VK_SHADER_UNUSED_NV";
-      }
-    }
-
-    // check if multiple structure members use the very same (not empty) len attribute
-    // Note: even though the arrays are not marked as optional, they still might be mutually exclusive (like in
-    // VkWriteDescriptorSet)! That is, there's not enough information available in vk.xml to decide on that, so we
-    // need this external knowledge!
-    static std::set<std::string> mutualExclusiveStructs = {
-      "VkAccelerationStructureBuildGeometryInfoKHR", "VkAccelerationStructureTrianglesOpacityMicromapEXT", "VkMicromapBuildInfoEXT", "VkWriteDescriptorSet"
-    };
-    static std::set<std::string> multipleLenStructs = { "VkAccelerationStructureTrianglesDisplacementMicromapNV",
-                                                        "VkImageConstraintsInfoFUCHSIA",
-                                                        "VkIndirectCommandsLayoutTokenNV",
-                                                        "VkIndirectExecutionSetShaderInfoEXT",
-                                                        "VkPipelineBinaryKeysAndDataKHR",
-                                                        "VkPresentInfoKHR",
-                                                        "VkSemaphoreWaitInfo",
-                                                        "VkSetDescriptorBufferOffsetsInfoEXT",
-                                                        "VkSubmitInfo",
-                                                        "VkSubpassDescription",
-                                                        "VkSubpassDescription2",
-                                                        "VkSwapchainTimeDomainPropertiesEXT",
-                                                        "VkTensorCopyARM",
-                                                        "VkTensorDescriptionARM",
-                                                        "VkVideoDecodeAV1PictureInfoKHR",
-                                                        "VkWin32KeyedMutexAcquireReleaseInfoKHR",
-                                                        "VkWin32KeyedMutexAcquireReleaseInfoNV" };
-    bool                         warned             = false;
-    for ( auto m0It = it->second.members.begin(); !warned && ( m0It != it->second.members.end() ); ++m0It )
-    {
-      if ( !m0It->lenExpressions.empty() && ( m0It->lenExpressions.front() != "null-terminated" ) )
-      {
-        for ( auto m1It = std::next( m0It ); !warned && ( m1It != it->second.members.end() ); ++m1It )
-        {
-          if ( !m1It->lenExpressions.empty() && ( m0It->lenExpressions.front() == m1It->lenExpressions.front() ) )
-          {
-            if ( mutualExclusiveStructs.contains( it->first ) )
-            {
-              it->second.mutualExclusiveLens = true;
-            }
-            else
-            {
-              checkForWarning(
-                multipleLenStructs.contains( it->first ),
-                line,
-                "Encountered structure <" +
-                  it->first +
-                  "> with multiple members referencing the same member for len. Need to be checked if they are supposed to be mutually exclusive." );
-              warned = true;
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-void VulkanHppGenerator::readTypes( tinyxml2::XMLElement const * element )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, { { "comment", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "comment", MultipleAllowed::Yes }, { "type", MultipleAllowed::Yes } } );
-
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "type" )
-    {
-      readTypesType( child );
-    }
-  }
-}
-
-void VulkanHppGenerator::readTypesType( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-
-  auto categoryIt = attributes.find( "category" );
-  if ( categoryIt != attributes.end() )
-  {
-    if ( categoryIt->second == "basetype" )
-    {
-      readTypeBasetype( element, attributes );
-    }
-    else if ( categoryIt->second == "bitmask" )
-    {
-      readTypeBitmask( element, attributes );
-    }
-    else if ( categoryIt->second == "define" )
-    {
-      readTypeDefine( element, attributes );
-    }
-    else if ( categoryIt->second == "enum" )
-    {
-      readTypeEnum( element, attributes );
-    }
-    else if ( categoryIt->second == "funcpointer" )
-    {
-      readTypeFuncpointer( element, attributes );
-    }
-    else if ( categoryIt->second == "handle" )
-    {
-      readTypeHandle( element, attributes );
-    }
-    else if ( categoryIt->second == "include" )
-    {
-      readTypeInclude( element, attributes );
-    }
-    else if ( ( categoryIt->second == "struct" ) || ( categoryIt->second == "union" ) )
-    {
-      readTypeStruct( element, ( categoryIt->second == "union" ), attributes );
-    }
-    else
-    {
-      checkForError( false, line, "unknown category <" + categoryIt->second + "> encountered" );
-    }
-  }
-  else
-  {
-    auto requiresIt = attributes.find( "requires" );
-    if ( requiresIt != attributes.end() )
-    {
-      readTypeRequires( element, attributes );
-    }
-    else
-    {
-      checkForError( ( attributes.size() == 1 ) && ( attributes.begin()->first == "name" ) && ( attributes.begin()->second == "int" ), line, "unknown type" );
-      checkForError( m_types.insert( { "int", TypeData{ TypeCategory::Unknown, {}, line } } ).second, line, "type <int> already specified" );
-    }
-  }
 }
 
 void VulkanHppGenerator::readVideoCapabilities( tinyxml2::XMLElement const * element, VideoCodec & videoCodec )
@@ -16485,8 +15621,8 @@ void VulkanHppGenerator::readVideoRequireCapabilities( tinyxml2::XMLElement cons
                    videoCodec.name +
                    ">" );
 
-  auto bitmaskIt = m_bitmasks.find( memberIt->type.type );
-  checkForError( bitmaskIt != m_bitmasks.end(), line, "Video Require Capabilities member <" + requireCapabilities.member + "> is not a bitmask" );
+  auto bitmaskIt = m_vkxml.bitmasks.find( memberIt->type.name );
+  checkForError( bitmaskIt != m_vkxml.bitmasks.end(), line, "Video Require Capabilities member <" + requireCapabilities.member + "> is not a bitmask" );
 
   auto enumIt = m_enums.find( bitmaskIt->second.require );
   assert( enumIt != m_enums.end() );
@@ -16521,35 +15657,35 @@ void VulkanHppGenerator::registerDeleter( std::string const & commandName, Comma
     switch ( commandData.params.size() )
     {
       case 2:
-        if ( commandData.params.back().type.type == "VkAllocationCallbacks" )
+        if ( commandData.params.back().type.name == "VkAllocationCallbacks" )
         {
           key        = "";
           valueIndex = 0;
         }
         else
         {
-          key        = commandData.params[0].type.type;
+          key        = commandData.params[0].type.name;
           valueIndex = 1;
         }
         break;
       case 3:
-        assert( commandData.params.back().type.type == "VkAllocationCallbacks" );
-        key        = commandData.params[0].type.type;
+        assert( commandData.params.back().type.name == "VkAllocationCallbacks" );
+        key        = commandData.params[0].type.name;
         valueIndex = 1;
         break;
       case 4:
-        key        = commandData.params[0].type.type;
+        key        = commandData.params[0].type.name;
         valueIndex = 3;
-        assert( m_handles.contains( commandData.params[valueIndex].type.type ) );
-        m_handles.find( commandData.params[valueIndex].type.type )->second.deletePool = commandData.params[1].type.type;
+        assert( m_handles.contains( commandData.params[valueIndex].type.name ) );
+        m_handles.find( commandData.params[valueIndex].type.name )->second.deletePool = commandData.params[1].type.name;
         break;
       default: assert( false );
     }
     auto keyHandleIt = m_handles.find( key );
     assert( keyHandleIt != m_handles.end() );
-    keyHandleIt->second.childrenHandles.insert( commandData.params[valueIndex].type.type );
+    keyHandleIt->second.childrenHandles.insert( commandData.params[valueIndex].type.name );
 
-    auto handleIt = m_handles.find( commandData.params[valueIndex].type.type );
+    auto handleIt = m_handles.find( commandData.params[valueIndex].type.name );
     assert( handleIt != m_handles.end() );
     handleIt->second.deleteCommand  = commandName;
     handleIt->second.destructorType = key;
@@ -16573,8 +15709,8 @@ void VulkanHppGenerator::rescheduleRAIIHandle( std::string &                    
   {
     for ( auto const & param : constructorIt->second.params )
     {
-      auto handleIt = m_handles.find( param.type.type );
-      if ( handleIt != m_handles.end() && !listedHandles.contains( param.type.type ) )
+      auto handleIt = m_handles.find( param.type.name );
+      if ( handleIt != m_handles.end() && !listedHandles.contains( param.type.name ) )
       {
         str += generateRAIIHandle( *handleIt, listedHandles, specialFunctions );
       }
@@ -16604,17 +15740,17 @@ bool VulkanHppGenerator::skipLeadingGrandParent( std::pair<std::string, HandleDa
   assert( !handle.second.constructorIts.empty() );
   auto constructorIt = handle.second.constructorIts.begin();
   if ( ( 1 < ( *constructorIt )->second.params.size() ) &&
-       isHandleType( ( *constructorIt )->second.params[0].type.type ) &&
-       ( ( *constructorIt )->second.params[1].type.type == handle.second.parent ) )
+       isHandleType( ( *constructorIt )->second.params[0].type.name ) &&
+       ( ( *constructorIt )->second.params[1].type.name == handle.second.parent ) )
   {
     auto parentIt = m_handles.find( handle.second.parent );
     assert( parentIt != m_handles.end() );
-    skip = ( ( *constructorIt )->second.params[0].type.type == parentIt->second.parent );
+    skip = ( ( *constructorIt )->second.params[0].type.name == parentIt->second.parent );
 #if !defined( NDEBUG )
     for ( auto it = std::next( constructorIt ); it != handle.second.constructorIts.end(); ++it )
     {
-      assert( ( *it )->second.params[0].type.type == ( *constructorIt )->second.params[0].type.type );
-      assert( !skip || ( ( *it )->second.params[1].type.type == ( *constructorIt )->second.params[1].type.type ) );
+      assert( ( *it )->second.params[0].type.name == ( *constructorIt )->second.params[0].type.name );
+      assert( !skip || ( ( *it )->second.params[1].type.name == ( *constructorIt )->second.params[1].type.name ) );
     }
 #endif
   }
@@ -16748,12 +15884,6 @@ bool VulkanHppGenerator::EnumData::addEnumValue(
 namespace
 {
   template <typename T>
-  bool containsByName( std::vector<T> const & values, std::string const & name )
-  {
-    return std::ranges::any_of( values, [&name]( T const & value ) { return value.name == name; } );
-  }
-
-  template <typename T>
   bool containsByNameOrAlias( std::vector<T> const & values, std::string const & name )
   {
     return std::ranges::any_of( values, [&name]( T const & value ) { return value.name == name || containsByName( value.aliases, name ); } );
@@ -16780,18 +15910,6 @@ namespace
   }
 
   template <typename T>
-  typename std::vector<T>::const_iterator findByName( std::vector<T> const & values, std::string const & name )
-  {
-    return std::ranges::find_if( values, [&name]( T const & value ) { return value.name == name; } );
-  }
-
-  template <typename T>
-  typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name )
-  {
-    return std::ranges::find_if( values, [&name]( T const & value ) { return value.name == name; } );
-  }
-
-  template <typename T>
   typename std::map<std::string, T>::const_iterator findByNameOrAlias( std::map<std::string, T> const & values, std::string const & name )
   {
     auto it = values.find( name );
@@ -16808,7 +15926,7 @@ namespace
     auto it = values.find( name );
     if ( it == values.end() )
     {
-      it = std::ranges::find_if( values, [&name]( auto const & value ) { return value.second.aliases.contains( name ); } );
+      it = std::ranges::find_if( values, [&name]( auto & value ) { return value.second.aliases.contains( name ); } );
     }
     assert( it != values.end() );
     return it;
@@ -16817,13 +15935,19 @@ namespace
   template <typename T>
   typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const & values, std::string const & name )
   {
-    return std::ranges::find_if( values, [&name]( T const & value ) { return ( value.name == name ) || containsByName( value.aliases, name ); } );
+    return std::ranges::find_if( values, [&name]( auto const & value ) { return ( value.name == name ) || containsByName( value.aliases, name ); } );
+  }
+
+  template <typename T>
+  typename std::vector<T>::iterator findByNameOrAlias( std::vector<T> & values, std::string const & name )
+  {
+    return std::ranges::find_if( values, [&name]( auto & value ) { return ( value.name == name ) || containsByName( value.aliases, name ); } );
   }
 
   template <typename T>
   typename std::vector<T>::const_iterator findByType( std::vector<T> const & values, std::string const & type )
   {
-    return std::ranges::find_if( values, [&type]( T const & value ) { return value.type.type == type; } );
+    return std::ranges::find_if( values, [&type]( auto const & value ) { return value.type.name == type; } );
   }
 
   std::string generateCArraySizes( std::vector<std::string> const & sizes )
@@ -16873,7 +15997,7 @@ namespace
   }
 
   // function to take three or four-vector of strings containing a macro definition, and return
-  // a tuple with possibly the deprecation reason, possibly the called macro, the macro parameters, and possibly the definition
+  // a tuple with possibly the called macro, the macro parameters, and possibly the definition
   VulkanHppGenerator::MacroData parseMacro( std::vector<std::string> const & completeMacro )
   {
     // #define macro definition
@@ -16882,14 +16006,10 @@ namespace
     auto const paramsRegex  = std::regex{ R"((\(.*?\)))" };
     auto const commentRegex = std::regex{ R"(\s*//.*)" };
 
-    auto rawComment = completeMacro[0];
-    std::erase( rawComment, '/' );
-    auto const strippedComment = trim( stripPostfix( stripPrefix( rawComment, " DEPRECATED:" ), "#define " ) );
-
     // special case for VK_USE_64_BIT_PTR_DEFINES
     if ( completeMacro.size() == 1 && completeMacro.front().find( "#ifndef VK_USE_64_BIT_PTR_DEFINES" ) != std::string::npos )
     {
-      return { {}, {}, {}, strippedComment };
+      return { {}, {}, completeMacro[0] };
     }
 
     // macro with parameters and implementation
@@ -16900,7 +16020,7 @@ namespace
       if ( paramsAndDefinitionAndTrailingComment.find( '(' ) == std::string::npos )
       {
         // no opening parenthesis found => no parameters
-        return { strippedComment, {}, {}, std::regex_replace( paramsAndDefinitionAndTrailingComment, commentRegex, "" ) };
+        return { {}, {}, std::regex_replace( paramsAndDefinitionAndTrailingComment, commentRegex, "" ) };
       }
 
       // match the first set of parentheses only
@@ -16916,7 +16036,7 @@ namespace
       std::erase( implementation, '\\' );
       implementation = trim( implementation );
 
-      return { strippedComment, {}, params, implementation };
+      return { {}, params, implementation };
     }
     if ( completeMacro.size() == 4 )
     {
@@ -16927,7 +16047,7 @@ namespace
       std::regex_search( argsAndTrailingComment, argsMatch, paramsRegex );
       auto args = tokenize( stripPrefix( stripPostfix( argsMatch[1].str(), ")" ), "(" ), "," );
 
-      return { strippedComment, calledMacro, args, {} };
+      return { calledMacro, args, {} };
     }
     return {};
   }
@@ -17025,7 +16145,8 @@ int main( int argc, char const ** argv )
   try
   {
     std::cout << "VulkanHppGenerator: Parsing " << filename << std::endl;
-    VulkanHppGenerator generator( doc, api );
+
+    VulkanHppGenerator generator( parseVkXml( doc, api ), doc, api );
 
     generator.prepareRAIIHandles();
     generator.generateCppmFile();

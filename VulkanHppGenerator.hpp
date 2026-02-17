@@ -536,7 +536,7 @@ private:
   void        checkDefineCorrectness() const;
   void        checkElements( int                                               line,
                              std::vector<tinyxml2::XMLElement const *> const & elements,
-                             std::map<std::string, bool> const &               required,
+                             std::map<std::string, MultipleAllowed> const &    required,
                              std::set<std::string> const &                     optional = {} ) const;
   void        checkEnumCorrectness() const;
   bool        checkEquivalentSingularConstructor( std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts,

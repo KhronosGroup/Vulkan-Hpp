@@ -29,6 +29,12 @@
 
 struct TypeInfo;
 
+enum class MultipleAllowed
+{
+  No,
+  Yes
+};
+
 void        checkAttributes( std::string const &                                  intro,
                              int                                                  line,
                              std::map<std::string, std::string> const &           attributes,
@@ -37,7 +43,7 @@ void        checkAttributes( std::string const &                                
 void        checkElements( std::string const &                               intro,
                            int                                               line,
                            std::vector<tinyxml2::XMLElement const *> const & elements,
-                           std::map<std::string, bool> const &               required,
+                           std::map<std::string, MultipleAllowed> const &    required,
                            std::set<std::string> const &                     optional = {} );
 void        checkForError( std::string const & intro, bool condition, int line, std::string const & message );
 void        checkForWarning( std::string const & intro, bool condition, int line, std::string const & message );
@@ -220,7 +226,7 @@ inline void checkAttributes( std::string const &                                
 inline void checkElements( std::string const &                               intro,
                            int                                               line,
                            std::vector<tinyxml2::XMLElement const *> const & elements,
-                           std::map<std::string, bool> const &               required,
+                           std::map<std::string, MultipleAllowed> const &    required,
                            std::set<std::string> const &                     optional )
 {
   std::map<std::string, size_t> encountered;
@@ -238,7 +244,7 @@ inline void checkElements( std::string const &                               int
     // check: r.second (means: required excactly once) => (encouteredIt->second == 1)
     checkForError(
       intro,
-      !r.second || ( encounteredIt->second == 1 ),
+      ( r.second == MultipleAllowed::Yes ) || ( encounteredIt->second == 1 ),
       line,
       "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " + std::to_string( encounteredIt->second ) + " times" );
   }
@@ -330,7 +336,7 @@ inline bool isNumber( std::string const & name ) noexcept
 
 inline std::string readComment( std::string const & intro, tinyxml2::XMLElement const * element )
 {
-  const int line = element->GetLineNum();
+  int const line = element->GetLineNum();
   checkAttributes( intro, line, getAttributes( element ), {}, {} );
   checkElements( intro, line, getChildElements( element ), {} );
   return element->GetText();
@@ -350,7 +356,7 @@ inline std::pair<std::vector<std::string>, std::string> readModifiers( std::stri
       std::string::size_type endPos = 0;
       while ( endPos + 1 != value.length() )
       {
-        const std::string::size_type startPos = value.find( '[', endPos );
+        std::string::size_type const startPos = value.find( '[', endPos );
         checkForError( intro, startPos != std::string::npos, node->GetLineNum(), "could not find '[' in <" + value + ">" );
         endPos = value.find( ']', startPos );
         checkForError( intro, endPos != std::string::npos, node->GetLineNum(), "could not find ']' in <" + value + ">" );
@@ -599,8 +605,8 @@ void writeToFile( std::string const & str, std::string const & fileName )
   std::cout.flush();
 
   messager.message( "VulkanHppGenerator: Formatting " + fileName + " ...\n" );
-  const std::string commandString = "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " + fileName;
-  const int         ret           = std::system( commandString.c_str() );
+  std::string const commandString = "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " + fileName;
+  int const         ret           = std::system( commandString.c_str() );
   if ( ret != 0 )
   {
     throw std::runtime_error( "VulkanHppGenerator: failed to format file " + fileName + " with error <" + std::to_string( ret ) + ">" );

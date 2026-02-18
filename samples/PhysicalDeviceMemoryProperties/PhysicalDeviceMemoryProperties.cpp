@@ -46,7 +46,7 @@ std::string formatSize( vk::DeviceSize size )
   return oss.str();
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

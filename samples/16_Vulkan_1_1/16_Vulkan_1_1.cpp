@@ -20,7 +20,7 @@
 static char const * AppName    = "16_Vulkan_1_1";
 static char const * EngineName = "Vulkan.hpp";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

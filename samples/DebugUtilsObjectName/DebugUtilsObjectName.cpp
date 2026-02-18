@@ -26,7 +26,7 @@ static char const * EngineName = "Vulkan.hpp";
 #  define NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST( type, x ) reinterpret_cast<uint64_t>( static_cast<type>( x ) )
 #endif
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

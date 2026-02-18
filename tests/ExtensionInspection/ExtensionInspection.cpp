@@ -43,7 +43,7 @@ import vulkan;
 #endif
 
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
 #if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110400 < GCC_VERSION ) )
   static_assert( vk::isInstanceExtension( vk::KHRSurfaceExtensionName ), "static_assert test failed" );

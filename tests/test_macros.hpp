@@ -10,3 +10,4 @@
       std::abort();                                                                                    \
     }                                                                                                  \
   } while ( false )
+

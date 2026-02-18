@@ -21,6 +21,8 @@
 #include "glslang/SPIRV/GlslangToSpv.h"
 #include "glslang/Public/ShaderLang.h"
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
 #include <iostream>
 
 static std::string AppName    = "UniqueHandle";
@@ -33,8 +35,9 @@ public:
   MyAllocator() = default;
 
   template <class U>
-  MyAllocator( const MyAllocator<U> & /*unused*/ )
+  MyAllocator( VULKAN_HPP_MAYBE_UNUSED MyAllocator<U> const & unused )
   {
+    VULKAN_HPP_UNUSED( unused );
   }
 
   template <class U>
@@ -210,7 +213,7 @@ vk::UniqueSwapchainKHR createSwapchainKHRUnique( vk::PhysicalDevice physicalDevi
   return device->createSwapchainKHRUnique( swapChainCreateInfo );
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

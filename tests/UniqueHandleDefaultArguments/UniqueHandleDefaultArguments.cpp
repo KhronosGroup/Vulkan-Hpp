@@ -25,7 +25,7 @@ import vulkan;
    VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   VkSurfaceKHR surface       = 0;
   auto         uniqueSurface = vk::UniqueSurfaceKHR( static_cast<vk::SurfaceKHR>( surface ), vk::Instance() );

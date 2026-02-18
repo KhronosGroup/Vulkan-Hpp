@@ -28,6 +28,7 @@
 
 #include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
+#  include <vulkan/vulkan_hpp_macros.hpp>
 import vulkan;
 #else
 #  include <array>
@@ -37,11 +38,17 @@ import vulkan;
 #endif
 
 
-void fct( vk::ArrayProxy<int> /*ap*/ ) {}
+void fct( VULKAN_HPP_MAYBE_UNUSED vk::ArrayProxy<int> ap )
+{
+  VULKAN_HPP_UNUSED( ap );
+}
 
-void fctc( vk::ArrayProxy<const int> /*ap*/ ) {}
+void fctc( VULKAN_HPP_MAYBE_UNUSED vk::ArrayProxy<const int> ap )
+{
+  VULKAN_HPP_UNUSED( ap );
+}
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

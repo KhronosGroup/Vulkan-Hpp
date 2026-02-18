@@ -35,7 +35,7 @@
 static char const * AppName    = "09_InitDescriptorSet";
 static char const * EngineName = "Vulkan.hpp";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

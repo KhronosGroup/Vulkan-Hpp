@@ -21,7 +21,7 @@
 #include <sstream>
 #include <vector>
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {
@@ -55,7 +55,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   }
   catch ( std::exception & err )
   {
-    std::cout << "std::runtexceptionime_error: " << err.what() << std::endl;
+    std::cout << "std::exception: " << err.what() << std::endl;
     exit( -1 );
   }
   catch ( ... )

@@ -53,7 +53,7 @@ MyVulkanTest::MyVulkanTest()
                                                .apiVersion         = vk::ApiVersion10 };
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   char const * appName       = "DesignatedInitializers";
   uint32_t     appVersion    = 1;
@@ -79,9 +79,9 @@ int main( int /*argc*/, char ** /*argv*/ )
   std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
   std::vector<char const *>              extensions;
   vk::DeviceCreateInfo                   info_device{
-                      .queueCreateInfoCount    = (uint32_t)queueCreateInfos.size(),
+                      .queueCreateInfoCount    = static_cast<uint32_t>(queueCreateInfos.size()),
                       .pQueueCreateInfos       = queueCreateInfos.data(),
-                      .enabledExtensionCount   = (uint32_t)extensions.size(),
+                      .enabledExtensionCount   = static_cast<uint32_t>(extensions.size()),
                       .ppEnabledExtensionNames = extensions.data(),
   };
 

@@ -577,7 +577,7 @@ void VulkanHppGenerator::checkDefineCorrectness() const
 void VulkanHppGenerator::checkElements( int                                               line,
                                         std::vector<tinyxml2::XMLElement const *> const & elements,
                                         std::map<std::string, MultipleAllowed> const &    required,
-                                        std::set<std::string> const &                     optional ) const
+                                        std::map<std::string, MultipleAllowed> const &    optional ) const
 {
   ::checkElements( "VulkanHppGenerator", line, elements, required, optional );
 }
@@ -12822,7 +12822,8 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
                        { "videocoding", { "both", "inside", "outside" } } } );
 
     std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-    checkElements( line, children, { { "param", MultipleAllowed::Yes }, { "proto", MultipleAllowed::No } }, { "implicitexternsyncparams" } );
+    checkElements(
+      line, children, { { "param", MultipleAllowed::Yes }, { "proto", MultipleAllowed::No } }, { { "implicitexternsyncparams", MultipleAllowed::No } } );
 
     CommandData commandData;
     commandData.xmlLine = line;
@@ -13046,7 +13047,7 @@ VulkanHppGenerator::DeprecateData VulkanHppGenerator::readDeprecateData( tinyxml
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "explanationlink", {} } }, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "command", "type" } );
+  checkElements( line, children, {}, { { "command", MultipleAllowed::Yes }, { "type", MultipleAllowed::Yes } } );
 
   DeprecateData deprecateData;
   deprecateData.xmlLine = line;
@@ -13107,7 +13108,7 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
   if ( type == "constants" )
   {
     assert( name == "API Constants" );
-    checkElements( line, children, { { "enum", MultipleAllowed::Yes } }, {} );
+    checkElements( line, children, { { "enum", MultipleAllowed::Yes } } );
     for ( auto const & child : children )
     {
       readEnumsConstants( child );
@@ -13115,7 +13116,7 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
   }
   else
   {
-    checkElements( line, children, {}, { "comment", "enum", "unused" } );
+    checkElements( line, children, {}, { { "comment", MultipleAllowed::Yes }, { "enum", MultipleAllowed::Yes }, { "unused", MultipleAllowed::No } } );
     checkForError( !type.empty(), line, "enum without type" );
 
     // get the EnumData entry in enum map
@@ -13277,7 +13278,14 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, {}, { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "depends", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "command", "comment", "enum", "feature", "type" } );
+  checkElements( line,
+                 children,
+                 {},
+                 { { "command", MultipleAllowed::Yes },
+                   { "comment", MultipleAllowed::Yes },
+                   { "enum", MultipleAllowed::Yes },
+                   { "feature", MultipleAllowed::Yes },
+                   { "type", MultipleAllowed::Yes } } );
 
   RequireData requireData{ .xmlLine = line };
   for ( auto const & attribute : attributes )
@@ -13560,7 +13568,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
                      { "sortorder", { "1" } },
                      { "specialuse", { "cadsupport", "d3demulation", "debugging", "devtools", "glemulation" } },
                      { "type", { "device", "instance" } } } );
-  checkElements( line, children, { { "require", MultipleAllowed::Yes } }, { "deprecate", "remove" } );
+  checkElements( line, children, { { "require", MultipleAllowed::Yes } }, { { "deprecate", MultipleAllowed::Yes }, { "remove", MultipleAllowed::No } } );
 
   // some special handling for two extensions
   std::string name = attributes.find( "name" )->second;
@@ -13732,7 +13740,7 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
                    { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "comment", {} }, { "name", {} }, { "number", {} } },
                    { { "apitype", { "internal" } }, { "depends", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "require", MultipleAllowed::Yes } }, { "deprecate", "remove" } );
+  checkElements( line, children, { { "require", MultipleAllowed::Yes } }, { { "deprecate", MultipleAllowed::Yes }, { "remove", MultipleAllowed::Yes } } );
 
   FeatureData featureData;
   featureData.xmlLine = line;
@@ -13822,7 +13830,14 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * elemen
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, {}, { { "comment", {} }, { "depends", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "command", "comment", "enum", "feature", "type" } );
+  checkElements( line,
+                 children,
+                 {},
+                 { { "command", MultipleAllowed::Yes },
+                   { "comment", MultipleAllowed::Yes },
+                   { "enum", MultipleAllowed::Yes },
+                   { "feature", MultipleAllowed::Yes },
+                   { "type", MultipleAllowed::Yes } } );
 
   std::string depends;
   for ( auto const & attribute : attributes )
@@ -13893,7 +13908,8 @@ void VulkanHppGenerator::readFormat( tinyxml2::XMLElement const * element )
       { "compressed", { "ASTC HDR", "ASTC LDR", "BC", "EAC", "ETC", "ETC2", "PVRTC" } },
       { "packed", { "8", "16", "32" } } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "component", MultipleAllowed::Yes } }, { "plane", "spirvimageformat" } );
+  checkElements(
+    line, children, { { "component", MultipleAllowed::Yes } }, { { "plane", MultipleAllowed::Yes }, { "spirvimageformat", MultipleAllowed::No } } );
 
   FormatData format;
   format.xmlLine = line;
@@ -14095,7 +14111,7 @@ std::pair<VulkanHppGenerator::NameData, TypeInfo> VulkanHppGenerator::readNameAn
 {
   int                                       line     = element->GetLineNum();
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "name", MultipleAllowed::No } }, { { "enum" }, { "type" } } );
+  checkElements( line, children, { { "name", MultipleAllowed::No } }, { { "enum", MultipleAllowed::No }, { "type", MultipleAllowed::No } } );
 
   NameData nameData;
   TypeInfo typeInfo;
@@ -14190,8 +14206,8 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
                    { "spirvextensions", MultipleAllowed::No },
                    { "sync", MultipleAllowed::No },
                    { "tags", MultipleAllowed::No },
-                   { "types", MultipleAllowed::No } },
-                 { "videocodecs" } );  // make this optional for now, make it required around October 2024
+                   { "types", MultipleAllowed::No },
+                   { "videocodecs", MultipleAllowed::No } } );
   for ( auto child : children )
   {
     std::string const value = child->Value();
@@ -14269,7 +14285,11 @@ VulkanHppGenerator::RemoveData VulkanHppGenerator::readRemoveData( tinyxml2::XML
   int const line = element->GetLineNum();
   checkAttributes( line, getAttributes( element ), {}, { { "comment", {} }, { "reasonlink", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "command", "enum", "feature", "type" } );
+  checkElements(
+    line,
+    children,
+    {},
+    { { "command", MultipleAllowed::Yes }, { "enum", MultipleAllowed::Yes }, { "feature", MultipleAllowed::Yes }, { "type", MultipleAllowed::Yes } } );
 
   RemoveData removeData;
   removeData.xmlLine = line;
@@ -14569,7 +14589,7 @@ void VulkanHppGenerator::readSPIRVCapability( tinyxml2::XMLElement const * eleme
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "name", {} } }, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "enable" } );
+  checkElements( line, children, { { "enable", MultipleAllowed::Yes } } );
 
   std::string name              = attributes.find( "name" )->second;
   auto [capabilityIt, inserted] = m_spirVCapabilities.insert( { name, { {}, line } } );
@@ -14585,7 +14605,7 @@ void VulkanHppGenerator::readSPIRVCapabilityEnable( tinyxml2::XMLElement const *
 {
   int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkElements( line, getChildElements( element ), {}, {} );
+  checkElements( line, getChildElements( element ), {} );
 
   if ( attributes.contains( "extension" ) )
   {
@@ -14695,7 +14715,7 @@ void VulkanHppGenerator::readSPIRVCapabilities( tinyxml2::XMLElement const * ele
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "comment", {} } }, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "spirvcapability" } );
+  checkElements( line, children, { { "spirvcapability", MultipleAllowed::Yes } } );
 
   for ( auto child : children )
   {
@@ -14709,7 +14729,7 @@ void VulkanHppGenerator::readSPIRVExtension( tinyxml2::XMLElement const * elemen
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "name", {} } }, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "enable" } );
+  checkElements( line, children, { { "enable", MultipleAllowed::Yes } } );
 
   for ( auto child : children )
   {
@@ -14722,7 +14742,7 @@ void VulkanHppGenerator::readSPIRVExtensionEnable( tinyxml2::XMLElement const * 
   int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, {}, { { "extension", {} }, { "version", {} } } );
-  checkElements( line, getChildElements( element ), {}, {} );
+  checkElements( line, getChildElements( element ), {} );
 
   for ( auto const & attribute : attributes )
   {
@@ -14749,7 +14769,7 @@ void VulkanHppGenerator::readSPIRVExtensions( tinyxml2::XMLElement const * eleme
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "comment", {} } }, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "spirvextension" } );
+  checkElements( line, children, { { "spirvextension", MultipleAllowed::Yes } } );
 
   for ( auto child : children )
   {
@@ -14778,7 +14798,10 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
                      { "selector", {} },
                      { "values", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "name", MultipleAllowed::No }, { "type", MultipleAllowed::No } }, { "comment", "enum" } );
+  checkElements( line,
+                 children,
+                 { { "name", MultipleAllowed::No }, { "type", MultipleAllowed::No } },
+                 { { "comment", MultipleAllowed::No }, { "enum", MultipleAllowed::No } } );
 
   MemberData memberData;
   memberData.xmlLine = line;
@@ -14863,7 +14886,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
   {
     int const childLine = child->GetLineNum();
     checkAttributes( childLine, getAttributes( child ), {}, {} );
-    checkElements( childLine, getChildElements( child ), {}, {} );
+    checkElements( childLine, getChildElements( child ), {} );
 
     std::string value = child->Value();
     if ( value == "enum" )
@@ -14907,8 +14930,7 @@ void VulkanHppGenerator::readSync( tinyxml2::XMLElement const * element )
   int const line = element->GetLineNum();
   checkAttributes( line, getAttributes( element ), { { "comment", {} } }, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements(
-    line, children, { { "syncaccess", MultipleAllowed::Yes }, { "syncpipeline", MultipleAllowed::Yes }, { "syncstage", MultipleAllowed::Yes } }, {} );
+  checkElements( line, children, { { "syncaccess", MultipleAllowed::Yes }, { "syncpipeline", MultipleAllowed::Yes }, { "syncstage", MultipleAllowed::Yes } } );
 
   auto accessFlagBits2It = m_enums.find( "VkAccessFlagBits2" );
   assert( accessFlagBits2It != m_enums.end() );
@@ -14940,7 +14962,8 @@ void VulkanHppGenerator::readSyncAccess( tinyxml2::XMLElement const * element, s
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "name", {} } }, { { "alias", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "comment", "syncequivalent", "syncsupport" } );
+  checkElements(
+    line, children, {}, { { "comment", MultipleAllowed::No }, { "syncequivalent", MultipleAllowed::No }, { "syncsupport", MultipleAllowed::No } } );
 
   std::string alias, name;
   for ( auto const & attribute : attributes )
@@ -14977,7 +15000,7 @@ void VulkanHppGenerator::readSyncAccessEquivalent( tinyxml2::XMLElement const * 
   int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "access", {} } }, {} );
-  checkElements( line, getChildElements( element ), {}, {} );
+  checkElements( line, getChildElements( element ), {} );
 
   for ( auto const & attribute : attributes )
   {
@@ -14995,7 +15018,7 @@ void VulkanHppGenerator::readSyncAccessSupport( tinyxml2::XMLElement const * ele
   int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "stage", {} } }, {} );
-  checkElements( line, getChildElements( element ), {}, {} );
+  checkElements( line, getChildElements( element ), {} );
 
   std::vector<std::string> stages = tokenize( attributes.find( "stage" )->second, "," );
   for ( auto const & stage : stages )
@@ -15010,7 +15033,7 @@ void VulkanHppGenerator::readSyncPipeline( tinyxml2::XMLElement const * element 
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "name", {} } }, { { "depends", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "syncpipelinestage", MultipleAllowed::Yes } }, {} );
+  checkElements( line, children, { { "syncpipelinestage", MultipleAllowed::Yes } } );
 
   for ( auto const & attribute : attributes )
   {
@@ -15031,7 +15054,7 @@ void VulkanHppGenerator::readSyncStage( tinyxml2::XMLElement const * element, st
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "name", {} } }, { { "alias", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "syncequivalent", "syncsupport" } );
+  checkElements( line, children, {}, { { "syncequivalent", MultipleAllowed::No }, { "syncsupport", MultipleAllowed::No } } );
 
   std::string alias, name;
   for ( auto const & attribute : attributes )
@@ -15069,7 +15092,7 @@ void VulkanHppGenerator::readSyncStageEquivalent( tinyxml2::XMLElement const * e
   int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "stage", {} } }, {} );
-  checkElements( line, getChildElements( element ), {}, {} );
+  checkElements( line, getChildElements( element ), {} );
 
   for ( auto const & attribute : attributes )
   {
@@ -15087,7 +15110,7 @@ void VulkanHppGenerator::readSyncStageSupport( tinyxml2::XMLElement const * elem
   int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "queues", {} } }, {} );
-  checkElements( line, getChildElements( element ), {}, {} );
+  checkElements( line, getChildElements( element ), {} );
 
   for ( auto const & attribute : attributes )
   {
@@ -15406,7 +15429,7 @@ void VulkanHppGenerator::readTypeFuncpointer( tinyxml2::XMLElement const * eleme
   if ( nameIt != children.end() )
   {
     // found the old fashioned funcpointer specification via "name" and "type"
-    checkElements( line, children, { { "name", MultipleAllowed::No } }, { "type" } );
+    checkElements( line, children, { { "name", MultipleAllowed::No }, { "type", MultipleAllowed::No } } );
 
     std::string text = element->GetText();
     assert( text.starts_with( "typedef " ) && text.ends_with( " (VKAPI_PTR *" ) );
@@ -15463,7 +15486,7 @@ void VulkanHppGenerator::readTypeFuncpointer( tinyxml2::XMLElement const * eleme
   else
   {
     // found the new funcpointer specification via "proto" and "param"
-    checkElements( line, children, { { "proto", MultipleAllowed::No } }, { "param" } );
+    checkElements( line, children, { { "proto", MultipleAllowed::No } }, { { "param", MultipleAllowed::Yes } } );
 
     for ( auto child : children )
     {
@@ -15590,7 +15613,7 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
   if ( aliasIt != attributes.end() )
   {
     checkAttributes( line, attributes, { { "alias", {} }, { "category", { "struct" } }, { "name", {} } }, {} );
-    checkElements( line, getChildElements( element ), {}, {} );
+    checkElements( line, getChildElements( element ), {} );
 
     std::string alias = aliasIt->second;
     std::string name  = attributes.find( "name" )->second;
@@ -15612,7 +15635,7 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
                        { "returnedonly", { "true" } },
                        { "structextends", {} } } );
     std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-    checkElements( line, children, {}, { "member", "comment" } );
+    checkElements( line, children, { { "member", MultipleAllowed::Yes } }, { { "comment", MultipleAllowed::Yes } } );
 
     StructData structureData;
     structureData.xmlLine = line;
@@ -15763,7 +15786,7 @@ void VulkanHppGenerator::readTypes( tinyxml2::XMLElement const * element )
   int const line = element->GetLineNum();
   checkAttributes( line, getAttributes( element ), {}, { { "comment", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "type", MultipleAllowed::Yes } }, { "comment" } );
+  checkElements( line, children, { { "comment", MultipleAllowed::Yes }, { "type", MultipleAllowed::Yes } } );
 
   for ( auto child : children )
   {
@@ -15874,7 +15897,8 @@ void VulkanHppGenerator::readVideoCodec( tinyxml2::XMLElement const * element )
   checkAttributes( line, attributes, { { "name", {} } }, { { "extend", {} }, { "value", {} } } );
 
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "videocapabilities", MultipleAllowed::Yes } }, { "videoformat", "videoprofiles" } );
+  checkElements(
+    line, children, { { "videocapabilities", MultipleAllowed::Yes } }, { { "videoformat", MultipleAllowed::Yes }, { "videoprofiles", MultipleAllowed::No } } );
 
   VideoCodec videoCodec;
   videoCodec.xmlLine = line;
@@ -15980,7 +16004,7 @@ void VulkanHppGenerator::readVideoFormat( tinyxml2::XMLElement const * element, 
     checkAttributes( line, attributes, { { "name", {} }, { "usage", {} } }, {} );
 
     std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-    checkElements( line, children, {}, { "videoformatproperties", "videorequirecapabilities" } );
+    checkElements( line, children, {}, { { "videoformatproperties", MultipleAllowed::No }, { "videorequirecapabilities", MultipleAllowed::No } } );
 
     auto flagBitsIt = m_enums.find( "VkImageUsageFlagBits" );
     assert( flagBitsIt != m_enums.end() );
@@ -16031,7 +16055,7 @@ void VulkanHppGenerator::readVideoProfileMember( tinyxml2::XMLElement const * el
   checkAttributes( line, attributes, { { "name", {} } }, {} );
 
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "videoprofile" } );
+  checkElements( line, children, { { "videoprofile", MultipleAllowed::Yes } } );
 
   VideoProfileMember profileMember;
   profileMember.xmlLine = line;
@@ -16056,7 +16080,7 @@ void VulkanHppGenerator::readVideoProfile( tinyxml2::XMLElement const * element,
   int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "name", {} }, { "value", {} } }, {} );
-  checkElements( line, getChildElements( element ), {}, {} );
+  checkElements( line, getChildElements( element ), {} );
 
   VideoProfile profile;
   profile.xmlLine = line;
@@ -16089,7 +16113,7 @@ void VulkanHppGenerator::readVideoProfiles( tinyxml2::XMLElement const * element
   checkAttributes( line, attributes, { { "struct", {} } }, {} );
 
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "videoprofilemember" } );
+  checkElements( line, children, { { "videoprofilemember", MultipleAllowed::Yes } } );
 
   VideoProfiles profiles;
   profiles.xmlLine = line;

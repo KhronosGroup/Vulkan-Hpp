@@ -44,7 +44,7 @@ void        checkElements( std::string const &                               int
                            int                                               line,
                            std::vector<tinyxml2::XMLElement const *> const & elements,
                            std::map<std::string, MultipleAllowed> const &    required,
-                           std::set<std::string> const &                     optional = {} );
+                           std::map<std::string, MultipleAllowed> const &    optional = {} );
 void        checkForError( std::string const & intro, bool condition, int line, std::string const & message );
 void        checkForWarning( std::string const & intro, bool condition, int line, std::string const & message );
 std::string generateCopyrightMessage( std::string const & comment );
@@ -227,7 +227,7 @@ inline void checkElements( std::string const &                               int
                            int                                               line,
                            std::vector<tinyxml2::XMLElement const *> const & elements,
                            std::map<std::string, MultipleAllowed> const &    required,
-                           std::set<std::string> const &                     optional )
+                           std::map<std::string, MultipleAllowed> const &    optional )
 {
   std::map<std::string, size_t> encountered;
   for ( auto const & e : elements )
@@ -241,12 +241,23 @@ inline void checkElements( std::string const &                               int
   {
     auto encounteredIt = encountered.find( r.first );
     checkForError( intro, encounteredIt != encountered.end(), line, "missing required element <" + r.first + ">" );
-    // check: r.second (means: required excactly once) => (encouteredIt->second == 1)
     checkForError(
       intro,
       ( r.second == MultipleAllowed::Yes ) || ( encounteredIt->second == 1 ),
       line,
       "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " + std::to_string( encounteredIt->second ) + " times" );
+  }
+  for ( auto const & o : optional )
+  {
+    auto encounteredIt = encountered.find( o.first );
+    if ( encounteredIt != encountered.end() )
+    {
+      checkForError(
+        intro,
+        ( o.second == MultipleAllowed::Yes ) || ( encounteredIt->second == 1 ),
+        line,
+        "optional element <" + o.first + "> is supposed to be listed at most once, but is listed " + std::to_string( encounteredIt->second ) + " times" );
+    }
   }
 }
 

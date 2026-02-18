@@ -83,21 +83,22 @@ Add a `friend` declaration for the base class.
 // Example of a custom shared device, that accepts an instance as a parent
 class MySharedHandle<VkDevice> : public vk::SharedHandleBase<VkDevice, vk::SharedInstance, MySharedHandle<VkDevice>>
 {
-  using base = vk::SharedHandleBase<VkDevice, vk::SharedInstance, MySharedHandle<VkDevice>>;
-  friend base;
+  using Base = vk::SharedHandleBase<VkDevice, vk::SharedInstance, MySharedHandle<VkDevice>>;
+  friend Base;
 
 public:
   MySharedHandle() = default;
-  explicit MySharedHandle(VkDevice handle, vk::SharedInstance parent) noexcept
-    : base(handle, std::move(parent)) {}
+  explicit MySharedHandle(VkDevice handle, vk::SharedInstance parent) noexcept:
+    Base(handle, std::move(parent)) {}
 
-  const auto& getParent() const noexcept
+  [[nodiscard]]
+  const vk::SharedInstance& getParent() const noexcept
   {
     return getHeader();
   }
 
 protected:
-  static void internalDestroy(const vk::SharedInstance& /*control*/, VkDevice handle) noexcept
+  static void internalDestroy([[maybe_unused]] const vk::SharedInstance& control, VkDevice handle) noexcept
   {
     vkDestroyDevice(handle);
   }

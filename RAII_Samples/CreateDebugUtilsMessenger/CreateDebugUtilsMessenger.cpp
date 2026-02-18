@@ -27,7 +27,7 @@ static char const * EngineName = "Vulkan.hpp";
 VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
                                                  vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
                                                  vk::DebugUtilsMessengerCallbackDataEXT const * pCallbackData,
-                                                 void * /*pUserData*/ )
+                                                 [[maybe_unused]] void * pUserData )
 {
   std::ostringstream message;
 
@@ -75,7 +75,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFl
   return false;
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

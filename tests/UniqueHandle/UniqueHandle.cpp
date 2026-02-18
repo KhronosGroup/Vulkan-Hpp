@@ -33,7 +33,7 @@ public:
   MyAllocator() = default;
 
   template <class U>
-  MyAllocator( const MyAllocator<U> & /*unused*/ )
+  MyAllocator( [[maybe_unused]] MyAllocator<U> const & unused )
   {
   }
 
@@ -210,7 +210,7 @@ vk::UniqueSwapchainKHR createSwapchainKHRUnique( vk::PhysicalDevice physicalDevi
   return device->createSwapchainKHRUnique( swapChainCreateInfo );
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

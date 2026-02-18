@@ -32,7 +32,7 @@
 static std::string AppName    = "02_EnumerateDevicesRAII";
 static std::string EngineName = "Vulkan.hpp";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

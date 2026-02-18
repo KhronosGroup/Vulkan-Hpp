@@ -44,7 +44,7 @@ void cout( vk::SurfaceCapabilitiesKHR const & surfaceCapabilities )
   std::cout << "\n";
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

@@ -141,7 +141,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     };
 #endif
   }  // namespace detail
-  
+
   class Instance;
   class Device;
   using PFN_dummy = void ( * )();

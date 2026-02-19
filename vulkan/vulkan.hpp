@@ -35,8 +35,9 @@
 #  if defined( VULKAN_HPP_SUPPORT_SPAN )
 #    include <span>
 #  endif
-#  include <vulkan/vulkan_dispatch_loader.hpp>
 #endif
+
+#include <vulkan/vulkan_dispatch_loader.hpp>
 
 // done:
 // 1. no more func declarations in vulkan_handles

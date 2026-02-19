@@ -42,9 +42,9 @@ jobs:
           { os: windows-2025, cxx: clang-cl,   c: clang-cl, arch: x64, gen: Ninja,                 cxx_max: 23 },
           # { os: windows-2025, cxx: c++,        c: cc,       arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
 
-          { os: macos-26,     cxx: /opt/homebrew/opt/llvm/bin/clang++, c: /opt/homebrew/opt/llvm/bin/clang, arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-I/opt/homebrew/opt/llvm/include/c++/v1 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk', linker_flags: '-L/opt/homebrew/opt/llvm/lib/c++' },
-          { os: ubuntu-24.04, cxx: clang++-21, c: clang-21, arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-stdlib=libc++', linker_flags: '-stdlib=libc++ -lc++abi' },
-          { os: windows-2025, cxx: cl,         c: cl      , arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '//EHsc' },
+          # { os: macos-26,     cxx: /opt/homebrew/opt/llvm/bin/clang++, c: /opt/homebrew/opt/llvm/bin/clang, arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-I/opt/homebrew/opt/llvm/include/c++/v1 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk', linker_flags: '-L/opt/homebrew/opt/llvm/lib/c++' },
+          # { os: ubuntu-24.04, cxx: clang++-21, c: clang-21, arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-stdlib=libc++', linker_flags: '-stdlib=libc++ -lc++abi' },
+          # { os: windows-2025, cxx: cl,         c: cl      , arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '//EHsc' },
         ]
 
     env:

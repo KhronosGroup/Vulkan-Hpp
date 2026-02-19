@@ -25,7 +25,7 @@
 static char const * AppName    = "SurfaceFormats";
 static char const * EngineName = "Vulkan.hpp";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

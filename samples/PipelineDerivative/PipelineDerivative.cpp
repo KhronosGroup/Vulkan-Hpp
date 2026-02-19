@@ -35,7 +35,7 @@
 static char const * AppName    = "PipelineDerivative";
 static char const * EngineName = "Vulkan.hpp";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

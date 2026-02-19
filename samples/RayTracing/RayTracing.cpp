@@ -605,7 +605,7 @@ static void keyCallback( GLFWwindow * window, int key, int /*scancode*/, int act
   }
 }
 
-static void mouseButtonCallback( GLFWwindow * window, int /*button*/, int /*action*/, int /*mods*/ )
+static void mouseButtonCallback( GLFWwindow * window, [[maybe_unused]] int button, [[maybe_unused]] int action, [[maybe_unused]] int mods )
 {
   double xpos, ypos;
   glfwGetCursorPos( window, &xpos, &ypos );
@@ -614,7 +614,7 @@ static void mouseButtonCallback( GLFWwindow * window, int /*button*/, int /*acti
   cameraManipulator.setMousePosition( glm::ivec2( static_cast<int>( xpos ), static_cast<int>( ypos ) ) );
 }
 
-static void scrollCallback( GLFWwindow * window, double /*xoffset*/, double yoffset )
+static void scrollCallback( GLFWwindow * window, [[maybe_unused]] double xoffset, double yoffset )
 {
   vk::su::CameraManipulator & cameraManipulator = reinterpret_cast<AppInfo *>( glfwGetWindowUserPointer( window ) )->cameraManipulator;
   cameraManipulator.wheel( static_cast<int>( yoffset ) );
@@ -645,7 +645,7 @@ uint32_t roundUp( uint32_t value, uint32_t alignment )
   return ( ( value + alignment - 1 ) / alignment ) * alignment;
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   // number of cubes in x-, y-, and z-direction
   const size_t xMax = 10;

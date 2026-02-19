@@ -54,7 +54,7 @@ void test( std::tuple<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoE
   unused( cis );
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

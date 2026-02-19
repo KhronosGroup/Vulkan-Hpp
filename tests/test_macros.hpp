@@ -10,3 +10,12 @@
       std::abort();                                                                                    \
     }                                                                                                  \
   } while ( false )
+
+#if VULKAN_HPP_CPP_VERSION >= 17
+#  define VULKAN_HPP_MAYBE_UNUSED [[maybe_unused]]
+#  define VULKAN_HPP_UNUSED( var )
+#else
+#  define VULKAN_HPP_MAYBE_UNUSED
+#  define VULKAN_HPP_UNUSED( var ) ( (void)( var ) )
+#endif
+

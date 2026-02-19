@@ -38,11 +38,17 @@ import vulkan;
 #endif
 
 
-void fct( vk::StridedArrayProxy<int> /*ap*/ ) {}
+void fct( VULKAN_HPP_MAYBE_UNUSED vk::ArrayProxy<int> ap )
+{
+  VULKAN_HPP_UNUSED( ap );
+}
 
-void fctc( vk::StridedArrayProxy<const int> /*ap*/ ) {}
+void fctc( VULKAN_HPP_MAYBE_UNUSED vk::ArrayProxy<const int> ap )
+{
+  VULKAN_HPP_UNUSED( ap );
+}
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

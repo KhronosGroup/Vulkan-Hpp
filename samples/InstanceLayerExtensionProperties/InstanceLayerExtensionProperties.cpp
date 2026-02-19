@@ -31,7 +31,7 @@ struct PropertyData
   std::vector<vk::ExtensionProperties> extensionProperties;
 };
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

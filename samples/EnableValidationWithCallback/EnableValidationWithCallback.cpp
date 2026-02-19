@@ -55,7 +55,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT( VkInstance instance,
 VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
                                                  vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
                                                  vk::DebugUtilsMessengerCallbackDataEXT const * pCallbackData,
-                                                 void * /*pUserData*/ )
+                                                 [[maybe_unused]] void * pUserData )
 {
   std::string message;
 
@@ -115,7 +115,7 @@ bool checkLayers( std::vector<char const *> const & layers, std::vector<vk::Laye
                       } );
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

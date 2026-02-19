@@ -27,7 +27,7 @@ import vulkan;
 #endif
 
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
 #if VULKAN_HPP_CPP_VERSION < 14 || defined( VULKAN_HPP_USE_CXX_MODULE )
   release_assert( vk::blockSize( vk::Format::eR4G4UnormPack8 ) == 1 );

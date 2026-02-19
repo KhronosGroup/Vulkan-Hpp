@@ -42,7 +42,7 @@ static_assert( std::is_same<vk::CppType<VkInstance>::Type, vk::Instance>::value,
 
 static_assert( std::is_same<vk::raii::Instance::CppType, vk::Instance>::value, "" );
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   return 0;
 }

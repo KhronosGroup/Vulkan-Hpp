@@ -50,7 +50,7 @@ std::vector<vk::UniqueHandle<vk::CommandBuffer, Dispatch>, Alloc> createCommandB
   return device.allocateCommandBuffersUnique( allocateInfo, alloc, d );
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

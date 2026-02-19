@@ -34,7 +34,7 @@ import vulkan;
 #  include <vulkan/vulkan_raii.hpp>
 #endif
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   //=== VK_VERSION_1_0 ===
   // Device initialization

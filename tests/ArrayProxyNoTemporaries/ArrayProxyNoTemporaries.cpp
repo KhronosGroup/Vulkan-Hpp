@@ -37,9 +37,15 @@ import vulkan;
 #endif
 
 
-void fct( vk::ArrayProxyNoTemporaries<int> /*ap*/ ) {}
+void fct( VULKAN_HPP_MAYBE_UNUSED vk::ArrayProxy<int> ap )
+{
+  VULKAN_HPP_UNUSED( ap );
+}
 
-void fctc( vk::ArrayProxyNoTemporaries<const int> /*ap*/ ) {}
+void fctc( VULKAN_HPP_MAYBE_UNUSED vk::ArrayProxy<const int> ap )
+{
+  VULKAN_HPP_UNUSED( ap );
+}
 
 int getInt()
 {
@@ -78,7 +84,7 @@ std::vector<int> const getConstVector()
   return { 1, 2 };
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

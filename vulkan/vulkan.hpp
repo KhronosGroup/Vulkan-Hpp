@@ -8,6 +8,9 @@
 #ifndef VULKAN_HPP
 #define VULKAN_HPP
 
+// DEBUG: temporarily disable all smart handles
+#define VULKAN_HPP_NO_SMART_HANDLE
+
 #if !defined( VULKAN_HPP_CXX_MODULE )
 #  include <vulkan/vulkan.h>
 // clang-format off
@@ -52,6 +55,7 @@
 // TODO:
 // some sort of static function that returns the default dispatcher? similar to raii
 // dispatch loader init functions should get some comments!
+// (static) dispatcher needs defaults for each dispatchable function when VK_NO_PROTOTYPES is not defined
 
 VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 343, "Wrong VK_HEADER_VERSION!" );
 

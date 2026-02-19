@@ -58,11 +58,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::detail::defaultDispatchLoaderDynamic.init();
+    vk::defaultDispatchLoader.init();
 
     vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, vk::ApiVersion11 );
     vk::UniqueInstance  instance = vk::createInstanceUnique( vk::InstanceCreateInfo( {}, &appInfo ) );
-    vk::detail::defaultDispatchLoaderDynamic.init( *instance );
+    vk::defaultDispatchLoader.init( *instance );
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
     // some valid StructureChains
@@ -166,7 +166,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     unused( t1 );
 
     using StructureChain = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
-    auto qfd             = physicalDevice.getQueueFamilyProperties2<StructureChain>( vk::detail::defaultDispatchLoaderDynamic );
+    auto qfd             = physicalDevice.getQueueFamilyProperties2<StructureChain>( vk::defaultDispatchLoader );
     unused( qfd );
 
     // some tests with structures with allowDuplicate == true

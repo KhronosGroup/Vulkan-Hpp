@@ -1,11 +1,11 @@
-  template <typename OwnerType, typename Dispatch>
+  template <typename OwnerType>
   class ObjectRelease
   {
   public:
     ObjectRelease() = default;
 
     ObjectRelease( OwnerType                 owner,
-                   Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+                   DispatchLoader const &    dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_owner( owner )
       , m_dispatch( &dispatch )
     {}
@@ -15,7 +15,7 @@
       return m_owner;
     }
 
-    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+    DispatchLoader const & getDispatch() const VULKAN_HPP_NOEXCEPT
     {
       return *m_dispatch;
     }
@@ -29,6 +29,6 @@
     }
 
   private:
-    OwnerType        m_owner    = {};
-    Dispatch const * m_dispatch = nullptr;
+    OwnerType              m_owner    = {};
+    DispatchLoader const * m_dispatch = nullptr;
   };

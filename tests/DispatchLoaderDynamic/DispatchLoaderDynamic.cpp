@@ -37,20 +37,20 @@ int main( int /*argc*/, char ** /*argv*/ )
     // three equivalent minimal initializations of the default dispatcher... you just need to use one of them
 
     // initialize minimal set of function pointers
-    vk::detail::defaultDispatchLoaderDynamic.init();
+    vk::defaultDispatchLoader.init();
 
     // the same initialization, now with explicitly providing a DynamicLoader
     vk::detail::DynamicLoader dl;
-    vk::detail::defaultDispatchLoaderDynamic.init( dl );
+    vk::defaultDispatchLoader.init( dl );
 
     // the same initialization, now with explicitly providing the initial function pointer
     PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
-    vk::detail::defaultDispatchLoaderDynamic.init( getInstanceProcAddr );
+    vk::defaultDispatchLoader.init( getInstanceProcAddr );
 
     vk::Instance instance = vk::createInstance( {}, nullptr );
 
     // initialize function pointers for instance
-    vk::detail::defaultDispatchLoaderDynamic.init( instance );
+    vk::defaultDispatchLoader.init( instance );
 
     // create a dispatcher, based on additional vkDevice/vkGetDeviceProcAddr
     std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
@@ -59,7 +59,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Device device = physicalDevices[0].createDevice( {}, nullptr );
 
     // optional function pointer specialization for device
-    vk::detail::defaultDispatchLoaderDynamic.init( device );
+    vk::defaultDispatchLoader.init( device );
   }
   catch ( vk::SystemError const & err )
   {

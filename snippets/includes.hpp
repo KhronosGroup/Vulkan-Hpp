@@ -25,4 +25,19 @@
 #  if defined( VULKAN_HPP_SUPPORT_SPAN )
 #    include <span>
 #  endif
+#  include <vulkan/vulkan_dispatch_loader.hpp>
 #endif
+
+// done:
+// 1. no more func declarations in vulkan_handles
+// -> by forward declaring vk::Instance and vk::Device init functions in dispatch loader
+// 2. unify all dispatch loaders (currently only unified static/dynamic)
+// 2.5 remove all the dispatcher templating (enable if too)
+// 3. fix/remove unique handles.. what about shared ones?
+// 4. also changed the init interface of the dispatcher a bit, i
+// 5. instead of the dispatch loader, the dynamic loader is now in detail namespace
+// 6. removed getVkHeaderVersion from dispatch loader
+
+// TODO:
+// some sort of static function that returns the default dispatcher? similar to raii
+// dispatch loader init functions should get some comments!

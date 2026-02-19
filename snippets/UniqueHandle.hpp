@@ -1,12 +1,12 @@
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
-template <typename Type, typename Dispatch>
+template <typename Type>
 class UniqueHandleTraits;
 
-template <typename Type, typename Dispatch>
-class UniqueHandle : public UniqueHandleTraits<Type, Dispatch>::deleter
+template <typename Type>
+class UniqueHandle : public UniqueHandleTraits<Type>::deleter
 {
 private:
-  using Deleter = typename UniqueHandleTraits<Type, Dispatch>::deleter;
+  using Deleter = typename UniqueHandleTraits<Type>::deleter;
 
 public:
   using element_type = Type;
@@ -105,7 +105,7 @@ public:
     return value;
   }
 
-  void swap( UniqueHandle<Type, Dispatch> & rhs ) VULKAN_HPP_NOEXCEPT
+  void swap( UniqueHandle<Type> & rhs ) VULKAN_HPP_NOEXCEPT
   {
     std::swap( m_value, rhs.m_value );
     std::swap( static_cast<Deleter &>( *this ), static_cast<Deleter &>( rhs ) );
@@ -123,8 +123,8 @@ VULKAN_HPP_INLINE std::vector<typename UniqueType::element_type> uniqueToRaw( st
   return newBuffer;
 }
 
-template <typename Type, typename Dispatch>
-VULKAN_HPP_INLINE void swap( UniqueHandle<Type, Dispatch> & lhs, UniqueHandle<Type, Dispatch> & rhs ) VULKAN_HPP_NOEXCEPT
+template <typename Type>
+VULKAN_HPP_INLINE void swap( UniqueHandle<Type> & lhs, UniqueHandle<Type> & rhs ) VULKAN_HPP_NOEXCEPT
 {
   lhs.swap( rhs );
 }

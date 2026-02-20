@@ -62,3 +62,5 @@ public:
 public:
   ${commandMembers}
 };
+
+#undef VULKAN_HPP_DEFAULT_ADDR

@@ -7410,7 +7410,7 @@ std::string VulkanHppGenerator::generateRAIIDispatchers() const
   }
 
   std::string contextDispatcherTemplate = R"(
-    class ContextDispatcher : public ::VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase
+    class ContextDispatcher
     {
     public:
       ContextDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
@@ -7426,7 +7426,7 @@ ${contextMembers}
   std::string str = replaceWithMap( contextDispatcherTemplate, { { "contextInitializers", contextInitializers }, { "contextMembers", contextMembers } } );
 
   std::string instanceDispatcherTemplate = R"(
-    class InstanceDispatcher : public ::VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase
+    class InstanceDispatcher
     {
     public:
       InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr, VkInstance instance )
@@ -7446,7 +7446,7 @@ ${instanceMembers}
   str += replaceWithMap( instanceDispatcherTemplate, { { "instanceAssignments", instanceAssignments }, { "instanceMembers", instanceMembers } } );
 
   std::string deviceDispatcherTemplate = R"(
-    class DeviceDispatcher : public ::VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase
+    class DeviceDispatcher
     {
     public:
       DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr, VkDevice device ) : vkGetDeviceProcAddr( getProcAddr )
@@ -7681,7 +7681,6 @@ ${getConstructorSuccessCode}
 ${getParent}
     ${dispatcherType} const * getDispatcher() const
     {
-      VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
       return ${getDispatcherReturn}m_dispatcher;
     }
 
@@ -8848,7 +8847,6 @@ std::string VulkanHppGenerator::generateRAIIHandleContext( std::pair<std::string
 
       detail::ContextDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return &*m_dispatcher;
       }
 

@@ -4355,4 +4355,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     PFN_dummy vkGetPhysicalDeviceUbmPresentationSupportSEC_placeholder = 0;
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
   };
+
+#undef VULKAN_HPP_DEFAULT_ADDR
 }

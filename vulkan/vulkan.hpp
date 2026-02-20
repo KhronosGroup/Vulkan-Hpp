@@ -50,13 +50,15 @@
 // 3. fix/remove unique handles.. what about shared ones?
 // 4. also changed the init interface of the dispatcher a bit
 // 5. instead of the dispatch loader, the dynamic loader is now in detail namespace
-// 6. removed getVkHeaderVersion from dispatch loader
+// 6. removed getVkHeaderVersion() from dispatch loader stuff, already handled via global macro checks (and also not that relevant for the loader)
 // 7. static loading only uses core and WSI extensions as per https://github.com/KhronosGroup/Vulkan-Loader/blob/main/loader/vulkan-1.def
+// -> with the exception of VK_KHR_descriptor_update_template
 
 // TODO:
 // some sort of static function that returns the default dispatcher? similar to raii
 // dispatch loader init functions should get some comments!
 // remove forward declared funcs in vulkan_handles
+// have per-instance/per-device dispatchers like in raii? perhaps thru an optional VULKAN_HPP_ flag
 
 VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 343, "Wrong VK_HEADER_VERSION!" );
 

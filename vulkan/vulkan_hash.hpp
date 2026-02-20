@@ -14476,6 +14476,23 @@ VULKAN_HPP_EXPORT namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE const &
+                              physicalDeviceShaderMixedFloatDotProductFeaturesVALVE ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderMixedFloatDotProductFeaturesVALVE.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderMixedFloatDotProductFeaturesVALVE.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderMixedFloatDotProductFeaturesVALVE.shaderMixedFloatDotProductFloat16AccFloat32 );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderMixedFloatDotProductFeaturesVALVE.shaderMixedFloatDotProductFloat16AccFloat16 );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderMixedFloatDotProductFeaturesVALVE.shaderMixedFloatDotProductBFloat16Acc );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderMixedFloatDotProductFeaturesVALVE.shaderMixedFloatDotProductFloat8AccFloat32 );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderModuleIdentifierFeaturesEXT>
   {
     std::size_t operator()(
@@ -19413,8 +19430,8 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, ubmSurfaceCreateInfoSEC.sType );
       VULKAN_HPP_HASH_COMBINE( seed, ubmSurfaceCreateInfoSEC.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, ubmSurfaceCreateInfoSEC.flags );
-      VULKAN_HPP_HASH_COMBINE( seed, ubmSurfaceCreateInfoSEC.ubm_device );
-      VULKAN_HPP_HASH_COMBINE( seed, ubmSurfaceCreateInfoSEC.ubm_surface );
+      VULKAN_HPP_HASH_COMBINE( seed, ubmSurfaceCreateInfoSEC.device );
+      VULKAN_HPP_HASH_COMBINE( seed, ubmSurfaceCreateInfoSEC.surface );
       return seed;
     }
   };

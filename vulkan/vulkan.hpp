@@ -37,7 +37,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 343, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 344, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -7801,9 +7801,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_INLINE VkBool32 vkGetPhysicalDeviceUbmPresentationSupportSEC( VkPhysicalDevice    physicalDevice,
                                                                                uint32_t            queueFamilyIndex,
-                                                                               struct ubm_device * ubm_device ) const VULKAN_HPP_NOEXCEPT
+                                                                               struct ubm_device * device ) const VULKAN_HPP_NOEXCEPT
       {
-        return ::vkGetPhysicalDeviceUbmPresentationSupportSEC( physicalDevice, queueFamilyIndex, ubm_device );
+        return ::vkGetPhysicalDeviceUbmPresentationSupportSEC( physicalDevice, queueFamilyIndex, device );
       }
 #    endif /*VK_USE_PLATFORM_UBM_SEC*/
 #  endif   /*VK_ONLY_EXPORTED_PROTOTYPES*/
@@ -10870,6 +10870,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto SECUbmSurfaceExtensionName = VK_SEC_UBM_SURFACE_EXTENSION_NAME;
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
 
+  //=== VK_VALVE_shader_mixed_float_dot_product ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto VALVEShaderMixedFloatDotProductSpecVersion   = VK_VALVE_SHADER_MIXED_FLOAT_DOT_PRODUCT_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto VALVEShaderMixedFloatDotProductExtensionName = VK_VALVE_SHADER_MIXED_FLOAT_DOT_PRODUCT_EXTENSION_NAME;
+
 }  // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off
@@ -11394,6 +11398,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_VERSION_1_2 ===
   template <>
+  struct StructExtends<PhysicalDeviceDriverProperties, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
   struct StructExtends<PhysicalDeviceVulkan11Features, PhysicalDeviceFeatures2>
   {
     enum
@@ -11467,15 +11480,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<ImageFormatListCreateInfo, PhysicalDeviceImageFormatInfo2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<PhysicalDeviceDriverProperties, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -11862,7 +11866,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<FramebufferAttachmentsCreateInfo, FramebufferCreateInfo>
+  struct StructExtends<RenderPassAttachmentBeginInfo, RenderPassBeginInfo>
   {
     enum
     {
@@ -11871,7 +11875,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<RenderPassAttachmentBeginInfo, RenderPassBeginInfo>
+  struct StructExtends<FramebufferAttachmentsCreateInfo, FramebufferCreateInfo>
   {
     enum
     {
@@ -21530,6 +21534,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_VALVE_shader_mixed_float_dot_product ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE, DeviceCreateInfo>
   {
     enum
     {

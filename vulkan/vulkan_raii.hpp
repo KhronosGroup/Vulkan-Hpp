@@ -28467,11 +28467,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceUbmPresentationSupportSEC &&
                          "Function <vkGetPhysicalDeviceUbmPresentationSupportSEC> requires <VK_SEC_ubm_surface>" );
 
-      struct ubm_device ubm_device;
+      struct ubm_device device;
       VkBool32          result =
-        getDispatcher()->vkGetPhysicalDeviceUbmPresentationSupportSEC( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &ubm_device );
+        getDispatcher()->vkGetPhysicalDeviceUbmPresentationSupportSEC( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &device );
 
-      return { result, ubm_device };
+      return { result, device };
     }
 #  endif /*VK_USE_PLATFORM_UBM_SEC*/
 

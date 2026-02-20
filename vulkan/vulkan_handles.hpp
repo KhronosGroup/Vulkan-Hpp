@@ -25,9 +25,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct Rect2D;
   struct BaseInStructure;
   struct BaseOutStructure;
-  struct BufferMemoryBarrier;
-  struct ImageMemoryBarrier;
-  struct MemoryBarrier;
   struct AllocationCallbacks;
   struct ApplicationInfo;
   struct FormatProperties;
@@ -38,26 +35,26 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceFeatures;
   struct PhysicalDeviceLimits;
   struct PhysicalDeviceMemoryProperties;
-  struct PhysicalDeviceProperties;
   struct PhysicalDeviceSparseProperties;
+  struct PhysicalDeviceProperties;
   struct QueueFamilyProperties;
-  struct DeviceCreateInfo;
   struct DeviceQueueCreateInfo;
+  struct DeviceCreateInfo;
   struct ExtensionProperties;
   struct LayerProperties;
   struct SubmitInfo;
   struct MappedMemoryRange;
   struct MemoryAllocateInfo;
   struct MemoryRequirements;
-  struct BindSparseInfo;
   struct ImageSubresource;
-  struct SparseBufferMemoryBindInfo;
   struct SparseImageFormatProperties;
   struct SparseImageMemoryBind;
   struct SparseImageMemoryBindInfo;
   struct SparseImageMemoryRequirements;
-  struct SparseImageOpaqueMemoryBindInfo;
   struct SparseMemoryBind;
+  struct SparseBufferMemoryBindInfo;
+  struct SparseImageOpaqueMemoryBindInfo;
+  struct BindSparseInfo;
   struct FenceCreateInfo;
   struct SemaphoreCreateInfo;
   struct QueryPoolCreateInfo;
@@ -69,30 +66,33 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct ImageViewCreateInfo;
   struct CommandPoolCreateInfo;
   struct CommandBufferAllocateInfo;
-  struct CommandBufferBeginInfo;
   struct CommandBufferInheritanceInfo;
+  struct CommandBufferBeginInfo;
   struct BufferCopy;
+  struct ImageSubresourceLayers;
   struct BufferImageCopy;
   struct ImageCopy;
-  struct ImageSubresourceLayers;
+  struct BufferMemoryBarrier;
+  struct ImageMemoryBarrier;
+  struct MemoryBarrier;
   struct DispatchIndirectCommand;
   struct PipelineCacheHeaderVersionOne;
   struct EventCreateInfo;
   struct BufferViewCreateInfo;
   struct ShaderModuleCreateInfo;
   struct PipelineCacheCreateInfo;
-  struct ComputePipelineCreateInfo;
-  struct PipelineShaderStageCreateInfo;
-  struct SpecializationInfo;
   struct SpecializationMapEntry;
-  struct PipelineLayoutCreateInfo;
+  struct SpecializationInfo;
+  struct PipelineShaderStageCreateInfo;
+  struct ComputePipelineCreateInfo;
   struct PushConstantRange;
+  struct PipelineLayoutCreateInfo;
   struct SamplerCreateInfo;
   struct CopyDescriptorSet;
   struct DescriptorBufferInfo;
   struct DescriptorImageInfo;
-  struct DescriptorPoolCreateInfo;
   struct DescriptorPoolSize;
+  struct DescriptorPoolCreateInfo;
   struct DescriptorSetAllocateInfo;
   struct DescriptorSetLayoutBinding;
   struct DescriptorSetLayoutCreateInfo;
@@ -100,7 +100,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   union ClearColorValue;
   struct DrawIndexedIndirectCommand;
   struct DrawIndirectCommand;
-  struct GraphicsPipelineCreateInfo;
+  struct StencilOpState;
+  struct VertexInputAttributeDescription;
+  struct VertexInputBindingDescription;
+  struct Viewport;
   struct PipelineColorBlendAttachmentState;
   struct PipelineColorBlendStateCreateInfo;
   struct PipelineDepthStencilStateCreateInfo;
@@ -111,20 +114,17 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct PipelineTessellationStateCreateInfo;
   struct PipelineVertexInputStateCreateInfo;
   struct PipelineViewportStateCreateInfo;
-  struct StencilOpState;
-  struct VertexInputAttributeDescription;
-  struct VertexInputBindingDescription;
-  struct Viewport;
+  struct GraphicsPipelineCreateInfo;
   struct AttachmentDescription;
   struct AttachmentReference;
   struct FramebufferCreateInfo;
-  struct RenderPassCreateInfo;
   struct SubpassDependency;
   struct SubpassDescription;
-  struct ClearAttachment;
+  struct RenderPassCreateInfo;
   struct ClearDepthStencilValue;
   struct ClearRect;
   union ClearValue;
+  struct ClearAttachment;
   struct ImageBlit;
   struct ImageResolve;
   struct RenderPassBeginInfo;
@@ -249,10 +249,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using DeviceGroupRenderPassBeginInfoKHR = DeviceGroupRenderPassBeginInfo;
   struct PhysicalDevicePointClippingProperties;
   using PhysicalDevicePointClippingPropertiesKHR = PhysicalDevicePointClippingProperties;
-  struct RenderPassInputAttachmentAspectCreateInfo;
-  using RenderPassInputAttachmentAspectCreateInfoKHR = RenderPassInputAttachmentAspectCreateInfo;
   struct InputAttachmentAspectReference;
   using InputAttachmentAspectReferenceKHR = InputAttachmentAspectReference;
+  struct RenderPassInputAttachmentAspectCreateInfo;
+  using RenderPassInputAttachmentAspectCreateInfoKHR = RenderPassInputAttachmentAspectCreateInfo;
   struct PipelineTessellationDomainOriginStateCreateInfo;
   using PipelineTessellationDomainOriginStateCreateInfoKHR = PipelineTessellationDomainOriginStateCreateInfo;
   struct RenderPassMultiviewCreateInfo;
@@ -265,16 +265,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using PhysicalDeviceShaderDrawParameterFeatures = PhysicalDeviceShaderDrawParametersFeatures;
 
   //=== VK_VERSION_1_2 ===
+  struct ConformanceVersion;
+  using ConformanceVersionKHR = ConformanceVersion;
+  struct PhysicalDeviceDriverProperties;
+  using PhysicalDeviceDriverPropertiesKHR = PhysicalDeviceDriverProperties;
   struct PhysicalDeviceVulkan11Features;
   struct PhysicalDeviceVulkan11Properties;
   struct PhysicalDeviceVulkan12Features;
   struct PhysicalDeviceVulkan12Properties;
   struct ImageFormatListCreateInfo;
   using ImageFormatListCreateInfoKHR = ImageFormatListCreateInfo;
-  struct ConformanceVersion;
-  using ConformanceVersionKHR = ConformanceVersion;
-  struct PhysicalDeviceDriverProperties;
-  using PhysicalDeviceDriverPropertiesKHR = PhysicalDeviceDriverProperties;
   struct PhysicalDeviceVulkanMemoryModelFeatures;
   using PhysicalDeviceVulkanMemoryModelFeaturesKHR = PhysicalDeviceVulkanMemoryModelFeatures;
   struct PhysicalDeviceHostQueryResetFeatures;
@@ -331,8 +331,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR = PhysicalDeviceUniformBufferStandardLayoutFeatures;
   struct PhysicalDeviceShaderSubgroupExtendedTypesFeatures;
   using PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR = PhysicalDeviceShaderSubgroupExtendedTypesFeatures;
-  struct RenderPassCreateInfo2;
-  using RenderPassCreateInfo2KHR = RenderPassCreateInfo2;
   struct AttachmentDescription2;
   using AttachmentDescription2KHR = AttachmentDescription2;
   struct AttachmentReference2;
@@ -345,6 +343,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using SubpassBeginInfoKHR = SubpassBeginInfo;
   struct SubpassEndInfo;
   using SubpassEndInfoKHR = SubpassEndInfo;
+  struct RenderPassCreateInfo2;
+  using RenderPassCreateInfo2KHR = RenderPassCreateInfo2;
   struct SubpassDescriptionDepthStencilResolve;
   using SubpassDescriptionDepthStencilResolveKHR = SubpassDescriptionDepthStencilResolve;
   struct PhysicalDeviceDepthStencilResolveProperties;
@@ -353,12 +353,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using ImageStencilUsageCreateInfoEXT = ImageStencilUsageCreateInfo;
   struct PhysicalDeviceImagelessFramebufferFeatures;
   using PhysicalDeviceImagelessFramebufferFeaturesKHR = PhysicalDeviceImagelessFramebufferFeatures;
-  struct FramebufferAttachmentsCreateInfo;
-  using FramebufferAttachmentsCreateInfoKHR = FramebufferAttachmentsCreateInfo;
   struct FramebufferAttachmentImageInfo;
   using FramebufferAttachmentImageInfoKHR = FramebufferAttachmentImageInfo;
   struct RenderPassAttachmentBeginInfo;
   using RenderPassAttachmentBeginInfoKHR = RenderPassAttachmentBeginInfo;
+  struct FramebufferAttachmentsCreateInfo;
+  using FramebufferAttachmentsCreateInfoKHR = FramebufferAttachmentsCreateInfo;
   struct PhysicalDeviceSeparateDepthStencilLayoutsFeatures;
   using PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR = PhysicalDeviceSeparateDepthStencilLayoutsFeatures;
   struct AttachmentReferenceStencilLayout;
@@ -385,28 +385,28 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using ImageMemoryBarrier2KHR = ImageMemoryBarrier2;
   struct DependencyInfo;
   using DependencyInfoKHR = DependencyInfo;
-  struct SubmitInfo2;
-  using SubmitInfo2KHR = SubmitInfo2;
   struct SemaphoreSubmitInfo;
   using SemaphoreSubmitInfoKHR = SemaphoreSubmitInfo;
   struct CommandBufferSubmitInfo;
   using CommandBufferSubmitInfoKHR = CommandBufferSubmitInfo;
+  struct SubmitInfo2;
+  using SubmitInfo2KHR = SubmitInfo2;
   struct PhysicalDeviceSynchronization2Features;
   using PhysicalDeviceSynchronization2FeaturesKHR = PhysicalDeviceSynchronization2Features;
+  struct BufferCopy2;
+  using BufferCopy2KHR = BufferCopy2;
   struct CopyBufferInfo2;
   using CopyBufferInfo2KHR = CopyBufferInfo2;
+  struct ImageCopy2;
+  using ImageCopy2KHR = ImageCopy2;
   struct CopyImageInfo2;
   using CopyImageInfo2KHR = CopyImageInfo2;
+  struct BufferImageCopy2;
+  using BufferImageCopy2KHR = BufferImageCopy2;
   struct CopyBufferToImageInfo2;
   using CopyBufferToImageInfo2KHR = CopyBufferToImageInfo2;
   struct CopyImageToBufferInfo2;
   using CopyImageToBufferInfo2KHR = CopyImageToBufferInfo2;
-  struct BufferCopy2;
-  using BufferCopy2KHR = BufferCopy2;
-  struct ImageCopy2;
-  using ImageCopy2KHR = ImageCopy2;
-  struct BufferImageCopy2;
-  using BufferImageCopy2KHR = BufferImageCopy2;
   struct PhysicalDeviceTextureCompressionASTCHDRFeatures;
   using PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT = PhysicalDeviceTextureCompressionASTCHDRFeatures;
   struct FormatProperties3;
@@ -419,10 +419,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using DeviceBufferMemoryRequirementsKHR = DeviceBufferMemoryRequirements;
   struct DeviceImageMemoryRequirements;
   using DeviceImageMemoryRequirementsKHR = DeviceImageMemoryRequirements;
-  struct PipelineCreationFeedbackCreateInfo;
-  using PipelineCreationFeedbackCreateInfoEXT = PipelineCreationFeedbackCreateInfo;
   struct PipelineCreationFeedback;
   using PipelineCreationFeedbackEXT = PipelineCreationFeedback;
+  struct PipelineCreationFeedbackCreateInfo;
+  using PipelineCreationFeedbackCreateInfoEXT = PipelineCreationFeedbackCreateInfo;
   struct PhysicalDeviceShaderTerminateInvocationFeatures;
   using PhysicalDeviceShaderTerminateInvocationFeaturesKHR = PhysicalDeviceShaderTerminateInvocationFeatures;
   struct PhysicalDeviceShaderDemoteToHelperInvocationFeatures;
@@ -454,18 +454,18 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using PhysicalDeviceShaderIntegerDotProductPropertiesKHR = PhysicalDeviceShaderIntegerDotProductProperties;
   struct PhysicalDeviceTexelBufferAlignmentProperties;
   using PhysicalDeviceTexelBufferAlignmentPropertiesEXT = PhysicalDeviceTexelBufferAlignmentProperties;
-  struct BlitImageInfo2;
-  using BlitImageInfo2KHR = BlitImageInfo2;
   struct ImageBlit2;
   using ImageBlit2KHR = ImageBlit2;
-  struct ResolveImageInfo2;
-  using ResolveImageInfo2KHR = ResolveImageInfo2;
+  struct BlitImageInfo2;
+  using BlitImageInfo2KHR = BlitImageInfo2;
   struct ImageResolve2;
   using ImageResolve2KHR = ImageResolve2;
-  struct RenderingInfo;
-  using RenderingInfoKHR = RenderingInfo;
+  struct ResolveImageInfo2;
+  using ResolveImageInfo2KHR = ResolveImageInfo2;
   struct RenderingAttachmentInfo;
   using RenderingAttachmentInfoKHR = RenderingAttachmentInfo;
+  struct RenderingInfo;
+  using RenderingInfoKHR = RenderingInfo;
   struct PipelineRenderingCreateInfo;
   using PipelineRenderingCreateInfoKHR = PipelineRenderingCreateInfo;
   struct PhysicalDeviceDynamicRenderingFeatures;
@@ -496,14 +496,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using PhysicalDeviceMaintenance5FeaturesKHR = PhysicalDeviceMaintenance5Features;
   struct PhysicalDeviceMaintenance5Properties;
   using PhysicalDeviceMaintenance5PropertiesKHR = PhysicalDeviceMaintenance5Properties;
-  struct DeviceImageSubresourceInfo;
-  using DeviceImageSubresourceInfoKHR = DeviceImageSubresourceInfo;
-  struct ImageSubresource2;
-  using ImageSubresource2EXT = ImageSubresource2;
-  using ImageSubresource2KHR = ImageSubresource2;
   struct SubresourceLayout2;
   using SubresourceLayout2EXT = SubresourceLayout2;
   using SubresourceLayout2KHR = SubresourceLayout2;
+  struct ImageSubresource2;
+  using ImageSubresource2EXT = ImageSubresource2;
+  using ImageSubresource2KHR = ImageSubresource2;
+  struct DeviceImageSubresourceInfo;
+  using DeviceImageSubresourceInfoKHR = DeviceImageSubresourceInfo;
   struct BufferUsageFlags2CreateInfo;
   using BufferUsageFlags2CreateInfoKHR = BufferUsageFlags2CreateInfo;
   struct PhysicalDeviceMaintenance6Features;
@@ -2338,6 +2338,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_SEC_ubm_surface ===
   struct UbmSurfaceCreateInfoSEC;
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
+
+  //=== VK_VALVE_shader_mixed_float_dot_product ===
+  struct PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE;
 
   //===================================
   //=== HANDLE forward declarations ===
@@ -21623,7 +21626,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch                                                                                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceUbmPresentationSupportSEC ), bool>::type = true>
     Bool32 getUbmPresentationSupportSEC( uint32_t            queueFamilyIndex,
-                                         struct ubm_device * ubm_device,
+                                         struct ubm_device * device,
                                          Dispatch const & d  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     // wrapper function for command vkGetPhysicalDeviceUbmPresentationSupportSEC, see

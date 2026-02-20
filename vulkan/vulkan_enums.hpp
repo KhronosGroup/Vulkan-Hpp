@@ -477,14 +477,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceMultiviewPropertiesKHR                    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES_KHR,
     ePhysicalDeviceShaderDrawParametersFeatures              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES,
     ePhysicalDeviceShaderDrawParameterFeatures               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES,
+    ePhysicalDeviceDriverProperties                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES,
+    ePhysicalDeviceDriverPropertiesKHR                       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR,
     ePhysicalDeviceVulkan11Features                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES,
     ePhysicalDeviceVulkan11Properties                        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES,
     ePhysicalDeviceVulkan12Features                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES,
     ePhysicalDeviceVulkan12Properties                        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES,
     eImageFormatListCreateInfo                               = VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO,
     eImageFormatListCreateInfoKHR                            = VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO_KHR,
-    ePhysicalDeviceDriverProperties                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES,
-    ePhysicalDeviceDriverPropertiesKHR                       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR,
     ePhysicalDeviceVulkanMemoryModelFeatures                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES,
     ePhysicalDeviceVulkanMemoryModelFeaturesKHR              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR,
     ePhysicalDeviceHostQueryResetFeatures                    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES,
@@ -1783,8 +1783,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceComputeOccupancyPriorityFeaturesNV         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV,
     ePhysicalDeviceShaderSubgroupPartitionedFeaturesEXT       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT,
 #if defined( VK_USE_PLATFORM_UBM_SEC )
-    eUbmSurfaceCreateInfoSEC = VK_STRUCTURE_TYPE_UBM_SURFACE_CREATE_INFO_SEC
+    eUbmSurfaceCreateInfoSEC = VK_STRUCTURE_TYPE_UBM_SURFACE_CREATE_INFO_SEC,
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
+    ePhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE
   };
 
   // wrapper class for enum VkObjectType, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkObjectType.html
@@ -2626,6 +2627,65 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eInstance = VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE
   };
 
+  // wrapper class for enum VkShaderStageFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkShaderStageFlagBits.html
+  enum class ShaderStageFlagBits : VkShaderStageFlags
+  {
+    eVertex                 = VK_SHADER_STAGE_VERTEX_BIT,
+    eTessellationControl    = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT,
+    eTessellationEvaluation = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT,
+    eGeometry               = VK_SHADER_STAGE_GEOMETRY_BIT,
+    eFragment               = VK_SHADER_STAGE_FRAGMENT_BIT,
+    eCompute                = VK_SHADER_STAGE_COMPUTE_BIT,
+    eAllGraphics            = VK_SHADER_STAGE_ALL_GRAPHICS,
+    eAll                    = VK_SHADER_STAGE_ALL,
+    eRaygenKHR              = VK_SHADER_STAGE_RAYGEN_BIT_KHR,
+    eRaygenNV               = VK_SHADER_STAGE_RAYGEN_BIT_NV,
+    eAnyHitKHR              = VK_SHADER_STAGE_ANY_HIT_BIT_KHR,
+    eAnyHitNV               = VK_SHADER_STAGE_ANY_HIT_BIT_NV,
+    eClosestHitKHR          = VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR,
+    eClosestHitNV           = VK_SHADER_STAGE_CLOSEST_HIT_BIT_NV,
+    eMissKHR                = VK_SHADER_STAGE_MISS_BIT_KHR,
+    eMissNV                 = VK_SHADER_STAGE_MISS_BIT_NV,
+    eIntersectionKHR        = VK_SHADER_STAGE_INTERSECTION_BIT_KHR,
+    eIntersectionNV         = VK_SHADER_STAGE_INTERSECTION_BIT_NV,
+    eCallableKHR            = VK_SHADER_STAGE_CALLABLE_BIT_KHR,
+    eCallableNV             = VK_SHADER_STAGE_CALLABLE_BIT_NV,
+    eTaskEXT                = VK_SHADER_STAGE_TASK_BIT_EXT,
+    eTaskNV                 = VK_SHADER_STAGE_TASK_BIT_NV,
+    eMeshEXT                = VK_SHADER_STAGE_MESH_BIT_EXT,
+    eMeshNV                 = VK_SHADER_STAGE_MESH_BIT_NV,
+    eSubpassShadingHUAWEI   = VK_SHADER_STAGE_SUBPASS_SHADING_BIT_HUAWEI,
+    eClusterCullingHUAWEI   = VK_SHADER_STAGE_CLUSTER_CULLING_BIT_HUAWEI
+  };
+
+  // wrapper using for bitmask VkShaderStageFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkShaderStageFlags.html
+  using ShaderStageFlags = Flags<ShaderStageFlagBits>;
+
+  template <>
+  struct FlagTraits<ShaderStageFlagBits>
+  {
+    using WrappedType                                               = VkShaderStageFlagBits;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool             isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR ShaderStageFlags allFlags  = ShaderStageFlagBits::eVertex |
+                                                                     ShaderStageFlagBits::eTessellationControl |
+                                                                     ShaderStageFlagBits::eTessellationEvaluation |
+                                                                     ShaderStageFlagBits::eGeometry |
+                                                                     ShaderStageFlagBits::eFragment |
+                                                                     ShaderStageFlagBits::eCompute |
+                                                                     ShaderStageFlagBits::eAllGraphics |
+                                                                     ShaderStageFlagBits::eAll |
+                                                                     ShaderStageFlagBits::eRaygenKHR |
+                                                                     ShaderStageFlagBits::eAnyHitKHR |
+                                                                     ShaderStageFlagBits::eClosestHitKHR |
+                                                                     ShaderStageFlagBits::eMissKHR |
+                                                                     ShaderStageFlagBits::eIntersectionKHR |
+                                                                     ShaderStageFlagBits::eCallableKHR |
+                                                                     ShaderStageFlagBits::eTaskEXT |
+                                                                     ShaderStageFlagBits::eMeshEXT |
+                                                                     ShaderStageFlagBits::eSubpassShadingHUAWEI |
+                                                                     ShaderStageFlagBits::eClusterCullingHUAWEI;
+  };
+
   enum class DeviceCreateFlagBits : VkDeviceCreateFlags
   {
   };
@@ -2878,6 +2938,50 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     using WrappedType                                                   = VkQueryPoolCreateFlagBits;
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                 isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR QueryPoolCreateFlags allFlags  = QueryPoolCreateFlagBits::eResetKHR;
+  };
+
+  // wrapper class for enum VkQueryPipelineStatisticFlagBits, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkQueryPipelineStatisticFlagBits.html
+  enum class QueryPipelineStatisticFlagBits : VkQueryPipelineStatisticFlags
+  {
+    eInputAssemblyVertices                   = VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT,
+    eInputAssemblyPrimitives                 = VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT,
+    eVertexShaderInvocations                 = VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT,
+    eGeometryShaderInvocations               = VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_INVOCATIONS_BIT,
+    eGeometryShaderPrimitives                = VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_PRIMITIVES_BIT,
+    eClippingInvocations                     = VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT,
+    eClippingPrimitives                      = VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT,
+    eFragmentShaderInvocations               = VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT,
+    eTessellationControlShaderPatches        = VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT,
+    eTessellationEvaluationShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT,
+    eComputeShaderInvocations                = VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT,
+    eTaskShaderInvocationsEXT                = VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT,
+    eMeshShaderInvocationsEXT                = VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT,
+    eClusterCullingShaderInvocationsHUAWEI   = VK_QUERY_PIPELINE_STATISTIC_CLUSTER_CULLING_SHADER_INVOCATIONS_BIT_HUAWEI
+  };
+
+  // wrapper using for bitmask VkQueryPipelineStatisticFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkQueryPipelineStatisticFlags.html
+  using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits>;
+
+  template <>
+  struct FlagTraits<QueryPipelineStatisticFlagBits>
+  {
+    using WrappedType                                                          = VkQueryPipelineStatisticFlagBits;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                        isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR QueryPipelineStatisticFlags allFlags  = QueryPipelineStatisticFlagBits::eInputAssemblyVertices |
+                                                                                QueryPipelineStatisticFlagBits::eInputAssemblyPrimitives |
+                                                                                QueryPipelineStatisticFlagBits::eVertexShaderInvocations |
+                                                                                QueryPipelineStatisticFlagBits::eGeometryShaderInvocations |
+                                                                                QueryPipelineStatisticFlagBits::eGeometryShaderPrimitives |
+                                                                                QueryPipelineStatisticFlagBits::eClippingInvocations |
+                                                                                QueryPipelineStatisticFlagBits::eClippingPrimitives |
+                                                                                QueryPipelineStatisticFlagBits::eFragmentShaderInvocations |
+                                                                                QueryPipelineStatisticFlagBits::eTessellationControlShaderPatches |
+                                                                                QueryPipelineStatisticFlagBits::eTessellationEvaluationShaderInvocations |
+                                                                                QueryPipelineStatisticFlagBits::eComputeShaderInvocations |
+                                                                                QueryPipelineStatisticFlagBits::eTaskShaderInvocationsEXT |
+                                                                                QueryPipelineStatisticFlagBits::eMeshShaderInvocationsEXT |
+                                                                                QueryPipelineStatisticFlagBits::eClusterCullingShaderInvocationsHUAWEI;
   };
 
   // wrapper class for enum VkQueryResultFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkQueryResultFlagBits.html
@@ -3586,65 +3690,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       PipelineShaderStageCreateFlagBits::eAllowVaryingSubgroupSize | PipelineShaderStageCreateFlagBits::eRequireFullSubgroups;
   };
 
-  // wrapper class for enum VkShaderStageFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkShaderStageFlagBits.html
-  enum class ShaderStageFlagBits : VkShaderStageFlags
-  {
-    eVertex                 = VK_SHADER_STAGE_VERTEX_BIT,
-    eTessellationControl    = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT,
-    eTessellationEvaluation = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT,
-    eGeometry               = VK_SHADER_STAGE_GEOMETRY_BIT,
-    eFragment               = VK_SHADER_STAGE_FRAGMENT_BIT,
-    eCompute                = VK_SHADER_STAGE_COMPUTE_BIT,
-    eAllGraphics            = VK_SHADER_STAGE_ALL_GRAPHICS,
-    eAll                    = VK_SHADER_STAGE_ALL,
-    eRaygenKHR              = VK_SHADER_STAGE_RAYGEN_BIT_KHR,
-    eRaygenNV               = VK_SHADER_STAGE_RAYGEN_BIT_NV,
-    eAnyHitKHR              = VK_SHADER_STAGE_ANY_HIT_BIT_KHR,
-    eAnyHitNV               = VK_SHADER_STAGE_ANY_HIT_BIT_NV,
-    eClosestHitKHR          = VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR,
-    eClosestHitNV           = VK_SHADER_STAGE_CLOSEST_HIT_BIT_NV,
-    eMissKHR                = VK_SHADER_STAGE_MISS_BIT_KHR,
-    eMissNV                 = VK_SHADER_STAGE_MISS_BIT_NV,
-    eIntersectionKHR        = VK_SHADER_STAGE_INTERSECTION_BIT_KHR,
-    eIntersectionNV         = VK_SHADER_STAGE_INTERSECTION_BIT_NV,
-    eCallableKHR            = VK_SHADER_STAGE_CALLABLE_BIT_KHR,
-    eCallableNV             = VK_SHADER_STAGE_CALLABLE_BIT_NV,
-    eTaskEXT                = VK_SHADER_STAGE_TASK_BIT_EXT,
-    eTaskNV                 = VK_SHADER_STAGE_TASK_BIT_NV,
-    eMeshEXT                = VK_SHADER_STAGE_MESH_BIT_EXT,
-    eMeshNV                 = VK_SHADER_STAGE_MESH_BIT_NV,
-    eSubpassShadingHUAWEI   = VK_SHADER_STAGE_SUBPASS_SHADING_BIT_HUAWEI,
-    eClusterCullingHUAWEI   = VK_SHADER_STAGE_CLUSTER_CULLING_BIT_HUAWEI
-  };
-
-  // wrapper using for bitmask VkShaderStageFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkShaderStageFlags.html
-  using ShaderStageFlags = Flags<ShaderStageFlagBits>;
-
-  template <>
-  struct FlagTraits<ShaderStageFlagBits>
-  {
-    using WrappedType                                               = VkShaderStageFlagBits;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool             isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR ShaderStageFlags allFlags  = ShaderStageFlagBits::eVertex |
-                                                                     ShaderStageFlagBits::eTessellationControl |
-                                                                     ShaderStageFlagBits::eTessellationEvaluation |
-                                                                     ShaderStageFlagBits::eGeometry |
-                                                                     ShaderStageFlagBits::eFragment |
-                                                                     ShaderStageFlagBits::eCompute |
-                                                                     ShaderStageFlagBits::eAllGraphics |
-                                                                     ShaderStageFlagBits::eAll |
-                                                                     ShaderStageFlagBits::eRaygenKHR |
-                                                                     ShaderStageFlagBits::eAnyHitKHR |
-                                                                     ShaderStageFlagBits::eClosestHitKHR |
-                                                                     ShaderStageFlagBits::eMissKHR |
-                                                                     ShaderStageFlagBits::eIntersectionKHR |
-                                                                     ShaderStageFlagBits::eCallableKHR |
-                                                                     ShaderStageFlagBits::eTaskEXT |
-                                                                     ShaderStageFlagBits::eMeshEXT |
-                                                                     ShaderStageFlagBits::eSubpassShadingHUAWEI |
-                                                                     ShaderStageFlagBits::eClusterCullingHUAWEI;
-  };
-
   // wrapper class for enum VkPipelineLayoutCreateFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineLayoutCreateFlagBits.html
   enum class PipelineLayoutCreateFlagBits : VkPipelineLayoutCreateFlags
   {
@@ -3718,6 +3763,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                        SamplerCreateFlagBits::eDescriptorBufferCaptureReplayEXT |
                                                                        SamplerCreateFlagBits::eNonSeamlessCubeMapEXT |
                                                                        SamplerCreateFlagBits::eImageProcessingQCOM;
+  };
+
+  // wrapper class for enum VkCompareOp, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkCompareOp.html
+  enum class CompareOp
+  {
+    eNever          = VK_COMPARE_OP_NEVER,
+    eLess           = VK_COMPARE_OP_LESS,
+    eEqual          = VK_COMPARE_OP_EQUAL,
+    eLessOrEqual    = VK_COMPARE_OP_LESS_OR_EQUAL,
+    eGreater        = VK_COMPARE_OP_GREATER,
+    eNotEqual       = VK_COMPARE_OP_NOT_EQUAL,
+    eGreaterOrEqual = VK_COMPARE_OP_GREATER_OR_EQUAL,
+    eAlways         = VK_COMPARE_OP_ALWAYS
   };
 
   // wrapper class for enum VkSamplerMipmapMode, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkSamplerMipmapMode.html
@@ -3826,50 +3884,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                     isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR DescriptorPoolResetFlags allFlags  = {};
-  };
-
-  // wrapper class for enum VkQueryPipelineStatisticFlagBits, see
-  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkQueryPipelineStatisticFlagBits.html
-  enum class QueryPipelineStatisticFlagBits : VkQueryPipelineStatisticFlags
-  {
-    eInputAssemblyVertices                   = VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT,
-    eInputAssemblyPrimitives                 = VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT,
-    eVertexShaderInvocations                 = VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT,
-    eGeometryShaderInvocations               = VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_INVOCATIONS_BIT,
-    eGeometryShaderPrimitives                = VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_PRIMITIVES_BIT,
-    eClippingInvocations                     = VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT,
-    eClippingPrimitives                      = VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT,
-    eFragmentShaderInvocations               = VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT,
-    eTessellationControlShaderPatches        = VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT,
-    eTessellationEvaluationShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT,
-    eComputeShaderInvocations                = VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT,
-    eTaskShaderInvocationsEXT                = VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT,
-    eMeshShaderInvocationsEXT                = VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT,
-    eClusterCullingShaderInvocationsHUAWEI   = VK_QUERY_PIPELINE_STATISTIC_CLUSTER_CULLING_SHADER_INVOCATIONS_BIT_HUAWEI
-  };
-
-  // wrapper using for bitmask VkQueryPipelineStatisticFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkQueryPipelineStatisticFlags.html
-  using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits>;
-
-  template <>
-  struct FlagTraits<QueryPipelineStatisticFlagBits>
-  {
-    using WrappedType                                                          = VkQueryPipelineStatisticFlagBits;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                        isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR QueryPipelineStatisticFlags allFlags  = QueryPipelineStatisticFlagBits::eInputAssemblyVertices |
-                                                                                QueryPipelineStatisticFlagBits::eInputAssemblyPrimitives |
-                                                                                QueryPipelineStatisticFlagBits::eVertexShaderInvocations |
-                                                                                QueryPipelineStatisticFlagBits::eGeometryShaderInvocations |
-                                                                                QueryPipelineStatisticFlagBits::eGeometryShaderPrimitives |
-                                                                                QueryPipelineStatisticFlagBits::eClippingInvocations |
-                                                                                QueryPipelineStatisticFlagBits::eClippingPrimitives |
-                                                                                QueryPipelineStatisticFlagBits::eFragmentShaderInvocations |
-                                                                                QueryPipelineStatisticFlagBits::eTessellationControlShaderPatches |
-                                                                                QueryPipelineStatisticFlagBits::eTessellationEvaluationShaderInvocations |
-                                                                                QueryPipelineStatisticFlagBits::eComputeShaderInvocations |
-                                                                                QueryPipelineStatisticFlagBits::eTaskShaderInvocationsEXT |
-                                                                                QueryPipelineStatisticFlagBits::eMeshShaderInvocationsEXT |
-                                                                                QueryPipelineStatisticFlagBits::eClusterCullingShaderInvocationsHUAWEI;
   };
 
   // wrapper class for enum VkPipelineBindPoint, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineBindPoint.html
@@ -3985,19 +3999,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR ColorComponentFlags allFlags =
       ColorComponentFlagBits::eR | ColorComponentFlagBits::eG | ColorComponentFlagBits::eB | ColorComponentFlagBits::eA;
-  };
-
-  // wrapper class for enum VkCompareOp, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkCompareOp.html
-  enum class CompareOp
-  {
-    eNever          = VK_COMPARE_OP_NEVER,
-    eLess           = VK_COMPARE_OP_LESS,
-    eEqual          = VK_COMPARE_OP_EQUAL,
-    eLessOrEqual    = VK_COMPARE_OP_LESS_OR_EQUAL,
-    eGreater        = VK_COMPARE_OP_GREATER,
-    eNotEqual       = VK_COMPARE_OP_NOT_EQUAL,
-    eGreaterOrEqual = VK_COMPARE_OP_GREATER_OR_EQUAL,
-    eAlways         = VK_COMPARE_OP_ALWAYS
   };
 
   // wrapper class for enum VkCullModeFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkCullModeFlagBits.html
@@ -4144,6 +4145,26 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eSet          = VK_LOGIC_OP_SET
   };
 
+  // wrapper class for enum VkStencilOp, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkStencilOp.html
+  enum class StencilOp
+  {
+    eKeep              = VK_STENCIL_OP_KEEP,
+    eZero              = VK_STENCIL_OP_ZERO,
+    eReplace           = VK_STENCIL_OP_REPLACE,
+    eIncrementAndClamp = VK_STENCIL_OP_INCREMENT_AND_CLAMP,
+    eDecrementAndClamp = VK_STENCIL_OP_DECREMENT_AND_CLAMP,
+    eInvert            = VK_STENCIL_OP_INVERT,
+    eIncrementAndWrap  = VK_STENCIL_OP_INCREMENT_AND_WRAP,
+    eDecrementAndWrap  = VK_STENCIL_OP_DECREMENT_AND_WRAP
+  };
+
+  // wrapper class for enum VkVertexInputRate, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkVertexInputRate.html
+  enum class VertexInputRate
+  {
+    eVertex   = VK_VERTEX_INPUT_RATE_VERTEX,
+    eInstance = VK_VERTEX_INPUT_RATE_INSTANCE
+  };
+
   // wrapper class for enum VkPolygonMode, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPolygonMode.html
   enum class PolygonMode
   {
@@ -4167,26 +4188,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eTriangleListWithAdjacency  = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_WITH_ADJACENCY,
     eTriangleStripWithAdjacency = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP_WITH_ADJACENCY,
     ePatchList                  = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST
-  };
-
-  // wrapper class for enum VkStencilOp, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkStencilOp.html
-  enum class StencilOp
-  {
-    eKeep              = VK_STENCIL_OP_KEEP,
-    eZero              = VK_STENCIL_OP_ZERO,
-    eReplace           = VK_STENCIL_OP_REPLACE,
-    eIncrementAndClamp = VK_STENCIL_OP_INCREMENT_AND_CLAMP,
-    eDecrementAndClamp = VK_STENCIL_OP_DECREMENT_AND_CLAMP,
-    eInvert            = VK_STENCIL_OP_INVERT,
-    eIncrementAndWrap  = VK_STENCIL_OP_INCREMENT_AND_WRAP,
-    eDecrementAndWrap  = VK_STENCIL_OP_DECREMENT_AND_WRAP
-  };
-
-  // wrapper class for enum VkVertexInputRate, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkVertexInputRate.html
-  enum class VertexInputRate
-  {
-    eVertex   = VK_VERTEX_INPUT_RATE_VERTEX,
-    eInstance = VK_VERTEX_INPUT_RATE_INSTANCE
   };
 
   // wrapper class for enum VkPipelineColorBlendStateCreateFlagBits, see
@@ -4488,6 +4489,57 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   //=== VK_VERSION_1_1 ===
+
+  // wrapper class for enum VkSubgroupFeatureFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkSubgroupFeatureFlagBits.html
+  enum class SubgroupFeatureFlagBits : VkSubgroupFeatureFlags
+  {
+    eBasic              = VK_SUBGROUP_FEATURE_BASIC_BIT,
+    eVote               = VK_SUBGROUP_FEATURE_VOTE_BIT,
+    eArithmetic         = VK_SUBGROUP_FEATURE_ARITHMETIC_BIT,
+    eBallot             = VK_SUBGROUP_FEATURE_BALLOT_BIT,
+    eShuffle            = VK_SUBGROUP_FEATURE_SHUFFLE_BIT,
+    eShuffleRelative    = VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT,
+    eClustered          = VK_SUBGROUP_FEATURE_CLUSTERED_BIT,
+    eQuad               = VK_SUBGROUP_FEATURE_QUAD_BIT,
+    eRotate             = VK_SUBGROUP_FEATURE_ROTATE_BIT,
+    eRotateKHR          = VK_SUBGROUP_FEATURE_ROTATE_BIT_KHR,
+    eRotateClustered    = VK_SUBGROUP_FEATURE_ROTATE_CLUSTERED_BIT,
+    eRotateClusteredKHR = VK_SUBGROUP_FEATURE_ROTATE_CLUSTERED_BIT_KHR,
+    ePartitionedEXT     = VK_SUBGROUP_FEATURE_PARTITIONED_BIT_EXT,
+    ePartitionedNV      = VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV
+  };
+
+  // wrapper using for bitmask VkSubgroupFeatureFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkSubgroupFeatureFlags.html
+  using SubgroupFeatureFlags = Flags<SubgroupFeatureFlagBits>;
+
+  template <>
+  struct FlagTraits<SubgroupFeatureFlagBits>
+  {
+    using WrappedType                                                   = VkSubgroupFeatureFlagBits;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                 isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR SubgroupFeatureFlags allFlags  = SubgroupFeatureFlagBits::eBasic |
+                                                                         SubgroupFeatureFlagBits::eVote |
+                                                                         SubgroupFeatureFlagBits::eArithmetic |
+                                                                         SubgroupFeatureFlagBits::eBallot |
+                                                                         SubgroupFeatureFlagBits::eShuffle |
+                                                                         SubgroupFeatureFlagBits::eShuffleRelative |
+                                                                         SubgroupFeatureFlagBits::eClustered |
+                                                                         SubgroupFeatureFlagBits::eQuad |
+                                                                         SubgroupFeatureFlagBits::eRotate |
+                                                                         SubgroupFeatureFlagBits::eRotateClustered |
+                                                                         SubgroupFeatureFlagBits::ePartitionedEXT;
+  };
+
+  // wrapper class for enum VkPointClippingBehavior, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPointClippingBehavior.html
+  enum class PointClippingBehavior
+  {
+    eAllClipPlanes         = VK_POINT_CLIPPING_BEHAVIOR_ALL_CLIP_PLANES,
+    eAllClipPlanesKHR      = VK_POINT_CLIPPING_BEHAVIOR_ALL_CLIP_PLANES_KHR,
+    eUserClipPlanesOnly    = VK_POINT_CLIPPING_BEHAVIOR_USER_CLIP_PLANES_ONLY,
+    eUserClipPlanesOnlyKHR = VK_POINT_CLIPPING_BEHAVIOR_USER_CLIP_PLANES_ONLY_KHR
+  };
+
+  using PointClippingBehaviorKHR = PointClippingBehavior;
 
   // wrapper class for enum VkPeerMemoryFeatureFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPeerMemoryFeatureFlagBits.html
   enum class PeerMemoryFeatureFlagBits : VkPeerMemoryFeatureFlags
@@ -4844,46 +4896,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       ExternalSemaphoreFeatureFlagBits::eExportable | ExternalSemaphoreFeatureFlagBits::eImportable;
   };
 
-  // wrapper class for enum VkSubgroupFeatureFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkSubgroupFeatureFlagBits.html
-  enum class SubgroupFeatureFlagBits : VkSubgroupFeatureFlags
-  {
-    eBasic              = VK_SUBGROUP_FEATURE_BASIC_BIT,
-    eVote               = VK_SUBGROUP_FEATURE_VOTE_BIT,
-    eArithmetic         = VK_SUBGROUP_FEATURE_ARITHMETIC_BIT,
-    eBallot             = VK_SUBGROUP_FEATURE_BALLOT_BIT,
-    eShuffle            = VK_SUBGROUP_FEATURE_SHUFFLE_BIT,
-    eShuffleRelative    = VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT,
-    eClustered          = VK_SUBGROUP_FEATURE_CLUSTERED_BIT,
-    eQuad               = VK_SUBGROUP_FEATURE_QUAD_BIT,
-    eRotate             = VK_SUBGROUP_FEATURE_ROTATE_BIT,
-    eRotateKHR          = VK_SUBGROUP_FEATURE_ROTATE_BIT_KHR,
-    eRotateClustered    = VK_SUBGROUP_FEATURE_ROTATE_CLUSTERED_BIT,
-    eRotateClusteredKHR = VK_SUBGROUP_FEATURE_ROTATE_CLUSTERED_BIT_KHR,
-    ePartitionedEXT     = VK_SUBGROUP_FEATURE_PARTITIONED_BIT_EXT,
-    ePartitionedNV      = VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV
-  };
-
-  // wrapper using for bitmask VkSubgroupFeatureFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkSubgroupFeatureFlags.html
-  using SubgroupFeatureFlags = Flags<SubgroupFeatureFlagBits>;
-
-  template <>
-  struct FlagTraits<SubgroupFeatureFlagBits>
-  {
-    using WrappedType                                                   = VkSubgroupFeatureFlagBits;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                 isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR SubgroupFeatureFlags allFlags  = SubgroupFeatureFlagBits::eBasic |
-                                                                         SubgroupFeatureFlagBits::eVote |
-                                                                         SubgroupFeatureFlagBits::eArithmetic |
-                                                                         SubgroupFeatureFlagBits::eBallot |
-                                                                         SubgroupFeatureFlagBits::eShuffle |
-                                                                         SubgroupFeatureFlagBits::eShuffleRelative |
-                                                                         SubgroupFeatureFlagBits::eClustered |
-                                                                         SubgroupFeatureFlagBits::eQuad |
-                                                                         SubgroupFeatureFlagBits::eRotate |
-                                                                         SubgroupFeatureFlagBits::eRotateClustered |
-                                                                         SubgroupFeatureFlagBits::ePartitionedEXT;
-  };
-
   // wrapper class for enum VkDescriptorUpdateTemplateType, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDescriptorUpdateTemplateType.html
   enum class DescriptorUpdateTemplateType
   {
@@ -4950,17 +4962,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using ChromaLocationKHR = ChromaLocation;
 
-  // wrapper class for enum VkPointClippingBehavior, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPointClippingBehavior.html
-  enum class PointClippingBehavior
-  {
-    eAllClipPlanes         = VK_POINT_CLIPPING_BEHAVIOR_ALL_CLIP_PLANES,
-    eAllClipPlanesKHR      = VK_POINT_CLIPPING_BEHAVIOR_ALL_CLIP_PLANES_KHR,
-    eUserClipPlanesOnly    = VK_POINT_CLIPPING_BEHAVIOR_USER_CLIP_PLANES_ONLY,
-    eUserClipPlanesOnlyKHR = VK_POINT_CLIPPING_BEHAVIOR_USER_CLIP_PLANES_ONLY_KHR
-  };
-
-  using PointClippingBehaviorKHR = PointClippingBehavior;
-
   // wrapper class for enum VkTessellationDomainOrigin, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkTessellationDomainOrigin.html
   enum class TessellationDomainOrigin
   {
@@ -5021,6 +5022,62 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using DriverIdKHR = DriverId;
 
+  // wrapper class for enum VkShaderFloatControlsIndependence, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkShaderFloatControlsIndependence.html
+  enum class ShaderFloatControlsIndependence
+  {
+    e32BitOnly    = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_32_BIT_ONLY,
+    e32BitOnlyKHR = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_32_BIT_ONLY_KHR,
+    eAll          = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_ALL,
+    eAllKHR       = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_ALL_KHR,
+    eNone         = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_NONE,
+    eNoneKHR      = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_NONE_KHR
+  };
+
+  using ShaderFloatControlsIndependenceKHR = ShaderFloatControlsIndependence;
+
+  // wrapper class for enum VkResolveModeFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkResolveModeFlagBits.html
+  enum class ResolveModeFlagBits : VkResolveModeFlags
+  {
+    eNone          = VK_RESOLVE_MODE_NONE,
+    eNoneKHR       = VK_RESOLVE_MODE_NONE_KHR,
+    eSampleZero    = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT,
+    eSampleZeroKHR = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT_KHR,
+    eAverage       = VK_RESOLVE_MODE_AVERAGE_BIT,
+    eAverageKHR    = VK_RESOLVE_MODE_AVERAGE_BIT_KHR,
+    eMin           = VK_RESOLVE_MODE_MIN_BIT,
+    eMinKHR        = VK_RESOLVE_MODE_MIN_BIT_KHR,
+    eMax           = VK_RESOLVE_MODE_MAX_BIT,
+    eMaxKHR        = VK_RESOLVE_MODE_MAX_BIT_KHR,
+#if defined( VK_USE_PLATFORM_ANDROID_KHR )
+    eExternalFormatDownsampleANDROID = VK_RESOLVE_MODE_EXTERNAL_FORMAT_DOWNSAMPLE_BIT_ANDROID,
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+    eCustomEXT = VK_RESOLVE_MODE_CUSTOM_BIT_EXT
+  };
+
+  using ResolveModeFlagBitsKHR = ResolveModeFlagBits;
+
+  // wrapper using for bitmask VkResolveModeFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkResolveModeFlags.html
+  using ResolveModeFlags    = Flags<ResolveModeFlagBits>;
+  using ResolveModeFlagsKHR = ResolveModeFlags;
+
+  template <>
+  struct FlagTraits<ResolveModeFlagBits>
+  {
+    using WrappedType                                               = VkResolveModeFlagBits;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool             isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR ResolveModeFlags allFlags  = ResolveModeFlagBits::eNone |
+                                                                     ResolveModeFlagBits::eSampleZero |
+                                                                     ResolveModeFlagBits::eAverage |
+                                                                     ResolveModeFlagBits::eMin |
+                                                                     ResolveModeFlagBits::eMax
+#if defined( VK_USE_PLATFORM_ANDROID_KHR )
+                                                                   |
+                                                                     ResolveModeFlagBits::eExternalFormatDownsampleANDROID
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+                                                                   | ResolveModeFlagBits::eCustomEXT;
+  };
+
   // wrapper class for enum VkSemaphoreType, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkSemaphoreType.html
   enum class SemaphoreType
   {
@@ -5052,20 +5109,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool               isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR SemaphoreWaitFlags allFlags  = SemaphoreWaitFlagBits::eAny;
   };
-
-  // wrapper class for enum VkShaderFloatControlsIndependence, see
-  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkShaderFloatControlsIndependence.html
-  enum class ShaderFloatControlsIndependence
-  {
-    e32BitOnly    = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_32_BIT_ONLY,
-    e32BitOnlyKHR = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_32_BIT_ONLY_KHR,
-    eAll          = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_ALL,
-    eAllKHR       = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_ALL_KHR,
-    eNone         = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_NONE,
-    eNoneKHR      = VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_NONE_KHR
-  };
-
-  using ShaderFloatControlsIndependenceKHR = ShaderFloatControlsIndependence;
 
   // wrapper class for enum VkDescriptorBindingFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDescriptorBindingFlagBits.html
   enum class DescriptorBindingFlagBits : VkDescriptorBindingFlags
@@ -5110,48 +5153,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   using SamplerReductionModeEXT = SamplerReductionMode;
-
-  // wrapper class for enum VkResolveModeFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkResolveModeFlagBits.html
-  enum class ResolveModeFlagBits : VkResolveModeFlags
-  {
-    eNone          = VK_RESOLVE_MODE_NONE,
-    eNoneKHR       = VK_RESOLVE_MODE_NONE_KHR,
-    eSampleZero    = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT,
-    eSampleZeroKHR = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT_KHR,
-    eAverage       = VK_RESOLVE_MODE_AVERAGE_BIT,
-    eAverageKHR    = VK_RESOLVE_MODE_AVERAGE_BIT_KHR,
-    eMin           = VK_RESOLVE_MODE_MIN_BIT,
-    eMinKHR        = VK_RESOLVE_MODE_MIN_BIT_KHR,
-    eMax           = VK_RESOLVE_MODE_MAX_BIT,
-    eMaxKHR        = VK_RESOLVE_MODE_MAX_BIT_KHR,
-#if defined( VK_USE_PLATFORM_ANDROID_KHR )
-    eExternalFormatDownsampleANDROID = VK_RESOLVE_MODE_EXTERNAL_FORMAT_DOWNSAMPLE_BIT_ANDROID,
-#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-    eCustomEXT = VK_RESOLVE_MODE_CUSTOM_BIT_EXT
-  };
-
-  using ResolveModeFlagBitsKHR = ResolveModeFlagBits;
-
-  // wrapper using for bitmask VkResolveModeFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkResolveModeFlags.html
-  using ResolveModeFlags    = Flags<ResolveModeFlagBits>;
-  using ResolveModeFlagsKHR = ResolveModeFlags;
-
-  template <>
-  struct FlagTraits<ResolveModeFlagBits>
-  {
-    using WrappedType                                               = VkResolveModeFlagBits;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool             isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR ResolveModeFlags allFlags  = ResolveModeFlagBits::eNone |
-                                                                     ResolveModeFlagBits::eSampleZero |
-                                                                     ResolveModeFlagBits::eAverage |
-                                                                     ResolveModeFlagBits::eMin |
-                                                                     ResolveModeFlagBits::eMax
-#if defined( VK_USE_PLATFORM_ANDROID_KHR )
-                                                                   |
-                                                                     ResolveModeFlagBits::eExternalFormatDownsampleANDROID
-#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-                                                                   | ResolveModeFlagBits::eCustomEXT;
-  };
 
   //=== VK_VERSION_1_3 ===
 
@@ -5748,6 +5749,38 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_VERSION_1_4 ===
 
+  // wrapper class for enum VkPipelineRobustnessBufferBehavior, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineRobustnessBufferBehavior.html
+  enum class PipelineRobustnessBufferBehavior
+  {
+    eDeviceDefault          = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_DEVICE_DEFAULT,
+    eDeviceDefaultEXT       = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_DEVICE_DEFAULT_EXT,
+    eDisabled               = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_DISABLED,
+    eDisabledEXT            = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_DISABLED_EXT,
+    eRobustBufferAccess     = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS,
+    eRobustBufferAccessEXT  = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS_EXT,
+    eRobustBufferAccess2    = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS_2,
+    eRobustBufferAccess2EXT = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS_2_EXT
+  };
+
+  using PipelineRobustnessBufferBehaviorEXT = PipelineRobustnessBufferBehavior;
+
+  // wrapper class for enum VkPipelineRobustnessImageBehavior, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineRobustnessImageBehavior.html
+  enum class PipelineRobustnessImageBehavior
+  {
+    eDeviceDefault         = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_DEVICE_DEFAULT,
+    eDeviceDefaultEXT      = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_DEVICE_DEFAULT_EXT,
+    eDisabled              = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_DISABLED,
+    eDisabledEXT           = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_DISABLED_EXT,
+    eRobustImageAccess     = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_ROBUST_IMAGE_ACCESS,
+    eRobustImageAccessEXT  = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_ROBUST_IMAGE_ACCESS_EXT,
+    eRobustImageAccess2    = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_ROBUST_IMAGE_ACCESS_2,
+    eRobustImageAccess2EXT = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_ROBUST_IMAGE_ACCESS_2_EXT
+  };
+
+  using PipelineRobustnessImageBehaviorEXT = PipelineRobustnessImageBehavior;
+
   // wrapper class for enum VkQueueGlobalPriority, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkQueueGlobalPriority.html
   enum class QueueGlobalPriority
   {
@@ -6028,38 +6061,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                          PipelineCreateFlagBits2::ePerLayerFragmentDensityVALVE |
                                                                          PipelineCreateFlagBits2::e64BitIndexingEXT;
   };
-
-  // wrapper class for enum VkPipelineRobustnessBufferBehavior, see
-  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineRobustnessBufferBehavior.html
-  enum class PipelineRobustnessBufferBehavior
-  {
-    eDeviceDefault          = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_DEVICE_DEFAULT,
-    eDeviceDefaultEXT       = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_DEVICE_DEFAULT_EXT,
-    eDisabled               = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_DISABLED,
-    eDisabledEXT            = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_DISABLED_EXT,
-    eRobustBufferAccess     = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS,
-    eRobustBufferAccessEXT  = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS_EXT,
-    eRobustBufferAccess2    = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS_2,
-    eRobustBufferAccess2EXT = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS_2_EXT
-  };
-
-  using PipelineRobustnessBufferBehaviorEXT = PipelineRobustnessBufferBehavior;
-
-  // wrapper class for enum VkPipelineRobustnessImageBehavior, see
-  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineRobustnessImageBehavior.html
-  enum class PipelineRobustnessImageBehavior
-  {
-    eDeviceDefault         = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_DEVICE_DEFAULT,
-    eDeviceDefaultEXT      = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_DEVICE_DEFAULT_EXT,
-    eDisabled              = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_DISABLED,
-    eDisabledEXT           = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_DISABLED_EXT,
-    eRobustImageAccess     = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_ROBUST_IMAGE_ACCESS,
-    eRobustImageAccessEXT  = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_ROBUST_IMAGE_ACCESS_EXT,
-    eRobustImageAccess2    = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_ROBUST_IMAGE_ACCESS_2,
-    eRobustImageAccess2EXT = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_ROBUST_IMAGE_ACCESS_2_EXT
-  };
-
-  using PipelineRobustnessImageBehaviorEXT = PipelineRobustnessImageBehavior;
 
   // wrapper class for enum VkLineRasterizationMode, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkLineRasterizationMode.html
   enum class LineRasterizationMode

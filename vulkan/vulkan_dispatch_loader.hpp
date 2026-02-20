@@ -146,6 +146,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   class Device;
   using PFN_dummy = void ( * )();
 
+#if VK_NO_PROTOTYPES
+#  define VULKAN_HPP_DEFAULT_ADDR( x ) 0
+#else
+#  define VULKAN_HPP_DEFAULT_ADDR( x ) ::x
+#endif
+
   class DispatchLoader
   {
   public:
@@ -3028,283 +3034,294 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   public:
     //=== VK_VERSION_1_0 ===
-    PFN_vkCreateInstance                               vkCreateInstance                               = 0;
-    PFN_vkDestroyInstance                              vkDestroyInstance                              = 0;
-    PFN_vkEnumeratePhysicalDevices                     vkEnumeratePhysicalDevices                     = 0;
-    PFN_vkGetPhysicalDeviceFeatures                    vkGetPhysicalDeviceFeatures                    = 0;
-    PFN_vkGetPhysicalDeviceFormatProperties            vkGetPhysicalDeviceFormatProperties            = 0;
-    PFN_vkGetPhysicalDeviceImageFormatProperties       vkGetPhysicalDeviceImageFormatProperties       = 0;
-    PFN_vkGetPhysicalDeviceProperties                  vkGetPhysicalDeviceProperties                  = 0;
-    PFN_vkGetPhysicalDeviceQueueFamilyProperties       vkGetPhysicalDeviceQueueFamilyProperties       = 0;
-    PFN_vkGetPhysicalDeviceMemoryProperties            vkGetPhysicalDeviceMemoryProperties            = 0;
-    PFN_vkGetInstanceProcAddr                          vkGetInstanceProcAddr                          = 0;
-    PFN_vkGetDeviceProcAddr                            vkGetDeviceProcAddr                            = 0;
-    PFN_vkCreateDevice                                 vkCreateDevice                                 = 0;
-    PFN_vkDestroyDevice                                vkDestroyDevice                                = 0;
-    PFN_vkEnumerateInstanceExtensionProperties         vkEnumerateInstanceExtensionProperties         = 0;
-    PFN_vkEnumerateDeviceExtensionProperties           vkEnumerateDeviceExtensionProperties           = 0;
-    PFN_vkEnumerateInstanceLayerProperties             vkEnumerateInstanceLayerProperties             = 0;
-    PFN_vkEnumerateDeviceLayerProperties               vkEnumerateDeviceLayerProperties               = 0;
-    PFN_vkGetDeviceQueue                               vkGetDeviceQueue                               = 0;
-    PFN_vkQueueSubmit                                  vkQueueSubmit                                  = 0;
-    PFN_vkQueueWaitIdle                                vkQueueWaitIdle                                = 0;
-    PFN_vkDeviceWaitIdle                               vkDeviceWaitIdle                               = 0;
-    PFN_vkAllocateMemory                               vkAllocateMemory                               = 0;
-    PFN_vkFreeMemory                                   vkFreeMemory                                   = 0;
-    PFN_vkMapMemory                                    vkMapMemory                                    = 0;
-    PFN_vkUnmapMemory                                  vkUnmapMemory                                  = 0;
-    PFN_vkFlushMappedMemoryRanges                      vkFlushMappedMemoryRanges                      = 0;
-    PFN_vkInvalidateMappedMemoryRanges                 vkInvalidateMappedMemoryRanges                 = 0;
-    PFN_vkGetDeviceMemoryCommitment                    vkGetDeviceMemoryCommitment                    = 0;
-    PFN_vkBindBufferMemory                             vkBindBufferMemory                             = 0;
-    PFN_vkBindImageMemory                              vkBindImageMemory                              = 0;
-    PFN_vkGetBufferMemoryRequirements                  vkGetBufferMemoryRequirements                  = 0;
-    PFN_vkGetImageMemoryRequirements                   vkGetImageMemoryRequirements                   = 0;
-    PFN_vkGetImageSparseMemoryRequirements             vkGetImageSparseMemoryRequirements             = 0;
-    PFN_vkGetPhysicalDeviceSparseImageFormatProperties vkGetPhysicalDeviceSparseImageFormatProperties = 0;
-    PFN_vkQueueBindSparse                              vkQueueBindSparse                              = 0;
-    PFN_vkCreateFence                                  vkCreateFence                                  = 0;
-    PFN_vkDestroyFence                                 vkDestroyFence                                 = 0;
-    PFN_vkResetFences                                  vkResetFences                                  = 0;
-    PFN_vkGetFenceStatus                               vkGetFenceStatus                               = 0;
-    PFN_vkWaitForFences                                vkWaitForFences                                = 0;
-    PFN_vkCreateSemaphore                              vkCreateSemaphore                              = 0;
-    PFN_vkDestroySemaphore                             vkDestroySemaphore                             = 0;
-    PFN_vkCreateQueryPool                              vkCreateQueryPool                              = 0;
-    PFN_vkDestroyQueryPool                             vkDestroyQueryPool                             = 0;
-    PFN_vkGetQueryPoolResults                          vkGetQueryPoolResults                          = 0;
-    PFN_vkCreateBuffer                                 vkCreateBuffer                                 = 0;
-    PFN_vkDestroyBuffer                                vkDestroyBuffer                                = 0;
-    PFN_vkCreateImage                                  vkCreateImage                                  = 0;
-    PFN_vkDestroyImage                                 vkDestroyImage                                 = 0;
-    PFN_vkGetImageSubresourceLayout                    vkGetImageSubresourceLayout                    = 0;
-    PFN_vkCreateImageView                              vkCreateImageView                              = 0;
-    PFN_vkDestroyImageView                             vkDestroyImageView                             = 0;
-    PFN_vkCreateCommandPool                            vkCreateCommandPool                            = 0;
-    PFN_vkDestroyCommandPool                           vkDestroyCommandPool                           = 0;
-    PFN_vkResetCommandPool                             vkResetCommandPool                             = 0;
-    PFN_vkAllocateCommandBuffers                       vkAllocateCommandBuffers                       = 0;
-    PFN_vkFreeCommandBuffers                           vkFreeCommandBuffers                           = 0;
-    PFN_vkBeginCommandBuffer                           vkBeginCommandBuffer                           = 0;
-    PFN_vkEndCommandBuffer                             vkEndCommandBuffer                             = 0;
-    PFN_vkResetCommandBuffer                           vkResetCommandBuffer                           = 0;
-    PFN_vkCmdCopyBuffer                                vkCmdCopyBuffer                                = 0;
-    PFN_vkCmdCopyImage                                 vkCmdCopyImage                                 = 0;
-    PFN_vkCmdCopyBufferToImage                         vkCmdCopyBufferToImage                         = 0;
-    PFN_vkCmdCopyImageToBuffer                         vkCmdCopyImageToBuffer                         = 0;
-    PFN_vkCmdUpdateBuffer                              vkCmdUpdateBuffer                              = 0;
-    PFN_vkCmdFillBuffer                                vkCmdFillBuffer                                = 0;
-    PFN_vkCmdPipelineBarrier                           vkCmdPipelineBarrier                           = 0;
-    PFN_vkCmdBeginQuery                                vkCmdBeginQuery                                = 0;
-    PFN_vkCmdEndQuery                                  vkCmdEndQuery                                  = 0;
-    PFN_vkCmdResetQueryPool                            vkCmdResetQueryPool                            = 0;
-    PFN_vkCmdWriteTimestamp                            vkCmdWriteTimestamp                            = 0;
-    PFN_vkCmdCopyQueryPoolResults                      vkCmdCopyQueryPoolResults                      = 0;
-    PFN_vkCmdExecuteCommands                           vkCmdExecuteCommands                           = 0;
-    PFN_vkCreateEvent                                  vkCreateEvent                                  = 0;
-    PFN_vkDestroyEvent                                 vkDestroyEvent                                 = 0;
-    PFN_vkGetEventStatus                               vkGetEventStatus                               = 0;
-    PFN_vkSetEvent                                     vkSetEvent                                     = 0;
-    PFN_vkResetEvent                                   vkResetEvent                                   = 0;
-    PFN_vkCreateBufferView                             vkCreateBufferView                             = 0;
-    PFN_vkDestroyBufferView                            vkDestroyBufferView                            = 0;
-    PFN_vkCreateShaderModule                           vkCreateShaderModule                           = 0;
-    PFN_vkDestroyShaderModule                          vkDestroyShaderModule                          = 0;
-    PFN_vkCreatePipelineCache                          vkCreatePipelineCache                          = 0;
-    PFN_vkDestroyPipelineCache                         vkDestroyPipelineCache                         = 0;
-    PFN_vkGetPipelineCacheData                         vkGetPipelineCacheData                         = 0;
-    PFN_vkMergePipelineCaches                          vkMergePipelineCaches                          = 0;
-    PFN_vkCreateComputePipelines                       vkCreateComputePipelines                       = 0;
-    PFN_vkDestroyPipeline                              vkDestroyPipeline                              = 0;
-    PFN_vkCreatePipelineLayout                         vkCreatePipelineLayout                         = 0;
-    PFN_vkDestroyPipelineLayout                        vkDestroyPipelineLayout                        = 0;
-    PFN_vkCreateSampler                                vkCreateSampler                                = 0;
-    PFN_vkDestroySampler                               vkDestroySampler                               = 0;
-    PFN_vkCreateDescriptorSetLayout                    vkCreateDescriptorSetLayout                    = 0;
-    PFN_vkDestroyDescriptorSetLayout                   vkDestroyDescriptorSetLayout                   = 0;
-    PFN_vkCreateDescriptorPool                         vkCreateDescriptorPool                         = 0;
-    PFN_vkDestroyDescriptorPool                        vkDestroyDescriptorPool                        = 0;
-    PFN_vkResetDescriptorPool                          vkResetDescriptorPool                          = 0;
-    PFN_vkAllocateDescriptorSets                       vkAllocateDescriptorSets                       = 0;
-    PFN_vkFreeDescriptorSets                           vkFreeDescriptorSets                           = 0;
-    PFN_vkUpdateDescriptorSets                         vkUpdateDescriptorSets                         = 0;
-    PFN_vkCmdBindPipeline                              vkCmdBindPipeline                              = 0;
-    PFN_vkCmdBindDescriptorSets                        vkCmdBindDescriptorSets                        = 0;
-    PFN_vkCmdClearColorImage                           vkCmdClearColorImage                           = 0;
-    PFN_vkCmdDispatch                                  vkCmdDispatch                                  = 0;
-    PFN_vkCmdDispatchIndirect                          vkCmdDispatchIndirect                          = 0;
-    PFN_vkCmdSetEvent                                  vkCmdSetEvent                                  = 0;
-    PFN_vkCmdResetEvent                                vkCmdResetEvent                                = 0;
-    PFN_vkCmdWaitEvents                                vkCmdWaitEvents                                = 0;
-    PFN_vkCmdPushConstants                             vkCmdPushConstants                             = 0;
-    PFN_vkCreateGraphicsPipelines                      vkCreateGraphicsPipelines                      = 0;
-    PFN_vkCreateFramebuffer                            vkCreateFramebuffer                            = 0;
-    PFN_vkDestroyFramebuffer                           vkDestroyFramebuffer                           = 0;
-    PFN_vkCreateRenderPass                             vkCreateRenderPass                             = 0;
-    PFN_vkDestroyRenderPass                            vkDestroyRenderPass                            = 0;
-    PFN_vkGetRenderAreaGranularity                     vkGetRenderAreaGranularity                     = 0;
-    PFN_vkCmdSetViewport                               vkCmdSetViewport                               = 0;
-    PFN_vkCmdSetScissor                                vkCmdSetScissor                                = 0;
-    PFN_vkCmdSetLineWidth                              vkCmdSetLineWidth                              = 0;
-    PFN_vkCmdSetDepthBias                              vkCmdSetDepthBias                              = 0;
-    PFN_vkCmdSetBlendConstants                         vkCmdSetBlendConstants                         = 0;
-    PFN_vkCmdSetDepthBounds                            vkCmdSetDepthBounds                            = 0;
-    PFN_vkCmdSetStencilCompareMask                     vkCmdSetStencilCompareMask                     = 0;
-    PFN_vkCmdSetStencilWriteMask                       vkCmdSetStencilWriteMask                       = 0;
-    PFN_vkCmdSetStencilReference                       vkCmdSetStencilReference                       = 0;
-    PFN_vkCmdBindIndexBuffer                           vkCmdBindIndexBuffer                           = 0;
-    PFN_vkCmdBindVertexBuffers                         vkCmdBindVertexBuffers                         = 0;
-    PFN_vkCmdDraw                                      vkCmdDraw                                      = 0;
-    PFN_vkCmdDrawIndexed                               vkCmdDrawIndexed                               = 0;
-    PFN_vkCmdDrawIndirect                              vkCmdDrawIndirect                              = 0;
-    PFN_vkCmdDrawIndexedIndirect                       vkCmdDrawIndexedIndirect                       = 0;
-    PFN_vkCmdBlitImage                                 vkCmdBlitImage                                 = 0;
-    PFN_vkCmdClearDepthStencilImage                    vkCmdClearDepthStencilImage                    = 0;
-    PFN_vkCmdClearAttachments                          vkCmdClearAttachments                          = 0;
-    PFN_vkCmdResolveImage                              vkCmdResolveImage                              = 0;
-    PFN_vkCmdBeginRenderPass                           vkCmdBeginRenderPass                           = 0;
-    PFN_vkCmdNextSubpass                               vkCmdNextSubpass                               = 0;
-    PFN_vkCmdEndRenderPass                             vkCmdEndRenderPass                             = 0;
+    PFN_vkCreateInstance                         vkCreateInstance                         = VULKAN_HPP_DEFAULT_ADDR( vkCreateInstance );
+    PFN_vkDestroyInstance                        vkDestroyInstance                        = VULKAN_HPP_DEFAULT_ADDR( vkDestroyInstance );
+    PFN_vkEnumeratePhysicalDevices               vkEnumeratePhysicalDevices               = VULKAN_HPP_DEFAULT_ADDR( vkEnumeratePhysicalDevices );
+    PFN_vkGetPhysicalDeviceFeatures              vkGetPhysicalDeviceFeatures              = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceFeatures );
+    PFN_vkGetPhysicalDeviceFormatProperties      vkGetPhysicalDeviceFormatProperties      = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceFormatProperties );
+    PFN_vkGetPhysicalDeviceImageFormatProperties vkGetPhysicalDeviceImageFormatProperties = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceImageFormatProperties );
+    PFN_vkGetPhysicalDeviceProperties            vkGetPhysicalDeviceProperties            = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceProperties );
+    PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFamilyProperties = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceQueueFamilyProperties );
+    PFN_vkGetPhysicalDeviceMemoryProperties      vkGetPhysicalDeviceMemoryProperties      = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceMemoryProperties );
+    PFN_vkGetInstanceProcAddr                    vkGetInstanceProcAddr                    = VULKAN_HPP_DEFAULT_ADDR( vkGetInstanceProcAddr );
+    PFN_vkGetDeviceProcAddr                      vkGetDeviceProcAddr                      = VULKAN_HPP_DEFAULT_ADDR( vkGetDeviceProcAddr );
+    PFN_vkCreateDevice                           vkCreateDevice                           = VULKAN_HPP_DEFAULT_ADDR( vkCreateDevice );
+    PFN_vkDestroyDevice                          vkDestroyDevice                          = VULKAN_HPP_DEFAULT_ADDR( vkDestroyDevice );
+    PFN_vkEnumerateInstanceExtensionProperties   vkEnumerateInstanceExtensionProperties   = VULKAN_HPP_DEFAULT_ADDR( vkEnumerateInstanceExtensionProperties );
+    PFN_vkEnumerateDeviceExtensionProperties     vkEnumerateDeviceExtensionProperties     = VULKAN_HPP_DEFAULT_ADDR( vkEnumerateDeviceExtensionProperties );
+    PFN_vkEnumerateInstanceLayerProperties       vkEnumerateInstanceLayerProperties       = VULKAN_HPP_DEFAULT_ADDR( vkEnumerateInstanceLayerProperties );
+    PFN_vkEnumerateDeviceLayerProperties         vkEnumerateDeviceLayerProperties         = VULKAN_HPP_DEFAULT_ADDR( vkEnumerateDeviceLayerProperties );
+    PFN_vkGetDeviceQueue                         vkGetDeviceQueue                         = VULKAN_HPP_DEFAULT_ADDR( vkGetDeviceQueue );
+    PFN_vkQueueSubmit                            vkQueueSubmit                            = VULKAN_HPP_DEFAULT_ADDR( vkQueueSubmit );
+    PFN_vkQueueWaitIdle                          vkQueueWaitIdle                          = VULKAN_HPP_DEFAULT_ADDR( vkQueueWaitIdle );
+    PFN_vkDeviceWaitIdle                         vkDeviceWaitIdle                         = VULKAN_HPP_DEFAULT_ADDR( vkDeviceWaitIdle );
+    PFN_vkAllocateMemory                         vkAllocateMemory                         = VULKAN_HPP_DEFAULT_ADDR( vkAllocateMemory );
+    PFN_vkFreeMemory                             vkFreeMemory                             = VULKAN_HPP_DEFAULT_ADDR( vkFreeMemory );
+    PFN_vkMapMemory                              vkMapMemory                              = VULKAN_HPP_DEFAULT_ADDR( vkMapMemory );
+    PFN_vkUnmapMemory                            vkUnmapMemory                            = VULKAN_HPP_DEFAULT_ADDR( vkUnmapMemory );
+    PFN_vkFlushMappedMemoryRanges                vkFlushMappedMemoryRanges                = VULKAN_HPP_DEFAULT_ADDR( vkFlushMappedMemoryRanges );
+    PFN_vkInvalidateMappedMemoryRanges           vkInvalidateMappedMemoryRanges           = VULKAN_HPP_DEFAULT_ADDR( vkInvalidateMappedMemoryRanges );
+    PFN_vkGetDeviceMemoryCommitment              vkGetDeviceMemoryCommitment              = VULKAN_HPP_DEFAULT_ADDR( vkGetDeviceMemoryCommitment );
+    PFN_vkBindBufferMemory                       vkBindBufferMemory                       = VULKAN_HPP_DEFAULT_ADDR( vkBindBufferMemory );
+    PFN_vkBindImageMemory                        vkBindImageMemory                        = VULKAN_HPP_DEFAULT_ADDR( vkBindImageMemory );
+    PFN_vkGetBufferMemoryRequirements            vkGetBufferMemoryRequirements            = VULKAN_HPP_DEFAULT_ADDR( vkGetBufferMemoryRequirements );
+    PFN_vkGetImageMemoryRequirements             vkGetImageMemoryRequirements             = VULKAN_HPP_DEFAULT_ADDR( vkGetImageMemoryRequirements );
+    PFN_vkGetImageSparseMemoryRequirements       vkGetImageSparseMemoryRequirements       = VULKAN_HPP_DEFAULT_ADDR( vkGetImageSparseMemoryRequirements );
+    PFN_vkGetPhysicalDeviceSparseImageFormatProperties vkGetPhysicalDeviceSparseImageFormatProperties =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceSparseImageFormatProperties );
+    PFN_vkQueueBindSparse            vkQueueBindSparse            = VULKAN_HPP_DEFAULT_ADDR( vkQueueBindSparse );
+    PFN_vkCreateFence                vkCreateFence                = VULKAN_HPP_DEFAULT_ADDR( vkCreateFence );
+    PFN_vkDestroyFence               vkDestroyFence               = VULKAN_HPP_DEFAULT_ADDR( vkDestroyFence );
+    PFN_vkResetFences                vkResetFences                = VULKAN_HPP_DEFAULT_ADDR( vkResetFences );
+    PFN_vkGetFenceStatus             vkGetFenceStatus             = VULKAN_HPP_DEFAULT_ADDR( vkGetFenceStatus );
+    PFN_vkWaitForFences              vkWaitForFences              = VULKAN_HPP_DEFAULT_ADDR( vkWaitForFences );
+    PFN_vkCreateSemaphore            vkCreateSemaphore            = VULKAN_HPP_DEFAULT_ADDR( vkCreateSemaphore );
+    PFN_vkDestroySemaphore           vkDestroySemaphore           = VULKAN_HPP_DEFAULT_ADDR( vkDestroySemaphore );
+    PFN_vkCreateQueryPool            vkCreateQueryPool            = VULKAN_HPP_DEFAULT_ADDR( vkCreateQueryPool );
+    PFN_vkDestroyQueryPool           vkDestroyQueryPool           = VULKAN_HPP_DEFAULT_ADDR( vkDestroyQueryPool );
+    PFN_vkGetQueryPoolResults        vkGetQueryPoolResults        = VULKAN_HPP_DEFAULT_ADDR( vkGetQueryPoolResults );
+    PFN_vkCreateBuffer               vkCreateBuffer               = VULKAN_HPP_DEFAULT_ADDR( vkCreateBuffer );
+    PFN_vkDestroyBuffer              vkDestroyBuffer              = VULKAN_HPP_DEFAULT_ADDR( vkDestroyBuffer );
+    PFN_vkCreateImage                vkCreateImage                = VULKAN_HPP_DEFAULT_ADDR( vkCreateImage );
+    PFN_vkDestroyImage               vkDestroyImage               = VULKAN_HPP_DEFAULT_ADDR( vkDestroyImage );
+    PFN_vkGetImageSubresourceLayout  vkGetImageSubresourceLayout  = VULKAN_HPP_DEFAULT_ADDR( vkGetImageSubresourceLayout );
+    PFN_vkCreateImageView            vkCreateImageView            = VULKAN_HPP_DEFAULT_ADDR( vkCreateImageView );
+    PFN_vkDestroyImageView           vkDestroyImageView           = VULKAN_HPP_DEFAULT_ADDR( vkDestroyImageView );
+    PFN_vkCreateCommandPool          vkCreateCommandPool          = VULKAN_HPP_DEFAULT_ADDR( vkCreateCommandPool );
+    PFN_vkDestroyCommandPool         vkDestroyCommandPool         = VULKAN_HPP_DEFAULT_ADDR( vkDestroyCommandPool );
+    PFN_vkResetCommandPool           vkResetCommandPool           = VULKAN_HPP_DEFAULT_ADDR( vkResetCommandPool );
+    PFN_vkAllocateCommandBuffers     vkAllocateCommandBuffers     = VULKAN_HPP_DEFAULT_ADDR( vkAllocateCommandBuffers );
+    PFN_vkFreeCommandBuffers         vkFreeCommandBuffers         = VULKAN_HPP_DEFAULT_ADDR( vkFreeCommandBuffers );
+    PFN_vkBeginCommandBuffer         vkBeginCommandBuffer         = VULKAN_HPP_DEFAULT_ADDR( vkBeginCommandBuffer );
+    PFN_vkEndCommandBuffer           vkEndCommandBuffer           = VULKAN_HPP_DEFAULT_ADDR( vkEndCommandBuffer );
+    PFN_vkResetCommandBuffer         vkResetCommandBuffer         = VULKAN_HPP_DEFAULT_ADDR( vkResetCommandBuffer );
+    PFN_vkCmdCopyBuffer              vkCmdCopyBuffer              = VULKAN_HPP_DEFAULT_ADDR( vkCmdCopyBuffer );
+    PFN_vkCmdCopyImage               vkCmdCopyImage               = VULKAN_HPP_DEFAULT_ADDR( vkCmdCopyImage );
+    PFN_vkCmdCopyBufferToImage       vkCmdCopyBufferToImage       = VULKAN_HPP_DEFAULT_ADDR( vkCmdCopyBufferToImage );
+    PFN_vkCmdCopyImageToBuffer       vkCmdCopyImageToBuffer       = VULKAN_HPP_DEFAULT_ADDR( vkCmdCopyImageToBuffer );
+    PFN_vkCmdUpdateBuffer            vkCmdUpdateBuffer            = VULKAN_HPP_DEFAULT_ADDR( vkCmdUpdateBuffer );
+    PFN_vkCmdFillBuffer              vkCmdFillBuffer              = VULKAN_HPP_DEFAULT_ADDR( vkCmdFillBuffer );
+    PFN_vkCmdPipelineBarrier         vkCmdPipelineBarrier         = VULKAN_HPP_DEFAULT_ADDR( vkCmdPipelineBarrier );
+    PFN_vkCmdBeginQuery              vkCmdBeginQuery              = VULKAN_HPP_DEFAULT_ADDR( vkCmdBeginQuery );
+    PFN_vkCmdEndQuery                vkCmdEndQuery                = VULKAN_HPP_DEFAULT_ADDR( vkCmdEndQuery );
+    PFN_vkCmdResetQueryPool          vkCmdResetQueryPool          = VULKAN_HPP_DEFAULT_ADDR( vkCmdResetQueryPool );
+    PFN_vkCmdWriteTimestamp          vkCmdWriteTimestamp          = VULKAN_HPP_DEFAULT_ADDR( vkCmdWriteTimestamp );
+    PFN_vkCmdCopyQueryPoolResults    vkCmdCopyQueryPoolResults    = VULKAN_HPP_DEFAULT_ADDR( vkCmdCopyQueryPoolResults );
+    PFN_vkCmdExecuteCommands         vkCmdExecuteCommands         = VULKAN_HPP_DEFAULT_ADDR( vkCmdExecuteCommands );
+    PFN_vkCreateEvent                vkCreateEvent                = VULKAN_HPP_DEFAULT_ADDR( vkCreateEvent );
+    PFN_vkDestroyEvent               vkDestroyEvent               = VULKAN_HPP_DEFAULT_ADDR( vkDestroyEvent );
+    PFN_vkGetEventStatus             vkGetEventStatus             = VULKAN_HPP_DEFAULT_ADDR( vkGetEventStatus );
+    PFN_vkSetEvent                   vkSetEvent                   = VULKAN_HPP_DEFAULT_ADDR( vkSetEvent );
+    PFN_vkResetEvent                 vkResetEvent                 = VULKAN_HPP_DEFAULT_ADDR( vkResetEvent );
+    PFN_vkCreateBufferView           vkCreateBufferView           = VULKAN_HPP_DEFAULT_ADDR( vkCreateBufferView );
+    PFN_vkDestroyBufferView          vkDestroyBufferView          = VULKAN_HPP_DEFAULT_ADDR( vkDestroyBufferView );
+    PFN_vkCreateShaderModule         vkCreateShaderModule         = VULKAN_HPP_DEFAULT_ADDR( vkCreateShaderModule );
+    PFN_vkDestroyShaderModule        vkDestroyShaderModule        = VULKAN_HPP_DEFAULT_ADDR( vkDestroyShaderModule );
+    PFN_vkCreatePipelineCache        vkCreatePipelineCache        = VULKAN_HPP_DEFAULT_ADDR( vkCreatePipelineCache );
+    PFN_vkDestroyPipelineCache       vkDestroyPipelineCache       = VULKAN_HPP_DEFAULT_ADDR( vkDestroyPipelineCache );
+    PFN_vkGetPipelineCacheData       vkGetPipelineCacheData       = VULKAN_HPP_DEFAULT_ADDR( vkGetPipelineCacheData );
+    PFN_vkMergePipelineCaches        vkMergePipelineCaches        = VULKAN_HPP_DEFAULT_ADDR( vkMergePipelineCaches );
+    PFN_vkCreateComputePipelines     vkCreateComputePipelines     = VULKAN_HPP_DEFAULT_ADDR( vkCreateComputePipelines );
+    PFN_vkDestroyPipeline            vkDestroyPipeline            = VULKAN_HPP_DEFAULT_ADDR( vkDestroyPipeline );
+    PFN_vkCreatePipelineLayout       vkCreatePipelineLayout       = VULKAN_HPP_DEFAULT_ADDR( vkCreatePipelineLayout );
+    PFN_vkDestroyPipelineLayout      vkDestroyPipelineLayout      = VULKAN_HPP_DEFAULT_ADDR( vkDestroyPipelineLayout );
+    PFN_vkCreateSampler              vkCreateSampler              = VULKAN_HPP_DEFAULT_ADDR( vkCreateSampler );
+    PFN_vkDestroySampler             vkDestroySampler             = VULKAN_HPP_DEFAULT_ADDR( vkDestroySampler );
+    PFN_vkCreateDescriptorSetLayout  vkCreateDescriptorSetLayout  = VULKAN_HPP_DEFAULT_ADDR( vkCreateDescriptorSetLayout );
+    PFN_vkDestroyDescriptorSetLayout vkDestroyDescriptorSetLayout = VULKAN_HPP_DEFAULT_ADDR( vkDestroyDescriptorSetLayout );
+    PFN_vkCreateDescriptorPool       vkCreateDescriptorPool       = VULKAN_HPP_DEFAULT_ADDR( vkCreateDescriptorPool );
+    PFN_vkDestroyDescriptorPool      vkDestroyDescriptorPool      = VULKAN_HPP_DEFAULT_ADDR( vkDestroyDescriptorPool );
+    PFN_vkResetDescriptorPool        vkResetDescriptorPool        = VULKAN_HPP_DEFAULT_ADDR( vkResetDescriptorPool );
+    PFN_vkAllocateDescriptorSets     vkAllocateDescriptorSets     = VULKAN_HPP_DEFAULT_ADDR( vkAllocateDescriptorSets );
+    PFN_vkFreeDescriptorSets         vkFreeDescriptorSets         = VULKAN_HPP_DEFAULT_ADDR( vkFreeDescriptorSets );
+    PFN_vkUpdateDescriptorSets       vkUpdateDescriptorSets       = VULKAN_HPP_DEFAULT_ADDR( vkUpdateDescriptorSets );
+    PFN_vkCmdBindPipeline            vkCmdBindPipeline            = VULKAN_HPP_DEFAULT_ADDR( vkCmdBindPipeline );
+    PFN_vkCmdBindDescriptorSets      vkCmdBindDescriptorSets      = VULKAN_HPP_DEFAULT_ADDR( vkCmdBindDescriptorSets );
+    PFN_vkCmdClearColorImage         vkCmdClearColorImage         = VULKAN_HPP_DEFAULT_ADDR( vkCmdClearColorImage );
+    PFN_vkCmdDispatch                vkCmdDispatch                = VULKAN_HPP_DEFAULT_ADDR( vkCmdDispatch );
+    PFN_vkCmdDispatchIndirect        vkCmdDispatchIndirect        = VULKAN_HPP_DEFAULT_ADDR( vkCmdDispatchIndirect );
+    PFN_vkCmdSetEvent                vkCmdSetEvent                = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetEvent );
+    PFN_vkCmdResetEvent              vkCmdResetEvent              = VULKAN_HPP_DEFAULT_ADDR( vkCmdResetEvent );
+    PFN_vkCmdWaitEvents              vkCmdWaitEvents              = VULKAN_HPP_DEFAULT_ADDR( vkCmdWaitEvents );
+    PFN_vkCmdPushConstants           vkCmdPushConstants           = VULKAN_HPP_DEFAULT_ADDR( vkCmdPushConstants );
+    PFN_vkCreateGraphicsPipelines    vkCreateGraphicsPipelines    = VULKAN_HPP_DEFAULT_ADDR( vkCreateGraphicsPipelines );
+    PFN_vkCreateFramebuffer          vkCreateFramebuffer          = VULKAN_HPP_DEFAULT_ADDR( vkCreateFramebuffer );
+    PFN_vkDestroyFramebuffer         vkDestroyFramebuffer         = VULKAN_HPP_DEFAULT_ADDR( vkDestroyFramebuffer );
+    PFN_vkCreateRenderPass           vkCreateRenderPass           = VULKAN_HPP_DEFAULT_ADDR( vkCreateRenderPass );
+    PFN_vkDestroyRenderPass          vkDestroyRenderPass          = VULKAN_HPP_DEFAULT_ADDR( vkDestroyRenderPass );
+    PFN_vkGetRenderAreaGranularity   vkGetRenderAreaGranularity   = VULKAN_HPP_DEFAULT_ADDR( vkGetRenderAreaGranularity );
+    PFN_vkCmdSetViewport             vkCmdSetViewport             = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetViewport );
+    PFN_vkCmdSetScissor              vkCmdSetScissor              = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetScissor );
+    PFN_vkCmdSetLineWidth            vkCmdSetLineWidth            = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetLineWidth );
+    PFN_vkCmdSetDepthBias            vkCmdSetDepthBias            = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetDepthBias );
+    PFN_vkCmdSetBlendConstants       vkCmdSetBlendConstants       = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetBlendConstants );
+    PFN_vkCmdSetDepthBounds          vkCmdSetDepthBounds          = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetDepthBounds );
+    PFN_vkCmdSetStencilCompareMask   vkCmdSetStencilCompareMask   = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetStencilCompareMask );
+    PFN_vkCmdSetStencilWriteMask     vkCmdSetStencilWriteMask     = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetStencilWriteMask );
+    PFN_vkCmdSetStencilReference     vkCmdSetStencilReference     = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetStencilReference );
+    PFN_vkCmdBindIndexBuffer         vkCmdBindIndexBuffer         = VULKAN_HPP_DEFAULT_ADDR( vkCmdBindIndexBuffer );
+    PFN_vkCmdBindVertexBuffers       vkCmdBindVertexBuffers       = VULKAN_HPP_DEFAULT_ADDR( vkCmdBindVertexBuffers );
+    PFN_vkCmdDraw                    vkCmdDraw                    = VULKAN_HPP_DEFAULT_ADDR( vkCmdDraw );
+    PFN_vkCmdDrawIndexed             vkCmdDrawIndexed             = VULKAN_HPP_DEFAULT_ADDR( vkCmdDrawIndexed );
+    PFN_vkCmdDrawIndirect            vkCmdDrawIndirect            = VULKAN_HPP_DEFAULT_ADDR( vkCmdDrawIndirect );
+    PFN_vkCmdDrawIndexedIndirect     vkCmdDrawIndexedIndirect     = VULKAN_HPP_DEFAULT_ADDR( vkCmdDrawIndexedIndirect );
+    PFN_vkCmdBlitImage               vkCmdBlitImage               = VULKAN_HPP_DEFAULT_ADDR( vkCmdBlitImage );
+    PFN_vkCmdClearDepthStencilImage  vkCmdClearDepthStencilImage  = VULKAN_HPP_DEFAULT_ADDR( vkCmdClearDepthStencilImage );
+    PFN_vkCmdClearAttachments        vkCmdClearAttachments        = VULKAN_HPP_DEFAULT_ADDR( vkCmdClearAttachments );
+    PFN_vkCmdResolveImage            vkCmdResolveImage            = VULKAN_HPP_DEFAULT_ADDR( vkCmdResolveImage );
+    PFN_vkCmdBeginRenderPass         vkCmdBeginRenderPass         = VULKAN_HPP_DEFAULT_ADDR( vkCmdBeginRenderPass );
+    PFN_vkCmdNextSubpass             vkCmdNextSubpass             = VULKAN_HPP_DEFAULT_ADDR( vkCmdNextSubpass );
+    PFN_vkCmdEndRenderPass           vkCmdEndRenderPass           = VULKAN_HPP_DEFAULT_ADDR( vkCmdEndRenderPass );
 
     //=== VK_VERSION_1_1 ===
-    PFN_vkEnumerateInstanceVersion                      vkEnumerateInstanceVersion                      = 0;
-    PFN_vkBindBufferMemory2                             vkBindBufferMemory2                             = 0;
-    PFN_vkBindImageMemory2                              vkBindImageMemory2                              = 0;
-    PFN_vkGetDeviceGroupPeerMemoryFeatures              vkGetDeviceGroupPeerMemoryFeatures              = 0;
-    PFN_vkCmdSetDeviceMask                              vkCmdSetDeviceMask                              = 0;
-    PFN_vkEnumeratePhysicalDeviceGroups                 vkEnumeratePhysicalDeviceGroups                 = 0;
-    PFN_vkGetImageMemoryRequirements2                   vkGetImageMemoryRequirements2                   = 0;
-    PFN_vkGetBufferMemoryRequirements2                  vkGetBufferMemoryRequirements2                  = 0;
-    PFN_vkGetImageSparseMemoryRequirements2             vkGetImageSparseMemoryRequirements2             = 0;
-    PFN_vkGetPhysicalDeviceFeatures2                    vkGetPhysicalDeviceFeatures2                    = 0;
-    PFN_vkGetPhysicalDeviceProperties2                  vkGetPhysicalDeviceProperties2                  = 0;
-    PFN_vkGetPhysicalDeviceFormatProperties2            vkGetPhysicalDeviceFormatProperties2            = 0;
-    PFN_vkGetPhysicalDeviceImageFormatProperties2       vkGetPhysicalDeviceImageFormatProperties2       = 0;
-    PFN_vkGetPhysicalDeviceQueueFamilyProperties2       vkGetPhysicalDeviceQueueFamilyProperties2       = 0;
-    PFN_vkGetPhysicalDeviceMemoryProperties2            vkGetPhysicalDeviceMemoryProperties2            = 0;
-    PFN_vkGetPhysicalDeviceSparseImageFormatProperties2 vkGetPhysicalDeviceSparseImageFormatProperties2 = 0;
-    PFN_vkTrimCommandPool                               vkTrimCommandPool                               = 0;
-    PFN_vkGetDeviceQueue2                               vkGetDeviceQueue2                               = 0;
-    PFN_vkGetPhysicalDeviceExternalBufferProperties     vkGetPhysicalDeviceExternalBufferProperties     = 0;
-    PFN_vkGetPhysicalDeviceExternalFenceProperties      vkGetPhysicalDeviceExternalFenceProperties      = 0;
-    PFN_vkGetPhysicalDeviceExternalSemaphoreProperties  vkGetPhysicalDeviceExternalSemaphoreProperties  = 0;
-    PFN_vkCmdDispatchBase                               vkCmdDispatchBase                               = 0;
-    PFN_vkCreateDescriptorUpdateTemplate                vkCreateDescriptorUpdateTemplate                = 0;
-    PFN_vkDestroyDescriptorUpdateTemplate               vkDestroyDescriptorUpdateTemplate               = 0;
-    PFN_vkUpdateDescriptorSetWithTemplate               vkUpdateDescriptorSetWithTemplate               = 0;
-    PFN_vkGetDescriptorSetLayoutSupport                 vkGetDescriptorSetLayoutSupport                 = 0;
-    PFN_vkCreateSamplerYcbcrConversion                  vkCreateSamplerYcbcrConversion                  = 0;
-    PFN_vkDestroySamplerYcbcrConversion                 vkDestroySamplerYcbcrConversion                 = 0;
+    PFN_vkEnumerateInstanceVersion                vkEnumerateInstanceVersion           = VULKAN_HPP_DEFAULT_ADDR( vkEnumerateInstanceVersion );
+    PFN_vkBindBufferMemory2                       vkBindBufferMemory2                  = VULKAN_HPP_DEFAULT_ADDR( vkBindBufferMemory2 );
+    PFN_vkBindImageMemory2                        vkBindImageMemory2                   = VULKAN_HPP_DEFAULT_ADDR( vkBindImageMemory2 );
+    PFN_vkGetDeviceGroupPeerMemoryFeatures        vkGetDeviceGroupPeerMemoryFeatures   = VULKAN_HPP_DEFAULT_ADDR( vkGetDeviceGroupPeerMemoryFeatures );
+    PFN_vkCmdSetDeviceMask                        vkCmdSetDeviceMask                   = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetDeviceMask );
+    PFN_vkEnumeratePhysicalDeviceGroups           vkEnumeratePhysicalDeviceGroups      = VULKAN_HPP_DEFAULT_ADDR( vkEnumeratePhysicalDeviceGroups );
+    PFN_vkGetImageMemoryRequirements2             vkGetImageMemoryRequirements2        = VULKAN_HPP_DEFAULT_ADDR( vkGetImageMemoryRequirements2 );
+    PFN_vkGetBufferMemoryRequirements2            vkGetBufferMemoryRequirements2       = VULKAN_HPP_DEFAULT_ADDR( vkGetBufferMemoryRequirements2 );
+    PFN_vkGetImageSparseMemoryRequirements2       vkGetImageSparseMemoryRequirements2  = VULKAN_HPP_DEFAULT_ADDR( vkGetImageSparseMemoryRequirements2 );
+    PFN_vkGetPhysicalDeviceFeatures2              vkGetPhysicalDeviceFeatures2         = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceFeatures2 );
+    PFN_vkGetPhysicalDeviceProperties2            vkGetPhysicalDeviceProperties2       = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceProperties2 );
+    PFN_vkGetPhysicalDeviceFormatProperties2      vkGetPhysicalDeviceFormatProperties2 = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceFormatProperties2 );
+    PFN_vkGetPhysicalDeviceImageFormatProperties2 vkGetPhysicalDeviceImageFormatProperties2 =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceImageFormatProperties2 );
+    PFN_vkGetPhysicalDeviceQueueFamilyProperties2 vkGetPhysicalDeviceQueueFamilyProperties2 =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceQueueFamilyProperties2 );
+    PFN_vkGetPhysicalDeviceMemoryProperties2            vkGetPhysicalDeviceMemoryProperties2 = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceMemoryProperties2 );
+    PFN_vkGetPhysicalDeviceSparseImageFormatProperties2 vkGetPhysicalDeviceSparseImageFormatProperties2 =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceSparseImageFormatProperties2 );
+    PFN_vkTrimCommandPool                           vkTrimCommandPool = VULKAN_HPP_DEFAULT_ADDR( vkTrimCommandPool );
+    PFN_vkGetDeviceQueue2                           vkGetDeviceQueue2 = VULKAN_HPP_DEFAULT_ADDR( vkGetDeviceQueue2 );
+    PFN_vkGetPhysicalDeviceExternalBufferProperties vkGetPhysicalDeviceExternalBufferProperties =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceExternalBufferProperties );
+    PFN_vkGetPhysicalDeviceExternalFenceProperties vkGetPhysicalDeviceExternalFenceProperties =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceExternalFenceProperties );
+    PFN_vkGetPhysicalDeviceExternalSemaphoreProperties vkGetPhysicalDeviceExternalSemaphoreProperties =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceExternalSemaphoreProperties );
+    PFN_vkCmdDispatchBase                 vkCmdDispatchBase                 = VULKAN_HPP_DEFAULT_ADDR( vkCmdDispatchBase );
+    PFN_vkCreateDescriptorUpdateTemplate  vkCreateDescriptorUpdateTemplate  = VULKAN_HPP_DEFAULT_ADDR( vkCreateDescriptorUpdateTemplate );
+    PFN_vkDestroyDescriptorUpdateTemplate vkDestroyDescriptorUpdateTemplate = VULKAN_HPP_DEFAULT_ADDR( vkDestroyDescriptorUpdateTemplate );
+    PFN_vkUpdateDescriptorSetWithTemplate vkUpdateDescriptorSetWithTemplate = VULKAN_HPP_DEFAULT_ADDR( vkUpdateDescriptorSetWithTemplate );
+    PFN_vkGetDescriptorSetLayoutSupport   vkGetDescriptorSetLayoutSupport   = VULKAN_HPP_DEFAULT_ADDR( vkGetDescriptorSetLayoutSupport );
+    PFN_vkCreateSamplerYcbcrConversion    vkCreateSamplerYcbcrConversion    = VULKAN_HPP_DEFAULT_ADDR( vkCreateSamplerYcbcrConversion );
+    PFN_vkDestroySamplerYcbcrConversion   vkDestroySamplerYcbcrConversion   = VULKAN_HPP_DEFAULT_ADDR( vkDestroySamplerYcbcrConversion );
 
     //=== VK_VERSION_1_2 ===
-    PFN_vkResetQueryPool                      vkResetQueryPool                      = 0;
-    PFN_vkGetSemaphoreCounterValue            vkGetSemaphoreCounterValue            = 0;
-    PFN_vkWaitSemaphores                      vkWaitSemaphores                      = 0;
-    PFN_vkSignalSemaphore                     vkSignalSemaphore                     = 0;
-    PFN_vkGetBufferDeviceAddress              vkGetBufferDeviceAddress              = 0;
-    PFN_vkGetBufferOpaqueCaptureAddress       vkGetBufferOpaqueCaptureAddress       = 0;
-    PFN_vkGetDeviceMemoryOpaqueCaptureAddress vkGetDeviceMemoryOpaqueCaptureAddress = 0;
-    PFN_vkCmdDrawIndirectCount                vkCmdDrawIndirectCount                = 0;
-    PFN_vkCmdDrawIndexedIndirectCount         vkCmdDrawIndexedIndirectCount         = 0;
-    PFN_vkCreateRenderPass2                   vkCreateRenderPass2                   = 0;
-    PFN_vkCmdBeginRenderPass2                 vkCmdBeginRenderPass2                 = 0;
-    PFN_vkCmdNextSubpass2                     vkCmdNextSubpass2                     = 0;
-    PFN_vkCmdEndRenderPass2                   vkCmdEndRenderPass2                   = 0;
+    PFN_vkResetQueryPool                      vkResetQueryPool                      = VULKAN_HPP_DEFAULT_ADDR( vkResetQueryPool );
+    PFN_vkGetSemaphoreCounterValue            vkGetSemaphoreCounterValue            = VULKAN_HPP_DEFAULT_ADDR( vkGetSemaphoreCounterValue );
+    PFN_vkWaitSemaphores                      vkWaitSemaphores                      = VULKAN_HPP_DEFAULT_ADDR( vkWaitSemaphores );
+    PFN_vkSignalSemaphore                     vkSignalSemaphore                     = VULKAN_HPP_DEFAULT_ADDR( vkSignalSemaphore );
+    PFN_vkGetBufferDeviceAddress              vkGetBufferDeviceAddress              = VULKAN_HPP_DEFAULT_ADDR( vkGetBufferDeviceAddress );
+    PFN_vkGetBufferOpaqueCaptureAddress       vkGetBufferOpaqueCaptureAddress       = VULKAN_HPP_DEFAULT_ADDR( vkGetBufferOpaqueCaptureAddress );
+    PFN_vkGetDeviceMemoryOpaqueCaptureAddress vkGetDeviceMemoryOpaqueCaptureAddress = VULKAN_HPP_DEFAULT_ADDR( vkGetDeviceMemoryOpaqueCaptureAddress );
+    PFN_vkCmdDrawIndirectCount                vkCmdDrawIndirectCount                = VULKAN_HPP_DEFAULT_ADDR( vkCmdDrawIndirectCount );
+    PFN_vkCmdDrawIndexedIndirectCount         vkCmdDrawIndexedIndirectCount         = VULKAN_HPP_DEFAULT_ADDR( vkCmdDrawIndexedIndirectCount );
+    PFN_vkCreateRenderPass2                   vkCreateRenderPass2                   = VULKAN_HPP_DEFAULT_ADDR( vkCreateRenderPass2 );
+    PFN_vkCmdBeginRenderPass2                 vkCmdBeginRenderPass2                 = VULKAN_HPP_DEFAULT_ADDR( vkCmdBeginRenderPass2 );
+    PFN_vkCmdNextSubpass2                     vkCmdNextSubpass2                     = VULKAN_HPP_DEFAULT_ADDR( vkCmdNextSubpass2 );
+    PFN_vkCmdEndRenderPass2                   vkCmdEndRenderPass2                   = VULKAN_HPP_DEFAULT_ADDR( vkCmdEndRenderPass2 );
 
     //=== VK_VERSION_1_3 ===
-    PFN_vkGetPhysicalDeviceToolProperties        vkGetPhysicalDeviceToolProperties        = 0;
-    PFN_vkCreatePrivateDataSlot                  vkCreatePrivateDataSlot                  = 0;
-    PFN_vkDestroyPrivateDataSlot                 vkDestroyPrivateDataSlot                 = 0;
-    PFN_vkSetPrivateData                         vkSetPrivateData                         = 0;
-    PFN_vkGetPrivateData                         vkGetPrivateData                         = 0;
-    PFN_vkCmdPipelineBarrier2                    vkCmdPipelineBarrier2                    = 0;
-    PFN_vkCmdWriteTimestamp2                     vkCmdWriteTimestamp2                     = 0;
-    PFN_vkQueueSubmit2                           vkQueueSubmit2                           = 0;
-    PFN_vkCmdCopyBuffer2                         vkCmdCopyBuffer2                         = 0;
-    PFN_vkCmdCopyImage2                          vkCmdCopyImage2                          = 0;
-    PFN_vkCmdCopyBufferToImage2                  vkCmdCopyBufferToImage2                  = 0;
-    PFN_vkCmdCopyImageToBuffer2                  vkCmdCopyImageToBuffer2                  = 0;
-    PFN_vkGetDeviceBufferMemoryRequirements      vkGetDeviceBufferMemoryRequirements      = 0;
-    PFN_vkGetDeviceImageMemoryRequirements       vkGetDeviceImageMemoryRequirements       = 0;
-    PFN_vkGetDeviceImageSparseMemoryRequirements vkGetDeviceImageSparseMemoryRequirements = 0;
-    PFN_vkCmdSetEvent2                           vkCmdSetEvent2                           = 0;
-    PFN_vkCmdResetEvent2                         vkCmdResetEvent2                         = 0;
-    PFN_vkCmdWaitEvents2                         vkCmdWaitEvents2                         = 0;
-    PFN_vkCmdBlitImage2                          vkCmdBlitImage2                          = 0;
-    PFN_vkCmdResolveImage2                       vkCmdResolveImage2                       = 0;
-    PFN_vkCmdBeginRendering                      vkCmdBeginRendering                      = 0;
-    PFN_vkCmdEndRendering                        vkCmdEndRendering                        = 0;
-    PFN_vkCmdSetCullMode                         vkCmdSetCullMode                         = 0;
-    PFN_vkCmdSetFrontFace                        vkCmdSetFrontFace                        = 0;
-    PFN_vkCmdSetPrimitiveTopology                vkCmdSetPrimitiveTopology                = 0;
-    PFN_vkCmdSetViewportWithCount                vkCmdSetViewportWithCount                = 0;
-    PFN_vkCmdSetScissorWithCount                 vkCmdSetScissorWithCount                 = 0;
-    PFN_vkCmdBindVertexBuffers2                  vkCmdBindVertexBuffers2                  = 0;
-    PFN_vkCmdSetDepthTestEnable                  vkCmdSetDepthTestEnable                  = 0;
-    PFN_vkCmdSetDepthWriteEnable                 vkCmdSetDepthWriteEnable                 = 0;
-    PFN_vkCmdSetDepthCompareOp                   vkCmdSetDepthCompareOp                   = 0;
-    PFN_vkCmdSetDepthBoundsTestEnable            vkCmdSetDepthBoundsTestEnable            = 0;
-    PFN_vkCmdSetStencilTestEnable                vkCmdSetStencilTestEnable                = 0;
-    PFN_vkCmdSetStencilOp                        vkCmdSetStencilOp                        = 0;
-    PFN_vkCmdSetRasterizerDiscardEnable          vkCmdSetRasterizerDiscardEnable          = 0;
-    PFN_vkCmdSetDepthBiasEnable                  vkCmdSetDepthBiasEnable                  = 0;
-    PFN_vkCmdSetPrimitiveRestartEnable           vkCmdSetPrimitiveRestartEnable           = 0;
+    PFN_vkGetPhysicalDeviceToolProperties        vkGetPhysicalDeviceToolProperties        = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceToolProperties );
+    PFN_vkCreatePrivateDataSlot                  vkCreatePrivateDataSlot                  = VULKAN_HPP_DEFAULT_ADDR( vkCreatePrivateDataSlot );
+    PFN_vkDestroyPrivateDataSlot                 vkDestroyPrivateDataSlot                 = VULKAN_HPP_DEFAULT_ADDR( vkDestroyPrivateDataSlot );
+    PFN_vkSetPrivateData                         vkSetPrivateData                         = VULKAN_HPP_DEFAULT_ADDR( vkSetPrivateData );
+    PFN_vkGetPrivateData                         vkGetPrivateData                         = VULKAN_HPP_DEFAULT_ADDR( vkGetPrivateData );
+    PFN_vkCmdPipelineBarrier2                    vkCmdPipelineBarrier2                    = VULKAN_HPP_DEFAULT_ADDR( vkCmdPipelineBarrier2 );
+    PFN_vkCmdWriteTimestamp2                     vkCmdWriteTimestamp2                     = VULKAN_HPP_DEFAULT_ADDR( vkCmdWriteTimestamp2 );
+    PFN_vkQueueSubmit2                           vkQueueSubmit2                           = VULKAN_HPP_DEFAULT_ADDR( vkQueueSubmit2 );
+    PFN_vkCmdCopyBuffer2                         vkCmdCopyBuffer2                         = VULKAN_HPP_DEFAULT_ADDR( vkCmdCopyBuffer2 );
+    PFN_vkCmdCopyImage2                          vkCmdCopyImage2                          = VULKAN_HPP_DEFAULT_ADDR( vkCmdCopyImage2 );
+    PFN_vkCmdCopyBufferToImage2                  vkCmdCopyBufferToImage2                  = VULKAN_HPP_DEFAULT_ADDR( vkCmdCopyBufferToImage2 );
+    PFN_vkCmdCopyImageToBuffer2                  vkCmdCopyImageToBuffer2                  = VULKAN_HPP_DEFAULT_ADDR( vkCmdCopyImageToBuffer2 );
+    PFN_vkGetDeviceBufferMemoryRequirements      vkGetDeviceBufferMemoryRequirements      = VULKAN_HPP_DEFAULT_ADDR( vkGetDeviceBufferMemoryRequirements );
+    PFN_vkGetDeviceImageMemoryRequirements       vkGetDeviceImageMemoryRequirements       = VULKAN_HPP_DEFAULT_ADDR( vkGetDeviceImageMemoryRequirements );
+    PFN_vkGetDeviceImageSparseMemoryRequirements vkGetDeviceImageSparseMemoryRequirements = VULKAN_HPP_DEFAULT_ADDR( vkGetDeviceImageSparseMemoryRequirements );
+    PFN_vkCmdSetEvent2                           vkCmdSetEvent2                           = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetEvent2 );
+    PFN_vkCmdResetEvent2                         vkCmdResetEvent2                         = VULKAN_HPP_DEFAULT_ADDR( vkCmdResetEvent2 );
+    PFN_vkCmdWaitEvents2                         vkCmdWaitEvents2                         = VULKAN_HPP_DEFAULT_ADDR( vkCmdWaitEvents2 );
+    PFN_vkCmdBlitImage2                          vkCmdBlitImage2                          = VULKAN_HPP_DEFAULT_ADDR( vkCmdBlitImage2 );
+    PFN_vkCmdResolveImage2                       vkCmdResolveImage2                       = VULKAN_HPP_DEFAULT_ADDR( vkCmdResolveImage2 );
+    PFN_vkCmdBeginRendering                      vkCmdBeginRendering                      = VULKAN_HPP_DEFAULT_ADDR( vkCmdBeginRendering );
+    PFN_vkCmdEndRendering                        vkCmdEndRendering                        = VULKAN_HPP_DEFAULT_ADDR( vkCmdEndRendering );
+    PFN_vkCmdSetCullMode                         vkCmdSetCullMode                         = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetCullMode );
+    PFN_vkCmdSetFrontFace                        vkCmdSetFrontFace                        = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetFrontFace );
+    PFN_vkCmdSetPrimitiveTopology                vkCmdSetPrimitiveTopology                = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetPrimitiveTopology );
+    PFN_vkCmdSetViewportWithCount                vkCmdSetViewportWithCount                = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetViewportWithCount );
+    PFN_vkCmdSetScissorWithCount                 vkCmdSetScissorWithCount                 = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetScissorWithCount );
+    PFN_vkCmdBindVertexBuffers2                  vkCmdBindVertexBuffers2                  = VULKAN_HPP_DEFAULT_ADDR( vkCmdBindVertexBuffers2 );
+    PFN_vkCmdSetDepthTestEnable                  vkCmdSetDepthTestEnable                  = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetDepthTestEnable );
+    PFN_vkCmdSetDepthWriteEnable                 vkCmdSetDepthWriteEnable                 = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetDepthWriteEnable );
+    PFN_vkCmdSetDepthCompareOp                   vkCmdSetDepthCompareOp                   = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetDepthCompareOp );
+    PFN_vkCmdSetDepthBoundsTestEnable            vkCmdSetDepthBoundsTestEnable            = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetDepthBoundsTestEnable );
+    PFN_vkCmdSetStencilTestEnable                vkCmdSetStencilTestEnable                = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetStencilTestEnable );
+    PFN_vkCmdSetStencilOp                        vkCmdSetStencilOp                        = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetStencilOp );
+    PFN_vkCmdSetRasterizerDiscardEnable          vkCmdSetRasterizerDiscardEnable          = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetRasterizerDiscardEnable );
+    PFN_vkCmdSetDepthBiasEnable                  vkCmdSetDepthBiasEnable                  = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetDepthBiasEnable );
+    PFN_vkCmdSetPrimitiveRestartEnable           vkCmdSetPrimitiveRestartEnable           = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetPrimitiveRestartEnable );
 
     //=== VK_VERSION_1_4 ===
-    PFN_vkMapMemory2                            vkMapMemory2                            = 0;
-    PFN_vkUnmapMemory2                          vkUnmapMemory2                          = 0;
-    PFN_vkGetDeviceImageSubresourceLayout       vkGetDeviceImageSubresourceLayout       = 0;
-    PFN_vkGetImageSubresourceLayout2            vkGetImageSubresourceLayout2            = 0;
-    PFN_vkCopyMemoryToImage                     vkCopyMemoryToImage                     = 0;
-    PFN_vkCopyImageToMemory                     vkCopyImageToMemory                     = 0;
-    PFN_vkCopyImageToImage                      vkCopyImageToImage                      = 0;
-    PFN_vkTransitionImageLayout                 vkTransitionImageLayout                 = 0;
-    PFN_vkCmdPushDescriptorSet                  vkCmdPushDescriptorSet                  = 0;
-    PFN_vkCmdPushDescriptorSetWithTemplate      vkCmdPushDescriptorSetWithTemplate      = 0;
-    PFN_vkCmdBindDescriptorSets2                vkCmdBindDescriptorSets2                = 0;
-    PFN_vkCmdPushConstants2                     vkCmdPushConstants2                     = 0;
-    PFN_vkCmdPushDescriptorSet2                 vkCmdPushDescriptorSet2                 = 0;
-    PFN_vkCmdPushDescriptorSetWithTemplate2     vkCmdPushDescriptorSetWithTemplate2     = 0;
-    PFN_vkCmdSetLineStipple                     vkCmdSetLineStipple                     = 0;
-    PFN_vkCmdBindIndexBuffer2                   vkCmdBindIndexBuffer2                   = 0;
-    PFN_vkGetRenderingAreaGranularity           vkGetRenderingAreaGranularity           = 0;
-    PFN_vkCmdSetRenderingAttachmentLocations    vkCmdSetRenderingAttachmentLocations    = 0;
-    PFN_vkCmdSetRenderingInputAttachmentIndices vkCmdSetRenderingInputAttachmentIndices = 0;
+    PFN_vkMapMemory2                            vkMapMemory2                            = VULKAN_HPP_DEFAULT_ADDR( vkMapMemory2 );
+    PFN_vkUnmapMemory2                          vkUnmapMemory2                          = VULKAN_HPP_DEFAULT_ADDR( vkUnmapMemory2 );
+    PFN_vkGetDeviceImageSubresourceLayout       vkGetDeviceImageSubresourceLayout       = VULKAN_HPP_DEFAULT_ADDR( vkGetDeviceImageSubresourceLayout );
+    PFN_vkGetImageSubresourceLayout2            vkGetImageSubresourceLayout2            = VULKAN_HPP_DEFAULT_ADDR( vkGetImageSubresourceLayout2 );
+    PFN_vkCopyMemoryToImage                     vkCopyMemoryToImage                     = VULKAN_HPP_DEFAULT_ADDR( vkCopyMemoryToImage );
+    PFN_vkCopyImageToMemory                     vkCopyImageToMemory                     = VULKAN_HPP_DEFAULT_ADDR( vkCopyImageToMemory );
+    PFN_vkCopyImageToImage                      vkCopyImageToImage                      = VULKAN_HPP_DEFAULT_ADDR( vkCopyImageToImage );
+    PFN_vkTransitionImageLayout                 vkTransitionImageLayout                 = VULKAN_HPP_DEFAULT_ADDR( vkTransitionImageLayout );
+    PFN_vkCmdPushDescriptorSet                  vkCmdPushDescriptorSet                  = VULKAN_HPP_DEFAULT_ADDR( vkCmdPushDescriptorSet );
+    PFN_vkCmdPushDescriptorSetWithTemplate      vkCmdPushDescriptorSetWithTemplate      = VULKAN_HPP_DEFAULT_ADDR( vkCmdPushDescriptorSetWithTemplate );
+    PFN_vkCmdBindDescriptorSets2                vkCmdBindDescriptorSets2                = VULKAN_HPP_DEFAULT_ADDR( vkCmdBindDescriptorSets2 );
+    PFN_vkCmdPushConstants2                     vkCmdPushConstants2                     = VULKAN_HPP_DEFAULT_ADDR( vkCmdPushConstants2 );
+    PFN_vkCmdPushDescriptorSet2                 vkCmdPushDescriptorSet2                 = VULKAN_HPP_DEFAULT_ADDR( vkCmdPushDescriptorSet2 );
+    PFN_vkCmdPushDescriptorSetWithTemplate2     vkCmdPushDescriptorSetWithTemplate2     = VULKAN_HPP_DEFAULT_ADDR( vkCmdPushDescriptorSetWithTemplate2 );
+    PFN_vkCmdSetLineStipple                     vkCmdSetLineStipple                     = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetLineStipple );
+    PFN_vkCmdBindIndexBuffer2                   vkCmdBindIndexBuffer2                   = VULKAN_HPP_DEFAULT_ADDR( vkCmdBindIndexBuffer2 );
+    PFN_vkGetRenderingAreaGranularity           vkGetRenderingAreaGranularity           = VULKAN_HPP_DEFAULT_ADDR( vkGetRenderingAreaGranularity );
+    PFN_vkCmdSetRenderingAttachmentLocations    vkCmdSetRenderingAttachmentLocations    = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetRenderingAttachmentLocations );
+    PFN_vkCmdSetRenderingInputAttachmentIndices vkCmdSetRenderingInputAttachmentIndices = VULKAN_HPP_DEFAULT_ADDR( vkCmdSetRenderingInputAttachmentIndices );
 
     //=== VK_KHR_surface ===
-    PFN_vkDestroySurfaceKHR                       vkDestroySurfaceKHR                       = 0;
-    PFN_vkGetPhysicalDeviceSurfaceSupportKHR      vkGetPhysicalDeviceSurfaceSupportKHR      = 0;
-    PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR vkGetPhysicalDeviceSurfaceCapabilitiesKHR = 0;
-    PFN_vkGetPhysicalDeviceSurfaceFormatsKHR      vkGetPhysicalDeviceSurfaceFormatsKHR      = 0;
-    PFN_vkGetPhysicalDeviceSurfacePresentModesKHR vkGetPhysicalDeviceSurfacePresentModesKHR = 0;
+    PFN_vkDestroySurfaceKHR                       vkDestroySurfaceKHR                  = VULKAN_HPP_DEFAULT_ADDR( vkDestroySurfaceKHR );
+    PFN_vkGetPhysicalDeviceSurfaceSupportKHR      vkGetPhysicalDeviceSurfaceSupportKHR = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceSurfaceSupportKHR );
+    PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR vkGetPhysicalDeviceSurfaceCapabilitiesKHR =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceSurfaceCapabilitiesKHR );
+    PFN_vkGetPhysicalDeviceSurfaceFormatsKHR      vkGetPhysicalDeviceSurfaceFormatsKHR = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceSurfaceFormatsKHR );
+    PFN_vkGetPhysicalDeviceSurfacePresentModesKHR vkGetPhysicalDeviceSurfacePresentModesKHR =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceSurfacePresentModesKHR );
 
     //=== VK_KHR_swapchain ===
-    PFN_vkCreateSwapchainKHR                    vkCreateSwapchainKHR                    = 0;
-    PFN_vkDestroySwapchainKHR                   vkDestroySwapchainKHR                   = 0;
-    PFN_vkGetSwapchainImagesKHR                 vkGetSwapchainImagesKHR                 = 0;
-    PFN_vkAcquireNextImageKHR                   vkAcquireNextImageKHR                   = 0;
-    PFN_vkQueuePresentKHR                       vkQueuePresentKHR                       = 0;
-    PFN_vkGetDeviceGroupPresentCapabilitiesKHR  vkGetDeviceGroupPresentCapabilitiesKHR  = 0;
-    PFN_vkGetDeviceGroupSurfacePresentModesKHR  vkGetDeviceGroupSurfacePresentModesKHR  = 0;
-    PFN_vkGetPhysicalDevicePresentRectanglesKHR vkGetPhysicalDevicePresentRectanglesKHR = 0;
-    PFN_vkAcquireNextImage2KHR                  vkAcquireNextImage2KHR                  = 0;
+    PFN_vkCreateSwapchainKHR                    vkCreateSwapchainKHR                    = VULKAN_HPP_DEFAULT_ADDR( vkCreateSwapchainKHR );
+    PFN_vkDestroySwapchainKHR                   vkDestroySwapchainKHR                   = VULKAN_HPP_DEFAULT_ADDR( vkDestroySwapchainKHR );
+    PFN_vkGetSwapchainImagesKHR                 vkGetSwapchainImagesKHR                 = VULKAN_HPP_DEFAULT_ADDR( vkGetSwapchainImagesKHR );
+    PFN_vkAcquireNextImageKHR                   vkAcquireNextImageKHR                   = VULKAN_HPP_DEFAULT_ADDR( vkAcquireNextImageKHR );
+    PFN_vkQueuePresentKHR                       vkQueuePresentKHR                       = VULKAN_HPP_DEFAULT_ADDR( vkQueuePresentKHR );
+    PFN_vkGetDeviceGroupPresentCapabilitiesKHR  vkGetDeviceGroupPresentCapabilitiesKHR  = VULKAN_HPP_DEFAULT_ADDR( vkGetDeviceGroupPresentCapabilitiesKHR );
+    PFN_vkGetDeviceGroupSurfacePresentModesKHR  vkGetDeviceGroupSurfacePresentModesKHR  = VULKAN_HPP_DEFAULT_ADDR( vkGetDeviceGroupSurfacePresentModesKHR );
+    PFN_vkGetPhysicalDevicePresentRectanglesKHR vkGetPhysicalDevicePresentRectanglesKHR = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDevicePresentRectanglesKHR );
+    PFN_vkAcquireNextImage2KHR                  vkAcquireNextImage2KHR                  = VULKAN_HPP_DEFAULT_ADDR( vkAcquireNextImage2KHR );
 
     //=== VK_KHR_display ===
-    PFN_vkGetPhysicalDeviceDisplayPropertiesKHR      vkGetPhysicalDeviceDisplayPropertiesKHR      = 0;
-    PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR vkGetPhysicalDeviceDisplayPlanePropertiesKHR = 0;
-    PFN_vkGetDisplayPlaneSupportedDisplaysKHR        vkGetDisplayPlaneSupportedDisplaysKHR        = 0;
-    PFN_vkGetDisplayModePropertiesKHR                vkGetDisplayModePropertiesKHR                = 0;
-    PFN_vkCreateDisplayModeKHR                       vkCreateDisplayModeKHR                       = 0;
-    PFN_vkGetDisplayPlaneCapabilitiesKHR             vkGetDisplayPlaneCapabilitiesKHR             = 0;
-    PFN_vkCreateDisplayPlaneSurfaceKHR               vkCreateDisplayPlaneSurfaceKHR               = 0;
+    PFN_vkGetPhysicalDeviceDisplayPropertiesKHR vkGetPhysicalDeviceDisplayPropertiesKHR = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceDisplayPropertiesKHR );
+    PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR vkGetPhysicalDeviceDisplayPlanePropertiesKHR =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceDisplayPlanePropertiesKHR );
+    PFN_vkGetDisplayPlaneSupportedDisplaysKHR vkGetDisplayPlaneSupportedDisplaysKHR = VULKAN_HPP_DEFAULT_ADDR( vkGetDisplayPlaneSupportedDisplaysKHR );
+    PFN_vkGetDisplayModePropertiesKHR         vkGetDisplayModePropertiesKHR         = VULKAN_HPP_DEFAULT_ADDR( vkGetDisplayModePropertiesKHR );
+    PFN_vkCreateDisplayModeKHR                vkCreateDisplayModeKHR                = VULKAN_HPP_DEFAULT_ADDR( vkCreateDisplayModeKHR );
+    PFN_vkGetDisplayPlaneCapabilitiesKHR      vkGetDisplayPlaneCapabilitiesKHR      = VULKAN_HPP_DEFAULT_ADDR( vkGetDisplayPlaneCapabilitiesKHR );
+    PFN_vkCreateDisplayPlaneSurfaceKHR        vkCreateDisplayPlaneSurfaceKHR        = VULKAN_HPP_DEFAULT_ADDR( vkCreateDisplayPlaneSurfaceKHR );
 
     //=== VK_KHR_display_swapchain ===
-    PFN_vkCreateSharedSwapchainsKHR vkCreateSharedSwapchainsKHR = 0;
+    PFN_vkCreateSharedSwapchainsKHR vkCreateSharedSwapchainsKHR = VULKAN_HPP_DEFAULT_ADDR( vkCreateSharedSwapchainsKHR );
 
 #if defined( VK_USE_PLATFORM_XLIB_KHR )
     //=== VK_KHR_xlib_surface ===
-    PFN_vkCreateXlibSurfaceKHR                        vkCreateXlibSurfaceKHR                        = 0;
-    PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR vkGetPhysicalDeviceXlibPresentationSupportKHR = 0;
+    PFN_vkCreateXlibSurfaceKHR                        vkCreateXlibSurfaceKHR = VULKAN_HPP_DEFAULT_ADDR( vkCreateXlibSurfaceKHR );
+    PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR vkGetPhysicalDeviceXlibPresentationSupportKHR =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceXlibPresentationSupportKHR );
 #else
     PFN_dummy vkCreateXlibSurfaceKHR_placeholder                        = 0;
     PFN_dummy vkGetPhysicalDeviceXlibPresentationSupportKHR_placeholder = 0;
@@ -3312,8 +3329,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_USE_PLATFORM_XCB_KHR )
     //=== VK_KHR_xcb_surface ===
-    PFN_vkCreateXcbSurfaceKHR                        vkCreateXcbSurfaceKHR                        = 0;
-    PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR vkGetPhysicalDeviceXcbPresentationSupportKHR = 0;
+    PFN_vkCreateXcbSurfaceKHR                        vkCreateXcbSurfaceKHR = VULKAN_HPP_DEFAULT_ADDR( vkCreateXcbSurfaceKHR );
+    PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR vkGetPhysicalDeviceXcbPresentationSupportKHR =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceXcbPresentationSupportKHR );
 #else
     PFN_dummy vkCreateXcbSurfaceKHR_placeholder                        = 0;
     PFN_dummy vkGetPhysicalDeviceXcbPresentationSupportKHR_placeholder = 0;
@@ -3321,8 +3339,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_USE_PLATFORM_WAYLAND_KHR )
     //=== VK_KHR_wayland_surface ===
-    PFN_vkCreateWaylandSurfaceKHR                        vkCreateWaylandSurfaceKHR                        = 0;
-    PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR vkGetPhysicalDeviceWaylandPresentationSupportKHR = 0;
+    PFN_vkCreateWaylandSurfaceKHR                        vkCreateWaylandSurfaceKHR = VULKAN_HPP_DEFAULT_ADDR( vkCreateWaylandSurfaceKHR );
+    PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR vkGetPhysicalDeviceWaylandPresentationSupportKHR =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceWaylandPresentationSupportKHR );
 #else
     PFN_dummy vkCreateWaylandSurfaceKHR_placeholder                        = 0;
     PFN_dummy vkGetPhysicalDeviceWaylandPresentationSupportKHR_placeholder = 0;
@@ -3330,15 +3349,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
     //=== VK_KHR_android_surface ===
-    PFN_vkCreateAndroidSurfaceKHR vkCreateAndroidSurfaceKHR = 0;
+    PFN_vkCreateAndroidSurfaceKHR vkCreateAndroidSurfaceKHR = VULKAN_HPP_DEFAULT_ADDR( vkCreateAndroidSurfaceKHR );
 #else
     PFN_dummy vkCreateAndroidSurfaceKHR_placeholder = 0;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
     //=== VK_KHR_win32_surface ===
-    PFN_vkCreateWin32SurfaceKHR                        vkCreateWin32SurfaceKHR                        = 0;
-    PFN_vkGetPhysicalDeviceWin32PresentationSupportKHR vkGetPhysicalDeviceWin32PresentationSupportKHR = 0;
+    PFN_vkCreateWin32SurfaceKHR                        vkCreateWin32SurfaceKHR = VULKAN_HPP_DEFAULT_ADDR( vkCreateWin32SurfaceKHR );
+    PFN_vkGetPhysicalDeviceWin32PresentationSupportKHR vkGetPhysicalDeviceWin32PresentationSupportKHR =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceWin32PresentationSupportKHR );
 #else
     PFN_dummy vkCreateWin32SurfaceKHR_placeholder                        = 0;
     PFN_dummy vkGetPhysicalDeviceWin32PresentationSupportKHR_placeholder = 0;
@@ -3566,10 +3586,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetPhysicalDeviceSurfaceFormats2KHR      vkGetPhysicalDeviceSurfaceFormats2KHR      = 0;
 
     //=== VK_KHR_get_display_properties2 ===
-    PFN_vkGetPhysicalDeviceDisplayProperties2KHR      vkGetPhysicalDeviceDisplayProperties2KHR      = 0;
-    PFN_vkGetPhysicalDeviceDisplayPlaneProperties2KHR vkGetPhysicalDeviceDisplayPlaneProperties2KHR = 0;
-    PFN_vkGetDisplayModeProperties2KHR                vkGetDisplayModeProperties2KHR                = 0;
-    PFN_vkGetDisplayPlaneCapabilities2KHR             vkGetDisplayPlaneCapabilities2KHR             = 0;
+    PFN_vkGetPhysicalDeviceDisplayProperties2KHR vkGetPhysicalDeviceDisplayProperties2KHR = VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceDisplayProperties2KHR );
+    PFN_vkGetPhysicalDeviceDisplayPlaneProperties2KHR vkGetPhysicalDeviceDisplayPlaneProperties2KHR =
+      VULKAN_HPP_DEFAULT_ADDR( vkGetPhysicalDeviceDisplayPlaneProperties2KHR );
+    PFN_vkGetDisplayModeProperties2KHR    vkGetDisplayModeProperties2KHR    = VULKAN_HPP_DEFAULT_ADDR( vkGetDisplayModeProperties2KHR );
+    PFN_vkGetDisplayPlaneCapabilities2KHR vkGetDisplayPlaneCapabilities2KHR = VULKAN_HPP_DEFAULT_ADDR( vkGetDisplayPlaneCapabilities2KHR );
 
 #if defined( VK_USE_PLATFORM_IOS_MVK )
     //=== VK_MVK_ios_surface ===
@@ -3818,7 +3839,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     //=== VK_EXT_headless_surface ===
-    PFN_vkCreateHeadlessSurfaceEXT vkCreateHeadlessSurfaceEXT = 0;
+    PFN_vkCreateHeadlessSurfaceEXT vkCreateHeadlessSurfaceEXT = VULKAN_HPP_DEFAULT_ADDR( vkCreateHeadlessSurfaceEXT );
 
     //=== VK_KHR_buffer_device_address ===
     PFN_vkGetBufferDeviceAddressKHR              vkGetBufferDeviceAddressKHR              = 0;

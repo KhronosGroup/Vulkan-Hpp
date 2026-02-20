@@ -882,7 +882,8 @@ private:
   std::string generateDispatchLoader() const; // uses vkGet*ProcAddress to get function pointers
   std::string generateDispatchLoaderCommandMembers( std::vector<RequireData> const & requireData,
                                                     std::set<std::string> const &    listedCommands,
-                                                    std::string const &              title ) const;
+                                                    std::string const &              title,
+                                                    bool                             staticallyLoaded ) const;
   std::string generateDispatchLoaderDeviceCommandAssignment( std::vector<RequireData> const & requireData,
                                                               std::set<std::string> const &    listedCommands,
                                                               std::string const &              title ) const;

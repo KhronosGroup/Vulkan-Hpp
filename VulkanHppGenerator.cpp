@@ -5393,15 +5393,22 @@ std::string VulkanHppGenerator::generateDispatchLoader() const
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
   for ( auto const & feature : m_features )
   {
-    commandMembers += generateDispatchLoaderCommandMembers( feature.requireData, listedCommands, feature.name );
+    commandMembers += generateDispatchLoaderCommandMembers( feature.requireData, listedCommands, feature.name, true );
     initialCommandAssignments += generateDispatchLoaderInitialCommandAssignment( feature.requireData, listedCommands, feature.name );
     instanceCommandAssignments += generateDispatchLoaderInstanceCommandAssignment( feature.requireData, listedCommands, feature.name );
     deviceCommandAssignments += generateDispatchLoaderDeviceCommandAssignment( feature.requireData, listedCommands, feature.name );
     forEachRequiredCommand( feature.requireData, [&listedCommands]( NameLine const & command, auto const & ) { listedCommands.insert( command.name ); } );
   }
+  // WSI extensions are part of the static loader
+  std::array<std::string, 11> staticLoaderExtensions
+  {
+    "VK_KHR_surface", "VK_KHR_swapchain", "VK_KHR_display", "VK_KHR_display_swapchain", "VK_EXT_headless_surface", "VK_KHR_get_display_properties2",
+    "VK_KHR_win32_surface", "VK_KHR_xlib_surface", "VK_KHR_xcb_surface", "VK_KHR_wayland_surface", "VK_KHR_android_surface"
+  };
   for ( auto const & extension : m_extensions )
   {
-    commandMembers += generateDispatchLoaderCommandMembers( extension.requireData, listedCommands, extension.name );
+    bool staticallyLoaded = std::find( staticLoaderExtensions.cbegin(), staticLoaderExtensions.cend(), extension.name ) != staticLoaderExtensions.cend();
+    commandMembers += generateDispatchLoaderCommandMembers( extension.requireData, listedCommands, extension.name, staticallyLoaded );
     initialCommandAssignments += generateDispatchLoaderInitialCommandAssignment( extension.requireData, listedCommands, extension.name );
     instanceCommandAssignments += generateDispatchLoaderInstanceCommandAssignment( extension.requireData, listedCommands, extension.name );
     deviceCommandAssignments += generateDispatchLoaderDeviceCommandAssignment( extension.requireData, listedCommands, extension.name );
@@ -5416,8 +5423,9 @@ std::string VulkanHppGenerator::generateDispatchLoader() const
 }
 
 std::string VulkanHppGenerator::generateDispatchLoaderCommandMembers( std::vector<RequireData> const & requireData,
-                                                                             std::set<std::string> const &    listedCommands,
-                                                                             std::string const &              title ) const
+                                                                      std::set<std::string> const &    listedCommands,
+                                                                      std::string const &              title,
+                                                                      bool                             staticallyLoaded ) const
 {
   std::string members, placeholders;
   forEachRequiredCommand( requireData,
@@ -5425,7 +5433,10 @@ std::string VulkanHppGenerator::generateDispatchLoaderCommandMembers( std::vecto
                           {
                             if ( !listedCommands.contains( command.name ) )
                             {
-                              members += "    PFN_" + command.name + " " + command.name + " = 0;\n";
+                              if ( staticallyLoaded ) {
+                                members    += "    PFN_" + command.name + " " + command.name + " = VULKAN_HPP_DEFAULT_ADDR( " + command.name + " );\n";
+                              }
+                              else members += "    PFN_" + command.name + " " + command.name + " = 0;\n";
                               placeholders += "    PFN_dummy " + command.name + "_placeholder = 0;\n";
                             }
                           } );

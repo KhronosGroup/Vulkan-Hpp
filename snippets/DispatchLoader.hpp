@@ -2,6 +2,12 @@ class Instance;
 class Device;
 using PFN_dummy = void ( * )();
 
+#if VK_NO_PROTOTYPES
+# define VULKAN_HPP_DEFAULT_ADDR( x ) 0
+#else
+# define VULKAN_HPP_DEFAULT_ADDR( x ) ::x
+#endif
+
 class DispatchLoader
 {
 public:

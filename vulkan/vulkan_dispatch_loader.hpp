@@ -146,7 +146,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   class Device;
   using PFN_dummy = void ( * )();
 
-#if VK_NO_PROTOTYPES
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 #  define VULKAN_HPP_DEFAULT_ADDR( x ) 0
 #else
 #  define VULKAN_HPP_DEFAULT_ADDR( x ) ::x

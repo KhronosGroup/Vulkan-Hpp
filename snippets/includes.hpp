@@ -1,5 +1,7 @@
 // DEBUG: temporarily disable all smart handles
-#define VULKAN_HPP_NO_SMART_HANDLE
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+#  define VULKAN_HPP_NO_SMART_HANDLE
+#endif
 
 #if !defined( VULKAN_HPP_CXX_MODULE )
 #  include <vulkan/${vulkan_h}>

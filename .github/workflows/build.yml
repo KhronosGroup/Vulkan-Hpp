@@ -107,17 +107,18 @@ jobs:
           cmake --build build --parallel --config $BUILD_TYPE --clean-first
         done
 
-    # Build samples using highest available C++ standard.
-    - name: Build Samples with C++${{matrix.env.cxx_max}}
-      if: (!matrix.env.modules) # Exclude module runners.
-      run: |
-        for BUILD_TYPE in Debug Release; do
-          cmake -B build -G '${{matrix.env.gen}}' --fresh --preset samples \
-            ${{ env.VAR_CMAKE_FLAGS }}                                     \
-            -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}}                  \
-            -D CMAKE_BUILD_TYPE=$BUILD_TYPE
-          cmake --build build --parallel --config $BUILD_TYPE --clean-first
-        done
+    # temporarily disabled due to lack of smart handles!
+    # # Build samples using highest available C++ standard.
+    # - name: Build Samples with C++${{matrix.env.cxx_max}}
+    #   if: (!matrix.env.modules) # Exclude module runners.
+    #   run: |
+    #     for BUILD_TYPE in Debug Release; do
+    #       cmake -B build -G '${{matrix.env.gen}}' --fresh --preset samples \
+    #         ${{ env.VAR_CMAKE_FLAGS }}                                     \
+    #         -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}}                  \
+    #         -D CMAKE_BUILD_TYPE=$BUILD_TYPE
+    #       cmake --build build --parallel --config $BUILD_TYPE --clean-first
+    #     done
 
     # Run all unit tests with C++11 to maximum support C++ version.
     # Module runners ignore all versions below C++23

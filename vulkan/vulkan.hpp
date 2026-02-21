@@ -8552,6 +8552,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return std::tuple<Result &, T &>( result, value );
     }
 
+    std::tuple<Result, T> asTuple() &&
+    {
+      return std::make_tuple( result, std::move( value ) );
+    }
+
     // std::expected-look alike
     bool has_value() const VULKAN_HPP_NOEXCEPT
     {
@@ -8582,68 +8587,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return value;
     }
   };
-
-#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
-  template <typename Type, typename Dispatch>
-  struct ResultValue<UniqueHandle<Type, Dispatch>>
-  {
-#  ifdef VULKAN_HPP_HAS_NOEXCEPT
-    ResultValue( Result r, UniqueHandle<Type, Dispatch> && v ) VULKAN_HPP_NOEXCEPT
-#  else
-    ResultValue( Result r, UniqueHandle<Type, Dispatch> && v )
-#  endif
-      : result( r )
-      , value( std::move( v ) )
-    {
-    }
-
-    VULKAN_HPP_DEPRECATED(
-      "asTuple() on an l-value is deprecated, as it implicitly moves the UniqueHandle out of the ResultValue. Use asTuple() on an r-value instead, requiring to explicitly move the UniqueHandle." )
-
-    std::tuple<Result, UniqueHandle<Type, Dispatch>> asTuple() &
-    {
-      return std::make_tuple( result, std::move( value ) );
-    }
-
-    std::tuple<Result, UniqueHandle<Type, Dispatch>> asTuple() &&
-    {
-      return std::make_tuple( result, std::move( value ) );
-    }
-
-    Result                       result;
-    UniqueHandle<Type, Dispatch> value;
-  };
-
-  template <typename Type, typename Dispatch>
-  struct ResultValue<std::vector<UniqueHandle<Type, Dispatch>>>
-  {
-#  ifdef VULKAN_HPP_HAS_NOEXCEPT
-    ResultValue( Result r, std::vector<UniqueHandle<Type, Dispatch>> && v ) VULKAN_HPP_NOEXCEPT
-#  else
-    ResultValue( Result r, std::vector<UniqueHandle<Type, Dispatch>> && v )
-#  endif
-      : result( r )
-      , value( std::move( v ) )
-    {
-    }
-
-    VULKAN_HPP_DEPRECATED(
-      "asTuple() on an l-value is deprecated, as it implicitly moves the UniqueHandle out of the ResultValue. Use asTuple() on an r-value instead, requiring to explicitly move the UniqueHandle." )
-
-    std::tuple<Result, std::vector<UniqueHandle<Type, Dispatch>>> asTuple() &
-    {
-      return std::make_tuple( result, std::move( value ) );
-    }
-
-    std::tuple<Result, std::vector<UniqueHandle<Type, Dispatch>>> asTuple() &&
-    {
-      return std::make_tuple( result, std::move( value ) );
-    }
-
-    Result                                    result;
-    std::vector<UniqueHandle<Type, Dispatch>> value;
-  };
-#endif
 
   template <typename T>
   struct ResultValueType

@@ -110,6 +110,7 @@ public:
   void generateStaticAssertionsHppFile() const;
   void generateStructsHppFile() const;
   void generateToStringHppFile() const;
+  void generateDispatchLoaderHppFile() const;
   void prepareRAIIHandles();
 
   struct MacroData
@@ -878,26 +879,24 @@ private:
                                            std::string const &                       returnType ) const;
   std::string generateDeprecatedConstructors( std::string const & name ) const;
   std::string generateDeprecatedStructSetters( std::string const & name ) const;
-  std::string generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
-  std::string generateDispatchLoaderDynamicCommandMembers( std::vector<RequireData> const & requireData,
-                                                           std::set<std::string> const &    listedCommands,
-                                                           std::string const &              title ) const;
-  std::string generateDispatchLoaderDynamicDeviceCommandAssignment( std::vector<RequireData> const & requireData,
-                                                                    std::set<std::string> const &    listedCommands,
-                                                                    std::string const &              title ) const;
-  std::string generateDispatchLoaderDynamicInitialCommandAssignment( std::vector<RequireData> const & requireData,
-                                                                     std::set<std::string> const &    listedCommands,
-                                                                     std::string const &              title ) const;
-  std::string generateDispatchLoaderDynamicInstanceCommandAssignment( std::vector<RequireData> const & requireData,
-                                                                      std::set<std::string> const &    listedCommands,
-                                                                      std::string const &              title ) const;
-  std::string generateDispatchLoaderStatic() const;  // uses exported symbols from loader
+  std::string generateDispatchLoader() const; // uses vkGet*ProcAddress to get function pointers
+  std::string generateDispatchLoaderCommandMembers( std::vector<RequireData> const & requireData,
+                                                    std::set<std::string> const &    listedCommands,
+                                                    std::string const &              title,
+                                                    bool                             staticallyLoaded ) const;
+  std::string generateDispatchLoaderDeviceCommandAssignment( std::vector<RequireData> const & requireData,
+                                                              std::set<std::string> const &    listedCommands,
+                                                              std::string const &              title ) const;
+  std::string generateDispatchLoaderInitialCommandAssignment( std::vector<RequireData> const & requireData,
+                                                              std::set<std::string> const &    listedCommands,
+                                                              std::string const &              title ) const;
+  std::string generateDispatchLoaderInstanceCommandAssignment( std::vector<RequireData> const & requireData,
+                                                               std::set<std::string> const &    listedCommands,
+                                                               std::string const &              title ) const;
+  std::string generateDispatchLoaderCommandAssignment( std::string const & commandName,
+                                                       std::string const & aliasName,
+                                                       std::string const & firstArg ) const;
   std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
-  std::string
-    generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName, std::string const & aliasName, std::string const & firstArg ) const;
-  std::string generateDispatchLoaderStaticCommands( std::vector<RequireData> const & requireData,
-                                                    std::set<std::string> &          listedCommands,
-                                                    std::string const &              title ) const;
   std::string generateEnum( std::pair<std::string, EnumData> const & enumData, std::string const & surroundingProtect ) const;
   std::string generateEnumInitializer( TypeInfo const &                   type,
                                        std::vector<std::string> const &   arraySizes,

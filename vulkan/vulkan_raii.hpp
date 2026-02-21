@@ -23,7 +23,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     {
       using PFN_dummy = void ( * )();
 
-      class ContextDispatcher : public ::VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase
+      class ContextDispatcher
       {
       public:
         ContextDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
@@ -50,7 +50,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         PFN_vkEnumerateInstanceVersion vkEnumerateInstanceVersion = 0;
       };
 
-      class InstanceDispatcher : public ::VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase
+      class InstanceDispatcher
       {
       public:
         InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr, VkInstance instance ) : vkGetInstanceProcAddr( getProcAddr )
@@ -725,7 +725,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = 0;
       };
 
-      class DeviceDispatcher : public ::VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase
+      class DeviceDispatcher
       {
       public:
         DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr, VkDevice device ) : vkGetDeviceProcAddr( getProcAddr )
@@ -3210,7 +3210,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::ContextDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return &*m_dispatcher;
       }
 
@@ -3339,7 +3338,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::InstanceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return &*m_dispatcher;
       }
 
@@ -3644,7 +3642,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::InstanceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -4354,7 +4351,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return &*m_dispatcher;
       }
 
@@ -5950,7 +5946,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -6079,7 +6074,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -6214,7 +6208,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -6365,7 +6358,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -6507,7 +6499,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -6633,7 +6624,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -6764,7 +6754,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -8275,7 +8264,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -8401,7 +8389,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -8529,7 +8516,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -8658,7 +8644,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -8794,7 +8779,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -8923,7 +8907,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::InstanceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -9052,7 +9035,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::InstanceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -9179,7 +9161,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -9319,7 +9300,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -9442,7 +9422,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -9613,7 +9592,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -9754,7 +9732,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -9880,7 +9857,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -10042,7 +10018,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::InstanceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -10208,7 +10183,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::InstanceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -10335,7 +10309,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -10475,7 +10448,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -10622,7 +10594,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -10753,7 +10724,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -10882,7 +10852,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -11076,7 +11045,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -11212,7 +11180,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -11343,7 +11310,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -11472,7 +11438,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -11608,7 +11573,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -11735,7 +11699,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -11862,7 +11825,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -11987,7 +11949,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -12188,7 +12149,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -12468,7 +12428,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -12621,7 +12580,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -12748,7 +12706,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -12874,7 +12831,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -13011,7 +12967,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -13204,7 +13159,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -13338,7 +13292,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -13467,7 +13420,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -13593,7 +13545,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -13740,7 +13691,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -13897,7 +13847,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -14171,7 +14120,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::InstanceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -14297,7 +14245,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -14545,7 +14492,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -14672,7 +14618,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -14799,7 +14744,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -14935,7 +14879,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 
@@ -15076,7 +15019,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       detail::DeviceDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return m_dispatcher;
       }
 

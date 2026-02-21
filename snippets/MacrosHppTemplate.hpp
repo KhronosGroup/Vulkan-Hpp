@@ -298,17 +298,14 @@ ${vulkan_64_bit_ptr_defines}
 
 #if !defined( VULKAN_HPP_DEFAULT_DISPATCHER )
 #  if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-#    define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::detail::defaultDispatchLoaderDynamic
-#    define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE                       \
-      namespace VULKAN_HPP_NAMESPACE                                                 \
-      {                                                                              \
-        namespace detail                                                             \
-        {                                                                            \
-          VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic; \
-        }                                                                            \
+#    define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::defaultDispatchLoader
+#    define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE       \
+      namespace VULKAN_HPP_NAMESPACE                                 \
+      {                                                              \
+        VULKAN_HPP_STORAGE_API DispatchLoader defaultDispatchLoader; \
       }
 #  else
-#    define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::detail::getDispatchLoaderStatic()
+#    define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::defaultDispatchLoader
 #    define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #  endif
 #else
@@ -320,7 +317,7 @@ ${vulkan_64_bit_ptr_defines}
 #else
 #  define VULKAN_HPP_DEFAULT_ASSIGNMENT( assignment ) = assignment
 #endif
-#define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT  VULKAN_HPP_DEFAULT_ASSIGNMENT( VULKAN_HPP_DEFAULT_DISPATCHER )
+#define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT VULKAN_HPP_DEFAULT_ASSIGNMENT( defaultDispatchLoader )
 
 #if !defined( VULKAN_HPP_EXPECTED ) && ( 23 <= VULKAN_HPP_CPP_VERSION ) && defined( __cpp_lib_expected ) && defined(VULKAN_HPP_USE_STD_EXPECTED)
 #  if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )

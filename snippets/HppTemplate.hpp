@@ -8,15 +8,16 @@ VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == ${headerVersion}, "Wrong VK_HEADE
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
-  namespace detail
-  {
-    class DispatchLoaderDynamic;
-
-#  if !defined( VULKAN_HPP_DEFAULT_DISPATCHER_HANDLED ) && VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-    extern VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-#  endif
-  }  // namespace detail
-}  // namespace VULKAN_HPP_NAMESPACE
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+# if !defined( VULKAN_HPP_DEFAULT_DISPATCHER_HANDLED )
+    // dispatcher will be placed once in user code
+    extern VULKAN_HPP_STORAGE_API DispatchLoader defaultDispatchLoader;
+# endif
+#else
+  // dispatcher will be placed into every including TU
+  static vk::DispatchLoader defaultDispatchLoader;
+#endif
+} // namespace VULKAN_HPP_NAMESPACE
 
 ${defines}
 
@@ -33,12 +34,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   ${UniqueHandle}
 #endif  // VULKAN_HPP_DISABLE_ENHANCED_MODE
 
-  namespace detail
-  {
-    ${IsDispatchedList}
-    ${DispatchLoaderBase}
-    ${DispatchLoaderStatic}
-  }
   ${Exchange}
 
   struct AllocationCallbacks;
@@ -94,20 +89,21 @@ ${constexprDefines}
 #include <vulkan/${api}_funcs.hpp>
 // clang-format on
 
-
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
+  // define forward-declared DispatchLoader init() functions
+  void DispatchLoader::init( Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
+  {
+    init( static_cast<VkInstance>( instanceCpp ) );
+  }
+
+  void DispatchLoader::init( Device deviceCpp ) VULKAN_HPP_NOEXCEPT
+  {
+    init( static_cast<VkDevice>( deviceCpp ) );
+  }
+
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   ${structExtendsStructs}
 #endif // VULKAN_HPP_DISABLE_ENHANCED_MODE
-
-  namespace detail
-  {
-    ${DynamicLoader}
-    ${DispatchLoaderDynamic}
-#   if defined( VULKAN_HPP_CXX_MODULE ) && !defined( VULKAN_HPP_DEFAULT_DISPATCHER_HANDLED ) && VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-      VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-#   endif
-  }
 }   // namespace VULKAN_HPP_NAMESPACE
 #endif

@@ -1,4 +1,4 @@
-  template <typename OwnerType, typename Dispatch>
+  template <typename OwnerType>
   class ObjectFree
   {
   public:
@@ -6,7 +6,7 @@
 
     ObjectFree( OwnerType                           owner,
                 Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
-                Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+                DispatchLoader const & dispatch     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_owner( owner )
       , m_allocationCallbacks( allocationCallbacks )
       , m_dispatch( &dispatch )
@@ -22,7 +22,7 @@
       return m_allocationCallbacks;
     }
 
-    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+    DispatchLoader const & getDispatch() const VULKAN_HPP_NOEXCEPT
     {
       return *m_dispatch;
     }
@@ -38,5 +38,5 @@
   private:
     OwnerType                           m_owner               = {};
     Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
-    Dispatch const *                    m_dispatch            = nullptr;
+    DispatchLoader const *              m_dispatch            = nullptr;
   };

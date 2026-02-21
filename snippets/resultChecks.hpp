@@ -30,14 +30,14 @@
 #endif
     }
 
-    template <typename HandleType, typename AllocatorType, typename Dispatch>
+    template <typename HandleType, typename AllocatorType>
     VULKAN_HPP_INLINE void resultCheck( Result                                         result,
                                         char const *                                   message,
                                         std::initializer_list<Result>                  successCodes,
                                         VkDevice                                       device,
                                         std::vector<HandleType, AllocatorType> const & pipelines,
                                         AllocationCallbacks const *                    pAllocator,
-                                        Dispatch const &                               d )
+                                        DispatchLoader const &                         d )
     {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
       ignore( result );  		// just in case VULKAN_HPP_ASSERT_ON_RESULT is empty

@@ -6261,10 +6261,15 @@ ${functionBody}
 
 std::pair<std::string, std::string> VulkanHppGenerator::generateEnumSuffixes( std::string const & name, bool bitmask ) const
 {
+  std::unordered_map<std::string, std::string> enumToPrefixSpecialCases{
+    {"VkResult", "VK_"},
+    {"VkDataGraphTOSAQualityFlagBitsARM", "VK_DATA_GRAPH_TOSA_QUALITY_"},
+    {"VkDataGraphTOSALevelARM", "VK_DATA_GRAPH_TOSA_LEVEL_"},
+  };
   std::string prefix, postfix;
-  if ( name == "VkResult" )
+  if ( enumToPrefixSpecialCases.count(name) )
   {
-    prefix = "VK_";
+    prefix = enumToPrefixSpecialCases.at(name);
   }
   else
   {

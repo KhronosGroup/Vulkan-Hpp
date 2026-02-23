@@ -16,18 +16,21 @@
 
 // Should be used on 64 bit only, as on 32 bit the test is ambiguous.
 
-
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan.h>
 import vulkan;
 #else
 #  include <vulkan/vulkan.hpp>
-   VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
   VkSurfaceKHR surface       = 0;
   auto         uniqueSurface = vk::UniqueSurfaceKHR( static_cast<vk::SurfaceKHR>( surface ), vk::Instance() );
+
+  vk::PhysicalDevice phys              = {};
+  auto               uniqueDisplayMode = phys.createDisplayModeKHRUnique( {}, {} );
+
   return 0;
 }

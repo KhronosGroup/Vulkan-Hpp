@@ -7356,17 +7356,27 @@ std::string VulkanHppGenerator::generateObjectDeleter( std::string const & comma
       throw std::runtime_error( "Found " + commandName + " which requires special handling for the object deleter" );
     }
   }
-  else if ( commandName.find( "Allocate" ) != std::string::npos )
-  {
-    objectDeleter = "detail::ObjectFree";
-    allocator     = "allocator, ";
-  }
   else
   {
-    assert( ( commandName.find( "Create" ) != std::string::npos ) || ( commandName.find( "Register" ) != std::string::npos ) );
-    objectDeleter = "detail::ObjectDestroy";
-    allocator     = "allocator, ";
+    auto handleIt = m_handles.find( commandData.params[returnParam].type.type );
+    assert( handleIt != m_handles.end() );
+
+    if ( handleIt->second.deleteCommand.empty() )
+    {
+      objectDeleter = "detail::DummyDestroy";
+    }
+    else if ( commandName.find( "Allocate" ) != std::string::npos )
+    {
+      objectDeleter = "detail::ObjectFree";
+    }
+    else
+    {
+      assert( ( commandName.find( "Create" ) != std::string::npos ) || ( commandName.find( "Register" ) != std::string::npos ) );
+      objectDeleter = "detail::ObjectDestroy";
+    }
+    allocator = "allocator, ";
   }
+
   std::string className  = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "";
   std::string parentName = ( className.empty() || ( commandData.params[returnParam].type.type == "VkDevice" ) ) ? "detail::NoParent" : className;
   return objectDeleter + "<" + parentName + ", Dispatch>( " + ( ( parentName == "detail::NoParent" ) ? "" : "*this, " ) + allocator + "d )";
@@ -11793,18 +11803,16 @@ ${leave})";
 
 std::string VulkanHppGenerator::generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const
 {
-  if ( !handleData.second.deleteCommand.empty() )
+  std::string type = stripPrefix( handleData.first, "Vk" );
+  std::string aliasHandle;
+  for ( auto const & alias : handleData.second.aliases )
   {
-    std::string type = stripPrefix( handleData.first, "Vk" );
-    std::string aliasHandle;
-    for ( auto const & alias : handleData.second.aliases )
-    {
-      static std::string const aliasHandleTemplate = R"(  using Unique${aliasType} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;)";
+    static std::string const aliasHandleTemplate = R"(  using Unique${aliasType} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;)";
 
-      aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( alias.first, "Vk" ) }, { "type", type } } );
-    }
+    aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( alias.first, "Vk" ) }, { "type", type } } );
+  }
 
-    static std::string const uniqueHandleTemplate = R"(  template <typename Dispatch>
+  static std::string const uniqueHandleTemplate = R"(  template <typename Dispatch>
   class UniqueHandleTraits<${type}, Dispatch>
   {
   public:
@@ -11813,16 +11821,17 @@ std::string VulkanHppGenerator::generateUniqueHandle( std::pair<std::string, Han
   using Unique${type} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 ${aliasHandle})";
 
-    return replaceWithMap(
-      uniqueHandleTemplate,
-      { { "aliasHandle", aliasHandle },
-        { "deleterAction", ( handleData.second.deleteCommand.substr( 2, 4 ) == "Free" ) ? "Free" : "Destroy" },
-        { "deleterParent", handleData.second.destructorType.empty() ? "detail::NoParent" : stripPrefix( handleData.second.destructorType, "Vk" ) },
-        { "deleterPool", handleData.second.deletePool.empty() ? "" : ", " + stripPrefix( handleData.second.deletePool, "Vk" ) },
-        { "deleterType", handleData.second.deletePool.empty() ? "Object" : "Pool" },
-        { "type", type } } );
-  }
-  return "";
+  assert( !handleData.second.constructorIts.empty() );
+  std::string deleterParent = ( handleData.first != "VkDevice" ) ? handleData.second.constructorIts.front()->second.handle : "";
+
+  return replaceWithMap(
+    uniqueHandleTemplate,
+    { { "aliasHandle", aliasHandle },
+      { "deleterAction", ( !handleData.second.deleteCommand.empty() && ( handleData.second.deleteCommand.substr( 2, 4 ) == "Free" ) ) ? "Free" : "Destroy" },
+      { "deleterParent", deleterParent.empty() ? "detail::NoParent" : stripPrefix( deleterParent, "Vk" ) },
+      { "deleterPool", handleData.second.deletePool.empty() ? "" : ", " + stripPrefix( handleData.second.deletePool, "Vk" ) },
+      { "deleterType", handleData.second.deleteCommand.empty() ? "Dummy" : ( handleData.second.deletePool.empty() ? "Object" : "Pool" ) },
+      { "type", type } } );
 }
 
 std::string VulkanHppGenerator::generateUniqueHandle( std::vector<RequireData> const & requireData,

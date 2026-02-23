@@ -7917,6 +7917,48 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     };
 
     template <typename OwnerType, typename Dispatch>
+    class DummyDestroy
+    {
+    public:
+      DummyDestroy() = default;
+
+      DummyDestroy( OwnerType                                               owner,
+                    Optional<AllocationCallbacks const> allocationCallbacks VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
+                    Dispatch const & dispatch                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+        : m_owner( owner )
+        , m_allocationCallbacks( allocationCallbacks )
+        , m_dispatch( &dispatch )
+      {
+      }
+
+      OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_owner;
+      }
+
+      Optional<AllocationCallbacks const> getAllocator() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_allocationCallbacks;
+      }
+
+      Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+      {
+        return *m_dispatch;
+      }
+
+    protected:
+      template <typename T>
+      void destroy( T /*t*/ ) VULKAN_HPP_NOEXCEPT
+      {
+      }
+
+    private:
+      OwnerType                           m_owner               = {};
+      Optional<AllocationCallbacks const> m_allocationCallbacks = nullptr;
+      Dispatch const *                    m_dispatch            = nullptr;
+    };
+
+    template <typename OwnerType, typename Dispatch>
     class ObjectFree
     {
     public:

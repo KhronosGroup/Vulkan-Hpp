@@ -2480,6 +2480,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueInstance = UniqueHandle<Instance, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
   template <typename Dispatch>
+  class UniqueHandleTraits<PhysicalDevice, Dispatch>
+  {
+  public:
+    using deleter = detail::DummyDestroy<Instance, Dispatch>;
+  };
+
+  using UniquePhysicalDevice = UniqueHandle<PhysicalDevice, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
   class UniqueHandleTraits<Device, Dispatch>
   {
   public:
@@ -2487,6 +2496,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   using UniqueDevice = UniqueHandle<Device, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<Queue, Dispatch>
+  {
+  public:
+    using deleter = detail::DummyDestroy<Device, Dispatch>;
+  };
+
+  using UniqueQueue = UniqueHandle<Queue, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
   template <typename Dispatch>
   class UniqueHandleTraits<DeviceMemory, Dispatch>
@@ -2738,6 +2756,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   using UniqueDisplayKHR = UniqueHandle<DisplayKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<DisplayModeKHR, Dispatch>
+  {
+  public:
+    using deleter = detail::DummyDestroy<PhysicalDevice, Dispatch>;
+  };
+
+  using UniqueDisplayModeKHR = UniqueHandle<DisplayModeKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
   //=== VK_EXT_debug_report ===
   template <typename Dispatch>

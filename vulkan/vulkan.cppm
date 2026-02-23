@@ -27,7 +27,7 @@ export module vulkan;
 
 export import std;
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 343, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 344, "Wrong VK_HEADER_VERSION!" );
 
 #if defined( _MSC_VER )
 #  pragma warning( push )

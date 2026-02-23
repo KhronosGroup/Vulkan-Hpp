@@ -526,7 +526,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                             "VK_SEC_pipeline_cache_incremental_mode",
                                                             "VK_EXT_shader_uniform_buffer_unsized_array",
                                                             "VK_NV_compute_occupancy_priority",
-                                                            "VK_EXT_shader_subgroup_partitioned" };
+                                                            "VK_EXT_shader_subgroup_partitioned",
+                                                            "VK_VALVE_shader_mixed_float_dot_product" };
     return deviceExtensions;
   }
 
@@ -3087,6 +3088,22 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_surface",
             } } } } }
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
+      ,
+      { "VK_VALVE_shader_mixed_float_dot_product",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+              "VK_KHR_shader_float16_int8",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+                "VK_KHR_shader_float16_int8",
+              },
+              {} } },
+          { "VK_VERSION_1_2",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } } } }
     };
     auto depIt = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
@@ -4326,7 +4343,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_SEC_pipeline_cache_incremental_mode" ) ||
            ( extension == "VK_EXT_shader_uniform_buffer_unsized_array" ) ||
            ( extension == "VK_NV_compute_occupancy_priority" ) ||
-           ( extension == "VK_EXT_shader_subgroup_partitioned" );
+           ( extension == "VK_EXT_shader_subgroup_partitioned" ) ||
+           ( extension == "VK_VALVE_shader_mixed_float_dot_product" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

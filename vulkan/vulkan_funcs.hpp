@@ -31911,12 +31911,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // wrapper function for command vkGetPhysicalDeviceUbmPresentationSupportSEC, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceUbmPresentationSupportSEC.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceUbmPresentationSupportSEC ), bool>::type>
-  VULKAN_HPP_INLINE Bool32 PhysicalDevice::getUbmPresentationSupportSEC( uint32_t queueFamilyIndex, struct ubm_device * ubm_device, Dispatch const & d )
+  VULKAN_HPP_INLINE Bool32 PhysicalDevice::getUbmPresentationSupportSEC( uint32_t queueFamilyIndex, struct ubm_device * device, Dispatch const & d )
     const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    return static_cast<Bool32>(
-      d.vkGetPhysicalDeviceUbmPresentationSupportSEC( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, ubm_device ) );
+    return static_cast<Bool32>( d.vkGetPhysicalDeviceUbmPresentationSupportSEC( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, device ) );
   }
 
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -31932,10 +31931,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                        "Function <vkGetPhysicalDeviceUbmPresentationSupportSEC> requires <VK_SEC_ubm_surface>" );
 #    endif
 
-    struct ubm_device ubm_device;
-    VkBool32          result = d.vkGetPhysicalDeviceUbmPresentationSupportSEC( m_physicalDevice, queueFamilyIndex, &ubm_device );
+    struct ubm_device device;
+    VkBool32          result = d.vkGetPhysicalDeviceUbmPresentationSupportSEC( m_physicalDevice, queueFamilyIndex, &device );
 
-    return { result, ubm_device };
+    return { result, device };
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_UBM_SEC*/

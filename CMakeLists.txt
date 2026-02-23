@@ -403,10 +403,10 @@ function( vulkan_hpp__setup_library )
 		vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
 		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON )
 		if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
-			# Vulkan C headers
-			target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
 			# Vulkan C++ headers
 			target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}" )
+			# Vulkan C headers
+			target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
 		else()
 			find_package( Vulkan REQUIRED )
 			target_include_directories( ${TARGET_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}" )

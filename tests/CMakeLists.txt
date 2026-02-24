@@ -41,6 +41,7 @@ if( NOT ( ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" ) AND ( CMAKE_CXX_COMPILER_VE
 	vulkan_hpp__setup_test( NAME NoExceptionsRAII ) # errors with clang++13 and clang++14
 endif()
 vulkan_hpp__setup_test( NAME NoSmartHandle )
+vulkan_hpp__setup_test( NAME Reflection )
 vulkan_hpp__setup_test( NAME StridedArrayProxy )
 # vulkan_hpp__setup_test( NAME StructureChain ) # no unique handle atm
 # # add_subdirectory( UniqueHandle ) # really messy setup, test needs to be shortened
@@ -67,7 +68,7 @@ if( VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_BUILD_CXX_MODULE )
 	# vulkan_hpp__setup_test( NAME DispatchLoaderDynamicSharedLibrary CXX_MODULE ) # no CXX_MODULE test version yet
 	vulkan_hpp__setup_test( NAME DispatchLoaderDynamic CXX_MODULE )
 	vulkan_hpp__setup_test( NAME EnableBetaExtensions CXX_MODULE )
-    vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE )
+	vulkan_hpp__setup_test( NAME ExtensionInspection CXX_MODULE )
 	vulkan_hpp__setup_test( NAME Flags CXX_MODULE )
 	vulkan_hpp__setup_test( NAME FormatTraits CXX_MODULE )
 	if( NOT( MSVC AND MSVC_VERSION VERSION_LESS "1950" ) )
@@ -81,6 +82,7 @@ if( VULKAN_HPP_TESTS_CTEST AND VULKAN_HPP_BUILD_CXX_MODULE )
 	vulkan_hpp__setup_test( NAME NoExceptions CXX_MODULE )
 	vulkan_hpp__setup_test( NAME NoExceptionsRAII CXX_MODULE )
 	vulkan_hpp__setup_test( NAME NoSmartHandle CXX_MODULE )
+	# vulkan_hpp__setup_test( NAME Reflection CXX_MODULE )
 	vulkan_hpp__setup_test( NAME StructureChain CXX_MODULE )
 	# add_subdirectory( UniqueHandle ) # no CXX_MODULE test version yet
 	vulkan_hpp__setup_test( NAME UniqueHandleDefaultArguments CXX_MODULE )

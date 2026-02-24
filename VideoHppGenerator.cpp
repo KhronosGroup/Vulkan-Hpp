@@ -25,7 +25,7 @@ VideoHppGenerator::VideoHppGenerator( tinyxml2::XMLDocument const & document )
   // read the document and check its correctness
   int                                       line     = document.GetLineNum();
   std::vector<tinyxml2::XMLElement const *> elements = getChildElements( &document );
-  checkElements( line, elements, { { "registry", true } } );
+  checkElements( line, elements, { { "registry", MultipleAllowed::No } } );
   checkForError( elements.size() == 1, line, "encountered " + std::to_string( elements.size() ) + " elements named <registry> but only one is allowed" );
   readRegistry( elements[0] );
   addImplicitlyRequiredTypes();
@@ -35,8 +35,7 @@ VideoHppGenerator::VideoHppGenerator( tinyxml2::XMLDocument const & document )
 
 void VideoHppGenerator::generateCppmFile() const
 {
-  generateFileFromTemplate(
-    "vulkan_video.cppm", "VideoCppmTemplate.hpp", { { "copyrightMessage", m_copyrightMessage }, { "includes", generateIncludes() } } );
+  generateFileFromTemplate( "vulkan_video.cppm", "VideoCppmTemplate.hpp", { { "copyrightMessage", m_copyrightMessage }, { "includes", generateIncludes() } } );
 }
 
 void VideoHppGenerator::generateHppFile() const
@@ -156,8 +155,8 @@ void VideoHppGenerator::checkCorrectness() const
 
 void VideoHppGenerator::checkElements( int                                               line,
                                        std::vector<tinyxml2::XMLElement const *> const & elements,
-                                       std::map<std::string, bool> const &               required,
-                                       std::set<std::string> const &                     optional ) const
+                                       std::map<std::string, MultipleAllowed> const &    required,
+                                       std::map<std::string, MultipleAllowed> const &    optional ) const
 {
   ::checkElements( "VideoHppGenerator", line, elements, required, optional );
 }
@@ -175,7 +174,7 @@ void VideoHppGenerator::checkForWarning( bool condition, int line, std::string c
 std::string VideoHppGenerator::generateConstants() const
 {
   {
-    const std::string enumsTemplate = R"(
+    std::string const enumsTemplate = R"(
   //=================
   //=== CONSTANTs ===
   //=================
@@ -252,7 +251,7 @@ std::string VideoHppGenerator::generateEnum( std::pair<std::string, EnumData> co
     enumValues = "\n" + enumValues + "  ";
   }
 
-  const std::string enumTemplate = R"(  enum class ${enumName}
+  std::string const enumTemplate = R"(  enum class ${enumName}
   {${enumValues}};
 )";
 
@@ -262,7 +261,7 @@ std::string VideoHppGenerator::generateEnum( std::pair<std::string, EnumData> co
 std::string VideoHppGenerator::generateEnums() const
 {
   {
-    const std::string enumsTemplate = R"(
+    std::string const enumsTemplate = R"(
   //=============
   //=== ENUMs ===
   //=============
@@ -314,7 +313,7 @@ std::string VideoHppGenerator::generateIncludes() const
 
 std::string VideoHppGenerator::generateStruct( std::pair<std::string, StructureData> const & structData ) const
 {
-  static const std::string structureTemplate = R"(  struct ${structureType}
+  static std::string const structureTemplate = R"(  struct ${structureType}
   {
     using NativeType = StdVideo${structureType};
 
@@ -351,7 +350,7 @@ ${members}
 
 std::string VideoHppGenerator::generateStructCompareOperators( std::pair<std::string, StructureData> const & structData ) const
 {
-  static const std::set<std::string> simpleTypes = { "char",   "double",  "DWORD",    "float",    "HANDLE",  "HINSTANCE", "HMONITOR",
+  static std::set<std::string> const simpleTypes = { "char",   "double",  "DWORD",    "float",    "HANDLE",  "HINSTANCE", "HMONITOR",
                                                      "HWND",   "int",     "int8_t",   "int16_t",  "int32_t", "int64_t",   "LPCWSTR",
                                                      "size_t", "uint8_t", "uint16_t", "uint32_t", "uint64_t" };
 
@@ -377,7 +376,7 @@ std::string VideoHppGenerator::generateStructCompareOperators( std::pair<std::st
     intro = "\n          && ";
   }
 
-  static const std::string compareTemplate = R"(
+  static std::string const compareTemplate = R"(
     bool operator==( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ${compareMembers};
@@ -447,7 +446,7 @@ std::string VideoHppGenerator::generateStructMembers( std::pair<std::string, Str
 
 std::string VideoHppGenerator::generateStructs() const
 {
-  const std::string structsTemplate = R"(
+  std::string const structsTemplate = R"(
   //===============
   //=== STRUCTS ===
   //===============
@@ -497,7 +496,7 @@ void VideoHppGenerator::readEnums( tinyxml2::XMLElement const * element )
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "name", {} } }, { { "type", { "enum" } } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "enum", {} } }, { "comment" } );
+  checkElements( line, children, { { "enum", MultipleAllowed::Yes } }, { { "comment", MultipleAllowed::No } } );
 
   std::string name;
   for ( auto const & attribute : attributes )
@@ -596,7 +595,7 @@ void VideoHppGenerator::readExtension( tinyxml2::XMLElement const * element )
   std::vector<tinyxml2::XMLElement const *> children   = getChildElements( element );
 
   checkAttributes( line, attributes, { { "name", {} }, { "comment", {} }, { "number", {} }, { "supported", { "vulkan" } } }, {} );
-  checkElements( line, children, { { "require", false } } );
+  checkElements( line, children, { { "require", MultipleAllowed::No } } );
 
   ExtensionData extensionData{ .xmlLine = line };
   std::string   supported;
@@ -630,7 +629,7 @@ void VideoHppGenerator::readExtension( tinyxml2::XMLElement const * element )
 
   for ( auto child : children )
   {
-    const std::string value = child->Value();
+    std::string const value = child->Value();
     assert( value == "require" );
     readExtensionRequire( child, extensionData );
   }
@@ -644,7 +643,7 @@ void VideoHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * eleme
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, {}, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "enum", "type" } );
+  checkElements( line, children, { { "type", MultipleAllowed::Yes } }, { { "enum", MultipleAllowed::Yes } } );
 
   extensionData.requireData.xmlLine = line;
 
@@ -668,11 +667,11 @@ void VideoHppGenerator::readExtensions( tinyxml2::XMLElement const * element )
   int line = element->GetLineNum();
   checkAttributes( line, getAttributes( element ), {}, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "extension", false } } );
+  checkElements( line, children, { { "extension", MultipleAllowed::Yes } } );
 
   for ( auto child : children )
   {
-    const std::string value = child->Value();
+    std::string const value = child->Value();
     assert( value == "extension" );
     readExtension( child );
   }
@@ -689,10 +688,13 @@ void VideoHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
   checkAttributes( line, getAttributes( element ), {}, {} );
 
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "comment", false }, { "enums", false }, { "extensions", true }, { "types", true } } );
+  checkElements(
+    line,
+    children,
+    { { "comment", MultipleAllowed::Yes }, { "enums", MultipleAllowed::Yes }, { "extensions", MultipleAllowed::No }, { "types", MultipleAllowed::No } } );
   for ( auto child : children )
   {
-    const std::string value = child->Value();
+    std::string const value = child->Value();
     if ( value == "comment" )
     {
       std::string comment = readComment( child );
@@ -722,8 +724,8 @@ void VideoHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, s
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkElements( line, getChildElements( element ), {} );
   checkAttributes( line, attributes, { { "name", {} }, { "value", {} } }, { { "type", { "uint32_t", "uint8_t" } } } );
+  checkElements( line, getChildElements( element ), {} );
 
   std::string name, type, value;
   for ( auto const & attribute : attributes )
@@ -780,7 +782,10 @@ void VideoHppGenerator::readStructMember( tinyxml2::XMLElement const * element, 
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, {}, { { "len", {} }, { "optional", { "false", "true" } } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "name", true }, { "type", true } }, { "comment", "enum" } );
+  checkElements( line,
+                 children,
+                 { { "name", MultipleAllowed::No }, { "type", MultipleAllowed::No } },
+                 { { "comment", MultipleAllowed::No }, { "enum", MultipleAllowed::Yes } } );
 
   MemberData memberData;
   memberData.xmlLine = line;
@@ -803,7 +808,7 @@ void VideoHppGenerator::readStructMember( tinyxml2::XMLElement const * element, 
   {
     int childLine = child->GetLineNum();
     checkAttributes( childLine, getAttributes( child ), {}, {} );
-    checkElements( childLine, getChildElements( child ), {}, {} );
+    checkElements( childLine, getChildElements( child ), {} );
 
     std::string value = child->Value();
     if ( value == "enum" )
@@ -840,7 +845,7 @@ void VideoHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, st
   int line = element->GetLineNum();
   checkAttributes( line, attributes, { { "category", { "define" } } }, { { "requires", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "name", false } }, { "type" } );
+  checkElements( line, children, { { "name", MultipleAllowed::No } }, { { "type", MultipleAllowed::No } } );
 
   std::string require;
   for ( auto const & attribute : attributes )
@@ -854,7 +859,7 @@ void VideoHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, st
   std::string name, type;
   for ( auto child : children )
   {
-    const std::string value = child->Value();
+    std::string const value = child->Value();
     if ( value == "name" )
     {
       name = child->GetText();
@@ -935,7 +940,7 @@ void VideoHppGenerator::readTypes( tinyxml2::XMLElement const * element )
   int line = element->GetLineNum();
   checkAttributes( line, getAttributes( element ), { { "comment", {} } }, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "type", false } } );
+  checkElements( line, children, { { "type", MultipleAllowed::Yes } } );
 
   for ( auto child : children )
   {
@@ -952,7 +957,7 @@ void VideoHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, st
   int line = element->GetLineNum();
   checkAttributes( line, attributes, { { "category", { "struct" } }, { "name", {} } }, { { "comment", {} }, { "requires", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "member", false } }, { "comment" } );
+  checkElements( line, children, { { "member", MultipleAllowed::Yes } }, { { "comment", MultipleAllowed::Yes } } );
 
   StructureData structureData{ .xmlLine = line };
 

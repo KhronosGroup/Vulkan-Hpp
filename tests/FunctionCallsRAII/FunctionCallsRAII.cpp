@@ -575,5 +575,40 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::BufferView     bufferView( device, bufferViewCreateInfo );
   }
 
+  // Shader commands
+  {
+    vk::raii::Device           device = nullptr;
+    vk::ShaderModuleCreateInfo shaderModuleCreateInfo;
+    vk::raii::ShaderModule     shaderModule = device.createShaderModule( shaderModuleCreateInfo );
+  }
+  {
+    vk::raii::Device           device = nullptr;
+    vk::ShaderModuleCreateInfo shaderModuleCreateInfo;
+    vk::raii::ShaderModule     shaderModule( device, shaderModuleCreateInfo );
+  }
+
+  // Pipeline Cache commands
+  {
+    vk::raii::Device            device = nullptr;
+    vk::PipelineCacheCreateInfo pipelineCacheCreateInfo;
+    vk::raii::PipelineCache     pipelineCache = device.createPipelineCache( pipelineCacheCreateInfo );
+  }
+  {
+    vk::raii::Device            device = nullptr;
+    vk::PipelineCacheCreateInfo pipelineCacheCreateInfo;
+    vk::raii::PipelineCache     pipelineCache( device, pipelineCacheCreateInfo );
+  }
+
+  {
+    vk::raii::PipelineCache pipelineCache = nullptr;
+    std::vector<uint8_t>    data          = pipelineCache.getData();
+  }
+
+  {
+    vk::raii::PipelineCache        dstCache = nullptr;
+    std::vector<vk::PipelineCache> srcCaches;
+    dstCache.merge( srcCaches );
+  }
+
   return 0;
 }

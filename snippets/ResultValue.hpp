@@ -27,6 +27,11 @@
       return std::tuple<Result &, T &>( result, value );
     }
 
+    std::tuple<Result, T> asTuple() &&
+    {
+      return std::make_tuple( result, std::move( value ) );
+    }
+
 	// std::expected-look alike
     bool has_value() const VULKAN_HPP_NOEXCEPT
     {
@@ -57,66 +62,6 @@
       return value;
     }
   };
-
-#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
-  template <typename Type>
-  struct ResultValue<UniqueHandle<Type>>
-  {
-#ifdef VULKAN_HPP_HAS_NOEXCEPT
-    ResultValue(Result r, UniqueHandle<Type> && v) VULKAN_HPP_NOEXCEPT
-#else
-    ResultValue(Result r, UniqueHandle<Type> && v)
-#endif
-      : result(r)
-      , value(std::move(v))
-    {}
-
-    VULKAN_HPP_DEPRECATED(
-      "asTuple() on an l-value is deprecated, as it implicitly moves the UniqueHandle out of the ResultValue. Use asTuple() on an r-value instead, requiring to explicitly move the UniqueHandle." )
-      std::tuple<Result, UniqueHandle<Type>>
-      asTuple() &
-    {
-      return std::make_tuple( result, std::move( value ) );
-    }
-
-    std::tuple<Result, UniqueHandle<Type>> asTuple() &&
-    {
-      return std::make_tuple( result, std::move( value ) );
-    }
-
-    Result                       result;
-    UniqueHandle<Type>  value;
-  };
-
-  template <typename Type>
-  struct ResultValue<std::vector<UniqueHandle<Type>>>
-  {
-#  ifdef VULKAN_HPP_HAS_NOEXCEPT
-    ResultValue( Result r, std::vector<UniqueHandle<Type>> && v ) VULKAN_HPP_NOEXCEPT
-#  else
-    ResultValue( Result r, std::vector<UniqueHandle<Type>> && v )
-#  endif
-      : result( r )
-      , value( std::move( v ) )
-    {}
-
-    VULKAN_HPP_DEPRECATED(
-      "asTuple() on an l-value is deprecated, as it implicitly moves the UniqueHandle out of the ResultValue. Use asTuple() on an r-value instead, requiring to explicitly move the UniqueHandle." )
-      std::tuple<Result, std::vector<UniqueHandle<Type>>>
-      asTuple() &
-    {
-      return std::make_tuple( result, std::move( value ) );
-    }
-
-    std::tuple<Result, std::vector<UniqueHandle<Type>>> asTuple() &&
-    {
-      return std::make_tuple( result, std::move( value ) );
-    }
-
-    Result                                    result;
-    std::vector<UniqueHandle<Type>> value;
-  };
-#endif
 
   template <typename T>
   struct ResultValueType

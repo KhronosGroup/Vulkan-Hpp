@@ -1228,6 +1228,80 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroy( shaderModule );
   }
 
+  // Pipeline Cache commands
+  {
+    vk::Device                  device;
+    vk::PipelineCacheCreateInfo pipelineCacheCreateInfo;
+    vk::AllocationCallbacks     allocationCallbacks;
+    vk::PipelineCache           pipelineCache;
+    vk::Result                  result = device.createPipelineCache( &pipelineCacheCreateInfo, &allocationCallbacks, &pipelineCache );
+  }
+  {
+    vk::Device                  device;
+    vk::PipelineCacheCreateInfo pipelineCacheCreateInfo;
+    vk::PipelineCache           pipelineCache = device.createPipelineCache( pipelineCacheCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::PipelineCache       pipelineCache;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyPipelineCache( pipelineCache, &allocationCallbacks );
+  }
+  {
+    vk::Device        device;
+    vk::PipelineCache pipelineCache;
+    device.destroyPipelineCache( pipelineCache );
+  }
+  {
+    vk::Device              device;
+    vk::PipelineCache       pipelineCache;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( pipelineCache, &allocationCallbacks );
+  }
+  {
+    vk::Device        device;
+    vk::PipelineCache pipelineCache;
+    device.destroy( pipelineCache );
+  }
+
+  {
+    vk::Device        device;
+    vk::PipelineCache pipelineCache;
+    std::size_t       dataSize = 0;
+    vk::Result        result   = device.getPipelineCacheData( pipelineCache, &dataSize, nullptr );
+    if ( result == vk::Result::eSuccess )
+    {
+      std::vector<uint8_t> data( dataSize );
+      result = device.getPipelineCacheData( pipelineCache, &dataSize, data.data() );
+    }
+  }
+  {
+    vk::Device           device;
+    vk::PipelineCache    pipelineCache;
+    std::vector<uint8_t> data = device.getPipelineCacheData( pipelineCache );
+  }
+  {
+    vk::Device        device;
+    vk::PipelineCache pipelineCache;
+    using Allocator = std::allocator<uint8_t>;
+    Allocator                       allocator;
+    std::vector<uint8_t, Allocator> data = device.getPipelineCacheData( pipelineCache, allocator );
+  }
+
+  {
+    vk::Device                     device;
+    vk::PipelineCache              dstCache;
+    std::vector<vk::PipelineCache> srcCaches;
+    vk::Result                     result = device.mergePipelineCaches( dstCache, static_cast<uint32_t>( srcCaches.size() ), srcCaches.data() );
+  }
+  {
+    vk::Device                     device;
+    vk::PipelineCache              dstCache;
+    std::vector<vk::PipelineCache> srcCaches;
+    device.mergePipelineCaches( dstCache, srcCaches );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

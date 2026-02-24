@@ -26,3 +26,5 @@
 #    include <span>
 #  endif
 #endif
+
+#include <vulkan/vulkan_dispatch_loader.hpp>

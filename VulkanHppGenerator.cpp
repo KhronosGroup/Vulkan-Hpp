@@ -246,15 +246,10 @@ void VulkanHppGenerator::generateHppFile() const
       { "baseTypes", generateBaseTypes() },
       { "constexprDefines", generateConstexprDefines() },
       { "defines", readSnippet( "defines.hpp" ) },
-      { "DispatchLoaderBase", readSnippet( "DispatchLoaderBase.hpp" ) },
-      { "DispatchLoaderDynamic", generateDispatchLoaderDynamic() },
-      { "DispatchLoaderStatic", generateDispatchLoaderStatic() },
-      { "DynamicLoader", readSnippet( "DynamicLoader.hpp" ) },
       { "Exceptions", readSnippet( "Exceptions.hpp" ) },
       { "Exchange", readSnippet( "Exchange.hpp" ) },
       { "headerVersion", m_version },
       { "includes", replaceWithMap( readSnippet( "includes.hpp" ), { { "vulkan_h", ( m_api == "vulkansc" ) ? "vulkan_sc_core.h" : ( m_api + ".h" ) } } ) },
-      { "IsDispatchedList", generateIsDispatchedList() },
       { "licenseHeader", m_vulkanLicenseHeader },
       { "ObjectDestroy", readSnippet( "ObjectDestroy.hpp" ) },
       { "ObjectFree", readSnippet( "ObjectFree.hpp" ) },
@@ -322,6 +317,17 @@ void VulkanHppGenerator::generateToStringHppFile() const
                               { "bitmasksToString", generateBitmasksToString() },
                               { "enumsToString", generateEnumsToString() },
                               { "licenseHeader", m_vulkanLicenseHeader } } );
+}
+
+void VulkanHppGenerator::generateDispatchLoaderHppFile() const
+{
+  generateFileFromTemplate( m_api + "_dispatch_loader.hpp",
+                            "DispatchLoaderHppTemplate.hpp",
+                            { 
+                              { "licenseHeader", m_vulkanLicenseHeader },
+                              { "DynamicLoader", readSnippet( "DynamicLoader.hpp" ) },
+                              { "DispatchLoader", generateDispatchLoader() },
+                            } );
 }
 
 void VulkanHppGenerator::prepareRAIIHandles()
@@ -1685,9 +1691,9 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
         cmd.insert(
           pos,
           R"(  // wrapper function for command vkSetDebugUtilsObjectNameEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
-  template <typename HandleType, typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type>
+  template <typename HandleType>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
-                                          Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d ) const
+                                          Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, DispatchLoader const & d ) const
   {
     VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
     // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
@@ -1703,9 +1709,9 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
       {
         cmd.insert( pos, R"(    // wrapper function for command vkSetDebugUtilsObjectNameEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
-    template <typename HandleType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type = true>
+    template <typename HandleType>
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
-      setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 )" );
       }
     }
@@ -1756,9 +1762,9 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
         cmd.insert(
           pos,
           R"(  // wrapper function for command vkSetDebugUtilsObjectTagEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
-  template <typename HandleType, typename TagType, typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type>
+  template <typename HandleType, typename TagType>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
-    Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag, Dispatch const & d ) const
+    Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag, DispatchLoader const & d ) const
   {
     VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
     // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
@@ -1776,9 +1782,9 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
       {
         cmd.insert( pos, R"(    // wrapper function for command vkSetDebugUtilsObjectTagEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
-    template <typename HandleType, typename TagType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type = true>
+    template <typename HandleType, typename TagType>
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type setDebugUtilsObjectTagEXT(
-      HandleType const & handle, uint64_t name, TagType const & tag, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      HandleType const & handle, uint64_t name, TagType const & tag, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 )" );
       }
     }
@@ -1989,7 +1995,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateAllocatorTemplat
           allocatorTemplates += "typename " + startUpperCase( returnDataTypes[i] ) + "Allocator";
           if ( !definition )
           {
-            allocatorTemplates += " = std::allocator<" + ( unique ? ( "UniqueHandle<" + returnDataTypes[i] + ", Dispatch>" ) : returnDataTypes[i] ) + ">";
+            allocatorTemplates += " = std::allocator<" + ( unique ? ( "UniqueHandle<" + returnDataTypes[i] + ">" ) : returnDataTypes[i] ) + ">";
           }
         }
         allocatorTemplates += ", ";
@@ -2173,7 +2179,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
   }
   if ( withDispatcher )
   {
-    arguments.push_back( std::string( "Dispatch const & d" ) + ( definition ? "" : " VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT" ) );
+    arguments.push_back( std::string( "DispatchLoader const & d" ) + ( definition ? "" : " VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT" ) );
   }
   return generateList( arguments, "", ", " );
 }
@@ -2197,7 +2203,7 @@ std::string VulkanHppGenerator::generateArgumentListStandard(
   }
   if ( withDispatcher )
   {
-    argumentList += "Dispatch const & d ";
+    argumentList += "DispatchLoader const & d ";
   }
   else if ( !argumentList.empty() )
   {
@@ -3936,7 +3942,16 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
   std::string argumentTemplates = generateArgumentTemplates( commandData.params, returnParams, vectorParams, templatedParams, chainedReturnParams, false );
   auto [allocatorTemplates, uniqueHandleAllocatorTemplates] =
     generateAllocatorTemplates( returnParams, dataTypes, vectorParams, chainedReturnParams, flavourFlags, definition );
-  std::string typenameCheck       = generateTypenameCheck( returnParams, vectorParams, chainedReturnParams, definition, dataTypes, flavourFlags );
+  std::string templateDecl = "";
+  if ( !argumentTemplates.empty() || !allocatorTemplates.empty() || !uniqueHandleAllocatorTemplates.empty() )
+  {
+    templateDecl = replaceWithMap( "template <${argumentTemplates}${allocatorTemplates}${uniqueHandleAllocatorTemplates}>\n",
+                            { { "argumentTemplates", argumentTemplates },
+                              { "allocatorTemplates", allocatorTemplates },
+                              { "uniqueHandleAllocatorTemplates", uniqueHandleAllocatorTemplates } } );
+    // final entry will be a ", ", so just replace the comma with a blank space
+    templateDecl[templateDecl.find_last_of(',')] = ' ';
+  }
   std::string nodiscard           = generateNoDiscard( !returnParams.empty(), 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
   std::string returnType          = generateReturnType( returnParams, vectorParams, flavourFlags, false, dataTypes );
   std::string decoratedReturnType = generateDecoratedReturnType( commandData, returnParams, vectorParams, enumerating, flavourFlags, returnType );
@@ -3991,14 +4006,12 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
 
     std::string const functionTemplate =
       R"(  // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
-  template <${argumentTemplates}${allocatorTemplates}typename Dispatch${uniqueHandleAllocatorTemplates}${typenameCheck}, typename std::enable_if<IS_DISPATCHED( ${vkCommandName} ), bool>::type>
-  ${nodiscard}VULKAN_HPP_INLINE ${decoratedReturnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const}${noexcept}
+    ${templateDecl}${nodiscard}VULKAN_HPP_INLINE ${decoratedReturnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const}${noexcept}
   {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #if (VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-${functionPointerCheck}
+    ${functionPointerCheck}
 #endif
-${vectorSizeCheck}
+    ${vectorSizeCheck}
     ${dataSizeChecks}
     ${dataDeclarations}
     ${callSequence}
@@ -4008,9 +4021,8 @@ ${vectorSizeCheck}
   })";
 
     return replaceWithMap( functionTemplate,
-                           { { "allocatorTemplates", allocatorTemplates },
+                           { { "templateDecl", templateDecl },
                              { "argumentList", argumentList },
-                             { "argumentTemplates", argumentTemplates },
                              { "callSequence", callSequence },
                              { "className", className },
                              { "classSeparator", classSeparator },
@@ -4025,7 +4037,6 @@ ${vectorSizeCheck}
                              { "noexcept", noexceptString },
                              { "resultCheck", resultCheck },
                              { "returnStatement", returnStatement },
-                             { "typenameCheck", typenameCheck },
                              { "uniqueHandleAllocatorTemplates", uniqueHandleAllocatorTemplates },
                              { "vectorSizeCheck", vectorSizeCheckString },
                              { "vkCommandName", name } } );
@@ -4034,19 +4045,16 @@ ${vectorSizeCheck}
   {
     std::string const functionTemplate =
       R"(    // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
-    template <${argumentTemplates}${allocatorTemplates}typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${uniqueHandleAllocatorTemplates}${typenameCheck}, typename std::enable_if<IS_DISPATCHED( ${vkCommandName} ), bool>::type = true>
-    ${nodiscard}${decoratedReturnType} ${commandName}( ${argumentList} )${const}${noexcept};)";
+    ${templateDecl}${nodiscard}${decoratedReturnType} ${commandName}( ${argumentList} )${const}${noexcept};)";
 
     return replaceWithMap( functionTemplate,
-                           { { "allocatorTemplates", allocatorTemplates },
+                           { { "templateDecl", templateDecl },
                              { "argumentList", argumentList },
-                             { "argumentTemplates", argumentTemplates },
                              { "commandName", commandName },
                              { "const", commandData.handle.empty() ? "" : " const" },
                              { "decoratedReturnType", decoratedReturnType },
                              { "nodiscard", nodiscard },
                              { "noexcept", noexceptString },
-                             { "typenameCheck", typenameCheck },
                              { "uniqueHandleAllocatorTemplates", uniqueHandleAllocatorTemplates },
                              { "vkCommandName", name } } );
   }
@@ -4262,10 +4270,8 @@ std::string VulkanHppGenerator::generateCommandStandard(
 
     std::string const functionTemplate =
       R"(  // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
-  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( ${vkCommandName} ), bool>::type>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const} VULKAN_HPP_NOEXCEPT
   {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     ${functionBody};
   })";
 
@@ -4284,7 +4290,6 @@ std::string VulkanHppGenerator::generateCommandStandard(
   {
     std::string const functionTemplate =
       R"(    // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( ${vkCommandName} ), bool>::type = true>
     ${nodiscard}${returnType} ${commandName}( ${argumentList} VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )${const} VULKAN_HPP_NOEXCEPT;)";
 
     return replaceWithMap( functionTemplate,
@@ -4943,7 +4948,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
     vectorParamIt = vectorParams.find( returnParams[0] );
     if ( vectorParamIt != vectorParams.end() && vectorParamIt->second.byStructure )
     {
-      deleterDefinition = "detail::ObjectDestroy<" + className + ", Dispatch> deleter( *this, allocator, d )";
+      deleterDefinition = "detail::ObjectDestroy<" + className + "> deleter( *this, allocator, d )";
       auto structIt     = m_structs.find( commandData.params[returnParams[0]].type.type );
       assert( structIt != m_structs.end() );
       vectorName = startLowerCase( stripPrefix( structIt->second.members.back().name, "p" ) );
@@ -4954,7 +4959,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
       std::vector<std::string> lenParts = tokenize( commandData.params[returnParams[0]].lenExpression, "->" );
       switch ( lenParts.size() )
       {
-        case 1: deleterDefinition = "detail::ObjectDestroy<" + className + ", Dispatch> deleter( *this, allocator, d )"; break;
+        case 1: deleterDefinition = "detail::ObjectDestroy<" + className + "> deleter( *this, allocator, d )"; break;
         case 2:
           {
             auto vpiIt = vectorParams.find( returnParams[0] );
@@ -4964,7 +4969,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
             assert( !poolType.empty() );
             poolType          = stripPrefix( poolType, "Vk" );
             poolName          = startLowerCase( stripPrefix( lenParts[0], "p" ) ) + "." + poolName;
-            deleterDefinition = "detail::PoolFree<" + className + ", " + poolType + ", Dispatch> deleter( *this, " + poolName + ", d )";
+            deleterDefinition = "detail::PoolFree<" + className + ", " + poolType + "> deleter( *this, " + poolName + ", d )";
           }
           break;
         default: assert( false ); break;
@@ -4979,12 +4984,12 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
     std::string uniqueVectorName = "unique" + startUpperCase( vectorName );
 
     std::string const dataPreparationTemplate =
-      R"(std::vector<UniqueHandle<${handleType}, Dispatch>, ${handleType}Allocator> ${uniqueVectorName}${vectorAllocator};
+      R"(std::vector<UniqueHandle<${handleType}>, ${handleType}Allocator> ${uniqueVectorName}${vectorAllocator};
     ${uniqueVectorName}.reserve( ${vectorSize} );
     ${deleterDefinition};
     for ( auto const & ${elementName} : ${vectorName} )
     {
-      ${uniqueVectorName}.push_back( UniqueHandle<${handleType}, Dispatch>( ${elementName}, deleter ) );
+      ${uniqueVectorName}.push_back( UniqueHandle<${handleType}>( ${elementName}, deleter ) );
     })";
 
     return replaceWithMap( dataPreparationTemplate,
@@ -5386,140 +5391,47 @@ std::string VulkanHppGenerator::generateDeprecatedStructSetters( std::string con
   return str;
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderDynamic() const
+std::string VulkanHppGenerator::generateDispatchLoader() const
 {
-  std::string const dispatchLoaderDynamicTemplate = R"(
-  using PFN_dummy = void ( * )();
-
-  class DispatchLoaderDynamic : public DispatchLoaderBase
-  {
-  public:
-${commandMembers}
-
-  public:
-    DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT = default;
-    DispatchLoaderDynamic( DispatchLoaderDynamic const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-    DispatchLoaderDynamic(PFN_vkGetInstanceProcAddr getInstanceProcAddr) VULKAN_HPP_NOEXCEPT
-    {
-      init(getInstanceProcAddr);
-    }
-
-    // This interface does not require a linked vulkan library.
-    DispatchLoaderDynamic( VkInstance                instance,
-                           PFN_vkGetInstanceProcAddr getInstanceProcAddr,
-                           VkDevice                  device            = {},
-                           PFN_vkGetDeviceProcAddr   getDeviceProcAddr = nullptr ) VULKAN_HPP_NOEXCEPT
-    {
-      init( instance, getInstanceProcAddr, device, getDeviceProcAddr );
-    }
-
-    template <typename DynamicLoader
-#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
-      = VULKAN_HPP_NAMESPACE::detail::DynamicLoader
-#endif
-    >
-    void init()
-    {
-      static DynamicLoader dl;
-      init( dl );
-    }
-
-    template <typename DynamicLoader>
-    void init( DynamicLoader const & dl ) VULKAN_HPP_NOEXCEPT
-    {
-      PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.template getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
-      init( getInstanceProcAddr );
-    }
-
-    void init( PFN_vkGetInstanceProcAddr getInstanceProcAddr ) VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT(getInstanceProcAddr);
-
-      vkGetInstanceProcAddr = getInstanceProcAddr;
-
-${initialCommandAssignments}
-    }
-
-    // This interface does not require a linked vulkan library.
-    void init( VkInstance                instance,
-               PFN_vkGetInstanceProcAddr getInstanceProcAddr,
-               VkDevice                  device              = {},
-               PFN_vkGetDeviceProcAddr /*getDeviceProcAddr*/ = nullptr ) VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT(instance && getInstanceProcAddr);
-      vkGetInstanceProcAddr = getInstanceProcAddr;
-      init( Instance(instance) );
-      if (device)
-      {
-        init( Device(device) );
-      }
-    }
-
-    void init( Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
-    {
-      VkInstance instance = static_cast<VkInstance>( instanceCpp );
-
-${instanceCommandAssignments}
-    }
-
-    void init( Device deviceCpp ) VULKAN_HPP_NOEXCEPT
-    {
-      VkDevice device = static_cast<VkDevice>( deviceCpp );
-
-${deviceCommandAssignments}
-    }
-
-    template <typename DynamicLoader>
-    void init( Instance const & instance, Device const & device, DynamicLoader const & dl ) VULKAN_HPP_NOEXCEPT
-    {
-      PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.template getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
-      PFN_vkGetDeviceProcAddr getDeviceProcAddr = dl.template getProcAddress<PFN_vkGetDeviceProcAddr>( "vkGetDeviceProcAddr" );
-      init( static_cast<VkInstance>( instance ), getInstanceProcAddr, static_cast<VkDevice>( device ), device ? getDeviceProcAddr : nullptr );
-    }
-
-    template <typename DynamicLoader
-#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
-      = VULKAN_HPP_NAMESPACE::detail::DynamicLoader
-#endif
-    >
-    void init( Instance const & instance, Device const & device ) VULKAN_HPP_NOEXCEPT
-    {
-      static DynamicLoader dl;
-      init(instance, device, dl);
-    }
-  };
-)";
+  const std::string dispatchLoader = readSnippet( "DispatchLoader.hpp" );
 
   std::string           commandMembers, deviceCommandAssignments, initialCommandAssignments, instanceCommandAssignments;
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
   for ( auto const & feature : m_features )
   {
-    commandMembers += generateDispatchLoaderDynamicCommandMembers( feature.requireData, listedCommands, feature.name );
-    initialCommandAssignments += generateDispatchLoaderDynamicInitialCommandAssignment( feature.requireData, listedCommands, feature.name );
-    instanceCommandAssignments += generateDispatchLoaderDynamicInstanceCommandAssignment( feature.requireData, listedCommands, feature.name );
-    deviceCommandAssignments += generateDispatchLoaderDynamicDeviceCommandAssignment( feature.requireData, listedCommands, feature.name );
+    commandMembers += generateDispatchLoaderCommandMembers( feature.requireData, listedCommands, feature.name, true );
+    initialCommandAssignments += generateDispatchLoaderInitialCommandAssignment( feature.requireData, listedCommands, feature.name );
+    instanceCommandAssignments += generateDispatchLoaderInstanceCommandAssignment( feature.requireData, listedCommands, feature.name );
+    deviceCommandAssignments += generateDispatchLoaderDeviceCommandAssignment( feature.requireData, listedCommands, feature.name );
     forEachRequiredCommand( feature.requireData, [&listedCommands]( NameLine const & command, auto const & ) { listedCommands.insert( command.name ); } );
   }
+  // WSI extensions are part of the static loader
+  std::array<std::string, 11> staticLoaderExtensions
+  {
+    "VK_KHR_surface", "VK_KHR_swapchain", "VK_KHR_display", "VK_KHR_display_swapchain", "VK_EXT_headless_surface", "VK_KHR_get_display_properties2",
+    "VK_KHR_win32_surface", "VK_KHR_xlib_surface", "VK_KHR_xcb_surface", "VK_KHR_wayland_surface", "VK_KHR_android_surface"
+  };
   for ( auto const & extension : m_extensions )
   {
-    commandMembers += generateDispatchLoaderDynamicCommandMembers( extension.requireData, listedCommands, extension.name );
-    initialCommandAssignments += generateDispatchLoaderDynamicInitialCommandAssignment( extension.requireData, listedCommands, extension.name );
-    instanceCommandAssignments += generateDispatchLoaderDynamicInstanceCommandAssignment( extension.requireData, listedCommands, extension.name );
-    deviceCommandAssignments += generateDispatchLoaderDynamicDeviceCommandAssignment( extension.requireData, listedCommands, extension.name );
+    bool staticallyLoaded = std::find( staticLoaderExtensions.cbegin(), staticLoaderExtensions.cend(), extension.name ) != staticLoaderExtensions.cend();
+    commandMembers += generateDispatchLoaderCommandMembers( extension.requireData, listedCommands, extension.name, staticallyLoaded );
+    initialCommandAssignments += generateDispatchLoaderInitialCommandAssignment( extension.requireData, listedCommands, extension.name );
+    instanceCommandAssignments += generateDispatchLoaderInstanceCommandAssignment( extension.requireData, listedCommands, extension.name );
+    deviceCommandAssignments += generateDispatchLoaderDeviceCommandAssignment( extension.requireData, listedCommands, extension.name );
     forEachRequiredCommand( extension.requireData, [&listedCommands]( NameLine const & command, auto const & ) { listedCommands.insert( command.name ); } );
   }
 
-  return replaceWithMap( dispatchLoaderDynamicTemplate,
+  return replaceWithMap( dispatchLoader,
                          { { "commandMembers", commandMembers },
                            { "deviceCommandAssignments", deviceCommandAssignments },
                            { "initialCommandAssignments", initialCommandAssignments },
                            { "instanceCommandAssignments", instanceCommandAssignments } } );
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandMembers( std::vector<RequireData> const & requireData,
-                                                                             std::set<std::string> const &    listedCommands,
-                                                                             std::string const &              title ) const
+std::string VulkanHppGenerator::generateDispatchLoaderCommandMembers( std::vector<RequireData> const & requireData,
+                                                                      std::set<std::string> const &    listedCommands,
+                                                                      std::string const &              title,
+                                                                      bool                             staticallyLoaded ) const
 {
   std::string members, placeholders;
   forEachRequiredCommand( requireData,
@@ -5527,14 +5439,17 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandMembers( std
                           {
                             if ( !listedCommands.contains( command.name ) )
                             {
-                              members += "    PFN_" + command.name + " " + command.name + " = 0;\n";
+                              if ( staticallyLoaded ) {
+                                members    += "    PFN_" + command.name + " " + command.name + " = VULKAN_HPP_DEFAULT_ADDR( " + command.name + " );\n";
+                              }
+                              else members += "    PFN_" + command.name + " " + command.name + " = 0;\n";
                               placeholders += "    PFN_dummy " + command.name + "_placeholder = 0;\n";
                             }
                           } );
   return addTitleAndProtection( title, members, placeholders );
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderDynamicDeviceCommandAssignment( std::vector<RequireData> const & requireData,
+std::string VulkanHppGenerator::generateDispatchLoaderDeviceCommandAssignment( std::vector<RequireData> const & requireData,
                                                                                       std::set<std::string> const &    listedCommands,
                                                                                       std::string const &              title ) const
 {
@@ -5544,13 +5459,13 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicDeviceCommandAssign
                           {
                             if ( !listedCommands.contains( command.name ) && !commandData.second.handle.empty() && isDeviceCommand( commandData.second ) )
                             {
-                              deviceCommandAssignments += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "device" );
+                              deviceCommandAssignments += generateDispatchLoaderCommandAssignment( command.name, commandData.first, "device" );
                             }
                           } );
   return addTitleAndProtection( title, deviceCommandAssignments );
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderDynamicInitialCommandAssignment( std::vector<RequireData> const & requireData,
+std::string VulkanHppGenerator::generateDispatchLoaderInitialCommandAssignment( std::vector<RequireData> const & requireData,
                                                                                        std::set<std::string> const &    listedCommands,
                                                                                        std::string const &              title ) const
 {
@@ -5560,13 +5475,13 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicInitialCommandAssig
                           {
                             if ( !listedCommands.contains( command.name ) && commandData.second.handle.empty() )
                             {
-                              initialCommandAssignments += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "NULL" );
+                              initialCommandAssignments += generateDispatchLoaderCommandAssignment( command.name, commandData.first, "NULL" );
                             }
                           } );
   return addTitleAndProtection( title, initialCommandAssignments );
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderDynamicInstanceCommandAssignment( std::vector<RequireData> const & requireData,
+std::string VulkanHppGenerator::generateDispatchLoaderInstanceCommandAssignment( std::vector<RequireData> const & requireData,
                                                                                         std::set<std::string> const &    listedCommands,
                                                                                         std::string const &              title ) const
 {
@@ -5576,49 +5491,38 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicInstanceCommandAssi
                           {
                             if ( !listedCommands.contains( command.name ) && !commandData.second.handle.empty() )
                             {
-                              instanceCommandAssignments += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "instance" );
+                              instanceCommandAssignments += generateDispatchLoaderCommandAssignment( command.name, commandData.first, "instance" );
                             }
                           } );
   return addTitleAndProtection( title, instanceCommandAssignments );
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderStatic() const
+std::string VulkanHppGenerator::generateDispatchLoaderCommandAssignment( std::string const & commandName,
+                                                                                std::string const & aliasName,
+                                                                                std::string const & firstArg ) const
 {
-  std::string const dispatchLoaderStaticTemplate = R"(
-#if !defined( VK_NO_PROTOTYPES ) || ( defined( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC ) && ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 0 ) )
-  class DispatchLoaderStatic : public DispatchLoaderBase
+  if ( commandName == "vkGetInstanceProcAddr" )
   {
-  public:
-  // These commands are listed as `VULKAN_HPP_INLINE` to account for P1779R3: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p1779r3.html
-  // That is, member functions defined in a class definition in a module interface unit are no longer implicitly inline.
-${commands}
-  };
-
-  inline DispatchLoaderStatic & getDispatchLoaderStatic()
-  {
-    static DispatchLoaderStatic dls;
-    return dls;
+    // Don't overwite vkGetInstanceProcAddr with NULL.
+    return "";
   }
-#endif
-)";
-
-  std::string           commands;
-  std::set<std::string> listedCommands;
-  for ( auto const & feature : m_features )
+  std::string str = "      " +
+                    commandName +
+                    " = PFN_" +
+                    commandName +
+                    "( vkGet" +
+                    ( ( firstArg == "device" ) ? "Device" : "Instance" ) +
+                    "ProcAddr( " +
+                    firstArg +
+                    ", \"" +
+                    commandName +
+                    "\" ) );\n";
+  // if this is an alias'ed function, use it as a fallback for the original one
+  if ( commandName != aliasName )
   {
-    commands += generateDispatchLoaderStaticCommands( feature.requireData, listedCommands, feature.name );
+    str += "      if ( !" + aliasName + " ) " + aliasName + " = " + commandName + ";\n";
   }
-
-  auto const [onlyexportedEnter, onlyexportedLeave] = generateProtection( "VK_ONLY_EXPORTED_PROTOTYPES", false );
-  commands += onlyexportedEnter;
-
-  for ( auto const & extension : m_extensions )
-  {
-    commands += generateDispatchLoaderStaticCommands( extension.requireData, listedCommands, extension.name );
-  }
-  commands += onlyexportedLeave;
-
-  return replaceWithMap( dispatchLoaderStaticTemplate, { { "commands", commands } } );
+  return str;
 }
 
 std::string VulkanHppGenerator::generateDestroyCommand( std::string const & name, CommandData const & commandData ) const
@@ -5673,73 +5577,6 @@ std::string VulkanHppGenerator::generateDestroyCommand( std::string const & name
   return "";
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName,
-                                                                                std::string const & aliasName,
-                                                                                std::string const & firstArg ) const
-{
-  if ( commandName == "vkGetInstanceProcAddr" )
-  {
-    // Don't overwite vkGetInstanceProcAddr with NULL.
-    return "";
-  }
-  std::string str = "      " +
-                    commandName +
-                    " = PFN_" +
-                    commandName +
-                    "( vkGet" +
-                    ( ( firstArg == "device" ) ? "Device" : "Instance" ) +
-                    "ProcAddr( " +
-                    firstArg +
-                    ", \"" +
-                    commandName +
-                    "\" ) );\n";
-  // if this is an alias'ed function, use it as a fallback for the original one
-  if ( commandName != aliasName )
-  {
-    str += "      if ( !" + aliasName + " ) " + aliasName + " = " + commandName + ";\n";
-  }
-  return str;
-}
-
-std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vector<RequireData> const & requireData,
-                                                                      std::set<std::string> &          listedCommands,
-                                                                      std::string const &              title ) const
-{
-  std::string str;
-  forEachRequiredCommand( requireData,
-                          [&]( NameLine const & command, auto const & commandData )
-                          {
-                            // some commands are listed for multiple extensions !
-                            if ( listedCommands.insert( command.name ).second )
-                            {
-                              str += "\n";
-                              std::string parameterList, parameters;
-                              assert( !commandData.second.params.empty() );
-                              for ( auto param : commandData.second.params )
-                              {
-                                parameterList += param.type.compose( "" ) + " " + param.name + generateCArraySizes( param.arraySizes ) + ", ";
-                                parameters += param.name + ", ";
-                              }
-                              assert( parameterList.ends_with( ", " ) && parameters.ends_with( ", " ) );
-                              parameterList.resize( parameterList.size() - 2 );
-                              parameters.resize( parameters.size() - 2 );
-
-                              std::string const commandTemplate = R"(
-    VULKAN_HPP_INLINE ${returnType} ${commandName}( ${parameterList} ) const VULKAN_HPP_NOEXCEPT
-    {
-      return ::${commandName}( ${parameters} );
-    }
-)";
-
-                              str += replaceWithMap( commandTemplate,
-                                                     { { "commandName", command.name },
-                                                       { "parameterList", parameterList },
-                                                       { "parameters", parameters },
-                                                       { "returnType", commandData.second.returnType.type } } );
-                            }
-                          } );
-  return addTitleAndProtection( title, str );
-}
 
 std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> const & enumData, std::string const & surroundingProtect ) const
 {
@@ -7119,50 +6956,6 @@ ${typeTraits}
   return replaceWithMap( typeTraitsTemplate, { { "typeTraits", typeTraits } } );
 }
 
-std::string VulkanHppGenerator::generateIsDispatchedList() const
-{
-  std::string const isDispatchedListTemplate = R"(
-  //==========================
-  //=== Is Dispatched List ===
-  //==========================
-
-  // C++11-compatible void_t
-  template <typename...>
-  struct voider { typedef void type; };
-  template <typename... Ts>
-  using void_t = typename voider<Ts...>::type;
-
-  // helper macro to declare a SFINAE-friendly has_<fn> trait
-# define DECLARE_IS_DISPATCHED( name )                                              \
-  template <typename D, typename = void>                                             \
-  struct has_##name : std::false_type                                                \
-  {                                                                                  \
-  };                                                                                 \
-  template <typename D>                                                               \
-  struct has_##name<D, void_t<decltype( &D::name )>> : std::true_type                \
-  {                                                                                  \
-  };
-
-  ${isDispatchedList}
-
-# undef DECLARE_IS_DISPATCHED
-
-# define IS_DISPATCHED( name ) ::VULKAN_HPP_NAMESPACE::detail::has_##name<Dispatch>::value
-)";
-
-  std::string isDispatchedList;
-  for ( auto const & command : m_commands )
-  {
-    isDispatchedList += "DECLARE_IS_DISPATCHED( " + command.first + " )\n";
-    for ( auto const & alias : command.second.aliases )
-    {
-      isDispatchedList += "DECLARE_IS_DISPATCHED( " + alias.first + " )\n";
-    }
-  }
-
-  return replaceWithMap( isDispatchedListTemplate, { { "isDispatchedList", isDispatchedList } } );
-}
-
 std::string VulkanHppGenerator::generateLayerSettingTypeTraits() const
 {
 #if !defined( NDEBUG )
@@ -7379,7 +7172,7 @@ std::string VulkanHppGenerator::generateObjectDeleter( std::string const & comma
 
   std::string className  = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "";
   std::string parentName = ( className.empty() || ( commandData.params[returnParam].type.type == "VkDevice" ) ) ? "detail::NoParent" : className;
-  return objectDeleter + "<" + parentName + ", Dispatch>( " + ( ( parentName == "detail::NoParent" ) ? "" : "*this, " ) + allocator + "d )";
+  return objectDeleter + "<" + parentName + ">( " + ( ( parentName == "detail::NoParent" ) ? "" : "*this, " ) + allocator + "d )";
 }
 
 std::string VulkanHppGenerator::generateObjectTypeToDebugReportObjectType() const
@@ -7633,7 +7426,7 @@ std::string VulkanHppGenerator::generateRAIIDispatchers() const
   }
 
   std::string contextDispatcherTemplate = R"(
-    class ContextDispatcher : public ::VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase
+    class ContextDispatcher
     {
     public:
       ContextDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
@@ -7649,7 +7442,7 @@ ${contextMembers}
   std::string str = replaceWithMap( contextDispatcherTemplate, { { "contextInitializers", contextInitializers }, { "contextMembers", contextMembers } } );
 
   std::string instanceDispatcherTemplate = R"(
-    class InstanceDispatcher : public ::VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase
+    class InstanceDispatcher
     {
     public:
       InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr, VkInstance instance )
@@ -7669,7 +7462,7 @@ ${instanceMembers}
   str += replaceWithMap( instanceDispatcherTemplate, { { "instanceAssignments", instanceAssignments }, { "instanceMembers", instanceMembers } } );
 
   std::string deviceDispatcherTemplate = R"(
-    class DeviceDispatcher : public ::VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase
+    class DeviceDispatcher
     {
     public:
       DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr, VkDevice device ) : vkGetDeviceProcAddr( getProcAddr )
@@ -7904,7 +7697,6 @@ ${getConstructorSuccessCode}
 ${getParent}
     ${dispatcherType} const * getDispatcher() const
     {
-      VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
       return ${getDispatcherReturn}m_dispatcher;
     }
 
@@ -9071,7 +8863,6 @@ std::string VulkanHppGenerator::generateRAIIHandleContext( std::pair<std::string
 
       detail::ContextDispatcher const * getDispatcher() const
       {
-        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return &*m_dispatcher;
       }
 
@@ -9783,7 +9574,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
         {
           returnStatement += "UniqueHandle<" +
                              dataType +
-                             ", Dispatch>( " +
+                             ">( " +
                              returnVariable +
                              ", " +
                              generateObjectDeleter( commandName, commandData, initialSkipCount, returnParam ) +
@@ -9841,11 +9632,11 @@ std::string VulkanHppGenerator::generateReturnType( std::vector<size_t> const & 
       {
         if ( vectorParams.contains( returnParams[0] ) && !singular )
         {
-          returnType = "std::vector<UniqueHandle<" + dataTypes[0] + ", Dispatch>, " + stripPrefix( dataTypes[0], "VULKAN_HPP_NAMESPACE::" ) + "Allocator>";
+          returnType = "std::vector<UniqueHandle<" + dataTypes[0] + ">, " + stripPrefix( dataTypes[0], "VULKAN_HPP_NAMESPACE::" ) + "Allocator>";
         }
         else
         {
-          returnType = "UniqueHandle<" + dataTypes[0] + ", Dispatch>";
+          returnType = "UniqueHandle<" + dataTypes[0] + ">";
         }
       }
       else
@@ -11630,7 +11421,7 @@ std::string VulkanHppGenerator::generateTypenameCheck( std::vector<size_t> const
         std::string extendedElementType = elementType;
         if ( flavourFlags & CommandFlavourFlagBits::unique )
         {
-          extendedElementType = "UniqueHandle<" + elementType + ", Dispatch>";
+          extendedElementType = "UniqueHandle<" + elementType + ">";
         }
         elementType = startUpperCase( stripPrefix( elementType, "VULKAN_HPP_NAMESPACE::" ) );
         if ( !enableIf.empty() )
@@ -11812,13 +11603,14 @@ std::string VulkanHppGenerator::generateUniqueHandle( std::pair<std::string, Han
     aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( alias.first, "Vk" ) }, { "type", type } } );
   }
 
-  static std::string const uniqueHandleTemplate = R"(  template <typename Dispatch>
-  class UniqueHandleTraits<${type}, Dispatch>
+    static std::string const uniqueHandleTemplate = R"(
+  template <>
+  class UniqueHandleTraits<${type}>
   {
   public:
-    using deleter = detail::${deleterType}${deleterAction}<${deleterParent}${deleterPool}, Dispatch>;
+    using deleter = detail::${deleterType}${deleterAction}<${deleterParent}${deleterPool}>;
   };
-  using Unique${type} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+  using Unique${type} = UniqueHandle<${type}>;
 ${aliasHandle})";
 
   assert( !handleData.second.constructorIts.empty() );
@@ -16772,6 +16564,7 @@ int main( int argc, char const ** argv )
     generator.generateStaticAssertionsHppFile();
     generator.generateStructsHppFile();
     generator.generateToStringHppFile();
+    generator.generateDispatchLoaderHppFile();
 
     // this modifies the generator data and needs to be done after all the other generations are done
     generator.distributeSecondLevelCommands();

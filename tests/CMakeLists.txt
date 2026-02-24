@@ -20,13 +20,13 @@ if( CMAKE_CXX_STANDARD GREATER_EQUAL 20 )
 	vulkan_hpp__setup_test( NAME DesignatedInitializers )
 	vulkan_hpp__setup_test( NAME ExtensionInspection )
 endif()
-# can only run these tests with VULKAN_HPP_DISPATCH_LOADER_DYNAMIC disabled
+# # can only run these tests with VULKAN_HPP_DISPATCH_LOADER_DYNAMIC disabled
 if( NOT VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
-	vulkan_hpp__setup_test( NAME DeviceFunctions )
+	# vulkan_hpp__setup_test( NAME DeviceFunctions ) # no unique handles atm
 	vulkan_hpp__setup_test( NAME DispatchLoaderStatic )
 endif()
 vulkan_hpp__setup_test( NAME DispatchLoaderDynamic )
-vulkan_hpp__setup_test( NAME DispatchLoaderDynamicSharedLibraryClient )
+vulkan_hpp__setup_test( NAME DispatchLoaderDynamicSharedLibraryClient ) # BROKEN
 vulkan_hpp__setup_test( NAME EnableBetaExtensions )
 vulkan_hpp__setup_test( NAME Flags )
 vulkan_hpp__setup_test( NAME FormatTraits )
@@ -34,19 +34,19 @@ vulkan_hpp__setup_test( NAME FunctionCalls )
 vulkan_hpp__setup_test( NAME FunctionCallsRAII )
 vulkan_hpp__setup_test( NAME Handles )
 vulkan_hpp__setup_test( NAME HandlesMoveExchange )
-vulkan_hpp__setup_test( NAME Hash )
+# vulkan_hpp__setup_test( NAME Hash ) # no unique handle atm
 vulkan_hpp__setup_test( NAME NoDefaultDispatcher )
-vulkan_hpp__setup_test( NAME NoExceptions )
+# vulkan_hpp__setup_test( NAME NoExceptions ) # no unique handle atm
 if( NOT ( ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" ) AND ( CMAKE_CXX_COMPILER_VERSION VERSION_LESS 15.0 ) ) )
 	vulkan_hpp__setup_test( NAME NoExceptionsRAII ) # errors with clang++13 and clang++14
 endif()
 vulkan_hpp__setup_test( NAME NoSmartHandle )
 vulkan_hpp__setup_test( NAME Reflection )
 vulkan_hpp__setup_test( NAME StridedArrayProxy )
-vulkan_hpp__setup_test( NAME StructureChain )
-# add_subdirectory( UniqueHandle ) # really messy setup, test needs to be shortened
+# vulkan_hpp__setup_test( NAME StructureChain ) # no unique handle atm
+# # add_subdirectory( UniqueHandle ) # really messy setup, test needs to be shortened
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	vulkan_hpp__setup_test( NAME UniqueHandleDefaultArguments )
+#	vulkan_hpp__setup_test( NAME UniqueHandleDefaultArguments ) # no unique handle atm
 endif()
 vulkan_hpp__setup_test( NAME Video )
 

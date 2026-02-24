@@ -1,4 +1,4 @@
-template <typename OwnerType, typename Dispatch>
+template <typename OwnerType>
 class ObjectDestroy
 {
 public:
@@ -6,7 +6,7 @@ public:
 
   ObjectDestroy( OwnerType                           owner,
                  Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
-                 Dispatch const & dispatch           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+                 DispatchLoader const & dispatch     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
     : m_owner( owner )
     , m_allocationCallbacks( allocationCallbacks )
     , m_dispatch( &dispatch )
@@ -23,7 +23,7 @@ public:
     return m_allocationCallbacks;
   }
 
-  Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+  DispatchLoader const & getDispatch() const VULKAN_HPP_NOEXCEPT
   {
     return *m_dispatch;
   }
@@ -39,19 +39,19 @@ protected:
 private:
   OwnerType                           m_owner               = {};
   Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
-  Dispatch const *                    m_dispatch            = nullptr;
+  DispatchLoader const *              m_dispatch            = nullptr;
 };
 
 class NoParent;
 
-template <typename Dispatch>
-class ObjectDestroy<NoParent, Dispatch>
+template<>
+class ObjectDestroy<NoParent>
 {
 public:
   ObjectDestroy() = default;
 
   ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks,
-                 Dispatch const & dispatch           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+                 DispatchLoader const & dispatch     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
     : m_allocationCallbacks( allocationCallbacks )
     , m_dispatch( &dispatch )
   {
@@ -62,7 +62,7 @@ public:
     return m_allocationCallbacks;
   }
 
-  Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+  DispatchLoader const & getDispatch() const VULKAN_HPP_NOEXCEPT
   {
     return *m_dispatch;
   }
@@ -77,10 +77,10 @@ protected:
 
 private:
   Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
-  Dispatch const *                    m_dispatch            = nullptr;
+  DispatchLoader const *              m_dispatch            = nullptr;
 };
 
-template <typename OwnerType, typename Dispatch>
+template <typename OwnerType>
 class DummyDestroy
 {
 public:
@@ -88,7 +88,7 @@ public:
 
   DummyDestroy( OwnerType                           owner,
                 Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
-                Dispatch const & dispatch           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+                DispatchLoader const & dispatch     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
     : m_owner( owner )
     , m_allocationCallbacks( allocationCallbacks )
     , m_dispatch( &dispatch )
@@ -105,7 +105,7 @@ public:
     return m_allocationCallbacks;
   }
 
-  Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+  DispatchLoader const & getDispatch() const VULKAN_HPP_NOEXCEPT
   {
     return *m_dispatch;
   }
@@ -119,5 +119,5 @@ protected:
 private:
   OwnerType                           m_owner               = {};
   Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
-  Dispatch const *                    m_dispatch            = nullptr;
+  DispatchLoader const *              m_dispatch            = nullptr;
 };

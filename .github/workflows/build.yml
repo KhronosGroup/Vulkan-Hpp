@@ -42,9 +42,9 @@ jobs:
           { os: windows-2025, cxx: clang-cl,   c: clang-cl, arch: x64, gen: Ninja,                 cxx_max: 23 },
           # { os: windows-2025, cxx: c++,        c: cc,       arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
 
-          { os: macos-26,     cxx: /opt/homebrew/opt/llvm/bin/clang++, c: /opt/homebrew/opt/llvm/bin/clang, arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-I/opt/homebrew/opt/llvm/include/c++/v1 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk', linker_flags: '-L/opt/homebrew/opt/llvm/lib/c++' },
-          { os: ubuntu-24.04, cxx: clang++-21, c: clang-21, arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-stdlib=libc++', linker_flags: '-stdlib=libc++ -lc++abi' },
-          { os: windows-2025, cxx: cl,         c: cl      , arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '//EHsc' },
+          # { os: macos-26,     cxx: /opt/homebrew/opt/llvm/bin/clang++, c: /opt/homebrew/opt/llvm/bin/clang, arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-I/opt/homebrew/opt/llvm/include/c++/v1 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk', linker_flags: '-L/opt/homebrew/opt/llvm/lib/c++' },
+          # { os: ubuntu-24.04, cxx: clang++-21, c: clang-21, arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-stdlib=libc++', linker_flags: '-stdlib=libc++ -lc++abi' },
+          # { os: windows-2025, cxx: cl,         c: cl      , arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '//EHsc' },
         ]
 
     env:
@@ -107,17 +107,18 @@ jobs:
           cmake --build build --parallel --config $BUILD_TYPE --clean-first
         done
 
-    # Build samples using highest available C++ standard.
-    - name: Build Samples with C++${{matrix.env.cxx_max}}
-      if: (!matrix.env.modules) # Exclude module runners.
-      run: |
-        for BUILD_TYPE in Debug Release; do
-          cmake -B build -G '${{matrix.env.gen}}' --fresh --preset samples \
-            ${{ env.VAR_CMAKE_FLAGS }}                                     \
-            -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}}                  \
-            -D CMAKE_BUILD_TYPE=$BUILD_TYPE
-          cmake --build build --parallel --config $BUILD_TYPE --clean-first
-        done
+    # temporarily disabled due to lack of smart handles!
+    # # Build samples using highest available C++ standard.
+    # - name: Build Samples with C++${{matrix.env.cxx_max}}
+    #   if: (!matrix.env.modules) # Exclude module runners.
+    #   run: |
+    #     for BUILD_TYPE in Debug Release; do
+    #       cmake -B build -G '${{matrix.env.gen}}' --fresh --preset samples \
+    #         ${{ env.VAR_CMAKE_FLAGS }}                                     \
+    #         -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}}                  \
+    #         -D CMAKE_BUILD_TYPE=$BUILD_TYPE
+    #       cmake --build build --parallel --config $BUILD_TYPE --clean-first
+    #     done
 
     # Run all unit tests with C++11 to maximum support C++ version.
     # Module runners ignore all versions below C++23

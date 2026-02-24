@@ -8795,8 +8795,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                    reinterpret_cast<VkDisplayModeKHR *>( &mode ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::createDisplayModeKHRUnique" );
 
-    return detail::createResultValueType(
-      result, UniqueHandle<DisplayModeKHR, Dispatch>( mode, detail::ObjectDestroy<PhysicalDevice, Dispatch>( *this, allocator, d ) ) );
+    return detail::createResultValueType( result, UniqueHandle<DisplayModeKHR>( mode, detail::DummyDestroy<PhysicalDevice>( *this, allocator, d ) ) );
   }
 #  endif /* VULKAN_HPP_NO_SMART_HANDLE */
 #endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
@@ -27992,13 +27991,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   // wrapper function for command vkGetPhysicalDeviceUbmPresentationSupportSEC, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceUbmPresentationSupportSEC.html
-  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceUbmPresentationSupportSEC ), bool>::type>
-  VULKAN_HPP_INLINE Bool32 PhysicalDevice::getUbmPresentationSupportSEC( uint32_t queueFamilyIndex, struct ubm_device * ubm_device, Dispatch const & d )
+  VULKAN_HPP_INLINE Bool32 PhysicalDevice::getUbmPresentationSupportSEC( uint32_t queueFamilyIndex, struct ubm_device * device, DispatchLoader const & d )
     const VULKAN_HPP_NOEXCEPT
   {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    return static_cast<Bool32>(
-      d.vkGetPhysicalDeviceUbmPresentationSupportSEC( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, ubm_device ) );
+    return static_cast<Bool32>( d.vkGetPhysicalDeviceUbmPresentationSupportSEC( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, device ) );
   }
 
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE

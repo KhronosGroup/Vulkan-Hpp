@@ -32,5 +32,8 @@ int main( int /*argc*/, char ** /*argv*/ )
   vk::PhysicalDevice phys              = {};
   auto               uniqueDisplayMode = phys.createDisplayModeKHRUnique( {}, {} );
 
+  vk::Device device           = {};
+  auto       uniquePerfConfig = device.acquirePerformanceConfigurationINTELUnique( {} );
+
   return 0;
 }

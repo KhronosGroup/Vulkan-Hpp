@@ -2752,7 +2752,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   class UniqueHandleTraits<DisplayKHR, Dispatch>
   {
   public:
-    using deleter = detail::ObjectDestroy<PhysicalDevice, Dispatch>;
+    using deleter = detail::ObjectRelease<PhysicalDevice, Dispatch>;
   };
 
   using UniqueDisplayKHR = UniqueHandle<DisplayKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
@@ -2869,7 +2869,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   class UniqueHandleTraits<PerformanceConfigurationINTEL, Dispatch>
   {
   public:
-    using deleter = detail::ObjectDestroy<Device, Dispatch>;
+    using deleter = detail::ObjectRelease<Device, Dispatch>;
   };
 
   using UniquePerformanceConfigurationINTEL = UniqueHandle<PerformanceConfigurationINTEL, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;

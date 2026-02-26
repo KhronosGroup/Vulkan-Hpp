@@ -35,7 +35,7 @@
 static char const * AppName    = "07_InitUniformBuffer";
 static char const * EngineName = "Vulkan.hpp";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

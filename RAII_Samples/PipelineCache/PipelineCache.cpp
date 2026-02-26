@@ -68,7 +68,7 @@ timestamp_t getMilliseconds()
 static char const * AppName    = "PipelineCache";
 static char const * EngineName = "Vulkan.hpp";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

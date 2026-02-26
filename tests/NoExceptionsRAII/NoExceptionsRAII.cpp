@@ -31,7 +31,7 @@ import vulkan;
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
 #if defined( VULKAN_HPP_NO_EXCEPTIONS )
   vk::raii::Context context;

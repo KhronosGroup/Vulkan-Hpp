@@ -41,7 +41,7 @@ import vulkan;
 static char const * AppName    = "StructureChain";
 static char const * EngineName = "Vulkan.hpp";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   vk::AabbPositionsKHR a;
   auto                 ra = a.reflect();

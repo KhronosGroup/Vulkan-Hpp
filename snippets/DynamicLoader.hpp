@@ -103,7 +103,7 @@
     }
 
     template <typename T>
-    T getProcAddress( const char* function ) const VULKAN_HPP_NOEXCEPT
+    T getProcAddress( char const * function ) const VULKAN_HPP_NOEXCEPT
     {
 #  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined(__Fuchsia__)
       return (T)(void*)dlsym( m_library, function );

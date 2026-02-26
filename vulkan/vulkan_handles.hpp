@@ -14884,7 +14884,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch                                                                                 = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<IS_DISPATCHED( vkGetAndroidHardwareBufferPropertiesANDROID ), bool>::type = true>
     VULKAN_HPP_NODISCARD Result
-      getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer *           buffer,
+      getAndroidHardwareBufferPropertiesANDROID( struct AHardwareBuffer const *           buffer,
                                                  AndroidHardwareBufferPropertiesANDROID * pProperties,
                                                  Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -14893,7 +14893,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch                                                                                 = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<IS_DISPATCHED( vkGetAndroidHardwareBufferPropertiesANDROID ), bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<AndroidHardwareBufferPropertiesANDROID>::type
-      getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getAndroidHardwareBufferPropertiesANDROID( struct AHardwareBuffer const & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetAndroidHardwareBufferPropertiesANDROID, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAndroidHardwareBufferPropertiesANDROID.html
     template <typename X,
@@ -14902,7 +14902,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               typename Dispatch                                                                                 = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<IS_DISPATCHED( vkGetAndroidHardwareBufferPropertiesANDROID ), bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-      getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getAndroidHardwareBufferPropertiesANDROID( struct AHardwareBuffer const & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetMemoryAndroidHardwareBufferANDROID, see
@@ -17820,7 +17820,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
     template <typename Dispatch                                                                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<IS_DISPATCHED( vkGetNativeBufferPropertiesOHOS ), bool>::type = true>
-    VULKAN_HPP_NODISCARD Result getNativeBufferPropertiesOHOS( const struct OH_NativeBuffer * buffer,
+    VULKAN_HPP_NODISCARD Result getNativeBufferPropertiesOHOS( struct OH_NativeBuffer const * buffer,
                                                                NativeBufferPropertiesOHOS *   pProperties,
                                                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -17829,7 +17829,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch                                                                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<IS_DISPATCHED( vkGetNativeBufferPropertiesOHOS ), bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<NativeBufferPropertiesOHOS>::type
-      getNativeBufferPropertiesOHOS( const struct OH_NativeBuffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getNativeBufferPropertiesOHOS( struct OH_NativeBuffer const & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetNativeBufferPropertiesOHOS, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
     template <typename X,
@@ -17838,7 +17838,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               typename Dispatch                                                                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<IS_DISPATCHED( vkGetNativeBufferPropertiesOHOS ), bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-      getNativeBufferPropertiesOHOS( const struct OH_NativeBuffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getNativeBufferPropertiesOHOS( struct OH_NativeBuffer const & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetMemoryNativeBufferOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetMemoryNativeBufferOHOS.html
@@ -18918,7 +18918,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetScreenBufferPropertiesQNX.html
     template <typename Dispatch                                                                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<IS_DISPATCHED( vkGetScreenBufferPropertiesQNX ), bool>::type = true>
-    VULKAN_HPP_NODISCARD Result getScreenBufferPropertiesQNX( const struct _screen_buffer * buffer,
+    VULKAN_HPP_NODISCARD Result getScreenBufferPropertiesQNX( struct _screen_buffer const * buffer,
                                                               ScreenBufferPropertiesQNX *   pProperties,
                                                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -18927,7 +18927,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch                                                                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<IS_DISPATCHED( vkGetScreenBufferPropertiesQNX ), bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<ScreenBufferPropertiesQNX>::type
-      getScreenBufferPropertiesQNX( const struct _screen_buffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getScreenBufferPropertiesQNX( struct _screen_buffer const & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetScreenBufferPropertiesQNX, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetScreenBufferPropertiesQNX.html
     template <typename X,
@@ -18936,7 +18936,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               typename Dispatch                                                                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<IS_DISPATCHED( vkGetScreenBufferPropertiesQNX ), bool>::type = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-      getScreenBufferPropertiesQNX( const struct _screen_buffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getScreenBufferPropertiesQNX( struct _screen_buffer const & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_SCREEN_QNX*/
 

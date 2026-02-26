@@ -212,7 +212,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     }
 #  endif
 
-    const HandleType * operator->() const VULKAN_HPP_NOEXCEPT
+    HandleType const * operator->() const VULKAN_HPP_NOEXCEPT
     {
       return &m_handle;
     }

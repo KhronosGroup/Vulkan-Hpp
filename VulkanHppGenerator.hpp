@@ -1255,7 +1255,6 @@ private:
   void                     readTypeStruct( tinyxml2::XMLElement const * element, bool isUnion, std::map<std::string, std::string> const & attributes );
   void                     readTypes( tinyxml2::XMLElement const * element );
   void                     readTypesType( tinyxml2::XMLElement const * element );
-  TypeInfo                 readTypeInfo( tinyxml2::XMLElement const * element ) const;
   void                     readVideoCapabilities( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
   void                     readVideoCodec( tinyxml2::XMLElement const * element );
   void                     readVideoCodecs( tinyxml2::XMLElement const * element );

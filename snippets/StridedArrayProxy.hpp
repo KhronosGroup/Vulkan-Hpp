@@ -13,14 +13,14 @@
 
     using ArrayProxy<T>::begin;
 
-    const T * end() const VULKAN_HPP_NOEXCEPT
+    T const * end() const VULKAN_HPP_NOEXCEPT
     {
       return reinterpret_cast<T const *>( static_cast<uint8_t const *>( begin() ) + size() * m_stride );
     }
 
     using ArrayProxy<T>::front;
 
-    const T & back() const VULKAN_HPP_NOEXCEPT
+    T const & back() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( begin() && size() );
       return *reinterpret_cast<T const *>( static_cast<uint8_t const *>( begin() ) + ( size() - 1 ) * m_stride );

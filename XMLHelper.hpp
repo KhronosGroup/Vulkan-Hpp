@@ -114,12 +114,12 @@ struct TypeInfo
 
   bool isConstPointer() const noexcept
   {
-    return isPointer() && ( prefix.find( "const" ) != std::string::npos );
+    return postfix.find( "const *" ) != std::string::npos;
   }
 
   bool isNonConstPointer() const noexcept
   {
-    return isPointer() && ( prefix.find( "const" ) == std::string::npos );
+    return isPointer() && postfix.find( "const" ) == std::string::npos;
   }
 
   bool isPointer() const noexcept
@@ -409,6 +409,11 @@ inline TypeInfo readTypeInfo( tinyxml2::XMLElement const * element )
   if ( nextSibling && nextSibling->ToText() )
   {
     typeInfo.postfix = trimStars( trimEnd( nextSibling->Value() ) );
+  }
+  if ( typeInfo.prefix.starts_with( "const" ) )
+  {
+    typeInfo.prefix = trim( typeInfo.prefix.substr( 5 ) );
+    typeInfo.postfix = ( typeInfo.postfix.empty() ? "const" : ( "const " + typeInfo.postfix ) );
   }
   return typeInfo;
 }

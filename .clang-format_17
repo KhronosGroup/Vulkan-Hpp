@@ -89,7 +89,7 @@ NamespaceIndentation : All
 PackConstructorInitializers : NextLine
 PPIndentWidth : -1
 PointerAlignment : Middle
-QualifierAlignment : Right
+# QualifierAlignment : Right    # Far too slow, and far from perfect!
 ReferenceAlignment : Pointer
 ReflowComments : true
 RemoveBracesLLVM : false

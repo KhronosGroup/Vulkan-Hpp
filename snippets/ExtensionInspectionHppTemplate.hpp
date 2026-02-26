@@ -45,26 +45,26 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   VULKAN_HPP_INLINE std::map<std::string, std::string> const & getDeprecatedExtensions()
   {
-    static const std::map<std::string, std::string> deprecatedExtensions = { ${deprecatedExtensions} };
+    static std::map<std::string, std::string> const deprecatedExtensions = { ${deprecatedExtensions} };
     return deprecatedExtensions;
   }
 
   VULKAN_HPP_INLINE std::set<std::string> const & getDeviceExtensions()
   {
-    static const std::set<std::string> deviceExtensions = { ${deviceExtensions} };
+    static std::set<std::string> const deviceExtensions = { ${deviceExtensions} };
     return deviceExtensions;
   }
 
   VULKAN_HPP_INLINE std::set<std::string> const & getInstanceExtensions()
   {
-    static const std::set<std::string> instanceExtensions = { ${instanceExtensions} };
+    static std::set<std::string> const instanceExtensions = { ${instanceExtensions} };
     return instanceExtensions;
   }
 
   VULKAN_HPP_INLINE std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension )
   {
-    static const std::map<std::string, std::vector<std::vector<std::string>>>                        noDependencies;
-    static const std::map<std::string, std::map<std::string, std::vector<std::vector<std::string>>>> dependencies = { ${extensionDependencies} };
+    static std::map<std::string, std::vector<std::vector<std::string>>> const                        noDependencies;
+    static std::map<std::string, std::map<std::string, std::vector<std::vector<std::string>>>> const dependencies = { ${extensionDependencies} };
     auto                                                                                             depIt        = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
   }
@@ -100,13 +100,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   VULKAN_HPP_INLINE std::map<std::string, std::string> const & getObsoletedExtensions()
   {
-    static const std::map<std::string, std::string> obsoletedExtensions = { ${obsoletedExtensions} };
+    static std::map<std::string, std::string> const obsoletedExtensions = { ${obsoletedExtensions} };
     return obsoletedExtensions;
   }
 
   VULKAN_HPP_INLINE std::map<std::string, std::string> const & getPromotedExtensions()
   {
-    static const std::map<std::string, std::string> promotedExtensions = { ${promotedExtensions} };
+    static std::map<std::string, std::string> const promotedExtensions = { ${promotedExtensions} };
     return promotedExtensions;
   }
 

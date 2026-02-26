@@ -60,23 +60,23 @@
       , m_ptr( v.data() )
     {}
 
-    const T * begin() const VULKAN_HPP_NOEXCEPT
+    T const * begin() const VULKAN_HPP_NOEXCEPT
     {
       return m_ptr;
     }
 
-    const T * end() const VULKAN_HPP_NOEXCEPT
+    T const * end() const VULKAN_HPP_NOEXCEPT
     {
       return m_ptr + m_count;
     }
 
-    const T & front() const VULKAN_HPP_NOEXCEPT
+    T const & front() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( m_count && m_ptr );
       return *m_ptr;
     }
 
-    const T & back() const VULKAN_HPP_NOEXCEPT
+    T const & back() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( m_count && m_ptr );
       return *( m_ptr + m_count - 1 );

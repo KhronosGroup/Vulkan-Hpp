@@ -10,33 +10,33 @@
   template <typename Type, class...>
   struct IsPartOfStructureChain
   {
-    static const bool valid = false;
+    static bool const valid = false;
   };
 
   template <typename Type, typename Head, typename... Tail>
   struct IsPartOfStructureChain<Type, Head, Tail...>
   {
-    static const bool valid = std::is_same<Type, Head>::value || IsPartOfStructureChain<Type, Tail...>::valid;
+    static bool const valid = std::is_same<Type, Head>::value || IsPartOfStructureChain<Type, Tail...>::valid;
   };
 
   template <size_t Index, typename T, typename... ChainElements>
   struct StructureChainContains
   {
-    static const bool value = std::is_same<T, typename std::tuple_element<Index, std::tuple<ChainElements...>>::type>::value ||
+    static bool const value = std::is_same<T, typename std::tuple_element<Index, std::tuple<ChainElements...>>::type>::value ||
                               StructureChainContains<Index - 1, T, ChainElements...>::value;
   };
 
   template <typename T, typename... ChainElements>
   struct StructureChainContains<0, T, ChainElements...>
   {
-    static const bool value = std::is_same<T, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value;
+    static bool const value = std::is_same<T, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value;
   };
 
   template <size_t Index, typename... ChainElements>
   struct StructureChainValidation
   {
     using TestType          = typename std::tuple_element<Index, std::tuple<ChainElements...>>::type;
-    static const bool valid = StructExtends<TestType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value &&
+    static bool const valid = StructExtends<TestType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value &&
                               ( TestType::allowDuplicate || !StructureChainContains<Index - 1, TestType, ChainElements...>::value ) &&
                               StructureChainValidation<Index - 1, ChainElements...>::valid;
   };
@@ -44,7 +44,7 @@
   template <typename... ChainElements>
   struct StructureChainValidation<0, ChainElements...>
   {
-    static const bool valid = true;
+    static bool const valid = true;
   };
 
   template <typename... ChainElements>
@@ -165,7 +165,7 @@
 
     // assign a complete structure to the StructureChain without modifying the chaining
     template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
-    StructureChain & assign( const T & rhs ) VULKAN_HPP_NOEXCEPT
+    StructureChain & assign( T const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       T &  lhs   	= get<T, Which>();
       auto pNext = lhs.pNext;

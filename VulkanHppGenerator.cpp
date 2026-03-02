@@ -11597,7 +11597,7 @@ std::string VulkanHppGenerator::generateUniqueHandle( std::pair<std::string, Han
   std::string aliasHandle;
   for ( auto const & alias : handleData.second.aliases )
   {
-    static std::string const aliasHandleTemplate = R"(  using Unique${aliasType} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;)";
+    static std::string const aliasHandleTemplate = R"(  using Unique${aliasType} = UniqueHandle<${type}>;)";
 
     aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( alias.first, "Vk" ) }, { "type", type } } );
   }

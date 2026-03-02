@@ -2706,7 +2706,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   using UniqueDescriptorUpdateTemplate    = UniqueHandle<DescriptorUpdateTemplate>;
-  using UniqueDescriptorUpdateTemplateKHR = UniqueHandle<DescriptorUpdateTemplate, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+  using UniqueDescriptorUpdateTemplateKHR = UniqueHandle<DescriptorUpdateTemplate>;
 
   template <>
   class UniqueHandleTraits<SamplerYcbcrConversion>
@@ -2716,7 +2716,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   using UniqueSamplerYcbcrConversion    = UniqueHandle<SamplerYcbcrConversion>;
-  using UniqueSamplerYcbcrConversionKHR = UniqueHandle<SamplerYcbcrConversion, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+  using UniqueSamplerYcbcrConversionKHR = UniqueHandle<SamplerYcbcrConversion>;
 
   //=== VK_VERSION_1_3 ===
 
@@ -2728,7 +2728,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   using UniquePrivateDataSlot    = UniqueHandle<PrivateDataSlot>;
-  using UniquePrivateDataSlotEXT = UniqueHandle<PrivateDataSlot, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+  using UniquePrivateDataSlotEXT = UniqueHandle<PrivateDataSlot>;
 
   //=== VK_KHR_surface ===
 

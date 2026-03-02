@@ -13089,7 +13089,7 @@ VulkanHppGenerator::DeprecateData VulkanHppGenerator::readDeprecateData( tinyxml
     if ( value == "command" )
     {
       deprecateData.commands.push_back( readName( child ) );
-      checkForError( m_commands.contains( deprecateData.commands.back() ),
+      checkForError( containsByNameOrAlias( m_commands, deprecateData.commands.back() ),
                      childLine,
                      "deprecated command <" + deprecateData.commands.back() + "> is not listed as command" );
     }

@@ -4752,7 +4752,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_ANDROID_external_memory_android_hardware_buffer ===
 
       VULKAN_HPP_INLINE VkResult vkGetAndroidHardwareBufferPropertiesANDROID( VkDevice                                   device,
-                                                                              const struct AHardwareBuffer *             buffer,
+                                                                              struct AHardwareBuffer const *             buffer,
                                                                               VkAndroidHardwareBufferPropertiesANDROID * pProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetAndroidHardwareBufferPropertiesANDROID( device, buffer, pProperties );
@@ -6819,7 +6819,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_OHOS_external_memory ===
 
       VULKAN_HPP_INLINE VkResult vkGetNativeBufferPropertiesOHOS( VkDevice                       device,
-                                                                  const struct OH_NativeBuffer * buffer,
+                                                                  struct OH_NativeBuffer const * buffer,
                                                                   VkNativeBufferPropertiesOHOS * pProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetNativeBufferPropertiesOHOS( device, buffer, pProperties );
@@ -7463,7 +7463,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_QNX_external_memory_screen_buffer ===
 
       VULKAN_HPP_INLINE VkResult vkGetScreenBufferPropertiesQNX( VkDevice                      device,
-                                                                 const struct _screen_buffer * buffer,
+                                                                 struct _screen_buffer const * buffer,
                                                                  VkScreenBufferPropertiesQNX * pProperties ) const VULKAN_HPP_NOEXCEPT
       {
         return ::vkGetScreenBufferPropertiesQNX( device, buffer, pProperties );
@@ -8180,7 +8180,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     }
   };
 
-  VULKAN_HPP_INLINE const std::error_category & errorCategory() VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE std::error_category const & errorCategory() VULKAN_HPP_NOEXCEPT
   {
     static ErrorCategoryImpl instance;
     return instance;

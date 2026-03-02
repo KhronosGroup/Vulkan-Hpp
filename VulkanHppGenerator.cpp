@@ -3843,7 +3843,8 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::string const & 
   std::string commandName = generateCommandName( command, commandIt->second.params, 1 );
   if ( ( command == commandIt->first ) && ( ( ( command.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
                                             ( command.substr( 2, 4 ) == "Free" ) ||
-                                            ( command == "vkReleasePerformanceConfigurationINTEL" ) ) )
+                                            ( command == "vkReleasePerformanceConfigurationINTEL" ) ||
+                                            ( command == "vkReleaseDisplayEXT" ) ) )
   {
     CommandData specialCommandData = commandIt->second;
     assert( ( 1 < specialCommandData.params.size() ) && ( specialCommandData.params[0].type.type == handle ) );
@@ -3861,7 +3862,7 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::string const & 
     }
     else
     {
-      assert( command == "vkReleasePerformanceConfigurationINTEL" );
+      assert( ( command == "vkReleasePerformanceConfigurationINTEL" ) || ( command == "vkReleaseDisplayEXT" ) );
       shortenedName = "release";
     }
     size_t pos = destroyCommandString.find( commandName );
@@ -5626,7 +5627,8 @@ std::string VulkanHppGenerator::generateDestroyCommand( std::string const & name
   std::string commandName = generateCommandName( name, commandData.params, 1 );
   if ( m_commands.contains( name ) && ( ( ( name.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
                                         ( name.substr( 2, 4 ) == "Free" ) ||
-                                        ( name == "vkReleasePerformanceConfigurationINTEL" ) ) )
+                                        ( name == "vkReleasePerformanceConfigurationINTEL" ) ||
+                                        ( name == "vkReleaseDisplayEXT" ) ) )
   {
     assert( 1 < commandData.params.size() );
     // make sure, the object to destroy/free/release is not optional in the shortened version!
@@ -5646,7 +5648,7 @@ std::string VulkanHppGenerator::generateDestroyCommand( std::string const & name
     }
     else
     {
-      assert( name == "vkReleasePerformanceConfigurationINTEL" );
+      assert( ( name == "vkReleasePerformanceConfigurationINTEL" ) || ( name == "vkReleaseDisplayEXT" ) );
       shortenedName = "release";
     }
     size_t pos = destroyCommandString.find( commandName );
@@ -16404,7 +16406,7 @@ bool VulkanHppGenerator::structureHoldsVector( StructData const & structData ) c
   return findVectorMember( structData.members ) != structData.members.end();
 }
 
-std::string VulkanHppGenerator::toString( TypeCategory category )
+std::string VulkanHppGenerator::toString( TypeCategory category ) const
 {
   switch ( category )
   {

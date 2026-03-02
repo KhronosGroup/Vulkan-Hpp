@@ -1278,7 +1278,7 @@ private:
   bool                     structureChainHoldsVector( std::string const & name ) const;
   bool                     structureHoldsHandle( StructData const & structData ) const;
   bool                     structureHoldsVector( StructData const & structData ) const;
-  std::string              toString( TypeCategory category );
+  std::string              toString( TypeCategory category ) const;
   MemberData const &       vectorMemberByStructure( std::string const & structureType ) const;
 
 private:

@@ -34,7 +34,7 @@ void f( std::string const & s )
   std::cout << "<" << s << ">" << std::endl;
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   vk::ArrayWrapper1D<char, 10> awc1( { 'f', 'o', 'o', 'b', 'a', 'h' } );
   std::string                  s1 = awc1;

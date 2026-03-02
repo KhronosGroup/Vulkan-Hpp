@@ -357,7 +357,7 @@ private:
   Asset  asset;
 };
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

@@ -95,7 +95,7 @@ namespace vk
   }  // namespace su
 }  // namespace vk
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

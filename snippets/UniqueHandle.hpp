@@ -76,7 +76,7 @@ public:
     return m_value;
   }
 
-  const Type & get() const VULKAN_HPP_NOEXCEPT
+  Type const & get() const VULKAN_HPP_NOEXCEPT
   {
     return m_value;
   }

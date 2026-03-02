@@ -41,7 +41,7 @@ import vulkan;
 #endif
 
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   vk::MemoryHeapFlags mhf0;
   release_assert( mhf0.m_mask == 0 );

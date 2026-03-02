@@ -351,8 +351,9 @@ namespace vk
     VKAPI_ATTR vk::Bool32 VKAPI_CALL debugUtilsMessengerCallback( vk::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
                                                                   vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
                                                                   const vk::DebugUtilsMessengerCallbackDataEXT * pCallbackData,
-                                                                  void * /*pUserData*/ )
+                                                                  VULKAN_HPP_MAYBE_UNUSED void * pUserData )
     {
+      VULKAN_HPP_UNUSED( pUserData );
 #if !defined( NDEBUG )
       switch ( static_cast<uint32_t>( pCallbackData->messageIdNumber ) )
       {

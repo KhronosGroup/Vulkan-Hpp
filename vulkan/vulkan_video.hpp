@@ -645,7 +645,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264SpsVuiFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH264SpsVuiFlags const *>( this );
+        return *reinterpret_cast<const StdVideoH264SpsVuiFlags *>( this );
       }
 
       operator StdVideoH264SpsVuiFlags &() VULKAN_HPP_NOEXCEPT
@@ -655,7 +655,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264SpsVuiFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH264SpsVuiFlags const *>( this );
+        return reinterpret_cast<const StdVideoH264SpsVuiFlags *>( this );
       }
 
       operator StdVideoH264SpsVuiFlags *() VULKAN_HPP_NOEXCEPT
@@ -705,7 +705,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264HrdParameters const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH264HrdParameters const *>( this );
+        return *reinterpret_cast<const StdVideoH264HrdParameters *>( this );
       }
 
       operator StdVideoH264HrdParameters &() VULKAN_HPP_NOEXCEPT
@@ -715,7 +715,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264HrdParameters const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH264HrdParameters const *>( this );
+        return reinterpret_cast<const StdVideoH264HrdParameters *>( this );
       }
 
       operator StdVideoH264HrdParameters *() VULKAN_HPP_NOEXCEPT
@@ -763,7 +763,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264SequenceParameterSetVui const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH264SequenceParameterSetVui const *>( this );
+        return *reinterpret_cast<const StdVideoH264SequenceParameterSetVui *>( this );
       }
 
       operator StdVideoH264SequenceParameterSetVui &() VULKAN_HPP_NOEXCEPT
@@ -773,7 +773,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264SequenceParameterSetVui const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH264SequenceParameterSetVui const *>( this );
+        return reinterpret_cast<const StdVideoH264SequenceParameterSetVui *>( this );
       }
 
       operator StdVideoH264SequenceParameterSetVui *() VULKAN_HPP_NOEXCEPT
@@ -832,7 +832,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264SpsFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH264SpsFlags const *>( this );
+        return *reinterpret_cast<const StdVideoH264SpsFlags *>( this );
       }
 
       operator StdVideoH264SpsFlags &() VULKAN_HPP_NOEXCEPT
@@ -842,7 +842,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264SpsFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH264SpsFlags const *>( this );
+        return reinterpret_cast<const StdVideoH264SpsFlags *>( this );
       }
 
       operator StdVideoH264SpsFlags *() VULKAN_HPP_NOEXCEPT
@@ -900,7 +900,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264ScalingLists const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH264ScalingLists const *>( this );
+        return *reinterpret_cast<const StdVideoH264ScalingLists *>( this );
       }
 
       operator StdVideoH264ScalingLists &() VULKAN_HPP_NOEXCEPT
@@ -910,7 +910,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264ScalingLists const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH264ScalingLists const *>( this );
+        return reinterpret_cast<const StdVideoH264ScalingLists *>( this );
       }
 
       operator StdVideoH264ScalingLists *() VULKAN_HPP_NOEXCEPT
@@ -944,7 +944,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264SequenceParameterSet const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH264SequenceParameterSet const *>( this );
+        return *reinterpret_cast<const StdVideoH264SequenceParameterSet *>( this );
       }
 
       operator StdVideoH264SequenceParameterSet &() VULKAN_HPP_NOEXCEPT
@@ -954,7 +954,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264SequenceParameterSet const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH264SequenceParameterSet const *>( this );
+        return reinterpret_cast<const StdVideoH264SequenceParameterSet *>( this );
       }
 
       operator StdVideoH264SequenceParameterSet *() VULKAN_HPP_NOEXCEPT
@@ -1032,7 +1032,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264PpsFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH264PpsFlags const *>( this );
+        return *reinterpret_cast<const StdVideoH264PpsFlags *>( this );
       }
 
       operator StdVideoH264PpsFlags &() VULKAN_HPP_NOEXCEPT
@@ -1042,7 +1042,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264PpsFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH264PpsFlags const *>( this );
+        return reinterpret_cast<const StdVideoH264PpsFlags *>( this );
       }
 
       operator StdVideoH264PpsFlags *() VULKAN_HPP_NOEXCEPT
@@ -1084,7 +1084,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264PictureParameterSet const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH264PictureParameterSet const *>( this );
+        return *reinterpret_cast<const StdVideoH264PictureParameterSet *>( this );
       }
 
       operator StdVideoH264PictureParameterSet &() VULKAN_HPP_NOEXCEPT
@@ -1094,7 +1094,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH264PictureParameterSet const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH264PictureParameterSet const *>( this );
+        return reinterpret_cast<const StdVideoH264PictureParameterSet *>( this );
       }
 
       operator StdVideoH264PictureParameterSet *() VULKAN_HPP_NOEXCEPT
@@ -1147,7 +1147,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH264PictureInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeH264PictureInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeH264PictureInfoFlags *>( this );
       }
 
       operator StdVideoDecodeH264PictureInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -1157,7 +1157,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH264PictureInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeH264PictureInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoDecodeH264PictureInfoFlags *>( this );
       }
 
       operator StdVideoDecodeH264PictureInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -1195,7 +1195,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH264PictureInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeH264PictureInfo const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeH264PictureInfo *>( this );
       }
 
       operator StdVideoDecodeH264PictureInfo &() VULKAN_HPP_NOEXCEPT
@@ -1205,7 +1205,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH264PictureInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeH264PictureInfo const *>( this );
+        return reinterpret_cast<const StdVideoDecodeH264PictureInfo *>( this );
       }
 
       operator StdVideoDecodeH264PictureInfo *() VULKAN_HPP_NOEXCEPT
@@ -1247,7 +1247,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH264ReferenceInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeH264ReferenceInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeH264ReferenceInfoFlags *>( this );
       }
 
       operator StdVideoDecodeH264ReferenceInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -1257,7 +1257,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH264ReferenceInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeH264ReferenceInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoDecodeH264ReferenceInfoFlags *>( this );
       }
 
       operator StdVideoDecodeH264ReferenceInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -1291,7 +1291,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH264ReferenceInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeH264ReferenceInfo const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeH264ReferenceInfo *>( this );
       }
 
       operator StdVideoDecodeH264ReferenceInfo &() VULKAN_HPP_NOEXCEPT
@@ -1301,7 +1301,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH264ReferenceInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeH264ReferenceInfo const *>( this );
+        return reinterpret_cast<const StdVideoDecodeH264ReferenceInfo *>( this );
       }
 
       operator StdVideoDecodeH264ReferenceInfo *() VULKAN_HPP_NOEXCEPT
@@ -1336,7 +1336,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264WeightTableFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH264WeightTableFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH264WeightTableFlags *>( this );
       }
 
       operator StdVideoEncodeH264WeightTableFlags &() VULKAN_HPP_NOEXCEPT
@@ -1346,7 +1346,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264WeightTableFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH264WeightTableFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH264WeightTableFlags *>( this );
       }
 
       operator StdVideoEncodeH264WeightTableFlags *() VULKAN_HPP_NOEXCEPT
@@ -1380,7 +1380,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264WeightTable const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH264WeightTable const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH264WeightTable *>( this );
       }
 
       operator StdVideoEncodeH264WeightTable &() VULKAN_HPP_NOEXCEPT
@@ -1390,7 +1390,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264WeightTable const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH264WeightTable const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH264WeightTable *>( this );
       }
 
       operator StdVideoEncodeH264WeightTable *() VULKAN_HPP_NOEXCEPT
@@ -1438,7 +1438,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264SliceHeaderFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH264SliceHeaderFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH264SliceHeaderFlags *>( this );
       }
 
       operator StdVideoEncodeH264SliceHeaderFlags &() VULKAN_HPP_NOEXCEPT
@@ -1448,7 +1448,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264SliceHeaderFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH264SliceHeaderFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH264SliceHeaderFlags *>( this );
       }
 
       operator StdVideoEncodeH264SliceHeaderFlags *() VULKAN_HPP_NOEXCEPT
@@ -1480,7 +1480,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264PictureInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH264PictureInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH264PictureInfoFlags *>( this );
       }
 
       operator StdVideoEncodeH264PictureInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -1490,7 +1490,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264PictureInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH264PictureInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH264PictureInfoFlags *>( this );
       }
 
       operator StdVideoEncodeH264PictureInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -1528,7 +1528,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264ReferenceInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH264ReferenceInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH264ReferenceInfoFlags *>( this );
       }
 
       operator StdVideoEncodeH264ReferenceInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -1538,7 +1538,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264ReferenceInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH264ReferenceInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH264ReferenceInfoFlags *>( this );
       }
 
       operator StdVideoEncodeH264ReferenceInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -1567,7 +1567,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264ReferenceListsInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH264ReferenceListsInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH264ReferenceListsInfoFlags *>( this );
       }
 
       operator StdVideoEncodeH264ReferenceListsInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -1577,7 +1577,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264ReferenceListsInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH264ReferenceListsInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH264ReferenceListsInfoFlags *>( this );
       }
 
       operator StdVideoEncodeH264ReferenceListsInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -1609,7 +1609,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264RefListModEntry const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH264RefListModEntry const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH264RefListModEntry *>( this );
       }
 
       operator StdVideoEncodeH264RefListModEntry &() VULKAN_HPP_NOEXCEPT
@@ -1619,7 +1619,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264RefListModEntry const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH264RefListModEntry const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH264RefListModEntry *>( this );
       }
 
       operator StdVideoEncodeH264RefListModEntry *() VULKAN_HPP_NOEXCEPT
@@ -1652,7 +1652,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264RefPicMarkingEntry const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH264RefPicMarkingEntry const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH264RefPicMarkingEntry *>( this );
       }
 
       operator StdVideoEncodeH264RefPicMarkingEntry &() VULKAN_HPP_NOEXCEPT
@@ -1662,7 +1662,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264RefPicMarkingEntry const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH264RefPicMarkingEntry const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH264RefPicMarkingEntry *>( this );
       }
 
       operator StdVideoEncodeH264RefPicMarkingEntry *() VULKAN_HPP_NOEXCEPT
@@ -1699,7 +1699,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264ReferenceListsInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH264ReferenceListsInfo const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH264ReferenceListsInfo *>( this );
       }
 
       operator StdVideoEncodeH264ReferenceListsInfo &() VULKAN_HPP_NOEXCEPT
@@ -1709,7 +1709,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264ReferenceListsInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH264ReferenceListsInfo const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH264ReferenceListsInfo *>( this );
       }
 
       operator StdVideoEncodeH264ReferenceListsInfo *() VULKAN_HPP_NOEXCEPT
@@ -1759,7 +1759,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264PictureInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH264PictureInfo const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH264PictureInfo *>( this );
       }
 
       operator StdVideoEncodeH264PictureInfo &() VULKAN_HPP_NOEXCEPT
@@ -1769,7 +1769,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264PictureInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH264PictureInfo const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH264PictureInfo *>( this );
       }
 
       operator StdVideoEncodeH264PictureInfo *() VULKAN_HPP_NOEXCEPT
@@ -1816,7 +1816,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264ReferenceInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH264ReferenceInfo const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH264ReferenceInfo *>( this );
       }
 
       operator StdVideoEncodeH264ReferenceInfo &() VULKAN_HPP_NOEXCEPT
@@ -1826,7 +1826,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264ReferenceInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH264ReferenceInfo const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH264ReferenceInfo *>( this );
       }
 
       operator StdVideoEncodeH264ReferenceInfo *() VULKAN_HPP_NOEXCEPT
@@ -1867,7 +1867,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264SliceHeader const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH264SliceHeader const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH264SliceHeader *>( this );
       }
 
       operator StdVideoEncodeH264SliceHeader &() VULKAN_HPP_NOEXCEPT
@@ -1877,7 +1877,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH264SliceHeader const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH264SliceHeader const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH264SliceHeader *>( this );
       }
 
       operator StdVideoEncodeH264SliceHeader *() VULKAN_HPP_NOEXCEPT
@@ -1929,7 +1929,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265DecPicBufMgr const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265DecPicBufMgr const *>( this );
+        return *reinterpret_cast<const StdVideoH265DecPicBufMgr *>( this );
       }
 
       operator StdVideoH265DecPicBufMgr &() VULKAN_HPP_NOEXCEPT
@@ -1939,7 +1939,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265DecPicBufMgr const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265DecPicBufMgr const *>( this );
+        return reinterpret_cast<const StdVideoH265DecPicBufMgr *>( this );
       }
 
       operator StdVideoH265DecPicBufMgr *() VULKAN_HPP_NOEXCEPT
@@ -1971,7 +1971,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265SubLayerHrdParameters const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265SubLayerHrdParameters const *>( this );
+        return *reinterpret_cast<const StdVideoH265SubLayerHrdParameters *>( this );
       }
 
       operator StdVideoH265SubLayerHrdParameters &() VULKAN_HPP_NOEXCEPT
@@ -1981,7 +1981,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265SubLayerHrdParameters const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265SubLayerHrdParameters const *>( this );
+        return reinterpret_cast<const StdVideoH265SubLayerHrdParameters *>( this );
       }
 
       operator StdVideoH265SubLayerHrdParameters *() VULKAN_HPP_NOEXCEPT
@@ -2017,7 +2017,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265HrdFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265HrdFlags const *>( this );
+        return *reinterpret_cast<const StdVideoH265HrdFlags *>( this );
       }
 
       operator StdVideoH265HrdFlags &() VULKAN_HPP_NOEXCEPT
@@ -2027,7 +2027,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265HrdFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265HrdFlags const *>( this );
+        return reinterpret_cast<const StdVideoH265HrdFlags *>( this );
       }
 
       operator StdVideoH265HrdFlags *() VULKAN_HPP_NOEXCEPT
@@ -2067,7 +2067,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265HrdParameters const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265HrdParameters const *>( this );
+        return *reinterpret_cast<const StdVideoH265HrdParameters *>( this );
       }
 
       operator StdVideoH265HrdParameters &() VULKAN_HPP_NOEXCEPT
@@ -2077,7 +2077,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265HrdParameters const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265HrdParameters const *>( this );
+        return reinterpret_cast<const StdVideoH265HrdParameters *>( this );
       }
 
       operator StdVideoH265HrdParameters *() VULKAN_HPP_NOEXCEPT
@@ -2133,7 +2133,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265VpsFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265VpsFlags const *>( this );
+        return *reinterpret_cast<const StdVideoH265VpsFlags *>( this );
       }
 
       operator StdVideoH265VpsFlags &() VULKAN_HPP_NOEXCEPT
@@ -2143,7 +2143,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265VpsFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265VpsFlags const *>( this );
+        return reinterpret_cast<const StdVideoH265VpsFlags *>( this );
       }
 
       operator StdVideoH265VpsFlags *() VULKAN_HPP_NOEXCEPT
@@ -2177,7 +2177,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265ProfileTierLevelFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265ProfileTierLevelFlags const *>( this );
+        return *reinterpret_cast<const StdVideoH265ProfileTierLevelFlags *>( this );
       }
 
       operator StdVideoH265ProfileTierLevelFlags &() VULKAN_HPP_NOEXCEPT
@@ -2187,7 +2187,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265ProfileTierLevelFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265ProfileTierLevelFlags const *>( this );
+        return reinterpret_cast<const StdVideoH265ProfileTierLevelFlags *>( this );
       }
 
       operator StdVideoH265ProfileTierLevelFlags *() VULKAN_HPP_NOEXCEPT
@@ -2223,7 +2223,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265ProfileTierLevel const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265ProfileTierLevel const *>( this );
+        return *reinterpret_cast<const StdVideoH265ProfileTierLevel *>( this );
       }
 
       operator StdVideoH265ProfileTierLevel &() VULKAN_HPP_NOEXCEPT
@@ -2233,7 +2233,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265ProfileTierLevel const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265ProfileTierLevel const *>( this );
+        return reinterpret_cast<const StdVideoH265ProfileTierLevel *>( this );
       }
 
       operator StdVideoH265ProfileTierLevel *() VULKAN_HPP_NOEXCEPT
@@ -2264,7 +2264,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265VideoParameterSet const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265VideoParameterSet const *>( this );
+        return *reinterpret_cast<const StdVideoH265VideoParameterSet *>( this );
       }
 
       operator StdVideoH265VideoParameterSet &() VULKAN_HPP_NOEXCEPT
@@ -2274,7 +2274,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265VideoParameterSet const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265VideoParameterSet const *>( this );
+        return reinterpret_cast<const StdVideoH265VideoParameterSet *>( this );
       }
 
       operator StdVideoH265VideoParameterSet *() VULKAN_HPP_NOEXCEPT
@@ -2324,7 +2324,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265ScalingLists const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265ScalingLists const *>( this );
+        return *reinterpret_cast<const StdVideoH265ScalingLists *>( this );
       }
 
       operator StdVideoH265ScalingLists &() VULKAN_HPP_NOEXCEPT
@@ -2334,7 +2334,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265ScalingLists const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265ScalingLists const *>( this );
+        return reinterpret_cast<const StdVideoH265ScalingLists *>( this );
       }
 
       operator StdVideoH265ScalingLists *() VULKAN_HPP_NOEXCEPT
@@ -2372,7 +2372,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265SpsVuiFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265SpsVuiFlags const *>( this );
+        return *reinterpret_cast<const StdVideoH265SpsVuiFlags *>( this );
       }
 
       operator StdVideoH265SpsVuiFlags &() VULKAN_HPP_NOEXCEPT
@@ -2382,7 +2382,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265SpsVuiFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265SpsVuiFlags const *>( this );
+        return reinterpret_cast<const StdVideoH265SpsVuiFlags *>( this );
       }
 
       operator StdVideoH265SpsVuiFlags *() VULKAN_HPP_NOEXCEPT
@@ -2444,7 +2444,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265SequenceParameterSetVui const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265SequenceParameterSetVui const *>( this );
+        return *reinterpret_cast<const StdVideoH265SequenceParameterSetVui *>( this );
       }
 
       operator StdVideoH265SequenceParameterSetVui &() VULKAN_HPP_NOEXCEPT
@@ -2454,7 +2454,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265SequenceParameterSetVui const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265SequenceParameterSetVui const *>( this );
+        return reinterpret_cast<const StdVideoH265SequenceParameterSetVui *>( this );
       }
 
       operator StdVideoH265SequenceParameterSetVui *() VULKAN_HPP_NOEXCEPT
@@ -2533,7 +2533,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265PredictorPaletteEntries const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265PredictorPaletteEntries const *>( this );
+        return *reinterpret_cast<const StdVideoH265PredictorPaletteEntries *>( this );
       }
 
       operator StdVideoH265PredictorPaletteEntries &() VULKAN_HPP_NOEXCEPT
@@ -2543,7 +2543,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265PredictorPaletteEntries const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265PredictorPaletteEntries const *>( this );
+        return reinterpret_cast<const StdVideoH265PredictorPaletteEntries *>( this );
       }
 
       operator StdVideoH265PredictorPaletteEntries *() VULKAN_HPP_NOEXCEPT
@@ -2572,7 +2572,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265SpsFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265SpsFlags const *>( this );
+        return *reinterpret_cast<const StdVideoH265SpsFlags *>( this );
       }
 
       operator StdVideoH265SpsFlags &() VULKAN_HPP_NOEXCEPT
@@ -2582,7 +2582,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265SpsFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265SpsFlags const *>( this );
+        return reinterpret_cast<const StdVideoH265SpsFlags *>( this );
       }
 
       operator StdVideoH265SpsFlags *() VULKAN_HPP_NOEXCEPT
@@ -2668,7 +2668,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265ShortTermRefPicSetFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265ShortTermRefPicSetFlags const *>( this );
+        return *reinterpret_cast<const StdVideoH265ShortTermRefPicSetFlags *>( this );
       }
 
       operator StdVideoH265ShortTermRefPicSetFlags &() VULKAN_HPP_NOEXCEPT
@@ -2678,7 +2678,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265ShortTermRefPicSetFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265ShortTermRefPicSetFlags const *>( this );
+        return reinterpret_cast<const StdVideoH265ShortTermRefPicSetFlags *>( this );
       }
 
       operator StdVideoH265ShortTermRefPicSetFlags *() VULKAN_HPP_NOEXCEPT
@@ -2707,7 +2707,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265ShortTermRefPicSet const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265ShortTermRefPicSet const *>( this );
+        return *reinterpret_cast<const StdVideoH265ShortTermRefPicSet *>( this );
       }
 
       operator StdVideoH265ShortTermRefPicSet &() VULKAN_HPP_NOEXCEPT
@@ -2717,7 +2717,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265ShortTermRefPicSet const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265ShortTermRefPicSet const *>( this );
+        return reinterpret_cast<const StdVideoH265ShortTermRefPicSet *>( this );
       }
 
       operator StdVideoH265ShortTermRefPicSet *() VULKAN_HPP_NOEXCEPT
@@ -2771,7 +2771,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265LongTermRefPicsSps const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265LongTermRefPicsSps const *>( this );
+        return *reinterpret_cast<const StdVideoH265LongTermRefPicsSps *>( this );
       }
 
       operator StdVideoH265LongTermRefPicsSps &() VULKAN_HPP_NOEXCEPT
@@ -2781,7 +2781,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265LongTermRefPicsSps const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265LongTermRefPicsSps const *>( this );
+        return reinterpret_cast<const StdVideoH265LongTermRefPicsSps *>( this );
       }
 
       operator StdVideoH265LongTermRefPicsSps *() VULKAN_HPP_NOEXCEPT
@@ -2810,7 +2810,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265SequenceParameterSet const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265SequenceParameterSet const *>( this );
+        return *reinterpret_cast<const StdVideoH265SequenceParameterSet *>( this );
       }
 
       operator StdVideoH265SequenceParameterSet &() VULKAN_HPP_NOEXCEPT
@@ -2820,7 +2820,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265SequenceParameterSet const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265SequenceParameterSet const *>( this );
+        return reinterpret_cast<const StdVideoH265SequenceParameterSet *>( this );
       }
 
       operator StdVideoH265SequenceParameterSet *() VULKAN_HPP_NOEXCEPT
@@ -2925,7 +2925,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265PpsFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265PpsFlags const *>( this );
+        return *reinterpret_cast<const StdVideoH265PpsFlags *>( this );
       }
 
       operator StdVideoH265PpsFlags &() VULKAN_HPP_NOEXCEPT
@@ -2935,7 +2935,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265PpsFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265PpsFlags const *>( this );
+        return reinterpret_cast<const StdVideoH265PpsFlags *>( this );
       }
 
       operator StdVideoH265PpsFlags *() VULKAN_HPP_NOEXCEPT
@@ -3023,7 +3023,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265PictureParameterSet const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoH265PictureParameterSet const *>( this );
+        return *reinterpret_cast<const StdVideoH265PictureParameterSet *>( this );
       }
 
       operator StdVideoH265PictureParameterSet &() VULKAN_HPP_NOEXCEPT
@@ -3033,7 +3033,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoH265PictureParameterSet const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoH265PictureParameterSet const *>( this );
+        return reinterpret_cast<const StdVideoH265PictureParameterSet *>( this );
       }
 
       operator StdVideoH265PictureParameterSet *() VULKAN_HPP_NOEXCEPT
@@ -3135,7 +3135,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH265PictureInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeH265PictureInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeH265PictureInfoFlags *>( this );
       }
 
       operator StdVideoDecodeH265PictureInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -3145,7 +3145,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH265PictureInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeH265PictureInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoDecodeH265PictureInfoFlags *>( this );
       }
 
       operator StdVideoDecodeH265PictureInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -3179,7 +3179,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH265PictureInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeH265PictureInfo const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeH265PictureInfo *>( this );
       }
 
       operator StdVideoDecodeH265PictureInfo &() VULKAN_HPP_NOEXCEPT
@@ -3189,7 +3189,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH265PictureInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeH265PictureInfo const *>( this );
+        return reinterpret_cast<const StdVideoDecodeH265PictureInfo *>( this );
       }
 
       operator StdVideoDecodeH265PictureInfo *() VULKAN_HPP_NOEXCEPT
@@ -3237,7 +3237,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH265ReferenceInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeH265ReferenceInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeH265ReferenceInfoFlags *>( this );
       }
 
       operator StdVideoDecodeH265ReferenceInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -3247,7 +3247,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH265ReferenceInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeH265ReferenceInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoDecodeH265ReferenceInfoFlags *>( this );
       }
 
       operator StdVideoDecodeH265ReferenceInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -3276,7 +3276,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH265ReferenceInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeH265ReferenceInfo const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeH265ReferenceInfo *>( this );
       }
 
       operator StdVideoDecodeH265ReferenceInfo &() VULKAN_HPP_NOEXCEPT
@@ -3286,7 +3286,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeH265ReferenceInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeH265ReferenceInfo const *>( this );
+        return reinterpret_cast<const StdVideoDecodeH265ReferenceInfo *>( this );
       }
 
       operator StdVideoDecodeH265ReferenceInfo *() VULKAN_HPP_NOEXCEPT
@@ -3319,7 +3319,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265WeightTableFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH265WeightTableFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH265WeightTableFlags *>( this );
       }
 
       operator StdVideoEncodeH265WeightTableFlags &() VULKAN_HPP_NOEXCEPT
@@ -3329,7 +3329,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265WeightTableFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH265WeightTableFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH265WeightTableFlags *>( this );
       }
 
       operator StdVideoEncodeH265WeightTableFlags *() VULKAN_HPP_NOEXCEPT
@@ -3363,7 +3363,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265WeightTable const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH265WeightTable const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH265WeightTable *>( this );
       }
 
       operator StdVideoEncodeH265WeightTable &() VULKAN_HPP_NOEXCEPT
@@ -3373,7 +3373,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265WeightTable const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH265WeightTable const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH265WeightTable *>( this );
       }
 
       operator StdVideoEncodeH265WeightTable *() VULKAN_HPP_NOEXCEPT
@@ -3421,7 +3421,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265SliceSegmentHeaderFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH265SliceSegmentHeaderFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH265SliceSegmentHeaderFlags *>( this );
       }
 
       operator StdVideoEncodeH265SliceSegmentHeaderFlags &() VULKAN_HPP_NOEXCEPT
@@ -3431,7 +3431,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265SliceSegmentHeaderFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH265SliceSegmentHeaderFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH265SliceSegmentHeaderFlags *>( this );
       }
 
       operator StdVideoEncodeH265SliceSegmentHeaderFlags *() VULKAN_HPP_NOEXCEPT
@@ -3483,7 +3483,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265SliceSegmentHeader const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH265SliceSegmentHeader const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH265SliceSegmentHeader *>( this );
       }
 
       operator StdVideoEncodeH265SliceSegmentHeader &() VULKAN_HPP_NOEXCEPT
@@ -3493,7 +3493,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265SliceSegmentHeader const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH265SliceSegmentHeader const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH265SliceSegmentHeader *>( this );
       }
 
       operator StdVideoEncodeH265SliceSegmentHeader *() VULKAN_HPP_NOEXCEPT
@@ -3549,7 +3549,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265ReferenceListsInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH265ReferenceListsInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH265ReferenceListsInfoFlags *>( this );
       }
 
       operator StdVideoEncodeH265ReferenceListsInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -3559,7 +3559,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265ReferenceListsInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH265ReferenceListsInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH265ReferenceListsInfoFlags *>( this );
       }
 
       operator StdVideoEncodeH265ReferenceListsInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -3591,7 +3591,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265ReferenceListsInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH265ReferenceListsInfo const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH265ReferenceListsInfo *>( this );
       }
 
       operator StdVideoEncodeH265ReferenceListsInfo &() VULKAN_HPP_NOEXCEPT
@@ -3601,7 +3601,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265ReferenceListsInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH265ReferenceListsInfo const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH265ReferenceListsInfo *>( this );
       }
 
       operator StdVideoEncodeH265ReferenceListsInfo *() VULKAN_HPP_NOEXCEPT
@@ -3641,7 +3641,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265PictureInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH265PictureInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH265PictureInfoFlags *>( this );
       }
 
       operator StdVideoEncodeH265PictureInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -3651,7 +3651,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265PictureInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH265PictureInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH265PictureInfoFlags *>( this );
       }
 
       operator StdVideoEncodeH265PictureInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -3697,7 +3697,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265LongTermRefPics const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH265LongTermRefPics const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH265LongTermRefPics *>( this );
       }
 
       operator StdVideoEncodeH265LongTermRefPics &() VULKAN_HPP_NOEXCEPT
@@ -3707,7 +3707,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265LongTermRefPics const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH265LongTermRefPics const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH265LongTermRefPics *>( this );
       }
 
       operator StdVideoEncodeH265LongTermRefPics *() VULKAN_HPP_NOEXCEPT
@@ -3747,7 +3747,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265PictureInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH265PictureInfo const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH265PictureInfo *>( this );
       }
 
       operator StdVideoEncodeH265PictureInfo &() VULKAN_HPP_NOEXCEPT
@@ -3757,7 +3757,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265PictureInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH265PictureInfo const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH265PictureInfo *>( this );
       }
 
       operator StdVideoEncodeH265PictureInfo *() VULKAN_HPP_NOEXCEPT
@@ -3807,7 +3807,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265ReferenceInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH265ReferenceInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH265ReferenceInfoFlags *>( this );
       }
 
       operator StdVideoEncodeH265ReferenceInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -3817,7 +3817,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265ReferenceInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH265ReferenceInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH265ReferenceInfoFlags *>( this );
       }
 
       operator StdVideoEncodeH265ReferenceInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -3849,7 +3849,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265ReferenceInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeH265ReferenceInfo const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeH265ReferenceInfo *>( this );
       }
 
       operator StdVideoEncodeH265ReferenceInfo &() VULKAN_HPP_NOEXCEPT
@@ -3859,7 +3859,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeH265ReferenceInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeH265ReferenceInfo const *>( this );
+        return reinterpret_cast<const StdVideoEncodeH265ReferenceInfo *>( this );
       }
 
       operator StdVideoEncodeH265ReferenceInfo *() VULKAN_HPP_NOEXCEPT
@@ -3894,7 +3894,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoVP9ColorConfigFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoVP9ColorConfigFlags const *>( this );
+        return *reinterpret_cast<const StdVideoVP9ColorConfigFlags *>( this );
       }
 
       operator StdVideoVP9ColorConfigFlags &() VULKAN_HPP_NOEXCEPT
@@ -3904,7 +3904,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoVP9ColorConfigFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoVP9ColorConfigFlags const *>( this );
+        return reinterpret_cast<const StdVideoVP9ColorConfigFlags *>( this );
       }
 
       operator StdVideoVP9ColorConfigFlags *() VULKAN_HPP_NOEXCEPT
@@ -3933,7 +3933,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoVP9ColorConfig const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoVP9ColorConfig const *>( this );
+        return *reinterpret_cast<const StdVideoVP9ColorConfig *>( this );
       }
 
       operator StdVideoVP9ColorConfig &() VULKAN_HPP_NOEXCEPT
@@ -3943,7 +3943,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoVP9ColorConfig const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoVP9ColorConfig const *>( this );
+        return reinterpret_cast<const StdVideoVP9ColorConfig *>( this );
       }
 
       operator StdVideoVP9ColorConfig *() VULKAN_HPP_NOEXCEPT
@@ -3981,7 +3981,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoVP9LoopFilterFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoVP9LoopFilterFlags const *>( this );
+        return *reinterpret_cast<const StdVideoVP9LoopFilterFlags *>( this );
       }
 
       operator StdVideoVP9LoopFilterFlags &() VULKAN_HPP_NOEXCEPT
@@ -3991,7 +3991,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoVP9LoopFilterFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoVP9LoopFilterFlags const *>( this );
+        return reinterpret_cast<const StdVideoVP9LoopFilterFlags *>( this );
       }
 
       operator StdVideoVP9LoopFilterFlags *() VULKAN_HPP_NOEXCEPT
@@ -4023,7 +4023,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoVP9LoopFilter const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoVP9LoopFilter const *>( this );
+        return *reinterpret_cast<const StdVideoVP9LoopFilter *>( this );
       }
 
       operator StdVideoVP9LoopFilter &() VULKAN_HPP_NOEXCEPT
@@ -4033,7 +4033,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoVP9LoopFilter const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoVP9LoopFilter const *>( this );
+        return reinterpret_cast<const StdVideoVP9LoopFilter *>( this );
       }
 
       operator StdVideoVP9LoopFilter *() VULKAN_HPP_NOEXCEPT
@@ -4073,7 +4073,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoVP9SegmentationFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoVP9SegmentationFlags const *>( this );
+        return *reinterpret_cast<const StdVideoVP9SegmentationFlags *>( this );
       }
 
       operator StdVideoVP9SegmentationFlags &() VULKAN_HPP_NOEXCEPT
@@ -4083,7 +4083,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoVP9SegmentationFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoVP9SegmentationFlags const *>( this );
+        return reinterpret_cast<const StdVideoVP9SegmentationFlags *>( this );
       }
 
       operator StdVideoVP9SegmentationFlags *() VULKAN_HPP_NOEXCEPT
@@ -4119,7 +4119,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoVP9Segmentation const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoVP9Segmentation const *>( this );
+        return *reinterpret_cast<const StdVideoVP9Segmentation *>( this );
       }
 
       operator StdVideoVP9Segmentation &() VULKAN_HPP_NOEXCEPT
@@ -4129,7 +4129,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoVP9Segmentation const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoVP9Segmentation const *>( this );
+        return reinterpret_cast<const StdVideoVP9Segmentation *>( this );
       }
 
       operator StdVideoVP9Segmentation *() VULKAN_HPP_NOEXCEPT
@@ -4169,7 +4169,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeVP9PictureInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeVP9PictureInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeVP9PictureInfoFlags *>( this );
       }
 
       operator StdVideoDecodeVP9PictureInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -4179,7 +4179,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeVP9PictureInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeVP9PictureInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoDecodeVP9PictureInfoFlags *>( this );
       }
 
       operator StdVideoDecodeVP9PictureInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -4223,7 +4223,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeVP9PictureInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeVP9PictureInfo const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeVP9PictureInfo *>( this );
       }
 
       operator StdVideoDecodeVP9PictureInfo &() VULKAN_HPP_NOEXCEPT
@@ -4233,7 +4233,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeVP9PictureInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeVP9PictureInfo const *>( this );
+        return reinterpret_cast<const StdVideoDecodeVP9PictureInfo *>( this );
       }
 
       operator StdVideoDecodeVP9PictureInfo *() VULKAN_HPP_NOEXCEPT
@@ -4300,7 +4300,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1ColorConfigFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1ColorConfigFlags const *>( this );
+        return *reinterpret_cast<const StdVideoAV1ColorConfigFlags *>( this );
       }
 
       operator StdVideoAV1ColorConfigFlags &() VULKAN_HPP_NOEXCEPT
@@ -4310,7 +4310,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1ColorConfigFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1ColorConfigFlags const *>( this );
+        return reinterpret_cast<const StdVideoAV1ColorConfigFlags *>( this );
       }
 
       operator StdVideoAV1ColorConfigFlags *() VULKAN_HPP_NOEXCEPT
@@ -4346,7 +4346,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1ColorConfig const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1ColorConfig const *>( this );
+        return *reinterpret_cast<const StdVideoAV1ColorConfig *>( this );
       }
 
       operator StdVideoAV1ColorConfig &() VULKAN_HPP_NOEXCEPT
@@ -4356,7 +4356,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1ColorConfig const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1ColorConfig const *>( this );
+        return reinterpret_cast<const StdVideoAV1ColorConfig *>( this );
       }
 
       operator StdVideoAV1ColorConfig *() VULKAN_HPP_NOEXCEPT
@@ -4404,7 +4404,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1TimingInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1TimingInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoAV1TimingInfoFlags *>( this );
       }
 
       operator StdVideoAV1TimingInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -4414,7 +4414,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1TimingInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1TimingInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoAV1TimingInfoFlags *>( this );
       }
 
       operator StdVideoAV1TimingInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -4443,7 +4443,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1TimingInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1TimingInfo const *>( this );
+        return *reinterpret_cast<const StdVideoAV1TimingInfo *>( this );
       }
 
       operator StdVideoAV1TimingInfo &() VULKAN_HPP_NOEXCEPT
@@ -4453,7 +4453,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1TimingInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1TimingInfo const *>( this );
+        return reinterpret_cast<const StdVideoAV1TimingInfo *>( this );
       }
 
       operator StdVideoAV1TimingInfo *() VULKAN_HPP_NOEXCEPT
@@ -4487,7 +4487,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1LoopFilterFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1LoopFilterFlags const *>( this );
+        return *reinterpret_cast<const StdVideoAV1LoopFilterFlags *>( this );
       }
 
       operator StdVideoAV1LoopFilterFlags &() VULKAN_HPP_NOEXCEPT
@@ -4497,7 +4497,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1LoopFilterFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1LoopFilterFlags const *>( this );
+        return reinterpret_cast<const StdVideoAV1LoopFilterFlags *>( this );
       }
 
       operator StdVideoAV1LoopFilterFlags *() VULKAN_HPP_NOEXCEPT
@@ -4529,7 +4529,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1LoopFilter const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1LoopFilter const *>( this );
+        return *reinterpret_cast<const StdVideoAV1LoopFilter *>( this );
       }
 
       operator StdVideoAV1LoopFilter &() VULKAN_HPP_NOEXCEPT
@@ -4539,7 +4539,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1LoopFilter const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1LoopFilter const *>( this );
+        return reinterpret_cast<const StdVideoAV1LoopFilter *>( this );
       }
 
       operator StdVideoAV1LoopFilter *() VULKAN_HPP_NOEXCEPT
@@ -4579,7 +4579,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1QuantizationFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1QuantizationFlags const *>( this );
+        return *reinterpret_cast<const StdVideoAV1QuantizationFlags *>( this );
       }
 
       operator StdVideoAV1QuantizationFlags &() VULKAN_HPP_NOEXCEPT
@@ -4589,7 +4589,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1QuantizationFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1QuantizationFlags const *>( this );
+        return reinterpret_cast<const StdVideoAV1QuantizationFlags *>( this );
       }
 
       operator StdVideoAV1QuantizationFlags *() VULKAN_HPP_NOEXCEPT
@@ -4619,7 +4619,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1Quantization const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1Quantization const *>( this );
+        return *reinterpret_cast<const StdVideoAV1Quantization *>( this );
       }
 
       operator StdVideoAV1Quantization &() VULKAN_HPP_NOEXCEPT
@@ -4629,7 +4629,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1Quantization const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1Quantization const *>( this );
+        return reinterpret_cast<const StdVideoAV1Quantization *>( this );
       }
 
       operator StdVideoAV1Quantization *() VULKAN_HPP_NOEXCEPT
@@ -4675,7 +4675,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1Segmentation const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1Segmentation const *>( this );
+        return *reinterpret_cast<const StdVideoAV1Segmentation *>( this );
       }
 
       operator StdVideoAV1Segmentation &() VULKAN_HPP_NOEXCEPT
@@ -4685,7 +4685,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1Segmentation const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1Segmentation const *>( this );
+        return reinterpret_cast<const StdVideoAV1Segmentation *>( this );
       }
 
       operator StdVideoAV1Segmentation *() VULKAN_HPP_NOEXCEPT
@@ -4714,7 +4714,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1TileInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1TileInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoAV1TileInfoFlags *>( this );
       }
 
       operator StdVideoAV1TileInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -4724,7 +4724,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1TileInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1TileInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoAV1TileInfoFlags *>( this );
       }
 
       operator StdVideoAV1TileInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -4753,7 +4753,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1TileInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1TileInfo const *>( this );
+        return *reinterpret_cast<const StdVideoAV1TileInfo *>( this );
       }
 
       operator StdVideoAV1TileInfo &() VULKAN_HPP_NOEXCEPT
@@ -4763,7 +4763,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1TileInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1TileInfo const *>( this );
+        return reinterpret_cast<const StdVideoAV1TileInfo *>( this );
       }
 
       operator StdVideoAV1TileInfo *() VULKAN_HPP_NOEXCEPT
@@ -4809,7 +4809,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1CDEF const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1CDEF const *>( this );
+        return *reinterpret_cast<const StdVideoAV1CDEF *>( this );
       }
 
       operator StdVideoAV1CDEF &() VULKAN_HPP_NOEXCEPT
@@ -4819,7 +4819,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1CDEF const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1CDEF const *>( this );
+        return reinterpret_cast<const StdVideoAV1CDEF *>( this );
       }
 
       operator StdVideoAV1CDEF *() VULKAN_HPP_NOEXCEPT
@@ -4857,7 +4857,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1LoopRestoration const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1LoopRestoration const *>( this );
+        return *reinterpret_cast<const StdVideoAV1LoopRestoration *>( this );
       }
 
       operator StdVideoAV1LoopRestoration &() VULKAN_HPP_NOEXCEPT
@@ -4867,7 +4867,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1LoopRestoration const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1LoopRestoration const *>( this );
+        return reinterpret_cast<const StdVideoAV1LoopRestoration *>( this );
       }
 
       operator StdVideoAV1LoopRestoration *() VULKAN_HPP_NOEXCEPT
@@ -4896,7 +4896,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1GlobalMotion const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1GlobalMotion const *>( this );
+        return *reinterpret_cast<const StdVideoAV1GlobalMotion *>( this );
       }
 
       operator StdVideoAV1GlobalMotion &() VULKAN_HPP_NOEXCEPT
@@ -4906,7 +4906,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1GlobalMotion const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1GlobalMotion const *>( this );
+        return reinterpret_cast<const StdVideoAV1GlobalMotion *>( this );
       }
 
       operator StdVideoAV1GlobalMotion *() VULKAN_HPP_NOEXCEPT
@@ -4935,7 +4935,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1FilmGrainFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1FilmGrainFlags const *>( this );
+        return *reinterpret_cast<const StdVideoAV1FilmGrainFlags *>( this );
       }
 
       operator StdVideoAV1FilmGrainFlags &() VULKAN_HPP_NOEXCEPT
@@ -4945,7 +4945,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1FilmGrainFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1FilmGrainFlags const *>( this );
+        return reinterpret_cast<const StdVideoAV1FilmGrainFlags *>( this );
       }
 
       operator StdVideoAV1FilmGrainFlags *() VULKAN_HPP_NOEXCEPT
@@ -4981,7 +4981,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1FilmGrain const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1FilmGrain const *>( this );
+        return *reinterpret_cast<const StdVideoAV1FilmGrain *>( this );
       }
 
       operator StdVideoAV1FilmGrain &() VULKAN_HPP_NOEXCEPT
@@ -4991,7 +4991,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1FilmGrain const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1FilmGrain const *>( this );
+        return reinterpret_cast<const StdVideoAV1FilmGrain *>( this );
       }
 
       operator StdVideoAV1FilmGrain *() VULKAN_HPP_NOEXCEPT
@@ -5067,7 +5067,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1SequenceHeaderFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1SequenceHeaderFlags const *>( this );
+        return *reinterpret_cast<const StdVideoAV1SequenceHeaderFlags *>( this );
       }
 
       operator StdVideoAV1SequenceHeaderFlags &() VULKAN_HPP_NOEXCEPT
@@ -5077,7 +5077,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1SequenceHeaderFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1SequenceHeaderFlags const *>( this );
+        return reinterpret_cast<const StdVideoAV1SequenceHeaderFlags *>( this );
       }
 
       operator StdVideoAV1SequenceHeaderFlags *() VULKAN_HPP_NOEXCEPT
@@ -5143,7 +5143,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1SequenceHeader const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoAV1SequenceHeader const *>( this );
+        return *reinterpret_cast<const StdVideoAV1SequenceHeader *>( this );
       }
 
       operator StdVideoAV1SequenceHeader &() VULKAN_HPP_NOEXCEPT
@@ -5153,7 +5153,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoAV1SequenceHeader const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoAV1SequenceHeader const *>( this );
+        return reinterpret_cast<const StdVideoAV1SequenceHeader *>( this );
       }
 
       operator StdVideoAV1SequenceHeader *() VULKAN_HPP_NOEXCEPT
@@ -5211,7 +5211,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeAV1PictureInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeAV1PictureInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeAV1PictureInfoFlags *>( this );
       }
 
       operator StdVideoDecodeAV1PictureInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -5221,7 +5221,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeAV1PictureInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeAV1PictureInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoDecodeAV1PictureInfoFlags *>( this );
       }
 
       operator StdVideoDecodeAV1PictureInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -5307,7 +5307,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeAV1PictureInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeAV1PictureInfo const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeAV1PictureInfo *>( this );
       }
 
       operator StdVideoDecodeAV1PictureInfo &() VULKAN_HPP_NOEXCEPT
@@ -5317,7 +5317,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeAV1PictureInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeAV1PictureInfo const *>( this );
+        return reinterpret_cast<const StdVideoDecodeAV1PictureInfo *>( this );
       }
 
       operator StdVideoDecodeAV1PictureInfo *() VULKAN_HPP_NOEXCEPT
@@ -5392,7 +5392,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeAV1ReferenceInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeAV1ReferenceInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeAV1ReferenceInfoFlags *>( this );
       }
 
       operator StdVideoDecodeAV1ReferenceInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -5402,7 +5402,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeAV1ReferenceInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeAV1ReferenceInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoDecodeAV1ReferenceInfoFlags *>( this );
       }
 
       operator StdVideoDecodeAV1ReferenceInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -5434,7 +5434,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeAV1ReferenceInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoDecodeAV1ReferenceInfo const *>( this );
+        return *reinterpret_cast<const StdVideoDecodeAV1ReferenceInfo *>( this );
       }
 
       operator StdVideoDecodeAV1ReferenceInfo &() VULKAN_HPP_NOEXCEPT
@@ -5444,7 +5444,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoDecodeAV1ReferenceInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoDecodeAV1ReferenceInfo const *>( this );
+        return reinterpret_cast<const StdVideoDecodeAV1ReferenceInfo *>( this );
       }
 
       operator StdVideoDecodeAV1ReferenceInfo *() VULKAN_HPP_NOEXCEPT
@@ -5484,7 +5484,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1DecoderModelInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeAV1DecoderModelInfo const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeAV1DecoderModelInfo *>( this );
       }
 
       operator StdVideoEncodeAV1DecoderModelInfo &() VULKAN_HPP_NOEXCEPT
@@ -5494,7 +5494,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1DecoderModelInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeAV1DecoderModelInfo const *>( this );
+        return reinterpret_cast<const StdVideoEncodeAV1DecoderModelInfo *>( this );
       }
 
       operator StdVideoEncodeAV1DecoderModelInfo *() VULKAN_HPP_NOEXCEPT
@@ -5530,7 +5530,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1ExtensionHeader const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeAV1ExtensionHeader const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeAV1ExtensionHeader *>( this );
       }
 
       operator StdVideoEncodeAV1ExtensionHeader &() VULKAN_HPP_NOEXCEPT
@@ -5540,7 +5540,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1ExtensionHeader const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeAV1ExtensionHeader const *>( this );
+        return reinterpret_cast<const StdVideoEncodeAV1ExtensionHeader *>( this );
       }
 
       operator StdVideoEncodeAV1ExtensionHeader *() VULKAN_HPP_NOEXCEPT
@@ -5569,7 +5569,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1OperatingPointInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeAV1OperatingPointInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeAV1OperatingPointInfoFlags *>( this );
       }
 
       operator StdVideoEncodeAV1OperatingPointInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -5579,7 +5579,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1OperatingPointInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeAV1OperatingPointInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeAV1OperatingPointInfoFlags *>( this );
       }
 
       operator StdVideoEncodeAV1OperatingPointInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -5613,7 +5613,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1OperatingPointInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeAV1OperatingPointInfo const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeAV1OperatingPointInfo *>( this );
       }
 
       operator StdVideoEncodeAV1OperatingPointInfo &() VULKAN_HPP_NOEXCEPT
@@ -5623,7 +5623,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1OperatingPointInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeAV1OperatingPointInfo const *>( this );
+        return reinterpret_cast<const StdVideoEncodeAV1OperatingPointInfo *>( this );
       }
 
       operator StdVideoEncodeAV1OperatingPointInfo *() VULKAN_HPP_NOEXCEPT
@@ -5663,7 +5663,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1PictureInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeAV1PictureInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeAV1PictureInfoFlags *>( this );
       }
 
       operator StdVideoEncodeAV1PictureInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -5673,7 +5673,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1PictureInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeAV1PictureInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeAV1PictureInfoFlags *>( this );
       }
 
       operator StdVideoEncodeAV1PictureInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -5759,7 +5759,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1PictureInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeAV1PictureInfo const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeAV1PictureInfo *>( this );
       }
 
       operator StdVideoEncodeAV1PictureInfo &() VULKAN_HPP_NOEXCEPT
@@ -5769,7 +5769,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1PictureInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeAV1PictureInfo const *>( this );
+        return reinterpret_cast<const StdVideoEncodeAV1PictureInfo *>( this );
       }
 
       operator StdVideoEncodeAV1PictureInfo *() VULKAN_HPP_NOEXCEPT
@@ -5850,7 +5850,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1ReferenceInfoFlags const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeAV1ReferenceInfoFlags const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeAV1ReferenceInfoFlags *>( this );
       }
 
       operator StdVideoEncodeAV1ReferenceInfoFlags &() VULKAN_HPP_NOEXCEPT
@@ -5860,7 +5860,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1ReferenceInfoFlags const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeAV1ReferenceInfoFlags const *>( this );
+        return reinterpret_cast<const StdVideoEncodeAV1ReferenceInfoFlags *>( this );
       }
 
       operator StdVideoEncodeAV1ReferenceInfoFlags *() VULKAN_HPP_NOEXCEPT
@@ -5892,7 +5892,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1ReferenceInfo const &() const VULKAN_HPP_NOEXCEPT
       {
-        return *reinterpret_cast<StdVideoEncodeAV1ReferenceInfo const *>( this );
+        return *reinterpret_cast<const StdVideoEncodeAV1ReferenceInfo *>( this );
       }
 
       operator StdVideoEncodeAV1ReferenceInfo &() VULKAN_HPP_NOEXCEPT
@@ -5902,7 +5902,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       operator StdVideoEncodeAV1ReferenceInfo const *() const VULKAN_HPP_NOEXCEPT
       {
-        return reinterpret_cast<StdVideoEncodeAV1ReferenceInfo const *>( this );
+        return reinterpret_cast<const StdVideoEncodeAV1ReferenceInfo *>( this );
       }
 
       operator StdVideoEncodeAV1ReferenceInfo *() VULKAN_HPP_NOEXCEPT

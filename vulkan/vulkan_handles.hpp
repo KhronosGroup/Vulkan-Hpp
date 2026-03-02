@@ -2470,8 +2470,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //======================
 
   //=== VK_VERSION_1_0 ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<Instance, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<Instance>
   {
   public:
     using deleter = detail::ObjectDestroy<detail::NoParent>;
@@ -2479,8 +2480,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueInstance = UniqueHandle<Instance>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<PhysicalDevice, Dispatch>
+  template <>
+  class UniqueHandleTraits<PhysicalDevice>
   {
   public:
     using deleter = detail::DummyDestroy<Instance>;
@@ -2488,8 +2489,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniquePhysicalDevice = UniqueHandle<PhysicalDevice>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<Device, Dispatch>
+  template <>
+  class UniqueHandleTraits<Device>
   {
   public:
     using deleter = detail::ObjectDestroy<detail::NoParent>;
@@ -2497,8 +2498,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueDevice = UniqueHandle<Device>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<Queue, Dispatch>
+  template <>
+  class UniqueHandleTraits<Queue>
   {
   public:
     using deleter = detail::DummyDestroy<Device>;
@@ -2506,8 +2507,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueQueue = UniqueHandle<Queue>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<DeviceMemory, Dispatch>
+  template <>
+  class UniqueHandleTraits<DeviceMemory>
   {
   public:
     using deleter = detail::ObjectFree<Device>;
@@ -2515,8 +2516,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueDeviceMemory = UniqueHandle<DeviceMemory>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<Fence, Dispatch>
+  template <>
+  class UniqueHandleTraits<Fence>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2524,8 +2525,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueFence = UniqueHandle<Fence>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<Semaphore, Dispatch>
+  template <>
+  class UniqueHandleTraits<Semaphore>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2533,8 +2534,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueSemaphore = UniqueHandle<Semaphore>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<QueryPool, Dispatch>
+  template <>
+  class UniqueHandleTraits<QueryPool>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2542,8 +2543,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueQueryPool = UniqueHandle<QueryPool>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<Buffer, Dispatch>
+  template <>
+  class UniqueHandleTraits<Buffer>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2551,8 +2552,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueBuffer = UniqueHandle<Buffer>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<Image, Dispatch>
+  template <>
+  class UniqueHandleTraits<Image>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2560,8 +2561,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueImage = UniqueHandle<Image>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<ImageView, Dispatch>
+  template <>
+  class UniqueHandleTraits<ImageView>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2569,8 +2570,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueImageView = UniqueHandle<ImageView>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<CommandPool, Dispatch>
+  template <>
+  class UniqueHandleTraits<CommandPool>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2578,8 +2579,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueCommandPool = UniqueHandle<CommandPool>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<CommandBuffer, Dispatch>
+  template <>
+  class UniqueHandleTraits<CommandBuffer>
   {
   public:
     using deleter = detail::PoolFree<Device, CommandPool>;
@@ -2587,8 +2588,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueCommandBuffer = UniqueHandle<CommandBuffer>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<Event, Dispatch>
+  template <>
+  class UniqueHandleTraits<Event>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2596,8 +2597,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueEvent = UniqueHandle<Event>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<BufferView, Dispatch>
+  template <>
+  class UniqueHandleTraits<BufferView>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2605,8 +2606,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueBufferView = UniqueHandle<BufferView>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<ShaderModule, Dispatch>
+  template <>
+  class UniqueHandleTraits<ShaderModule>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2614,8 +2615,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueShaderModule = UniqueHandle<ShaderModule>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<PipelineCache, Dispatch>
+  template <>
+  class UniqueHandleTraits<PipelineCache>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2623,8 +2624,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniquePipelineCache = UniqueHandle<PipelineCache>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<Pipeline, Dispatch>
+  template <>
+  class UniqueHandleTraits<Pipeline>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2632,8 +2633,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniquePipeline = UniqueHandle<Pipeline>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<PipelineLayout, Dispatch>
+  template <>
+  class UniqueHandleTraits<PipelineLayout>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2641,8 +2642,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniquePipelineLayout = UniqueHandle<PipelineLayout>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<Sampler, Dispatch>
+  template <>
+  class UniqueHandleTraits<Sampler>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2650,8 +2651,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueSampler = UniqueHandle<Sampler>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<DescriptorPool, Dispatch>
+  template <>
+  class UniqueHandleTraits<DescriptorPool>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2659,8 +2660,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueDescriptorPool = UniqueHandle<DescriptorPool>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<DescriptorSet, Dispatch>
+  template <>
+  class UniqueHandleTraits<DescriptorSet>
   {
   public:
     using deleter = detail::PoolFree<Device, DescriptorPool>;
@@ -2668,8 +2669,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueDescriptorSet = UniqueHandle<DescriptorSet>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<DescriptorSetLayout, Dispatch>
+  template <>
+  class UniqueHandleTraits<DescriptorSetLayout>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2677,8 +2678,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueDescriptorSetLayout = UniqueHandle<DescriptorSetLayout>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<Framebuffer, Dispatch>
+  template <>
+  class UniqueHandleTraits<Framebuffer>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2686,8 +2687,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueFramebuffer = UniqueHandle<Framebuffer>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<RenderPass, Dispatch>
+  template <>
+  class UniqueHandleTraits<RenderPass>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2696,8 +2697,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueRenderPass = UniqueHandle<RenderPass>;
 
   //=== VK_VERSION_1_1 ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<DescriptorUpdateTemplate, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<DescriptorUpdateTemplate>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2706,8 +2708,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueDescriptorUpdateTemplate    = UniqueHandle<DescriptorUpdateTemplate>;
   using UniqueDescriptorUpdateTemplateKHR = UniqueHandle<DescriptorUpdateTemplate, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<SamplerYcbcrConversion, Dispatch>
+  template <>
+  class UniqueHandleTraits<SamplerYcbcrConversion>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2717,8 +2719,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueSamplerYcbcrConversionKHR = UniqueHandle<SamplerYcbcrConversion, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
   //=== VK_VERSION_1_3 ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<PrivateDataSlot, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<PrivateDataSlot>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2728,8 +2731,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniquePrivateDataSlotEXT = UniqueHandle<PrivateDataSlot, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
   //=== VK_KHR_surface ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<SurfaceKHR, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<SurfaceKHR>
   {
   public:
     using deleter = detail::ObjectDestroy<Instance>;
@@ -2738,8 +2742,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueSurfaceKHR = UniqueHandle<SurfaceKHR>;
 
   //=== VK_KHR_swapchain ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<SwapchainKHR, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<SwapchainKHR>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2748,17 +2753,18 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueSwapchainKHR = UniqueHandle<SwapchainKHR>;
 
   //=== VK_KHR_display ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<DisplayKHR, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<DisplayKHR>
   {
   public:
-    using deleter = detail::ObjectDestroy<PhysicalDevice>;
+    using deleter = detail::ObjectRelease<PhysicalDevice>;
   };
 
   using UniqueDisplayKHR = UniqueHandle<DisplayKHR>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<DisplayModeKHR, Dispatch>
+  template <>
+  class UniqueHandleTraits<DisplayModeKHR>
   {
   public:
     using deleter = detail::DummyDestroy<PhysicalDevice>;
@@ -2767,8 +2773,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueDisplayModeKHR = UniqueHandle<DisplayModeKHR>;
 
   //=== VK_EXT_debug_report ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<DebugReportCallbackEXT, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<DebugReportCallbackEXT>
   {
   public:
     using deleter = detail::ObjectDestroy<Instance>;
@@ -2777,8 +2784,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueDebugReportCallbackEXT = UniqueHandle<DebugReportCallbackEXT>;
 
   //=== VK_KHR_video_queue ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<VideoSessionKHR, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<VideoSessionKHR>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2786,8 +2794,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueVideoSessionKHR = UniqueHandle<VideoSessionKHR>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<VideoSessionParametersKHR, Dispatch>
+  template <>
+  class UniqueHandleTraits<VideoSessionParametersKHR>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2796,8 +2804,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueVideoSessionParametersKHR = UniqueHandle<VideoSessionParametersKHR>;
 
   //=== VK_NVX_binary_import ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<CuModuleNVX, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<CuModuleNVX>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2805,8 +2814,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueCuModuleNVX = UniqueHandle<CuModuleNVX>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<CuFunctionNVX, Dispatch>
+  template <>
+  class UniqueHandleTraits<CuFunctionNVX>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2815,8 +2824,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueCuFunctionNVX = UniqueHandle<CuFunctionNVX>;
 
   //=== VK_EXT_debug_utils ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<DebugUtilsMessengerEXT, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<DebugUtilsMessengerEXT>
   {
   public:
     using deleter = detail::ObjectDestroy<Instance>;
@@ -2825,8 +2835,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueDebugUtilsMessengerEXT = UniqueHandle<DebugUtilsMessengerEXT>;
 
   //=== VK_EXT_descriptor_heap ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<TensorARM, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<TensorARM>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2835,8 +2846,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueTensorARM = UniqueHandle<TensorARM>;
 
   //=== VK_KHR_acceleration_structure ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<AccelerationStructureKHR, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<AccelerationStructureKHR>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2845,8 +2857,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueAccelerationStructureKHR = UniqueHandle<AccelerationStructureKHR>;
 
   //=== VK_EXT_validation_cache ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<ValidationCacheEXT, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<ValidationCacheEXT>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2855,8 +2868,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueValidationCacheEXT = UniqueHandle<ValidationCacheEXT>;
 
   //=== VK_NV_ray_tracing ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<AccelerationStructureNV, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<AccelerationStructureNV>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2865,18 +2879,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueAccelerationStructureNV = UniqueHandle<AccelerationStructureNV>;
 
   //=== VK_INTEL_performance_query ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<PerformanceConfigurationINTEL, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<PerformanceConfigurationINTEL>
   {
   public:
-    using deleter = detail::ObjectDestroy<Device>;
+    using deleter = detail::ObjectRelease<Device>;
   };
 
   using UniquePerformanceConfigurationINTEL = UniqueHandle<PerformanceConfigurationINTEL>;
 
   //=== VK_KHR_deferred_host_operations ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<DeferredOperationKHR, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<DeferredOperationKHR>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2885,8 +2901,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueDeferredOperationKHR = UniqueHandle<DeferredOperationKHR>;
 
   //=== VK_NV_device_generated_commands ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<IndirectCommandsLayoutNV, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<IndirectCommandsLayoutNV>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2896,8 +2913,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_NV_cuda_kernel_launch ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<CudaModuleNV, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<CudaModuleNV>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2905,8 +2923,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueCudaModuleNV = UniqueHandle<CudaModuleNV>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<CudaFunctionNV, Dispatch>
+  template <>
+  class UniqueHandleTraits<CudaFunctionNV>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2917,8 +2935,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_buffer_collection ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<BufferCollectionFUCHSIA, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<BufferCollectionFUCHSIA>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2928,8 +2947,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
   //=== VK_EXT_opacity_micromap ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<MicromapEXT, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<MicromapEXT>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2938,8 +2958,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueMicromapEXT = UniqueHandle<MicromapEXT>;
 
   //=== VK_ARM_tensors ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<TensorViewARM, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<TensorViewARM>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2948,8 +2969,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueTensorViewARM = UniqueHandle<TensorViewARM>;
 
   //=== VK_NV_optical_flow ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<OpticalFlowSessionNV, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<OpticalFlowSessionNV>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2958,8 +2980,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueOpticalFlowSessionNV = UniqueHandle<OpticalFlowSessionNV>;
 
   //=== VK_EXT_shader_object ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<ShaderEXT, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<ShaderEXT>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2968,8 +2991,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueShaderEXT = UniqueHandle<ShaderEXT>;
 
   //=== VK_KHR_pipeline_binary ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<PipelineBinaryKHR, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<PipelineBinaryKHR>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2978,8 +3002,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniquePipelineBinaryKHR = UniqueHandle<PipelineBinaryKHR>;
 
   //=== VK_ARM_data_graph ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<DataGraphPipelineSessionARM, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<DataGraphPipelineSessionARM>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2988,8 +3013,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueDataGraphPipelineSessionARM = UniqueHandle<DataGraphPipelineSessionARM>;
 
   //=== VK_NV_external_compute_queue ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<ExternalComputeQueueNV, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<ExternalComputeQueueNV>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -2998,8 +3024,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using UniqueExternalComputeQueueNV = UniqueHandle<ExternalComputeQueueNV>;
 
   //=== VK_EXT_device_generated_commands ===
-  template <typename Dispatch>
-  class UniqueHandleTraits<IndirectCommandsLayoutEXT, Dispatch>
+
+  template <>
+  class UniqueHandleTraits<IndirectCommandsLayoutEXT>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -3007,8 +3034,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using UniqueIndirectCommandsLayoutEXT = UniqueHandle<IndirectCommandsLayoutEXT>;
 
-  template <typename Dispatch>
-  class UniqueHandleTraits<IndirectExecutionSetEXT, Dispatch>
+  template <>
+  class UniqueHandleTraits<IndirectExecutionSetEXT>
   {
   public:
     using deleter = detail::ObjectDestroy<Device>;
@@ -13683,20 +13710,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetAndroidHardwareBufferPropertiesANDROID, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAndroidHardwareBufferPropertiesANDROID.html
     VULKAN_HPP_NODISCARD Result
-      getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer *           buffer,
+      getAndroidHardwareBufferPropertiesANDROID( struct AHardwareBuffer const *           buffer,
                                                  AndroidHardwareBufferPropertiesANDROID * pProperties,
                                                  DispatchLoader const & d                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     // wrapper function for command vkGetAndroidHardwareBufferPropertiesANDROID, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAndroidHardwareBufferPropertiesANDROID.html
     VULKAN_HPP_NODISCARD typename ResultValueType<AndroidHardwareBufferPropertiesANDROID>::type
-      getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer,
+      getAndroidHardwareBufferPropertiesANDROID( struct AHardwareBuffer const & buffer,
                                                  DispatchLoader const & d       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetAndroidHardwareBufferPropertiesANDROID, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAndroidHardwareBufferPropertiesANDROID.html
     template <typename X, typename Y, typename... Z>
     VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-      getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer,
+      getAndroidHardwareBufferPropertiesANDROID( struct AHardwareBuffer const & buffer,
                                                  DispatchLoader const & d       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -16013,19 +16040,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkGetNativeBufferPropertiesOHOS, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
-    VULKAN_HPP_NODISCARD Result getNativeBufferPropertiesOHOS( const struct OH_NativeBuffer * buffer,
+    VULKAN_HPP_NODISCARD Result getNativeBufferPropertiesOHOS( struct OH_NativeBuffer const * buffer,
                                                                NativeBufferPropertiesOHOS *   pProperties,
                                                                DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     // wrapper function for command vkGetNativeBufferPropertiesOHOS, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
     VULKAN_HPP_NODISCARD typename ResultValueType<NativeBufferPropertiesOHOS>::type
-      getNativeBufferPropertiesOHOS( const struct OH_NativeBuffer & buffer, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getNativeBufferPropertiesOHOS( struct OH_NativeBuffer const & buffer, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetNativeBufferPropertiesOHOS, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
     template <typename X, typename Y, typename... Z>
     VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-      getNativeBufferPropertiesOHOS( const struct OH_NativeBuffer & buffer, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getNativeBufferPropertiesOHOS( struct OH_NativeBuffer const & buffer, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetMemoryNativeBufferOHOS, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetMemoryNativeBufferOHOS.html
@@ -16873,19 +16900,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkGetScreenBufferPropertiesQNX, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetScreenBufferPropertiesQNX.html
-    VULKAN_HPP_NODISCARD Result getScreenBufferPropertiesQNX( const struct _screen_buffer * buffer,
+    VULKAN_HPP_NODISCARD Result getScreenBufferPropertiesQNX( struct _screen_buffer const * buffer,
                                                               ScreenBufferPropertiesQNX *   pProperties,
                                                               DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     // wrapper function for command vkGetScreenBufferPropertiesQNX, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetScreenBufferPropertiesQNX.html
     VULKAN_HPP_NODISCARD typename ResultValueType<ScreenBufferPropertiesQNX>::type
-      getScreenBufferPropertiesQNX( const struct _screen_buffer & buffer, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getScreenBufferPropertiesQNX( struct _screen_buffer const & buffer, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkGetScreenBufferPropertiesQNX, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetScreenBufferPropertiesQNX.html
     template <typename X, typename Y, typename... Z>
     VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-      getScreenBufferPropertiesQNX( const struct _screen_buffer & buffer, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getScreenBufferPropertiesQNX( struct _screen_buffer const & buffer, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_SCREEN_QNX*/
 
@@ -18251,6 +18278,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkReleaseDisplayEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseDisplayEXT.html
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
       releaseDisplayEXT( DisplayKHR display, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkReleaseDisplayEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseDisplayEXT.html
+    VULKAN_HPP_NODISCARD Result release( DisplayKHR display, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#else
+    // wrapper function for command vkReleaseDisplayEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkReleaseDisplayEXT.html
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      release( DisplayKHR display, DispatchLoader const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #if defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )

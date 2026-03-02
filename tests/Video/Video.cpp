@@ -34,7 +34,7 @@ import vulkan_video;
 #endif
 
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   vk::video::H264ChromaFormatIdc x;
   vk::video::H264ProfileIdc      y;

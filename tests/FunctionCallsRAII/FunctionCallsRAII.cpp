@@ -34,7 +34,7 @@ import vulkan;
 #  include <vulkan/vulkan_raii.hpp>
 #endif
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   //=== VK_VERSION_1_0 ===
   // Device initialization
@@ -608,6 +608,32 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::PipelineCache        dstCache = nullptr;
     std::vector<vk::PipelineCache> srcCaches;
     dstCache.merge( srcCaches );
+  }
+
+  // Compute pipeline commands
+  {
+    vk::raii::Device                           device        = nullptr;
+    vk::raii::PipelineCache                    pipelineCache = nullptr;
+    std::vector<vk::ComputePipelineCreateInfo> computePipelineCreateInfos;
+    std::vector<vk::raii::Pipeline>            pipelines = device.createComputePipelines( pipelineCache, computePipelineCreateInfos );
+  }
+  {
+    vk::raii::Device                           device        = nullptr;
+    vk::raii::PipelineCache                    pipelineCache = nullptr;
+    std::vector<vk::ComputePipelineCreateInfo> computePipelineCreateInfos;
+    vk::raii::Pipelines                        pipelines( device, pipelineCache, computePipelineCreateInfos );
+  }
+  {
+    vk::raii::Device              device        = nullptr;
+    vk::raii::PipelineCache       pipelineCache = nullptr;
+    vk::ComputePipelineCreateInfo computePipelineCreateInfo;
+    vk::raii::Pipeline            pipeline = device.createComputePipeline( pipelineCache, computePipelineCreateInfo );
+  }
+  {
+    vk::raii::Device              device        = nullptr;
+    vk::raii::PipelineCache       pipelineCache = nullptr;
+    vk::ComputePipelineCreateInfo computePipelineCreateInfo;
+    vk::raii::Pipeline            pipeline( device, pipelineCache, computePipelineCreateInfo );
   }
 
   return 0;

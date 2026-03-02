@@ -24,7 +24,7 @@
 static char const * AppName    = "11_InitShaders";
 static char const * EngineName = "Vulkan.hpp";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

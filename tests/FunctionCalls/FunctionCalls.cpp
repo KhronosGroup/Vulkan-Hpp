@@ -35,7 +35,7 @@ import vulkan;
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   //=== VK_VERSION_1_0 ===
   // Device initialization
@@ -1300,6 +1300,61 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::PipelineCache              dstCache;
     std::vector<vk::PipelineCache> srcCaches;
     device.mergePipelineCaches( dstCache, srcCaches );
+  }
+
+  // Compute pipeline commands
+  {
+    vk::Device                    device;
+    vk::PipelineCache             pipelineCache;
+    vk::ComputePipelineCreateInfo computePipelineCreateInfo;
+    uint32_t                      pipelineIndex = 0;
+    vk::AllocationCallbacks       allocationCallbacks;
+    vk::Pipeline                  pipeline;
+    vk::Result                    result = device.createComputePipelines( pipelineCache, 1, &computePipelineCreateInfo, &allocationCallbacks, &pipeline );
+  }
+  {
+    vk::Device                                 device;
+    vk::PipelineCache                          pipelineCache;
+    std::vector<vk::ComputePipelineCreateInfo> computePipelineCreateInfos;
+    vk::ResultValue<std::vector<vk::Pipeline>> rv = device.createComputePipelines( pipelineCache, computePipelineCreateInfos );
+  }
+  {
+    vk::Device                                 device;
+    vk::PipelineCache                          pipelineCache;
+    std::vector<vk::ComputePipelineCreateInfo> computePipelineCreateInfos;
+    vk::AllocationCallbacks                    allocationCallbacks;
+    using Allocator = std::allocator<vk::Pipeline>;
+    Allocator                                  allocator;
+    vk::ResultValue<std::vector<vk::Pipeline>> rv = device.createComputePipelines( pipelineCache, computePipelineCreateInfos, allocationCallbacks, allocator );
+  }
+  {
+    vk::Device                    device;
+    vk::PipelineCache             pipelineCache;
+    vk::ComputePipelineCreateInfo computePipelineCreateInfo;
+    vk::ResultValue<vk::Pipeline> rv = device.createComputePipeline( pipelineCache, computePipelineCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Pipeline            pipeline;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyPipeline( pipeline, &allocationCallbacks );
+  }
+  {
+    vk::Device   device;
+    vk::Pipeline pipeline;
+    device.destroyPipeline( pipeline );
+  }
+  {
+    vk::Device              device;
+    vk::Pipeline            pipeline;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( pipeline, &allocationCallbacks );
+  }
+  {
+    vk::Device   device;
+    vk::Pipeline pipeline;
+    device.destroy( pipeline );
   }
 
 #if 0

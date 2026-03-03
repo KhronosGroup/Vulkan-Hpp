@@ -6399,7 +6399,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename StructureChainAllocator::value_type, StructureChain>::value, int>::type,
             typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyProperties2 ), bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<StructureChain, StructureChainAllocator> PhysicalDevice::getQueueFamilyProperties2(
-    StructureChainAllocator & structureChainAllocator, Dispatch const & d ) const
+    StructureChainAllocator const & structureChainAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -11246,7 +11246,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceVideoFormatPropertiesKHR ), bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<StructureChain, StructureChainAllocator>>::type
                        PhysicalDevice::getVideoFormatPropertiesKHR(
-      PhysicalDeviceVideoFormatInfoKHR const & videoFormatInfo, StructureChainAllocator & structureChainAllocator, Dispatch const & d ) const
+      PhysicalDeviceVideoFormatInfoKHR const & videoFormatInfo, StructureChainAllocator const & structureChainAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -12957,7 +12957,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename StructureChainAllocator::value_type, StructureChain>::value, int>::type,
             typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyProperties2KHR ), bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<StructureChain, StructureChainAllocator> PhysicalDevice::getQueueFamilyProperties2KHR(
-    StructureChainAllocator & structureChainAllocator, Dispatch const & d ) const
+    StructureChainAllocator const & structureChainAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -15311,7 +15311,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceSurfaceFormats2KHR ), bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<StructureChain, StructureChainAllocator>>::type
                        PhysicalDevice::getSurfaceFormats2KHR(
-      PhysicalDeviceSurfaceInfo2KHR const & surfaceInfo, StructureChainAllocator & structureChainAllocator, Dispatch const & d ) const
+      PhysicalDeviceSurfaceInfo2KHR const & surfaceInfo, StructureChainAllocator const & structureChainAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -15673,7 +15673,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             typename std::enable_if<std::is_same<typename StructureChainAllocator::value_type, StructureChain>::value, int>::type,
             typename std::enable_if<IS_DISPATCHED( vkGetDisplayModeProperties2KHR ), bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<StructureChain, StructureChainAllocator>>::type
-    PhysicalDevice::getDisplayModeProperties2KHR( DisplayKHR display, StructureChainAllocator & structureChainAllocator, Dispatch const & d ) const
+    PhysicalDevice::getDisplayModeProperties2KHR( DisplayKHR display, StructureChainAllocator const & structureChainAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )

@@ -778,6 +778,13 @@ private:
                                                bool                                      raii,
                                                std::vector<size_t> const &               returnParams,
                                                std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::string generateCommand3ReturnsEnumValue( std::string const &                       name,
+                                                CommandData const &                       commandData,
+                                                size_t                                    initialSkipCount,
+                                                bool                                      definition,
+                                                bool                                      raii,
+                                                std::vector<size_t> const &               returnParams,
+                                                std::map<size_t, VectorParamData> const & vectorParams ) const;
   std::string generateCommand3ReturnsValueEnum( std::string const &                       name,
                                                 CommandData const &                       commandData,
                                                 size_t                                    initialSkipCount,

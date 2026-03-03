@@ -19849,7 +19849,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename StructureChainAllocator::value_type, StructureChain>::value, int>::type = 0,
               typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyProperties2 ), bool>::type                       = true>
     VULKAN_HPP_NODISCARD std::vector<StructureChain, StructureChainAllocator>
-      getQueueFamilyProperties2( StructureChainAllocator & structureChainAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getQueueFamilyProperties2( StructureChainAllocator const & structureChainAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetPhysicalDeviceMemoryProperties2, see
@@ -20412,7 +20412,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceVideoFormatPropertiesKHR ), bool>::type                     = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<StructureChain, StructureChainAllocator>>::type
       getVideoFormatPropertiesKHR( PhysicalDeviceVideoFormatInfoKHR const & videoFormatInfo,
-                                   StructureChainAllocator &                structureChainAllocator,
+                                   StructureChainAllocator const &          structureChainAllocator,
                                    Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -20581,7 +20581,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename StructureChainAllocator::value_type, StructureChain>::value, int>::type = 0,
               typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyProperties2KHR ), bool>::type                    = true>
     VULKAN_HPP_NODISCARD std::vector<StructureChain, StructureChainAllocator>
-      getQueueFamilyProperties2KHR( StructureChainAllocator & structureChainAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+                         getQueueFamilyProperties2KHR( StructureChainAllocator const & structureChainAllocator,
+                                                       Dispatch const & d              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetPhysicalDeviceMemoryProperties2KHR, see
@@ -20903,7 +20904,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceSurfaceFormats2KHR ), bool>::type                           = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<StructureChain, StructureChainAllocator>>::type
       getSurfaceFormats2KHR( PhysicalDeviceSurfaceInfo2KHR const & surfaceInfo,
-                             StructureChainAllocator &             structureChainAllocator,
+                             StructureChainAllocator const &       structureChainAllocator,
                              Dispatch const & d                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -21007,7 +21008,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename StructureChainAllocator::value_type, StructureChain>::value, int>::type = 0,
               typename std::enable_if<IS_DISPATCHED( vkGetDisplayModeProperties2KHR ), bool>::type                                  = true>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<StructureChain, StructureChainAllocator>>::type getDisplayModeProperties2KHR(
-      DisplayKHR display, StructureChainAllocator & structureChainAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      DisplayKHR display, StructureChainAllocator const & structureChainAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkGetDisplayPlaneCapabilities2KHR, see

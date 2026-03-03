@@ -3582,6 +3582,15 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
                                           { CommandFlavourFlagBits::enhanced } );
     }
   }
+  else if ( m_externalTypes.contains( returnType0 ) )
+  {
+    if ( returnType1 == "void" )
+    {
+      // a return type of void *, without any len/vector information, means, it points to some memory where the size of that memory is externally calculated ->
+      // can't to an enhanced version
+      return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, returnParams, vectorParams, false, {}, raii, false, {} );
+    }
+  }
   else if ( auto structIt = findByNameOrAlias( m_structs, returnType0 ); structIt != m_structs.end() )
   {
     // the first return param is a single struct

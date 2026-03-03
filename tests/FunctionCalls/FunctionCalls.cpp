@@ -1357,6 +1357,43 @@ int main()
     device.destroy( pipeline );
   }
 
+  // Pipeline layout commands
+  {
+    vk::Device                   device;
+    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo;
+    vk::AllocationCallbacks      allocationCallbacks;
+    vk::PipelineLayout           pipelineLayout;
+    vk::Result                   result = device.createPipelineLayout( &pipelineLayoutCreateInfo, &allocationCallbacks, &pipelineLayout );
+  }
+  {
+    vk::Device                   device;
+    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo;
+    vk::PipelineLayout           pipelineLayout = device.createPipelineLayout( pipelineLayoutCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::PipelineLayout      pipelineLayout;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyPipelineLayout( pipelineLayout, &allocationCallbacks );
+  }
+  {
+    vk::Device         device;
+    vk::PipelineLayout pipelineLayout;
+    device.destroyPipelineLayout( pipelineLayout );
+  }
+  {
+    vk::Device              device;
+    vk::PipelineLayout      pipelineLayout;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( pipelineLayout, &allocationCallbacks );
+  }
+  {
+    vk::Device         device;
+    vk::PipelineLayout pipelineLayout;
+    device.destroy( pipelineLayout );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

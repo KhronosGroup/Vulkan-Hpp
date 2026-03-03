@@ -636,5 +636,17 @@ int main()
     vk::raii::Pipeline            pipeline( device, pipelineCache, computePipelineCreateInfo );
   }
 
+  // Pipeline layout commands
+  {
+    vk::raii::Device             device = nullptr;
+    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo;
+    vk::raii::PipelineLayout     pipelineLayout = device.createPipelineLayout( pipelineLayoutCreateInfo );
+  }
+  {
+    vk::raii::Device             device = nullptr;
+    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo;
+    vk::raii::PipelineLayout     pipelineLayout( device, pipelineLayoutCreateInfo );
+  }
+
   return 0;
 }

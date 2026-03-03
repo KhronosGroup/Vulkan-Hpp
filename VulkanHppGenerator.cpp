@@ -4310,6 +4310,16 @@ std::string VulkanHppGenerator::generateCommandSetInclusive( std::string const &
     }
     else
     {
+      if ( std::ranges::any_of( vectorParams,
+                                [&commandData, &returnParams]( std::pair<size_t, VectorParamData> const & vpd )
+                                {
+                                  return ( commandData.params[vpd.first].type.type == "void" ) &&
+                                         std::ranges::none_of( returnParams, [&vpd]( size_t returnParam ) { return vpd.second.lenParam == returnParam; } );
+                                } ) )
+      {
+        // Functions taking a vector with data type void and the len for that data is not returned (no enumeration) need the standard implementation as well
+        raiiCommands = generateRAIIHandleCommandStandard( name, commandData, initialSkipCount, definition, raii );
+      }
       for ( auto flag : raiiFlags )
       {
         bool const noReturn = flag & CommandFlavourFlagBits::noReturn;

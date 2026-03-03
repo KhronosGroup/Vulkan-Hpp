@@ -5018,6 +5018,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkWriteAccelerationStructuresPropertiesKHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkWriteAccelerationStructuresPropertiesKHR.html
+      VULKAN_HPP_NODISCARD Result writeAccelerationStructuresPropertiesKHR( uint32_t                                               accelerationStructureCount,
+                                                                            VULKAN_HPP_NAMESPACE::AccelerationStructureKHR const * pAccelerationStructures,
+                                                                            QueryType                                              queryType,
+                                                                            size_t                                                 dataSize,
+                                                                            void *                                                 pData,
+                                                                            size_t stride ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkWriteAccelerationStructuresPropertiesKHR, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkWriteAccelerationStructuresPropertiesKHR.html
       template <typename DataType>
       VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<DataType>>::type
         writeAccelerationStructuresPropertiesKHR( ArrayProxy<VULKAN_HPP_NAMESPACE::AccelerationStructureKHR const> const & accelerationStructures,
@@ -5357,6 +5366,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_descriptor_buffer ===
 
       // wrapper function for command vkGetDescriptorEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDescriptorEXT.html
+      void getDescriptorEXT( DescriptorGetInfoEXT const * pDescriptorInfo, size_t dataSize, void * pDescriptor ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkGetDescriptorEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDescriptorEXT.html
       void getDescriptorEXT( DescriptorGetInfoEXT const & descriptorInfo, size_t dataSize, void * pDescriptor ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkGetDescriptorEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDescriptorEXT.html
@@ -5468,6 +5480,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkCopyMemoryToMicromapEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCopyMemoryToMicromapEXT.html
       VULKAN_HPP_NODISCARD Result copyMemoryToMicromapEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR deferredOperation,
                                                            CopyMemoryToMicromapInfoEXT const &        info ) const;
+
+      // wrapper function for command vkWriteMicromapsPropertiesEXT, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkWriteMicromapsPropertiesEXT.html
+      VULKAN_HPP_NODISCARD Result writeMicromapsPropertiesEXT( uint32_t                                  micromapCount,
+                                                               VULKAN_HPP_NAMESPACE::MicromapEXT const * pMicromaps,
+                                                               QueryType                                 queryType,
+                                                               size_t                                    dataSize,
+                                                               void *                                    pData,
+                                                               size_t                                    stride ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkWriteMicromapsPropertiesEXT, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkWriteMicromapsPropertiesEXT.html
@@ -6092,6 +6113,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       //=== VK_NV_ray_tracing ===
+
+      // wrapper function for command vkGetAccelerationStructureHandleNV, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAccelerationStructureHandleNV.html
+      VULKAN_HPP_NODISCARD Result getHandle( size_t dataSize, void * pData ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkGetAccelerationStructureHandleNV, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAccelerationStructureHandleNV.html
@@ -6812,6 +6837,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                               ArrayProxy<BufferImageCopy const> const & regions ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkCmdUpdateBuffer, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdUpdateBuffer.html
+      void updateBuffer( VULKAN_HPP_NAMESPACE::Buffer dstBuffer, DeviceSize dstOffset, DeviceSize dataSize, void const * pData ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkCmdUpdateBuffer, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdUpdateBuffer.html
       template <typename DataType>
       void updateBuffer( VULKAN_HPP_NAMESPACE::Buffer dstBuffer, DeviceSize dstOffset, ArrayProxy<DataType const> const & data ) const VULKAN_HPP_NOEXCEPT;
 
@@ -6887,6 +6915,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                        ArrayProxy<MemoryBarrier const> const &               memoryBarriers,
                        ArrayProxy<BufferMemoryBarrier const> const &         bufferMemoryBarriers,
                        ArrayProxy<ImageMemoryBarrier const> const &          imageMemoryBarriers ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkCmdPushConstants, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdPushConstants.html
+      void pushConstants( VULKAN_HPP_NAMESPACE::PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, uint32_t size, void const * pValues ) const
+        VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkCmdPushConstants, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdPushConstants.html
       template <typename ValuesType>
@@ -12224,6 +12256,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkGetRayTracingShaderGroupHandlesKHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingShaderGroupHandlesKHR.html
+      VULKAN_HPP_NODISCARD Result getRayTracingShaderGroupHandlesKHR( uint32_t firstGroup,
+                                                                      uint32_t groupCount,
+                                                                      size_t   dataSize,
+                                                                      void *   pData ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkGetRayTracingShaderGroupHandlesKHR, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingShaderGroupHandlesKHR.html
       template <typename DataType>
       VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<DataType>>::type
         getRayTracingShaderGroupHandlesKHR( uint32_t firstGroup, uint32_t groupCount, size_t dataSize ) const;
@@ -12232,6 +12271,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingShaderGroupHandlesKHR.html
       template <typename DataType>
       VULKAN_HPP_NODISCARD typename ResultValueType<DataType>::type getRayTracingShaderGroupHandleKHR( uint32_t firstGroup, uint32_t groupCount ) const;
+
+      // wrapper function for command vkGetRayTracingCaptureReplayShaderGroupHandlesKHR, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingCaptureReplayShaderGroupHandlesKHR.html
+      VULKAN_HPP_NODISCARD Result getRayTracingCaptureReplayShaderGroupHandlesKHR( uint32_t firstGroup,
+                                                                                   uint32_t groupCount,
+                                                                                   size_t   dataSize,
+                                                                                   void *   pData ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkGetRayTracingCaptureReplayShaderGroupHandlesKHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingCaptureReplayShaderGroupHandlesKHR.html
@@ -12250,6 +12296,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD DeviceSize getRayTracingShaderGroupStackSizeKHR( uint32_t group, ShaderGroupShaderKHR groupShader ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_NV_ray_tracing ===
+
+      // wrapper function for command vkGetRayTracingShaderGroupHandlesNV, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingShaderGroupHandlesNV.html
+      VULKAN_HPP_NODISCARD Result getRayTracingShaderGroupHandlesNV( uint32_t firstGroup,
+                                                                     uint32_t groupCount,
+                                                                     size_t   dataSize,
+                                                                     void *   pData ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkGetRayTracingShaderGroupHandlesNV, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingShaderGroupHandlesNV.html
@@ -12887,6 +12940,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 
       //=== VK_VERSION_1_0 ===
+
+      // wrapper function for command vkGetQueryPoolResults, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueryPoolResults.html
+      VULKAN_HPP_NODISCARD Result getResults(
+        uint32_t firstQuery, uint32_t queryCount, size_t dataSize, void * pData, DeviceSize stride, QueryResultFlags flags ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkGetQueryPoolResults, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueryPoolResults.html
       template <typename DataType>
@@ -15801,6 +15858,21 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     }
 
     // wrapper function for command vkGetQueryPoolResults, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueryPoolResults.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result QueryPool::getResults(
+      uint32_t firstQuery, uint32_t queryCount, size_t dataSize, void * pData, DeviceSize stride, QueryResultFlags flags ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetQueryPoolResults && "Function <vkGetQueryPoolResults> requires <VK_VERSION_1_0>" );
+      return static_cast<Result>( getDispatcher()->vkGetQueryPoolResults( static_cast<VkDevice>( m_device ),
+                                                                          static_cast<VkQueryPool>( m_queryPool ),
+                                                                          firstQuery,
+                                                                          queryCount,
+                                                                          dataSize,
+                                                                          pData,
+                                                                          static_cast<VkDeviceSize>( stride ),
+                                                                          static_cast<VkQueryResultFlags>( flags ) ) );
+    }
+
+    // wrapper function for command vkGetQueryPoolResults, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueryPoolResults.html
     template <typename DataType>
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<DataType>>
       QueryPool::getResults( uint32_t firstQuery, uint32_t queryCount, size_t dataSize, DeviceSize stride, QueryResultFlags flags ) const
@@ -16052,6 +16124,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                static_cast<VkBuffer>( dstBuffer ),
                                                regions.size(),
                                                reinterpret_cast<VkBufferImageCopy const *>( regions.data() ) );
+    }
+
+    // wrapper function for command vkCmdUpdateBuffer, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdUpdateBuffer.html
+    VULKAN_HPP_INLINE void CommandBuffer::updateBuffer( VULKAN_HPP_NAMESPACE::Buffer dstBuffer,
+                                                        DeviceSize                   dstOffset,
+                                                        DeviceSize                   dataSize,
+                                                        void const *                 pData ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdUpdateBuffer && "Function <vkCmdUpdateBuffer> requires <VK_VERSION_1_0>" );
+      getDispatcher()->vkCmdUpdateBuffer( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                          static_cast<VkBuffer>( dstBuffer ),
+                                          static_cast<VkDeviceSize>( dstOffset ),
+                                          static_cast<VkDeviceSize>( dataSize ),
+                                          pData );
     }
 
     // wrapper function for command vkCmdUpdateBuffer, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdUpdateBuffer.html
@@ -16578,6 +16664,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                         reinterpret_cast<VkBufferMemoryBarrier const *>( bufferMemoryBarriers.data() ),
                                         imageMemoryBarriers.size(),
                                         reinterpret_cast<VkImageMemoryBarrier const *>( imageMemoryBarriers.data() ) );
+    }
+
+    // wrapper function for command vkCmdPushConstants, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdPushConstants.html
+    VULKAN_HPP_INLINE void CommandBuffer::pushConstants(
+      VULKAN_HPP_NAMESPACE::PipelineLayout layout, ShaderStageFlags stageFlags, uint32_t offset, uint32_t size, void const * pValues ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdPushConstants && "Function <vkCmdPushConstants> requires <VK_VERSION_1_0>" );
+      getDispatcher()->vkCmdPushConstants( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                           static_cast<VkPipelineLayout>( layout ),
+                                           static_cast<VkShaderStageFlags>( stageFlags ),
+                                           offset,
+                                           size,
+                                           pValues );
     }
 
     // wrapper function for command vkCmdPushConstants, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdPushConstants.html
@@ -22189,6 +22288,28 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkWriteAccelerationStructuresPropertiesKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkWriteAccelerationStructuresPropertiesKHR.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+      Device::writeAccelerationStructuresPropertiesKHR( uint32_t                                               accelerationStructureCount,
+                                                        VULKAN_HPP_NAMESPACE::AccelerationStructureKHR const * pAccelerationStructures,
+                                                        QueryType                                              queryType,
+                                                        size_t                                                 dataSize,
+                                                        void *                                                 pData,
+                                                        size_t                                                 stride ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkWriteAccelerationStructuresPropertiesKHR &&
+                         "Function <vkWriteAccelerationStructuresPropertiesKHR> requires <VK_KHR_acceleration_structure>" );
+      return static_cast<Result>(
+        getDispatcher()->vkWriteAccelerationStructuresPropertiesKHR( static_cast<VkDevice>( m_device ),
+                                                                     accelerationStructureCount,
+                                                                     reinterpret_cast<VkAccelerationStructureKHR const *>( pAccelerationStructures ),
+                                                                     static_cast<VkQueryType>( queryType ),
+                                                                     dataSize,
+                                                                     pData,
+                                                                     stride ) );
+    }
+
+    // wrapper function for command vkWriteAccelerationStructuresPropertiesKHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkWriteAccelerationStructuresPropertiesKHR.html
     template <typename DataType>
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DataType>>::type
       Device::writeAccelerationStructuresPropertiesKHR( ArrayProxy<VULKAN_HPP_NAMESPACE::AccelerationStructureKHR const> const & accelerationStructures,
@@ -22437,6 +22558,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkGetRayTracingShaderGroupHandlesKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingShaderGroupHandlesKHR.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Pipeline::getRayTracingShaderGroupHandlesKHR( uint32_t firstGroup,
+                                                                                                uint32_t groupCount,
+                                                                                                size_t   dataSize,
+                                                                                                void *   pData ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetRayTracingShaderGroupHandlesKHR &&
+                         "Function <vkGetRayTracingShaderGroupHandlesKHR> requires <VK_KHR_ray_tracing_pipeline> or <VK_NV_ray_tracing>" );
+      return static_cast<Result>( getDispatcher()->vkGetRayTracingShaderGroupHandlesKHR(
+        static_cast<VkDevice>( m_device ), static_cast<VkPipeline>( m_pipeline ), firstGroup, groupCount, dataSize, pData ) );
+    }
+
+    // wrapper function for command vkGetRayTracingShaderGroupHandlesKHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingShaderGroupHandlesKHR.html
     template <typename DataType>
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DataType>>::type
                          Pipeline::getRayTracingShaderGroupHandlesKHR( uint32_t firstGroup, uint32_t groupCount, size_t dataSize ) const
@@ -22476,6 +22610,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Pipeline::getRayTracingShaderGroupHandleKHR" );
 
       return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( data ) );
+    }
+
+    // wrapper function for command vkGetRayTracingCaptureReplayShaderGroupHandlesKHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingCaptureReplayShaderGroupHandlesKHR.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Pipeline::getRayTracingCaptureReplayShaderGroupHandlesKHR( uint32_t firstGroup,
+                                                                                                             uint32_t groupCount,
+                                                                                                             size_t   dataSize,
+                                                                                                             void *   pData ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetRayTracingCaptureReplayShaderGroupHandlesKHR &&
+                         "Function <vkGetRayTracingCaptureReplayShaderGroupHandlesKHR> requires <VK_KHR_ray_tracing_pipeline>" );
+      return static_cast<Result>( getDispatcher()->vkGetRayTracingCaptureReplayShaderGroupHandlesKHR(
+        static_cast<VkDevice>( m_device ), static_cast<VkPipeline>( m_pipeline ), firstGroup, groupCount, dataSize, pData ) );
     }
 
     // wrapper function for command vkGetRayTracingCaptureReplayShaderGroupHandlesKHR, see
@@ -22941,6 +23088,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkGetRayTracingShaderGroupHandlesNV, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingShaderGroupHandlesNV.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Pipeline::getRayTracingShaderGroupHandlesNV( uint32_t firstGroup,
+                                                                                               uint32_t groupCount,
+                                                                                               size_t   dataSize,
+                                                                                               void *   pData ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetRayTracingShaderGroupHandlesNV &&
+                         "Function <vkGetRayTracingShaderGroupHandlesNV> requires <VK_KHR_ray_tracing_pipeline> or <VK_NV_ray_tracing>" );
+      return static_cast<Result>( getDispatcher()->vkGetRayTracingShaderGroupHandlesNV(
+        static_cast<VkDevice>( m_device ), static_cast<VkPipeline>( m_pipeline ), firstGroup, groupCount, dataSize, pData ) );
+    }
+
+    // wrapper function for command vkGetRayTracingShaderGroupHandlesNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingShaderGroupHandlesNV.html
     template <typename DataType>
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DataType>>::type
                          Pipeline::getRayTracingShaderGroupHandlesNV( uint32_t firstGroup, uint32_t groupCount, size_t dataSize ) const
@@ -22980,6 +23140,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Pipeline::getRayTracingShaderGroupHandleNV" );
 
       return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( data ) );
+    }
+
+    // wrapper function for command vkGetAccelerationStructureHandleNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAccelerationStructureHandleNV.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result AccelerationStructureNV::getHandle( size_t dataSize, void * pData ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetAccelerationStructureHandleNV && "Function <vkGetAccelerationStructureHandleNV> requires <VK_NV_ray_tracing>" );
+      return static_cast<Result>( getDispatcher()->vkGetAccelerationStructureHandleNV(
+        static_cast<VkDevice>( m_device ), static_cast<VkAccelerationStructureNV>( m_accelerationStructureNV ), dataSize, pData ) );
     }
 
     // wrapper function for command vkGetAccelerationStructureHandleNV, see
@@ -25000,6 +25169,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkGetDescriptorEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDescriptorEXT.html
     VULKAN_HPP_INLINE void
+      Device::getDescriptorEXT( DescriptorGetInfoEXT const * pDescriptorInfo, size_t dataSize, void * pDescriptor ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDescriptorEXT && "Function <vkGetDescriptorEXT> requires <VK_EXT_descriptor_buffer>" );
+      getDispatcher()->vkGetDescriptorEXT(
+        static_cast<VkDevice>( m_device ), reinterpret_cast<VkDescriptorGetInfoEXT const *>( pDescriptorInfo ), dataSize, pDescriptor );
+    }
+
+    // wrapper function for command vkGetDescriptorEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDescriptorEXT.html
+    VULKAN_HPP_INLINE void
       Device::getDescriptorEXT( DescriptorGetInfoEXT const & descriptorInfo, size_t dataSize, void * pDescriptor ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetDescriptorEXT && "Function <vkGetDescriptorEXT> requires <VK_EXT_descriptor_buffer>" );
@@ -25816,6 +25994,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                  { Result::eSuccess, Result::eOperationDeferredKHR, Result::eOperationNotDeferredKHR } );
 
       return static_cast<Result>( result );
+    }
+
+    // wrapper function for command vkWriteMicromapsPropertiesEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkWriteMicromapsPropertiesEXT.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::writeMicromapsPropertiesEXT( uint32_t                                  micromapCount,
+                                                                                       VULKAN_HPP_NAMESPACE::MicromapEXT const * pMicromaps,
+                                                                                       QueryType                                 queryType,
+                                                                                       size_t                                    dataSize,
+                                                                                       void *                                    pData,
+                                                                                       size_t stride ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkWriteMicromapsPropertiesEXT && "Function <vkWriteMicromapsPropertiesEXT> requires <VK_EXT_opacity_micromap>" );
+      return static_cast<Result>( getDispatcher()->vkWriteMicromapsPropertiesEXT( static_cast<VkDevice>( m_device ),
+                                                                                  micromapCount,
+                                                                                  reinterpret_cast<VkMicromapEXT const *>( pMicromaps ),
+                                                                                  static_cast<VkQueryType>( queryType ),
+                                                                                  dataSize,
+                                                                                  pData,
+                                                                                  stride ) );
     }
 
     // wrapper function for command vkWriteMicromapsPropertiesEXT, see

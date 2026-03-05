@@ -648,5 +648,17 @@ int main()
     vk::raii::PipelineLayout     pipelineLayout( device, pipelineLayoutCreateInfo );
   }
 
+  // Sampler commands
+  {
+    vk::raii::Device      device = nullptr;
+    vk::SamplerCreateInfo samplerCreateInfo;
+    vk::raii::Sampler     sampler = device.createSampler( samplerCreateInfo );
+  }
+  {
+    vk::raii::Device      device = nullptr;
+    vk::SamplerCreateInfo samplerCreateInfo;
+    vk::raii::Sampler     sampler( device, samplerCreateInfo );
+  }
+
   return 0;
 }

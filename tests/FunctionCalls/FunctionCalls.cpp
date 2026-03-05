@@ -1394,6 +1394,43 @@ int main()
     device.destroy( pipelineLayout );
   }
 
+  // Sampler commands
+  {
+    vk::Device              device;
+    vk::SamplerCreateInfo   samplerCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::Sampler             sampler;
+    vk::Result              result = device.createSampler( &samplerCreateInfo, &allocationCallbacks, &sampler );
+  }
+  {
+    vk::Device            device;
+    vk::SamplerCreateInfo samplerCreateInfo;
+    vk::Sampler           sampler = device.createSampler( samplerCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Sampler             sampler;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroySampler( sampler, &allocationCallbacks );
+  }
+  {
+    vk::Device  device;
+    vk::Sampler sampler;
+    device.destroySampler( sampler );
+  }
+  {
+    vk::Device              device;
+    vk::Sampler             sampler;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( sampler, &allocationCallbacks );
+  }
+  {
+    vk::Device  device;
+    vk::Sampler sampler;
+    device.destroy( sampler );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

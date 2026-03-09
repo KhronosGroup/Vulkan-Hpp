@@ -10817,7 +10817,6 @@ ${byString}
         }
         else
         {
-          assert( mit->deprecated.empty() );
           std::string argument = generateStructConstructorArgument( *mit, arrayListed );
           if ( !argument.empty() )
           {

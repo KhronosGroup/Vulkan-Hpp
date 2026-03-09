@@ -11341,7 +11341,6 @@ std::tuple<std::string, std::string, std::string, std::string>
 
     if ( !member.deprecated.empty() )
     {
-      assert( member.deprecated == "ignored" );
       members += "VULKAN_HPP_DEPRECATED( \"" + member.deprecated + "\" ) ";
     }
 
@@ -14987,7 +14986,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
                    {},
                    { { "altlen", {} },
                      { "api", { "vulkan", "vulkanbase", "vulkansc" } },
-                     { "deprecated", { "ignored" } },
+                     { "deprecated", { "ignored", "unused" } },
                      { "externsync", { "maybe", "true" } },
                      { "featurelink", {} },
                      { "len", {} },

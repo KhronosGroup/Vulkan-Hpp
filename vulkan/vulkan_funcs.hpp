@@ -15905,9 +15905,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
     // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
     VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo;
-    nameInfo.objectType   = handle.objectType;
+    nameInfo.objectType = handle.objectType;
+#  if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
     nameInfo.objectHandle = reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) );
-    nameInfo.pObjectName  = name.c_str();
+#  else
+    nameInfo.objectHandle = static_cast<typename HandleType::CType>( handle );
+#  endif
+    nameInfo.pObjectName = name.c_str();
     return setDebugUtilsObjectNameEXT( nameInfo, d );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
@@ -15946,11 +15950,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
     // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
     VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT tagInfo;
-    tagInfo.objectType   = handle.objectType;
+    tagInfo.objectType = handle.objectType;
+#  if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
     tagInfo.objectHandle = reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) );
-    tagInfo.tagName      = name;
-    tagInfo.tagSize      = sizeof( TagType );
-    tagInfo.pTag         = &tag;
+#  else
+    tagInfo.objectHandle = static_cast<typename HandleType::CType>( handle );
+#  endif
+    tagInfo.tagName = name;
+    tagInfo.tagSize = sizeof( TagType );
+    tagInfo.pTag    = &tag;
     return setDebugUtilsObjectTagEXT( tagInfo, d );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */

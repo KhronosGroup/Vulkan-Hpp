@@ -1659,7 +1659,11 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
       // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
       VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo;
       nameInfo.objectType   = handle.objectType;
+#  if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
       nameInfo.objectHandle = reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) );
+#  else
+      nameInfo.objectHandle = static_cast<typename HandleType::CType>( handle );
+#  endif
       nameInfo.pObjectName  = name.c_str();
       return setDebugUtilsObjectNameEXT( nameInfo );
     }
@@ -1693,7 +1697,11 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
     // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
     VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo;
     nameInfo.objectType   = handle.objectType;
+#  if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
     nameInfo.objectHandle = reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) );
+#  else
+    nameInfo.objectHandle = static_cast<typename HandleType::CType>( handle );
+#  endif
     nameInfo.pObjectName  = name.c_str();
     return setDebugUtilsObjectNameEXT( nameInfo, d );
   }
@@ -1728,7 +1736,11 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
       // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
       VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT tagInfo;
       tagInfo.objectType   = handle.objectType;
+#  if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
       tagInfo.objectHandle = reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) );
+#  else
+      tagInfo.objectHandle = static_cast<typename HandleType::CType>( handle );
+#  endif
       tagInfo.tagName      = name;
       tagInfo.tagSize      = sizeof( TagType );
       tagInfo.pTag         = &tag;
@@ -1764,7 +1776,11 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
     // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
     VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT tagInfo;
     tagInfo.objectType   = handle.objectType;
+#  if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
     tagInfo.objectHandle = reinterpret_cast<uint64_t>( static_cast<typename HandleType::CType>( handle ) );
+#  else
+    tagInfo.objectHandle = static_cast<typename HandleType::CType>( handle );
+#  endif
     tagInfo.tagName      = name;
     tagInfo.tagSize      = sizeof( TagType );
     tagInfo.pTag         = &tag;

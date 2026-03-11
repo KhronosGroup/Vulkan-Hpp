@@ -2809,7 +2809,6 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue(
     }
     else
     {
-      assert( !param.optional );
       assert( param.arraySizes.size() <= 1 );
       pointerIt = std::ranges::find_if( params, [paramIndex]( ParamData const & pd ) { return pd.strideParam.second == paramIndex; } );
       if ( pointerIt != params.end() )

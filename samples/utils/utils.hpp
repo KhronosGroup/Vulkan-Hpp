@@ -402,7 +402,7 @@ namespace vk
     VKAPI_ATTR vk::Bool32 VKAPI_CALL debugUtilsMessengerCallback( vk::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
                                                                   vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
                                                                   vk::DebugUtilsMessengerCallbackDataEXT const * pCallbackData,
-                                                                  void * /*pUserData*/ );
+                                                                  VULKAN_HPP_MAYBE_UNUSED void * pUserData );
     uint32_t                         findGraphicsQueueFamilyIndex( std::vector<vk::QueueFamilyProperties> const & queueFamilyProperties );
     std::pair<uint32_t, uint32_t>    findGraphicsAndPresentQueueFamilyIndex( vk::PhysicalDevice physicalDevice, vk::SurfaceKHR const & surface );
     uint32_t findMemoryType( vk::PhysicalDeviceMemoryProperties const & memoryProperties, uint32_t typeBits, vk::MemoryPropertyFlags requirementsMask );

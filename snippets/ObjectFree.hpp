@@ -5,7 +5,7 @@
     ObjectFree() = default;
 
     ObjectFree( OwnerType                           owner,
-                Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
+                Optional<AllocationCallbacks const> allocationCallbacks VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
                 Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_owner( owner )
       , m_allocationCallbacks( allocationCallbacks )
@@ -17,7 +17,7 @@
       return m_owner;
     }
 
-    Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+    Optional<AllocationCallbacks const> getAllocator() const VULKAN_HPP_NOEXCEPT
     {
       return m_allocationCallbacks;
     }
@@ -37,6 +37,6 @@
 
   private:
     OwnerType                           m_owner               = {};
-    Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+    Optional<AllocationCallbacks const> m_allocationCallbacks = nullptr;
     Dispatch const *                    m_dispatch            = nullptr;
   };

@@ -27,7 +27,7 @@ export module vulkan;
 
 export import std;
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 343, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 346, "Wrong VK_HEADER_VERSION!" );
 
 #if defined( _MSC_VER )
 #  pragma warning( push )
@@ -916,6 +916,30 @@ export {
   using ::PFN_vkGetImageViewOpaqueCaptureDescriptorDataEXT;
   using ::PFN_vkGetSamplerOpaqueCaptureDescriptorDataEXT;
 
+  //=== VK_KHR_device_address_commands ===
+  using ::PFN_vkCmdBeginConditionalRendering2EXT;
+  using ::PFN_vkCmdBeginTransformFeedback2EXT;
+  using ::PFN_vkCmdBindIndexBuffer3KHR;
+  using ::PFN_vkCmdBindTransformFeedbackBuffers2EXT;
+  using ::PFN_vkCmdBindVertexBuffers3KHR;
+  using ::PFN_vkCmdCopyImageToMemoryKHR;
+  using ::PFN_vkCmdCopyMemoryKHR;
+  using ::PFN_vkCmdCopyMemoryToImageKHR;
+  using ::PFN_vkCmdCopyQueryPoolResultsToMemoryKHR;
+  using ::PFN_vkCmdDispatchIndirect2KHR;
+  using ::PFN_vkCmdDrawIndexedIndirect2KHR;
+  using ::PFN_vkCmdDrawIndexedIndirectCount2KHR;
+  using ::PFN_vkCmdDrawIndirect2KHR;
+  using ::PFN_vkCmdDrawIndirectByteCount2EXT;
+  using ::PFN_vkCmdDrawIndirectCount2KHR;
+  using ::PFN_vkCmdDrawMeshTasksIndirect2EXT;
+  using ::PFN_vkCmdDrawMeshTasksIndirectCount2EXT;
+  using ::PFN_vkCmdEndTransformFeedback2EXT;
+  using ::PFN_vkCmdFillMemoryKHR;
+  using ::PFN_vkCmdUpdateMemoryKHR;
+  using ::PFN_vkCmdWriteMarkerToMemoryAMD;
+  using ::PFN_vkCreateAccelerationStructure2KHR;
+
   //=== VK_NV_fragment_shading_rate_enums ===
   using ::PFN_vkCmdSetFragmentShadingRateEnumNV;
 
@@ -1250,6 +1274,15 @@ export {
 
   //=== VK_ARM_performance_counters_by_region ===
   using ::PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceCountersByRegionARM;
+
+  //=== VK_ARM_shader_instrumentation ===
+  using ::PFN_vkClearShaderInstrumentationMetricsARM;
+  using ::PFN_vkCmdBeginShaderInstrumentationARM;
+  using ::PFN_vkCmdEndShaderInstrumentationARM;
+  using ::PFN_vkCreateShaderInstrumentationARM;
+  using ::PFN_vkDestroyShaderInstrumentationARM;
+  using ::PFN_vkEnumeratePhysicalDeviceShaderInstrumentationMetricsARM;
+  using ::PFN_vkGetShaderInstrumentationValuesARM;
 
   //=== VK_EXT_fragment_density_map_offset ===
   using ::PFN_vkCmdEndRendering2EXT;

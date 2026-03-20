@@ -37,7 +37,7 @@ import vulkan;
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   vk::detail::defaultDispatchLoaderDynamic.init();
 

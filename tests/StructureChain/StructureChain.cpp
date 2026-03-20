@@ -34,6 +34,7 @@
 
 #include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
+#  include <vulkan/vulkan_hpp_macros.hpp>
 import vulkan;
 #else
 #  include <iostream>
@@ -44,17 +45,12 @@ VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 static char const * AppName    = "StructureChain";
 static char const * EngineName = "Vulkan.hpp";
 
-template <typename T>
-void unused( T const & )
+void test( VULKAN_HPP_MAYBE_UNUSED std::tuple<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT> const & cis )
 {
+  VULKAN_HPP_UNUSED( cis );
 }
 
-void test( std::tuple<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT> const & cis )
-{
-  unused( cis );
-}
-
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {
@@ -69,7 +65,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::StructureChain<vk::PhysicalDeviceProperties2>                                       sc0;
     vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties> const sc1;
     auto                                                                                    pdp = sc1.get<vk::PhysicalDeviceProperties2>();
-    unused( pdp );
+    VULKAN_HPP_UNUSED( pdp );
     vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMaintenance3Properties>                                      sc2;
     vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDevicePushDescriptorPropertiesKHR>                                 sc3;
     vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties>      sc4;
@@ -146,28 +142,28 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // simple calls, getting structure back
     vk::PhysicalDeviceFeatures2 a = physicalDevice.getFeatures2();
-    unused( a );
+    VULKAN_HPP_UNUSED( a );
 
     // complex calls, getting StructureChain back
     auto                          c  = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
     vk::PhysicalDeviceFeatures2 & c0 = c.get<vk::PhysicalDeviceFeatures2>();
-    unused( c0 );
+    VULKAN_HPP_UNUSED( c0 );
 
     auto t0 = c.get<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
-    unused( t0 );
+    VULKAN_HPP_UNUSED( t0 );
 
     auto                          d  = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
     vk::PhysicalDeviceFeatures2 & d0 = d.get<vk::PhysicalDeviceFeatures2>();
-    unused( d0 );
+    VULKAN_HPP_UNUSED( d0 );
     vk::PhysicalDeviceVariablePointerFeatures & d1 = d.get<vk::PhysicalDeviceVariablePointerFeatures>();
-    unused( d1 );
+    VULKAN_HPP_UNUSED( d1 );
 
     auto t1 = d.get<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
-    unused( t1 );
+    VULKAN_HPP_UNUSED( t1 );
 
     using StructureChain = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
     auto qfd             = physicalDevice.getQueueFamilyProperties2<StructureChain>( vk::detail::defaultDispatchLoaderDynamic );
-    unused( qfd );
+    VULKAN_HPP_UNUSED( qfd );
 
     // some tests with structures with allowDuplicate == true
     vk::StructureChain<vk::DeviceCreateInfo, vk::DevicePrivateDataCreateInfoEXT, vk::DevicePrivateDataCreateInfoEXT> dci0;

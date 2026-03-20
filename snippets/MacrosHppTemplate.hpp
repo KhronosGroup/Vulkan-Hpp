@@ -97,7 +97,7 @@ using FARPROC = int(__stdcall *)();
 #    endif
 extern "C" __declspec( dllimport ) HINSTANCE __stdcall LoadLibraryA( char const * lpLibFileName );
 extern "C" __declspec( dllimport ) int __stdcall FreeLibrary( HINSTANCE hLibModule );
-extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE hModule, const char * lpProcName );
+extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE hModule, char const * lpProcName );
 #  endif
 #endif
 
@@ -244,6 +244,14 @@ ${vulkan_64_bit_ptr_defines}
 #else
 #  define VULKAN_HPP_NODISCARD
 #  define VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS
+#endif
+
+#if 17 <= VULKAN_HPP_CPP_VERSION
+#  define VULKAN_HPP_MAYBE_UNUSED [[maybe_unused]]
+#  define VULKAN_HPP_UNUSED( var )
+#else
+#  define VULKAN_HPP_MAYBE_UNUSED
+#  define VULKAN_HPP_UNUSED( var ) ( (void)( var ) )
 #endif
 
 #if !defined( VULKAN_HPP_NAMESPACE )

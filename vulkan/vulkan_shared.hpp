@@ -1035,6 +1035,17 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   using SharedIndirectExecutionSetEXT = SharedHandle<IndirectExecutionSetEXT>;
 
+  //=== VK_ARM_shader_instrumentation ===
+  template <>
+  class SharedHandleTraits<ShaderInstrumentationARM>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = detail::ObjectDestroyShared<ShaderInstrumentationARM>;
+  };
+
+  using SharedShaderInstrumentationARM = SharedHandle<ShaderInstrumentationARM>;
+
   // a number of SharedHandle specializations
   enum class SwapchainOwns
   {

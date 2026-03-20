@@ -71,7 +71,7 @@ jobs:
       run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
     - name: Setup MacOS
       if: contains(matrix.env.os, 'macos')
-      run: brew install clang-format molten-vk
+      run: brew install molten-vk
 
     # Additional setups for module testing
     - name: Setup Modules (CMake, Ninja)

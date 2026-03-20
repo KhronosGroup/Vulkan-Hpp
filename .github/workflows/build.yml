@@ -15,9 +15,9 @@ jobs:
     strategy:
       matrix:
         env: [
-          { os: macos-14,     cxx: clang++,    c: clang,    arch: x64, gen: Ninja,                 cxx_max: 23 },
-          { os: macos-15,     cxx: clang++,    c: clang,    arch: x64, gen: Ninja,                 cxx_max: 23 },
-          { os: macos-26,     cxx: clang++,    c: clang,    arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: macos-14,     cxx: /usr/bin/clang++,    c: /usr/bin/clang,    arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: macos-15,     cxx: /usr/bin/clang++,    c: /usr/bin/clang,    arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: macos-26,     cxx: /usr/bin/clang++,    c: /usr/bin/clang,    arch: x64, gen: Ninja,                 cxx_max: 23 },
           
           { os: ubuntu-22.04, cxx: g++-10,     c: gcc-10,   arch: x64, gen: Ninja,                 cxx_max: 17 },
           { os: ubuntu-22.04, cxx: g++-11,     c: gcc-11,   arch: x64, gen: Ninja,                 cxx_max: 23 },

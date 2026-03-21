@@ -4368,6 +4368,31 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     return result;
   }
 
+  //=== VK_KHR_device_fault ===
+
+  VULKAN_HPP_INLINE std::string to_string( DeviceFaultFlagsKHR value )
+  {
+    std::string result = "{";
+    if ( value & DeviceFaultFlagBitsKHR::eFlagDeviceLost )
+      result += " FlagDeviceLost |";
+    if ( value & DeviceFaultFlagBitsKHR::eFlagMemoryAddress )
+      result += " FlagMemoryAddress |";
+    if ( value & DeviceFaultFlagBitsKHR::eFlagInstructionAddress )
+      result += " FlagInstructionAddress |";
+    if ( value & DeviceFaultFlagBitsKHR::eFlagVendor )
+      result += " FlagVendor |";
+    if ( value & DeviceFaultFlagBitsKHR::eFlagWatchdogTimeout )
+      result += " FlagWatchdogTimeout |";
+    if ( value & DeviceFaultFlagBitsKHR::eFlagOverflow )
+      result += " FlagOverflow |";
+
+    if ( result.size() > 1 )
+      result.back() = '}';
+    else
+      result = "{}";
+    return result;
+  }
+
   //=== VK_KHR_maintenance8 ===
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( AccessFlags3KHR )
@@ -5139,6 +5164,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case StructureType::eRenderingFragmentShadingRateAttachmentInfoKHR           : return "RenderingFragmentShadingRateAttachmentInfoKHR";
       case StructureType::ePhysicalDeviceShaderCoreProperties2AMD                  : return "PhysicalDeviceShaderCoreProperties2AMD";
       case StructureType::ePhysicalDeviceCoherentMemoryFeaturesAMD                 : return "PhysicalDeviceCoherentMemoryFeaturesAMD";
+      case StructureType::ePhysicalDeviceShaderConstantDataFeaturesKHR             : return "PhysicalDeviceShaderConstantDataFeaturesKHR";
+      case StructureType::ePhysicalDeviceShaderAbortFeaturesKHR                    : return "PhysicalDeviceShaderAbortFeaturesKHR";
+      case StructureType::eDeviceFaultShaderAbortMessageInfoKHR                    : return "DeviceFaultShaderAbortMessageInfoKHR";
+      case StructureType::ePhysicalDeviceShaderAbortPropertiesKHR                  : return "PhysicalDeviceShaderAbortPropertiesKHR";
       case StructureType::ePhysicalDeviceShaderImageAtomicInt64FeaturesEXT         : return "PhysicalDeviceShaderImageAtomicInt64FeaturesEXT";
       case StructureType::ePhysicalDeviceShaderQuadControlFeaturesKHR              : return "PhysicalDeviceShaderQuadControlFeaturesKHR";
       case StructureType::ePhysicalDeviceMemoryBudgetPropertiesEXT                 : return "PhysicalDeviceMemoryBudgetPropertiesEXT";
@@ -5694,6 +5723,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case StructureType::eIndirectExecutionSetShaderLayoutInfoEXT                   : return "IndirectExecutionSetShaderLayoutInfoEXT";
       case StructureType::eGeneratedCommandsPipelineInfoEXT                          : return "GeneratedCommandsPipelineInfoEXT";
       case StructureType::eGeneratedCommandsShaderInfoEXT                            : return "GeneratedCommandsShaderInfoEXT";
+      case StructureType::ePhysicalDeviceFaultFeaturesKHR                            : return "PhysicalDeviceFaultFeaturesKHR";
+      case StructureType::ePhysicalDeviceFaultPropertiesKHR                          : return "PhysicalDeviceFaultPropertiesKHR";
+      case StructureType::eDeviceFaultInfoKHR                                        : return "DeviceFaultInfoKHR";
+      case StructureType::eDeviceFaultDebugInfoKHR                                   : return "DeviceFaultDebugInfoKHR";
       case StructureType::ePhysicalDeviceMaintenance8FeaturesKHR                     : return "PhysicalDeviceMaintenance8FeaturesKHR";
       case StructureType::eMemoryBarrierAccessFlags3KHR                              : return "MemoryBarrierAccessFlags3KHR";
       case StructureType::ePhysicalDeviceImageAlignmentControlFeaturesMESA           : return "PhysicalDeviceImageAlignmentControlFeaturesMESA";
@@ -10041,32 +10074,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  //=== VK_EXT_device_fault ===
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceFaultAddressTypeEXT value )
-  {
-    switch ( value )
-    {
-      case DeviceFaultAddressTypeEXT::eNone                     : return "None";
-      case DeviceFaultAddressTypeEXT::eReadInvalid              : return "ReadInvalid";
-      case DeviceFaultAddressTypeEXT::eWriteInvalid             : return "WriteInvalid";
-      case DeviceFaultAddressTypeEXT::eExecuteInvalid           : return "ExecuteInvalid";
-      case DeviceFaultAddressTypeEXT::eInstructionPointerUnknown: return "InstructionPointerUnknown";
-      case DeviceFaultAddressTypeEXT::eInstructionPointerInvalid: return "InstructionPointerInvalid";
-      case DeviceFaultAddressTypeEXT::eInstructionPointerFault  : return "InstructionPointerFault";
-      default                                                   : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceFaultVendorBinaryHeaderVersionEXT value )
-  {
-    switch ( value )
-    {
-      case DeviceFaultVendorBinaryHeaderVersionEXT::eOne: return "One";
-      default                                           : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
   //=== VK_EXT_directfb_surface ===
 
@@ -11076,6 +11083,46 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case IndirectCommandsInputModeFlagBitsEXT::eVulkanIndexBuffer: return "VulkanIndexBuffer";
       case IndirectCommandsInputModeFlagBitsEXT::eDxgiIndexBuffer  : return "DxgiIndexBuffer";
       default                                                      : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_KHR_device_fault ===
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceFaultAddressTypeKHR value )
+  {
+    switch ( value )
+    {
+      case DeviceFaultAddressTypeKHR::eNone                     : return "None";
+      case DeviceFaultAddressTypeKHR::eReadInvalid              : return "ReadInvalid";
+      case DeviceFaultAddressTypeKHR::eWriteInvalid             : return "WriteInvalid";
+      case DeviceFaultAddressTypeKHR::eExecuteInvalid           : return "ExecuteInvalid";
+      case DeviceFaultAddressTypeKHR::eInstructionPointerUnknown: return "InstructionPointerUnknown";
+      case DeviceFaultAddressTypeKHR::eInstructionPointerInvalid: return "InstructionPointerInvalid";
+      case DeviceFaultAddressTypeKHR::eInstructionPointerFault  : return "InstructionPointerFault";
+      default                                                   : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceFaultVendorBinaryHeaderVersionKHR value )
+  {
+    switch ( value )
+    {
+      case DeviceFaultVendorBinaryHeaderVersionKHR::eOne: return "One";
+      default                                           : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( DeviceFaultFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case DeviceFaultFlagBitsKHR::eFlagDeviceLost        : return "FlagDeviceLost";
+      case DeviceFaultFlagBitsKHR::eFlagMemoryAddress     : return "FlagMemoryAddress";
+      case DeviceFaultFlagBitsKHR::eFlagInstructionAddress: return "FlagInstructionAddress";
+      case DeviceFaultFlagBitsKHR::eFlagVendor            : return "FlagVendor";
+      case DeviceFaultFlagBitsKHR::eFlagWatchdogTimeout   : return "FlagWatchdogTimeout";
+      case DeviceFaultFlagBitsKHR::eFlagOverflow          : return "FlagOverflow";
+      default                                             : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 

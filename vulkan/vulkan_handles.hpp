@@ -1213,6 +1213,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_AMD_device_coherent_memory ===
   struct PhysicalDeviceCoherentMemoryFeaturesAMD;
 
+  //=== VK_KHR_shader_constant_data ===
+  struct PhysicalDeviceShaderConstantDataFeaturesKHR;
+
+  //=== VK_KHR_shader_abort ===
+  struct PhysicalDeviceShaderAbortFeaturesKHR;
+  struct DeviceFaultShaderAbortMessageInfoKHR;
+  struct PhysicalDeviceShaderAbortPropertiesKHR;
+
   //=== VK_EXT_shader_image_atomic_int64 ===
   struct PhysicalDeviceShaderImageAtomicInt64FeaturesEXT;
 
@@ -1508,9 +1516,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceFaultFeaturesEXT;
   struct DeviceFaultCountsEXT;
   struct DeviceFaultInfoEXT;
-  struct DeviceFaultAddressInfoEXT;
-  struct DeviceFaultVendorInfoEXT;
-  struct DeviceFaultVendorBinaryHeaderVersionOneEXT;
 
   //=== VK_EXT_rgba10x6_formats ===
   struct PhysicalDeviceRGBA10X6FormatsFeaturesEXT;
@@ -2204,6 +2209,18 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct GeneratedCommandsPipelineInfoEXT;
   struct GeneratedCommandsShaderInfoEXT;
   struct WriteIndirectExecutionSetShaderEXT;
+
+  //=== VK_KHR_device_fault ===
+  struct PhysicalDeviceFaultFeaturesKHR;
+  struct PhysicalDeviceFaultPropertiesKHR;
+  struct DeviceFaultInfoKHR;
+  struct DeviceFaultDebugInfoKHR;
+  struct DeviceFaultAddressInfoKHR;
+  using DeviceFaultAddressInfoEXT = DeviceFaultAddressInfoKHR;
+  struct DeviceFaultVendorInfoKHR;
+  using DeviceFaultVendorInfoEXT = DeviceFaultVendorInfoKHR;
+  struct DeviceFaultVendorBinaryHeaderVersionOneKHR;
+  using DeviceFaultVendorBinaryHeaderVersionOneEXT = DeviceFaultVendorBinaryHeaderVersionOneKHR;
 
   //=== VK_KHR_maintenance8 ===
   struct MemoryBarrierAccessFlags3KHR;
@@ -19741,6 +19758,37 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                               ArrayProxy<WriteIndirectExecutionSetShaderEXT const> const & executionSetWrites,
                                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_KHR_device_fault ===
+
+    // wrapper function for command vkGetDeviceFaultReportsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultReportsKHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkGetDeviceFaultReportsKHR ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result getFaultReportsKHR( uint64_t             timeout,
+                                                    uint32_t *           pFaultCounts,
+                                                    DeviceFaultInfoKHR * pFaultInfo,
+                                                    Dispatch const & d   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetDeviceFaultReportsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultReportsKHR.html
+    template <typename DeviceFaultInfoKHRAllocator = std::allocator<DeviceFaultInfoKHR>,
+              typename Dispatch                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename DeviceFaultInfoKHRAllocator::value_type, DeviceFaultInfoKHR>::value, int>::type = 0,
+              typename std::enable_if<IS_DISPATCHED( vkGetDeviceFaultReportsKHR ), bool>::type                                              = true>
+    VULKAN_HPP_NODISCARD ResultValue<std::vector<DeviceFaultInfoKHR, DeviceFaultInfoKHRAllocator>>
+                         getFaultReportsKHR( uint64_t timeout, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    // wrapper function for command vkGetDeviceFaultReportsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultReportsKHR.html
+    template <typename DeviceFaultInfoKHRAllocator = std::allocator<DeviceFaultInfoKHR>,
+              typename Dispatch                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename DeviceFaultInfoKHRAllocator::value_type, DeviceFaultInfoKHR>::value, int>::type = 0,
+              typename std::enable_if<IS_DISPATCHED( vkGetDeviceFaultReportsKHR ), bool>::type                                              = true>
+    VULKAN_HPP_NODISCARD ResultValue<std::vector<DeviceFaultInfoKHR, DeviceFaultInfoKHRAllocator>> getFaultReportsKHR(
+      uint64_t timeout, DeviceFaultInfoKHRAllocator const & deviceFaultInfoKHRAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkGetDeviceFaultDebugInfoKHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultDebugInfoKHR.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkGetDeviceFaultDebugInfoKHR ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result getFaultDebugInfoKHR( DeviceFaultDebugInfoKHR * pDebugInfo,
+                                                      Dispatch const & d        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
     //=== VK_EXT_external_memory_metal ===

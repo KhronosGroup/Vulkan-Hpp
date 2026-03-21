@@ -1141,6 +1141,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eRenderingFragmentShadingRateAttachmentInfoKHR            = VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR,
     ePhysicalDeviceShaderCoreProperties2AMD                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD,
     ePhysicalDeviceCoherentMemoryFeaturesAMD                  = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD,
+    ePhysicalDeviceShaderConstantDataFeaturesKHR              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CONSTANT_DATA_FEATURES_KHR,
+    ePhysicalDeviceShaderAbortFeaturesKHR                     = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ABORT_FEATURES_KHR,
+    eDeviceFaultShaderAbortMessageInfoKHR                     = VK_STRUCTURE_TYPE_DEVICE_FAULT_SHADER_ABORT_MESSAGE_INFO_KHR,
+    ePhysicalDeviceShaderAbortPropertiesKHR                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ABORT_PROPERTIES_KHR,
     ePhysicalDeviceShaderImageAtomicInt64FeaturesEXT          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT,
     ePhysicalDeviceShaderQuadControlFeaturesKHR               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_QUAD_CONTROL_FEATURES_KHR,
     ePhysicalDeviceMemoryBudgetPropertiesEXT                  = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT,
@@ -1716,6 +1720,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eIndirectExecutionSetShaderLayoutInfoEXT                    = VK_STRUCTURE_TYPE_INDIRECT_EXECUTION_SET_SHADER_LAYOUT_INFO_EXT,
     eGeneratedCommandsPipelineInfoEXT                           = VK_STRUCTURE_TYPE_GENERATED_COMMANDS_PIPELINE_INFO_EXT,
     eGeneratedCommandsShaderInfoEXT                             = VK_STRUCTURE_TYPE_GENERATED_COMMANDS_SHADER_INFO_EXT,
+    ePhysicalDeviceFaultFeaturesKHR                             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FAULT_FEATURES_KHR,
+    ePhysicalDeviceFaultPropertiesKHR                           = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FAULT_PROPERTIES_KHR,
+    eDeviceFaultInfoKHR                                         = VK_STRUCTURE_TYPE_DEVICE_FAULT_INFO_KHR,
+    eDeviceFaultDebugInfoKHR                                    = VK_STRUCTURE_TYPE_DEVICE_FAULT_DEBUG_INFO_KHR,
     ePhysicalDeviceMaintenance8FeaturesKHR                      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_8_FEATURES_KHR,
     eMemoryBarrierAccessFlags3KHR                               = VK_STRUCTURE_TYPE_MEMORY_BARRIER_ACCESS_FLAGS_3_KHR,
     ePhysicalDeviceImageAlignmentControlFeaturesMESA            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ALIGNMENT_CONTROL_FEATURES_MESA,
@@ -8835,27 +8843,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                                        ImageCompressionFixedRateFlagBitsEXT::e24Bpc;
   };
 
-  //=== VK_EXT_device_fault ===
-
-  // wrapper class for enum VkDeviceFaultAddressTypeEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDeviceFaultAddressTypeEXT.html
-  enum class DeviceFaultAddressTypeEXT
-  {
-    eNone                      = VK_DEVICE_FAULT_ADDRESS_TYPE_NONE_EXT,
-    eReadInvalid               = VK_DEVICE_FAULT_ADDRESS_TYPE_READ_INVALID_EXT,
-    eWriteInvalid              = VK_DEVICE_FAULT_ADDRESS_TYPE_WRITE_INVALID_EXT,
-    eExecuteInvalid            = VK_DEVICE_FAULT_ADDRESS_TYPE_EXECUTE_INVALID_EXT,
-    eInstructionPointerUnknown = VK_DEVICE_FAULT_ADDRESS_TYPE_INSTRUCTION_POINTER_UNKNOWN_EXT,
-    eInstructionPointerInvalid = VK_DEVICE_FAULT_ADDRESS_TYPE_INSTRUCTION_POINTER_INVALID_EXT,
-    eInstructionPointerFault   = VK_DEVICE_FAULT_ADDRESS_TYPE_INSTRUCTION_POINTER_FAULT_EXT
-  };
-
-  // wrapper class for enum VkDeviceFaultVendorBinaryHeaderVersionEXT, see
-  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDeviceFaultVendorBinaryHeaderVersionEXT.html
-  enum class DeviceFaultVendorBinaryHeaderVersionEXT
-  {
-    eOne = VK_DEVICE_FAULT_VENDOR_BINARY_HEADER_VERSION_ONE_EXT
-  };
-
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
   //=== VK_EXT_directfb_surface ===
 
@@ -10302,6 +10289,66 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                              isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR IndirectCommandsInputModeFlagsEXT allFlags =
       IndirectCommandsInputModeFlagBitsEXT::eVulkanIndexBuffer | IndirectCommandsInputModeFlagBitsEXT::eDxgiIndexBuffer;
+  };
+
+  //=== VK_KHR_device_fault ===
+
+  // wrapper class for enum VkDeviceFaultAddressTypeKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDeviceFaultAddressTypeKHR.html
+  enum class DeviceFaultAddressTypeKHR
+  {
+    eNone                         = VK_DEVICE_FAULT_ADDRESS_TYPE_NONE_KHR,
+    eNoneEXT                      = VK_DEVICE_FAULT_ADDRESS_TYPE_NONE_EXT,
+    eReadInvalid                  = VK_DEVICE_FAULT_ADDRESS_TYPE_READ_INVALID_KHR,
+    eReadInvalidEXT               = VK_DEVICE_FAULT_ADDRESS_TYPE_READ_INVALID_EXT,
+    eWriteInvalid                 = VK_DEVICE_FAULT_ADDRESS_TYPE_WRITE_INVALID_KHR,
+    eWriteInvalidEXT              = VK_DEVICE_FAULT_ADDRESS_TYPE_WRITE_INVALID_EXT,
+    eExecuteInvalid               = VK_DEVICE_FAULT_ADDRESS_TYPE_EXECUTE_INVALID_KHR,
+    eExecuteInvalidEXT            = VK_DEVICE_FAULT_ADDRESS_TYPE_EXECUTE_INVALID_EXT,
+    eInstructionPointerUnknown    = VK_DEVICE_FAULT_ADDRESS_TYPE_INSTRUCTION_POINTER_UNKNOWN_KHR,
+    eInstructionPointerUnknownEXT = VK_DEVICE_FAULT_ADDRESS_TYPE_INSTRUCTION_POINTER_UNKNOWN_EXT,
+    eInstructionPointerInvalid    = VK_DEVICE_FAULT_ADDRESS_TYPE_INSTRUCTION_POINTER_INVALID_KHR,
+    eInstructionPointerInvalidEXT = VK_DEVICE_FAULT_ADDRESS_TYPE_INSTRUCTION_POINTER_INVALID_EXT,
+    eInstructionPointerFault      = VK_DEVICE_FAULT_ADDRESS_TYPE_INSTRUCTION_POINTER_FAULT_KHR,
+    eInstructionPointerFaultEXT   = VK_DEVICE_FAULT_ADDRESS_TYPE_INSTRUCTION_POINTER_FAULT_EXT
+  };
+
+  using DeviceFaultAddressTypeEXT = DeviceFaultAddressTypeKHR;
+
+  // wrapper class for enum VkDeviceFaultVendorBinaryHeaderVersionKHR, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDeviceFaultVendorBinaryHeaderVersionKHR.html
+  enum class DeviceFaultVendorBinaryHeaderVersionKHR
+  {
+    eOne    = VK_DEVICE_FAULT_VENDOR_BINARY_HEADER_VERSION_ONE_KHR,
+    eOneEXT = VK_DEVICE_FAULT_VENDOR_BINARY_HEADER_VERSION_ONE_EXT
+  };
+
+  using DeviceFaultVendorBinaryHeaderVersionEXT = DeviceFaultVendorBinaryHeaderVersionKHR;
+
+  // wrapper class for enum VkDeviceFaultFlagBitsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDeviceFaultFlagBitsKHR.html
+  enum class DeviceFaultFlagBitsKHR : VkDeviceFaultFlagsKHR
+  {
+    eFlagDeviceLost         = VK_DEVICE_FAULT_FLAG_DEVICE_LOST_KHR,
+    eFlagMemoryAddress      = VK_DEVICE_FAULT_FLAG_MEMORY_ADDRESS_KHR,
+    eFlagInstructionAddress = VK_DEVICE_FAULT_FLAG_INSTRUCTION_ADDRESS_KHR,
+    eFlagVendor             = VK_DEVICE_FAULT_FLAG_VENDOR_KHR,
+    eFlagWatchdogTimeout    = VK_DEVICE_FAULT_FLAG_WATCHDOG_TIMEOUT_KHR,
+    eFlagOverflow           = VK_DEVICE_FAULT_FLAG_OVERFLOW_KHR
+  };
+
+  // wrapper using for bitmask VkDeviceFaultFlagsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDeviceFaultFlagsKHR.html
+  using DeviceFaultFlagsKHR = Flags<DeviceFaultFlagBitsKHR>;
+
+  template <>
+  struct FlagTraits<DeviceFaultFlagBitsKHR>
+  {
+    using WrappedType                                                  = VkDeviceFaultFlagBitsKHR;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DeviceFaultFlagsKHR allFlags  = DeviceFaultFlagBitsKHR::eFlagDeviceLost |
+                                                                         DeviceFaultFlagBitsKHR::eFlagMemoryAddress |
+                                                                         DeviceFaultFlagBitsKHR::eFlagInstructionAddress |
+                                                                         DeviceFaultFlagBitsKHR::eFlagVendor |
+                                                                         DeviceFaultFlagBitsKHR::eFlagWatchdogTimeout |
+                                                                         DeviceFaultFlagBitsKHR::eFlagOverflow;
   };
 
   //=== VK_KHR_maintenance8 ===

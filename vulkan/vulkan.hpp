@@ -37,7 +37,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 346, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 347, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -1622,7 +1622,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkGetDeviceBufferMemoryRequirements )
     DECLARE_IS_DISPATCHED( vkGetDeviceBufferMemoryRequirementsKHR )
     DECLARE_IS_DISPATCHED( vkGetDeviceCombinedImageSamplerIndexNVX )
+    DECLARE_IS_DISPATCHED( vkGetDeviceFaultDebugInfoKHR )
     DECLARE_IS_DISPATCHED( vkGetDeviceFaultInfoEXT )
+    DECLARE_IS_DISPATCHED( vkGetDeviceFaultReportsKHR )
     DECLARE_IS_DISPATCHED( vkGetDeviceGroupPeerMemoryFeatures )
     DECLARE_IS_DISPATCHED( vkGetDeviceGroupPeerMemoryFeaturesKHR )
     DECLARE_IS_DISPATCHED( vkGetDeviceGroupPresentCapabilitiesKHR )
@@ -7885,6 +7887,21 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkUpdateIndirectExecutionSetShaderEXT( device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites );
       }
 
+      //=== VK_KHR_device_fault ===
+
+      VULKAN_HPP_INLINE VkResult vkGetDeviceFaultReportsKHR( VkDevice               device,
+                                                             uint64_t               timeout,
+                                                             uint32_t *             pFaultCounts,
+                                                             VkDeviceFaultInfoKHR * pFaultInfo ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetDeviceFaultReportsKHR( device, timeout, pFaultCounts, pFaultInfo );
+      }
+
+      VULKAN_HPP_INLINE VkResult vkGetDeviceFaultDebugInfoKHR( VkDevice device, VkDeviceFaultDebugInfoKHR * pDebugInfo ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetDeviceFaultDebugInfoKHR( device, pDebugInfo );
+      }
+
 #    if defined( VK_USE_PLATFORM_OHOS )
       //=== VK_OHOS_surface ===
 
@@ -10019,9 +10036,17 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto AMDDeviceCoherentMemorySpecVersion   = VK_AMD_DEVICE_COHERENT_MEMORY_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto AMDDeviceCoherentMemoryExtensionName = VK_AMD_DEVICE_COHERENT_MEMORY_EXTENSION_NAME;
 
+  //=== VK_KHR_shader_constant_data ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRShaderConstantDataSpecVersion   = VK_KHR_SHADER_CONSTANT_DATA_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRShaderConstantDataExtensionName = VK_KHR_SHADER_CONSTANT_DATA_EXTENSION_NAME;
+
   //=== VK_KHR_dynamic_rendering_local_read ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRDynamicRenderingLocalReadSpecVersion   = VK_KHR_DYNAMIC_RENDERING_LOCAL_READ_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRDynamicRenderingLocalReadExtensionName = VK_KHR_DYNAMIC_RENDERING_LOCAL_READ_EXTENSION_NAME;
+
+  //=== VK_KHR_shader_abort ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRShaderAbortSpecVersion   = VK_KHR_SHADER_ABORT_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRShaderAbortExtensionName = VK_KHR_SHADER_ABORT_EXTENSION_NAME;
 
   //=== VK_EXT_shader_image_atomic_int64 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderImageAtomicInt64SpecVersion   = VK_EXT_SHADER_IMAGE_ATOMIC_INT64_SPEC_VERSION;
@@ -10946,6 +10971,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_device_generated_commands ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTDeviceGeneratedCommandsSpecVersion   = VK_EXT_DEVICE_GENERATED_COMMANDS_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTDeviceGeneratedCommandsExtensionName = VK_EXT_DEVICE_GENERATED_COMMANDS_EXTENSION_NAME;
+
+  //=== VK_KHR_device_fault ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRDeviceFaultSpecVersion   = VK_KHR_DEVICE_FAULT_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRDeviceFaultExtensionName = VK_KHR_DEVICE_FAULT_EXTENSION_NAME;
 
   //=== VK_KHR_maintenance8 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance8SpecVersion   = VK_KHR_MAINTENANCE_8_SPEC_VERSION;
@@ -15420,6 +15449,62 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceCoherentMemoryFeaturesAMD, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_shader_constant_data ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderConstantDataFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderConstantDataFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_shader_abort ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderAbortFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderAbortFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<DeviceFaultShaderAbortMessageInfoKHR, DeviceFaultDebugInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderAbortPropertiesKHR, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -20889,6 +20974,34 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_KHR_device_fault ===
+  template <>
+  struct StructExtends<PhysicalDeviceFaultFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceFaultFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceFaultPropertiesKHR, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_KHR_maintenance8 ===
   template <>
   struct StructExtends<MemoryBarrierAccessFlags3KHR, SubpassDependency2>
@@ -23280,6 +23393,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       PFN_vkUpdateIndirectExecutionSetPipelineEXT     vkUpdateIndirectExecutionSetPipelineEXT     = 0;
       PFN_vkUpdateIndirectExecutionSetShaderEXT       vkUpdateIndirectExecutionSetShaderEXT       = 0;
 
+      //=== VK_KHR_device_fault ===
+      PFN_vkGetDeviceFaultReportsKHR   vkGetDeviceFaultReportsKHR   = 0;
+      PFN_vkGetDeviceFaultDebugInfoKHR vkGetDeviceFaultDebugInfoKHR = 0;
+
 #if defined( VK_USE_PLATFORM_OHOS )
       //=== VK_OHOS_surface ===
       PFN_vkCreateSurfaceOHOS vkCreateSurfaceOHOS = 0;
@@ -24989,6 +25106,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         vkUpdateIndirectExecutionSetShaderEXT =
           PFN_vkUpdateIndirectExecutionSetShaderEXT( vkGetInstanceProcAddr( instance, "vkUpdateIndirectExecutionSetShaderEXT" ) );
 
+        //=== VK_KHR_device_fault ===
+        vkGetDeviceFaultReportsKHR   = PFN_vkGetDeviceFaultReportsKHR( vkGetInstanceProcAddr( instance, "vkGetDeviceFaultReportsKHR" ) );
+        vkGetDeviceFaultDebugInfoKHR = PFN_vkGetDeviceFaultDebugInfoKHR( vkGetInstanceProcAddr( instance, "vkGetDeviceFaultDebugInfoKHR" ) );
+
 #if defined( VK_USE_PLATFORM_OHOS )
         //=== VK_OHOS_surface ===
         vkCreateSurfaceOHOS = PFN_vkCreateSurfaceOHOS( vkGetInstanceProcAddr( instance, "vkCreateSurfaceOHOS" ) );
@@ -26316,6 +26437,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
           PFN_vkUpdateIndirectExecutionSetPipelineEXT( vkGetDeviceProcAddr( device, "vkUpdateIndirectExecutionSetPipelineEXT" ) );
         vkUpdateIndirectExecutionSetShaderEXT =
           PFN_vkUpdateIndirectExecutionSetShaderEXT( vkGetDeviceProcAddr( device, "vkUpdateIndirectExecutionSetShaderEXT" ) );
+
+        //=== VK_KHR_device_fault ===
+        vkGetDeviceFaultReportsKHR   = PFN_vkGetDeviceFaultReportsKHR( vkGetDeviceProcAddr( device, "vkGetDeviceFaultReportsKHR" ) );
+        vkGetDeviceFaultDebugInfoKHR = PFN_vkGetDeviceFaultDebugInfoKHR( vkGetDeviceProcAddr( device, "vkGetDeviceFaultDebugInfoKHR" ) );
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
         //=== VK_EXT_external_memory_metal ===

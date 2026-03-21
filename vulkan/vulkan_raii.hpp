@@ -2007,6 +2007,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
           vkUpdateIndirectExecutionSetShaderEXT =
             PFN_vkUpdateIndirectExecutionSetShaderEXT( vkGetDeviceProcAddr( device, "vkUpdateIndirectExecutionSetShaderEXT" ) );
 
+          //=== VK_KHR_device_fault ===
+          vkGetDeviceFaultReportsKHR   = PFN_vkGetDeviceFaultReportsKHR( vkGetDeviceProcAddr( device, "vkGetDeviceFaultReportsKHR" ) );
+          vkGetDeviceFaultDebugInfoKHR = PFN_vkGetDeviceFaultDebugInfoKHR( vkGetDeviceProcAddr( device, "vkGetDeviceFaultDebugInfoKHR" ) );
+
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
           //=== VK_EXT_external_memory_metal ===
           vkGetMemoryMetalHandleEXT           = PFN_vkGetMemoryMetalHandleEXT( vkGetDeviceProcAddr( device, "vkGetMemoryMetalHandleEXT" ) );
@@ -3074,6 +3078,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         PFN_vkDestroyIndirectExecutionSetEXT            vkDestroyIndirectExecutionSetEXT            = 0;
         PFN_vkUpdateIndirectExecutionSetPipelineEXT     vkUpdateIndirectExecutionSetPipelineEXT     = 0;
         PFN_vkUpdateIndirectExecutionSetShaderEXT       vkUpdateIndirectExecutionSetShaderEXT       = 0;
+
+        //=== VK_KHR_device_fault ===
+        PFN_vkGetDeviceFaultReportsKHR   vkGetDeviceFaultReportsKHR   = 0;
+        PFN_vkGetDeviceFaultDebugInfoKHR vkGetDeviceFaultDebugInfoKHR = 0;
 
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
         //=== VK_EXT_external_memory_metal ===
@@ -5931,6 +5939,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD typename ResultValueType<IndirectExecutionSetEXT>::type
         createIndirectExecutionSetEXT( IndirectExecutionSetCreateInfoEXT const & createInfo,
                                        Optional<AllocationCallbacks const>       allocator = nullptr ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+
+      //=== VK_KHR_device_fault ===
+
+      // wrapper function for command vkGetDeviceFaultReportsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultReportsKHR.html
+      VULKAN_HPP_NODISCARD ResultValue<std::vector<DeviceFaultInfoKHR>> getFaultReportsKHR( uint64_t timeout ) const;
+
+      // wrapper function for command vkGetDeviceFaultDebugInfoKHR, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultDebugInfoKHR.html
+      VULKAN_HPP_NODISCARD Result getFaultDebugInfoKHR( DeviceFaultDebugInfoKHR * pDebugInfo ) const VULKAN_HPP_NOEXCEPT;
 
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
       //=== VK_EXT_external_memory_metal ===
@@ -29107,6 +29124,44 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                               reinterpret_cast<VkWriteIndirectExecutionSetShaderEXT const *>( executionSetWrites.data() ) );
     }
 
+    //=== VK_KHR_device_fault ===
+
+    // wrapper function for command vkGetDeviceFaultReportsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultReportsKHR.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<DeviceFaultInfoKHR>> Device::getFaultReportsKHR( uint64_t timeout ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeviceFaultReportsKHR && "Function <vkGetDeviceFaultReportsKHR> requires <VK_KHR_device_fault>" );
+
+      std::vector<DeviceFaultInfoKHR> faultInfo;
+      uint32_t                        faultCounts;
+      Result                          result;
+      do
+      {
+        result = static_cast<Result>( getDispatcher()->vkGetDeviceFaultReportsKHR( static_cast<VkDevice>( m_device ), timeout, &faultCounts, nullptr ) );
+        if ( ( result == Result::eSuccess ) && faultCounts )
+        {
+          faultInfo.resize( faultCounts );
+          result = static_cast<Result>( getDispatcher()->vkGetDeviceFaultReportsKHR(
+            static_cast<VkDevice>( m_device ), timeout, &faultCounts, reinterpret_cast<VkDeviceFaultInfoKHR *>( faultInfo.data() ) ) );
+        }
+      } while ( result == Result::eIncomplete );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck(
+        result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::getFaultReportsKHR", { Result::eSuccess, Result::eIncomplete, Result::eTimeout } );
+      VULKAN_HPP_ASSERT( faultCounts <= faultInfo.size() );
+      if ( faultCounts < faultInfo.size() )
+      {
+        faultInfo.resize( faultCounts );
+      }
+      return { result, faultInfo };
+    }
+
+    // wrapper function for command vkGetDeviceFaultDebugInfoKHR, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultDebugInfoKHR.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getFaultDebugInfoKHR( DeviceFaultDebugInfoKHR * pDebugInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeviceFaultDebugInfoKHR && "Function <vkGetDeviceFaultDebugInfoKHR> requires <VK_KHR_device_fault>" );
+      return static_cast<Result>(
+        getDispatcher()->vkGetDeviceFaultDebugInfoKHR( static_cast<VkDevice>( m_device ), reinterpret_cast<VkDeviceFaultDebugInfoKHR *>( pDebugInfo ) ) );
+    }
 #  if defined( VK_USE_PLATFORM_OHOS )
     //=== VK_OHOS_surface ===
 

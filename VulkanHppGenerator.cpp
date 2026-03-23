@@ -13255,6 +13255,54 @@ std::string VulkanHppGenerator::readComment( tinyxml2::XMLElement const * elemen
   return ::readComment( "VulkanHppGenerator", element );
 }
 
+VulkanHppGenerator::DeprecatedCommandData VulkanHppGenerator::readDeprecatedCommand( tinyxml2::XMLElement const * element ) const
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "name", {} } }, { { "supersededby", {} } } );
+  checkElements( line, getChildElements( element ), {} );
+
+  std::string name, supersededBy;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      name = attribute.second;
+    }
+    else
+    {
+      assert( attribute.first == "supersededby" );
+      supersededBy = attribute.second;
+    }
+  }
+
+  return { name, supersededBy };
+}
+
+VulkanHppGenerator::DeprecatedTypeData VulkanHppGenerator::readDeprecatedType( tinyxml2::XMLElement const * element ) const
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "name", {} } }, { { "supersededby", {} } } );
+  checkElements( line, getChildElements( element ), {} );
+
+  std::string name, supersededBy;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      name = attribute.second;
+    }
+    else
+    {
+      assert( attribute.first == "supersededby" );
+      supersededBy = attribute.second;
+    }
+  }
+
+  return { name, supersededBy };
+}
+
 VulkanHppGenerator::DeprecateData VulkanHppGenerator::readDeprecateData( tinyxml2::XMLElement const * element ) const
 {
   int const                          line       = element->GetLineNum();
@@ -13279,15 +13327,27 @@ VulkanHppGenerator::DeprecateData VulkanHppGenerator::readDeprecateData( tinyxml
     std::string value     = child->Value();
     if ( value == "command" )
     {
-      deprecateData.commands.push_back( readName( child ) );
-      checkForError( containsByNameOrAlias( m_commands, deprecateData.commands.back() ),
+      deprecateData.commands.push_back( readDeprecatedCommand( child ) );
+      checkForError( containsByNameOrAlias( m_commands, deprecateData.commands.back().name ),
                      childLine,
-                     "deprecated command <" + deprecateData.commands.back() + "> is not listed as command" );
+                     "deprecated command <" + deprecateData.commands.back().name + "> is not listed as a command" );
+      checkForError( deprecateData.commands.back().supersededBy.empty() || containsByNameOrAlias( m_commands, deprecateData.commands.back().supersededBy ),
+                     childLine,
+                     "command <" +
+                       deprecateData.commands.back().supersededBy +
+                       ">, superseding command <" +
+                       deprecateData.commands.back().name +
+                       "> is not listed as a command" );
     }
     else if ( value == "type" )
     {
-      deprecateData.types.push_back( readName( child ) );
-      checkForError( m_types.contains( deprecateData.types.back() ), childLine, "deprecated type <" + deprecateData.types.back() + "> is not listed as type" );
+      deprecateData.types.push_back( readDeprecatedType( child ) );
+      checkForError(
+        m_types.contains( deprecateData.types.back().name ), childLine, "deprecated type <" + deprecateData.types.back().name + "> is not listed as a type" );
+      checkForError(
+        deprecateData.types.back().supersededBy.empty() || m_types.contains( deprecateData.types.back().supersededBy ),
+        childLine,
+        "type <" + deprecateData.types.back().supersededBy + ">, superseding type <" + deprecateData.types.back().name + "> is not listed as a type" );
     }
   }
   return deprecateData;

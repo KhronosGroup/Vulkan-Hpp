@@ -32051,6 +32051,100 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+  //=== VK_KHR_device_fault ===
+
+  // wrapper function for command vkGetDeviceFaultReportsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultReportsKHR.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetDeviceFaultReportsKHR ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getFaultReportsKHR(
+    uint64_t timeout, uint32_t * pFaultCounts, DeviceFaultInfoKHR * pFaultInfo, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkGetDeviceFaultReportsKHR( static_cast<VkDevice>( m_device ), timeout, pFaultCounts, reinterpret_cast<VkDeviceFaultInfoKHR *>( pFaultInfo ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkGetDeviceFaultReportsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultReportsKHR.html
+  template <typename DeviceFaultInfoKHRAllocator,
+            typename Dispatch,
+            typename std::enable_if<std::is_same<typename DeviceFaultInfoKHRAllocator::value_type, DeviceFaultInfoKHR>::value, int>::type,
+            typename std::enable_if<IS_DISPATCHED( vkGetDeviceFaultReportsKHR ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<DeviceFaultInfoKHR, DeviceFaultInfoKHRAllocator>> Device::getFaultReportsKHR(
+    uint64_t timeout, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetDeviceFaultReportsKHR && "Function <vkGetDeviceFaultReportsKHR> requires <VK_KHR_device_fault>" );
+#  endif
+
+    std::vector<DeviceFaultInfoKHR, DeviceFaultInfoKHRAllocator> faultInfo;
+    uint32_t                                                     faultCounts;
+    Result                                                       result;
+    do
+    {
+      result = static_cast<Result>( d.vkGetDeviceFaultReportsKHR( m_device, timeout, &faultCounts, nullptr ) );
+      if ( ( result == Result::eSuccess ) && faultCounts )
+      {
+        faultInfo.resize( faultCounts );
+        result =
+          static_cast<Result>( d.vkGetDeviceFaultReportsKHR( m_device, timeout, &faultCounts, reinterpret_cast<VkDeviceFaultInfoKHR *>( faultInfo.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getFaultReportsKHR", { Result::eSuccess, Result::eIncomplete, Result::eTimeout } );
+    VULKAN_HPP_ASSERT( faultCounts <= faultInfo.size() );
+    if ( faultCounts < faultInfo.size() )
+    {
+      faultInfo.resize( faultCounts );
+    }
+    return { result, faultInfo };
+  }
+
+  // wrapper function for command vkGetDeviceFaultReportsKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultReportsKHR.html
+  template <typename DeviceFaultInfoKHRAllocator,
+            typename Dispatch,
+            typename std::enable_if<std::is_same<typename DeviceFaultInfoKHRAllocator::value_type, DeviceFaultInfoKHR>::value, int>::type,
+            typename std::enable_if<IS_DISPATCHED( vkGetDeviceFaultReportsKHR ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<DeviceFaultInfoKHR, DeviceFaultInfoKHRAllocator>> Device::getFaultReportsKHR(
+    uint64_t timeout, DeviceFaultInfoKHRAllocator const & deviceFaultInfoKHRAllocator, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetDeviceFaultReportsKHR && "Function <vkGetDeviceFaultReportsKHR> requires <VK_KHR_device_fault>" );
+#  endif
+
+    std::vector<DeviceFaultInfoKHR, DeviceFaultInfoKHRAllocator> faultInfo( deviceFaultInfoKHRAllocator );
+    uint32_t                                                     faultCounts;
+    Result                                                       result;
+    do
+    {
+      result = static_cast<Result>( d.vkGetDeviceFaultReportsKHR( m_device, timeout, &faultCounts, nullptr ) );
+      if ( ( result == Result::eSuccess ) && faultCounts )
+      {
+        faultInfo.resize( faultCounts );
+        result =
+          static_cast<Result>( d.vkGetDeviceFaultReportsKHR( m_device, timeout, &faultCounts, reinterpret_cast<VkDeviceFaultInfoKHR *>( faultInfo.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getFaultReportsKHR", { Result::eSuccess, Result::eIncomplete, Result::eTimeout } );
+    VULKAN_HPP_ASSERT( faultCounts <= faultInfo.size() );
+    if ( faultCounts < faultInfo.size() )
+    {
+      faultInfo.resize( faultCounts );
+    }
+    return { result, faultInfo };
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  // wrapper function for command vkGetDeviceFaultDebugInfoKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceFaultDebugInfoKHR.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetDeviceFaultDebugInfoKHR ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getFaultDebugInfoKHR( DeviceFaultDebugInfoKHR * pDebugInfo, Dispatch const & d )
+    const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkGetDeviceFaultDebugInfoKHR( static_cast<VkDevice>( m_device ), reinterpret_cast<VkDeviceFaultDebugInfoKHR *>( pDebugInfo ) ) );
+  }
+
 #if defined( VK_USE_PLATFORM_OHOS )
   //=== VK_OHOS_surface ===
 

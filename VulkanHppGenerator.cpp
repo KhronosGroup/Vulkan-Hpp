@@ -4066,16 +4066,16 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
   std::string classSeparator      = commandData.handle.empty() ? "" : "::";
   std::string commandName         = generateCommandName( name, commandData.params, initialSkipCount, flavourFlags );
   std::string argumentList        = generateArgumentListEnhanced( commandData.params,
-                                                           returnParams,
-                                                           vectorParams,
-                                                           skippedParams,
-                                                           singularParams,
-                                                           templatedParams,
-                                                           chainedReturnParams,
-                                                           false,
-                                                           definition,
-                                                           flavourFlags,
-                                                           true );
+                                                                  returnParams,
+                                                                  vectorParams,
+                                                                  skippedParams,
+                                                                  singularParams,
+                                                                  templatedParams,
+                                                                  chainedReturnParams,
+                                                                  false,
+                                                                  definition,
+                                                                  flavourFlags,
+                                                                  true );
   std::string constString         = commandData.handle.empty() ? "" : " const";
   std::string noexceptString      = generateNoExcept( commandData.errorCodes, returnParams, vectorParams, flavourFlags, vectorSizeCheck.first, false );
 
@@ -4977,10 +4977,10 @@ std::string VulkanHppGenerator::generateDataDeclarations3Returns( CommandData co
           firstVectorAllocatorType  = startUpperCase( stripPrefix( dataTypes[1], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
           secondVectorAllocatorType = startUpperCase( stripPrefix( dataTypes[2], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
           pairConstructor           = ( flavourFlags & CommandFlavourFlagBits::withAllocator ) ? ( "( std::piecewise_construct, std::forward_as_tuple( " +
-                                                                                         startLowerCase( firstVectorAllocatorType ) +
-                                                                                         " ), std::forward_as_tuple( " +
-                                                                                         startLowerCase( secondVectorAllocatorType ) +
-                                                                                         " ) )" )
+                                                                                                   startLowerCase( firstVectorAllocatorType ) +
+                                                                                                   " ), std::forward_as_tuple( " +
+                                                                                                   startLowerCase( secondVectorAllocatorType ) +
+                                                                                                   " ) )" )
                                                                                                : "";
           firstVectorAllocatorType  = ", " + firstVectorAllocatorType;
           secondVectorAllocatorType = ", " + secondVectorAllocatorType;
@@ -8293,16 +8293,16 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandEnhanced( std::string c
 
   std::string argumentTemplates = generateArgumentTemplates( commandData.params, returnParams, vectorParams, templatedParams, chainedReturnParams, true );
   std::string argumentList      = generateArgumentListEnhanced( commandData.params,
-                                                           returnParams,
-                                                           vectorParams,
-                                                           skippedParams,
-                                                           singularParams,
-                                                           templatedParams,
-                                                           chainedReturnParams,
-                                                           true,
-                                                           definition,
-                                                           flavourFlags,
-                                                           false );
+                                                                returnParams,
+                                                                vectorParams,
+                                                                skippedParams,
+                                                                singularParams,
+                                                                templatedParams,
+                                                                chainedReturnParams,
+                                                                true,
+                                                                definition,
+                                                                flavourFlags,
+                                                                false );
   std::string commandName       = generateCommandName( name, commandData.params, initialSkipCount, flavourFlags );
   std::string nodiscard =
     generateNoDiscard( !returnParams.empty() || ( ( commandData.returnType.type != "VkResult" ) && ( commandData.returnType.type != "void" ) ),
@@ -11812,7 +11812,7 @@ std::string VulkanHppGenerator::generateTypenameCheck( std::vector<size_t> const
       if ( vectorParams.contains( returnParams[i] ) )
       {
         std::string elementType         = ( ( flavourFlags & CommandFlavourFlagBits::chained ) &&
-                                    std::ranges::any_of( chainedReturnParams, [&returnParams, i]( size_t crp ) { return crp == returnParams[i]; } ) )
+                                            std::ranges::any_of( chainedReturnParams, [&returnParams, i]( size_t crp ) { return crp == returnParams[i]; } ) )
                                           ? "StructureChain"
                                           : dataTypes[i];
         std::string extendedElementType = elementType;
@@ -12781,7 +12781,7 @@ bool VulkanHppGenerator::isMultiSuccessCodeConstructor( std::vector<std::map<std
   {
     auto constructorIt = constructorIts.begin();
     ok                 = ( 2 < ( *constructorIt )->second.successCodes.size() ) ||
-         ( ( ( *constructorIt )->second.successCodes.size() == 2 ) && ( ( *constructorIt )->second.successCodes[1] != "VK_INCOMPLETE" ) );
+                         ( ( ( *constructorIt )->second.successCodes.size() == 2 ) && ( ( *constructorIt )->second.successCodes[1] != "VK_INCOMPLETE" ) );
 #if !defined( NDEBUG )
     for ( constructorIt = std::next( constructorIt ); constructorIt != constructorIts.end(); ++constructorIt )
     {
@@ -15125,6 +15125,13 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
     {
       memberData.type = readTypeInfo( child );
     }
+  }
+
+  // `ppEnabledLayerNames` needs to be special-cased with old attributes to maintain API compatibility
+  // See https://github.com/KhronosGroup/Vulkan-Hpp/issues/2531
+  if ( name == "ppEnabledLayerNames" )
+  {
+    memberData.lenExpressions = { "enabledLayerCount", "null-terminated" };
   }
   assert( !name.empty() );
 

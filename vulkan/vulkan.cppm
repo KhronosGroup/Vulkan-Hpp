@@ -27,7 +27,7 @@ export module vulkan;
 
 export import std;
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 346, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 347, "Wrong VK_HEADER_VERSION!" );
 
 #if defined( _MSC_VER )
 #  pragma warning( push )
@@ -1257,6 +1257,10 @@ export {
   using ::PFN_vkGetGeneratedCommandsMemoryRequirementsEXT;
   using ::PFN_vkUpdateIndirectExecutionSetPipelineEXT;
   using ::PFN_vkUpdateIndirectExecutionSetShaderEXT;
+
+  //=== VK_KHR_device_fault ===
+  using ::PFN_vkGetDeviceFaultDebugInfoKHR;
+  using ::PFN_vkGetDeviceFaultReportsKHR;
 
 #if defined( VK_USE_PLATFORM_OHOS )
   //=== VK_OHOS_surface ===

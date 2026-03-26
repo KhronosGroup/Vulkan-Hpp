@@ -1,0 +1,19 @@
+# Common excluded directories
+/out
+/build
+/builds
+/.cache
+
+# The generated .clang-format
+/.clang-format
+
+# For clangd
+/.clangd
+/compile_commands.json
+
+# For MacOS
+.DS_store
+
+# For some editors and IDEs
+.vscode
+.idea

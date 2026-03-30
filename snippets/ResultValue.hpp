@@ -107,7 +107,7 @@
       {
           return {};
       }
-      return VULKAN_HPP_UNEXPECTED(result);
+      return VULKAN_HPP_UNEXPECTED( result );
 #else
       return result;
 #endif
@@ -125,7 +125,7 @@
       {
           return data;
       }
-      return VULKAN_HPP_UNEXPECTED(data);
+      return VULKAN_HPP_UNEXPECTED( result );
 #else
       return ResultValue<T>( result, data );
 #endif

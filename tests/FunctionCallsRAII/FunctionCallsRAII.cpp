@@ -660,5 +660,47 @@ int main()
     vk::raii::Sampler     sampler( device, samplerCreateInfo );
   }
 
+  // Descriptor set commands
+  {
+    vk::raii::Device                  device = nullptr;
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+    vk::raii::DescriptorSetLayout     descriptorSetLayout = device.createDescriptorSetLayout( descriptorSetLayoutCreateInfo );
+  }
+  {
+    vk::raii::Device                  device = nullptr;
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+    vk::raii::DescriptorSetLayout     descriptorSetLayout( device, descriptorSetLayoutCreateInfo );
+  }
+
+  {
+    vk::raii::Device             device = nullptr;
+    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo;
+    vk::raii::DescriptorPool     descriptorPool = device.createDescriptorPool( descriptorPoolCreateInfo );
+  }
+  {
+    vk::raii::Device             device = nullptr;
+    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo;
+    vk::raii::DescriptorPool     descriptorPool( device, descriptorPoolCreateInfo );
+  }
+
+  {
+    vk::raii::DescriptorPool     descriptorPool = nullptr;
+    vk::DescriptorPoolResetFlags flags          = {};
+    descriptorPool.reset( flags );
+  }
+
+  {
+    vk::raii::Device                     device = nullptr;
+    vk::DescriptorSetAllocateInfo        descriptorSetAllocateInfo;
+    std::vector<vk::raii::DescriptorSet> descriptorSets = device.allocateDescriptorSets( descriptorSetAllocateInfo );
+  }
+
+  {
+    vk::raii::Device                    device = nullptr;
+    std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
+    std::vector<vk::CopyDescriptorSet>  copyDescriptorSets;
+    device.updateDescriptorSets( writeDescriptorSets, copyDescriptorSets );
+  }
+
   return 0;
 }

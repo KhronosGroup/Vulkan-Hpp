@@ -1431,6 +1431,146 @@ int main()
     device.destroy( sampler );
   }
 
+  // Descriptor set commands
+  {
+    vk::Device                        device;
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+    vk::AllocationCallbacks           allocationCallbacks;
+    vk::DescriptorSetLayout           descriptorSetLayout;
+    vk::Result                        result = device.createDescriptorSetLayout( &descriptorSetLayoutCreateInfo, &allocationCallbacks, &descriptorSetLayout );
+  }
+  {
+    vk::Device                        device;
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+    vk::DescriptorSetLayout           descriptorSetLayout = device.createDescriptorSetLayout( descriptorSetLayoutCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::DescriptorSetLayout descriptorSetLayout;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyDescriptorSetLayout( descriptorSetLayout, &allocationCallbacks );
+  }
+  {
+    vk::Device              device;
+    vk::DescriptorSetLayout descriptorSetLayout;
+    device.destroyDescriptorSetLayout( descriptorSetLayout );
+  }
+  {
+    vk::Device              device;
+    vk::DescriptorSetLayout descriptorSetLayout;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( descriptorSetLayout, &allocationCallbacks );
+  }
+  {
+    vk::Device              device;
+    vk::DescriptorSetLayout descriptorSetLayout;
+    device.destroy( descriptorSetLayout );
+  }
+
+  {
+    vk::Device                   device;
+    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo;
+    vk::AllocationCallbacks      allocationCallbacks;
+    vk::DescriptorPool           descriptorPool;
+    vk::Result                   result = device.createDescriptorPool( &descriptorPoolCreateInfo, &allocationCallbacks, &descriptorPool );
+  }
+  {
+    vk::Device                   device;
+    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo;
+    vk::DescriptorPool           descriptorPool = device.createDescriptorPool( descriptorPoolCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::DescriptorPool      descriptorPool;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyDescriptorPool( descriptorPool, &allocationCallbacks );
+  }
+  {
+    vk::Device         device;
+    vk::DescriptorPool descriptorPool;
+    device.destroyDescriptorPool( descriptorPool );
+  }
+  {
+    vk::Device              device;
+    vk::DescriptorPool      descriptorPool;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( descriptorPool, &allocationCallbacks );
+  }
+  {
+    vk::Device         device;
+    vk::DescriptorPool descriptorPool;
+    device.destroy( descriptorPool );
+  }
+
+  {
+    vk::Device                   device;
+    vk::DescriptorPool           descriptorPool;
+    vk::DescriptorPoolResetFlags flags = {};
+    device.resetDescriptorPool( descriptorPool, flags );
+  }
+
+  {
+    vk::Device                    device;
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo;
+    vk::DescriptorSet             descriptorSet;
+    vk::Result                    result = device.allocateDescriptorSets( &descriptorSetAllocateInfo, &descriptorSet );
+  }
+  {
+    vk::Device                     device;
+    vk::DescriptorSetAllocateInfo  descriptorSetAllocateInfo;
+    std::vector<vk::DescriptorSet> descriptorSets = device.allocateDescriptorSets( descriptorSetAllocateInfo );
+  }
+  {
+    vk::Device                    device;
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo;
+    using DescriptorSetAllocator = std::allocator<vk::DescriptorSet>;
+    DescriptorSetAllocator         descriptorSetAllocator;
+    std::vector<vk::DescriptorSet> descriptorSets = device.allocateDescriptorSets( descriptorSetAllocateInfo, descriptorSetAllocator );
+  }
+
+  {
+    vk::Device                     device;
+    vk::DescriptorPool             descriptorPool;
+    std::vector<vk::DescriptorSet> descriptorSets;
+    vk::Result                     result = device.freeDescriptorSets( descriptorPool, static_cast<uint32_t>( descriptorSets.size() ), descriptorSets.data() );
+  }
+  {
+    vk::Device                     device;
+    vk::DescriptorPool             descriptorPool;
+    std::vector<vk::DescriptorSet> descriptorSets;
+    device.freeDescriptorSets( descriptorPool, descriptorSets );
+  }
+  {
+    vk::Device                     device;
+    vk::DescriptorPool             descriptorPool;
+    std::vector<vk::DescriptorSet> descriptorSets;
+    vk::Result                     result = device.free( descriptorPool, static_cast<uint32_t>( descriptorSets.size() ), descriptorSets.data() );
+  }
+  {
+    vk::Device                     device;
+    vk::DescriptorPool             descriptorPool;
+    std::vector<vk::DescriptorSet> descriptorSets;
+    device.free( descriptorPool, descriptorSets );
+  }
+
+  {
+    vk::Device                          device;
+    std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
+    std::vector<vk::CopyDescriptorSet>  copyDescriptorSets;
+    device.updateDescriptorSets( static_cast<uint32_t>( writeDescriptorSets.size() ),
+                                 writeDescriptorSets.data(),
+                                 static_cast<uint32_t>( copyDescriptorSets.size() ),
+                                 copyDescriptorSets.data() );
+  }
+  {
+    vk::Device                          device;
+    std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
+    std::vector<vk::CopyDescriptorSet>  copyDescriptorSets;
+    device.updateDescriptorSets( writeDescriptorSets, copyDescriptorSets );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

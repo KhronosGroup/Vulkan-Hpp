@@ -412,7 +412,7 @@ inline TypeInfo readTypeInfo( tinyxml2::XMLElement const * element )
   }
   if ( typeInfo.prefix.starts_with( "const" ) )
   {
-    typeInfo.prefix = trim( typeInfo.prefix.substr( 5 ) );
+    typeInfo.prefix  = trim( typeInfo.prefix.substr( 5 ) );
     typeInfo.postfix = ( typeInfo.postfix.empty() ? "const" : ( "const " + typeInfo.postfix ) );
   }
   return typeInfo;
@@ -558,18 +558,18 @@ inline std::string toString( tinyxml2::XMLError error )
 
 std::string toUpperCase( std::string const & name )
 {
+  assert( !name.empty() );
   std::string convertedName;
-  bool        previousIsLowerCase = false;
-  bool        previousIsDigit     = false;
-  for ( auto c : name )
+  convertedName.push_back( static_cast<char>( toupper( name.front() ) ) );
+  size_t n = name.length();
+  for ( size_t i = 1; i < n; ++i )
   {
-    if ( ( isupper( c ) && ( previousIsLowerCase || previousIsDigit ) ) || ( isdigit( c ) && previousIsLowerCase ) )
+    if ( ( isupper( name[i] ) && ( islower( name[i - 1] ) || isdigit( name[i - 1] ) || ( ( i < n - 1 ) && islower( name[i + 1] ) ) ) ) ||
+         ( isdigit( name[i] ) && islower( name[i - 1] ) ) )
     {
       convertedName.push_back( '_' );
     }
-    convertedName.push_back( static_cast<char>( toupper( c ) ) );
-    previousIsLowerCase = !!islower( c );
-    previousIsDigit     = !!isdigit( c );
+    convertedName.push_back( static_cast<char>( toupper( name[i] ) ) );
   }
   return convertedName;
 }

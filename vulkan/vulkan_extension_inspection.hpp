@@ -263,7 +263,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                             "VK_KHR_fragment_shading_rate",
                                                             "VK_AMD_shader_core_properties2",
                                                             "VK_AMD_device_coherent_memory",
+                                                            "VK_KHR_shader_constant_data",
                                                             "VK_KHR_dynamic_rendering_local_read",
+                                                            "VK_KHR_shader_abort",
                                                             "VK_EXT_shader_image_atomic_int64",
                                                             "VK_KHR_shader_quad_control",
                                                             "VK_KHR_spirv_1_4",
@@ -328,6 +330,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
                                                             "VK_KHR_synchronization2",
                                                             "VK_EXT_descriptor_buffer",
+                                                            "VK_KHR_device_address_commands",
                                                             "VK_EXT_graphics_pipeline_library",
                                                             "VK_AMD_shader_early_and_late_fragment_tests",
                                                             "VK_KHR_fragment_shader_barycentric",
@@ -492,6 +495,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                             "VK_NV_cluster_acceleration_structure",
                                                             "VK_NV_partitioned_acceleration_structure",
                                                             "VK_EXT_device_generated_commands",
+                                                            "VK_KHR_device_fault",
                                                             "VK_KHR_maintenance8",
                                                             "VK_MESA_image_alignment_control",
                                                             "VK_KHR_shader_fma",
@@ -508,13 +512,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
                                                             "VK_KHR_depth_clamp_zero_one",
                                                             "VK_ARM_performance_counters_by_region",
+                                                            "VK_ARM_shader_instrumentation",
                                                             "VK_EXT_vertex_attribute_robustness",
                                                             "VK_ARM_format_pack",
                                                             "VK_VALVE_fragment_density_map_layered",
                                                             "VK_KHR_robustness2",
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
                                                             "VK_NV_present_metering",
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
                                                             "VK_EXT_fragment_density_map_offset",
                                                             "VK_EXT_zero_initialize_device_memory",
                                                             "VK_KHR_present_mode_fifo_latest_ready",
@@ -526,7 +529,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                             "VK_SEC_pipeline_cache_incremental_mode",
                                                             "VK_EXT_shader_uniform_buffer_unsized_array",
                                                             "VK_NV_compute_occupancy_priority",
-                                                            "VK_EXT_shader_subgroup_partitioned" };
+                                                            "VK_EXT_shader_subgroup_partitioned",
+                                                            "VK_VALVE_shader_mixed_float_dot_product" };
     return deviceExtensions;
   }
 
@@ -1501,6 +1505,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_dynamic_rendering",
             } } },
           { "VK_VERSION_1_3", { {} } } } },
+      { "VK_KHR_shader_abort",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_device_fault",
+              "VK_KHR_get_physical_device_properties2",
+              "VK_KHR_shader_constant_data",
+            } } } } },
       { "VK_EXT_shader_image_atomic_int64",
         { { "VK_VERSION_1_0",
             { {
@@ -1871,6 +1882,26 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             } } },
           { "VK_VERSION_1_2",
             { {
+              "VK_KHR_synchronization2",
+            } } },
+          { "VK_VERSION_1_3", { {} } } } },
+      { "VK_KHR_device_address_commands",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_EXT_extended_dynamic_state",
+              "VK_KHR_buffer_device_address",
+              "VK_KHR_get_physical_device_properties2",
+              "VK_KHR_synchronization2",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+              "VK_EXT_extended_dynamic_state",
+              "VK_KHR_buffer_device_address",
+              "VK_KHR_synchronization2",
+            } } },
+          { "VK_VERSION_1_2",
+            { {
+              "VK_EXT_extended_dynamic_state",
               "VK_KHR_synchronization2",
             } } },
           { "VK_VERSION_1_3", { {} } } } },
@@ -2871,6 +2902,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_maintenance5",
             } } },
           { "VK_VERSION_1_3", { {} } } } },
+      { "VK_KHR_device_fault",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } } } },
       { "VK_KHR_maintenance8", { { "VK_VERSION_1_1", { {} } } } },
       { "VK_MESA_image_alignment_control",
         { { "VK_VERSION_1_0",
@@ -2959,6 +2995,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
+      { "VK_ARM_shader_instrumentation",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_EXT_vertex_attribute_robustness",
         { { "VK_VERSION_1_0",
             { {
@@ -2986,17 +3028,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } },
-          { "VK_VERSION_1_1", { {} } } } }
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-      ,
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_NV_present_metering",
         { { "VK_VERSION_1_0",
             { {
               "VK_KHR_get_physical_device_properties2",
             } } },
-          { "VK_VERSION_1_1", { {} } } } }
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      ,
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_EXT_fragment_density_map_offset",
         { { "VK_VERSION_1_0",
             { {
@@ -3087,6 +3125,22 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_surface",
             } } } } }
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
+      ,
+      { "VK_VALVE_shader_mixed_float_dot_product",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+              "VK_KHR_shader_float16_int8",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+                "VK_KHR_shader_float16_int8",
+              },
+              {} } },
+          { "VK_VERSION_1_2",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } } } }
     };
     auto depIt = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
@@ -3219,6 +3273,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                            { "VK_EXT_image_robustness", "VK_VERSION_1_3" },
                                                                            { "VK_KHR_copy_commands2", "VK_VERSION_1_3" },
                                                                            { "VK_EXT_4444_formats", "VK_VERSION_1_3" },
+                                                                           { "VK_EXT_device_fault", "VK_KHR_device_fault" },
                                                                            { "VK_ARM_rasterization_order_attachment_access",
                                                                              "VK_EXT_rasterization_order_attachment_access" },
                                                                            { "VK_VALVE_mutable_descriptor_type", "VK_EXT_mutable_descriptor_type" },
@@ -3702,6 +3757,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     {
       return "VK_VERSION_1_3";
     }
+    if ( extension == "VK_EXT_device_fault" )
+    {
+      return "VK_KHR_device_fault";
+    }
     if ( extension == "VK_ARM_rasterization_order_attachment_access" )
     {
       return "VK_EXT_rasterization_order_attachment_access";
@@ -4039,7 +4098,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_KHR_fragment_shading_rate" ) ||
            ( extension == "VK_AMD_shader_core_properties2" ) ||
            ( extension == "VK_AMD_device_coherent_memory" ) ||
+           ( extension == "VK_KHR_shader_constant_data" ) ||
            ( extension == "VK_KHR_dynamic_rendering_local_read" ) ||
+           ( extension == "VK_KHR_shader_abort" ) ||
            ( extension == "VK_EXT_shader_image_atomic_int64" ) ||
            ( extension == "VK_KHR_shader_quad_control" ) ||
            ( extension == "VK_KHR_spirv_1_4" ) ||
@@ -4110,6 +4171,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         ||
            ( extension == "VK_KHR_synchronization2" ) ||
            ( extension == "VK_EXT_descriptor_buffer" ) ||
+           ( extension == "VK_KHR_device_address_commands" ) ||
            ( extension == "VK_EXT_graphics_pipeline_library" ) ||
            ( extension == "VK_AMD_shader_early_and_late_fragment_tests" ) ||
            ( extension == "VK_KHR_fragment_shader_barycentric" ) ||
@@ -4288,6 +4350,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_NV_cluster_acceleration_structure" ) ||
            ( extension == "VK_NV_partitioned_acceleration_structure" ) ||
            ( extension == "VK_EXT_device_generated_commands" ) ||
+           ( extension == "VK_KHR_device_fault" ) ||
            ( extension == "VK_KHR_maintenance8" ) ||
            ( extension == "VK_MESA_image_alignment_control" ) ||
            ( extension == "VK_KHR_shader_fma" ) ||
@@ -4306,15 +4369,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         ||
            ( extension == "VK_KHR_depth_clamp_zero_one" ) ||
            ( extension == "VK_ARM_performance_counters_by_region" ) ||
+           ( extension == "VK_ARM_shader_instrumentation" ) ||
            ( extension == "VK_EXT_vertex_attribute_robustness" ) ||
            ( extension == "VK_ARM_format_pack" ) ||
            ( extension == "VK_VALVE_fragment_density_map_layered" ) ||
-           ( extension == "VK_KHR_robustness2" )
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-        ||
-           ( extension == "VK_NV_present_metering" )
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-        ||
+           ( extension == "VK_KHR_robustness2" ) ||
+           ( extension == "VK_NV_present_metering" ) ||
            ( extension == "VK_EXT_fragment_density_map_offset" ) ||
            ( extension == "VK_EXT_zero_initialize_device_memory" ) ||
            ( extension == "VK_KHR_present_mode_fifo_latest_ready" ) ||
@@ -4326,7 +4386,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_SEC_pipeline_cache_incremental_mode" ) ||
            ( extension == "VK_EXT_shader_uniform_buffer_unsized_array" ) ||
            ( extension == "VK_NV_compute_occupancy_priority" ) ||
-           ( extension == "VK_EXT_shader_subgroup_partitioned" );
+           ( extension == "VK_EXT_shader_subgroup_partitioned" ) ||
+           ( extension == "VK_VALVE_shader_mixed_float_dot_product" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )
@@ -4530,6 +4591,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_image_robustness" ) ||
            ( extension == "VK_KHR_copy_commands2" ) ||
            ( extension == "VK_EXT_4444_formats" ) ||
+           ( extension == "VK_EXT_device_fault" ) ||
            ( extension == "VK_ARM_rasterization_order_attachment_access" ) ||
            ( extension == "VK_VALVE_mutable_descriptor_type" ) ||
            ( extension == "VK_KHR_format_feature_flags2" ) ||

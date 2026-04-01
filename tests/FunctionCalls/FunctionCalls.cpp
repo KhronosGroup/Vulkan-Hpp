@@ -35,7 +35,7 @@ import vulkan;
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   //=== VK_VERSION_1_0 ===
   // Device initialization
@@ -1189,6 +1189,386 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Device     device;
     vk::BufferView bufferView;
     device.destroy( bufferView );
+  }
+
+  // Shader commands
+  {
+    vk::Device                 device;
+    vk::ShaderModuleCreateInfo shaderModuleCreateInfo;
+    vk::AllocationCallbacks    allocationCallbacks;
+    vk::ShaderModule           shaderModule;
+    vk::Result                 result = device.createShaderModule( &shaderModuleCreateInfo, &allocationCallbacks, &shaderModule );
+  }
+  {
+    vk::Device                 device;
+    vk::ShaderModuleCreateInfo shaderModuleCreateInfo;
+    vk::ShaderModule           shaderModule = device.createShaderModule( shaderModuleCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::ShaderModule        shaderModule;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyShaderModule( shaderModule, &allocationCallbacks );
+  }
+  {
+    vk::Device       device;
+    vk::ShaderModule shaderModule;
+    device.destroyShaderModule( shaderModule );
+  }
+  {
+    vk::Device              device;
+    vk::ShaderModule        shaderModule;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( shaderModule, &allocationCallbacks );
+  }
+  {
+    vk::Device       device;
+    vk::ShaderModule shaderModule;
+    device.destroy( shaderModule );
+  }
+
+  // Pipeline Cache commands
+  {
+    vk::Device                  device;
+    vk::PipelineCacheCreateInfo pipelineCacheCreateInfo;
+    vk::AllocationCallbacks     allocationCallbacks;
+    vk::PipelineCache           pipelineCache;
+    vk::Result                  result = device.createPipelineCache( &pipelineCacheCreateInfo, &allocationCallbacks, &pipelineCache );
+  }
+  {
+    vk::Device                  device;
+    vk::PipelineCacheCreateInfo pipelineCacheCreateInfo;
+    vk::PipelineCache           pipelineCache = device.createPipelineCache( pipelineCacheCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::PipelineCache       pipelineCache;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyPipelineCache( pipelineCache, &allocationCallbacks );
+  }
+  {
+    vk::Device        device;
+    vk::PipelineCache pipelineCache;
+    device.destroyPipelineCache( pipelineCache );
+  }
+  {
+    vk::Device              device;
+    vk::PipelineCache       pipelineCache;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( pipelineCache, &allocationCallbacks );
+  }
+  {
+    vk::Device        device;
+    vk::PipelineCache pipelineCache;
+    device.destroy( pipelineCache );
+  }
+
+  {
+    vk::Device        device;
+    vk::PipelineCache pipelineCache;
+    std::size_t       dataSize = 0;
+    vk::Result        result   = device.getPipelineCacheData( pipelineCache, &dataSize, nullptr );
+    if ( result == vk::Result::eSuccess )
+    {
+      std::vector<uint8_t> data( dataSize );
+      result = device.getPipelineCacheData( pipelineCache, &dataSize, data.data() );
+    }
+  }
+  {
+    vk::Device           device;
+    vk::PipelineCache    pipelineCache;
+    std::vector<uint8_t> data = device.getPipelineCacheData( pipelineCache );
+  }
+  {
+    vk::Device        device;
+    vk::PipelineCache pipelineCache;
+    using Allocator = std::allocator<uint8_t>;
+    Allocator                       allocator;
+    std::vector<uint8_t, Allocator> data = device.getPipelineCacheData( pipelineCache, allocator );
+  }
+
+  {
+    vk::Device                     device;
+    vk::PipelineCache              dstCache;
+    std::vector<vk::PipelineCache> srcCaches;
+    vk::Result                     result = device.mergePipelineCaches( dstCache, static_cast<uint32_t>( srcCaches.size() ), srcCaches.data() );
+  }
+  {
+    vk::Device                     device;
+    vk::PipelineCache              dstCache;
+    std::vector<vk::PipelineCache> srcCaches;
+    device.mergePipelineCaches( dstCache, srcCaches );
+  }
+
+  // Compute pipeline commands
+  {
+    vk::Device                    device;
+    vk::PipelineCache             pipelineCache;
+    vk::ComputePipelineCreateInfo computePipelineCreateInfo;
+    uint32_t                      pipelineIndex = 0;
+    vk::AllocationCallbacks       allocationCallbacks;
+    vk::Pipeline                  pipeline;
+    vk::Result                    result = device.createComputePipelines( pipelineCache, 1, &computePipelineCreateInfo, &allocationCallbacks, &pipeline );
+  }
+  {
+    vk::Device                                 device;
+    vk::PipelineCache                          pipelineCache;
+    std::vector<vk::ComputePipelineCreateInfo> computePipelineCreateInfos;
+    vk::ResultValue<std::vector<vk::Pipeline>> rv = device.createComputePipelines( pipelineCache, computePipelineCreateInfos );
+  }
+  {
+    vk::Device                                 device;
+    vk::PipelineCache                          pipelineCache;
+    std::vector<vk::ComputePipelineCreateInfo> computePipelineCreateInfos;
+    vk::AllocationCallbacks                    allocationCallbacks;
+    using Allocator = std::allocator<vk::Pipeline>;
+    Allocator                                  allocator;
+    vk::ResultValue<std::vector<vk::Pipeline>> rv = device.createComputePipelines( pipelineCache, computePipelineCreateInfos, allocationCallbacks, allocator );
+  }
+  {
+    vk::Device                    device;
+    vk::PipelineCache             pipelineCache;
+    vk::ComputePipelineCreateInfo computePipelineCreateInfo;
+    vk::ResultValue<vk::Pipeline> rv = device.createComputePipeline( pipelineCache, computePipelineCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Pipeline            pipeline;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyPipeline( pipeline, &allocationCallbacks );
+  }
+  {
+    vk::Device   device;
+    vk::Pipeline pipeline;
+    device.destroyPipeline( pipeline );
+  }
+  {
+    vk::Device              device;
+    vk::Pipeline            pipeline;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( pipeline, &allocationCallbacks );
+  }
+  {
+    vk::Device   device;
+    vk::Pipeline pipeline;
+    device.destroy( pipeline );
+  }
+
+  // Pipeline layout commands
+  {
+    vk::Device                   device;
+    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo;
+    vk::AllocationCallbacks      allocationCallbacks;
+    vk::PipelineLayout           pipelineLayout;
+    vk::Result                   result = device.createPipelineLayout( &pipelineLayoutCreateInfo, &allocationCallbacks, &pipelineLayout );
+  }
+  {
+    vk::Device                   device;
+    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo;
+    vk::PipelineLayout           pipelineLayout = device.createPipelineLayout( pipelineLayoutCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::PipelineLayout      pipelineLayout;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyPipelineLayout( pipelineLayout, &allocationCallbacks );
+  }
+  {
+    vk::Device         device;
+    vk::PipelineLayout pipelineLayout;
+    device.destroyPipelineLayout( pipelineLayout );
+  }
+  {
+    vk::Device              device;
+    vk::PipelineLayout      pipelineLayout;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( pipelineLayout, &allocationCallbacks );
+  }
+  {
+    vk::Device         device;
+    vk::PipelineLayout pipelineLayout;
+    device.destroy( pipelineLayout );
+  }
+
+  // Sampler commands
+  {
+    vk::Device              device;
+    vk::SamplerCreateInfo   samplerCreateInfo;
+    vk::AllocationCallbacks allocationCallbacks;
+    vk::Sampler             sampler;
+    vk::Result              result = device.createSampler( &samplerCreateInfo, &allocationCallbacks, &sampler );
+  }
+  {
+    vk::Device            device;
+    vk::SamplerCreateInfo samplerCreateInfo;
+    vk::Sampler           sampler = device.createSampler( samplerCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Sampler             sampler;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroySampler( sampler, &allocationCallbacks );
+  }
+  {
+    vk::Device  device;
+    vk::Sampler sampler;
+    device.destroySampler( sampler );
+  }
+  {
+    vk::Device              device;
+    vk::Sampler             sampler;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( sampler, &allocationCallbacks );
+  }
+  {
+    vk::Device  device;
+    vk::Sampler sampler;
+    device.destroy( sampler );
+  }
+
+  // Descriptor set commands
+  {
+    vk::Device                        device;
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+    vk::AllocationCallbacks           allocationCallbacks;
+    vk::DescriptorSetLayout           descriptorSetLayout;
+    vk::Result                        result = device.createDescriptorSetLayout( &descriptorSetLayoutCreateInfo, &allocationCallbacks, &descriptorSetLayout );
+  }
+  {
+    vk::Device                        device;
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+    vk::DescriptorSetLayout           descriptorSetLayout = device.createDescriptorSetLayout( descriptorSetLayoutCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::DescriptorSetLayout descriptorSetLayout;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyDescriptorSetLayout( descriptorSetLayout, &allocationCallbacks );
+  }
+  {
+    vk::Device              device;
+    vk::DescriptorSetLayout descriptorSetLayout;
+    device.destroyDescriptorSetLayout( descriptorSetLayout );
+  }
+  {
+    vk::Device              device;
+    vk::DescriptorSetLayout descriptorSetLayout;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( descriptorSetLayout, &allocationCallbacks );
+  }
+  {
+    vk::Device              device;
+    vk::DescriptorSetLayout descriptorSetLayout;
+    device.destroy( descriptorSetLayout );
+  }
+
+  {
+    vk::Device                   device;
+    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo;
+    vk::AllocationCallbacks      allocationCallbacks;
+    vk::DescriptorPool           descriptorPool;
+    vk::Result                   result = device.createDescriptorPool( &descriptorPoolCreateInfo, &allocationCallbacks, &descriptorPool );
+  }
+  {
+    vk::Device                   device;
+    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo;
+    vk::DescriptorPool           descriptorPool = device.createDescriptorPool( descriptorPoolCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::DescriptorPool      descriptorPool;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyDescriptorPool( descriptorPool, &allocationCallbacks );
+  }
+  {
+    vk::Device         device;
+    vk::DescriptorPool descriptorPool;
+    device.destroyDescriptorPool( descriptorPool );
+  }
+  {
+    vk::Device              device;
+    vk::DescriptorPool      descriptorPool;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( descriptorPool, &allocationCallbacks );
+  }
+  {
+    vk::Device         device;
+    vk::DescriptorPool descriptorPool;
+    device.destroy( descriptorPool );
+  }
+
+  {
+    vk::Device                   device;
+    vk::DescriptorPool           descriptorPool;
+    vk::DescriptorPoolResetFlags flags = {};
+    device.resetDescriptorPool( descriptorPool, flags );
+  }
+
+  {
+    vk::Device                    device;
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo;
+    vk::DescriptorSet             descriptorSet;
+    vk::Result                    result = device.allocateDescriptorSets( &descriptorSetAllocateInfo, &descriptorSet );
+  }
+  {
+    vk::Device                     device;
+    vk::DescriptorSetAllocateInfo  descriptorSetAllocateInfo;
+    std::vector<vk::DescriptorSet> descriptorSets = device.allocateDescriptorSets( descriptorSetAllocateInfo );
+  }
+  {
+    vk::Device                    device;
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo;
+    using DescriptorSetAllocator = std::allocator<vk::DescriptorSet>;
+    DescriptorSetAllocator         descriptorSetAllocator;
+    std::vector<vk::DescriptorSet> descriptorSets = device.allocateDescriptorSets( descriptorSetAllocateInfo, descriptorSetAllocator );
+  }
+
+  {
+    vk::Device                     device;
+    vk::DescriptorPool             descriptorPool;
+    std::vector<vk::DescriptorSet> descriptorSets;
+    vk::Result                     result = device.freeDescriptorSets( descriptorPool, static_cast<uint32_t>( descriptorSets.size() ), descriptorSets.data() );
+  }
+  {
+    vk::Device                     device;
+    vk::DescriptorPool             descriptorPool;
+    std::vector<vk::DescriptorSet> descriptorSets;
+    device.freeDescriptorSets( descriptorPool, descriptorSets );
+  }
+  {
+    vk::Device                     device;
+    vk::DescriptorPool             descriptorPool;
+    std::vector<vk::DescriptorSet> descriptorSets;
+    vk::Result                     result = device.free( descriptorPool, static_cast<uint32_t>( descriptorSets.size() ), descriptorSets.data() );
+  }
+  {
+    vk::Device                     device;
+    vk::DescriptorPool             descriptorPool;
+    std::vector<vk::DescriptorSet> descriptorSets;
+    device.free( descriptorPool, descriptorSets );
+  }
+
+  {
+    vk::Device                          device;
+    std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
+    std::vector<vk::CopyDescriptorSet>  copyDescriptorSets;
+    device.updateDescriptorSets( static_cast<uint32_t>( writeDescriptorSets.size() ),
+                                 writeDescriptorSets.data(),
+                                 static_cast<uint32_t>( copyDescriptorSets.size() ),
+                                 copyDescriptorSets.data() );
+  }
+  {
+    vk::Device                          device;
+    std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
+    std::vector<vk::CopyDescriptorSet>  copyDescriptorSets;
+    device.updateDescriptorSets( writeDescriptorSets, copyDescriptorSets );
   }
 
 #if 0

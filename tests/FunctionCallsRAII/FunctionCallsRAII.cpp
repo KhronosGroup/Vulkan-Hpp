@@ -34,7 +34,7 @@ import vulkan;
 #  include <vulkan/vulkan_raii.hpp>
 #endif
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   //=== VK_VERSION_1_0 ===
   // Device initialization
@@ -573,6 +573,133 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::Device         device = nullptr;
     vk::BufferViewCreateInfo bufferViewCreateInfo;
     vk::raii::BufferView     bufferView( device, bufferViewCreateInfo );
+  }
+
+  // Shader commands
+  {
+    vk::raii::Device           device = nullptr;
+    vk::ShaderModuleCreateInfo shaderModuleCreateInfo;
+    vk::raii::ShaderModule     shaderModule = device.createShaderModule( shaderModuleCreateInfo );
+  }
+  {
+    vk::raii::Device           device = nullptr;
+    vk::ShaderModuleCreateInfo shaderModuleCreateInfo;
+    vk::raii::ShaderModule     shaderModule( device, shaderModuleCreateInfo );
+  }
+
+  // Pipeline Cache commands
+  {
+    vk::raii::Device            device = nullptr;
+    vk::PipelineCacheCreateInfo pipelineCacheCreateInfo;
+    vk::raii::PipelineCache     pipelineCache = device.createPipelineCache( pipelineCacheCreateInfo );
+  }
+  {
+    vk::raii::Device            device = nullptr;
+    vk::PipelineCacheCreateInfo pipelineCacheCreateInfo;
+    vk::raii::PipelineCache     pipelineCache( device, pipelineCacheCreateInfo );
+  }
+
+  {
+    vk::raii::PipelineCache pipelineCache = nullptr;
+    std::vector<uint8_t>    data          = pipelineCache.getData();
+  }
+
+  {
+    vk::raii::PipelineCache        dstCache = nullptr;
+    std::vector<vk::PipelineCache> srcCaches;
+    dstCache.merge( srcCaches );
+  }
+
+  // Compute pipeline commands
+  {
+    vk::raii::Device                           device        = nullptr;
+    vk::raii::PipelineCache                    pipelineCache = nullptr;
+    std::vector<vk::ComputePipelineCreateInfo> computePipelineCreateInfos;
+    std::vector<vk::raii::Pipeline>            pipelines = device.createComputePipelines( pipelineCache, computePipelineCreateInfos );
+  }
+  {
+    vk::raii::Device                           device        = nullptr;
+    vk::raii::PipelineCache                    pipelineCache = nullptr;
+    std::vector<vk::ComputePipelineCreateInfo> computePipelineCreateInfos;
+    vk::raii::Pipelines                        pipelines( device, pipelineCache, computePipelineCreateInfos );
+  }
+  {
+    vk::raii::Device              device        = nullptr;
+    vk::raii::PipelineCache       pipelineCache = nullptr;
+    vk::ComputePipelineCreateInfo computePipelineCreateInfo;
+    vk::raii::Pipeline            pipeline = device.createComputePipeline( pipelineCache, computePipelineCreateInfo );
+  }
+  {
+    vk::raii::Device              device        = nullptr;
+    vk::raii::PipelineCache       pipelineCache = nullptr;
+    vk::ComputePipelineCreateInfo computePipelineCreateInfo;
+    vk::raii::Pipeline            pipeline( device, pipelineCache, computePipelineCreateInfo );
+  }
+
+  // Pipeline layout commands
+  {
+    vk::raii::Device             device = nullptr;
+    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo;
+    vk::raii::PipelineLayout     pipelineLayout = device.createPipelineLayout( pipelineLayoutCreateInfo );
+  }
+  {
+    vk::raii::Device             device = nullptr;
+    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo;
+    vk::raii::PipelineLayout     pipelineLayout( device, pipelineLayoutCreateInfo );
+  }
+
+  // Sampler commands
+  {
+    vk::raii::Device      device = nullptr;
+    vk::SamplerCreateInfo samplerCreateInfo;
+    vk::raii::Sampler     sampler = device.createSampler( samplerCreateInfo );
+  }
+  {
+    vk::raii::Device      device = nullptr;
+    vk::SamplerCreateInfo samplerCreateInfo;
+    vk::raii::Sampler     sampler( device, samplerCreateInfo );
+  }
+
+  // Descriptor set commands
+  {
+    vk::raii::Device                  device = nullptr;
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+    vk::raii::DescriptorSetLayout     descriptorSetLayout = device.createDescriptorSetLayout( descriptorSetLayoutCreateInfo );
+  }
+  {
+    vk::raii::Device                  device = nullptr;
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+    vk::raii::DescriptorSetLayout     descriptorSetLayout( device, descriptorSetLayoutCreateInfo );
+  }
+
+  {
+    vk::raii::Device             device = nullptr;
+    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo;
+    vk::raii::DescriptorPool     descriptorPool = device.createDescriptorPool( descriptorPoolCreateInfo );
+  }
+  {
+    vk::raii::Device             device = nullptr;
+    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo;
+    vk::raii::DescriptorPool     descriptorPool( device, descriptorPoolCreateInfo );
+  }
+
+  {
+    vk::raii::DescriptorPool     descriptorPool = nullptr;
+    vk::DescriptorPoolResetFlags flags          = {};
+    descriptorPool.reset( flags );
+  }
+
+  {
+    vk::raii::Device                     device = nullptr;
+    vk::DescriptorSetAllocateInfo        descriptorSetAllocateInfo;
+    std::vector<vk::raii::DescriptorSet> descriptorSets = device.allocateDescriptorSets( descriptorSetAllocateInfo );
+  }
+
+  {
+    vk::raii::Device                    device = nullptr;
+    std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
+    std::vector<vk::CopyDescriptorSet>  copyDescriptorSets;
+    device.updateDescriptorSets( writeDescriptorSets, copyDescriptorSets );
   }
 
   return 0;

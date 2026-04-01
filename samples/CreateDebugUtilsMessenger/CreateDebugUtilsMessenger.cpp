@@ -42,8 +42,9 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT( VkInstance instance,
 VKAPI_ATTR vk::Bool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
                                                    vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
                                                    vk::DebugUtilsMessengerCallbackDataEXT const * pCallbackData,
-                                                   void * /*pUserData*/ )
+                                                   VULKAN_HPP_MAYBE_UNUSED void * pUserData )
 {
+  VULKAN_HPP_UNUSED( pUserData );
   std::ostringstream message;
 
   message << vk::to_string( messageSeverity ) << ": " << vk::to_string( messageTypes ) << ":\n";
@@ -90,7 +91,7 @@ VKAPI_ATTR vk::Bool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverity
   return false;
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

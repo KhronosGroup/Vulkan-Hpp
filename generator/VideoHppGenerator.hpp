@@ -101,8 +101,8 @@ private:
   void checkCorrectness() const;
   void checkElements( int                                               line,
                       std::vector<tinyxml2::XMLElement const *> const & elements,
-                      std::map<std::string, bool> const &               required,
-                      std::set<std::string> const &                     optional = {} ) const;
+                      std::map<std::string, MultipleAllowed> const &    required,
+                      std::map<std::string, MultipleAllowed> const &    optional = {} ) const;
   void checkForError( bool condition, int line, std::string const & message ) const;
   void checkForWarning( bool condition, int line, std::string const & message ) const;
   std::string                                      generateConstants() const;

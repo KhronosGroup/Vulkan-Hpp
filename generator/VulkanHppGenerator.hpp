@@ -287,12 +287,24 @@ private:
     int                           xmlLine       = {};
   };
 
+  struct DeprecatedCommandData
+  {
+    std::string name         = {};
+    std::string supersededBy = {};
+  };
+
+  struct DeprecatedTypeData
+  {
+    std::string name         = {};
+    std::string supersededBy = {};
+  };
+
   struct DeprecateData
   {
-    std::string              explanationLink = {};
-    std::vector<std::string> commands        = {};
-    std::vector<std::string> types           = {};
-    int                      xmlLine         = 0;
+    std::string                        explanationLink = {};
+    std::vector<DeprecatedCommandData> commands        = {};
+    std::vector<DeprecatedTypeData>    types           = {};
+    int                                xmlLine         = 0;
   };
 
   struct ExtensionData
@@ -536,8 +548,8 @@ private:
   void        checkDefineCorrectness() const;
   void        checkElements( int                                               line,
                              std::vector<tinyxml2::XMLElement const *> const & elements,
-                             std::map<std::string, bool> const &               required,
-                             std::set<std::string> const &                     optional = {} ) const;
+                             std::map<std::string, MultipleAllowed> const &    required,
+                             std::map<std::string, MultipleAllowed> const &    optional = {} ) const;
   void        checkEnumCorrectness() const;
   bool        checkEquivalentSingularConstructor( std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts,
                                                   std::map<std::string, CommandData>::const_iterator                      constructorIt,
@@ -608,43 +620,43 @@ private:
   std::string                             findTag( std::string const & name, std::string const & postfix = "" ) const;
   std::vector<MemberData>::const_iterator findHandleMember( std::vector<MemberData> const & memberData ) const;
   std::vector<MemberData>::const_iterator findVectorMember( std::vector<MemberData> const & memberData ) const;
-  void                                    forEachRequiredBitmask( std::vector<RequireData> const &                                           requireData,
-                                                                  std::set<std::string> &                                                    encounteredBitmasks,
-                                                                  std::function<void( std::pair<std::string, BitmaskData> const & )> const & bitmaskAction ) const;
-  void                                    forEachRequiredCommand( std::vector<RequireData> const &                                                             requireData,
-                                                                  std::function<void( NameLine const &, std::pair<std::string, CommandData> const & )> const & commandAction ) const;
-  void                                    forEachRequiredConstant( std::vector<RequireData> const &                                            requireData,
-                                                                   std::set<std::string> &                                                     encounteredConstants,
-                                                                   std::function<void( std::pair<std::string, ConstantData> const & )> const & constantAction ) const;
-  void                                    forEachRequiredEnumConstant( std::vector<RequireData> const &                        requireData,
-                                                                       std::set<std::string> &                                 encounteredEnumConstants,
-                                                                       std::function<void( EnumConstantData const & )> const & enumConstantAction ) const;
-  void                                    forEachRequiredFuncPointer( std::vector<RequireData> const &                                               requireData,
-                                                                      std::function<void( std::pair<std::string, FuncPointerData> const & )> const & funcPointerAction ) const;
-  void                                    forEachRequiredHandle( std::vector<RequireData> const &                                          requireData,
-                                                                 std::function<void( std::pair<std::string, HandleData> const & )> const & handleAction ) const;
-  void                                    forEachRequiredStruct( std::vector<RequireData> const &                                          requireData,
-                                                                 std::function<void( std::pair<std::string, StructData> const & )> const & structAction ) const;
-  std::set<std::string>                   gatherResultCodes() const;
-  std::pair<std::string, std::string>     generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
-                                                                      std::vector<std::string> const &          returnDataTypes,
-                                                                      std::map<size_t, VectorParamData> const & vectorParams,
-                                                                      std::vector<size_t> const &               chainedReturnParams,
-                                                                      CommandFlavourFlags                       flavourFlags,
-                                                                      bool                                      definition ) const;
-  std::string                             generateArgumentListEnhanced( std::vector<ParamData> const &            params,
-                                                                        std::vector<size_t> const &               returnParams,
-                                                                        std::map<size_t, VectorParamData> const & vectorParams,
-                                                                        std::set<size_t> const &                  skippedParams,
-                                                                        std::set<size_t> const &                  singularParams,
-                                                                        std::set<size_t> const &                  templatedParams,
-                                                                        std::vector<size_t> const &               chainedReturnParams,
-                                                                        bool                                      raii,
-                                                                        bool                                      definition,
-                                                                        CommandFlavourFlags                       flavourFlags,
-                                                                        bool                                      withDispatcher ) const;
-  std::string                             generateArgumentListStandard(
-                                std::vector<ParamData> const & params, std::set<size_t> const & skippedParams, bool definition, bool raii, bool withDispatcher ) const;
+  void forEachRequiredBitmask( std::vector<RequireData> const &                                           requireData,
+                               std::set<std::string> &                                                    encounteredBitmasks,
+                               std::function<void( std::pair<std::string, BitmaskData> const & )> const & bitmaskAction ) const;
+  void forEachRequiredCommand( std::vector<RequireData> const &                                                             requireData,
+                               std::function<void( NameLine const &, std::pair<std::string, CommandData> const & )> const & commandAction ) const;
+  void forEachRequiredConstant( std::vector<RequireData> const &                                            requireData,
+                                std::set<std::string> &                                                     encounteredConstants,
+                                std::function<void( std::pair<std::string, ConstantData> const & )> const & constantAction ) const;
+  void forEachRequiredEnumConstant( std::vector<RequireData> const &                        requireData,
+                                    std::set<std::string> &                                 encounteredEnumConstants,
+                                    std::function<void( EnumConstantData const & )> const & enumConstantAction ) const;
+  void forEachRequiredFuncPointer( std::vector<RequireData> const &                                               requireData,
+                                   std::function<void( std::pair<std::string, FuncPointerData> const & )> const & funcPointerAction ) const;
+  void forEachRequiredHandle( std::vector<RequireData> const &                                          requireData,
+                              std::function<void( std::pair<std::string, HandleData> const & )> const & handleAction ) const;
+  void forEachRequiredStruct( std::vector<RequireData> const &                                          requireData,
+                              std::function<void( std::pair<std::string, StructData> const & )> const & structAction ) const;
+  std::set<std::string>               gatherResultCodes() const;
+  std::pair<std::string, std::string> generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
+                                                                  std::vector<std::string> const &          returnDataTypes,
+                                                                  std::map<size_t, VectorParamData> const & vectorParams,
+                                                                  std::vector<size_t> const &               chainedReturnParams,
+                                                                  CommandFlavourFlags                       flavourFlags,
+                                                                  bool                                      definition ) const;
+  std::string                         generateArgumentListEnhanced( std::vector<ParamData> const &            params,
+                                                                    std::vector<size_t> const &               returnParams,
+                                                                    std::map<size_t, VectorParamData> const & vectorParams,
+                                                                    std::set<size_t> const &                  skippedParams,
+                                                                    std::set<size_t> const &                  singularParams,
+                                                                    std::set<size_t> const &                  templatedParams,
+                                                                    std::vector<size_t> const &               chainedReturnParams,
+                                                                    bool                                      raii,
+                                                                    bool                                      definition,
+                                                                    CommandFlavourFlags                       flavourFlags,
+                                                                    bool                                      withDispatcher ) const;
+  std::string                         generateArgumentListStandard(
+    std::vector<ParamData> const & params, std::set<size_t> const & skippedParams, bool definition, bool raii, bool withDispatcher ) const;
   std::string generateArgumentTemplates( std::vector<ParamData> const &            params,
                                          std::vector<size_t> const &               returnParams,
                                          std::map<size_t, VectorParamData> const & vectorParams,
@@ -778,6 +790,13 @@ private:
                                                bool                                      raii,
                                                std::vector<size_t> const &               returnParams,
                                                std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::string generateCommand3ReturnsEnumValue( std::string const &                       name,
+                                                CommandData const &                       commandData,
+                                                size_t                                    initialSkipCount,
+                                                bool                                      definition,
+                                                bool                                      raii,
+                                                std::vector<size_t> const &               returnParams,
+                                                std::map<size_t, VectorParamData> const & vectorParams ) const;
   std::string generateCommand3ReturnsValueEnum( std::string const &                       name,
                                                 CommandData const &                       commandData,
                                                 size_t                                    initialSkipCount,
@@ -945,9 +964,9 @@ private:
   std::string generateIsDispatchedList() const;
   std::string generateLayerSettingTypeTraits() const;
   std::string
-              generateLenInitializer( std::vector<MemberData>::const_iterator                                                                                 mit,
-                                      std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
-                                      bool mutualExclusiveLens ) const;
+    generateLenInitializer( std::vector<MemberData>::const_iterator                                                                                 mit,
+                            std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
+                            bool mutualExclusiveLens ) const;
   std::string generateName( TypeInfo const & typeInfo ) const;
   std::string generateNoExcept( std::vector<std::string> const &          errorCodes,
                                 std::vector<size_t> const &               returnParams,
@@ -1200,6 +1219,8 @@ private:
   std::pair<std::string, TypeInfo>                       readCommandProto( tinyxml2::XMLElement const * element, std::string const & prefix );
   void                                                   readCommands( tinyxml2::XMLElement const * element );
   std::string                                            readComment( tinyxml2::XMLElement const * element ) const;
+  DeprecatedCommandData                                  readDeprecatedCommand( tinyxml2::XMLElement const * element ) const;
+  DeprecatedTypeData                                     readDeprecatedType( tinyxml2::XMLElement const * element ) const;
   DeprecateData                                          readDeprecateData( tinyxml2::XMLElement const * element ) const;
   void                                                   readEnums( tinyxml2::XMLElement const * element );
   void                                                   readEnumsConstants( tinyxml2::XMLElement const * element );
@@ -1223,7 +1244,7 @@ private:
   RemoveData                                       readRemoveData( tinyxml2::XMLElement const * element );
   NameLine                                         readRequireCommand( tinyxml2::XMLElement const * element );
   void                                             readRequireEnum(
-                                                tinyxml2::XMLElement const * element, std::string const & requiredBy, std::string const & platform, bool supported, RequireData & requireData );
+    tinyxml2::XMLElement const * element, std::string const & requiredBy, std::string const & platform, bool supported, RequireData & requireData );
   RequireFeature           readRequireFeature( tinyxml2::XMLElement const * element );
   NameLine                 readRequireType( tinyxml2::XMLElement const * element );
   void                     readSPIRVCapability( tinyxml2::XMLElement const * element );
@@ -1255,7 +1276,6 @@ private:
   void                     readTypeStruct( tinyxml2::XMLElement const * element, bool isUnion, std::map<std::string, std::string> const & attributes );
   void                     readTypes( tinyxml2::XMLElement const * element );
   void                     readTypesType( tinyxml2::XMLElement const * element );
-  TypeInfo                 readTypeInfo( tinyxml2::XMLElement const * element ) const;
   void                     readVideoCapabilities( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
   void                     readVideoCodec( tinyxml2::XMLElement const * element );
   void                     readVideoCodecs( tinyxml2::XMLElement const * element );
@@ -1279,7 +1299,7 @@ private:
   bool                     structureChainHoldsVector( std::string const & name ) const;
   bool                     structureHoldsHandle( StructData const & structData ) const;
   bool                     structureHoldsVector( StructData const & structData ) const;
-  std::string              toString( TypeCategory category );
+  std::string              toString( TypeCategory category ) const;
   MemberData const &       vectorMemberByStructure( std::string const & structureType ) const;
 
 private:

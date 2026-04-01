@@ -25,7 +25,7 @@ std::string decodeAPIVersion( uint32_t apiVersion )
          std::to_string( VK_VERSION_PATCH( apiVersion ) );
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   try
   {

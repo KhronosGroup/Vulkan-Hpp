@@ -52,7 +52,7 @@ void main()
 }
 )";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   const float texels[] = { 118.0f / 255.0f, 185.0f / 255.0f, 0.0f };
 

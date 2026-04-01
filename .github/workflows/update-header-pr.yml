@@ -22,7 +22,8 @@ jobs:
       run: |
         sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
         export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-        brew install clang-format@21
+        # clang-format on brew is not versioned, it will always be the newest version available
+        brew install clang-format
         
     - name: Update Submodules
       run: |

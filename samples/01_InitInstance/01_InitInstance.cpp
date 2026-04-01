@@ -21,7 +21,7 @@
 static std::string AppName    = "01_InitInstance";
 static std::string EngineName = "Vulkan.hpp";
 
-int main( int /*argc*/, char ** /*argv*/ )
+int main()
 {
   /* VULKAN_HPP_KEY_START */
 

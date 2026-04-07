@@ -27,7 +27,7 @@ export module vulkan;
 
 export import std;
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 347, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 348, "Wrong VK_HEADER_VERSION!" );
 
 #if defined( _MSC_VER )
 #  pragma warning( push )
@@ -875,6 +875,9 @@ export {
   using ::PFN_vkGetEncodedVideoSessionParametersKHR;
   using ::PFN_vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR;
 
+  //=== VK_QCOM_queue_perf_hint ===
+  using ::PFN_vkQueueSetPerfHintQCOM;
+
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_NV_cuda_kernel_launch ===
   using ::PFN_vkCmdCudaLaunchKernelNV;
@@ -1059,6 +1062,9 @@ export {
   using ::PFN_vkGetDeviceImageMemoryRequirementsKHR;
   using ::PFN_vkGetDeviceImageSparseMemoryRequirementsKHR;
 
+  //=== VK_ARM_scheduling_controls ===
+  using ::PFN_vkCmdSetDispatchParametersARM;
+
   //=== VK_VALVE_descriptor_set_host_mapping ===
   using ::PFN_vkGetDescriptorSetHostMappingVALVE;
   using ::PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE;
@@ -1200,6 +1206,9 @@ export {
   using ::PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM;
   using ::PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM;
 
+  //=== VK_ARM_data_graph_instruction_set_tosa ===
+  using ::PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM;
+
   //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
   using ::PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT;
 
@@ -1305,4 +1314,7 @@ export {
   using ::PFN_vkCreateUbmSurfaceSEC;
   using ::PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC;
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
+
+  //=== VK_EXT_primitive_restart_index ===
+  using ::PFN_vkCmdSetPrimitiveRestartIndexEXT;
 }

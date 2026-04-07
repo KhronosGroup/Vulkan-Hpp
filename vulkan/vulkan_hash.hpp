@@ -3960,6 +3960,21 @@ VULKAN_HPP_EXPORT namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DataGraphTOSANameQualityARM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::DataGraphTOSANameQualityARM const & dataGraphTOSANameQualityARM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      for ( size_t i = 0; i < VK_MAX_DATA_GRAPH_TOSA_NAME_SIZE_ARM; ++i )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, dataGraphTOSANameQualityARM.name[i] );
+      }
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphTOSANameQualityARM.qualityFlags );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::DebugMarkerMarkerInfoEXT>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::DebugMarkerMarkerInfoEXT const & debugMarkerMarkerInfoEXT ) const VULKAN_HPP_NOEXCEPT
@@ -5503,6 +5518,21 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, dispatchIndirectCommand.x );
       VULKAN_HPP_HASH_COMBINE( seed, dispatchIndirectCommand.y );
       VULKAN_HPP_HASH_COMBINE( seed, dispatchIndirectCommand.z );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DispatchParametersARM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::DispatchParametersARM const & dispatchParametersARM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, dispatchParametersARM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, dispatchParametersARM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, dispatchParametersARM.workGroupBatchSize );
+      VULKAN_HPP_HASH_COMBINE( seed, dispatchParametersARM.maxQueuedWorkGroupBatches );
+      VULKAN_HPP_HASH_COMBINE( seed, dispatchParametersARM.maxWarpsPerShaderCore );
       return seed;
     }
   };
@@ -9460,6 +9490,20 @@ VULKAN_HPP_EXPORT namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, perTileEndInfoQCOM.sType );
       VULKAN_HPP_HASH_COMBINE( seed, perTileEndInfoQCOM.pNext );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PerfHintInfoQCOM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PerfHintInfoQCOM const & perfHintInfoQCOM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, perfHintInfoQCOM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, perfHintInfoQCOM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, perfHintInfoQCOM.type );
+      VULKAN_HPP_HASH_COMBINE( seed, perfHintInfoQCOM.scale );
       return seed;
     }
   };
@@ -13697,6 +13741,20 @@ VULKAN_HPP_EXPORT namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePrimitiveRestartIndexFeaturesEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDevicePrimitiveRestartIndexFeaturesEXT const & physicalDevicePrimitiveRestartIndexFeaturesEXT ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDevicePrimitiveRestartIndexFeaturesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDevicePrimitiveRestartIndexFeaturesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDevicePrimitiveRestartIndexFeaturesEXT.primitiveRestartIndex );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT const &
@@ -13854,6 +13912,34 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM.queueFamilyIndex );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM.engineType );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceQueuePerfHintFeaturesQCOM>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceQueuePerfHintFeaturesQCOM const & physicalDeviceQueuePerfHintFeaturesQCOM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceQueuePerfHintFeaturesQCOM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceQueuePerfHintFeaturesQCOM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceQueuePerfHintFeaturesQCOM.queuePerfHint );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceQueuePerfHintPropertiesQCOM>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceQueuePerfHintPropertiesQCOM const & physicalDeviceQueuePerfHintPropertiesQCOM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceQueuePerfHintPropertiesQCOM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceQueuePerfHintPropertiesQCOM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceQueuePerfHintPropertiesQCOM.supportedQueues );
       return seed;
     }
   };
@@ -14253,6 +14339,22 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceScalarBlockLayoutFeatures.sType );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceScalarBlockLayoutFeatures.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceScalarBlockLayoutFeatures.scalarBlockLayout );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceSchedulingControlsDispatchParametersPropertiesARM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceSchedulingControlsDispatchParametersPropertiesARM const &
+                              physicalDeviceSchedulingControlsDispatchParametersPropertiesARM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceSchedulingControlsDispatchParametersPropertiesARM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceSchedulingControlsDispatchParametersPropertiesARM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceSchedulingControlsDispatchParametersPropertiesARM.schedulingControlsMaxWarpsCount );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceSchedulingControlsDispatchParametersPropertiesARM.schedulingControlsMaxQueuedBatchesCount );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceSchedulingControlsDispatchParametersPropertiesARM.schedulingControlsMaxWorkGroupBatchSize );
       return seed;
     }
   };
@@ -17648,6 +17750,24 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphPropertiesARM.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphPropertiesARM.engine );
       VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphPropertiesARM.operation );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::QueueFamilyDataGraphTOSAPropertiesARM>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::QueueFamilyDataGraphTOSAPropertiesARM const & queueFamilyDataGraphTOSAPropertiesARM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphTOSAPropertiesARM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphTOSAPropertiesARM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphTOSAPropertiesARM.profileCount );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphTOSAPropertiesARM.pProfiles );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphTOSAPropertiesARM.extensionCount );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphTOSAPropertiesARM.pExtensions );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphTOSAPropertiesARM.level );
       return seed;
     }
   };

@@ -386,6 +386,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
           vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM(
             vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM" ) );
 
+          //=== VK_ARM_data_graph_instruction_set_tosa ===
+          vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM = PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM(
+            vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM" ) );
+
           //=== VK_KHR_calibrated_timestamps ===
           vkGetPhysicalDeviceCalibrateableTimeDomainsKHR =
             PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCalibrateableTimeDomainsKHR" ) );
@@ -700,6 +704,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         //=== VK_ARM_data_graph ===
         PFN_vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM                 vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM                 = 0;
         PFN_vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM = 0;
+
+        //=== VK_ARM_data_graph_instruction_set_tosa ===
+        PFN_vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM = 0;
 
         //=== VK_KHR_calibrated_timestamps ===
         PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR vkGetPhysicalDeviceCalibrateableTimeDomainsKHR = 0;
@@ -1547,6 +1554,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             PFN_vkGetEncodedVideoSessionParametersKHR( vkGetDeviceProcAddr( device, "vkGetEncodedVideoSessionParametersKHR" ) );
           vkCmdEncodeVideoKHR = PFN_vkCmdEncodeVideoKHR( vkGetDeviceProcAddr( device, "vkCmdEncodeVideoKHR" ) );
 
+          //=== VK_QCOM_queue_perf_hint ===
+          vkQueueSetPerfHintQCOM = PFN_vkQueueSetPerfHintQCOM( vkGetDeviceProcAddr( device, "vkQueueSetPerfHintQCOM" ) );
+
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
           //=== VK_NV_cuda_kernel_launch ===
           vkCreateCudaModuleNV    = PFN_vkCreateCudaModuleNV( vkGetDeviceProcAddr( device, "vkCreateCudaModuleNV" ) );
@@ -1766,6 +1776,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             PFN_vkGetDeviceImageSparseMemoryRequirementsKHR( vkGetDeviceProcAddr( device, "vkGetDeviceImageSparseMemoryRequirementsKHR" ) );
           if ( !vkGetDeviceImageSparseMemoryRequirements )
             vkGetDeviceImageSparseMemoryRequirements = vkGetDeviceImageSparseMemoryRequirementsKHR;
+
+          //=== VK_ARM_scheduling_controls ===
+          vkCmdSetDispatchParametersARM = PFN_vkCmdSetDispatchParametersARM( vkGetDeviceProcAddr( device, "vkCmdSetDispatchParametersARM" ) );
 
           //=== VK_VALVE_descriptor_set_host_mapping ===
           vkGetDescriptorSetLayoutHostMappingInfoVALVE =
@@ -2039,6 +2052,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
           //=== VK_NV_compute_occupancy_priority ===
           vkCmdSetComputeOccupancyPriorityNV = PFN_vkCmdSetComputeOccupancyPriorityNV( vkGetDeviceProcAddr( device, "vkCmdSetComputeOccupancyPriorityNV" ) );
+
+          //=== VK_EXT_primitive_restart_index ===
+          vkCmdSetPrimitiveRestartIndexEXT = PFN_vkCmdSetPrimitiveRestartIndexEXT( vkGetDeviceProcAddr( device, "vkCmdSetPrimitiveRestartIndexEXT" ) );
         }
 
       public:
@@ -2697,6 +2713,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         PFN_vkGetEncodedVideoSessionParametersKHR vkGetEncodedVideoSessionParametersKHR = 0;
         PFN_vkCmdEncodeVideoKHR                   vkCmdEncodeVideoKHR                   = 0;
 
+        //=== VK_QCOM_queue_perf_hint ===
+        PFN_vkQueueSetPerfHintQCOM vkQueueSetPerfHintQCOM = 0;
+
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
         //=== VK_NV_cuda_kernel_launch ===
         PFN_vkCreateCudaModuleNV    vkCreateCudaModuleNV    = 0;
@@ -2883,6 +2902,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         PFN_vkGetDeviceBufferMemoryRequirementsKHR      vkGetDeviceBufferMemoryRequirementsKHR      = 0;
         PFN_vkGetDeviceImageMemoryRequirementsKHR       vkGetDeviceImageMemoryRequirementsKHR       = 0;
         PFN_vkGetDeviceImageSparseMemoryRequirementsKHR vkGetDeviceImageSparseMemoryRequirementsKHR = 0;
+
+        //=== VK_ARM_scheduling_controls ===
+        PFN_vkCmdSetDispatchParametersARM vkCmdSetDispatchParametersARM = 0;
 
         //=== VK_VALVE_descriptor_set_host_mapping ===
         PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE vkGetDescriptorSetLayoutHostMappingInfoVALVE = 0;
@@ -3111,6 +3133,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_NV_compute_occupancy_priority ===
         PFN_vkCmdSetComputeOccupancyPriorityNV vkCmdSetComputeOccupancyPriorityNV = 0;
+
+        //=== VK_EXT_primitive_restart_index ===
+        PFN_vkCmdSetPrimitiveRestartIndexEXT vkCmdSetPrimitiveRestartIndexEXT = 0;
       };
     }  // namespace detail
 
@@ -4287,6 +4312,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD QueueFamilyDataGraphProcessingEnginePropertiesARM getQueueFamilyDataGraphProcessingEnginePropertiesARM(
         PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM const & queueFamilyDataGraphProcessingEngineInfo ) const VULKAN_HPP_NOEXCEPT;
 
+      //=== VK_ARM_data_graph_instruction_set_tosa ===
+
+      // wrapper function for command vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM.html
+      VULKAN_HPP_NODISCARD typename ResultValueType<BaseOutStructure>::type
+        getQueueFamilyDataGraphEngineOperationPropertiesARM( uint32_t                                  queueFamilyIndex,
+                                                             QueueFamilyDataGraphPropertiesARM const & queueFamilyDataGraphProperties ) const;
+
       //=== VK_KHR_calibrated_timestamps ===
 
       // wrapper function for command vkGetPhysicalDeviceCalibrateableTimeDomainsKHR, see
@@ -5204,7 +5237,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkGetAccelerationStructureMemoryRequirementsNV, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAccelerationStructureMemoryRequirementsNV.html
-      VULKAN_HPP_NODISCARD MemoryRequirements2KHR
+      VULKAN_HPP_NODISCARD MemoryRequirements2
         getAccelerationStructureMemoryRequirementsNV( AccelerationStructureMemoryRequirementsInfoNV const & info ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkGetAccelerationStructureMemoryRequirementsNV, see
@@ -5557,7 +5590,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_pipeline_properties ===
 
       // wrapper function for command vkGetPipelinePropertiesEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPipelinePropertiesEXT.html
-      VULKAN_HPP_NODISCARD typename ResultValueType<BaseOutStructure>::type getPipelinePropertiesEXT( PipelineInfoEXT const & pipelineInfo ) const;
+      VULKAN_HPP_NODISCARD typename ResultValueType<BaseOutStructure>::type getPipelinePropertiesEXT( PipelineInfoKHR const & pipelineInfo ) const;
 
       //=== VK_EXT_opacity_micromap ===
 
@@ -8102,6 +8135,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdDrawClusterIndirectHUAWEI.html
       void drawClusterIndirectHUAWEI( VULKAN_HPP_NAMESPACE::Buffer buffer, DeviceSize offset ) const VULKAN_HPP_NOEXCEPT;
 
+      //=== VK_ARM_scheduling_controls ===
+
+      // wrapper function for command vkCmdSetDispatchParametersARM, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetDispatchParametersARM.html
+      void setDispatchParametersARM( DispatchParametersARM const & dispatchParameters ) const VULKAN_HPP_NOEXCEPT;
+
       //=== VK_NV_copy_memory_indirect ===
 
       // wrapper function for command vkCmdCopyMemoryIndirectNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyMemoryIndirectNV.html
@@ -8405,6 +8444,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkCmdSetComputeOccupancyPriorityNV, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetComputeOccupancyPriorityNV.html
       void setComputeOccupancyPriorityNV( ComputeOccupancyPriorityParametersNV const & parameters ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_EXT_primitive_restart_index ===
+
+      // wrapper function for command vkCmdSetPrimitiveRestartIndexEXT, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetPrimitiveRestartIndexEXT.html
+      void setPrimitiveRestartIndexEXT( uint32_t primitiveRestartIndex VULKAN_HPP_DEFAULT_ASSIGNMENT( {} ) ) const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device        m_device        = {};
@@ -13368,6 +13413,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkQueueSetPerformanceConfigurationINTEL, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueSetPerformanceConfigurationINTEL.html
       typename ResultValueType<void>::type setPerformanceConfigurationINTEL( VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL configuration ) const;
+
+      //=== VK_QCOM_queue_perf_hint ===
+
+      // wrapper function for command vkQueueSetPerfHintQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueSetPerfHintQCOM.html
+      typename ResultValueType<void>::type setPerfHintQCOM( PerfHintInfoQCOM const & perfHintInfo ) const;
 
       //=== VK_KHR_synchronization2 ===
 
@@ -23300,16 +23350,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkGetAccelerationStructureMemoryRequirementsNV, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAccelerationStructureMemoryRequirementsNV.html
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE MemoryRequirements2KHR
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE MemoryRequirements2
       Device::getAccelerationStructureMemoryRequirementsNV( AccelerationStructureMemoryRequirementsInfoNV const & info ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetAccelerationStructureMemoryRequirementsNV &&
                          "Function <vkGetAccelerationStructureMemoryRequirementsNV> requires <VK_NV_ray_tracing>" );
 
-      MemoryRequirements2KHR memoryRequirements;
+      MemoryRequirements2 memoryRequirements;
       getDispatcher()->vkGetAccelerationStructureMemoryRequirementsNV( static_cast<VkDevice>( m_device ),
                                                                        reinterpret_cast<VkAccelerationStructureMemoryRequirementsInfoNV const *>( &info ),
-                                                                       reinterpret_cast<VkMemoryRequirements2KHR *>( &memoryRequirements ) );
+                                                                       reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
 
       return memoryRequirements;
     }
@@ -23324,10 +23374,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                          "Function <vkGetAccelerationStructureMemoryRequirementsNV> requires <VK_NV_ray_tracing>" );
 
       StructureChain<X, Y, Z...> structureChain;
-      MemoryRequirements2KHR &   memoryRequirements = structureChain.template get<MemoryRequirements2KHR>();
+      MemoryRequirements2 &      memoryRequirements = structureChain.template get<MemoryRequirements2>();
       getDispatcher()->vkGetAccelerationStructureMemoryRequirementsNV( static_cast<VkDevice>( m_device ),
                                                                        reinterpret_cast<VkAccelerationStructureMemoryRequirementsInfoNV const *>( &info ),
-                                                                       reinterpret_cast<VkMemoryRequirements2KHR *>( &memoryRequirements ) );
+                                                                       reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
 
       return structureChain;
     }
@@ -25334,6 +25384,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkCmdEncodeVideoKHR( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<VkVideoEncodeInfoKHR const *>( &encodeInfo ) );
     }
 
+    //=== VK_QCOM_queue_perf_hint ===
+
+    // wrapper function for command vkQueueSetPerfHintQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueSetPerfHintQCOM.html
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type Queue::setPerfHintQCOM( PerfHintInfoQCOM const & perfHintInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkQueueSetPerfHintQCOM && "Function <vkQueueSetPerfHintQCOM> requires <VK_QCOM_queue_perf_hint>" );
+
+      Result result = static_cast<Result>(
+        getDispatcher()->vkQueueSetPerfHintQCOM( static_cast<VkQueue>( m_queue ), reinterpret_cast<VkPerfHintInfoQCOM const *>( &perfHintInfo ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Queue::setPerfHintQCOM" );
+
+      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result );
+    }
+
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_NV_cuda_kernel_launch ===
 
@@ -26422,13 +26486,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     // wrapper function for command vkGetPipelinePropertiesEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPipelinePropertiesEXT.html
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<BaseOutStructure>::type
-                         Device::getPipelinePropertiesEXT( PipelineInfoEXT const & pipelineInfo ) const
+                         Device::getPipelinePropertiesEXT( PipelineInfoKHR const & pipelineInfo ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPipelinePropertiesEXT && "Function <vkGetPipelinePropertiesEXT> requires <VK_EXT_pipeline_properties>" );
 
       BaseOutStructure pipelineProperties;
       Result result = static_cast<Result>( getDispatcher()->vkGetPipelinePropertiesEXT( static_cast<VkDevice>( m_device ),
-                                                                                        reinterpret_cast<VkPipelineInfoEXT const *>( &pipelineInfo ),
+                                                                                        reinterpret_cast<VkPipelineInfoKHR const *>( &pipelineInfo ),
                                                                                         reinterpret_cast<VkBaseOutStructure *>( &pipelineProperties ) ) );
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::getPipelinePropertiesEXT" );
 
@@ -26934,6 +26998,18 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         sparseMemoryRequirements.resize( sparseMemoryRequirementCount );
       }
       return sparseMemoryRequirements;
+    }
+
+    //=== VK_ARM_scheduling_controls ===
+
+    // wrapper function for command vkCmdSetDispatchParametersARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetDispatchParametersARM.html
+    VULKAN_HPP_INLINE void CommandBuffer::setDispatchParametersARM( DispatchParametersARM const & dispatchParameters ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetDispatchParametersARM && "Function <vkCmdSetDispatchParametersARM> requires <VK_ARM_scheduling_controls>" );
+
+      getDispatcher()->vkCmdSetDispatchParametersARM( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                      reinterpret_cast<VkDispatchParametersARM const *>( &dispatchParameters ) );
     }
 
     //=== VK_VALVE_descriptor_set_host_mapping ===
@@ -28627,6 +28703,29 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return queueFamilyDataGraphProcessingEngineProperties;
     }
 
+    //=== VK_ARM_data_graph_instruction_set_tosa ===
+
+    // wrapper function for command vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<BaseOutStructure>::type
+      PhysicalDevice::getQueueFamilyDataGraphEngineOperationPropertiesARM( uint32_t                                  queueFamilyIndex,
+                                                                           QueueFamilyDataGraphPropertiesARM const & queueFamilyDataGraphProperties ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM &&
+                         "Function <vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM> requires <VK_ARM_data_graph_instruction_set_tosa>" );
+
+      BaseOutStructure properties;
+      Result           result = static_cast<Result>( getDispatcher()->vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM(
+        static_cast<VkPhysicalDevice>( m_physicalDevice ),
+        queueFamilyIndex,
+        reinterpret_cast<VkQueueFamilyDataGraphPropertiesARM const *>( &queueFamilyDataGraphProperties ),
+        reinterpret_cast<VkBaseOutStructure *>( &properties ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result,
+                                                 VULKAN_HPP_RAII_NAMESPACE_STRING "::PhysicalDevice::getQueueFamilyDataGraphEngineOperationPropertiesARM" );
+
+      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( properties ) );
+    }
+
     //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
 
     // wrapper function for command vkCmdSetAttachmentFeedbackLoopEnableEXT, see
@@ -29484,6 +29583,18 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return { result, device };
     }
 #  endif /*VK_USE_PLATFORM_UBM_SEC*/
+
+    //=== VK_EXT_primitive_restart_index ===
+
+    // wrapper function for command vkCmdSetPrimitiveRestartIndexEXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetPrimitiveRestartIndexEXT.html
+    VULKAN_HPP_INLINE void CommandBuffer::setPrimitiveRestartIndexEXT( uint32_t primitiveRestartIndex ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetPrimitiveRestartIndexEXT &&
+                         "Function <vkCmdSetPrimitiveRestartIndexEXT> requires <VK_EXT_primitive_restart_index>" );
+
+      getDispatcher()->vkCmdSetPrimitiveRestartIndexEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), primitiveRestartIndex );
+    }
 
     //====================
     //=== RAII Helpers ===

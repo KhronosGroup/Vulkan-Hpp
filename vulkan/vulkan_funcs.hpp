@@ -19006,19 +19006,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAccelerationStructureMemoryRequirementsNV.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetAccelerationStructureMemoryRequirementsNV ), bool>::type>
   VULKAN_HPP_INLINE void Device::getAccelerationStructureMemoryRequirementsNV(
-    AccelerationStructureMemoryRequirementsInfoNV const * pInfo, MemoryRequirements2KHR * pMemoryRequirements, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+    AccelerationStructureMemoryRequirementsInfoNV const * pInfo, MemoryRequirements2 * pMemoryRequirements, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     d.vkGetAccelerationStructureMemoryRequirementsNV( static_cast<VkDevice>( m_device ),
                                                       reinterpret_cast<VkAccelerationStructureMemoryRequirementsInfoNV const *>( pInfo ),
-                                                      reinterpret_cast<VkMemoryRequirements2KHR *>( pMemoryRequirements ) );
+                                                      reinterpret_cast<VkMemoryRequirements2 *>( pMemoryRequirements ) );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   // wrapper function for command vkGetAccelerationStructureMemoryRequirementsNV, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAccelerationStructureMemoryRequirementsNV.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetAccelerationStructureMemoryRequirementsNV ), bool>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE MemoryRequirements2KHR Device::getAccelerationStructureMemoryRequirementsNV(
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE MemoryRequirements2 Device::getAccelerationStructureMemoryRequirementsNV(
     AccelerationStructureMemoryRequirementsInfoNV const & info, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -19027,10 +19027,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                        "Function <vkGetAccelerationStructureMemoryRequirementsNV> requires <VK_NV_ray_tracing>" );
 #  endif
 
-    MemoryRequirements2KHR memoryRequirements;
+    MemoryRequirements2 memoryRequirements;
     d.vkGetAccelerationStructureMemoryRequirementsNV( m_device,
                                                       reinterpret_cast<VkAccelerationStructureMemoryRequirementsInfoNV const *>( &info ),
-                                                      reinterpret_cast<VkMemoryRequirements2KHR *>( &memoryRequirements ) );
+                                                      reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
 
     return memoryRequirements;
   }
@@ -19052,10 +19052,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif
 
     StructureChain<X, Y, Z...> structureChain;
-    MemoryRequirements2KHR &   memoryRequirements = structureChain.template get<MemoryRequirements2KHR>();
+    MemoryRequirements2 &      memoryRequirements = structureChain.template get<MemoryRequirements2>();
     d.vkGetAccelerationStructureMemoryRequirementsNV( m_device,
                                                       reinterpret_cast<VkAccelerationStructureMemoryRequirementsInfoNV const *>( &info ),
-                                                      reinterpret_cast<VkMemoryRequirements2KHR *>( &memoryRequirements ) );
+                                                      reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
 
     return structureChain;
   }
@@ -23346,6 +23346,34 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+  //=== VK_QCOM_queue_perf_hint ===
+
+  // wrapper function for command vkQueueSetPerfHintQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueSetPerfHintQCOM.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkQueueSetPerfHintQCOM ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Queue::setPerfHintQCOM( PerfHintInfoQCOM const * pPerfHintInfo, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkQueueSetPerfHintQCOM( static_cast<VkQueue>( m_queue ), reinterpret_cast<VkPerfHintInfoQCOM const *>( pPerfHintInfo ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkQueueSetPerfHintQCOM, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueSetPerfHintQCOM.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkQueueSetPerfHintQCOM ), bool>::type>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type Queue::setPerfHintQCOM( PerfHintInfoQCOM const & perfHintInfo,
+                                                                                                                         Dispatch const &         d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkQueueSetPerfHintQCOM && "Function <vkQueueSetPerfHintQCOM> requires <VK_QCOM_queue_perf_hint>" );
+#  endif
+
+    Result result = static_cast<Result>( d.vkQueueSetPerfHintQCOM( m_queue, reinterpret_cast<VkPerfHintInfoQCOM const *>( &perfHintInfo ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Queue::setPerfHintQCOM" );
+
+    return detail::createResultValueType( result );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_NV_cuda_kernel_launch ===
 
@@ -25772,11 +25800,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // wrapper function for command vkGetPipelinePropertiesEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPipelinePropertiesEXT.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPipelinePropertiesEXT ), bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getPipelinePropertiesEXT(
-    PipelineInfoEXT const * pPipelineInfo, BaseOutStructure * pPipelineProperties, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+    PipelineInfoKHR const * pPipelineInfo, BaseOutStructure * pPipelineProperties, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkGetPipelinePropertiesEXT( static_cast<VkDevice>( m_device ),
-                                                              reinterpret_cast<VkPipelineInfoEXT const *>( pPipelineInfo ),
+                                                              reinterpret_cast<VkPipelineInfoKHR const *>( pPipelineInfo ),
                                                               reinterpret_cast<VkBaseOutStructure *>( pPipelineProperties ) ) );
   }
 
@@ -25784,7 +25812,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // wrapper function for command vkGetPipelinePropertiesEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPipelinePropertiesEXT.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPipelinePropertiesEXT ), bool>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<BaseOutStructure>::type Device::getPipelinePropertiesEXT(
-    PipelineInfoEXT const & pipelineInfo, Dispatch const & d ) const
+    PipelineInfoKHR const & pipelineInfo, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -25793,7 +25821,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     BaseOutStructure pipelineProperties;
     Result           result = static_cast<Result>( d.vkGetPipelinePropertiesEXT(
-      m_device, reinterpret_cast<VkPipelineInfoEXT const *>( &pipelineInfo ), reinterpret_cast<VkBaseOutStructure *>( &pipelineProperties ) ) );
+      m_device, reinterpret_cast<VkPipelineInfoKHR const *>( &pipelineInfo ), reinterpret_cast<VkBaseOutStructure *>( &pipelineProperties ) ) );
     detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getPipelinePropertiesEXT" );
 
     return detail::createResultValueType( result, std::move( pipelineProperties ) );
@@ -26784,6 +26812,35 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       sparseMemoryRequirements.resize( sparseMemoryRequirementCount );
     }
     return sparseMemoryRequirements;
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  //=== VK_ARM_scheduling_controls ===
+
+  // wrapper function for command vkCmdSetDispatchParametersARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetDispatchParametersARM.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCmdSetDispatchParametersARM ), bool>::type>
+  VULKAN_HPP_INLINE void CommandBuffer::setDispatchParametersARM( DispatchParametersARM const * pDispatchParameters, Dispatch const & d )
+    const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetDispatchParametersARM( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                     reinterpret_cast<VkDispatchParametersARM const *>( pDispatchParameters ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCmdSetDispatchParametersARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetDispatchParametersARM.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCmdSetDispatchParametersARM ), bool>::type>
+  VULKAN_HPP_INLINE void CommandBuffer::setDispatchParametersARM( DispatchParametersARM const & dispatchParameters, Dispatch const & d )
+    const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdSetDispatchParametersARM && "Function <vkCmdSetDispatchParametersARM> requires <VK_ARM_scheduling_controls>" );
+#  endif
+
+    d.vkCmdSetDispatchParametersARM( m_commandBuffer, reinterpret_cast<VkDispatchParametersARM const *>( &dispatchParameters ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -30794,6 +30851,48 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+  //=== VK_ARM_data_graph_instruction_set_tosa ===
+
+  // wrapper function for command vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::getQueueFamilyDataGraphEngineOperationPropertiesARM(
+    uint32_t queueFamilyIndex, QueueFamilyDataGraphPropertiesARM const * pQueueFamilyDataGraphProperties, BaseOutStructure * pProperties, Dispatch const & d )
+    const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM(
+      static_cast<VkPhysicalDevice>( m_physicalDevice ),
+      queueFamilyIndex,
+      reinterpret_cast<VkQueueFamilyDataGraphPropertiesARM const *>( pQueueFamilyDataGraphProperties ),
+      reinterpret_cast<VkBaseOutStructure *>( pProperties ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<BaseOutStructure>::type PhysicalDevice::getQueueFamilyDataGraphEngineOperationPropertiesARM(
+    uint32_t queueFamilyIndex, QueueFamilyDataGraphPropertiesARM const & queueFamilyDataGraphProperties, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM &&
+                       "Function <vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM> requires <VK_ARM_data_graph_instruction_set_tosa>" );
+#  endif
+
+    BaseOutStructure properties;
+    Result           result = static_cast<Result>( d.vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM(
+      m_physicalDevice,
+      queueFamilyIndex,
+      reinterpret_cast<VkQueueFamilyDataGraphPropertiesARM const *>( &queueFamilyDataGraphProperties ),
+      reinterpret_cast<VkBaseOutStructure *>( &properties ) ) );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getQueueFamilyDataGraphEngineOperationPropertiesARM" );
+
+    return detail::createResultValueType( result, std::move( properties ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
   //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
 
   // wrapper function for command vkCmdSetAttachmentFeedbackLoopEnableEXT, see
@@ -32969,6 +33068,17 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_UBM_SEC*/
+
+  //=== VK_EXT_primitive_restart_index ===
+
+  // wrapper function for command vkCmdSetPrimitiveRestartIndexEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetPrimitiveRestartIndexEXT.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCmdSetPrimitiveRestartIndexEXT ), bool>::type>
+  VULKAN_HPP_INLINE void CommandBuffer::setPrimitiveRestartIndexEXT( uint32_t primitiveRestartIndex, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetPrimitiveRestartIndexEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), primitiveRestartIndex );
+  }
 
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

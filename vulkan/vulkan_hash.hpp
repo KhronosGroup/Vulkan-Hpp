@@ -620,7 +620,7 @@ VULKAN_HPP_EXPORT namespace std
 
 #  if !defined( VULKAN_HPP_HASH_COMBINE )
 #    define VULKAN_HPP_HASH_COMBINE( seed, value ) \
-      seed ^= std::hash<std::decay<decltype( value )>::type>{}( value ) + 0x9e3779b9 + ( seed << 6 ) + ( seed >> 2 )
+      seed ^= std::hash<std::decay<decltype( value )>::type>{}( value ) + 0x9E3779B9 + ( seed << 6 ) + ( seed >> 2 )
 #  endif
 
   template <>

@@ -14,15 +14,15 @@
 #  define VULKAN_HPP_CPLUSPLUS __cplusplus
 #endif
 
-#if 202002L < VULKAN_HPP_CPLUSPLUS
+#if 202002l < VULKAN_HPP_CPLUSPLUS
 #  define VULKAN_HPP_CPP_VERSION 23
-#elif 201703L < VULKAN_HPP_CPLUSPLUS
+#elif 201703l < VULKAN_HPP_CPLUSPLUS
 #  define VULKAN_HPP_CPP_VERSION 20
-#elif 201402L < VULKAN_HPP_CPLUSPLUS
+#elif 201402l < VULKAN_HPP_CPLUSPLUS
 #  define VULKAN_HPP_CPP_VERSION 17
-#elif 201103L < VULKAN_HPP_CPLUSPLUS
+#elif 201103l < VULKAN_HPP_CPLUSPLUS
 #  define VULKAN_HPP_CPP_VERSION 14
-#elif 199711L < VULKAN_HPP_CPLUSPLUS
+#elif 199711l < VULKAN_HPP_CPLUSPLUS
 #  define VULKAN_HPP_CPP_VERSION 11
 #else
 #  error "vulkan.hpp needs at least c++ standard version 11"
@@ -218,7 +218,7 @@ VULKAN_HPP_COMPILE_WARNING( "This is a non-conforming implementation of C++ name
 #endif
 
 #if !defined( VULKAN_HPP_CONSTEXPR_INLINE )
-#  if 201606L <= __cpp_inline_variables
+#  if 201606l <= __cpp_inline_variables
 #    define VULKAN_HPP_CONSTEXPR_INLINE VULKAN_HPP_CONSTEXPR inline
 #  else
 #    define VULKAN_HPP_CONSTEXPR_INLINE VULKAN_HPP_CONSTEXPR

@@ -9183,47 +9183,47 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionMajor( T const version )
   {
-    return ( ( (uint32_t)( version ) >> 22U ) & 0x7FU );
+    return ( ( (uint32_t)( version ) >> 22u ) & 0x7Fu );
   }
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionMinor( T const version )
   {
-    return ( ( (uint32_t)( version ) >> 12U ) & 0x3FFU );
+    return ( ( (uint32_t)( version ) >> 12u ) & 0x3FFu );
   }
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionPatch( T const version )
   {
-    return ( (uint32_t)( version ) & 0xFFFU );
+    return ( (uint32_t)( version ) & 0xFFFu );
   }
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionVariant( T const version )
   {
-    return ( (uint32_t)( version ) >> 29U );
+    return ( (uint32_t)( version ) >> 29u );
   }
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t makeApiVersion( T const variant, T const major, T const minor, T const patch )
   {
-    return ( ( ( (uint32_t)( variant ) ) << 29U ) | ( ( (uint32_t)( major ) ) << 22U ) | ( ( (uint32_t)( minor ) ) << 12U ) | ( (uint32_t)( patch ) ) );
+    return ( ( ( (uint32_t)( variant ) ) << 29u ) | ( ( (uint32_t)( major ) ) << 22u ) | ( ( (uint32_t)( minor ) ) << 12u ) | ( (uint32_t)( patch ) ) );
   }
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t makeVersion( T const major, T const minor, T const patch )
   {
-    return ( ( ( (uint32_t)( major ) ) << 22U ) | ( ( (uint32_t)( minor ) ) << 12U ) | ( (uint32_t)( patch ) ) );
+    return ( ( ( (uint32_t)( major ) ) << 22u ) | ( ( (uint32_t)( minor ) ) << 12u ) | ( (uint32_t)( patch ) ) );
   }
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t versionMajor( T const version )
   {
-    return ( (uint32_t)( version ) >> 22U );
+    return ( (uint32_t)( version ) >> 22u );
   }
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t versionMinor( T const version )
   {
-    return ( ( (uint32_t)( version ) >> 12U ) & 0x3FFU );
+    return ( ( (uint32_t)( version ) >> 12u ) & 0x3FFu );
   }
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t versionPatch( T const version )
   {
-    return ( (uint32_t)( version ) & 0xFFFU );
+    return ( (uint32_t)( version ) & 0xFFFu );
   }
 
   //=========================

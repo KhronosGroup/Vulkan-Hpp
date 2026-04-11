@@ -10055,6 +10055,76 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ResolveI
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ResolveImageModeInfoKHR>::value,
                           "ResolveImageModeInfoKHR is not nothrow_move_constructible!" );
 
+//=== VK_ARM_data_graph_optical_flow ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceDataGraphOpticalFlowFeaturesARM ) ==
+                            sizeof( VkPhysicalDeviceDataGraphOpticalFlowFeaturesARM ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceDataGraphOpticalFlowFeaturesARM>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceDataGraphOpticalFlowFeaturesARM>::value,
+                          "PhysicalDeviceDataGraphOpticalFlowFeaturesARM is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::QueueFamilyDataGraphOpticalFlowPropertiesARM ) ==
+                            sizeof( VkQueueFamilyDataGraphOpticalFlowPropertiesARM ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::QueueFamilyDataGraphOpticalFlowPropertiesARM>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::QueueFamilyDataGraphOpticalFlowPropertiesARM>::value,
+                          "QueueFamilyDataGraphOpticalFlowPropertiesARM is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DataGraphPipelineOpticalFlowCreateInfoARM ) == sizeof( VkDataGraphPipelineOpticalFlowCreateInfoARM ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DataGraphPipelineOpticalFlowCreateInfoARM>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DataGraphPipelineOpticalFlowCreateInfoARM>::value,
+                          "DataGraphPipelineOpticalFlowCreateInfoARM is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DataGraphOpticalFlowImageFormatPropertiesARM ) ==
+                            sizeof( VkDataGraphOpticalFlowImageFormatPropertiesARM ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DataGraphOpticalFlowImageFormatPropertiesARM>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DataGraphOpticalFlowImageFormatPropertiesARM>::value,
+                          "DataGraphOpticalFlowImageFormatPropertiesARM is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DataGraphOpticalFlowImageFormatInfoARM ) == sizeof( VkDataGraphOpticalFlowImageFormatInfoARM ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DataGraphOpticalFlowImageFormatInfoARM>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DataGraphOpticalFlowImageFormatInfoARM>::value,
+                          "DataGraphOpticalFlowImageFormatInfoARM is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DataGraphPipelineOpticalFlowDispatchInfoARM ) ==
+                            sizeof( VkDataGraphPipelineOpticalFlowDispatchInfoARM ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DataGraphPipelineOpticalFlowDispatchInfoARM>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DataGraphPipelineOpticalFlowDispatchInfoARM>::value,
+                          "DataGraphPipelineOpticalFlowDispatchInfoARM is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DataGraphPipelineResourceInfoImageLayoutARM ) ==
+                            sizeof( VkDataGraphPipelineResourceInfoImageLayoutARM ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DataGraphPipelineResourceInfoImageLayoutARM>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DataGraphPipelineResourceInfoImageLayoutARM>::value,
+                          "DataGraphPipelineResourceInfoImageLayoutARM is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DataGraphPipelineSingleNodeCreateInfoARM ) == sizeof( VkDataGraphPipelineSingleNodeCreateInfoARM ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DataGraphPipelineSingleNodeCreateInfoARM>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DataGraphPipelineSingleNodeCreateInfoARM>::value,
+                          "DataGraphPipelineSingleNodeCreateInfoARM is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DataGraphPipelineSingleNodeConnectionARM ) == sizeof( VkDataGraphPipelineSingleNodeConnectionARM ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DataGraphPipelineSingleNodeConnectionARM>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DataGraphPipelineSingleNodeConnectionARM>::value,
+                          "DataGraphPipelineSingleNodeConnectionARM is not nothrow_move_constructible!" );
+
 //=== VK_EXT_shader_long_vector ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderLongVectorFeaturesEXT ) == sizeof( VkPhysicalDeviceShaderLongVectorFeaturesEXT ),

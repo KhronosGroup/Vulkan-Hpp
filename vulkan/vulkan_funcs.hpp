@@ -30877,8 +30877,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    VULKAN_HPP_ASSERT( d.vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM &&
-                       "Function <vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM> requires <VK_ARM_data_graph_instruction_set_tosa>" );
+    VULKAN_HPP_ASSERT(
+      d.vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM &&
+      "Function <vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM> requires <VK_ARM_data_graph_instruction_set_tosa> or <VK_ARM_data_graph_optical_flow>" );
 #  endif
 
     BaseOutStructure properties;
@@ -32946,6 +32947,142 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif
 
     d.vkCmdEndRendering2KHR( m_commandBuffer, reinterpret_cast<VkRenderingEndInfoKHR const *>( renderingEndInfo.get() ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  //=== VK_ARM_data_graph_optical_flow ===
+
+  // wrapper function for command vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::getQueueFamilyDataGraphOpticalFlowImageFormatsARM(
+    uint32_t                                       queueFamilyIndex,
+    QueueFamilyDataGraphPropertiesARM const *      pQueueFamilyDataGraphProperties,
+    DataGraphOpticalFlowImageFormatInfoARM const * pOpticalFlowImageFormatInfo,
+    uint32_t *                                     pFormatCount,
+    DataGraphOpticalFlowImageFormatPropertiesARM * pImageFormatProperties,
+    Dispatch const &                               d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM(
+      static_cast<VkPhysicalDevice>( m_physicalDevice ),
+      queueFamilyIndex,
+      reinterpret_cast<VkQueueFamilyDataGraphPropertiesARM const *>( pQueueFamilyDataGraphProperties ),
+      reinterpret_cast<VkDataGraphOpticalFlowImageFormatInfoARM const *>( pOpticalFlowImageFormatInfo ),
+      pFormatCount,
+      reinterpret_cast<VkDataGraphOpticalFlowImageFormatPropertiesARM *>( pImageFormatProperties ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM.html
+  template <typename DataGraphOpticalFlowImageFormatPropertiesARMAllocator,
+            typename Dispatch,
+            typename std::enable_if<
+              std::is_same<typename DataGraphOpticalFlowImageFormatPropertiesARMAllocator::value_type, DataGraphOpticalFlowImageFormatPropertiesARM>::value,
+              int>::type,
+            typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+    typename ResultValueType<std::vector<DataGraphOpticalFlowImageFormatPropertiesARM, DataGraphOpticalFlowImageFormatPropertiesARMAllocator>>::type
+    PhysicalDevice::getQueueFamilyDataGraphOpticalFlowImageFormatsARM( uint32_t                                       queueFamilyIndex,
+                                                                       QueueFamilyDataGraphPropertiesARM const &      queueFamilyDataGraphProperties,
+                                                                       DataGraphOpticalFlowImageFormatInfoARM const & opticalFlowImageFormatInfo,
+                                                                       Dispatch const &                               d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM &&
+                       "Function <vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM> requires <VK_ARM_data_graph_optical_flow>" );
+#  endif
+
+    std::vector<DataGraphOpticalFlowImageFormatPropertiesARM, DataGraphOpticalFlowImageFormatPropertiesARMAllocator> imageFormatProperties;
+    uint32_t                                                                                                         formatCount;
+    Result                                                                                                           result;
+    do
+    {
+      result = static_cast<Result>( d.vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM(
+        m_physicalDevice,
+        queueFamilyIndex,
+        reinterpret_cast<VkQueueFamilyDataGraphPropertiesARM const *>( &queueFamilyDataGraphProperties ),
+        reinterpret_cast<VkDataGraphOpticalFlowImageFormatInfoARM const *>( &opticalFlowImageFormatInfo ),
+        &formatCount,
+        nullptr ) );
+      if ( ( result == Result::eSuccess ) && formatCount )
+      {
+        imageFormatProperties.resize( formatCount );
+        result = static_cast<Result>( d.vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM(
+          m_physicalDevice,
+          queueFamilyIndex,
+          reinterpret_cast<VkQueueFamilyDataGraphPropertiesARM const *>( &queueFamilyDataGraphProperties ),
+          reinterpret_cast<VkDataGraphOpticalFlowImageFormatInfoARM const *>( &opticalFlowImageFormatInfo ),
+          &formatCount,
+          reinterpret_cast<VkDataGraphOpticalFlowImageFormatPropertiesARM *>( imageFormatProperties.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getQueueFamilyDataGraphOpticalFlowImageFormatsARM" );
+    VULKAN_HPP_ASSERT( formatCount <= imageFormatProperties.size() );
+    if ( formatCount < imageFormatProperties.size() )
+    {
+      imageFormatProperties.resize( formatCount );
+    }
+    return detail::createResultValueType( result, std::move( imageFormatProperties ) );
+  }
+
+  // wrapper function for command vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM.html
+  template <typename DataGraphOpticalFlowImageFormatPropertiesARMAllocator,
+            typename Dispatch,
+            typename std::enable_if<
+              std::is_same<typename DataGraphOpticalFlowImageFormatPropertiesARMAllocator::value_type, DataGraphOpticalFlowImageFormatPropertiesARM>::value,
+              int>::type,
+            typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+    typename ResultValueType<std::vector<DataGraphOpticalFlowImageFormatPropertiesARM, DataGraphOpticalFlowImageFormatPropertiesARMAllocator>>::type
+    PhysicalDevice::getQueueFamilyDataGraphOpticalFlowImageFormatsARM(
+      uint32_t                                                      queueFamilyIndex,
+      QueueFamilyDataGraphPropertiesARM const &                     queueFamilyDataGraphProperties,
+      DataGraphOpticalFlowImageFormatInfoARM const &                opticalFlowImageFormatInfo,
+      DataGraphOpticalFlowImageFormatPropertiesARMAllocator const & dataGraphOpticalFlowImageFormatPropertiesARMAllocator,
+      Dispatch const &                                              d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM &&
+                       "Function <vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM> requires <VK_ARM_data_graph_optical_flow>" );
+#  endif
+
+    std::vector<DataGraphOpticalFlowImageFormatPropertiesARM, DataGraphOpticalFlowImageFormatPropertiesARMAllocator> imageFormatProperties(
+      dataGraphOpticalFlowImageFormatPropertiesARMAllocator );
+    uint32_t formatCount;
+    Result   result;
+    do
+    {
+      result = static_cast<Result>( d.vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM(
+        m_physicalDevice,
+        queueFamilyIndex,
+        reinterpret_cast<VkQueueFamilyDataGraphPropertiesARM const *>( &queueFamilyDataGraphProperties ),
+        reinterpret_cast<VkDataGraphOpticalFlowImageFormatInfoARM const *>( &opticalFlowImageFormatInfo ),
+        &formatCount,
+        nullptr ) );
+      if ( ( result == Result::eSuccess ) && formatCount )
+      {
+        imageFormatProperties.resize( formatCount );
+        result = static_cast<Result>( d.vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM(
+          m_physicalDevice,
+          queueFamilyIndex,
+          reinterpret_cast<VkQueueFamilyDataGraphPropertiesARM const *>( &queueFamilyDataGraphProperties ),
+          reinterpret_cast<VkDataGraphOpticalFlowImageFormatInfoARM const *>( &opticalFlowImageFormatInfo ),
+          &formatCount,
+          reinterpret_cast<VkDataGraphOpticalFlowImageFormatPropertiesARM *>( imageFormatProperties.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getQueueFamilyDataGraphOpticalFlowImageFormatsARM" );
+    VULKAN_HPP_ASSERT( formatCount <= imageFormatProperties.size() );
+    if ( formatCount < imageFormatProperties.size() )
+    {
+      imageFormatProperties.resize( formatCount );
+    }
+    return detail::createResultValueType( result, std::move( imageFormatProperties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

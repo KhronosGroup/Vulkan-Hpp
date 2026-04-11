@@ -27,7 +27,7 @@ export module vulkan;
 
 export import std;
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 348, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 349, "Wrong VK_HEADER_VERSION!" );
 
 #if defined( _MSC_VER )
 #  pragma warning( push )
@@ -1305,6 +1305,9 @@ export {
 
   //=== VK_KHR_maintenance10 ===
   using ::PFN_vkCmdEndRendering2KHR;
+
+  //=== VK_ARM_data_graph_optical_flow ===
+  using ::PFN_vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM;
 
   //=== VK_NV_compute_occupancy_priority ===
   using ::PFN_vkCmdSetComputeOccupancyPriorityNV;

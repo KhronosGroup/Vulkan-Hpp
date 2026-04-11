@@ -2369,6 +2369,17 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct RenderingAttachmentFlagsInfoKHR;
   struct ResolveImageModeInfoKHR;
 
+  //=== VK_ARM_data_graph_optical_flow ===
+  struct PhysicalDeviceDataGraphOpticalFlowFeaturesARM;
+  struct QueueFamilyDataGraphOpticalFlowPropertiesARM;
+  struct DataGraphPipelineOpticalFlowCreateInfoARM;
+  struct DataGraphOpticalFlowImageFormatPropertiesARM;
+  struct DataGraphOpticalFlowImageFormatInfoARM;
+  struct DataGraphPipelineOpticalFlowDispatchInfoARM;
+  struct DataGraphPipelineResourceInfoImageLayoutARM;
+  struct DataGraphPipelineSingleNodeCreateInfoARM;
+  struct DataGraphPipelineSingleNodeConnectionARM;
+
   //=== VK_EXT_shader_long_vector ===
   struct PhysicalDeviceShaderLongVectorFeaturesEXT;
   struct PhysicalDeviceShaderLongVectorPropertiesEXT;
@@ -22369,6 +22380,52 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       typename ResultValueType<std::vector<ShaderInstrumentationMetricDescriptionARM, ShaderInstrumentationMetricDescriptionARMAllocator>>::type
       enumerateShaderInstrumentationMetricsARM( ShaderInstrumentationMetricDescriptionARMAllocator const & shaderInstrumentationMetricDescriptionARMAllocator,
                                                 Dispatch const & d                                         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_ARM_data_graph_optical_flow ===
+
+    // wrapper function for command vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result
+      getQueueFamilyDataGraphOpticalFlowImageFormatsARM( uint32_t                                       queueFamilyIndex,
+                                                         QueueFamilyDataGraphPropertiesARM const *      pQueueFamilyDataGraphProperties,
+                                                         DataGraphOpticalFlowImageFormatInfoARM const * pOpticalFlowImageFormatInfo,
+                                                         uint32_t *                                     pFormatCount,
+                                                         DataGraphOpticalFlowImageFormatPropertiesARM * pImageFormatProperties,
+                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM.html
+    template <typename DataGraphOpticalFlowImageFormatPropertiesARMAllocator = std::allocator<DataGraphOpticalFlowImageFormatPropertiesARM>,
+              typename Dispatch                                              = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<
+                std::is_same<typename DataGraphOpticalFlowImageFormatPropertiesARMAllocator::value_type, DataGraphOpticalFlowImageFormatPropertiesARM>::value,
+                int>::type                                                                                                            = 0,
+              typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM ), bool>::type = true>
+    VULKAN_HPP_NODISCARD
+      typename ResultValueType<std::vector<DataGraphOpticalFlowImageFormatPropertiesARM, DataGraphOpticalFlowImageFormatPropertiesARMAllocator>>::type
+      getQueueFamilyDataGraphOpticalFlowImageFormatsARM( uint32_t                                       queueFamilyIndex,
+                                                         QueueFamilyDataGraphPropertiesARM const &      queueFamilyDataGraphProperties,
+                                                         DataGraphOpticalFlowImageFormatInfoARM const & opticalFlowImageFormatInfo,
+                                                         Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    // wrapper function for command vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM.html
+    template <typename DataGraphOpticalFlowImageFormatPropertiesARMAllocator = std::allocator<DataGraphOpticalFlowImageFormatPropertiesARM>,
+              typename Dispatch                                              = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<
+                std::is_same<typename DataGraphOpticalFlowImageFormatPropertiesARMAllocator::value_type, DataGraphOpticalFlowImageFormatPropertiesARM>::value,
+                int>::type                                                                                                            = 0,
+              typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM ), bool>::type = true>
+    VULKAN_HPP_NODISCARD
+      typename ResultValueType<std::vector<DataGraphOpticalFlowImageFormatPropertiesARM, DataGraphOpticalFlowImageFormatPropertiesARMAllocator>>::type
+      getQueueFamilyDataGraphOpticalFlowImageFormatsARM(
+        uint32_t                                                      queueFamilyIndex,
+        QueueFamilyDataGraphPropertiesARM const &                     queueFamilyDataGraphProperties,
+        DataGraphOpticalFlowImageFormatInfoARM const &                opticalFlowImageFormatInfo,
+        DataGraphOpticalFlowImageFormatPropertiesARMAllocator const & dataGraphOpticalFlowImageFormatPropertiesARMAllocator,
+        Dispatch const & d                                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
 #if defined( VK_USE_PLATFORM_UBM_SEC )

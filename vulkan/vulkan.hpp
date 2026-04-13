@@ -37,7 +37,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 348, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 349, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -1748,6 +1748,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceProperties2 )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceProperties2KHR )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM )
+    DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphProcessingEnginePropertiesARM )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphPropertiesARM )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR )
@@ -8056,6 +8057,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdEndRendering2KHR( commandBuffer, pRenderingEndInfo );
       }
 
+      //=== VK_ARM_data_graph_optical_flow ===
+
+      VULKAN_HPP_INLINE VkResult vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM(
+        VkPhysicalDevice                                 physicalDevice,
+        uint32_t                                         queueFamilyIndex,
+        VkQueueFamilyDataGraphPropertiesARM const *      pQueueFamilyDataGraphProperties,
+        VkDataGraphOpticalFlowImageFormatInfoARM const * pOpticalFlowImageFormatInfo,
+        uint32_t *                                       pFormatCount,
+        VkDataGraphOpticalFlowImageFormatPropertiesARM * pImageFormatProperties ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM(
+          physicalDevice, queueFamilyIndex, pQueueFamilyDataGraphProperties, pOpticalFlowImageFormatInfo, pFormatCount, pImageFormatProperties );
+      }
+
       //=== VK_NV_compute_occupancy_priority ===
 
       VULKAN_HPP_INLINE void vkCmdSetComputeOccupancyPriorityNV( VkCommandBuffer                                commandBuffer,
@@ -10876,7 +10891,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRVideoMaintenance1ExtensionName = VK_KHR_VIDEO_MAINTENANCE_1_EXTENSION_NAME;
 
   //=== VK_NV_per_stage_descriptor_set ===
-  VULKAN_HPP_CONSTEXPR_INLINE auto NVPerStageDescriptorSetSpecVersion   = VK_NV_PER_STAGE_DESCRIPTOR_SET_SPEC_VERSION;
+  VULKAN_HPP_DEPRECATED( "The VK_NV_per_stage_descriptor_set extension has been deprecated by VK_EXT_descriptor_heap." )
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVPerStageDescriptorSetSpecVersion = VK_NV_PER_STAGE_DESCRIPTOR_SET_SPEC_VERSION;
+  VULKAN_HPP_DEPRECATED( "The VK_NV_per_stage_descriptor_set extension has been deprecated by VK_EXT_descriptor_heap." )
   VULKAN_HPP_CONSTEXPR_INLINE auto NVPerStageDescriptorSetExtensionName = VK_NV_PER_STAGE_DESCRIPTOR_SET_EXTENSION_NAME;
 
   //=== VK_QCOM_image_processing2 ===
@@ -11140,6 +11157,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_maintenance10 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance10SpecVersion   = VK_KHR_MAINTENANCE_10_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance10ExtensionName = VK_KHR_MAINTENANCE_10_EXTENSION_NAME;
+
+  //=== VK_ARM_data_graph_optical_flow ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto ARMDataGraphOpticalFlowSpecVersion   = VK_ARM_DATA_GRAPH_OPTICAL_FLOW_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto ARMDataGraphOpticalFlowExtensionName = VK_ARM_DATA_GRAPH_OPTICAL_FLOW_EXTENSION_NAME;
 
   //=== VK_EXT_shader_long_vector ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderLongVectorSpecVersion   = VK_EXT_SHADER_LONG_VECTOR_SPEC_VERSION;
@@ -21940,6 +21961,79 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_ARM_data_graph_optical_flow ===
+  template <>
+  struct StructExtends<PhysicalDeviceDataGraphOpticalFlowFeaturesARM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceDataGraphOpticalFlowFeaturesARM, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<DataGraphPipelineOpticalFlowCreateInfoARM, DataGraphPipelineCreateInfoARM>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<DataGraphOpticalFlowImageFormatInfoARM, PhysicalDeviceImageFormatInfo2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<DataGraphOpticalFlowImageFormatInfoARM, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<DataGraphPipelineOpticalFlowDispatchInfoARM, DataGraphPipelineDispatchInfoARM>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<DataGraphPipelineResourceInfoImageLayoutARM, DataGraphPipelineResourceInfoARM>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<DataGraphPipelineSingleNodeCreateInfoARM, DataGraphPipelineCreateInfoARM>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_shader_long_vector ===
   template <>
   struct StructExtends<PhysicalDeviceShaderLongVectorFeaturesEXT, PhysicalDeviceFeatures2>
@@ -23563,6 +23657,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_maintenance10 ===
       PFN_vkCmdEndRendering2KHR vkCmdEndRendering2KHR = 0;
+
+      //=== VK_ARM_data_graph_optical_flow ===
+      PFN_vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM = 0;
 
       //=== VK_NV_compute_occupancy_priority ===
       PFN_vkCmdSetComputeOccupancyPriorityNV vkCmdSetComputeOccupancyPriorityNV = 0;
@@ -25292,6 +25389,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_KHR_maintenance10 ===
         vkCmdEndRendering2KHR = PFN_vkCmdEndRendering2KHR( vkGetInstanceProcAddr( instance, "vkCmdEndRendering2KHR" ) );
+
+        //=== VK_ARM_data_graph_optical_flow ===
+        vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM = PFN_vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM(
+          vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM" ) );
 
         //=== VK_NV_compute_occupancy_priority ===
         vkCmdSetComputeOccupancyPriorityNV = PFN_vkCmdSetComputeOccupancyPriorityNV( vkGetInstanceProcAddr( instance, "vkCmdSetComputeOccupancyPriorityNV" ) );

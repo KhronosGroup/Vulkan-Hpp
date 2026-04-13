@@ -1807,6 +1807,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eRenderingEndInfoKHR                                      = VK_STRUCTURE_TYPE_RENDERING_END_INFO_KHR,
     eRenderingEndInfoEXT                                      = VK_STRUCTURE_TYPE_RENDERING_END_INFO_EXT,
     eResolveImageModeInfoKHR                                  = VK_STRUCTURE_TYPE_RESOLVE_IMAGE_MODE_INFO_KHR,
+    ePhysicalDeviceDataGraphOpticalFlowFeaturesARM            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DATA_GRAPH_OPTICAL_FLOW_FEATURES_ARM,
+    eQueueFamilyDataGraphOpticalFlowPropertiesARM             = VK_STRUCTURE_TYPE_QUEUE_FAMILY_DATA_GRAPH_OPTICAL_FLOW_PROPERTIES_ARM,
+    eDataGraphOpticalFlowImageFormatInfoARM                   = VK_STRUCTURE_TYPE_DATA_GRAPH_OPTICAL_FLOW_IMAGE_FORMAT_INFO_ARM,
+    eDataGraphOpticalFlowImageFormatPropertiesARM             = VK_STRUCTURE_TYPE_DATA_GRAPH_OPTICAL_FLOW_IMAGE_FORMAT_PROPERTIES_ARM,
+    eDataGraphPipelineOpticalFlowDispatchInfoARM              = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_OPTICAL_FLOW_DISPATCH_INFO_ARM,
+    eDataGraphPipelineOpticalFlowCreateInfoARM                = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_OPTICAL_FLOW_CREATE_INFO_ARM,
+    eDataGraphPipelineResourceInfoImageLayoutARM              = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_RESOURCE_INFO_IMAGE_LAYOUT_ARM,
+    eDataGraphPipelineSingleNodeCreateInfoARM                 = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_SINGLE_NODE_CREATE_INFO_ARM,
+    eDataGraphPipelineSingleNodeConnectionARM                 = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_SINGLE_NODE_CONNECTION_ARM,
     ePhysicalDeviceShaderLongVectorFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_LONG_VECTOR_FEATURES_EXT,
     ePhysicalDeviceShaderLongVectorPropertiesEXT              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_LONG_VECTOR_PROPERTIES_EXT,
     ePhysicalDevicePipelineCacheIncrementalModeFeaturesSEC    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_CACHE_INCREMENTAL_MODE_FEATURES_SEC,
@@ -5641,7 +5650,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eDepthCopyOnComputeQueueKHR           = VK_FORMAT_FEATURE_2_DEPTH_COPY_ON_COMPUTE_QUEUE_BIT_KHR,
     eDepthCopyOnTransferQueueKHR          = VK_FORMAT_FEATURE_2_DEPTH_COPY_ON_TRANSFER_QUEUE_BIT_KHR,
     eStencilCopyOnComputeQueueKHR         = VK_FORMAT_FEATURE_2_STENCIL_COPY_ON_COMPUTE_QUEUE_BIT_KHR,
-    eStencilCopyOnTransferQueueKHR        = VK_FORMAT_FEATURE_2_STENCIL_COPY_ON_TRANSFER_QUEUE_BIT_KHR
+    eStencilCopyOnTransferQueueKHR        = VK_FORMAT_FEATURE_2_STENCIL_COPY_ON_TRANSFER_QUEUE_BIT_KHR,
+    eDataGraphOpticalFlowImageARM         = VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_IMAGE_BIT_ARM,
+    eDataGraphOpticalFlowVectorARM        = VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_VECTOR_BIT_ARM,
+    eDataGraphOpticalFlowCostARM          = VK_FORMAT_FEATURE_2_DATA_GRAPH_OPTICAL_FLOW_COST_BIT_ARM
   };
 
   using FormatFeatureFlagBits2KHR = FormatFeatureFlagBits2;
@@ -5709,7 +5721,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       FormatFeatureFlagBits2::eDepthCopyOnComputeQueueKHR |
       FormatFeatureFlagBits2::eDepthCopyOnTransferQueueKHR |
       FormatFeatureFlagBits2::eStencilCopyOnComputeQueueKHR |
-      FormatFeatureFlagBits2::eStencilCopyOnTransferQueueKHR;
+      FormatFeatureFlagBits2::eStencilCopyOnTransferQueueKHR |
+      FormatFeatureFlagBits2::eDataGraphOpticalFlowImageARM |
+      FormatFeatureFlagBits2::eDataGraphOpticalFlowVectorARM |
+      FormatFeatureFlagBits2::eDataGraphOpticalFlowCostARM;
   };
 
   // wrapper class for enum VkPipelineCreationFeedbackFlagBits, see
@@ -9730,7 +9745,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphPipelineSessionBindPointARM.html
   enum class DataGraphPipelineSessionBindPointARM
   {
-    eTransient = VK_DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_TRANSIENT_ARM
+    eTransient        = VK_DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_TRANSIENT_ARM,
+    eOpticalFlowCache = VK_DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_OPTICAL_FLOW_CACHE_ARM
   };
 
   // wrapper class for enum VkDataGraphPipelineSessionBindPointTypeARM, see
@@ -9744,7 +9760,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphPipelineSessionCreateFlagBitsARM.html
   enum class DataGraphPipelineSessionCreateFlagBitsARM : VkDataGraphPipelineSessionCreateFlagsARM
   {
-    eProtected = VK_DATA_GRAPH_PIPELINE_SESSION_CREATE_PROTECTED_BIT_ARM
+    eProtected        = VK_DATA_GRAPH_PIPELINE_SESSION_CREATE_PROTECTED_BIT_ARM,
+    eOpticalFlowCache = VK_DATA_GRAPH_PIPELINE_SESSION_CREATE_OPTICAL_FLOW_CACHE_BIT_ARM
   };
 
   // wrapper using for bitmask VkDataGraphPipelineSessionCreateFlagsARM, see
@@ -9756,7 +9773,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   {
     using WrappedType                                                                     = VkDataGraphPipelineSessionCreateFlagBitsARM;
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                                   isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR DataGraphPipelineSessionCreateFlagsARM allFlags  = DataGraphPipelineSessionCreateFlagBitsARM::eProtected;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DataGraphPipelineSessionCreateFlagsARM allFlags =
+      DataGraphPipelineSessionCreateFlagBitsARM::eProtected | DataGraphPipelineSessionCreateFlagBitsARM::eOpticalFlowCache;
   };
 
   // wrapper class for enum VkDataGraphPipelinePropertyARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphPipelinePropertyARM.html
@@ -9796,7 +9814,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   {
     eSpirvExtendedInstructionSet = VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_SPIRV_EXTENDED_INSTRUCTION_SET_ARM,
     eNeuralModelQCOM             = VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_NEURAL_MODEL_QCOM,
-    eBuiltinModelQCOM            = VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_BUILTIN_MODEL_QCOM
+    eBuiltinModelQCOM            = VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_BUILTIN_MODEL_QCOM,
+    eOpticalFlow                 = VK_PHYSICAL_DEVICE_DATA_GRAPH_OPERATION_TYPE_OPTICAL_FLOW_ARM
   };
 
   //=== VK_ARM_data_graph_instruction_set_tosa ===
@@ -10557,6 +10576,139 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                 isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR ResolveImageFlagsKHR allFlags =
       ResolveImageFlagBitsKHR::eSkipTransferFunction | ResolveImageFlagBitsKHR::eEnableTransferFunction;
+  };
+
+  //=== VK_ARM_data_graph_optical_flow ===
+
+  // wrapper class for enum VkDataGraphOpticalFlowImageUsageFlagBitsARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphOpticalFlowImageUsageFlagBitsARM.html
+  enum class DataGraphOpticalFlowImageUsageFlagBitsARM : VkDataGraphOpticalFlowImageUsageFlagsARM
+  {
+    eUnknown = VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_UNKNOWN_ARM,
+    eInput   = VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_INPUT_BIT_ARM,
+    eOutput  = VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_OUTPUT_BIT_ARM,
+    eHint    = VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_HINT_BIT_ARM,
+    eCost    = VK_DATA_GRAPH_OPTICAL_FLOW_IMAGE_USAGE_COST_BIT_ARM
+  };
+
+  // wrapper using for bitmask VkDataGraphOpticalFlowImageUsageFlagsARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphOpticalFlowImageUsageFlagsARM.html
+  using DataGraphOpticalFlowImageUsageFlagsARM = Flags<DataGraphOpticalFlowImageUsageFlagBitsARM>;
+
+  template <>
+  struct FlagTraits<DataGraphOpticalFlowImageUsageFlagBitsARM>
+  {
+    using WrappedType                                                                     = VkDataGraphOpticalFlowImageUsageFlagBitsARM;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                                   isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DataGraphOpticalFlowImageUsageFlagsARM allFlags  = DataGraphOpticalFlowImageUsageFlagBitsARM::eUnknown |
+                                                                                            DataGraphOpticalFlowImageUsageFlagBitsARM::eInput |
+                                                                                            DataGraphOpticalFlowImageUsageFlagBitsARM::eOutput |
+                                                                                            DataGraphOpticalFlowImageUsageFlagBitsARM::eHint |
+                                                                                            DataGraphOpticalFlowImageUsageFlagBitsARM::eCost;
+  };
+
+  // wrapper class for enum VkDataGraphOpticalFlowCreateFlagBitsARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphOpticalFlowCreateFlagBitsARM.html
+  enum class DataGraphOpticalFlowCreateFlagBitsARM : VkDataGraphOpticalFlowCreateFlagsARM
+  {
+    eEnableHint = VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_ENABLE_HINT_BIT_ARM,
+    eEnableCost = VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_ENABLE_COST_BIT_ARM,
+    eReserved30 = VK_DATA_GRAPH_OPTICAL_FLOW_CREATE_RESERVED_30_BIT_ARM
+  };
+
+  // wrapper using for bitmask VkDataGraphOpticalFlowCreateFlagsARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphOpticalFlowCreateFlagsARM.html
+  using DataGraphOpticalFlowCreateFlagsARM = Flags<DataGraphOpticalFlowCreateFlagBitsARM>;
+
+  template <>
+  struct FlagTraits<DataGraphOpticalFlowCreateFlagBitsARM>
+  {
+    using WrappedType                                                                 = VkDataGraphOpticalFlowCreateFlagBitsARM;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                               isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DataGraphOpticalFlowCreateFlagsARM allFlags  = DataGraphOpticalFlowCreateFlagBitsARM::eEnableHint |
+                                                                                        DataGraphOpticalFlowCreateFlagBitsARM::eEnableCost |
+                                                                                        DataGraphOpticalFlowCreateFlagBitsARM::eReserved30;
+  };
+
+  // wrapper class for enum VkDataGraphOpticalFlowPerformanceLevelARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphOpticalFlowPerformanceLevelARM.html
+  enum class DataGraphOpticalFlowPerformanceLevelARM
+  {
+    eUnknown = VK_DATA_GRAPH_OPTICAL_FLOW_PERFORMANCE_LEVEL_UNKNOWN_ARM,
+    eSlow    = VK_DATA_GRAPH_OPTICAL_FLOW_PERFORMANCE_LEVEL_SLOW_ARM,
+    eMedium  = VK_DATA_GRAPH_OPTICAL_FLOW_PERFORMANCE_LEVEL_MEDIUM_ARM,
+    eFast    = VK_DATA_GRAPH_OPTICAL_FLOW_PERFORMANCE_LEVEL_FAST_ARM
+  };
+
+  // wrapper class for enum VkDataGraphOpticalFlowGridSizeFlagBitsARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphOpticalFlowGridSizeFlagBitsARM.html
+  enum class DataGraphOpticalFlowGridSizeFlagBitsARM : VkDataGraphOpticalFlowGridSizeFlagsARM
+  {
+    eUnknown = VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_UNKNOWN_ARM,
+    e1X1     = VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_1X1_BIT_ARM,
+    e2X2     = VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_2X2_BIT_ARM,
+    e4X4     = VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_4X4_BIT_ARM,
+    e8X8     = VK_DATA_GRAPH_OPTICAL_FLOW_GRID_SIZE_8X8_BIT_ARM
+  };
+
+  // wrapper using for bitmask VkDataGraphOpticalFlowGridSizeFlagsARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphOpticalFlowGridSizeFlagsARM.html
+  using DataGraphOpticalFlowGridSizeFlagsARM = Flags<DataGraphOpticalFlowGridSizeFlagBitsARM>;
+
+  template <>
+  struct FlagTraits<DataGraphOpticalFlowGridSizeFlagBitsARM>
+  {
+    using WrappedType                                                                   = VkDataGraphOpticalFlowGridSizeFlagBitsARM;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                                 isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DataGraphOpticalFlowGridSizeFlagsARM allFlags  = DataGraphOpticalFlowGridSizeFlagBitsARM::eUnknown |
+                                                                                          DataGraphOpticalFlowGridSizeFlagBitsARM::e1X1 |
+                                                                                          DataGraphOpticalFlowGridSizeFlagBitsARM::e2X2 |
+                                                                                          DataGraphOpticalFlowGridSizeFlagBitsARM::e4X4 |
+                                                                                          DataGraphOpticalFlowGridSizeFlagBitsARM::e8X8;
+  };
+
+  // wrapper class for enum VkDataGraphOpticalFlowExecuteFlagBitsARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphOpticalFlowExecuteFlagBitsARM.html
+  enum class DataGraphOpticalFlowExecuteFlagBitsARM : VkDataGraphOpticalFlowExecuteFlagsARM
+  {
+    eDisableTemporalHints     = VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_DISABLE_TEMPORAL_HINTS_BIT_ARM,
+    eInputUnchanged           = VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_INPUT_UNCHANGED_BIT_ARM,
+    eReferenceUnchanged       = VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_REFERENCE_UNCHANGED_BIT_ARM,
+    eInputIsPreviousReference = VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_INPUT_IS_PREVIOUS_REFERENCE_BIT_ARM,
+    eReferenceIsPreviousInput = VK_DATA_GRAPH_OPTICAL_FLOW_EXECUTE_REFERENCE_IS_PREVIOUS_INPUT_BIT_ARM
+  };
+
+  // wrapper using for bitmask VkDataGraphOpticalFlowExecuteFlagsARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphOpticalFlowExecuteFlagsARM.html
+  using DataGraphOpticalFlowExecuteFlagsARM = Flags<DataGraphOpticalFlowExecuteFlagBitsARM>;
+
+  template <>
+  struct FlagTraits<DataGraphOpticalFlowExecuteFlagBitsARM>
+  {
+    using WrappedType                                                                  = VkDataGraphOpticalFlowExecuteFlagBitsARM;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                                isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DataGraphOpticalFlowExecuteFlagsARM allFlags  = DataGraphOpticalFlowExecuteFlagBitsARM::eDisableTemporalHints |
+                                                                                         DataGraphOpticalFlowExecuteFlagBitsARM::eInputUnchanged |
+                                                                                         DataGraphOpticalFlowExecuteFlagBitsARM::eReferenceUnchanged |
+                                                                                         DataGraphOpticalFlowExecuteFlagBitsARM::eInputIsPreviousReference |
+                                                                                         DataGraphOpticalFlowExecuteFlagBitsARM::eReferenceIsPreviousInput;
+  };
+
+  // wrapper class for enum VkDataGraphPipelineNodeTypeARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphPipelineNodeTypeARM.html
+  enum class DataGraphPipelineNodeTypeARM
+  {
+    eOpticalFlow = VK_DATA_GRAPH_PIPELINE_NODE_TYPE_OPTICAL_FLOW_ARM
+  };
+
+  // wrapper class for enum VkDataGraphPipelineNodeConnectionTypeARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphPipelineNodeConnectionTypeARM.html
+  enum class DataGraphPipelineNodeConnectionTypeARM
+  {
+    eOpticalFlowInput      = VK_DATA_GRAPH_PIPELINE_NODE_CONNECTION_TYPE_OPTICAL_FLOW_INPUT_ARM,
+    eOpticalFlowReference  = VK_DATA_GRAPH_PIPELINE_NODE_CONNECTION_TYPE_OPTICAL_FLOW_REFERENCE_ARM,
+    eOpticalFlowHint       = VK_DATA_GRAPH_PIPELINE_NODE_CONNECTION_TYPE_OPTICAL_FLOW_HINT_ARM,
+    eOpticalFlowFlowVector = VK_DATA_GRAPH_PIPELINE_NODE_CONNECTION_TYPE_OPTICAL_FLOW_FLOW_VECTOR_ARM,
+    eOpticalFlowCost       = VK_DATA_GRAPH_PIPELINE_NODE_CONNECTION_TYPE_OPTICAL_FLOW_COST_ARM
   };
 
 #if defined( VK_USE_PLATFORM_UBM_SEC )

@@ -3683,6 +3683,34 @@ VULKAN_HPP_EXPORT namespace std
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DataGraphOpticalFlowImageFormatInfoARM>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::DataGraphOpticalFlowImageFormatInfoARM const & dataGraphOpticalFlowImageFormatInfoARM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphOpticalFlowImageFormatInfoARM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphOpticalFlowImageFormatInfoARM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphOpticalFlowImageFormatInfoARM.usage );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DataGraphOpticalFlowImageFormatPropertiesARM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::DataGraphOpticalFlowImageFormatPropertiesARM const & dataGraphOpticalFlowImageFormatPropertiesARM ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphOpticalFlowImageFormatPropertiesARM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphOpticalFlowImageFormatPropertiesARM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphOpticalFlowImageFormatPropertiesARM.format );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDataGraphOperationSupportARM>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceDataGraphOperationSupportARM const & physicalDeviceDataGraphOperationSupportARM ) const
@@ -3833,6 +3861,43 @@ VULKAN_HPP_EXPORT namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DataGraphPipelineOpticalFlowCreateInfoARM>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::DataGraphPipelineOpticalFlowCreateInfoARM const & dataGraphPipelineOpticalFlowCreateInfoARM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowCreateInfoARM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowCreateInfoARM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowCreateInfoARM.width );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowCreateInfoARM.height );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowCreateInfoARM.imageFormat );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowCreateInfoARM.flowVectorFormat );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowCreateInfoARM.costFormat );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowCreateInfoARM.outputGridSize );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowCreateInfoARM.hintGridSize );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowCreateInfoARM.performanceLevel );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowCreateInfoARM.flags );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DataGraphPipelineOpticalFlowDispatchInfoARM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::DataGraphPipelineOpticalFlowDispatchInfoARM const & dataGraphPipelineOpticalFlowDispatchInfoARM ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowDispatchInfoARM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowDispatchInfoARM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowDispatchInfoARM.flags );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineOpticalFlowDispatchInfoARM.meanFlowL1NormHint );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::DataGraphPipelinePropertyQueryResultARM>
   {
     std::size_t
@@ -3845,6 +3910,20 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelinePropertyQueryResultARM.isText );
       VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelinePropertyQueryResultARM.dataSize );
       VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelinePropertyQueryResultARM.pData );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DataGraphPipelineResourceInfoImageLayoutARM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::DataGraphPipelineResourceInfoImageLayoutARM const & dataGraphPipelineResourceInfoImageLayoutARM ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineResourceInfoImageLayoutARM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineResourceInfoImageLayoutARM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineResourceInfoImageLayoutARM.layout );
       return seed;
     }
   };
@@ -3927,6 +4006,38 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineShaderModuleCreateInfoARM.pSpecializationInfo );
       VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineShaderModuleCreateInfoARM.constantCount );
       VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineShaderModuleCreateInfoARM.pConstants );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DataGraphPipelineSingleNodeConnectionARM>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::DataGraphPipelineSingleNodeConnectionARM const & dataGraphPipelineSingleNodeConnectionARM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineSingleNodeConnectionARM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineSingleNodeConnectionARM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineSingleNodeConnectionARM.set );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineSingleNodeConnectionARM.binding );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineSingleNodeConnectionARM.connection );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DataGraphPipelineSingleNodeCreateInfoARM>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::DataGraphPipelineSingleNodeCreateInfoARM const & dataGraphPipelineSingleNodeCreateInfoARM ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineSingleNodeCreateInfoARM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineSingleNodeCreateInfoARM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineSingleNodeCreateInfoARM.nodeType );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineSingleNodeCreateInfoARM.connectionCount );
+      VULKAN_HPP_HASH_COMBINE( seed, dataGraphPipelineSingleNodeCreateInfoARM.pConnections );
       return seed;
     }
   };
@@ -10449,6 +10560,20 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDataGraphModelFeaturesQCOM.sType );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDataGraphModelFeaturesQCOM.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDataGraphModelFeaturesQCOM.dataGraphModel );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDataGraphOpticalFlowFeaturesARM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceDataGraphOpticalFlowFeaturesARM const & physicalDeviceDataGraphOpticalFlowFeaturesARM ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDataGraphOpticalFlowFeaturesARM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDataGraphOpticalFlowFeaturesARM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDataGraphOpticalFlowFeaturesARM.dataGraphOpticalFlow );
       return seed;
     }
   };
@@ -17721,6 +17846,27 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, queueFamilyCheckpointPropertiesNV.sType );
       VULKAN_HPP_HASH_COMBINE( seed, queueFamilyCheckpointPropertiesNV.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, queueFamilyCheckpointPropertiesNV.checkpointExecutionStageMask );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::QueueFamilyDataGraphOpticalFlowPropertiesARM>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::QueueFamilyDataGraphOpticalFlowPropertiesARM const & queueFamilyDataGraphOpticalFlowPropertiesARM ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphOpticalFlowPropertiesARM.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphOpticalFlowPropertiesARM.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphOpticalFlowPropertiesARM.supportedOutputGridSizes );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphOpticalFlowPropertiesARM.supportedHintGridSizes );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphOpticalFlowPropertiesARM.hintSupported );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphOpticalFlowPropertiesARM.costSupported );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphOpticalFlowPropertiesARM.minWidth );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphOpticalFlowPropertiesARM.minHeight );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphOpticalFlowPropertiesARM.maxWidth );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyDataGraphOpticalFlowPropertiesARM.maxHeight );
       return seed;
     }
   };

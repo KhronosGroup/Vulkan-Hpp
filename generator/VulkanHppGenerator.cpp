@@ -11821,14 +11821,14 @@ std::string VulkanHppGenerator::generateTypenameCheck( std::vector<size_t> const
           extendedElementType = "UniqueHandle<" + elementType + ", Dispatch>";
         }
         elementType = startUpperCase( stripPrefix( elementType, "VULKAN_HPP_NAMESPACE::" ) );
-        if ( !enableIf.empty() )
-        {
-          enableIf += " && ";
-        }
         // prevent multiple checks on the same allocator type
         if ( elementTypes.insert( elementType ).second )
         {
-          enableIf += "std::is_same<typename " + elementType + "Allocator::value_type, " + extendedElementType + " > ::value ";
+          if ( !enableIf.empty() )
+          {
+            enableIf += " && ";
+          }
+          enableIf += "std::is_same<typename " + elementType + "Allocator::value_type, " + extendedElementType + ">::value ";
         }
       }
     }

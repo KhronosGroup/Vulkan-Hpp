@@ -5928,6 +5928,8 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
     if ( value.supported )
     {
       std::string valueName = generateEnumValueName( enumData.first, value.name, enumData.second.isBitmask );
+      checkForError( !valueName.empty(),
+                     value.xmlLine, "generated enum value name for <" + value.name + "> is empty for enum <" + enumData.first + ">" );
       checkForError( valueToNameMap.insert( { valueName, value.name } ).second,
                      value.xmlLine,
                      "generated enum value name <" + valueName + "> already listed for enum <" + enumData.first + ">" );
@@ -5967,36 +5969,12 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
             }
           }
 
-          std::string                                        aliasName = generateEnumValueName( enumName, valueAlias.name, enumData.second.isBitmask );
-          std::map<std::string, std::string>::const_iterator mapIt;
-          bool                                               inserted;
-          std::tie( mapIt, inserted ) = valueToNameMap.insert( { aliasName, valueAlias.name } );
-          if ( inserted )
+          std::string aliasName = generateEnumValueName( enumName, valueAlias.name, enumData.second.isBitmask );
+          // aliases starting with the wrong prefix, determined out of the enumName, are skipped!
+          if ( !aliasName.empty() )
           {
-            enumValues += "    " + aliasName + " = " + valueAlias.name + ",\n";
-          }
-          else
-          {
-            // some aliases are so close to the original, that no new entry can be generated!
-            assert( mapIt->second != valueAlias.name );
-            checkForError( ( mapIt->second == value.name ) ||
-                             std::ranges::any_of( value.aliases, [mapIt]( auto const & eav ) { return eav.name == mapIt->second; } ),
-                           valueAlias.xmlLine,
-                           "generated enum alias value name <" +
-                             aliasName +
-                             ">, generated from <" +
-                             valueAlias.name +
-                             "> is already generated from different enum value <" +
-                             mapIt->second +
-                             ">" );
-          }
-
-          if ( ( enumName != enumData.first ) && ( findTag( enumName ) != findTag( enumData.first ) ) )
-          {
-            // the enum value was introduced with a tagged enum, but is now an alias of an enum with a different, potentially empty, tag
-            // even though, there has never been this generated with that tag, we add a tagged version here for consistency reasons
-            assert( findTag( valueAlias.name ) == findTag( enumName ) );
-            aliasName                   = generateEnumValueName( enumData.first, valueAlias.name, enumData.second.isBitmask );
+            std::map<std::string, std::string>::const_iterator mapIt;
+            bool                                               inserted;
             std::tie( mapIt, inserted ) = valueToNameMap.insert( { aliasName, valueAlias.name } );
             if ( inserted )
             {
@@ -6016,6 +5994,34 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
                                "> is already generated from different enum value <" +
                                mapIt->second +
                                ">" );
+            }
+
+            if ( ( enumName != enumData.first ) && ( findTag( enumName ) != findTag( enumData.first ) ) )
+            {
+              // the enum value was introduced with a tagged enum, but is now an alias of an enum with a different, potentially empty, tag
+              // even though, there has never been this generated with that tag, we add a tagged version here for consistency reasons
+              assert( findTag( valueAlias.name ) == findTag( enumName ) );
+              aliasName                   = generateEnumValueName( enumData.first, valueAlias.name, enumData.second.isBitmask );
+              std::tie( mapIt, inserted ) = valueToNameMap.insert( { aliasName, valueAlias.name } );
+              if ( inserted )
+              {
+                enumValues += "    " + aliasName + " = " + valueAlias.name + ",\n";
+              }
+              else
+              {
+                // some aliases are so close to the original, that no new entry can be generated!
+                assert( mapIt->second != valueAlias.name );
+                checkForError( ( mapIt->second == value.name ) ||
+                                 std::ranges::any_of( value.aliases, [mapIt]( auto const & eav ) { return eav.name == mapIt->second; } ),
+                               valueAlias.xmlLine,
+                               "generated enum alias value name <" +
+                                 aliasName +
+                                 ">, generated from <" +
+                                 valueAlias.name +
+                                 "> is already generated from different enum value <" +
+                                 mapIt->second +
+                                 ">" );
+              }
             }
           }
         }
@@ -6316,20 +6322,28 @@ std::string VulkanHppGenerator::generateEnumValueName( std::string const & enumN
     tag = findTag( valueName, postfix );
   }
 
-  std::string result = "e" + toCamelCase( stripPostfix( stripPrefix( valueName, prefix ), postfix ) );
-  if ( bitmask )
+  // skip enum values that start with the wrong prefix
+  if ( valueName.starts_with( prefix ) )
   {
-    size_t const pos = result.rfind( "Bit" );
-    if ( pos != std::string::npos )
+    std::string result = "e" + toCamelCase( stripPostfix( stripPrefix( valueName, prefix ), postfix ) );
+    if ( bitmask )
     {
-      result.erase( pos, 3 );
+      size_t const pos = result.rfind( "Bit" );
+      if ( pos != std::string::npos )
+      {
+        result.erase( pos, 3 );
+      }
     }
+    if ( !tag.empty() && ( result.substr( result.length() - tag.length() ) == toCamelCase( tag ) ) )
+    {
+      result = result.substr( 0, result.length() - tag.length() ) + tag;
+    }
+    return result;
   }
-  if ( !tag.empty() && ( result.substr( result.length() - tag.length() ) == toCamelCase( tag ) ) )
+  else
   {
-    result = result.substr( 0, result.length() - tag.length() ) + tag;
+    return "";
   }
-  return result;
 }
 
 std::string VulkanHppGenerator::generateExtensionDependencies() const

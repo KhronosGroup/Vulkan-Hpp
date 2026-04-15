@@ -3623,44 +3623,42 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // wrapper class for enum VkPipelineCreateFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineCreateFlagBits.html
   enum class PipelineCreateFlagBits : VkPipelineCreateFlags
   {
-    eDisableOptimization                                                = VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
-    eAllowDerivatives                                                   = VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT,
-    eDerivative                                                         = VK_PIPELINE_CREATE_DERIVATIVE_BIT,
-    eDispatchBase                                                       = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
-    eDispatchBaseKHR                                                    = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT_KHR,
-    eViewIndexFromDeviceIndex                                           = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT,
-    eViewIndexFromDeviceIndexKHR                                        = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT_KHR,
-    eFailOnPipelineCompileRequired                                      = VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT,
-    eFailOnPipelineCompileRequiredEXT                                   = VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT_EXT,
-    eEarlyReturnOnFailure                                               = VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT,
-    eEarlyReturnOnFailureEXT                                            = VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT_EXT,
-    eNoProtectedAccess                                                  = VK_PIPELINE_CREATE_NO_PROTECTED_ACCESS_BIT,
-    eNoProtectedAccessEXT                                               = VK_PIPELINE_CREATE_NO_PROTECTED_ACCESS_BIT_EXT,
-    eProtectedAccessOnly                                                = VK_PIPELINE_CREATE_PROTECTED_ACCESS_ONLY_BIT,
-    eProtectedAccessOnlyEXT                                             = VK_PIPELINE_CREATE_PROTECTED_ACCESS_ONLY_BIT_EXT,
-    eRayTracingNoNullAnyHitShadersKHR                                   = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR,
-    eRayTracingNoNullClosestHitShadersKHR                               = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR,
-    eRayTracingNoNullMissShadersKHR                                     = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR,
-    eRayTracingNoNullIntersectionShadersKHR                             = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR,
-    eRayTracingSkipTrianglesKHR                                         = VK_PIPELINE_CREATE_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR,
-    eRayTracingSkipAabbsKHR                                             = VK_PIPELINE_CREATE_RAY_TRACING_SKIP_AABBS_BIT_KHR,
-    eRayTracingShaderGroupHandleCaptureReplayKHR                        = VK_PIPELINE_CREATE_RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_BIT_KHR,
-    eDeferCompileNV                                                     = VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NV,
-    eRenderingFragmentDensityMapAttachmentEXT                           = VK_PIPELINE_CREATE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT,
-    eVkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT  = VK_PIPELINE_RASTERIZATION_STATE_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT,
-    eRenderingFragmentShadingRateAttachmentKHR                          = VK_PIPELINE_CREATE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR,
-    eVkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR = VK_PIPELINE_RASTERIZATION_STATE_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR,
-    eCaptureStatisticsKHR                                               = VK_PIPELINE_CREATE_CAPTURE_STATISTICS_BIT_KHR,
-    eCaptureInternalRepresentationsKHR                                  = VK_PIPELINE_CREATE_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR,
-    eIndirectBindableNV                                                 = VK_PIPELINE_CREATE_INDIRECT_BINDABLE_BIT_NV,
-    eLibraryKHR                                                         = VK_PIPELINE_CREATE_LIBRARY_BIT_KHR,
-    eDescriptorBufferEXT                                                = VK_PIPELINE_CREATE_DESCRIPTOR_BUFFER_BIT_EXT,
-    eRetainLinkTimeOptimizationInfoEXT                                  = VK_PIPELINE_CREATE_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT,
-    eLinkTimeOptimizationEXT                                            = VK_PIPELINE_CREATE_LINK_TIME_OPTIMIZATION_BIT_EXT,
-    eRayTracingAllowMotionNV                                            = VK_PIPELINE_CREATE_RAY_TRACING_ALLOW_MOTION_BIT_NV,
-    eColorAttachmentFeedbackLoopEXT                                     = VK_PIPELINE_CREATE_COLOR_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT,
-    eDepthStencilAttachmentFeedbackLoopEXT                              = VK_PIPELINE_CREATE_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT,
-    eRayTracingOpacityMicromapEXT                                       = VK_PIPELINE_CREATE_RAY_TRACING_OPACITY_MICROMAP_BIT_EXT,
+    eDisableOptimization                         = VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
+    eAllowDerivatives                            = VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT,
+    eDerivative                                  = VK_PIPELINE_CREATE_DERIVATIVE_BIT,
+    eDispatchBase                                = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
+    eDispatchBaseKHR                             = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT_KHR,
+    eViewIndexFromDeviceIndex                    = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT,
+    eViewIndexFromDeviceIndexKHR                 = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT_KHR,
+    eFailOnPipelineCompileRequired               = VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT,
+    eFailOnPipelineCompileRequiredEXT            = VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT_EXT,
+    eEarlyReturnOnFailure                        = VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT,
+    eEarlyReturnOnFailureEXT                     = VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT_EXT,
+    eNoProtectedAccess                           = VK_PIPELINE_CREATE_NO_PROTECTED_ACCESS_BIT,
+    eNoProtectedAccessEXT                        = VK_PIPELINE_CREATE_NO_PROTECTED_ACCESS_BIT_EXT,
+    eProtectedAccessOnly                         = VK_PIPELINE_CREATE_PROTECTED_ACCESS_ONLY_BIT,
+    eProtectedAccessOnlyEXT                      = VK_PIPELINE_CREATE_PROTECTED_ACCESS_ONLY_BIT_EXT,
+    eRayTracingNoNullAnyHitShadersKHR            = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR,
+    eRayTracingNoNullClosestHitShadersKHR        = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR,
+    eRayTracingNoNullMissShadersKHR              = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR,
+    eRayTracingNoNullIntersectionShadersKHR      = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR,
+    eRayTracingSkipTrianglesKHR                  = VK_PIPELINE_CREATE_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR,
+    eRayTracingSkipAabbsKHR                      = VK_PIPELINE_CREATE_RAY_TRACING_SKIP_AABBS_BIT_KHR,
+    eRayTracingShaderGroupHandleCaptureReplayKHR = VK_PIPELINE_CREATE_RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_BIT_KHR,
+    eDeferCompileNV                              = VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NV,
+    eRenderingFragmentDensityMapAttachmentEXT    = VK_PIPELINE_CREATE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT,
+    eRenderingFragmentShadingRateAttachmentKHR   = VK_PIPELINE_CREATE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR,
+    eCaptureStatisticsKHR                        = VK_PIPELINE_CREATE_CAPTURE_STATISTICS_BIT_KHR,
+    eCaptureInternalRepresentationsKHR           = VK_PIPELINE_CREATE_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR,
+    eIndirectBindableNV                          = VK_PIPELINE_CREATE_INDIRECT_BINDABLE_BIT_NV,
+    eLibraryKHR                                  = VK_PIPELINE_CREATE_LIBRARY_BIT_KHR,
+    eDescriptorBufferEXT                         = VK_PIPELINE_CREATE_DESCRIPTOR_BUFFER_BIT_EXT,
+    eRetainLinkTimeOptimizationInfoEXT           = VK_PIPELINE_CREATE_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT,
+    eLinkTimeOptimizationEXT                     = VK_PIPELINE_CREATE_LINK_TIME_OPTIMIZATION_BIT_EXT,
+    eRayTracingAllowMotionNV                     = VK_PIPELINE_CREATE_RAY_TRACING_ALLOW_MOTION_BIT_NV,
+    eColorAttachmentFeedbackLoopEXT              = VK_PIPELINE_CREATE_COLOR_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT,
+    eDepthStencilAttachmentFeedbackLoopEXT       = VK_PIPELINE_CREATE_DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_BIT_EXT,
+    eRayTracingOpacityMicromapEXT                = VK_PIPELINE_CREATE_RAY_TRACING_OPACITY_MICROMAP_BIT_EXT,
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
     eRayTracingDisplacementMicromapNV = VK_PIPELINE_CREATE_RAY_TRACING_DISPLACEMENT_MICROMAP_BIT_NV
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -4504,10 +4502,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // wrapper class for enum VkStencilFaceFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkStencilFaceFlagBits.html
   enum class StencilFaceFlagBits : VkStencilFaceFlags
   {
-    eFront                 = VK_STENCIL_FACE_FRONT_BIT,
-    eBack                  = VK_STENCIL_FACE_BACK_BIT,
-    eFrontAndBack          = VK_STENCIL_FACE_FRONT_AND_BACK,
-    eVkStencilFrontAndBack = VK_STENCIL_FRONT_AND_BACK
+    eFront        = VK_STENCIL_FACE_FRONT_BIT,
+    eBack         = VK_STENCIL_FACE_BACK_BIT,
+    eFrontAndBack = VK_STENCIL_FACE_FRONT_AND_BACK
   };
 
   // wrapper using for bitmask VkStencilFaceFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkStencilFaceFlags.html
@@ -6190,17 +6187,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // wrapper class for enum VkColorSpaceKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkColorSpaceKHR.html
   enum class ColorSpaceKHR
   {
-    eSrgbNonlinear             = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
-    eVkColorspaceSrgbNonlinear = VK_COLORSPACE_SRGB_NONLINEAR_KHR,
-    eDisplayP3NonlinearEXT     = VK_COLOR_SPACE_DISPLAY_P3_NONLINEAR_EXT,
-    eExtendedSrgbLinearEXT     = VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT,
-    eDisplayP3LinearEXT        = VK_COLOR_SPACE_DISPLAY_P3_LINEAR_EXT,
-    eDciP3LinearEXT            = VK_COLOR_SPACE_DCI_P3_LINEAR_EXT,
-    eDciP3NonlinearEXT         = VK_COLOR_SPACE_DCI_P3_NONLINEAR_EXT,
-    eBt709LinearEXT            = VK_COLOR_SPACE_BT709_LINEAR_EXT,
-    eBt709NonlinearEXT         = VK_COLOR_SPACE_BT709_NONLINEAR_EXT,
-    eBt2020LinearEXT           = VK_COLOR_SPACE_BT2020_LINEAR_EXT,
-    eHdr10St2084EXT            = VK_COLOR_SPACE_HDR10_ST2084_EXT,
+    eSrgbNonlinear         = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
+    eDisplayP3NonlinearEXT = VK_COLOR_SPACE_DISPLAY_P3_NONLINEAR_EXT,
+    eExtendedSrgbLinearEXT = VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT,
+    eDisplayP3LinearEXT    = VK_COLOR_SPACE_DISPLAY_P3_LINEAR_EXT,
+    eDciP3LinearEXT        = VK_COLOR_SPACE_DCI_P3_LINEAR_EXT,
+    eDciP3NonlinearEXT     = VK_COLOR_SPACE_DCI_P3_NONLINEAR_EXT,
+    eBt709LinearEXT        = VK_COLOR_SPACE_BT709_LINEAR_EXT,
+    eBt709NonlinearEXT     = VK_COLOR_SPACE_BT709_NONLINEAR_EXT,
+    eBt2020LinearEXT       = VK_COLOR_SPACE_BT2020_LINEAR_EXT,
+    eHdr10St2084EXT        = VK_COLOR_SPACE_HDR10_ST2084_EXT,
     eDolbyvisionEXT VULKAN_HPP_DEPRECATED_17( "eDolbyvisionEXT is deprecated, but no reason was given in the API XML" ) = VK_COLOR_SPACE_DOLBYVISION_EXT,
     eHdr10HlgEXT                                                                                                        = VK_COLOR_SPACE_HDR10_HLG_EXT,
     eAdobergbLinearEXT                                                                                                  = VK_COLOR_SPACE_ADOBERGB_LINEAR_EXT,
@@ -7418,12 +7414,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // wrapper class for enum VkPerformanceCounterScopeKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPerformanceCounterScopeKHR.html
   enum class PerformanceCounterScopeKHR
   {
-    eCommandBuffer             = VK_PERFORMANCE_COUNTER_SCOPE_COMMAND_BUFFER_KHR,
-    eVkQueryScopeCommandBuffer = VK_QUERY_SCOPE_COMMAND_BUFFER_KHR,
-    eRenderPass                = VK_PERFORMANCE_COUNTER_SCOPE_RENDER_PASS_KHR,
-    eVkQueryScopeRenderPass    = VK_QUERY_SCOPE_RENDER_PASS_KHR,
-    eCommand                   = VK_PERFORMANCE_COUNTER_SCOPE_COMMAND_KHR,
-    eVkQueryScopeCommand       = VK_QUERY_SCOPE_COMMAND_KHR
+    eCommandBuffer = VK_PERFORMANCE_COUNTER_SCOPE_COMMAND_BUFFER_KHR,
+    eRenderPass    = VK_PERFORMANCE_COUNTER_SCOPE_RENDER_PASS_KHR,
+    eCommand       = VK_PERFORMANCE_COUNTER_SCOPE_COMMAND_KHR
   };
 
   // wrapper class for enum VkPerformanceCounterStorageKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPerformanceCounterStorageKHR.html

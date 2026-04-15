@@ -37,7 +37,10 @@ VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
 int main()
 {
-  //=== VK_VERSION_1_0 ===
+  //======================================
+  // Vulkan base API interface definitions
+  //======================================
+
   // Device initialization
   {
     vk::InstanceCreateInfo  instanceCreateInfo;
@@ -1099,6 +1102,10 @@ int main()
     commandBuffer.executeCommands( secondaryCommandBuffers );
   }
 
+  //=========================================
+  // Vulkan compute API interface definitions
+  //=========================================
+
   // Event commands
   {
     vk::Device              device;
@@ -1569,6 +1576,131 @@ int main()
     std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
     std::vector<vk::CopyDescriptorSet>  copyDescriptorSets;
     device.updateDescriptorSets( writeDescriptorSets, copyDescriptorSets );
+  }
+
+  // Command buffer building commands
+  {
+    vk::CommandBuffer     commandBuffer;
+    vk::PipelineBindPoint pipelineBindPoint = {};
+    vk::Pipeline          pipeline;
+    commandBuffer.bindPipeline( pipelineBindPoint, pipeline );
+  }
+  {
+    vk::CommandBuffer              commandBuffer;
+    vk::PipelineBindPoint          pipelineBindPoint = {};
+    vk::PipelineLayout             pipelineLayout;
+    uint32_t                       firstSet = 0;
+    std::vector<vk::DescriptorSet> descriptorSets;
+    std::vector<uint32_t>          dynamicOffsets;
+    commandBuffer.bindDescriptorSets( pipelineBindPoint,
+                                      pipelineLayout,
+                                      firstSet,
+                                      static_cast<uint32_t>( descriptorSets.size() ),
+                                      descriptorSets.data(),
+                                      static_cast<uint32_t>( dynamicOffsets.size() ),
+                                      dynamicOffsets.data() );
+  }
+  {
+    vk::CommandBuffer              commandBuffer;
+    vk::PipelineBindPoint          pipelineBindPoint = {};
+    vk::PipelineLayout             pipelineLayout;
+    uint32_t                       firstSet = 0;
+    std::vector<vk::DescriptorSet> descriptorSets;
+    std::vector<uint32_t>          dynamicOffsets;
+    commandBuffer.bindDescriptorSets( pipelineBindPoint, pipelineLayout, firstSet, descriptorSets, dynamicOffsets );
+  }
+
+  {
+    vk::CommandBuffer                      commandBuffer;
+    vk::Image                              image;
+    vk::ImageLayout                        imageLayout = {};
+    vk::ClearColorValue                    clearColor  = {};
+    std::vector<vk::ImageSubresourceRange> ranges;
+    commandBuffer.clearColorImage( image, imageLayout, &clearColor, static_cast<uint32_t>( ranges.size() ), ranges.data() );
+  }
+  {
+    vk::CommandBuffer                      commandBuffer;
+    vk::Image                              image;
+    vk::ImageLayout                        imageLayout = {};
+    vk::ClearColorValue                    clearColor  = {};
+    std::vector<vk::ImageSubresourceRange> ranges;
+    commandBuffer.clearColorImage( image, imageLayout, clearColor, ranges );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    uint32_t          groupCountX = 1;
+    uint32_t          groupCountY = 1;
+    uint32_t          groupCountZ = 1;
+    commandBuffer.dispatch( groupCountX, groupCountY, groupCountZ );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::Buffer        buffer;
+    vk::DeviceSize    offset = 0;
+    commandBuffer.dispatchIndirect( buffer, offset );
+  }
+
+  {
+    vk::CommandBuffer      commandBuffer;
+    vk::Event              event;
+    vk::PipelineStageFlags stageMask = {};
+    commandBuffer.setEvent( event, stageMask );
+  }
+
+  {
+    vk::CommandBuffer      commandBuffer;
+    vk::Event              event;
+    vk::PipelineStageFlags stageMask = {};
+    commandBuffer.resetEvent( event, stageMask );
+  }
+
+  {
+    vk::CommandBuffer                    commandBuffer;
+    std::vector<vk::Event>               events;
+    vk::PipelineStageFlags               srcStageMask = {};
+    vk::PipelineStageFlags               dstStageMask = {};
+    std::vector<vk::MemoryBarrier>       memoryBarriers;
+    std::vector<vk::BufferMemoryBarrier> bufferMemoryBarriers;
+    std::vector<vk::ImageMemoryBarrier>  imageMemoryBarriers;
+    commandBuffer.waitEvents( static_cast<uint32_t>( events.size() ),
+                              events.data(),
+                              srcStageMask,
+                              dstStageMask,
+                              static_cast<uint32_t>( memoryBarriers.size() ),
+                              memoryBarriers.data(),
+                              static_cast<uint32_t>( bufferMemoryBarriers.size() ),
+                              bufferMemoryBarriers.data(),
+                              static_cast<uint32_t>( imageMemoryBarriers.size() ),
+                              imageMemoryBarriers.data() );
+  }
+  {
+    vk::CommandBuffer                    commandBuffer;
+    std::vector<vk::Event>               events;
+    vk::PipelineStageFlags               srcStageMask = {};
+    vk::PipelineStageFlags               dstStageMask = {};
+    std::vector<vk::MemoryBarrier>       memoryBarriers;
+    std::vector<vk::BufferMemoryBarrier> bufferMemoryBarriers;
+    std::vector<vk::ImageMemoryBarrier>  imageMemoryBarriers;
+    commandBuffer.waitEvents( events, srcStageMask, dstStageMask, memoryBarriers, bufferMemoryBarriers, imageMemoryBarriers );
+  }
+
+  {
+    vk::CommandBuffer     commandBuffer;
+    vk::PipelineLayout    pipelineLayout;
+    vk::ShaderStageFlags  stageFlags = {};
+    uint32_t              offset     = 0;
+    std::vector<uint32_t> values;
+    commandBuffer.pushConstants( pipelineLayout, stageFlags, offset, static_cast<uint32_t>( values.size() * sizeof( uint32_t ) ), values.data() );
+  }
+  {
+    vk::CommandBuffer     commandBuffer;
+    vk::PipelineLayout    pipelineLayout;
+    vk::ShaderStageFlags  stageFlags = {};
+    uint32_t              offset     = 0;
+    std::vector<uint32_t> values;
+    commandBuffer.pushConstants<uint32_t>( pipelineLayout, stageFlags, offset, values );
   }
 
 #if 0

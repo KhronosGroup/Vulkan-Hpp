@@ -36,7 +36,10 @@ import vulkan;
 
 int main()
 {
-  //=== VK_VERSION_1_0 ===
+  //======================================
+  // Vulkan base API interface definitions
+  //======================================
+
   // Device initialization
   {
     vk::raii::Context      context;
@@ -156,7 +159,7 @@ int main()
   {
     vk::raii::Queue queue = nullptr;
     vk::SubmitInfo  submitInfo;
-    vk::Fence       fence;
+    vk::raii::Fence fence = nullptr;
     queue.submit( submitInfo, fence );
   }
 
@@ -214,16 +217,16 @@ int main()
 
   // Memory management API commands
   {
-    vk::raii::Buffer buffer = nullptr;
-    vk::DeviceMemory deviceMemory;
-    vk::DeviceSize   memoryOffset = 0;
+    vk::raii::Buffer       buffer       = nullptr;
+    vk::raii::DeviceMemory deviceMemory = nullptr;
+    vk::DeviceSize         memoryOffset = 0;
     buffer.bindMemory( deviceMemory, memoryOffset );
   }
 
   {
-    vk::raii::Image  image = nullptr;
-    vk::DeviceMemory deviceMemory;
-    vk::DeviceSize   memoryOffset = 0;
+    vk::raii::Image        image        = nullptr;
+    vk::raii::DeviceMemory deviceMemory = nullptr;
+    vk::DeviceSize         memoryOffset = 0;
     image.bindMemory( deviceMemory, memoryOffset );
   }
 
@@ -274,9 +277,9 @@ int main()
   }
 
   {
-    vk::raii::Device device = nullptr;
-    vk::Fence        fence;
-    device.resetFences( fence );
+    vk::raii::Device       device = nullptr;
+    std::vector<vk::Fence> fences;
+    device.resetFences( fences );
   }
 
   {
@@ -285,11 +288,11 @@ int main()
   }
 
   {
-    vk::raii::Device device = nullptr;
-    vk::Fence        fence;
-    vk::Bool32       waitAll = vk::True;
-    uint64_t         timeout = 1000000000;
-    vk::Result       result  = device.waitForFences( fence, waitAll, timeout );
+    vk::raii::Device       device = nullptr;
+    std::vector<vk::Fence> fences;
+    vk::Bool32             waitAll = vk::True;
+    uint64_t               timeout = 1000000000;
+    vk::Result             result  = device.waitForFences( fences, waitAll, timeout );
   }
 
   // Queue semaphore commands
@@ -426,17 +429,17 @@ int main()
   // Command buffer building commands
   {
     vk::raii::CommandBuffer     commandBuffer = nullptr;
-    vk::Buffer                  srcBuffer;
-    vk::Buffer                  dstBuffer;
+    vk::raii::Buffer            srcBuffer     = nullptr;
+    vk::raii::Buffer            dstBuffer     = nullptr;
     std::vector<vk::BufferCopy> copyRegions;
     commandBuffer.copyBuffer( srcBuffer, dstBuffer, copyRegions );
   }
 
   {
-    vk::raii::CommandBuffer    commandBuffer = nullptr;
-    vk::Image                  srcImage;
+    vk::raii::CommandBuffer    commandBuffer  = nullptr;
+    vk::raii::Image            srcImage       = nullptr;
     vk::ImageLayout            srcImageLayout = {};
-    vk::Image                  dstImage;
+    vk::raii::Image            dstImage       = nullptr;
     vk::ImageLayout            dstImageLayout = {};
     std::vector<vk::ImageCopy> copyRegions;
     commandBuffer.copyImage( srcImage, srcImageLayout, dstImage, dstImageLayout, copyRegions );
@@ -444,35 +447,35 @@ int main()
 
   {
     vk::raii::CommandBuffer          commandBuffer = nullptr;
-    vk::Buffer                       buffer;
-    vk::Image                        image;
-    vk::ImageLayout                  imageLayout = {};
+    vk::raii::Buffer                 buffer        = nullptr;
+    vk::raii::Image                  image         = nullptr;
+    vk::ImageLayout                  imageLayout   = {};
     std::vector<vk::BufferImageCopy> regions;
     commandBuffer.copyBufferToImage( buffer, image, imageLayout, regions );
   }
 
   {
     vk::raii::CommandBuffer          commandBuffer = nullptr;
-    vk::Image                        image;
-    vk::ImageLayout                  imageLayout = {};
-    vk::Buffer                       buffer;
+    vk::raii::Image                  image         = nullptr;
+    vk::ImageLayout                  imageLayout   = {};
+    vk::raii::Buffer                 buffer        = nullptr;
     std::vector<vk::BufferImageCopy> regions;
     commandBuffer.copyImageToBuffer( image, imageLayout, buffer, regions );
   }
 
   {
     vk::raii::CommandBuffer commandBuffer = nullptr;
-    vk::Buffer              dstBuffer;
-    vk::DeviceSize          dstOffset = 0;
+    vk::raii::Buffer        dstBuffer     = nullptr;
+    vk::DeviceSize          dstOffset     = 0;
     std::vector<uint8_t>    data( 1024 );
     commandBuffer.updateBuffer<uint8_t>( dstBuffer, dstOffset, data );
   }
 
   {
     vk::raii::CommandBuffer commandBuffer = nullptr;
-    vk::Buffer              buffer;
-    vk::DeviceSize          offset = 0;
-    vk::DeviceSize          size   = vk::WholeSize;
+    vk::raii::Buffer        buffer        = nullptr;
+    vk::DeviceSize          offset        = 0;
+    vk::DeviceSize          size          = vk::WholeSize;
     commandBuffer.fillBuffer( buffer, offset, size, 0 );
   }
 
@@ -489,44 +492,44 @@ int main()
 
   {
     vk::raii::CommandBuffer commandBuffer = nullptr;
-    vk::QueryPool           queryPool;
-    uint32_t                query = 0;
-    vk::QueryControlFlags   flags = {};
+    vk::raii::QueryPool     queryPool     = nullptr;
+    uint32_t                query         = 0;
+    vk::QueryControlFlags   flags         = {};
     commandBuffer.beginQuery( queryPool, query, flags );
   }
 
   {
     vk::raii::CommandBuffer commandBuffer = nullptr;
-    vk::QueryPool           queryPool;
-    uint32_t                query = 0;
+    vk::raii::QueryPool     queryPool     = nullptr;
+    uint32_t                query         = 0;
     commandBuffer.endQuery( queryPool, query );
   }
 
   {
     vk::raii::CommandBuffer commandBuffer = nullptr;
-    vk::QueryPool           queryPool;
-    uint32_t                firstQuery = 0;
-    uint32_t                queryCount = 1;
+    vk::raii::QueryPool     queryPool     = nullptr;
+    uint32_t                firstQuery    = 0;
+    uint32_t                queryCount    = 1;
     commandBuffer.resetQueryPool( queryPool, firstQuery, queryCount );
   }
 
   {
     vk::raii::CommandBuffer   commandBuffer = nullptr;
     vk::PipelineStageFlagBits stage         = {};
-    vk::QueryPool             queryPool;
-    uint32_t                  query = 0;
+    vk::raii::QueryPool       queryPool     = nullptr;
+    uint32_t                  query         = 0;
     commandBuffer.writeTimestamp( stage, queryPool, query );
   }
 
   {
     vk::raii::CommandBuffer commandBuffer = nullptr;
-    vk::QueryPool           queryPool;
-    uint32_t                firstQuery = 0;
-    uint32_t                queryCount = 1;
-    vk::Buffer              dstBuffer;
-    vk::DeviceSize          dstOffset = 0;
-    vk::DeviceSize          stride    = 0;
-    vk::QueryResultFlags    flags     = {};
+    vk::raii::QueryPool     queryPool     = nullptr;
+    uint32_t                firstQuery    = 0;
+    uint32_t                queryCount    = 1;
+    vk::raii::Buffer        dstBuffer     = nullptr;
+    vk::DeviceSize          dstOffset     = 0;
+    vk::DeviceSize          stride        = 0;
+    vk::QueryResultFlags    flags         = {};
     commandBuffer.copyQueryPoolResults( queryPool, firstQuery, queryCount, dstBuffer, dstOffset, stride, flags );
   }
 
@@ -535,6 +538,10 @@ int main()
     std::vector<vk::CommandBuffer> secondaryCommandBuffers;
     commandBuffer.executeCommands( secondaryCommandBuffers );
   }
+
+  //=========================================
+  // Vulkan compute API interface definitions
+  //=========================================
 
   // Event commands
   {
@@ -700,6 +707,90 @@ int main()
     std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
     std::vector<vk::CopyDescriptorSet>  copyDescriptorSets;
     device.updateDescriptorSets( writeDescriptorSets, copyDescriptorSets );
+  }
+
+  // Command buffer building commands
+  {
+    vk::raii::CommandBuffer commandBuffer     = nullptr;
+    vk::PipelineBindPoint   pipelineBindPoint = {};
+    vk::raii::Pipeline      pipeline          = nullptr;
+    commandBuffer.bindPipeline( pipelineBindPoint, pipeline );
+  }
+
+  {
+    vk::raii::CommandBuffer        commandBuffer     = nullptr;
+    vk::PipelineBindPoint          pipelineBindPoint = {};
+    vk::raii::PipelineLayout       pipelineLayout    = nullptr;
+    uint32_t                       firstSet          = 0;
+    std::vector<vk::DescriptorSet> descriptorSets;
+    std::vector<uint32_t>          dynamicOffsets;
+    commandBuffer.bindDescriptorSets( pipelineBindPoint, pipelineLayout, firstSet, descriptorSets, dynamicOffsets );
+  }
+
+  {
+    vk::raii::CommandBuffer                commandBuffer = nullptr;
+    vk::raii::Image                        image         = nullptr;
+    vk::ImageLayout                        imageLayout   = {};
+    vk::ClearColorValue                    clearColor    = {};
+    std::vector<vk::ImageSubresourceRange> ranges;
+    commandBuffer.clearColorImage( image, imageLayout, clearColor, ranges );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    uint32_t                groupCountX   = 1;
+    uint32_t                groupCountY   = 1;
+    uint32_t                groupCountZ   = 1;
+    commandBuffer.dispatch( groupCountX, groupCountY, groupCountZ );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::raii::Buffer        buffer        = nullptr;
+    vk::DeviceSize          offset        = 0;
+    commandBuffer.dispatchIndirect( buffer, offset );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::raii::Event         event         = nullptr;
+    vk::PipelineStageFlags  stageMask     = {};
+    commandBuffer.setEvent( event, stageMask );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::raii::Event         event         = nullptr;
+    vk::PipelineStageFlags  stageMask     = {};
+    commandBuffer.resetEvent( event, stageMask );
+  }
+
+  {
+    vk::raii::CommandBuffer              commandBuffer = nullptr;
+    std::vector<vk::Event>               events;
+    vk::PipelineStageFlags               srcStageMask = {};
+    vk::PipelineStageFlags               dstStageMask = {};
+    std::vector<vk::MemoryBarrier>       memoryBarriers;
+    std::vector<vk::BufferMemoryBarrier> bufferMemoryBarriers;
+    std::vector<vk::ImageMemoryBarrier>  imageMemoryBarriers;
+    commandBuffer.waitEvents( events, srcStageMask, dstStageMask, memoryBarriers, bufferMemoryBarriers, imageMemoryBarriers );
+  }
+
+  {
+    vk::raii::CommandBuffer  commandBuffer  = nullptr;
+    vk::raii::PipelineLayout pipelineLayout = nullptr;
+    vk::ShaderStageFlags     stageFlags     = {};
+    uint32_t                 offset         = 0;
+    std::vector<uint32_t>    values;
+    commandBuffer.pushConstants( pipelineLayout, stageFlags, offset, static_cast<uint32_t>( values.size() * sizeof( uint32_t ) ), values.data() );
+  }
+  {
+    vk::raii::CommandBuffer  commandBuffer  = nullptr;
+    vk::raii::PipelineLayout pipelineLayout = nullptr;
+    vk::ShaderStageFlags     stageFlags     = {};
+    uint32_t                 offset         = 0;
+    std::vector<uint32_t>    values;
+    commandBuffer.pushConstants<uint32_t>( pipelineLayout, stageFlags, offset, values );
   }
 
   return 0;

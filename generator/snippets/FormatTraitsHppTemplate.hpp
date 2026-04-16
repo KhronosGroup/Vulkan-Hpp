@@ -1,4 +1,4 @@
-${licenseHeader}
+${copyrightMessage}
 
 #ifndef VULKAN_FORMAT_TRAITS_HPP
 #  define VULKAN_FORMAT_TRAITS_HPP

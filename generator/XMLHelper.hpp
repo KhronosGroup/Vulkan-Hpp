@@ -27,7 +27,7 @@
 #include <tinyxml2.h>
 #include <vector>
 
-struct TypeInfo;
+struct Type;
 
 enum class MultipleAllowed
 {
@@ -35,19 +35,25 @@ enum class MultipleAllowed
   Yes
 };
 
-void        checkAttributes( std::string const &                                  intro,
-                             int                                                  line,
-                             std::map<std::string, std::string> const &           attributes,
-                             std::map<std::string, std::set<std::string>> const & required,
-                             std::map<std::string, std::set<std::string>> const & optional );
-void        checkElements( std::string const &                               intro,
-                           int                                               line,
-                           std::vector<tinyxml2::XMLElement const *> const & elements,
-                           std::map<std::string, MultipleAllowed> const &    required,
-                           std::map<std::string, MultipleAllowed> const &    optional = {} );
-void        checkForError( std::string const & intro, bool condition, int line, std::string const & message );
-void        checkForWarning( std::string const & intro, bool condition, int line, std::string const & message );
-std::string generateCopyrightMessage( std::string const & comment );
+void checkAttributes( std::string const &                                  intro,
+                      int                                                  line,
+                      std::map<std::string, std::string> const &           attributes,
+                      std::map<std::string, std::set<std::string>> const & required,
+                      std::map<std::string, std::set<std::string>> const & optional );
+void checkElements( std::string const &                               intro,
+                    int                                               line,
+                    std::vector<tinyxml2::XMLElement const *> const & elements,
+                    std::map<std::string, MultipleAllowed> const &    required,
+                    std::map<std::string, MultipleAllowed> const &    optional = {} );
+void checkForError( std::string const & intro, bool condition, int line, std::string const & message );
+void checkForWarning( std::string const & intro, bool condition, int line, std::string const & message );
+template <typename T>
+bool containsByName( std::vector<T> const & values, std::string const & name );
+template <typename T>
+typename std::vector<T>::const_iterator findByName( std::vector<T> const & values, std::string const & name );
+template <typename T>
+typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name );
+std::string                       generateCopyrightMessage( std::string const & comment );
 void        generateFileFromTemplate( std::string const & fileName, std::string const & snippetFile, std::map<std::string, std::string> const & replacements );
 std::string generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes );
 std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element );
@@ -56,7 +62,7 @@ std::vector<tinyxml2::XMLElement const *>        getChildElements( ElementContai
 std::string                                      readComment( std::string const & intro, tinyxml2::XMLElement const * element );
 std::pair<std::vector<std::string>, std::string> readModifiers( std::string const & intro, tinyxml2::XMLNode const * node );
 std::string                                      readSnippet( std::string const & snippetFile );
-TypeInfo                                         readTypeInfo( tinyxml2::XMLElement const * element );
+Type                                             readType( tinyxml2::XMLElement const * element );
 std::string                                      replaceWithMap( std::string const & input, std::map<std::string, std::string> const & replacements );
 std::string                                      stripPostfix( std::string const & value, std::string const & postfix );
 std::string                                      stripPrefix( std::string const & value, std::string const & prefix );
@@ -82,34 +88,34 @@ private:
   std::mutex m_messageMutex;
 };
 
-SyncedMessageHandler messager;
+inline SyncedMessageHandler messager;
 
-struct TypeInfo
+struct Type
 {
   std::string compose( std::string const & prefixToStrip, std::string const & nameSpace = "" ) const
   {
     return prefix +
            ( prefix.empty() ? "" : " " ) +
            ( prefixToStrip.empty()
-               ? type
-               : ( ( ( type.starts_with( prefixToStrip ) && !nameSpace.empty() ) ? ( nameSpace + "::" ) : "" ) + stripPrefix( type, prefixToStrip ) ) ) +
+               ? name
+               : ( ( ( name.starts_with( prefixToStrip ) && !nameSpace.empty() ) ? ( nameSpace + "::" ) : "" ) + stripPrefix( name, prefixToStrip ) ) ) +
            ( postfix.empty() ? "" : " " ) +
            postfix;
   }
 
-  bool operator==( TypeInfo const & rhs ) const noexcept
+  bool operator==( Type const & rhs ) const noexcept
   {
-    return ( prefix == rhs.prefix ) && ( type == rhs.type ) && ( postfix == rhs.postfix );
+    return ( prefix == rhs.prefix ) && ( name == rhs.name ) && ( postfix == rhs.postfix );
   }
 
-  bool operator!=( TypeInfo const & rhs ) const noexcept
+  bool operator!=( Type const & rhs ) const noexcept
   {
     return !operator==( rhs );
   }
 
-  bool operator<( TypeInfo const & rhs ) const noexcept
+  bool operator<( Type const & rhs ) const noexcept
   {
-    return ( prefix < rhs.prefix ) || ( ( prefix == rhs.prefix ) && ( ( type < rhs.type ) || ( ( type == rhs.type ) && ( postfix < rhs.postfix ) ) ) );
+    return ( prefix < rhs.prefix ) || ( ( prefix == rhs.prefix ) && ( ( name < rhs.name ) || ( ( name == rhs.name ) && ( postfix < rhs.postfix ) ) ) );
   }
 
   bool isConstPointer() const noexcept
@@ -133,7 +139,7 @@ struct TypeInfo
   }
 
   std::string prefix  = {};
-  std::string type    = {};
+  std::string name    = {};
   std::string postfix = {};
 };
 
@@ -277,6 +283,24 @@ inline void checkForWarning( std::string const & intro, bool condition, int line
   }
 }
 
+template <typename T>
+bool containsByName( std::vector<T> const & values, std::string const & name )
+{
+  return std::ranges::any_of( values, [&name]( T const & value ) { return value.name == name; } );
+}
+
+template <typename T>
+typename std::vector<T>::const_iterator findByName( std::vector<T> const & values, std::string const & name )
+{
+  return std::ranges::find_if( values, [&name]( T const & value ) { return value.name == name; } );
+}
+
+template <typename T>
+typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name )
+{
+  return std::ranges::find_if( values, [&name]( T const & value ) { return value.name == name; } );
+}
+
 inline std::string generateCopyrightMessage( std::string const & comment )
 {
   std::string copyrightMessage = comment;
@@ -396,26 +420,26 @@ inline std::string readSnippet( std::string const & snippetFile )
   return oss.str();
 }
 
-inline TypeInfo readTypeInfo( tinyxml2::XMLElement const * element )
+inline Type readType( tinyxml2::XMLElement const * element )
 {
-  TypeInfo                  typeInfo;
+  Type                      type;
   tinyxml2::XMLNode const * previousSibling = element->PreviousSibling();
   if ( previousSibling && previousSibling->ToText() )
   {
-    typeInfo.prefix = trim( previousSibling->Value() );
+    type.prefix = trim( previousSibling->Value() );
   }
-  typeInfo.type                         = element->GetText();
+  type.name                             = element->GetText();
   tinyxml2::XMLNode const * nextSibling = element->NextSibling();
   if ( nextSibling && nextSibling->ToText() )
   {
-    typeInfo.postfix = trimStars( trimEnd( nextSibling->Value() ) );
+    type.postfix = trimStars( trimEnd( nextSibling->Value() ) );
   }
-  if ( typeInfo.prefix.starts_with( "const" ) )
+  if ( type.prefix.starts_with( "const" ) )
   {
-    typeInfo.prefix  = trim( typeInfo.prefix.substr( 5 ) );
-    typeInfo.postfix = ( typeInfo.postfix.empty() ? "const" : ( "const " + typeInfo.postfix ) );
+    type.prefix  = trim( type.prefix.substr( 5 ) );
+    type.postfix = ( type.postfix.empty() ? "const" : ( "const " + type.postfix ) );
   }
-  return typeInfo;
+  return type;
 }
 
 inline std::string replaceWithMap( std::string const & input, std::map<std::string, std::string> const & replacements )
@@ -556,7 +580,7 @@ inline std::string toString( tinyxml2::XMLError error )
   }
 }
 
-std::string toUpperCase( std::string const & name )
+inline std::string toUpperCase( std::string const & name )
 {
   assert( !name.empty() );
   std::string convertedName;
@@ -609,7 +633,7 @@ inline std::string trimStars( std::string const & input )
   return result;
 }
 
-void writeToFile( std::string const & str, std::string const & fileName )
+inline void writeToFile( std::string const & str, std::string const & fileName )
 {
   std::ofstream ofs( fileName );
   assert( !ofs.fail() );

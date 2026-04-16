@@ -1,4 +1,4 @@
-${licenseHeader}
+${copyrightMessage}
 
 #ifndef VULKAN_HPP_MACROS_HPP
 #define VULKAN_HPP_MACROS_HPP

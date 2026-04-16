@@ -1703,6 +1703,43 @@ int main()
     commandBuffer.pushConstants<uint32_t>( pipelineLayout, stageFlags, offset, values );
   }
 
+  //==========================================
+  // Vulkan graphics API interface definitions
+  //==========================================
+
+  // Graphics Pipeline commands
+  {
+    vk::Device                                  device;
+    vk::PipelineCache                           pipelineCache;
+    std::vector<vk::GraphicsPipelineCreateInfo> graphicsPipelineCreateInfos;
+    vk::AllocationCallbacks                     allocationCallbacks;
+    std::vector<vk::Pipeline>                   pipelines;
+    vk::Result                                  result = device.createGraphicsPipelines(
+      pipelineCache, static_cast<uint32_t>( graphicsPipelineCreateInfos.size() ), graphicsPipelineCreateInfos.data(), &allocationCallbacks, pipelines.data() );
+  }
+  {
+    vk::Device                                  device;
+    vk::PipelineCache                           pipelineCache;
+    std::vector<vk::GraphicsPipelineCreateInfo> graphicsPipelineCreateInfos;
+    vk::ResultValue<std::vector<vk::Pipeline>>  rv = device.createGraphicsPipelines( pipelineCache, graphicsPipelineCreateInfos );
+  }
+  {
+    vk::Device                                  device;
+    vk::PipelineCache                           pipelineCache;
+    std::vector<vk::GraphicsPipelineCreateInfo> graphicsPipelineCreateInfos;
+    vk::AllocationCallbacks                     allocationCallbacks;
+    using PipelineAllocator = std::allocator<vk::Pipeline>;
+    PipelineAllocator                          pipelineAllocator;
+    vk::ResultValue<std::vector<vk::Pipeline>> rv =
+      device.createGraphicsPipelines( pipelineCache, graphicsPipelineCreateInfos, allocationCallbacks, pipelineAllocator );
+  }
+  {
+    vk::Device                     device;
+    vk::PipelineCache              pipelineCache;
+    vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo;
+    vk::ResultValue<vk::Pipeline>  rv = device.createGraphicsPipeline( pipelineCache, graphicsPipelineCreateInfo );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

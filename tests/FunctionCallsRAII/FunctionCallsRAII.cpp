@@ -793,5 +793,23 @@ int main()
     commandBuffer.pushConstants<uint32_t>( pipelineLayout, stageFlags, offset, values );
   }
 
+  //==========================================
+  // Vulkan graphics API interface definitions
+  //==========================================
+
+  // Graphics Pipeline commands
+  {
+    vk::raii::Device                            device        = nullptr;
+    vk::raii::PipelineCache                     pipelineCache = nullptr;
+    std::vector<vk::GraphicsPipelineCreateInfo> graphicsPipelineCreateInfos;
+    std::vector<vk::raii::Pipeline>             pipelines = device.createGraphicsPipelines( pipelineCache, graphicsPipelineCreateInfos );
+  }
+  {
+    vk::raii::Device               device        = nullptr;
+    vk::raii::PipelineCache        pipelineCache = nullptr;
+    vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo;
+    vk::raii::Pipeline             pipelines = device.createGraphicsPipeline( pipelineCache, graphicsPipelineCreateInfo );
+  }
+
   return 0;
 }

@@ -1740,6 +1740,91 @@ int main()
     vk::ResultValue<vk::Pipeline>  rv = device.createGraphicsPipeline( pipelineCache, graphicsPipelineCreateInfo );
   }
 
+  // Pass commands
+  {
+    vk::Device                device;
+    vk::FramebufferCreateInfo framebufferCreateInfo;
+    vk::AllocationCallbacks   allocationCallbacks;
+    vk::Framebuffer           framebuffer;
+    vk::Result                result = device.createFramebuffer( &framebufferCreateInfo, &allocationCallbacks, &framebuffer );
+  }
+  {
+    vk::Device                device;
+    vk::FramebufferCreateInfo framebufferCreateInfo;
+    vk::Framebuffer           framebuffer = device.createFramebuffer( framebufferCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::Framebuffer         framebuffer;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyFramebuffer( framebuffer, &allocationCallbacks );
+  }
+  {
+    vk::Device      device;
+    vk::Framebuffer framebuffer;
+    device.destroyFramebuffer( framebuffer );
+  }
+  {
+    vk::Device              device;
+    vk::Framebuffer         framebuffer;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( framebuffer, &allocationCallbacks );
+  }
+  {
+    vk::Device      device;
+    vk::Framebuffer framebuffer;
+    device.destroy( framebuffer );
+  }
+
+  {
+    vk::Device               device;
+    vk::RenderPassCreateInfo renderPassCreateInfo;
+    vk::AllocationCallbacks  allocationCallbacks;
+    vk::RenderPass           renderPass;
+    vk::Result               result = device.createRenderPass( &renderPassCreateInfo, &allocationCallbacks, &renderPass );
+  }
+  {
+    vk::Device               device;
+    vk::RenderPassCreateInfo renderPassCreateInfo;
+    vk::RenderPass           renderPass = device.createRenderPass( renderPassCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::RenderPass          renderPass;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyRenderPass( renderPass, &allocationCallbacks );
+  }
+  {
+    vk::Device     device;
+    vk::RenderPass renderPass;
+    device.destroyRenderPass( renderPass );
+  }
+  {
+    vk::Device              device;
+    vk::RenderPass          renderPass;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( renderPass, &allocationCallbacks );
+  }
+  {
+    vk::Device     device;
+    vk::RenderPass renderPass;
+    device.destroy( renderPass );
+  }
+
+  {
+    vk::Device     device;
+    vk::RenderPass renderPass;
+    vk::Extent2D   granularity;
+    device.getRenderAreaGranularity( renderPass, &granularity );
+  }
+  {
+    vk::Device     device;
+    vk::RenderPass renderPass;
+    vk::Extent2D   granularity = device.getRenderAreaGranularity( renderPass );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

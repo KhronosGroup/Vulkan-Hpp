@@ -109,7 +109,7 @@ if( VULKAN_HPP_GENERATOR_BUILD )
 	source_group( TinyXML2 FILES ${TINYXML2_HEADERS} ${TINYXML2_SOURCES} )
 
 	# The generator executable
-	add_executable( VulkanHppGenerator "generator/VulkanHppGenerator.cpp" "generator/VulkanHppGenerator.hpp" "generator/XMLHelper.hpp" ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
+	add_executable( VulkanHppGenerator "generator/VulkanHppGenerator.cpp" "generator/VulkanHppGenerator.hpp" "generator/VkXMLParser.cpp" "generator/VkXMLParser.hpp" "generator/XMLHelper.hpp" ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
 	vulkan_hpp__setup_warning_level( NAME VulkanHppGenerator )
 	target_compile_definitions( VulkanHppGenerator PUBLIC BASE_PATH="${CMAKE_CURRENT_SOURCE_DIR}" VK_SPEC="${vk_spec}" )
 	target_include_directories( VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR} )

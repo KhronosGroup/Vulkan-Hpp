@@ -1,4 +1,4 @@
-${licenseHeader}
+${copyrightMessage}
 
 #ifndef VULKAN_EXTENSION_INSPECTION_HPP
 #define VULKAN_EXTENSION_INSPECTION_HPP

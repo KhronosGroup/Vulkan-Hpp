@@ -1,4 +1,4 @@
-${licenseHeader}
+${copyrightMessage}
 
 #ifndef VULKAN_HASH_HPP
 #  define VULKAN_HASH_HPP

@@ -74,7 +74,7 @@ std::vector<std::string>::iterator VideoHppGenerator::addImplicitlyRequiredTypes
   assert( structIt != m_structs.end() );
   for ( auto const & member : structIt->second.members )
   {
-    auto memberTypeIt = m_types.find( member.type.type );
+    auto memberTypeIt = m_types.find( member.type.name );
     if ( ( memberTypeIt != m_types.end() ) && ( memberTypeIt->second.category == TypeCategory::Struct ) )
     {
       reqIt = addImplicitlyRequiredTypes( memberTypeIt, extensionData, reqIt );
@@ -119,16 +119,16 @@ void VideoHppGenerator::checkCorrectness() const
     for ( auto const & member : structure.second.members )
     {
       // check that each member type is known
-      checkForError( m_types.contains( member.type.type ), member.xmlLine, "struct member uses unknown type <" + member.type.type + ">" );
+      checkForError( m_types.contains( member.type.name ), member.xmlLine, "struct member uses unknown type <" + member.type.name + ">" );
 
       // check that all member types are required in some extension (it's just a warning!!)
-      if ( member.type.type.starts_with( "StdVideo" ) )
+      if ( member.type.name.starts_with( "StdVideo" ) )
       {
-        auto memberTypeIt = m_types.find( member.type.type );
+        auto memberTypeIt = m_types.find( member.type.name );
         assert( memberTypeIt != m_types.end() );
         checkForWarning( !memberTypeIt->second.requiredBy.empty(),
                          member.xmlLine,
-                         "struct member type <" + member.type.type + "> used in struct <" + structure.first + "> is never required for any extension" );
+                         "struct member type <" + member.type.name + "> used in struct <" + structure.first + "> is never required for any extension" );
       }
 
       // check that all array sizes are a known constant
@@ -360,16 +360,16 @@ std::string VideoHppGenerator::generateStructCompareOperators( std::pair<std::st
   for ( size_t i = 0; i < structData.second.members.size(); i++ )
   {
     MemberData const & member = structData.second.members[i];
-    auto               typeIt = m_types.find( member.type.type );
+    auto               typeIt = m_types.find( member.type.name );
     assert( typeIt != m_types.end() );
-    if ( ( typeIt->second.category == TypeCategory::ExternalType ) && member.type.postfix.empty() && !simpleTypes.contains( member.type.type ) )
+    if ( ( typeIt->second.category == TypeCategory::ExternalType ) && member.type.postfix.empty() && !simpleTypes.contains( member.type.name ) )
     {
       // this type might support operator==() or operator<=>()... that is, use memcmp
-      compareMembers += intro + "( memcmp( &" + member.name + ", &rhs." + member.name + ", sizeof( " + member.type.type + " ) ) == 0 )";
+      compareMembers += intro + "( memcmp( &" + member.name + ", &rhs." + member.name + ", sizeof( " + member.type.name + " ) ) == 0 )";
     }
     else
     {
-      assert( member.type.type != "char" );
+      assert( member.type.name != "char" );
       // for all others, we use the operator== of that type
       compareMembers += intro + "( " + member.name + " == rhs." + member.name + " )";
     }
@@ -398,10 +398,10 @@ std::string VideoHppGenerator::generateStructMembers( std::pair<std::string, Str
   {
     members += "    ";
     std::string type;
-    if ( !member.bitCount.empty() && member.type.type.starts_with( "StdVideo" ) )
+    if ( !member.bitCount.empty() && member.type.name.starts_with( "StdVideo" ) )
     {
       assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encounterd a different case
-      type = member.type.type;
+      type = member.type.name;
     }
     else if ( member.arraySizes.empty() )
     {
@@ -424,12 +424,12 @@ std::string VideoHppGenerator::generateStructMembers( std::pair<std::string, Str
     else
     {
       members += " = ";
-      auto enumIt = m_enums.find( member.type.type );
+      auto enumIt = m_enums.find( member.type.name );
       if ( member.arraySizes.empty() && ( enumIt != m_enums.end() ) && member.type.postfix.empty() )
       {
         assert( member.type.prefix.empty() && member.arraySizes.empty() && !enumIt->second.values.empty() );
 
-        std::string prefix    = toUpperCase( member.type.type ) + "_";
+        std::string prefix    = toUpperCase( member.type.name ) + "_";
         std::string valueName = "e" + toCamelCase( stripPrefix( enumIt->second.values.front().name, prefix ), true );
 
         members += type + "::" + valueName;
@@ -829,7 +829,7 @@ void VideoHppGenerator::readStructMember( tinyxml2::XMLElement const * element, 
     }
     else if ( value == "type" )
     {
-      memberData.type = readTypeInfo( child );
+      memberData.type = readType( child );
     }
   }
   assert( !name.empty() );
@@ -1047,22 +1047,22 @@ void VideoHppGenerator::sortStructs()
         assert( structIt != m_structs.end() );
         for ( auto const & member : structIt->second.members )
         {
-          auto memberTypeIt = m_types.find( member.type.type );
+          auto memberTypeIt = m_types.find( member.type.name );
           assert( memberTypeIt != m_types.end() );
-          if ( ( memberTypeIt->second.category == TypeCategory::Struct ) && ( std::find( ext.requireData.types.begin(), reqIt, member.type.type ) == reqIt ) )
+          if ( ( memberTypeIt->second.category == TypeCategory::Struct ) && ( std::find( ext.requireData.types.begin(), reqIt, member.type.name ) == reqIt ) )
           {
-            auto it = std::find( std::next( reqIt ), ext.requireData.types.end(), member.type.type );
+            auto it = std::find( std::next( reqIt ), ext.requireData.types.end(), member.type.name );
             if ( it != ext.requireData.types.end() )
             {
               ext.requireData.types.erase( it );
-              reqIt = std::next( ext.requireData.types.insert( reqIt, member.type.type ) );
+              reqIt = std::next( ext.requireData.types.insert( reqIt, member.type.name ) );
             }
 #if !defined( NDEBUG )
             else
             {
               auto depIt = std::ranges::find_if( m_extensions, [&ext]( ExtensionData const & ed ) { return ed.name == ext.depends; } );
               assert( ( depIt != m_extensions.end() ) &&
-                      std::ranges::any_of( depIt->requireData.types, [&member]( std::string const & type ) { return type == member.type.type; } ) );
+                      std::ranges::any_of( depIt->requireData.types, [&member]( std::string const & type ) { return type == member.type.name; } ) );
             }
 #endif
           }

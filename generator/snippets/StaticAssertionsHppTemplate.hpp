@@ -1,4 +1,4 @@
-${licenseHeader}
+${copyrightMessage}
 
 #ifndef VULKAN_STATIC_ASSERTIONS_HPP
 #  define VULKAN_STATIC_ASSERTIONS_HPP

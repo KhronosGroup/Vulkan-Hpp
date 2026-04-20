@@ -75,7 +75,7 @@ private:
 
   struct MemberData
   {
-    TypeInfo                 type       = {};
+    Type                     type       = {};
     std::string              name       = {};
     std::vector<std::string> arraySizes = {};
     std::string              bitCount   = {};

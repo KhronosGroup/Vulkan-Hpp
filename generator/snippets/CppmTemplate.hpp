@@ -1,4 +1,4 @@
-${licenseHeader}
+${copyrightMessage}
 
 module;
 

@@ -1,4 +1,5 @@
-${licenseHeader}
+${copyrightMessage}
+
 #ifndef VULKAN_TO_STRING_HPP
 #  define VULKAN_TO_STRING_HPP
 

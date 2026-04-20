@@ -1,4 +1,5 @@
-${licenseHeader}
+${copyrightMessage}
+
 #ifndef VULKAN_RAII_HPP
 #define VULKAN_RAII_HPP
 

@@ -1,4 +1,4 @@
-${licenseHeader}
+${copyrightMessage}
 
 #ifndef VULKAN_ENUMS_HPP
 #  define VULKAN_ENUMS_HPP

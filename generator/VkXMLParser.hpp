@@ -30,10 +30,11 @@ struct BaseType
 
 struct Bitmask
 {
-  std::map<std::string, int> aliases = {};
-  std::string                require = {};
-  Type                       type    = {};
-  int                        xmlLine = {};
+  std::map<std::string, int> aliases   = {};
+  std::string                bitValues = {};
+  std::string                require   = {};
+  Type                       type      = {};
+  int                        xmlLine   = {};
 };
 
 struct CategoryAlias
@@ -61,9 +62,9 @@ struct Param
 
   bool operator==( Param const & rhs ) const noexcept
   {
-    return ( altLen == rhs.altLen ) && ( api == rhs.api ) && ( arraySizes == rhs.arraySizes ) && ( externSync == rhs.externSync ) &&
-           ( len == rhs.len ) && ( name == rhs.name ) && ( noAutoValidity == rhs.noAutoValidity ) && ( objectType == rhs.objectType ) &&
-           ( optional == rhs.optional ) && ( stride == rhs.stride ) && ( type == rhs.type ) && ( validStructs == rhs.validStructs );
+    return ( altLen == rhs.altLen ) && ( api == rhs.api ) && ( arraySizes == rhs.arraySizes ) && ( externSync == rhs.externSync ) && ( len == rhs.len ) &&
+           ( name == rhs.name ) && ( noAutoValidity == rhs.noAutoValidity ) && ( objectType == rhs.objectType ) && ( optional == rhs.optional ) &&
+           ( stride == rhs.stride ) && ( type == rhs.type ) && ( validStructs == rhs.validStructs );
   }
 };
 
@@ -107,6 +108,21 @@ struct Define
   int                      xmlLine = {};
 };
 
+struct SupersededName
+{
+  std::string name         = {};
+  std::string supersededBy = {};
+  int         xmlLine      = {};
+};
+
+struct Deprecate
+{
+  std::string                 explanationLink = {};
+  std::vector<SupersededName> commands        = {};
+  std::vector<SupersededName> types           = {};
+  int                         xmlLine         = {};
+};
+
 struct EnumValueAlias
 {
   std::string api        = {};
@@ -117,7 +133,7 @@ struct EnumValueAlias
 struct EnumValue
 {
   std::map<std::string, EnumValueAlias> aliases = {};
-  std::string                           bitpos  = {};
+  std::string                           bitPos  = {};
   std::string                           name    = {};
   std::string                           value   = {};
   int                                   xmlLine = {};
@@ -144,12 +160,85 @@ struct Enums
 {
   std::map<std::string, Constant>   constants  = {};
   std::map<std::string, EnumValues> enumValues = {};
+  int                               xmlLine    = {};
 };
 
 struct ExternalType
 {
   std::string includedBy = {};
   int         xmlLine    = {};
+};
+
+struct NameElement
+{
+  std::string name    = {};
+  int         xmlLine = {};
+};
+
+struct RequireEnum
+{
+  std::string alias       = {};
+  std::string api         = {};
+  std::string bitPos      = {};
+  std::string comment     = {};
+  std::string deprectated = {};
+  std::string dir         = {};
+  std::string extends     = {};
+  std::string extNumber   = {};
+  std::string offset      = {};
+  std::string name        = {};
+  std::string value       = {};
+  int         xmlLine     = {};
+};
+
+struct FeatureElement
+{
+  std::string name      = {};
+  std::string structure = {};
+  int         xmlLine   = {};
+};
+
+struct RequireType
+{
+  std::string comment = {};
+  std::string name    = {};
+  int         xmlLine = {};
+};
+
+struct Remove
+{
+  std::string                 comment    = {};
+  std::string                 reasonLink = {};
+  std::vector<NameElement>    commands   = {};
+  std::vector<NameElement>    enums      = {};
+  std::vector<FeatureElement> features   = {};
+  std::vector<NameElement>    types      = {};
+  int                         xmlLine    = {};
+};
+
+struct Require
+{
+  std::vector<NameElement>    commands = {};
+  std::string                 comment  = {};
+  std::vector<std::string>    depends  = {};
+  std::vector<RequireEnum>    enums    = {};
+  std::vector<FeatureElement> features = {};
+  std::vector<RequireType>    types    = {};
+  int                         xmlLine  = {};
+};
+
+struct Feature
+{
+  std::vector<std::string> api        = {};
+  std::string              apiType    = {};
+  std::string              comment    = {};
+  std::vector<std::string> depends    = {};
+  std::vector<Deprecate>   deprecates = {};
+  std::string              name       = {};
+  std::string              number     = {};
+  std::vector<Remove>      removes    = {};
+  std::vector<Require>     require    = {};
+  int                      xmlLine    = {};
 };
 
 struct FuncPointerParam
@@ -271,6 +360,7 @@ struct Types
   std::map<std::string, Union>        unions        = {};
 
   std::vector<CategoryAlias> structAliases = {};
+  std::set<std::string>      types         = {};
 };
 
 struct Vkxml
@@ -283,6 +373,7 @@ struct Vkxml
   std::map<std::string, Define>       defines       = {};
   std::map<std::string, Enum>         enums         = {};
   std::map<std::string, ExternalType> externalTypes = {};
+  std::vector<Feature>                features      = {};
   std::map<std::string, FuncPointer>  funcPointers  = {};
   std::map<std::string, Handle>       handles       = {};
   std::map<std::string, int>          includes      = {};
@@ -290,6 +381,10 @@ struct Vkxml
   std::map<std::string, Struct>       structs       = {};
   std::map<std::string, Tag>          tags          = {};
   std::map<std::string, Union>        unions        = {};
+
+  std::set<std::string> types = {};
 };
+
+std::string concatenate( std::vector<std::string> const & list );
 
 Vkxml parseVkXml( tinyxml2::XMLDocument const & document, std::string const & api );

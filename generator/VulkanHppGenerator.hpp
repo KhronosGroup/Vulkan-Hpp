@@ -550,6 +550,7 @@ private:
                                                               size_t                                    returnParam0,
                                                               size_t                                    returnParam1 ) const;
   void                                    extendSpecialCommands( std::string const & name, bool definition, bool raii, std::string & cmd ) const;
+  FeatureData                             featureToFeatureData( Feature const & feature, bool supported );
   void                                    filterLenMembers();
   std::string                             findTag( std::string const & name, std::string const & postfix = "" ) const;
   std::vector<MemberData>::const_iterator findHandleMember( std::vector<MemberData> const & memberData ) const;
@@ -1153,8 +1154,6 @@ private:
   void                                                   readExtension( tinyxml2::XMLElement const * element );
   void readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData, bool extensionSupported );
   void readExtensions( tinyxml2::XMLElement const * element );
-  void readFeature( tinyxml2::XMLElement const * element );
-  void readFeatureRequire( tinyxml2::XMLElement const * element, FeatureData & featureData, bool featureSupported );
   void readFormat( tinyxml2::XMLElement const * element );
   void readFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData );
   void readFormatPlane( tinyxml2::XMLElement const * element, FormatData & formatData );

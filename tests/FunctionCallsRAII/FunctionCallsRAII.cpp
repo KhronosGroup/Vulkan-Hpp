@@ -810,6 +810,46 @@ int main()
     vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo;
     vk::raii::Pipeline             pipelines = device.createGraphicsPipeline( pipelineCache, graphicsPipelineCreateInfo );
   }
+  {
+    vk::raii::Device                            device        = nullptr;
+    vk::raii::PipelineCache                     pipelineCache = nullptr;
+    std::vector<vk::GraphicsPipelineCreateInfo> graphicsPipelineCreateInfos;
+    vk::raii::Pipelines                         pipelines( device, pipelineCache, graphicsPipelineCreateInfos );
+  }
+  {
+    vk::raii::Device               device        = nullptr;
+    vk::raii::PipelineCache        pipelineCache = nullptr;
+    vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo;
+    vk::raii::Pipeline             pipeline( device, pipelineCache, graphicsPipelineCreateInfo );
+  }
+
+  // Pass commands
+  {
+    vk::raii::Device          device = nullptr;
+    vk::FramebufferCreateInfo framebufferCreateInfo;
+    vk::raii::Framebuffer     framebuffer = device.createFramebuffer( framebufferCreateInfo );
+  }
+  {
+    vk::raii::Device          device = nullptr;
+    vk::FramebufferCreateInfo framebufferCreateInfo;
+    vk::raii::Framebuffer     framebuffer( device, framebufferCreateInfo );
+  }
+
+  {
+    vk::raii::Device         device = nullptr;
+    vk::RenderPassCreateInfo renderPassCreateInfo;
+    vk::raii::RenderPass     renderPass = device.createRenderPass( renderPassCreateInfo );
+  }
+  {
+    vk::raii::Device         device = nullptr;
+    vk::RenderPassCreateInfo renderPassCreateInfo;
+    vk::raii::RenderPass     renderPass( device, renderPassCreateInfo );
+  }
+
+  {
+    vk::raii::RenderPass renderPass  = nullptr;
+    vk::Extent2D         granularity = renderPass.getRenderAreaGranularity();
+  }
 
   return 0;
 }

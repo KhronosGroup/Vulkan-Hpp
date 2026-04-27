@@ -377,7 +377,7 @@ private:
     std::string                                 bitCount       = {};
     std::string                                 deprecated     = {};
     std::vector<std::string>                    lenExpressions = {};
-    std::string                                 limitType      = {};
+    std::vector<std::string>                    limitType      = {};
     std::vector<std::pair<std::string, size_t>> lenMembers     = {};
     bool                                        noAutoValidity = {};
     std::vector<bool>                           optional       = {};
@@ -465,7 +465,6 @@ private:
   };
 
 private:
-  void        addCommand( std::string const & name, CommandData && commandData );
   void        addCommandToHandle( std::pair<std::string, CommandData> const & commandData );
   void        addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredBy );
   std::string addTitleAndProtection( std::string const & title, std::string const & strIf, std::string const & strElse = {} ) const;
@@ -560,8 +559,8 @@ private:
                                                                   std::function<void( std::pair<std::string, Bitmask> const & )> const & bitmaskAction ) const;
   void forEachRequiredCommand( std::vector<RequireData> const &                                                             requireData,
                                std::function<void( NameLine const &, std::pair<std::string, CommandData> const & )> const & commandAction ) const;
-  void forEachRequiredConstant( std::vector<RequireData> const &                                            requireData,
-                                std::set<std::string> &                                                     encounteredConstants,
+  void forEachRequiredConstant( std::vector<RequireData> const &                                        requireData,
+                                std::set<std::string> &                                                 encounteredConstants,
                                 std::function<void( std::pair<std::string, Constant> const & )> const & constantAction ) const;
   void forEachRequiredEnumConstant( std::vector<RequireData> const &                        requireData,
                                     std::set<std::string> &                                 encounteredEnumConstants,
@@ -1147,15 +1146,11 @@ private:
                                                                                std::vector<size_t> const &               returnParams,
                                                                                std::set<size_t> const &                  singularParams,
                                                                                std::set<size_t> const &                  skippedParams ) const;
-  void                                                   readCommand( tinyxml2::XMLElement const * element );
-  std::pair<bool, ParamData>                             readCommandParam( tinyxml2::XMLElement const * element, std::vector<ParamData> const & params );
-  std::pair<std::string, Type>                           readCommandProto( tinyxml2::XMLElement const * element, std::string const & prefix );
-  void                                                   readCommands( tinyxml2::XMLElement const * element );
   std::string                                            readComment( tinyxml2::XMLElement const * element ) const;
   DeprecatedCommandData                                  readDeprecatedCommand( tinyxml2::XMLElement const * element ) const;
   DeprecatedTypeData                                     readDeprecatedType( tinyxml2::XMLElement const * element ) const;
   DeprecateData                                          readDeprecateData( tinyxml2::XMLElement const * element ) const;
-  void readExtension( tinyxml2::XMLElement const * element );
+  void                                                   readExtension( tinyxml2::XMLElement const * element );
   void readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData, bool extensionSupported );
   void readExtensions( tinyxml2::XMLElement const * element );
   void readFeature( tinyxml2::XMLElement const * element );

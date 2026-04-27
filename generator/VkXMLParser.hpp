@@ -43,6 +43,42 @@ struct CategoryAlias
   int         xmlLine = {};
 };
 
+struct Param
+{
+  std::string              altLen         = {};
+  std::vector<std::string> api            = {};
+  std::vector<std::string> arraySizes     = {};
+  std::string              externSync     = {};
+  std::string              len            = {};
+  std::string              name           = {};
+  std::string              noAutoValidity = {};
+  std::string              objectType     = {};
+  std::vector<std::string> optional       = {};
+  std::string              stride         = {};
+  Type                     type           = {};
+  std::string              validStructs   = {};
+  int                      xmlLine        = {};
+};
+
+struct Command
+{
+  std::string                allowNoQueues        = {};
+  std::map<std::string, int> aliases              = {};
+  std::vector<std::string>   api                  = {};
+  std::vector<std::string>   cmdBufferLevel       = {};
+  std::string                conditionalRendering = {};
+  std::vector<std::string>   errorCodes           = {};
+  std::vector<std::string>   export_              = {};
+  std::vector<Param>         params               = {};
+  std::vector<std::string>   queues               = {};
+  std::string                renderPass           = {};
+  Type                       returnType           = {};
+  std::vector<std::string>   successCodes         = {};
+  std::vector<std::string>   tasks                = {};
+  std::string                videoCoding          = {};
+  int                        xmlLine              = {};
+};
+
 struct Constant
 {
   std::string type    = {};
@@ -81,11 +117,11 @@ struct EnumValue
 
 struct Enum
 {
-  std::map<std::string, int> aliases   = {};
-  std::string                bitwidth  = {};
-  std::string                type      = {};
-  std::vector<EnumValue>     values    = {};
-  int                        xmlLine   = {};
+  std::map<std::string, int> aliases  = {};
+  std::string                bitwidth = {};
+  std::string                type     = {};
+  std::vector<EnumValue>     values   = {};
+  int                        xmlLine  = {};
 };
 
 struct EnumValues
@@ -165,11 +201,11 @@ struct StructMember
   std::string              externSync     = {};
   std::string              featureLink    = {};
   std::vector<std::string> len            = {};
-  std::string              limitType      = {};
+  std::vector<std::string> limitType      = {};
   std::string              name           = {};
-  bool                     noAutoValidity = {};
-  bool                     objectType     = {};
-  std::vector<bool>        optional       = {};
+  std::string              noAutoValidity = {};
+  std::string              objectType     = {};
+  std::vector<std::string> optional       = {};
   std::string              selector       = {};
   Type                     type           = {};
   std::string              values         = {};
@@ -179,9 +215,9 @@ struct StructMember
 struct Struct
 {
   std::map<std::string, int> aliases           = {};
-  bool                       allowDuplicate    = {};
-  bool                       requiredLimitType = {};
-  bool                       returnedOnly      = {};
+  std::string                allowDuplicate    = {};
+  std::string                requiredLimitType = {};
+  std::string                returnedOnly      = {};
   std::vector<StructMember>  members           = {};
   std::vector<std::string>   structExtends     = {};
   int                        xmlLine           = {};
@@ -199,8 +235,8 @@ struct UnionMember
   std::vector<std::string> arraySizes     = {};
   std::string              len            = {};
   std::string              name           = {};
-  bool                     noAutoValidity = {};
-  bool                     optional       = {};
+  std::string              noAutoValidity = {};
+  std::string              optional       = {};
   std::vector<std::string> selection      = {};
   Type                     type           = {};
   int                      xmlLine        = {};
@@ -209,7 +245,7 @@ struct UnionMember
 struct Union
 {
   std::vector<UnionMember> members      = {};
-  bool                     returnedOnly = {};
+  std::string              returnedOnly = {};
   int                      xmlLine      = {};
 };
 
@@ -233,6 +269,7 @@ struct Vkxml
 {
   std::map<std::string, BaseType>     baseTypes     = {};
   std::map<std::string, Bitmask>      bitmasks      = {};
+  std::map<std::string, Command>      commands      = {};  // lists only commands of the requested export
   std::map<std::string, Constant>     constants     = {};
   Comment                             copyright     = {};
   std::map<std::string, Define>       defines       = {};

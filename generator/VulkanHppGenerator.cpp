@@ -27,9 +27,7 @@ using namespace std::literals;
 namespace
 {
   template <typename T>
-  bool containsByNameOrAlias( std::vector<T> const & values, std::string const & name );
-  template <typename T>
-  bool                                        containsByNameOrAlias( std::map<std::string, T> const & values, std::string const & name );
+  bool                                        containsByNameOrAlias( std::vector<T> const & values, std::string const & name );
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names );
   template <typename T>
   typename std::map<std::string, T>::const_iterator findByNameOrAlias( std::map<std::string, T> const & values, std::string const & name );
@@ -64,284 +62,325 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, tinyxml2::XMLDocument co
 {
   m_copyrightMessage = generateCopyrightMessage( m_vkxml.copyright.text );
 
-  // gather all types from the different categories into one map, to check for duplicates and to have them available for lookups by name
-  std::ranges::for_each( m_vkxml.baseTypes,
-                         [&]( auto const & baseType )
-                         {
-                           checkForError( m_types.insert( { baseType.first, TypeData{ TypeCategory::BaseType, {}, baseType.second.xmlLine } } ).second,
-                                          baseType.second.xmlLine,
-                                          "basetype <" + baseType.first + "> already specified" );
-                         } );
-  std::ranges::for_each( m_vkxml.bitmasks,
-                         [&]( auto const & bitmask )
-                         {
-                           checkForError( m_types.insert( { bitmask.first, TypeData{ TypeCategory::Bitmask, {}, bitmask.second.xmlLine } } ).second,
-                                          bitmask.second.xmlLine,
-                                          "bitmask <" + bitmask.first + "> already specified" );
-                           std::ranges::for_each( bitmask.second.aliases,
-                                                  [&]( auto const & alias )
-                                                  {
-                                                    checkForError(
-                                                      m_types.insert( { alias.first, TypeData{ TypeCategory::Bitmask, {}, alias.second } } ).second,
-                                                      alias.second,
-                                                      "alias <" + alias.first + "> of bitmask <" + bitmask.first + "> already specified" );
-                                                  } );
-                         } );
-  std::ranges::for_each( m_vkxml.constants,
-                         [&]( auto const & constant )
-                         {
-                           checkForError( m_types.insert( { constant.first, TypeData{ TypeCategory::Constant, {}, constant.second.xmlLine } } ).second,
-                                          constant.second.xmlLine,
-                                          "type <" + constant.first + "> already specified" );
-                         } );
-  std::ranges::for_each( m_vkxml.defines,
-                         [&]( auto const & define )
-                         {
-                           checkForError( m_types.insert( { define.first, TypeData{ TypeCategory::Define, {}, define.second.xmlLine } } ).second,
-                                          define.second.xmlLine,
-                                          "type <" + define.first + "> already specified" );
-
-                           // for defines, we compile some more data than is read from the vk.xml, so we insert the defines from the vk.xml into our own map
-                           auto const & [possibleCallee, params, possibleDefinition] = parseMacro( define.second.macro );
-                           m_defines[define.first] = { define.second.require, define.second.xmlLine, possibleCallee, params, possibleDefinition };
-                         } );
-  std::ranges::for_each( m_vkxml.enums,
-                         [&]( auto const & xmlEnum )
-                         {
-                           checkForError( m_types.insert( { xmlEnum.first, TypeData{ TypeCategory::Enum, {}, xmlEnum.second.xmlLine } } ).second,
-                                          xmlEnum.second.xmlLine,
-                                          "type <" + xmlEnum.first + "> already specified" );
-                           std::ranges::for_each( xmlEnum.second.aliases,
-                                                  [&]( auto const & alias )
-                                                  {
-                                                    checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Enum, {}, alias.second } } ).second,
-                                                                   alias.second,
-                                                                   "alias <" + alias.first + "> of handle <" + xmlEnum.first + "> already specified" );
-                                                  } );
-
-                           // for enums, we compile some more data than is read from the vk.xml, so we insert the enums from the vk.xml into our own map
-                           auto [enumIt, inserted] = m_enums.insert( { xmlEnum.first, {} } );
-                           assert( inserted );
-                           enumIt->second.aliases   = xmlEnum.second.aliases;
-                           enumIt->second.bitwidth  = xmlEnum.second.bitwidth;
-                           enumIt->second.isBitmask = xmlEnum.second.type == "bitmask";
-                           enumIt->second.xmlLine   = xmlEnum.second.xmlLine;
-
-                           for ( auto const & enumValue : xmlEnum.second.values )
+  for ( auto const & baseType : m_vkxml.baseTypes )
+  {
+    checkForError( m_types.insert( { baseType.first, TypeData{ TypeCategory::BaseType, {}, baseType.second.xmlLine } } ).second,
+                   baseType.second.xmlLine,
+                   "basetype <" + baseType.first + "> already specified" );
+  }
+  for ( auto const & bitmask : m_vkxml.bitmasks )
+  {
+    checkForError( m_types.insert( { bitmask.first, TypeData{ TypeCategory::Bitmask, {}, bitmask.second.xmlLine } } ).second,
+                   bitmask.second.xmlLine,
+                   "bitmask <" + bitmask.first + "> already specified" );
+    std::ranges::for_each( bitmask.second.aliases,
+                           [&]( auto const & alias )
                            {
-                             EnumValueData enumValueData;
-                             for ( auto const & alias : enumValue.aliases )
-                             {
-                               enumValueData.aliases.push_back( { enumValue.name, alias.first, "", true, alias.second.xmlLine } );
-                             }
-                             enumValueData.bitpos    = enumValue.bitpos;
-                             enumValueData.name      = enumValue.name;
-                             enumValueData.supported = true;
-                             enumValueData.value     = enumValue.value;
-                             enumValueData.xmlLine   = enumValue.xmlLine;
-                             enumIt->second.values.push_back( std::move( enumValueData ) );
-                           }
-                         } );
-  std::ranges::for_each( m_vkxml.externalTypes,
-                         [&]( auto const & externalType )
-                         {
-                           checkForError(
-                             m_types.insert( { externalType.first, TypeData{ TypeCategory::ExternalType, {}, externalType.second.xmlLine } } ).second,
-                             externalType.second.xmlLine,
-                             "type <" + externalType.first + "> already specified" );
-                         } );
-  std::ranges::for_each( m_vkxml.funcPointers,
-                         [&]( auto const & funcPointer )
-                         {
-                           checkForError( m_types.insert( { funcPointer.first, TypeData{ TypeCategory::FuncPointer, {}, funcPointer.second.xmlLine } } ).second,
-                                          funcPointer.second.xmlLine,
-                                          "funcpointer <" + funcPointer.first + "> already specified" );
-                         } );
-  std::ranges::for_each( m_vkxml.handles,
-                         [&]( auto const & handle )
-                         {
-                           checkForError( m_types.insert( { handle.first, TypeData{ TypeCategory::Handle, {}, handle.second.xmlLine } } ).second,
-                                          handle.second.xmlLine,
-                                          "type <" + handle.first + "> already specified" );
-                           std::ranges::for_each( handle.second.aliases,
-                                                  [&]( auto const & alias )
-                                                  {
-                                                    checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Handle, {}, alias.second } } ).second,
-                                                                   alias.second,
-                                                                   "alias <" + alias.first + "> of handle <" + handle.first + "> already specified" );
-                                                  } );
+                             checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Bitmask, {}, alias.second } } ).second,
+                                            alias.second,
+                                            "alias <" + alias.first + "> of bitmask <" + bitmask.first + "> already specified" );
+                           } );
+  }
+  for ( auto const & command : m_vkxml.commands )
+  {
+    auto [commandIt, inserted] = m_commands.insert( { command.first, { .xmlLine = command.second.xmlLine } } );
+    assert( inserted );
+    commandIt->second.aliases    = command.second.aliases;
+    commandIt->second.errorCodes = command.second.errorCodes;
+    commandIt->second.exports    = command.second.export_;
 
-                           // for handles, we compile some more data than is read from the vk.xml, so we insert the handles from the vk.xml into our own map
-                           auto [handleIt, inserted] = m_handles.insert( { handle.first, {} } );
-                           assert( inserted );
-                           handleIt->second.aliases        = handle.second.aliases;
-                           handleIt->second.objTypeEnum    = handle.second.objTypeEnum;
-                           handleIt->second.parent         = handle.second.parent;
-                           handleIt->second.isDispatchable = ( handle.second.type.name == "VK_DEFINE_HANDLE" );
-                           handleIt->second.xmlLine        = handle.second.xmlLine;
-                         } );
-  std::ranges::for_each( m_vkxml.includes,
-                         [&]( auto const & include )
-                         {
-                           checkForError( m_types.insert( { include.first, TypeData{ TypeCategory::Include, {}, include.second } } ).second,
-                                          include.second,
-                                          "include <" + include.first + "> already specified" );
-                         } );
-  std::ranges::for_each(
-    m_vkxml.structs,
-    [&]( auto const & structure )
+    // find the handle this command is going to be associated to
+    auto handleIt            = m_vkxml.handles.find( command.second.params[0].type.name );
+    commandIt->second.handle = ( handleIt != m_vkxml.handles.end() ) ? handleIt->first : "";
+
+    for ( auto const & param : command.second.params )
     {
-      checkForError( m_types.insert( { structure.first, TypeData{ TypeCategory::Struct, {}, structure.second.xmlLine } } ).second,
-                     structure.second.xmlLine,
-                     "struct <" + structure.first + "> already specified" );
-      std::ranges::for_each( structure.second.aliases,
-                             [&]( auto const & alias )
-                             {
-                               checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Struct, {}, alias.second } } ).second,
-                                              alias.second,
-                                              "alias <" + alias.first + "> of struc <" + structure.first + "> already specified" );
-                             } );
-
-      // for structs, we compile some more data than is read from the vk.xml, so we insert the structs from the vk.xml into our own map
-      auto [structIt, inserted] = m_structs.insert( { structure.first, {} } );
-      assert( inserted );
-      structIt->second.aliases           = structure.second.aliases;
-      structIt->second.allowDuplicate    = structure.second.allowDuplicate;
-      structIt->second.isUnion           = false;
-      structIt->second.requiredLimitType = structure.second.requiredLimitType;
-      structIt->second.returnedOnly      = structure.second.returnedOnly;
-      structIt->second.structExtends     = structure.second.structExtends;
-      for ( auto const & member : structure.second.members )
+      commandIt->second.params.emplace_back( param.name, param.type, param.xmlLine );
+      commandIt->second.params.back().arraySizes = std::move( param.arraySizes );
+      if ( !param.altLen.empty() )
       {
-        MemberData memberData;
-        memberData.type           = member.type;
-        memberData.xmlLine        = member.xmlLine;
-        memberData.name           = member.name;
-        memberData.arraySizes     = member.arraySizes;
-        memberData.bitCount       = member.bitCount;
-        memberData.deprecated     = member.deprecated;
-        memberData.lenExpressions = member.len;
-        memberData.limitType      = member.limitType;
-        memberData.noAutoValidity = member.noAutoValidity;
-        memberData.optional       = member.optional;
-        memberData.selector       = member.selector;
-        memberData.value          = member.values;
-        memberData.xmlLine        = member.xmlLine;
-
-        if ( !member.altLen.empty() )
+        commandIt->second.params.back().lenParams = filterNumbers( tokenizeAny( param.altLen, " /()+" ) );
+        for ( auto & lenParam : commandIt->second.params.back().lenParams )
         {
-          memberData.lenMembers     = filterNumbers( tokenizeAny( member.altLen, " /()+*" ) );
-          memberData.lenExpressions = { member.altLen };
+          auto paramIt = findByName( command.second.params, lenParam.first );
+          checkForError( paramIt != command.second.params.end(),
+                         param.xmlLine,
+                         "param <" + param.name + "> uses unknown len parameter <" + lenParam.first + "> in its \"altlen\" attribute <" + param.altLen + ">" );
+          lenParam.second = std::distance( command.second.params.begin(), paramIt );
         }
-        else if ( !member.len.empty() && ( member.len[0] != "null-terminated" ) )
-        {
-          auto lenMemberIt = findByName( structure.second.members, member.len[0] );
-          checkForError( lenMemberIt != structure.second.members.end(), member.xmlLine, "member attribute <len> holds unknown value <" + member.len[0] + ">" );
-          memberData.lenMembers.push_back( { member.len[0], std::distance( structure.second.members.begin(), lenMemberIt ) } );
-        }
-
-        structIt->second.members.push_back( std::move( memberData ) );
+        commandIt->second.params.back().lenExpression = std::move( param.altLen );
       }
-      structIt->second.xmlLine   = structure.second.xmlLine;
-      structIt->second.subStruct = determineSubStruct( *structIt );
-
-      // add some default values for some structures here!
-      if ( ( structIt->first == "VkRayTracingShaderGroupCreateInfoNV" ) || ( structIt->first == "VkRayTracingShaderGroupCreateInfoKHR" ) )
+      else if ( !param.len.empty() )
       {
-        assert( ( ( structIt->first != "VkRayTracingShaderGroupCreateInfoNV" ) || ( structIt->second.members.size() == 7 ) ) &&
-                ( ( structIt->first != "VkRayTracingShaderGroupCreateInfoKHR" ) || ( structIt->second.members.size() == 8 ) ) );
-        assert( ( structIt->second.members[3].name == "generalShader" ) &&
-                ( structIt->second.members[4].name == "closestHitShader" ) &&
-                ( structIt->second.members[5].name == "anyHitShader" ) &&
-                ( structIt->second.members[6].name == "intersectionShader" ) );
-        bool const isKHR = ( structIt->first == "VkRayTracingShaderGroupCreateInfoKHR" );
-        for ( size_t const i : { 3, 4, 5, 6 } )
+        auto paramIt = findByName( command.second.params, param.len );
+        if ( paramIt != command.second.params.end() )
         {
-          structIt->second.members[i].defaultValue = isKHR ? "VK_SHADER_UNUSED_KHR" : "VK_SHADER_UNUSED_NV";
+          commandIt->second.params.back().lenParams.push_back( { param.len, std::distance( command.second.params.begin(), paramIt ) } );
         }
+        commandIt->second.params.back().lenExpression = std::move( param.len );
+      }
+      commandIt->second.params.back().optional = param.optional.size() == 1 && ( param.optional[0] == "true" );
+      if ( !param.stride.empty() )
+      {
+        auto paramIt = findByName( command.second.params, param.stride );
+        assert( paramIt != command.second.params.end() );
+        commandIt->second.params.back().strideParam = { param.stride, std::distance( command.second.params.begin(), paramIt ) };
+      }
+    }
+
+    // commandIt->second.requiredBy is filled later on by distributeRequirements
+    commandIt->second.returnType   = command.second.returnType;
+    commandIt->second.successCodes = command.second.successCodes;
+
+    m_commandQueues.insert( command.second.queues.begin(), command.second.queues.end() );
+  }
+  for ( auto const & constant : m_vkxml.constants )
+  {
+    checkForError( m_types.insert( { constant.first, TypeData{ TypeCategory::Constant, {}, constant.second.xmlLine } } ).second,
+                   constant.second.xmlLine,
+                   "type <" + constant.first + "> already specified" );
+  }
+  for ( auto const & define : m_vkxml.defines )
+  {
+    checkForError( m_types.insert( { define.first, TypeData{ TypeCategory::Define, {}, define.second.xmlLine } } ).second,
+                   define.second.xmlLine,
+                   "type <" + define.first + "> already specified" );
+
+    // for defines, we compile some more data than is read from the vk.xml, so we insert the defines from the vk.xml into our own map
+    auto const & [possibleCallee, params, possibleDefinition] = parseMacro( define.second.macro );
+    m_defines[define.first]                                   = { define.second.require, define.second.xmlLine, possibleCallee, params, possibleDefinition };
+  }
+  for ( auto const & xmlEnum : m_vkxml.enums )
+  {
+    checkForError( m_types.insert( { xmlEnum.first, TypeData{ TypeCategory::Enum, {}, xmlEnum.second.xmlLine } } ).second,
+                   xmlEnum.second.xmlLine,
+                   "type <" + xmlEnum.first + "> already specified" );
+    std::ranges::for_each( xmlEnum.second.aliases,
+                           [&]( auto const & alias )
+                           {
+                             checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Enum, {}, alias.second } } ).second,
+                                            alias.second,
+                                            "alias <" + alias.first + "> of handle <" + xmlEnum.first + "> already specified" );
+                           } );
+
+    // for enums, we compile some more data than is read from the vk.xml, so we insert the enums from the vk.xml into our own map
+    auto [enumIt, inserted] = m_enums.insert( { xmlEnum.first, {} } );
+    assert( inserted );
+    enumIt->second.aliases   = xmlEnum.second.aliases;
+    enumIt->second.bitwidth  = xmlEnum.second.bitwidth;
+    enumIt->second.isBitmask = xmlEnum.second.type == "bitmask";
+    enumIt->second.xmlLine   = xmlEnum.second.xmlLine;
+
+    for ( auto const & enumValue : xmlEnum.second.values )
+    {
+      EnumValueData enumValueData;
+      for ( auto const & alias : enumValue.aliases )
+      {
+        enumValueData.aliases.push_back( { enumValue.name, alias.first, "", true, alias.second.xmlLine } );
+      }
+      enumValueData.bitpos    = enumValue.bitpos;
+      enumValueData.name      = enumValue.name;
+      enumValueData.supported = true;
+      enumValueData.value     = enumValue.value;
+      enumValueData.xmlLine   = enumValue.xmlLine;
+      enumIt->second.values.push_back( std::move( enumValueData ) );
+    }
+  }
+  for ( auto const & externalType : m_vkxml.externalTypes )
+  {
+    checkForError( m_types.insert( { externalType.first, TypeData{ TypeCategory::ExternalType, {}, externalType.second.xmlLine } } ).second,
+                   externalType.second.xmlLine,
+                   "type <" + externalType.first + "> already specified" );
+  }
+  for ( auto const & funcPointer : m_vkxml.funcPointers )
+  {
+    checkForError( m_types.insert( { funcPointer.first, TypeData{ TypeCategory::FuncPointer, {}, funcPointer.second.xmlLine } } ).second,
+                   funcPointer.second.xmlLine,
+                   "funcpointer <" + funcPointer.first + "> already specified" );
+  }
+  for ( auto const & handle : m_vkxml.handles )
+  {
+    checkForError( m_types.insert( { handle.first, TypeData{ TypeCategory::Handle, {}, handle.second.xmlLine } } ).second,
+                   handle.second.xmlLine,
+                   "type <" + handle.first + "> already specified" );
+    std::ranges::for_each( handle.second.aliases,
+                           [&]( auto const & alias )
+                           {
+                             checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Handle, {}, alias.second } } ).second,
+                                            alias.second,
+                                            "alias <" + alias.first + "> of handle <" + handle.first + "> already specified" );
+                           } );
+
+    // for handles, we compile some more data than is read from the vk.xml, so we insert the handles from the vk.xml into our own map
+    auto [handleIt, inserted] = m_handles.insert( { handle.first, {} } );
+    assert( inserted );
+    handleIt->second.aliases        = handle.second.aliases;
+    handleIt->second.objTypeEnum    = handle.second.objTypeEnum;
+    handleIt->second.parent         = handle.second.parent;
+    handleIt->second.isDispatchable = ( handle.second.type.name == "VK_DEFINE_HANDLE" );
+    handleIt->second.xmlLine        = handle.second.xmlLine;
+  }
+  for ( auto const & include : m_vkxml.includes )
+  {
+    checkForError( m_types.insert( { include.first, TypeData{ TypeCategory::Include, {}, include.second } } ).second,
+                   include.second,
+                   "include <" + include.first + "> already specified" );
+  }
+  for ( auto const & structure : m_vkxml.structs )
+  {
+    checkForError( m_types.insert( { structure.first, TypeData{ TypeCategory::Struct, {}, structure.second.xmlLine } } ).second,
+                   structure.second.xmlLine,
+                   "struct <" + structure.first + "> already specified" );
+    std::ranges::for_each( structure.second.aliases,
+                           [&]( auto const & alias )
+                           {
+                             checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Struct, {}, alias.second } } ).second,
+                                            alias.second,
+                                            "alias <" + alias.first + "> of struc <" + structure.first + "> already specified" );
+                           } );
+
+    // for structs, we compile some more data than is read from the vk.xml, so we insert the structs from the vk.xml into our own map
+    auto [structIt, inserted] = m_structs.insert( { structure.first, {} } );
+    assert( inserted );
+    structIt->second.aliases           = structure.second.aliases;
+    structIt->second.allowDuplicate    = ( structure.second.allowDuplicate == "true" );
+    structIt->second.isUnion           = false;
+    structIt->second.requiredLimitType = ( structure.second.requiredLimitType == "true" );
+    structIt->second.returnedOnly      = ( structure.second.returnedOnly == "true" );
+    structIt->second.structExtends     = structure.second.structExtends;
+    for ( auto const & member : structure.second.members )
+    {
+      MemberData memberData;
+      memberData.type           = member.type;
+      memberData.xmlLine        = member.xmlLine;
+      memberData.name           = member.name;
+      memberData.arraySizes     = member.arraySizes;
+      memberData.bitCount       = member.bitCount;
+      memberData.deprecated     = member.deprecated;
+      memberData.lenExpressions = member.len;
+      memberData.limitType      = member.limitType;
+      memberData.noAutoValidity = ( member.noAutoValidity == "true" );
+      for ( auto const & optional : member.optional )
+      {
+        memberData.optional.push_back( optional == "true" );
+      }
+      memberData.selector = member.selector;
+      memberData.value    = member.values;
+      memberData.xmlLine  = member.xmlLine;
+
+      if ( !member.altLen.empty() )
+      {
+        memberData.lenMembers     = filterNumbers( tokenizeAny( member.altLen, " /()+*" ) );
+        memberData.lenExpressions = { member.altLen };
+      }
+      else if ( !member.len.empty() && ( member.len[0] != "null-terminated" ) )
+      {
+        auto lenMemberIt = findByName( structure.second.members, member.len[0] );
+        checkForError( lenMemberIt != structure.second.members.end(), member.xmlLine, "member attribute <len> holds unknown value <" + member.len[0] + ">" );
+        memberData.lenMembers.push_back( { member.len[0], std::distance( structure.second.members.begin(), lenMemberIt ) } );
       }
 
-      // check if multiple structure members use the very same (not empty) len attribute
-      // Note: even though the arrays are not marked as optional, they still might be mutually exclusive (like in
-      // VkWriteDescriptorSet)! That is, there's not enough information available in vk.xml to decide on that, so we
-      // need this external knowledge!
-      static std::set<std::string> mutualExclusiveStructs = {
-        "VkAccelerationStructureBuildGeometryInfoKHR", "VkAccelerationStructureTrianglesOpacityMicromapEXT", "VkMicromapBuildInfoEXT", "VkWriteDescriptorSet"
-      };
-      static std::set<std::string> multipleLenStructs = { "VkAccelerationStructureTrianglesDisplacementMicromapNV",
-                                                          "VkImageConstraintsInfoFUCHSIA",
-                                                          "VkIndirectCommandsLayoutTokenNV",
-                                                          "VkIndirectExecutionSetShaderInfoEXT",
-                                                          "VkPipelineBinaryKeysAndDataKHR",
-                                                          "VkPresentInfoKHR",
-                                                          "VkSemaphoreWaitInfo",
-                                                          "VkSetDescriptorBufferOffsetsInfoEXT",
-                                                          "VkSubmitInfo",
-                                                          "VkSubpassDescription",
-                                                          "VkSubpassDescription2",
-                                                          "VkSwapchainTimeDomainPropertiesEXT",
-                                                          "VkTensorCopyARM",
-                                                          "VkTensorDescriptionARM",
-                                                          "VkVideoDecodeAV1PictureInfoKHR",
-                                                          "VkWin32KeyedMutexAcquireReleaseInfoKHR",
-                                                          "VkWin32KeyedMutexAcquireReleaseInfoNV" };
-      bool                         warned             = false;
-      for ( auto m0It = structIt->second.members.begin(); !warned && ( m0It != structIt->second.members.end() ); ++m0It )
+      structIt->second.members.push_back( std::move( memberData ) );
+    }
+    structIt->second.xmlLine   = structure.second.xmlLine;
+    structIt->second.subStruct = determineSubStruct( *structIt );
+
+    // add some default values for some structures here!
+    if ( ( structIt->first == "VkRayTracingShaderGroupCreateInfoNV" ) || ( structIt->first == "VkRayTracingShaderGroupCreateInfoKHR" ) )
+    {
+      assert( ( ( structIt->first != "VkRayTracingShaderGroupCreateInfoNV" ) || ( structIt->second.members.size() == 7 ) ) &&
+              ( ( structIt->first != "VkRayTracingShaderGroupCreateInfoKHR" ) || ( structIt->second.members.size() == 8 ) ) );
+      assert( ( structIt->second.members[3].name == "generalShader" ) &&
+              ( structIt->second.members[4].name == "closestHitShader" ) &&
+              ( structIt->second.members[5].name == "anyHitShader" ) &&
+              ( structIt->second.members[6].name == "intersectionShader" ) );
+      bool const isKHR = ( structIt->first == "VkRayTracingShaderGroupCreateInfoKHR" );
+      for ( size_t const i : { 3, 4, 5, 6 } )
       {
-        if ( !m0It->lenExpressions.empty() && ( m0It->lenExpressions.front() != "null-terminated" ) )
+        structIt->second.members[i].defaultValue = isKHR ? "VK_SHADER_UNUSED_KHR" : "VK_SHADER_UNUSED_NV";
+      }
+    }
+
+    // check if multiple structure members use the very same (not empty) len attribute
+    // Note: even though the arrays are not marked as optional, they still might be mutually exclusive (like in
+    // VkWriteDescriptorSet)! That is, there's not enough information available in vk.xml to decide on that, so we
+    // need this external knowledge!
+    static std::set<std::string> mutualExclusiveStructs = {
+      "VkAccelerationStructureBuildGeometryInfoKHR", "VkAccelerationStructureTrianglesOpacityMicromapEXT", "VkMicromapBuildInfoEXT", "VkWriteDescriptorSet"
+    };
+    static std::set<std::string> multipleLenStructs = { "VkAccelerationStructureTrianglesDisplacementMicromapNV",
+                                                        "VkImageConstraintsInfoFUCHSIA",
+                                                        "VkIndirectCommandsLayoutTokenNV",
+                                                        "VkIndirectExecutionSetShaderInfoEXT",
+                                                        "VkPipelineBinaryKeysAndDataKHR",
+                                                        "VkPresentInfoKHR",
+                                                        "VkSemaphoreWaitInfo",
+                                                        "VkSetDescriptorBufferOffsetsInfoEXT",
+                                                        "VkSubmitInfo",
+                                                        "VkSubpassDescription",
+                                                        "VkSubpassDescription2",
+                                                        "VkSwapchainTimeDomainPropertiesEXT",
+                                                        "VkTensorCopyARM",
+                                                        "VkTensorDescriptionARM",
+                                                        "VkVideoDecodeAV1PictureInfoKHR",
+                                                        "VkWin32KeyedMutexAcquireReleaseInfoKHR",
+                                                        "VkWin32KeyedMutexAcquireReleaseInfoNV" };
+    bool                         warned             = false;
+    for ( auto m0It = structIt->second.members.begin(); !warned && ( m0It != structIt->second.members.end() ); ++m0It )
+    {
+      if ( !m0It->lenExpressions.empty() && ( m0It->lenExpressions.front() != "null-terminated" ) )
+      {
+        for ( auto m1It = std::next( m0It ); !warned && ( m1It != structIt->second.members.end() ); ++m1It )
         {
-          for ( auto m1It = std::next( m0It ); !warned && ( m1It != structIt->second.members.end() ); ++m1It )
+          if ( !m1It->lenExpressions.empty() && ( m0It->lenExpressions.front() == m1It->lenExpressions.front() ) )
           {
-            if ( !m1It->lenExpressions.empty() && ( m0It->lenExpressions.front() == m1It->lenExpressions.front() ) )
+            if ( mutualExclusiveStructs.contains( structIt->first ) )
             {
-              if ( mutualExclusiveStructs.contains( structIt->first ) )
-              {
-                structIt->second.mutualExclusiveLens = true;
-              }
-              else
-              {
-                checkForWarning(
-                  multipleLenStructs.contains( structIt->first ),
-                  structIt->second.xmlLine,
-                  "Encountered structure <" +
-                    structIt->first +
-                    "> with multiple members referencing the same member for len. Need to be checked if they are supposed to be mutually exclusive." );
-                warned = true;
-              }
+              structIt->second.mutualExclusiveLens = true;
+            }
+            else
+            {
+              checkForWarning(
+                multipleLenStructs.contains( structIt->first ),
+                structIt->second.xmlLine,
+                "Encountered structure <" +
+                  structIt->first +
+                  "> with multiple members referencing the same member for len. Need to be checked if they are supposed to be mutually exclusive." );
+              warned = true;
             }
           }
         }
       }
-    } );
-  std::ranges::for_each( m_vkxml.unions,
-                         [&]( auto const & u )
-                         {
-                           checkForError( m_types.insert( { u.first, TypeData{ TypeCategory::Struct, {}, u.second.xmlLine } } ).second,
-                                          u.second.xmlLine,
-                                          "union <" + u.first + "> already specified" );
+    }
+  }
+  for ( auto const & u : m_vkxml.unions )
+  {
+    checkForError( m_types.insert( { u.first, TypeData{ TypeCategory::Struct, {}, u.second.xmlLine } } ).second,
+                   u.second.xmlLine,
+                   "union <" + u.first + "> already specified" );
 
-                           // we hold unions in the same map as structs, but mark them as union, to be able to check for correct usage of selectors
-                           auto [structIt, inserted] = m_structs.insert( { u.first, {} } );
-                           assert( inserted );
-                           structIt->second.isUnion      = true;
-                           structIt->second.returnedOnly = u.second.returnedOnly;
-                           for ( auto const & member : u.second.members )
-                           {
-                             MemberData memberData;
-                             memberData.type           = member.type;
-                             memberData.xmlLine        = member.xmlLine;
-                             memberData.name           = member.name;
-                             memberData.arraySizes     = member.arraySizes;
-                             memberData.lenExpressions = { member.len };
-                             memberData.noAutoValidity = member.noAutoValidity;
-                             memberData.optional       = { member.optional };
-                             memberData.selection      = member.selection;
-                             memberData.xmlLine        = member.xmlLine;
+    // we hold unions in the same map as structs, but mark them as union, to be able to check for correct usage of selectors
+    auto [structIt, inserted] = m_structs.insert( { u.first, {} } );
+    assert( inserted );
+    structIt->second.isUnion      = true;
+    structIt->second.returnedOnly = ( u.second.returnedOnly == "true" );
+    for ( auto const & member : u.second.members )
+    {
+      MemberData memberData;
+      memberData.type           = member.type;
+      memberData.xmlLine        = member.xmlLine;
+      memberData.name           = member.name;
+      memberData.arraySizes     = member.arraySizes;
+      memberData.lenExpressions = { member.len };
+      memberData.noAutoValidity = ( member.noAutoValidity == "true" );
+      memberData.optional       = { member.optional == "true" };
+      memberData.selection      = member.selection;
+      memberData.xmlLine        = member.xmlLine;
 
-                             structIt->second.members.push_back( std::move( memberData ) );
-                           }
-                           structIt->second.xmlLine = u.second.xmlLine;
-                         } );
+      structIt->second.members.push_back( std::move( memberData ) );
+    }
+    structIt->second.xmlLine = u.second.xmlLine;
+  }
 
   auto versionIt = m_defines.find( "VK_HEADER_VERSION" );
   assert( versionIt != m_defines.end() );
@@ -624,23 +663,6 @@ void VulkanHppGenerator::prepareRAIIHandles()
 // VulkanHppGenerator private interface
 //
 
-void VulkanHppGenerator::addCommand( std::string const & name, CommandData && commandData )
-{
-  checkForError( !commandData.params.empty(), commandData.xmlLine, "command <" + name + "> with no params" );
-
-  auto [commandIt, inserted] = m_commands.insert( { name, std::move( commandData ) } );
-  checkForError( inserted, commandData.xmlLine, "already encountered command <" + name + ">" );
-
-  // find the handle this command is going to be associated to
-  auto handleIt = m_handles.find( commandIt->second.params[0].type.name );
-  if ( handleIt == m_handles.end() )
-  {
-    handleIt = m_handles.begin();
-    assert( handleIt->first == "" );
-  }
-  commandIt->second.handle = handleIt->first;
-}
-
 void VulkanHppGenerator::addCommandToHandle( std::pair<std::string, CommandData> const & commandData )
 {
   auto handleIt = m_handles.find( commandData.second.handle );
@@ -823,6 +845,17 @@ void VulkanHppGenerator::checkCommandCorrectness() const
     }
     checkForError(
       m_types.contains( command.second.returnType.name ), command.second.xmlLine, "command uses unknown return type <" + command.second.returnType.name + ">" );
+  }
+
+  auto queueFlagBitsIt = m_enums.find( "VkQueueFlagBits" );
+  assert( queueFlagBitsIt != m_enums.end() );
+  for ( auto const & command : m_vkxml.commands )
+  {
+    for ( auto const & q : command.second.queues )
+    {
+      checkForError(
+        containsByName( queueFlagBitsIt->second.values, q ), command.second.xmlLine, "command <" + command.first + "> uses unknown queue <" + q + ">" );
+    }
   }
 }
 
@@ -10763,7 +10796,7 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
         else
         {
           assert( member.lenExpressions[1] == "null-terminated" );
-          assert( member.type.prefix.empty() && ( member.type.postfix == "const * const*" ) );
+          assert( member.type.prefix.empty() && ( member.type.postfix == "const * const *" ) );
           static std::string const compareMemberTemplate =
             R"(std::equal( ${name}, ${name} + ${count}, rhs.${name}, []( char const * left, char const * right ) { return ( left == right ) || ( strcmp( left, right ) == 0 ); } ))";
           compareMembers += intro + replaceWithMap( compareMemberTemplate, { { "count", member.lenExpressions[0] }, { "name", member.name } } );
@@ -13271,258 +13304,6 @@ std::pair<bool, std::map<size_t, std::vector<size_t>>> VulkanHppGenerator::needs
            countToVectorMap };
 }
 
-void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  auto                               aliasIt    = attributes.find( "alias" );
-  if ( aliasIt != attributes.end() )
-  {
-    checkAttributes( line, attributes, { { "alias", {} }, { "name", {} } }, {} );
-
-    std::string alias = aliasIt->second;
-    std::string name  = attributes.find( "name" )->second;
-
-    checkForError( name.starts_with( "vk" ), line, "name <" + name + "> should begin with \"vk\"" );
-    auto commandIt = m_commands.find( alias );
-    checkForError( commandIt != m_commands.end(), line, "command <" + name + "> is aliased to unknown command <" + alias + ">" );
-    checkForError(
-      commandIt->second.aliases.insert( { name, line } ).second, line, "command <" + name + "> is already listed as alias for command <" + alias + ">" );
-  }
-  else
-  {
-    checkAttributes( line,
-                     attributes,
-                     {},
-                     { { "allownoqueues", { "true" } },
-                       { "api", { "vulkan", "vulkanbase", "vulkansc" } },
-                       { "cmdbufferlevel", { "primary", "secondary" } },
-                       { "comment", {} },
-                       { "conditionalrendering", { "false", "true" } },
-                       { "errorcodes", {} },
-                       { "export", { "vulkan", "vulkansc" } },
-                       { "queues", {} },
-                       { "renderpass", { "both", "inside", "outside" } },
-                       { "successcodes", {} },
-                       { "tasks", { "action", "indirection", "state", "synchronization" } },
-                       { "videocoding", { "both", "inside", "outside" } } } );
-
-    std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-    checkElements(
-      line, children, { { "param", MultipleAllowed::Yes }, { "proto", MultipleAllowed::No } }, { { "implicitexternsyncparams", MultipleAllowed::No } } );
-
-    CommandData commandData;
-    commandData.xmlLine = line;
-    std::vector<std::string> api;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "api" )
-      {
-        api = tokenize( attribute.second, "," );
-      }
-      else if ( attribute.first == "errorcodes" )
-      {
-        commandData.errorCodes = tokenize( attribute.second, "," );
-        // errorCodes are checked in checkCorrectness after complete reading
-      }
-      else if ( attribute.first == "export" )
-      {
-        commandData.exports = tokenize( attribute.second, "," );
-      }
-      else if ( attribute.first == "queues" )
-      {
-        m_commandQueues.insert( attribute.second );
-      }
-      else if ( attribute.first == "successcodes" )
-      {
-        commandData.successCodes = tokenize( attribute.second, "," );
-        // successCodes are checked in checkCorrectness after complete reading
-      }
-    }
-
-    std::string name;
-    for ( auto child : children )
-    {
-      std::string value = child->Value();
-      if ( value == "param" )
-      {
-        std::pair<bool, ParamData> result = readCommandParam( child, commandData.params );
-        if ( result.first )
-        {
-          commandData.params.push_back( result.second );
-        }
-      }
-      else if ( value == "proto" )
-      {
-        std::tie( name, commandData.returnType ) = readCommandProto( child, "vk" );
-        checkForError( commandData.returnType.postfix.empty(), line, "unexpected type postfix <" + commandData.returnType.postfix + ">" );
-      }
-    }
-
-    checkForError(
-      api.empty() ||
-        commandData.exports.empty() ||
-        ( ( commandData.exports.size() == 1 ) && std::ranges::any_of( api, [&commandData]( auto const & a ) { return a == commandData.exports.front(); } ) ),
-      line,
-      "command <" + name + "> has disjunct attributes <api> and <export>" );
-
-    for ( auto & param : commandData.params )
-    {
-      for ( auto & lenParam : param.lenParams )
-      {
-        auto paramIt = findByName( commandData.params, lenParam.first );
-        checkForError(
-          paramIt != commandData.params.end(),
-          param.xmlLine,
-          "param <" + param.name + "> uses unknown len parameter <" + lenParam.first + "> in its \"altlen\" attribute <" + param.lenExpression + ">" );
-        lenParam.second = std::distance( commandData.params.begin(), paramIt );
-      }
-      if ( !param.strideParam.first.empty() )
-      {
-        auto paramIt = findByName( commandData.params, param.strideParam.first );
-        checkForError(
-          paramIt != commandData.params.end(), param.xmlLine, "param <" + param.name + "> uses unknown stride parameter <" + param.strideParam.first + ">" );
-        param.strideParam.second = std::distance( commandData.params.begin(), paramIt );
-      }
-    }
-
-    assert( !name.empty() );
-    checkForError( ( commandData.returnType.name == "VkResult" ) || commandData.errorCodes.empty(),
-                   line,
-                   "command <" + name + "> does not return a VkResult but specifies errorcodes" );
-    checkForError( ( commandData.returnType.name == "VkResult" ) || commandData.successCodes.empty(),
-                   line,
-                   "command <" + name + "> does not return a VkResult but specifies successcodes" );
-
-    if ( api.empty() || std::ranges::any_of( api, [this]( auto const & a ) { return a == m_api; } ) )
-    {
-      checkForError( !m_commands.contains( name ), line, "command <" + name + "> already specified" );
-      addCommand( name, std::move( commandData ) );
-    }
-  }
-}
-
-std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandParam( tinyxml2::XMLElement const *   element,
-                                                                                     std::vector<ParamData> const & params )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line,
-                   attributes,
-                   {},
-                   { { "altlen", {} },
-                     { "api", { "vulkan", "vulkanbase", "vulkansc" } },
-                     { "externsync", {} },
-                     { "len", {} },
-                     { "noautovalidity", { "true" } },
-                     { "objecttype", { "objectType" } },
-                     { "optional", { "false", "true" } },
-                     { "stride", {} },
-                     { "validstructs", {} } } );
-
-  ParamData paramData;
-  paramData.xmlLine = line;
-  std::vector<std::string> api;
-  for ( auto attribute : attributes )
-  {
-    if ( attribute.first == "altlen" )
-    {
-      assert( paramData.lenExpression.empty() );
-      paramData.lenExpression = attribute.second;
-      paramData.lenParams     = filterNumbers( tokenizeAny( attribute.second, " /()+" ) );
-    }
-    else if ( attribute.first == "api" )
-    {
-      api = tokenize( attribute.second, "," );
-    }
-    else if ( attribute.first == "len" )
-    {
-      if ( paramData.lenExpression.empty() )
-      {
-        paramData.lenExpression = attribute.second;
-        auto paramIt            = findByName( params, attribute.second );
-        if ( paramIt != params.end() )
-        {
-          paramData.lenParams.push_back( { attribute.second, std::distance( params.begin(), paramIt ) } );
-        }
-        else
-        {
-          checkForError( ( attribute.second == "null-terminated" ) || ( attribute.second == "1" ) || isLenByStructMember( attribute.second, params ),
-                         line,
-                         "attribute <len> holds an unknown value <" + attribute.second + ">" );
-        }
-      }
-    }
-    else if ( attribute.first == "stride" )
-    {
-      paramData.strideParam.first = attribute.second;
-    }
-    else if ( attribute.first == "optional" )
-    {
-      paramData.optional = ( attribute.second == "true" );
-    }
-    else if ( attribute.first == "validstructs" )
-    {
-      std::vector<std::string> validStructs = tokenize( attribute.second, "," );
-      for ( auto const & vs : validStructs )
-      {
-        checkForError( m_structs.contains( vs ), line, "unknown struct <" + vs + "> listed in attribute <validstructs>" );
-      }
-    }
-  }
-
-  NameData nameData;
-  std::tie( nameData, paramData.type ) = readNameAndType( element );
-
-  checkForError( paramData.type.prefix.empty() || ( paramData.type.prefix == "struct" ), line, "unexpected type prefix <" + paramData.type.prefix + ">" );
-  checkForError( paramData.type.postfix.empty() ||
-                   ( paramData.type.postfix == "const" ) ||
-                   ( paramData.type.postfix == "*" ) ||
-                   ( paramData.type.postfix == "const *" ) ||
-                   ( paramData.type.postfix == "**" ) ||
-                   ( paramData.type.postfix == "* const *" ) ||
-                   ( paramData.type.postfix == "const * const *" ),
-                 line,
-                 "unexpected type postfix <" + paramData.type.postfix + ">" );
-  assert( paramData.type.postfix != "* const *" );
-  checkForError(
-    paramData.lenParams.empty() || paramData.type.isPointer(), line, "parameter <" + nameData.name + "> has an attribute <len> but is not a pointer" );
-  paramData.name       = nameData.name;
-  paramData.arraySizes = nameData.arraySizes;
-
-  bool valid = api.empty() || std::ranges::any_of( api, [this]( auto const & a ) { return a == m_api; } );
-  checkForError( !valid || !containsByName( params, nameData.name ), line, "command param <" + nameData.name + "> already used" );
-  return { valid, paramData };
-}
-
-std::pair<std::string, Type> VulkanHppGenerator::readCommandProto( tinyxml2::XMLElement const * element, std::string const & prefix )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, {} );
-
-  auto [nameData, type] = readNameAndType( element );
-
-  checkForError( nameData.name.starts_with( prefix ), line, "name <" + nameData.name + "> does not begin with <" + prefix + ">" );
-  checkForError( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
-  checkForError( m_types.contains( type.name ), line, "unknown type <" + type.name + ">" );
-  checkForError( type.prefix.empty(), line, "unexpected type prefix <" + type.prefix + ">" );
-
-  return { nameData.name, type };
-}
-
-void VulkanHppGenerator::readCommands( tinyxml2::XMLElement const * element )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, { { "comment", {} } } );
-
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "command", MultipleAllowed::Yes } } );
-  for ( auto child : children )
-  {
-    readCommand( child );
-  }
-}
-
 std::string VulkanHppGenerator::readComment( tinyxml2::XMLElement const * element ) const
 {
   return ::readComment( "VulkanHppGenerator", element );
@@ -14526,11 +14307,7 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
   for ( auto child : children )
   {
     std::string const value = child->Value();
-    if ( value == "commands" )
-    {
-      readCommands( child );
-    }
-    else if ( value == "extensions" )
+    if ( value == "extensions" )
     {
       readExtensions( child );
     }
@@ -15245,7 +15022,11 @@ void VulkanHppGenerator::readSyncStageSupport( tinyxml2::XMLElement const * elem
   for ( auto const & attribute : attributes )
   {
     assert( attribute.first == "queues" );
-    checkForError( m_commandQueues.contains( attribute.second ), line, "syncsupport queues uses unknown value <" + attribute.second + ">" );
+    std::vector<std::string> queues = tokenize( attribute.second, "," );
+    for ( auto const & q : queues )
+    {
+      checkForError( m_commandQueues.contains( q ), line, "syncsupport queues uses unknown value <" + q + ">" );
+    }
   }
 }
 
@@ -15887,13 +15668,6 @@ namespace
   bool containsByNameOrAlias( std::vector<T> const & values, std::string const & name )
   {
     return std::ranges::any_of( values, [&name]( T const & value ) { return value.name == name || containsByName( value.aliases, name ); } );
-  }
-
-  template <typename T>
-  bool containsByNameOrAlias( std::map<std::string, T> const & values, std::string const & name )
-  {
-    return values.contains( name ) ||
-           std::ranges::any_of( values, [&name]( std::pair<std::string, T> const & value ) { return value.second.aliases.contains( name ); } );
   }
 
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names )

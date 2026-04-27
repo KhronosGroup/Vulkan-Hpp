@@ -50,6 +50,8 @@ void checkForWarning( std::string const & intro, bool condition, int line, std::
 template <typename T>
 bool containsByName( std::vector<T> const & values, std::string const & name );
 template <typename T>
+bool containsByNameOrAlias( std::map<std::string, T> const & values, std::string const & name );
+template <typename T>
 typename std::vector<T>::const_iterator findByName( std::vector<T> const & values, std::string const & name );
 template <typename T>
 typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name );
@@ -94,13 +96,11 @@ struct Type
 {
   std::string compose( std::string const & prefixToStrip, std::string const & nameSpace = "" ) const
   {
-    return prefix +
-           ( prefix.empty() ? "" : " " ) +
+    return prefix + ( prefix.empty() ? "" : " " ) +
            ( prefixToStrip.empty()
                ? name
                : ( ( ( name.starts_with( prefixToStrip ) && !nameSpace.empty() ) ? ( nameSpace + "::" ) : "" ) + stripPrefix( name, prefixToStrip ) ) ) +
-           ( postfix.empty() ? "" : " " ) +
-           postfix;
+           ( postfix.empty() ? "" : " " ) + postfix;
   }
 
   bool operator==( Type const & rhs ) const noexcept
@@ -247,22 +247,22 @@ inline void checkElements( std::string const &                               int
   {
     auto encounteredIt = encountered.find( r.first );
     checkForError( intro, encounteredIt != encountered.end(), line, "missing required element <" + r.first + ">" );
-    checkForError(
-      intro,
-      ( r.second == MultipleAllowed::Yes ) || ( encounteredIt->second == 1 ),
-      line,
-      "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " + std::to_string( encounteredIt->second ) + " times" );
+    checkForError( intro,
+                   ( r.second == MultipleAllowed::Yes ) || ( encounteredIt->second == 1 ),
+                   line,
+                   "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " + std::to_string( encounteredIt->second ) +
+                     " times" );
   }
   for ( auto const & o : optional )
   {
     auto encounteredIt = encountered.find( o.first );
     if ( encounteredIt != encountered.end() )
     {
-      checkForError(
-        intro,
-        ( o.second == MultipleAllowed::Yes ) || ( encounteredIt->second == 1 ),
-        line,
-        "optional element <" + o.first + "> is supposed to be listed at most once, but is listed " + std::to_string( encounteredIt->second ) + " times" );
+      checkForError( intro,
+                     ( o.second == MultipleAllowed::Yes ) || ( encounteredIt->second == 1 ),
+                     line,
+                     "optional element <" + o.first + "> is supposed to be listed at most once, but is listed " + std::to_string( encounteredIt->second ) +
+                       " times" );
     }
   }
 }
@@ -287,6 +287,13 @@ template <typename T>
 bool containsByName( std::vector<T> const & values, std::string const & name )
 {
   return std::ranges::any_of( values, [&name]( T const & value ) { return value.name == name; } );
+}
+
+template <typename T>
+bool containsByNameOrAlias( std::map<std::string, T> const & values, std::string const & name )
+{
+  return values.contains( name ) ||
+         std::ranges::any_of( values, [&name]( std::pair<std::string, T> const & value ) { return value.second.aliases.contains( name ); } );
 }
 
 template <typename T>

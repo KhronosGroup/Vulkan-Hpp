@@ -840,5 +840,176 @@ int main()
     vk::Extent2D         granularity = renderPass.getRenderAreaGranularity();
   }
 
+  // Command buffer building commands
+  {
+    vk::raii::CommandBuffer   commandBuffer = nullptr;
+    uint32_t                  firstViewport = 0;
+    std::vector<vk::Viewport> viewports;
+    commandBuffer.setViewport( firstViewport, viewports );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    uint32_t                firstScissor  = 0;
+    std::vector<vk::Rect2D> scissors;
+    commandBuffer.setScissor( firstScissor, scissors );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    float                   lineWidth     = 1.0f;
+    commandBuffer.setLineWidth( lineWidth );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer           = nullptr;
+    float                   depthBiasConstantFactor = 0.0f;
+    float                   depthBiasClamp          = 0.0f;
+    float                   depthBiasSlopeFactor    = 0.0f;
+    commandBuffer.setDepthBias( depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer  = nullptr;
+    std::array<float, 4>    blendConstants = {};
+    commandBuffer.setBlendConstants( blendConstants );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer  = nullptr;
+    float                   minDepthBounds = 0.0f;
+    float                   maxDepthBounds = 1.0f;
+    commandBuffer.setDepthBounds( minDepthBounds, maxDepthBounds );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::StencilFaceFlags    faceMask      = {};
+    uint32_t                compareMask   = 0;
+    commandBuffer.setStencilCompareMask( faceMask, compareMask );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::StencilFaceFlags    faceMask      = {};
+    uint32_t                writeMask     = 0;
+    commandBuffer.setStencilWriteMask( faceMask, writeMask );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::StencilFaceFlags    faceMask      = {};
+    int32_t                 reference     = 0;
+    commandBuffer.setStencilReference( faceMask, reference );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::Buffer              buffer;
+    vk::DeviceSize          offset    = 0;
+    vk::IndexType           indexType = {};
+    commandBuffer.bindIndexBuffer( buffer, offset, indexType );
+  }
+
+  {
+    vk::raii::CommandBuffer     commandBuffer = nullptr;
+    uint32_t                    firstBinding  = 0;
+    std::vector<vk::DeviceSize> offsets;
+    std::vector<vk::Buffer>     buffers;
+    commandBuffer.bindVertexBuffers( firstBinding, buffers, offsets );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    uint32_t                vertexCount   = 3;
+    uint32_t                instanceCount = 1;
+    uint32_t                firstVertex   = 0;
+    uint32_t                firstInstance = 0;
+    commandBuffer.draw( vertexCount, instanceCount, firstVertex, firstInstance );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    uint32_t                indexCount    = 3;
+    uint32_t                instanceCount = 1;
+    uint32_t                firstIndex    = 0;
+    uint32_t                vertexOffset  = 0;
+    uint32_t                firstInstance = 0;
+    commandBuffer.drawIndexed( indexCount, instanceCount, firstIndex, vertexOffset, firstInstance );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::raii::Buffer        buffer        = nullptr;
+    vk::DeviceSize          offset        = 0;
+    uint32_t                drawCount     = 1;
+    uint32_t                stride        = 0;
+    commandBuffer.drawIndirect( buffer, offset, drawCount, stride );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::raii::Buffer        buffer        = nullptr;
+    vk::DeviceSize          offset        = 0;
+    uint32_t                drawCount     = 1;
+    uint32_t                stride        = 0;
+    commandBuffer.drawIndexedIndirect( buffer, offset, drawCount, stride );
+  }
+
+  {
+    vk::raii::CommandBuffer    commandBuffer  = nullptr;
+    vk::raii::Image            srcImage       = nullptr;
+    vk::ImageLayout            srcImageLayout = {};
+    vk::raii::Image            dstImage       = nullptr;
+    vk::ImageLayout            dstImageLayout = {};
+    std::vector<vk::ImageBlit> regions;
+    vk::Filter                 filter = {};
+    commandBuffer.blitImage( srcImage, srcImageLayout, dstImage, dstImageLayout, regions, filter );
+  }
+
+  {
+    vk::raii::CommandBuffer                commandBuffer     = nullptr;
+    vk::raii::Image                        image             = nullptr;
+    vk::ImageLayout                        imageLayout       = {};
+    vk::ClearDepthStencilValue             clearDepthStencil = {};
+    std::vector<vk::ImageSubresourceRange> ranges;
+    commandBuffer.clearDepthStencilImage( image, imageLayout, clearDepthStencil, ranges );
+  }
+
+  {
+    vk::raii::CommandBuffer          commandBuffer = nullptr;
+    std::vector<vk::ClearAttachment> clearAttachments;
+    std::vector<vk::ClearRect>       clearRectangles;
+    commandBuffer.clearAttachments( clearAttachments, clearRectangles );
+  }
+
+  {
+    vk::raii::CommandBuffer       commandBuffer  = nullptr;
+    vk::raii::Image               srcImage       = nullptr;
+    vk::ImageLayout               srcImageLayout = {};
+    vk::raii::Image               dstImage       = nullptr;
+    vk::ImageLayout               dstImageLayout = {};
+    std::vector<vk::ImageResolve> regions;
+    commandBuffer.resolveImage( srcImage, srcImageLayout, dstImage, dstImageLayout, regions );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::RenderPassBeginInfo renderPassBeginInfo;
+    vk::SubpassContents     contents = {};
+    commandBuffer.beginRenderPass( renderPassBeginInfo, contents );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::SubpassContents     contents      = {};
+    commandBuffer.nextSubpass( contents );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    commandBuffer.endRenderPass();
+  }
+
   return 0;
 }

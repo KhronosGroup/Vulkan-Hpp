@@ -1086,7 +1086,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
                            containsByNameOrAlias( vkxml.enums, param.type.name ) ||
                            vkxml.externalTypes.contains( param.type.name ) ||
                            vkxml.handles.contains( param.type.name ) ||
-                           vkxml.structs.contains( param.type.name ) ||
+                           containsByNameOrAlias( vkxml.structs, param.type.name ) ||
                            vkxml.unions.contains( param.type.name ),
                          param.xmlLine,
                          "unknown type <" + param.type.name + "> of parameter <" + param.name + "> of command <" + command.first + ">" );

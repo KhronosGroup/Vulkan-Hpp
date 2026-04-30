@@ -61,7 +61,7 @@ BreakBeforeBraces : Custom
 BreakBeforeConceptDeclarations : Always
 BreakBeforeInlineASMColon : OnlyMultiline
 BreakBeforeTernaryOperators : true
-BreakBinaryOperations : RespectPrecedence
+BreakBinaryOperations : Never
 BreakConstructorInitializers : BeforeComma
 BreakFunctionDefinitionParameters : false
 BreakInheritanceList : BeforeComma

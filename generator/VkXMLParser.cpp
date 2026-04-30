@@ -337,8 +337,7 @@ void parseCommand( tinyxml2::XMLElement const *                   element,
                    "command <" + name + "> does not return a VkResult but specifies successcodes" );
     checkForError(
       "vk.xml",
-      command.api.empty() ||
-        command.export_.empty() ||
+      command.api.empty() || command.export_.empty() ||
         ( ( command.export_.size() == 1 ) && std::ranges::any_of( command.api, [&command]( auto const & a ) { return a == command.export_.front(); } ) ),
       line,
       "command <" + name + "> has disjunct attributes <api> and <export>" );
@@ -452,10 +451,9 @@ std::pair<std::vector<std::string>, std::pair<std::string, Define>> parseDefine(
     name = trim( child->GetText() );
     //  ignore all the other defines
     checkForWarning( "vk.xml",
-                     !child->NextSiblingElement() || ( child->NextSiblingElement() &&
-                                                       !child->NextSiblingElement()->FirstAttribute() &&
-                                                       ( strcmp( child->NextSiblingElement()->Value(), "type" ) == 0 ) &&
-                                                       !child->NextSiblingElement()->NextSiblingElement() ),
+                     !child->NextSiblingElement() ||
+                       ( child->NextSiblingElement() && !child->NextSiblingElement()->FirstAttribute() &&
+                         ( strcmp( child->NextSiblingElement()->Value(), "type" ) == 0 ) && !child->NextSiblingElement()->NextSiblingElement() ),
                      line,
                      "unknown formatting of type category define" );
   }
@@ -764,9 +762,7 @@ std::string parseMemberEnum( tinyxml2::XMLElement const * element )
   std::string enumString = element->GetText();
 
   checkForError( "vk.xml",
-                 element->PreviousSibling() &&
-                   ( strcmp( element->PreviousSibling()->Value(), "[" ) == 0 ) &&
-                   element->NextSibling() &&
+                 element->PreviousSibling() && ( strcmp( element->PreviousSibling()->Value(), "[" ) == 0 ) && element->NextSibling() &&
                    ( strcmp( element->NextSibling()->Value(), "]" ) == 0 ),
                  line,
                  std::string( "struct member array specifiation is ill-formatted: <" ) + enumString + ">" );
@@ -817,9 +813,7 @@ std::tuple<std::string, Type, std::vector<std::string>, std::string> parseNameAn
     {
       arraySizes.push_back( child->GetText() );
       checkForError( "vk.xml",
-                     child->PreviousSibling() &&
-                       ( strcmp( child->PreviousSibling()->Value(), "[" ) == 0 ) &&
-                       child->NextSibling() &&
+                     child->PreviousSibling() && ( strcmp( child->PreviousSibling()->Value(), "[" ) == 0 ) && child->NextSibling() &&
                        ( strcmp( child->NextSibling()->Value(), "]" ) == 0 ),
                      line,
                      std::string( "array specifiation is ill-formatted: <" ) + arraySizes.back() + ">" );
@@ -908,13 +902,8 @@ Param parseParam( tinyxml2::XMLElement const * element )
   checkForError( "vk.xml", bitCount.empty(), line, "unexpected bit count specification for param <" + param.name + ">" );
   checkForError( "vk.xml", param.type.prefix.empty() || ( param.type.prefix == "struct" ), line, "unexpected type prefix <" + param.type.prefix + ">" );
   checkForError( "vk.xml",
-                 param.type.postfix.empty() ||
-                   ( param.type.postfix == "const" ) ||
-                   ( param.type.postfix == "*" ) ||
-                   ( param.type.postfix == "const *" ) ||
-                   ( param.type.postfix == "**" ) ||
-                   ( param.type.postfix == "* const *" ) ||
-                   ( param.type.postfix == "const * const *" ),
+                 param.type.postfix.empty() || ( param.type.postfix == "const" ) || ( param.type.postfix == "*" ) || ( param.type.postfix == "const *" ) ||
+                   ( param.type.postfix == "**" ) || ( param.type.postfix == "* const *" ) || ( param.type.postfix == "const * const *" ),
                  line,
                  "unexpected type postfix <" + param.type.postfix + ">" );
   assert( param.type.postfix != "* const *" );
@@ -1044,49 +1033,30 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
             checkForError( "vk.xml",
                            pos != std::string::npos,
                            param.xmlLine,
-                           "unexpected value <" +
-                             param.externSync +
-                             "> for attribute externsync of parameter <" +
-                             param.name +
-                             "> of command <" +
-                             command.first +
-                             ">, expected format is \"maybe:<paramname>[].<membername>\"" );
+                           "unexpected value <" + param.externSync + "> for attribute externsync of parameter <" + param.name + "> of command <" +
+                             command.first + ">, expected format is \"maybe:<paramname>[].<membername>\"" );
             std::string memberName = param.externSync.substr( pos + 1 );
             auto        structIt   = vkxml.structs.find( param.type.name );
-            checkForError(
-              "vk.xml",
-              structIt != vkxml.structs.end(),
-              param.xmlLine,
-              "type <" + param.type.name + "> of parameter <" + param.name + "> of command <" + command.first + "> with externsync attribute is not a struct" );
+            checkForError( "vk.xml",
+                           structIt != vkxml.structs.end(),
+                           param.xmlLine,
+                           "type <" + param.type.name + "> of parameter <" + param.name + "> of command <" + command.first +
+                             "> with externsync attribute is not a struct" );
             checkForError( "vk.xml",
                            containsByName( structIt->second.members, memberName ),
                            param.xmlLine,
-                           "struct <" +
-                             param.type.name +
-                             "> used in externsync attribute of parameter <" +
-                             param.name +
-                             "> of command <" +
-                             command.first +
-                             "> does not have member <" +
-                             memberName +
-                             ">" );
+                           "struct <" + param.type.name + "> used in externsync attribute of parameter <" + param.name + "> of command <" + command.first +
+                             "> does not have member <" + memberName + ">" );
           }
           checkForError( "vk.xml",
-                         param.len.empty() ||
-                           ( param.len == "null-terminated" ) ||
-                           ( param.len == "1" ) ||
-                           param.len.starts_with( "latexmath:" ) ||
-                           containsByName( command.second.params, param.len ) ||
-                           isLenByStructMember( param.len, command.second.params, vkxml.structs ),
+                         param.len.empty() || ( param.len == "null-terminated" ) || ( param.len == "1" ) || param.len.starts_with( "latexmath:" ) ||
+                           containsByName( command.second.params, param.len ) || isLenByStructMember( param.len, command.second.params, vkxml.structs ),
                          param.xmlLine,
                          "unknown len <" + param.len + "> specified for parameter <" + param.name + "> of command <" + command.first + ">" );
           checkForError( "vk.xml",
-                         vkxml.baseTypes.contains( param.type.name ) ||
-                           vkxml.bitmasks.contains( param.type.name ) ||
-                           containsByNameOrAlias( vkxml.enums, param.type.name ) ||
-                           vkxml.externalTypes.contains( param.type.name ) ||
-                           vkxml.handles.contains( param.type.name ) ||
-                           containsByNameOrAlias( vkxml.structs, param.type.name ) ||
+                         vkxml.baseTypes.contains( param.type.name ) || vkxml.bitmasks.contains( param.type.name ) ||
+                           containsByNameOrAlias( vkxml.enums, param.type.name ) || vkxml.externalTypes.contains( param.type.name ) ||
+                           vkxml.handles.contains( param.type.name ) || containsByNameOrAlias( vkxml.structs, param.type.name ) ||
                            vkxml.unions.contains( param.type.name ),
                          param.xmlLine,
                          "unknown type <" + param.type.name + "> of parameter <" + param.name + "> of command <" + command.first + ">" );
@@ -1517,25 +1487,14 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
         checkForError( "vk.xml",
                        types.unions.contains( member.type.name ),
                        member.xmlLine,
-                       "struct member <" +
-                         member.name +
-                         "> in struct <" +
-                         structName +
-                         "> has selector <" +
-                         member.selector +
-                         "> but its type <" +
-                         member.type.name +
-                         "> is not a union" );
+                       "struct member <" + member.name + "> in struct <" + structName + "> has selector <" + member.selector + "> but its type <" +
+                         member.type.name + "> is not a union" );
       }
       checkForError( "vk.xml",
-                     containsByNameOrAlias( types.bitmasks, member.type.name ) ||
-                       types.baseTypes.contains( member.type.name ) ||
-                       containsByNameOrAlias( types.enums, member.type.name ) ||
-                       types.externalTypes.contains( member.type.name ) ||
-                       types.funcPointers.contains( member.type.name ) ||
-                       types.handles.contains( member.type.name ) ||
-                       containsByNameOrAlias( types.structs, member.type.name ) ||
-                       types.unions.contains( member.type.name ),
+                     containsByNameOrAlias( types.bitmasks, member.type.name ) || types.baseTypes.contains( member.type.name ) ||
+                       containsByNameOrAlias( types.enums, member.type.name ) || types.externalTypes.contains( member.type.name ) ||
+                       types.funcPointers.contains( member.type.name ) || types.handles.contains( member.type.name ) ||
+                       containsByNameOrAlias( types.structs, member.type.name ) || types.unions.contains( member.type.name ),
                      member.xmlLine,
                      "struct member <" + member.name + "> in struct <" + structName + "> has unknown type <" + member.type.name + ">" );
     }

@@ -45,7 +45,7 @@ import vulkan;
 
 int main()
 {
-#if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110400 < GCC_VERSION ) )
+#if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 120000 <= GCC_VERSION ) )
   static_assert( vk::isInstanceExtension( vk::KHRSurfaceExtensionName ), "static_assert test failed" );
   static_assert( vk::isDeviceExtension( vk::KHRSwapchainExtensionName ), "static assert test failed" );
   static_assert( vk::isDeprecatedExtension( vk::EXTDebugReportExtensionName ), "static assert test failed" );

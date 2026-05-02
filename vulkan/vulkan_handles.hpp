@@ -2394,6 +2394,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct ComputeOccupancyPriorityParametersNV;
   struct PhysicalDeviceComputeOccupancyPriorityFeaturesNV;
 
+  //=== VK_KHR_maintenance11 ===
+  struct PhysicalDeviceMaintenance11FeaturesKHR;
+  struct QueueFamilyOptimalImageTransferGranularityPropertiesKHR;
+
   //=== VK_EXT_shader_subgroup_partitioned ===
   struct PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT;
 
@@ -2404,6 +2408,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_VALVE_shader_mixed_float_dot_product ===
   struct PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE;
+
+  //=== VK_SEC_throttle_hint ===
+  struct ThrottleHintSubmitInfoSEC;
+  struct PhysicalDeviceThrottleHintFeaturesSEC;
+
+  //=== VK_ARM_data_graph_neural_accelerator_statistics ===
+  struct PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM;
+  struct DataGraphPipelineNeuralStatisticsCreateInfoARM;
+  struct DataGraphPipelineSessionNeuralStatisticsCreateInfoARM;
 
   //=== VK_EXT_primitive_restart_index ===
   struct PhysicalDevicePrimitiveRestartIndexFeaturesEXT;

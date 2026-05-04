@@ -1822,12 +1822,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_UNIFORM_BUFFER_UNSIZED_ARRAY_FEATURES_EXT,
     eComputeOccupancyPriorityParametersNV                     = VK_STRUCTURE_TYPE_COMPUTE_OCCUPANCY_PRIORITY_PARAMETERS_NV,
     ePhysicalDeviceComputeOccupancyPriorityFeaturesNV         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV,
+    ePhysicalDeviceMaintenance11FeaturesKHR                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_11_FEATURES_KHR,
+    eQueueFamilyOptimalImageTransferGranularityPropertiesKHR  = VK_STRUCTURE_TYPE_QUEUE_FAMILY_OPTIMAL_IMAGE_TRANSFER_GRANULARITY_PROPERTIES_KHR,
     ePhysicalDeviceShaderSubgroupPartitionedFeaturesEXT       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT,
 #if defined( VK_USE_PLATFORM_UBM_SEC )
     eUbmSurfaceCreateInfoSEC = VK_STRUCTURE_TYPE_UBM_SURFACE_CREATE_INFO_SEC,
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
-    ePhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE,
-    ePhysicalDevicePrimitiveRestartIndexFeaturesEXT        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT
+    ePhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_MIXED_FLOAT_DOT_PRODUCT_FEATURES_VALVE,
+    ePhysicalDeviceThrottleHintFeaturesSEC                         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_THROTTLE_HINT_FEATURES_SEC,
+    eThrottleHintSubmitInfoSEC                                     = VK_STRUCTURE_TYPE_THROTTLE_HINT_SUBMIT_INFO_SEC,
+    eDataGraphPipelineNeuralStatisticsCreateInfoARM                = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_NEURAL_STATISTICS_CREATE_INFO_ARM,
+    eDataGraphPipelineSessionNeuralStatisticsCreateInfoARM         = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_SESSION_NEURAL_STATISTICS_CREATE_INFO_ARM,
+    ePhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_FEATURES_ARM,
+    ePhysicalDevicePrimitiveRestartIndexFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT
   };
 
   // wrapper class for enum VkObjectType, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkObjectType.html
@@ -2377,7 +2384,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     e2DViewCompatibleEXT                  = VK_IMAGE_CREATE_2D_VIEW_COMPATIBLE_BIT_EXT,
     eVideoProfileIndependentKHR           = VK_IMAGE_CREATE_VIDEO_PROFILE_INDEPENDENT_BIT_KHR,
     eFragmentDensityMapOffsetEXT          = VK_IMAGE_CREATE_FRAGMENT_DENSITY_MAP_OFFSET_BIT_EXT,
-    eFragmentDensityMapOffsetQCOM         = VK_IMAGE_CREATE_FRAGMENT_DENSITY_MAP_OFFSET_BIT_QCOM
+    eFragmentDensityMapOffsetQCOM         = VK_IMAGE_CREATE_FRAGMENT_DENSITY_MAP_OFFSET_BIT_QCOM,
+    eAliasSingleLayerDescriptorKHR        = VK_IMAGE_CREATE_ALIAS_SINGLE_LAYER_DESCRIPTOR_BIT_KHR
   };
 
   // wrapper using for bitmask VkImageCreateFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkImageCreateFlags.html
@@ -2395,7 +2403,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       ImageCreateFlagBits::eProtected | ImageCreateFlagBits::eDisjoint | ImageCreateFlagBits::eCornerSampledNV |
       ImageCreateFlagBits::eDescriptorHeapCaptureReplayEXT | ImageCreateFlagBits::eSampleLocationsCompatibleDepthEXT | ImageCreateFlagBits::eSubsampledEXT |
       ImageCreateFlagBits::eMultisampledRenderToSingleSampledEXT | ImageCreateFlagBits::e2DViewCompatibleEXT |
-      ImageCreateFlagBits::eVideoProfileIndependentKHR | ImageCreateFlagBits::eFragmentDensityMapOffsetEXT;
+      ImageCreateFlagBits::eVideoProfileIndependentKHR | ImageCreateFlagBits::eFragmentDensityMapOffsetEXT |
+      ImageCreateFlagBits::eAliasSingleLayerDescriptorKHR;
   };
 
   // wrapper class for enum VkImageTiling, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkImageTiling.html
@@ -3546,7 +3555,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // wrapper class for enum VkPipelineLayoutCreateFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineLayoutCreateFlagBits.html
   enum class PipelineLayoutCreateFlagBits : VkPipelineLayoutCreateFlags
   {
-    eIndependentSetsEXT = VK_PIPELINE_LAYOUT_CREATE_INDEPENDENT_SETS_BIT_EXT
+    eIndependentSetsEXT = VK_PIPELINE_LAYOUT_CREATE_INDEPENDENT_SETS_BIT_EXT,
+    eNoTaskShaderKHR    = VK_PIPELINE_LAYOUT_CREATE_NO_TASK_SHADER_BIT_KHR
   };
 
   // wrapper using for bitmask VkPipelineLayoutCreateFlags, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineLayoutCreateFlags.html
@@ -3557,7 +3567,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   {
     using WrappedType                                                        = VkPipelineLayoutCreateFlagBits;
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                      isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineLayoutCreateFlags allFlags  = PipelineLayoutCreateFlagBits::eIndependentSetsEXT;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineLayoutCreateFlags allFlags =
+      PipelineLayoutCreateFlagBits::eIndependentSetsEXT | PipelineLayoutCreateFlagBits::eNoTaskShaderKHR;
   };
 
   // wrapper class for enum VkPipelineShaderStageCreateFlagBits, see
@@ -9002,7 +9013,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eFragmentShadingRateAttachment = VK_SHADER_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_EXT,
     eFragmentDensityMapAttachment  = VK_SHADER_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT,
     eIndirectBindable              = VK_SHADER_CREATE_INDIRECT_BINDABLE_BIT_EXT,
-    e64BitIndexing                 = VK_SHADER_CREATE_64_BIT_INDEXING_BIT_EXT
+    e64BitIndexing                 = VK_SHADER_CREATE_64_BIT_INDEXING_BIT_EXT,
+    eIndependentSetsKHR            = VK_SHADER_CREATE_INDEPENDENT_SETS_BIT_KHR
   };
 
   // wrapper using for bitmask VkShaderCreateFlagsEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkShaderCreateFlagsEXT.html
@@ -9017,7 +9029,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       ShaderCreateFlagBitsEXT::eLinkStage | ShaderCreateFlagBitsEXT::eDescriptorHeap | ShaderCreateFlagBitsEXT::eInstrumentShaderARM |
       ShaderCreateFlagBitsEXT::eAllowVaryingSubgroupSize | ShaderCreateFlagBitsEXT::eRequireFullSubgroups | ShaderCreateFlagBitsEXT::eNoTaskShader |
       ShaderCreateFlagBitsEXT::eDispatchBase | ShaderCreateFlagBitsEXT::eFragmentShadingRateAttachment |
-      ShaderCreateFlagBitsEXT::eFragmentDensityMapAttachment | ShaderCreateFlagBitsEXT::eIndirectBindable | ShaderCreateFlagBitsEXT::e64BitIndexing;
+      ShaderCreateFlagBitsEXT::eFragmentDensityMapAttachment | ShaderCreateFlagBitsEXT::eIndirectBindable | ShaderCreateFlagBitsEXT::e64BitIndexing |
+      ShaderCreateFlagBitsEXT::eIndependentSetsKHR;
   };
 
   // wrapper class for enum VkShaderCodeTypeEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkShaderCodeTypeEXT.html
@@ -9264,8 +9277,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphPipelineSessionBindPointARM.html
   enum class DataGraphPipelineSessionBindPointARM
   {
-    eTransient        = VK_DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_TRANSIENT_ARM,
-    eOpticalFlowCache = VK_DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_OPTICAL_FLOW_CACHE_ARM
+    eTransient                   = VK_DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_TRANSIENT_ARM,
+    eOpticalFlowCache            = VK_DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_OPTICAL_FLOW_CACHE_ARM,
+    eNeuralAcceleratorStatistics = VK_DATA_GRAPH_PIPELINE_SESSION_BIND_POINT_NEURAL_ACCELERATOR_STATISTICS_ARM
   };
 
   // wrapper class for enum VkDataGraphPipelineSessionBindPointTypeARM, see
@@ -9299,8 +9313,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // wrapper class for enum VkDataGraphPipelinePropertyARM, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDataGraphPipelinePropertyARM.html
   enum class DataGraphPipelinePropertyARM
   {
-    eCreationLog = VK_DATA_GRAPH_PIPELINE_PROPERTY_CREATION_LOG_ARM,
-    eIdentifier  = VK_DATA_GRAPH_PIPELINE_PROPERTY_IDENTIFIER_ARM
+    eCreationLog                     = VK_DATA_GRAPH_PIPELINE_PROPERTY_CREATION_LOG_ARM,
+    eIdentifier                      = VK_DATA_GRAPH_PIPELINE_PROPERTY_IDENTIFIER_ARM,
+    eNeuralAcceleratorDebugDatabase  = VK_DATA_GRAPH_PIPELINE_PROPERTY_NEURAL_ACCELERATOR_DEBUG_DATABASE_ARM,
+    eNeuralAcceleratorStatisticsInfo = VK_DATA_GRAPH_PIPELINE_PROPERTY_NEURAL_ACCELERATOR_STATISTICS_INFO_ARM
   };
 
   enum class DataGraphPipelineDispatchFlagBitsARM : VkDataGraphPipelineDispatchFlagsARM
@@ -10230,6 +10246,27 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR UbmSurfaceCreateFlagsSEC allFlags  = {};
   };
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
+
+  //=== VK_SEC_throttle_hint ===
+
+  // wrapper class for enum VkThrottleHintTypeSEC, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkThrottleHintTypeSEC.html
+  enum class ThrottleHintTypeSEC
+  {
+    eDefault = VK_THROTTLE_HINT_TYPE_DEFAULT_SEC,
+    eLow     = VK_THROTTLE_HINT_TYPE_LOW_SEC,
+    eHigh    = VK_THROTTLE_HINT_TYPE_HIGH_SEC
+  };
+
+  //=== VK_ARM_data_graph_neural_accelerator_statistics ===
+
+  // wrapper class for enum VkNeuralAcceleratorStatisticsModeARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkNeuralAcceleratorStatisticsModeARM.html
+  enum class NeuralAcceleratorStatisticsModeARM
+  {
+    eDisabled    = VK_NEURAL_ACCELERATOR_STATISTICS_MODE_DISABLED_ARM,
+    eStatistics0 = VK_NEURAL_ACCELERATOR_STATISTICS_MODE_STATISTICS0_ARM,
+    eStatistics1 = VK_NEURAL_ACCELERATOR_STATISTICS_MODE_STATISTICS1_ARM
+  };
 
   //===========================================================
   //=== Mapping from ObjectType to DebugReportObjectTypeEXT ===

@@ -37,7 +37,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 349, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 350, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -11176,6 +11176,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto NVComputeOccupancyPrioritySpecVersion   = VK_NV_COMPUTE_OCCUPANCY_PRIORITY_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVComputeOccupancyPriorityExtensionName = VK_NV_COMPUTE_OCCUPANCY_PRIORITY_EXTENSION_NAME;
 
+  //=== VK_KHR_maintenance11 ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance11SpecVersion   = VK_KHR_MAINTENANCE_11_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance11ExtensionName = VK_KHR_MAINTENANCE_11_EXTENSION_NAME;
+
   //=== VK_EXT_shader_subgroup_partitioned ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderSubgroupPartitionedSpecVersion   = VK_EXT_SHADER_SUBGROUP_PARTITIONED_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderSubgroupPartitionedExtensionName = VK_EXT_SHADER_SUBGROUP_PARTITIONED_EXTENSION_NAME;
@@ -11189,6 +11193,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_VALVE_shader_mixed_float_dot_product ===
   VULKAN_HPP_CONSTEXPR_INLINE auto VALVEShaderMixedFloatDotProductSpecVersion   = VK_VALVE_SHADER_MIXED_FLOAT_DOT_PRODUCT_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto VALVEShaderMixedFloatDotProductExtensionName = VK_VALVE_SHADER_MIXED_FLOAT_DOT_PRODUCT_EXTENSION_NAME;
+
+  //=== VK_SEC_throttle_hint ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto SECThrottleHintSpecVersion   = VK_SEC_THROTTLE_HINT_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto SECThrottleHintExtensionName = VK_SEC_THROTTLE_HINT_EXTENSION_NAME;
+
+  //=== VK_ARM_data_graph_neural_accelerator_statistics ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto ARMDataGraphNeuralAcceleratorStatisticsSpecVersion   = VK_ARM_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto ARMDataGraphNeuralAcceleratorStatisticsExtensionName = VK_ARM_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_EXTENSION_NAME;
 
   //=== VK_EXT_primitive_restart_index ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTPrimitiveRestartIndexSpecVersion   = VK_EXT_PRIMITIVE_RESTART_INDEX_SPEC_VERSION;
@@ -22117,6 +22129,34 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_KHR_maintenance11 ===
+  template <>
+  struct StructExtends<PhysicalDeviceMaintenance11FeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceMaintenance11FeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<QueueFamilyOptimalImageTransferGranularityPropertiesKHR, QueueFamilyProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_shader_subgroup_partitioned ===
   template <>
   struct StructExtends<PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT, PhysicalDeviceFeatures2>
@@ -22148,6 +22188,71 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_SEC_throttle_hint ===
+  template <>
+  struct StructExtends<ThrottleHintSubmitInfoSEC, SubmitInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceThrottleHintFeaturesSEC, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceThrottleHintFeaturesSEC, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_ARM_data_graph_neural_accelerator_statistics ===
+  template <>
+  struct StructExtends<PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<DataGraphPipelineNeuralStatisticsCreateInfoARM, DataGraphPipelineCreateInfoARM>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<DataGraphPipelineSessionNeuralStatisticsCreateInfoARM, DataGraphPipelineSessionCreateInfoARM>
   {
     enum
     {

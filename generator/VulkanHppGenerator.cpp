@@ -83,56 +83,60 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, tinyxml2::XMLDocument co
   }
   for ( auto const & command : m_vkxml.commands )
   {
-    auto [commandIt, inserted] = m_commands.insert( { command.first, { .xmlLine = command.second.xmlLine } } );
-    assert( inserted );
-    commandIt->second.aliases    = command.second.aliases;
-    commandIt->second.errorCodes = command.second.errorCodes;
-    commandIt->second.exports    = command.second.export_;
-
-    // find the handle this command is going to be associated to
-    auto handleIt            = m_vkxml.handles.find( command.second.params[0].type.name );
-    commandIt->second.handle = ( handleIt != m_vkxml.handles.end() ) ? handleIt->first : "";
-
-    for ( auto const & param : command.second.params )
+    if ( command.api.empty() || std::ranges::any_of( command.api, [&api]( std::string const & commandApi ) { return commandApi == api; } ) )
     {
-      commandIt->second.params.emplace_back( param.name, param.type, param.xmlLine );
-      commandIt->second.params.back().arraySizes = std::move( param.arraySizes );
-      if ( !param.altLen.empty() )
+      auto [commandIt, inserted] = m_commands.insert( { command.name, { .xmlLine = command.xmlLine } } );
+      assert( inserted );
+      commandIt->second.aliases    = command.aliases;
+      commandIt->second.errorCodes = command.errorCodes;
+      commandIt->second.exports    = command.exports;
+
+      // find the handle this command is going to be associated to
+      auto handleIt            = m_vkxml.handles.find( command.params[0].type.name );
+      commandIt->second.handle = ( handleIt != m_vkxml.handles.end() ) ? handleIt->first : "";
+
+      for ( auto const & param : command.params )
       {
-        commandIt->second.params.back().lenParams = filterNumbers( tokenizeAny( param.altLen, " /()+" ) );
-        for ( auto & lenParam : commandIt->second.params.back().lenParams )
+        commandIt->second.params.emplace_back( param.name, param.type, param.xmlLine );
+        commandIt->second.params.back().arraySizes = std::move( param.arraySizes );
+        if ( !param.altLen.empty() )
         {
-          auto paramIt = findByName( command.second.params, lenParam.first );
-          checkForError( paramIt != command.second.params.end(),
-                         param.xmlLine,
-                         "param <" + param.name + "> uses unknown len parameter <" + lenParam.first + "> in its \"altlen\" attribute <" + param.altLen + ">" );
-          lenParam.second = std::distance( command.second.params.begin(), paramIt );
+          commandIt->second.params.back().lenParams = filterNumbers( tokenizeAny( param.altLen, " /()+" ) );
+          for ( auto & lenParam : commandIt->second.params.back().lenParams )
+          {
+            auto paramIt = findByName( command.params, lenParam.first );
+            checkForError( paramIt != command.params.end(),
+                           param.xmlLine,
+                           "param <" + param.name + "> uses unknown len parameter <" + lenParam.first + "> in its \"altlen\" attribute <" + param.altLen +
+                             ">" );
+            lenParam.second = std::distance( command.params.begin(), paramIt );
+          }
+          commandIt->second.params.back().lenExpression = std::move( param.altLen );
         }
-        commandIt->second.params.back().lenExpression = std::move( param.altLen );
-      }
-      else if ( !param.len.empty() )
-      {
-        auto paramIt = findByName( command.second.params, param.len );
-        if ( paramIt != command.second.params.end() )
+        else if ( !param.len.empty() )
         {
-          commandIt->second.params.back().lenParams.push_back( { param.len, std::distance( command.second.params.begin(), paramIt ) } );
+          auto paramIt = findByName( command.params, param.len );
+          if ( paramIt != command.params.end() )
+          {
+            commandIt->second.params.back().lenParams.push_back( { param.len, std::distance( command.params.begin(), paramIt ) } );
+          }
+          commandIt->second.params.back().lenExpression = std::move( param.len );
         }
-        commandIt->second.params.back().lenExpression = std::move( param.len );
+        commandIt->second.params.back().optional = param.optional.size() == 1 && ( param.optional[0] == "true" );
+        if ( !param.stride.empty() )
+        {
+          auto paramIt = findByName( command.params, param.stride );
+          assert( paramIt != command.params.end() );
+          commandIt->second.params.back().strideParam = { param.stride, std::distance( command.params.begin(), paramIt ) };
+        }
       }
-      commandIt->second.params.back().optional = param.optional.size() == 1 && ( param.optional[0] == "true" );
-      if ( !param.stride.empty() )
-      {
-        auto paramIt = findByName( command.second.params, param.stride );
-        assert( paramIt != command.second.params.end() );
-        commandIt->second.params.back().strideParam = { param.stride, std::distance( command.second.params.begin(), paramIt ) };
-      }
+
+      // commandIt->second.requiredBy is filled later on by distributeRequirements
+      commandIt->second.returnType   = command.returnType;
+      commandIt->second.successCodes = command.successCodes;
+
+      m_commandQueues.insert( command.queues.begin(), command.queues.end() );
     }
-
-    // commandIt->second.requiredBy is filled later on by distributeRequirements
-    commandIt->second.returnType   = command.second.returnType;
-    commandIt->second.successCodes = command.second.successCodes;
-
-    m_commandQueues.insert( command.second.queues.begin(), command.second.queues.end() );
   }
   for ( auto const & constant : m_vkxml.constants )
   {
@@ -848,10 +852,9 @@ void VulkanHppGenerator::checkCommandCorrectness() const
   assert( queueFlagBitsIt != m_enums.end() );
   for ( auto const & command : m_vkxml.commands )
   {
-    for ( auto const & q : command.second.queues )
+    for ( auto const & q : command.queues )
     {
-      checkForError(
-        containsByName( queueFlagBitsIt->second.values, q ), command.second.xmlLine, "command <" + command.first + "> uses unknown queue <" + q + ">" );
+      checkForError( containsByName( queueFlagBitsIt->second.values, q ), command.xmlLine, "command <" + command.name + "> uses unknown queue <" + q + ">" );
     }
   }
 }

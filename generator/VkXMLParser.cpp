@@ -19,18 +19,15 @@
 #include <vector>
 
 void checkNoList( std::string const & item, int line );
+bool containsByNameAndExport( std::vector<Command> const & commands, std::string const & name, std::vector<std::string> const & exports );
 bool isLenByStructMember( std::string const & name, std::vector<Param> const & params, std::map<std::string, Struct> const & structs );
 std::pair<std::string, BaseType>
   parseBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & api );
 std::pair<std::vector<std::string>, std::pair<std::string, Bitmask>> parseBitmask( tinyxml2::XMLElement const *               element,
                                                                                    std::map<std::string, std::string> const & attributes );
-void                                                                 parseCommand( tinyxml2::XMLElement const *                   element,
-                                                                                   std::string const &                            api,
-                                                                                   std::map<std::string, Command> &               commands,
-                                                                                   std::vector<std::pair<std::string, Command>> & skippedCommands );
-std::pair<std::map<std::string, Command>, std::vector<std::pair<std::string, Command>>> parseCommands( tinyxml2::XMLElement const * element,
-                                                                                                       std::string const &          api );
-std::pair<std::string, Constant>                                                        parseConstant( tinyxml2::XMLElement const * element );
+void                                                                 parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & commands );
+std::vector<Command>                                                 parseCommands( tinyxml2::XMLElement const * element );
+std::pair<std::string, Constant>                                     parseConstant( tinyxml2::XMLElement const * element );
 CategoryAlias parseCategoryAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & category );
 std::pair<std::vector<std::string>, std::pair<std::string, Define>> parseDefine( tinyxml2::XMLElement const *               element,
                                                                                  std::map<std::string, std::string> const & attributes );
@@ -66,6 +63,21 @@ UnionMember                   parseUnionMember( tinyxml2::XMLElement const * ele
 void checkNoList( std::string const & item, int line )
 {
   checkForError( "vk.xml", item.find( ',' ) == std::string::npos, line, "item <" + item + "> contains unexpected coma, looks like list" );
+}
+
+bool containsByNameAndExport( std::vector<Command> const & commands, std::string const & name, std::vector<std::string> const & exports )
+{
+  // check if there is a command with the specified name and at least one export in the specified exports list
+  return std::ranges::any_of(
+    commands,
+    [&name, &exports]( Command const & command )
+    {
+      return ( command.name == name ) &&
+             std::ranges::any_of(
+               command.exports,
+               [&exports]( std::string const & commandExport )
+               { return std::ranges::any_of( exports, [&commandExport]( std::string const & exportItem ) { return exportItem == commandExport; } ); } );
+    } );
 }
 
 bool isLenByStructMember( std::string const & name, std::vector<Param> const & params, std::map<std::string, Struct> const & structs )
@@ -167,10 +179,7 @@ std::pair<std::vector<std::string>, std::pair<std::string, Bitmask>> parseBitmas
   return { api, { name, { .require = require, .type = type, .xmlLine = line } } };
 }
 
-void parseCommand( tinyxml2::XMLElement const *                   element,
-                   std::string const &                            api,
-                   std::map<std::string, Command> &               commands,
-                   std::vector<std::pair<std::string, Command>> & skippedCommands )
+void parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & commands )
 {
   int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -195,12 +204,14 @@ void parseCommand( tinyxml2::XMLElement const *                   element,
       }
     }
 
-    auto commandIt = commands.find( alias );
+    auto commandIt = findByName( commands, alias );
     checkForError( "vk.xml", commandIt != commands.end(), line, "command <" + name + "> is aliased to unknown command <" + alias + ">" );
     checkForError( "vk.xml",
-                   commandIt->second.aliases.insert( { name, line } ).second,
+                   std::find_if( std::next( commandIt ), commands.end(), [&alias]( Command const & c ) { return c.name == alias; } ) == commands.end(),
                    line,
-                   "command <" + name + "> is already listed as alias for command <" + alias + ">" );
+                   "command <" + name + "> is aliased to multiply specfied command <" + alias + ">" );
+    checkForError(
+      "vk.xml", commandIt->aliases.insert( { name, line } ).second, line, "command <" + name + "> is already listed as alias for command <" + alias + ">" );
   }
   else
   {
@@ -255,7 +266,7 @@ void parseCommand( tinyxml2::XMLElement const *                   element,
       }
       else if ( attribute.first == "export" )
       {
-        command.export_ = tokenize( attribute.second, "," );
+        command.exports = tokenize( attribute.second, "," );
       }
       else if ( attribute.first == "queues" )
       {
@@ -281,7 +292,6 @@ void parseCommand( tinyxml2::XMLElement const *                   element,
       }
     }
 
-    std::string name;
     for ( auto child : children )
     {
       std::string value = child->Value();
@@ -291,15 +301,29 @@ void parseCommand( tinyxml2::XMLElement const *                   element,
       }
       else if ( value == "param" )
       {
-        Param param = parseParam( child );
-        if ( param.api.empty() || ( std::ranges::find( param.api, api ) != param.api.end() ) )
+        Param param   = parseParam( child );
+        auto  paramIt = findByName( command.params, param.name );
+        if ( paramIt == command.params.end() )
         {
           command.params.push_back( std::move( param ) );
+        }
+        else
+        {
+          checkForError( "vk.xml",
+                         param.api != paramIt->api,
+                         param.xmlLine,
+                         "command <" + command.name + "> has the parameter <" + param.name + "> multiply defined for the same set of apis" );
+          std::vector<std::string> api = param.api;
+          param.api                    = paramIt->api;
+          checkForError( "vk.xml",
+                         param == *paramIt,
+                         param.xmlLine,
+                         "command <" + command.name + "> has the parameter <" + param.name + "> multiply defined with different attributes" );
         }
       }
       else if ( value == "proto" )
       {
-        std::tie( name, command.returnType ) = parseProto( child );
+        std::tie( command.name, command.returnType ) = parseProto( child );
       }
     }
 
@@ -330,31 +354,24 @@ void parseCommand( tinyxml2::XMLElement const *                   element,
     checkForError( "vk.xml",
                    ( command.returnType.name == "VkResult" ) || command.errorCodes.empty(),
                    line,
-                   "command <" + name + "> does not return a VkResult but specifies errorcodes" );
+                   "command <" + command.name + "> does not return a VkResult but specifies errorcodes" );
     checkForError( "vk.xml",
                    ( command.returnType.name == "VkResult" ) || command.successCodes.empty(),
                    line,
-                   "command <" + name + "> does not return a VkResult but specifies successcodes" );
+                   "command <" + command.name + "> does not return a VkResult but specifies successcodes" );
     checkForError(
       "vk.xml",
-      command.api.empty() || command.export_.empty() ||
-        ( ( command.export_.size() == 1 ) && std::ranges::any_of( command.api, [&command]( auto const & a ) { return a == command.export_.front(); } ) ),
+      command.api.empty() || command.exports.empty() ||
+        ( ( command.exports.size() == 1 ) && std::ranges::any_of( command.api, [&command]( auto const & a ) { return a == command.exports.front(); } ) ),
       line,
-      "command <" + name + "> has disjunct attributes <api> and <export>" );
+      "command <" + command.name + "> has disjunct attributes <api> and <export>" );
 
-    if ( command.api.empty() || ( std::ranges::find( command.api, api ) != command.api.end() ) )
-    {
-      checkForError( "vk.xml", commands.insert( { name, command } ).second, line, "command <" + name + "> already specified for api <" + api + ">" );
-    }
-    else
-    {
-      skippedCommands.push_back( { name, command } );
-    }
+    checkForError( "vk.xml", !containsByNameAndExport( commands, command.name, command.exports ), line, "command <" + command.name + "> already specified" );
+    commands.push_back( std::move( command ) );
   }
 }
 
-std::pair<std::map<std::string, Command>, std::vector<std::pair<std::string, Command>>> parseCommands( tinyxml2::XMLElement const * element,
-                                                                                                       std::string const &          api )
+std::vector<Command> parseCommands( tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
   checkAttributes( "vk.xml", line, getAttributes( element ), {}, { { "comment", {} } } );
@@ -362,14 +379,13 @@ std::pair<std::map<std::string, Command>, std::vector<std::pair<std::string, Com
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( "vk.xml", line, children, { { "command", MultipleAllowed::Yes } } );
 
-  std::map<std::string, Command>               commands;
-  std::vector<std::pair<std::string, Command>> skippedCommands;
+  std::vector<Command> commands;
   for ( auto child : children )
   {
-    parseCommand( child, api, commands, skippedCommands );
+    parseCommand( child, commands );
   }
 
-  return { commands, skippedCommands };
+  return commands;
 }
 
 std::pair<std::string, Constant> parseConstant( tinyxml2::XMLElement const * element )
@@ -1020,12 +1036,11 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
     std::string const value = child->Value();
     if ( value == "commands" )
     {
-      std::vector<std::pair<std::string, Command>> skippedCommands;
-      std::tie( vkxml.commands, skippedCommands ) = parseCommands( child, api );
+      vkxml.commands = parseCommands( child );
 
       for ( auto const & command : vkxml.commands )
       {
-        for ( auto const & param : command.second.params )
+        for ( auto const & param : command.params )
         {
           if ( param.externSync.starts_with( "maybe:" ) )
           {
@@ -1034,36 +1049,36 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
                            pos != std::string::npos,
                            param.xmlLine,
                            "unexpected value <" + param.externSync + "> for attribute externsync of parameter <" + param.name + "> of command <" +
-                             command.first + ">, expected format is \"maybe:<paramname>[].<membername>\"" );
+                             command.name + ">, expected format is \"maybe:<paramname>[].<membername>\"" );
             std::string memberName = param.externSync.substr( pos + 1 );
             auto        structIt   = vkxml.structs.find( param.type.name );
             checkForError( "vk.xml",
                            structIt != vkxml.structs.end(),
                            param.xmlLine,
-                           "type <" + param.type.name + "> of parameter <" + param.name + "> of command <" + command.first +
+                           "type <" + param.type.name + "> of parameter <" + param.name + "> of command <" + command.name +
                              "> with externsync attribute is not a struct" );
             checkForError( "vk.xml",
                            containsByName( structIt->second.members, memberName ),
                            param.xmlLine,
-                           "struct <" + param.type.name + "> used in externsync attribute of parameter <" + param.name + "> of command <" + command.first +
+                           "struct <" + param.type.name + "> used in externsync attribute of parameter <" + param.name + "> of command <" + command.name +
                              "> does not have member <" + memberName + ">" );
           }
           checkForError( "vk.xml",
                          param.len.empty() || ( param.len == "null-terminated" ) || ( param.len == "1" ) || param.len.starts_with( "latexmath:" ) ||
-                           containsByName( command.second.params, param.len ) || isLenByStructMember( param.len, command.second.params, vkxml.structs ),
+                           containsByName( command.params, param.len ) || isLenByStructMember( param.len, command.params, vkxml.structs ),
                          param.xmlLine,
-                         "unknown len <" + param.len + "> specified for parameter <" + param.name + "> of command <" + command.first + ">" );
+                         "unknown len <" + param.len + "> specified for parameter <" + param.name + "> of command <" + command.name + ">" );
           checkForError( "vk.xml",
                          vkxml.baseTypes.contains( param.type.name ) || vkxml.bitmasks.contains( param.type.name ) ||
                            containsByNameOrAlias( vkxml.enums, param.type.name ) || vkxml.externalTypes.contains( param.type.name ) ||
                            vkxml.handles.contains( param.type.name ) || containsByNameOrAlias( vkxml.structs, param.type.name ) ||
                            vkxml.unions.contains( param.type.name ),
                          param.xmlLine,
-                         "unknown type <" + param.type.name + "> of parameter <" + param.name + "> of command <" + command.first + ">" );
+                         "unknown type <" + param.type.name + "> of parameter <" + param.name + "> of command <" + command.name + ">" );
           checkForError( "vk.xml",
                          param.validStructs.empty() || vkxml.structs.contains( param.validStructs ),
                          param.xmlLine,
-                         "unknown validstructs <" + param.validStructs + "> specified for parameter <" + param.name + "> of command <" + command.first + ">" );
+                         "unknown validstructs <" + param.validStructs + "> specified for parameter <" + param.name + "> of command <" + command.name + ">" );
         }
       }
     }

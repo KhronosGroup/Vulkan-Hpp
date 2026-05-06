@@ -58,17 +58,25 @@ struct Param
   Type                     type           = {};
   std::string              validStructs   = {};
   int                      xmlLine        = {};
+
+  bool operator==( Param const & rhs ) const noexcept
+  {
+    return ( altLen == rhs.altLen ) && ( api == rhs.api ) && ( arraySizes == rhs.arraySizes ) && ( externSync == rhs.externSync ) &&
+           ( len == rhs.len ) && ( name == rhs.name ) && ( noAutoValidity == rhs.noAutoValidity ) && ( objectType == rhs.objectType ) &&
+           ( optional == rhs.optional ) && ( stride == rhs.stride ) && ( type == rhs.type ) && ( validStructs == rhs.validStructs );
+  }
 };
 
 struct Command
 {
+  std::string                name                 = {};
   std::string                allowNoQueues        = {};
   std::map<std::string, int> aliases              = {};
   std::vector<std::string>   api                  = {};
   std::vector<std::string>   cmdBufferLevel       = {};
   std::string                conditionalRendering = {};
   std::vector<std::string>   errorCodes           = {};
-  std::vector<std::string>   export_              = {};
+  std::vector<std::string>   exports              = {};
   std::vector<Param>         params               = {};
   std::vector<std::string>   queues               = {};
   std::string                renderPass           = {};
@@ -269,7 +277,7 @@ struct Vkxml
 {
   std::map<std::string, BaseType>     baseTypes     = {};
   std::map<std::string, Bitmask>      bitmasks      = {};
-  std::map<std::string, Command>      commands      = {};  // lists only commands of the requested export
+  std::vector<Command>                commands      = {};
   std::map<std::string, Constant>     constants     = {};
   Comment                             copyright     = {};
   std::map<std::string, Define>       defines       = {};

@@ -5336,6 +5336,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     d.vkCmdSetBlendConstants( static_cast<VkCommandBuffer>( m_commandBuffer ), blendConstants );
   }
 
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCmdSetBlendConstants, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetBlendConstants.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCmdSetBlendConstants ), bool>::type>
+  VULKAN_HPP_INLINE void CommandBuffer::setBlendConstants( std::array<float, 4> const & blendConstants, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdSetBlendConstants && "Function <vkCmdSetBlendConstants> requires <VK_VERSION_1_0>" );
+#  endif
+
+    d.vkCmdSetBlendConstants( m_commandBuffer, blendConstants.data() );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
   // wrapper function for command vkCmdSetDepthBounds, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetDepthBounds.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCmdSetDepthBounds ), bool>::type>
   VULKAN_HPP_INLINE void CommandBuffer::setDepthBounds( float minDepthBounds, float maxDepthBounds, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
@@ -20943,15 +20957,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetFragmentShadingRateKHR.html
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCmdSetFragmentShadingRateKHR ), bool>::type>
   VULKAN_HPP_INLINE void CommandBuffer::setFragmentShadingRateKHR(
-    Extent2D const & fragmentSize, FragmentShadingRateCombinerOpKHR const combinerOps[2], Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+    Extent2D const & fragmentSize, std::array<FragmentShadingRateCombinerOpKHR, 2> const & combinerOps, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     VULKAN_HPP_ASSERT( d.vkCmdSetFragmentShadingRateKHR && "Function <vkCmdSetFragmentShadingRateKHR> requires <VK_KHR_fragment_shading_rate>" );
 #  endif
 
-    d.vkCmdSetFragmentShadingRateKHR(
-      m_commandBuffer, reinterpret_cast<VkExtent2D const *>( &fragmentSize ), reinterpret_cast<VkFragmentShadingRateCombinerOpKHR const *>( combinerOps ) );
+    d.vkCmdSetFragmentShadingRateKHR( m_commandBuffer,
+                                      reinterpret_cast<VkExtent2D const *>( &fragmentSize ),
+                                      reinterpret_cast<VkFragmentShadingRateCombinerOpKHR const *>( combinerOps.data() ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -24938,6 +24953,24 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                          static_cast<VkFragmentShadingRateNV>( shadingRate ),
                                          reinterpret_cast<VkFragmentShadingRateCombinerOpKHR const *>( combinerOps ) );
   }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkCmdSetFragmentShadingRateEnumNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetFragmentShadingRateEnumNV.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkCmdSetFragmentShadingRateEnumNV ), bool>::type>
+  VULKAN_HPP_INLINE void CommandBuffer::setFragmentShadingRateEnumNV(
+    FragmentShadingRateNV shadingRate, std::array<FragmentShadingRateCombinerOpKHR, 2> const & combinerOps, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdSetFragmentShadingRateEnumNV && "Function <vkCmdSetFragmentShadingRateEnumNV> requires <VK_NV_fragment_shading_rate_enums>" );
+#  endif
+
+    d.vkCmdSetFragmentShadingRateEnumNV( m_commandBuffer,
+                                         static_cast<VkFragmentShadingRateNV>( shadingRate ),
+                                         reinterpret_cast<VkFragmentShadingRateCombinerOpKHR const *>( combinerOps.data() ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   //=== VK_EXT_mesh_shader ===
 

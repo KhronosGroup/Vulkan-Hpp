@@ -77,6 +77,15 @@ Requests for updates and issues with these packages should be directed to their 
 
 We try to keep the API for all flavours of Vulkan-Hpp constant or backwards compatible. However, we may introduce unavoidable breaking changes, usually to fix bugs. Following is a list of those changes, arranged by version.
 
+### v1.4.351
+
+In order to improve argument safety, the interface of functions taking a C-array of values has changed to take a `std::array`, instead.
+The affected functions are:
+- `vk::CommandBuffer::setFragmentShadingRateKHR`
+- `vk::raii::CommandBuffer::setBlendConstants`
+- `vk::raii::CommandBuffer::setFragmentShadingRateKHR`
+- `vk::raii::CommandBuffer::setFragmentShadingRateEnumNV`
+
 ### v1.4.334
 
 The `vulkan_hpp` C++ named module has been renamed to `vulkan`.

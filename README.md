@@ -30,7 +30,7 @@ For more details, check out the [workflow](.github/workflows/build.yml) that gov
 
 | [![CI Status](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/build.yml/badge.svg)](.github/workflows/build.yml) | GCC | Clang | MSVC |
 | :--- | :---: | :---: | :---: |
-| **Windows 2022** <br> **Windows 2025**            | - <br> - | 17 <br> 17 | VS 17 2022 <br> VS 17 2022 |
+| **Windows 2022** <br> **Windows 2025**            | - <br> - | 17 <br> 18 | VS 17 2022 <br> VS 18 2026 |
 | **Ubuntu 22.04** <br> **Ubuntu 24.04**            | 10, 11 <br> 12, 13, 14 | 13, 14, 15 <br> 16, 17, 18 | - <br> - |
 | **MacOS 14** <br> **MacOS 15** <br> **MacOS 16**  | - <br> - <br> - | 15 <br> 17 <br> 17 | - <br> - <br> - |
 

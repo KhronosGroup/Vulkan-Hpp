@@ -20,16 +20,19 @@
 Vulkan-Hpp provides header-only C++ bindings for the Vulkan C API to improve the developer experience with Vulkan without introducing run-time CPU costs.
 It adds features like type safety for enumerations and bit-fields, STL container support, exception support, and several varieties of RAII-capable types.
 
-This repository contains the [generators](VulkanHppGenerator.hpp) for Vulkan-Hpp, which accept the [XML specification of Vulkan](https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/refs/heads/main/xml/vk.xml) and emit C++ bindings, which are documented further below.
+This repository contains the [generators](./generator/) for Vulkan-Hpp, which accept the [XML specification of Vulkan](https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/refs/heads/main/xml/vk.xml) and emit C++ bindings, which are documented further below.
 
 ## CI/CD status
 
-<!-- TODO: This table is now broken with the recent changes to CI/CD. -->
-| Platform | Build Status |
-|:--------|:------------|
-| **Windows**  | [![CI Windows Clang](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-clang.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-clang.yml) <br> [![CI Windows MSVC](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-msvc.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-windows-msvc.yml) |
-| **Linux**    | [![CI Ubuntu 22](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-22.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-22.yml) <br> [![CI Ubuntu 24](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-24.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-ubuntu-24.yml) |
-| **macOS**    | [![CI MacOS](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-macos.yml/badge.svg)](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/ci-macos.yml) |
+We test a wide range of compilers across Windows, Linux and MacOS (via [MoltenVK](https://github.com/KhronosGroup/MoltenVK)).
+Below is a matrix representing all of the runner permutations used for automated testing.
+For more details, check out the [workflow](.github/workflows/build.yml) that governs these runners.
+
+| [![CI Status](https://github.com/KhronosGroup/Vulkan-Hpp/actions/workflows/build.yml/badge.svg)](.github/workflows/build.yml) | GCC | Clang | MSVC |
+| :--- | :---: | :---: | :---: |
+| **Windows 2022** <br> **Windows 2025**            | - <br> - | 17 <br> 17 | VS 17 2022 <br> VS 17 2022 |
+| **Ubuntu 22.04** <br> **Ubuntu 24.04**            | 10, 11 <br> 12, 13, 14 | 13, 14, 15 <br> 16, 17, 18 | - <br> - |
+| **MacOS 14** <br> **MacOS 15** <br> **MacOS 26**  | - <br> - <br> - | 15 <br> 17 <br> 17 | - <br> - <br> - |
 
 ## Documentation
 

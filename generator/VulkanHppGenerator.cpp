@@ -2350,6 +2350,12 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
         assert( composedType.ends_with( " *" ) );
         arguments.push_back( stripPostfix( composedType, " *" ) + " & " + stripPluralS( startLowerCase( stripPrefix( params[i].name, "p" ) ) ) );
       }
+      else if ( !params[i].arraySizes.empty() )
+      {
+        assert( params[i].arraySizes.size() == 1 );
+        assert( params[i].type.postfix == "const" );
+        arguments.push_back( "std::array<" + stripPrefix( params[i].type.name, "Vk" ) + ", " + params[i].arraySizes[0] + "> const & " + params[i].name );
+      }
       else if ( params[i].type.isConstPointer() )
       {
         assert( composedType.ends_with( " *" ) );
@@ -2357,7 +2363,6 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
         if ( params[i].lenExpression.empty() )
         {
           assert( withDispatcher || !isHandleType( params[i].type.name ) );
-          assert( params[i].arraySizes.empty() );
           if ( params[i].type.name == "void" )
           {
             arguments.push_back( templatedParams.contains( i ) ? ( stripPrefix( params[i].name, "p" ) + "Type const & " + name )
@@ -2378,7 +2383,6 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
         {
           // a const-pointer with a non-empty len is either null-terminated (aka a string) or represented by an
           // ArrayProxy
-          assert( params[i].arraySizes.empty() );
           if ( params[i].lenExpression == "null-terminated" )
           {
             assert( params[i].type.name == "char" );
@@ -2431,7 +2435,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
         assert( params[i].type.isValue() );
         // parameters named "objectType" collide with the member variable -> append an _ to here
         std::string paramName = ( definition && ( params[i].name == "objectType" ) ) ? "objectType_" : params[i].name;
-        arguments.push_back( composedType + " " + paramName + generateCArraySizes( params[i].arraySizes ) );
+        arguments.push_back( composedType + " " + paramName );
       }
       arguments.back() += std::string( !definition && ( defaultStartIndex <= i ) && !hasDefaultAssignment ? " VULKAN_HPP_DEFAULT_ASSIGNMENT( {} )" : "" );
     }
@@ -2999,9 +3003,9 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue(
   std::string       argument;
   ParamData const & param = params[paramIndex];
   assert( ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) || param.lenExpression.empty() );  // !keepVoidPtr -> no lenExpression
-  if ( param.type.name.starts_with( "Vk" ) )
+  if ( param.arraySizes.empty() )
   {
-    if ( param.arraySizes.empty() )
+    if ( param.type.name.starts_with( "Vk" ) )
     {
       // check if this param is used as the len of an other param
       auto pointerIt = std::ranges::find_if( params, [&param]( ParamData const & pd ) { return pd.lenExpression == param.name; } );
@@ -3038,57 +3042,55 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue(
     }
     else
     {
-      assert( !param.optional );
-      assert( param.arraySizes.size() == 1 );
-      assert( param.type.postfix == "const" );
-      argument = "reinterpret_cast<" + param.type.compose( "" ) + " *>( " + param.name + " )";
+      auto pointerIt = std::ranges::find_if( params, [&param]( ParamData const & pd ) { return pd.lenExpression == param.name; } );
+      if ( ( pointerIt != params.end() ) && !( ( pointerIt->type.name == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) ) )
+      {
+        // this parameter is the len of some other -> replace it with that parameter's size
+        assert( ( param.type.name == "size_t" ) || ( param.type.name == "uint32_t" ) );
+        if ( singularParams.contains( paramIndex ) )
+        {
+          if ( pointerIt->type.name == "void" )
+          {
+            argument = "sizeof( " + stripPrefix( pointerIt->name, "p" ) + "Type )";
+          }
+          else
+          {
+            argument = "1";
+          }
+        }
+        else
+        {
+          argument = startLowerCase( stripPrefix( pointerIt->name, "p" ) ) + ".size()";
+          if ( pointerIt->type.name == "void" )
+          {
+            argument += " * sizeof( " + stripPrefix( pointerIt->name, "p" ) + "Type )";
+          }
+        }
+      }
+      else
+      {
+        pointerIt = std::ranges::find_if( params, [paramIndex]( ParamData const & pd ) { return pd.strideParam.second == paramIndex; } );
+        if ( pointerIt != params.end() )
+        {
+          // this parameter is the stride of some other -> replace it with that parameter's stride
+          assert( param.type.name == "uint32_t" );
+          assert( pointerIt->strideParam.first == param.name );
+          argument = startLowerCase( stripPrefix( pointerIt->name, "p" ) ) + ".stride()";
+        }
+        else
+        {
+          argument = param.name;
+        }
+      }
     }
   }
   else
   {
-    auto pointerIt = std::ranges::find_if( params, [&param]( ParamData const & pd ) { return pd.lenExpression == param.name; } );
-    if ( ( pointerIt != params.end() ) && !( ( pointerIt->type.name == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) ) )
-    {
-      // this parameter is the len of some other -> replace it with that parameter's size
-      assert( param.arraySizes.empty() );
-      assert( ( param.type.name == "size_t" ) || ( param.type.name == "uint32_t" ) );
-      if ( singularParams.contains( paramIndex ) )
-      {
-        if ( pointerIt->type.name == "void" )
-        {
-          argument = "sizeof( " + stripPrefix( pointerIt->name, "p" ) + "Type )";
-        }
-        else
-        {
-          argument = "1";
-        }
-      }
-      else
-      {
-        argument = startLowerCase( stripPrefix( pointerIt->name, "p" ) ) + ".size()";
-        if ( pointerIt->type.name == "void" )
-        {
-          argument += " * sizeof( " + stripPrefix( pointerIt->name, "p" ) + "Type )";
-        }
-      }
-    }
-    else
-    {
-      assert( param.arraySizes.size() <= 1 );
-      pointerIt = std::ranges::find_if( params, [paramIndex]( ParamData const & pd ) { return pd.strideParam.second == paramIndex; } );
-      if ( pointerIt != params.end() )
-      {
-        // this parameter is the stride of some other -> replace it with that parameter's stride
-        assert( param.arraySizes.empty() );
-        assert( param.type.name == "uint32_t" );
-        assert( pointerIt->strideParam.first == param.name );
-        argument = startLowerCase( stripPrefix( pointerIt->name, "p" ) ) + ".stride()";
-      }
-      else
-      {
-        argument = param.name;
-      }
-    }
+    assert( !param.optional );
+    assert( param.arraySizes.size() == 1 );
+    assert( param.type.postfix == "const" );
+    argument = param.type.name.starts_with( "Vk" ) ? ( "reinterpret_cast<" + param.type.compose( "" ) + " *>( " + param.name + ".data() )" )
+                                                   : ( param.name + ".data()" );
   }
   return argument;
 }
@@ -12849,7 +12851,7 @@ bool VulkanHppGenerator::hasParentHandle( std::string const & handle, std::strin
 
 bool VulkanHppGenerator::hasPointerParams( std::vector<ParamData> const & params ) const
 {
-  return std::ranges::any_of( params, []( auto const & pd ) { return pd.type.isPointer(); } );
+  return std::ranges::any_of( params, []( auto const & pd ) { return pd.type.isPointer() || !pd.arraySizes.empty(); } );
 }
 
 bool VulkanHppGenerator::isDeviceCommand( CommandData const & commandData ) const

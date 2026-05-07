@@ -5729,6 +5729,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkCmdSetBlendConstants, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetBlendConstants.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdSetBlendConstants ), bool>::type = true>
     void setBlendConstants( float const blendConstants[4], Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdSetBlendConstants, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetBlendConstants.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdSetBlendConstants ), bool>::type = true>
+    void setBlendConstants( std::array<float, 4> const & blendConstants,
+                            Dispatch const & d           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     // wrapper function for command vkCmdSetDepthBounds, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetDepthBounds.html
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdSetDepthBounds ), bool>::type = true>
@@ -7289,9 +7295,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetFragmentShadingRateKHR.html
     template <typename Dispatch                                                                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
               typename std::enable_if<IS_DISPATCHED( vkCmdSetFragmentShadingRateKHR ), bool>::type = true>
-    void setFragmentShadingRateKHR( Extent2D const &                       fragmentSize,
-                                    FragmentShadingRateCombinerOpKHR const combinerOps[2],
-                                    Dispatch const & d                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    void setFragmentShadingRateKHR( Extent2D const &                                        fragmentSize,
+                                    std::array<FragmentShadingRateCombinerOpKHR, 2> const & combinerOps,
+                                    Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_KHR_dynamic_rendering_local_read ===
@@ -7953,6 +7959,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     void setFragmentShadingRateEnumNV( FragmentShadingRateNV                  shadingRate,
                                        FragmentShadingRateCombinerOpKHR const combinerOps[2],
                                        Dispatch const & d                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdSetFragmentShadingRateEnumNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetFragmentShadingRateEnumNV.html
+    template <typename Dispatch                                                                       = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkCmdSetFragmentShadingRateEnumNV ), bool>::type = true>
+    void setFragmentShadingRateEnumNV( FragmentShadingRateNV                                   shadingRate,
+                                       std::array<FragmentShadingRateCombinerOpKHR, 2> const & combinerOps,
+                                       Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_EXT_mesh_shader ===
 

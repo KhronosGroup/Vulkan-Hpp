@@ -1188,6 +1188,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             PFN_vkGetMemoryAndroidHardwareBufferANDROID( vkGetDeviceProcAddr( device, "vkGetMemoryAndroidHardwareBufferANDROID" ) );
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
+          //=== VK_AMD_gpa_interface ===
+          vkCreateGpaSessionAMD         = PFN_vkCreateGpaSessionAMD( vkGetDeviceProcAddr( device, "vkCreateGpaSessionAMD" ) );
+          vkDestroyGpaSessionAMD        = PFN_vkDestroyGpaSessionAMD( vkGetDeviceProcAddr( device, "vkDestroyGpaSessionAMD" ) );
+          vkSetGpaDeviceClockModeAMD    = PFN_vkSetGpaDeviceClockModeAMD( vkGetDeviceProcAddr( device, "vkSetGpaDeviceClockModeAMD" ) );
+          vkGetGpaDeviceClockInfoAMD    = PFN_vkGetGpaDeviceClockInfoAMD( vkGetDeviceProcAddr( device, "vkGetGpaDeviceClockInfoAMD" ) );
+          vkCmdBeginGpaSessionAMD       = PFN_vkCmdBeginGpaSessionAMD( vkGetDeviceProcAddr( device, "vkCmdBeginGpaSessionAMD" ) );
+          vkCmdEndGpaSessionAMD         = PFN_vkCmdEndGpaSessionAMD( vkGetDeviceProcAddr( device, "vkCmdEndGpaSessionAMD" ) );
+          vkCmdBeginGpaSampleAMD        = PFN_vkCmdBeginGpaSampleAMD( vkGetDeviceProcAddr( device, "vkCmdBeginGpaSampleAMD" ) );
+          vkCmdEndGpaSampleAMD          = PFN_vkCmdEndGpaSampleAMD( vkGetDeviceProcAddr( device, "vkCmdEndGpaSampleAMD" ) );
+          vkGetGpaSessionStatusAMD      = PFN_vkGetGpaSessionStatusAMD( vkGetDeviceProcAddr( device, "vkGetGpaSessionStatusAMD" ) );
+          vkGetGpaSessionResultsAMD     = PFN_vkGetGpaSessionResultsAMD( vkGetDeviceProcAddr( device, "vkGetGpaSessionResultsAMD" ) );
+          vkResetGpaSessionAMD          = PFN_vkResetGpaSessionAMD( vkGetDeviceProcAddr( device, "vkResetGpaSessionAMD" ) );
+          vkCmdCopyGpaSessionResultsAMD = PFN_vkCmdCopyGpaSessionResultsAMD( vkGetDeviceProcAddr( device, "vkCmdCopyGpaSessionResultsAMD" ) );
+
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
           //=== VK_AMDX_shader_enqueue ===
           vkCreateExecutionGraphPipelinesAMDX = PFN_vkCreateExecutionGraphPipelinesAMDX( vkGetDeviceProcAddr( device, "vkCreateExecutionGraphPipelinesAMDX" ) );
@@ -2467,6 +2481,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         PFN_dummy vkGetMemoryAndroidHardwareBufferANDROID_placeholder     = 0;
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
+        //=== VK_AMD_gpa_interface ===
+        PFN_vkCreateGpaSessionAMD         vkCreateGpaSessionAMD         = 0;
+        PFN_vkDestroyGpaSessionAMD        vkDestroyGpaSessionAMD        = 0;
+        PFN_vkSetGpaDeviceClockModeAMD    vkSetGpaDeviceClockModeAMD    = 0;
+        PFN_vkGetGpaDeviceClockInfoAMD    vkGetGpaDeviceClockInfoAMD    = 0;
+        PFN_vkCmdBeginGpaSessionAMD       vkCmdBeginGpaSessionAMD       = 0;
+        PFN_vkCmdEndGpaSessionAMD         vkCmdEndGpaSessionAMD         = 0;
+        PFN_vkCmdBeginGpaSampleAMD        vkCmdBeginGpaSampleAMD        = 0;
+        PFN_vkCmdEndGpaSampleAMD          vkCmdEndGpaSampleAMD          = 0;
+        PFN_vkGetGpaSessionStatusAMD      vkGetGpaSessionStatusAMD      = 0;
+        PFN_vkGetGpaSessionResultsAMD     vkGetGpaSessionResultsAMD     = 0;
+        PFN_vkResetGpaSessionAMD          vkResetGpaSessionAMD          = 0;
+        PFN_vkCmdCopyGpaSessionResultsAMD vkCmdCopyGpaSessionResultsAMD = 0;
+
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
         //=== VK_AMDX_shader_enqueue ===
         PFN_vkCreateExecutionGraphPipelinesAMDX        vkCreateExecutionGraphPipelinesAMDX        = 0;
@@ -3210,6 +3238,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_EXT_debug_utils ===
     class DebugUtilsMessengerEXT;
+
+    //=== VK_AMD_gpa_interface ===
+    class GpaSessionAMD;
 
     //=== VK_EXT_descriptor_heap ===
     class TensorARM;
@@ -5050,6 +5081,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD typename ResultValueType<struct AHardwareBuffer *>::type
         getMemoryAndroidHardwareBufferANDROID( MemoryGetAndroidHardwareBufferInfoANDROID const & info ) const;
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
+      //=== VK_AMD_gpa_interface ===
+
+      // wrapper function for command vkCreateGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateGpaSessionAMD.html
+      VULKAN_HPP_NODISCARD typename ResultValueType<GpaSessionAMD>::type
+        createGpaSessionAMD( GpaSessionCreateInfoAMD const &     createInfo,
+                             Optional<AllocationCallbacks const> allocator = nullptr ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+
+      // wrapper function for command vkSetGpaDeviceClockModeAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetGpaDeviceClockModeAMD.html
+      VULKAN_HPP_NODISCARD typename ResultValueType<GpaDeviceClockModeInfoAMD>::type setGpaClockModeAMD() const;
+
+      // wrapper function for command vkGetGpaDeviceClockInfoAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaDeviceClockInfoAMD.html
+      VULKAN_HPP_NODISCARD typename ResultValueType<GpaDeviceGetClockInfoAMD>::type getGpaClockInfoAMD() const;
 
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       //=== VK_AMDX_shader_enqueue ===
@@ -7529,6 +7573,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkCmdInsertDebugUtilsLabelEXT, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdInsertDebugUtilsLabelEXT.html
       void insertDebugUtilsLabelEXT( DebugUtilsLabelEXT const & labelInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_AMD_gpa_interface ===
+
+      // wrapper function for command vkCmdBeginGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginGpaSessionAMD.html
+      typename ResultValueType<void>::type beginGpaSessionAMD( VULKAN_HPP_NAMESPACE::GpaSessionAMD gpaSession ) const;
+
+      // wrapper function for command vkCmdEndGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndGpaSessionAMD.html
+      typename ResultValueType<void>::type endGpaSessionAMD( VULKAN_HPP_NAMESPACE::GpaSessionAMD gpaSession ) const;
+
+      // wrapper function for command vkCmdBeginGpaSampleAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginGpaSampleAMD.html
+      VULKAN_HPP_NODISCARD typename ResultValueType<uint32_t>::type beginGpaSampleAMD( VULKAN_HPP_NAMESPACE::GpaSessionAMD gpaSession,
+                                                                                       GpaSampleBeginInfoAMD const &       gpaSampleBeginInfo ) const;
+
+      // wrapper function for command vkCmdEndGpaSampleAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndGpaSampleAMD.html
+      void endGpaSampleAMD( VULKAN_HPP_NAMESPACE::GpaSessionAMD gpaSession, uint32_t sampleID ) const VULKAN_HPP_NOEXCEPT;
+
+      // wrapper function for command vkCmdCopyGpaSessionResultsAMD, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyGpaSessionResultsAMD.html
+      void copyGpaSessionResultsAMD( VULKAN_HPP_NAMESPACE::GpaSessionAMD gpaSession ) const VULKAN_HPP_NOEXCEPT;
 
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       //=== VK_AMDX_shader_enqueue ===
@@ -11113,6 +11176,144 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     template <>
     struct isVulkanRAIIHandleType<Framebuffer>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
+    // wrapper class for handle VkGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkGpaSessionAMD.html
+    class GpaSessionAMD
+    {
+    public:
+      using CType   = VkGpaSessionAMD;
+      using CppType = VULKAN_HPP_NAMESPACE::GpaSessionAMD;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR ObjectType               objectType            = ObjectType::eGpaSessionAMD;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR DebugReportObjectTypeEXT debugReportObjectType = DebugReportObjectTypeEXT::eUnknown;
+
+    public:
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+      GpaSessionAMD( Device const & device, GpaSessionCreateInfoAMD const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
+      {
+        *this = device.createGpaSessionAMD( createInfo, allocator );
+      }
+#  endif
+
+      GpaSessionAMD( Device const & device, VkGpaSessionAMD gpaSession, Optional<AllocationCallbacks const> allocator = nullptr )
+        : m_device( device )
+        , m_gpaSessionAMD( gpaSession )
+        , m_allocator( static_cast<const AllocationCallbacks *>( allocator ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+      }
+
+      GpaSessionAMD( std::nullptr_t ) {}
+
+      ~GpaSessionAMD()
+      {
+        clear();
+      }
+
+      GpaSessionAMD()                        = delete;
+      GpaSessionAMD( GpaSessionAMD const & ) = delete;
+
+      GpaSessionAMD( GpaSessionAMD && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_device( exchange( rhs.m_device, {} ) )
+        , m_gpaSessionAMD( exchange( rhs.m_gpaSessionAMD, {} ) )
+        , m_allocator( exchange( rhs.m_allocator, {} ) )
+        , m_dispatcher( exchange( rhs.m_dispatcher, nullptr ) )
+      {
+      }
+
+      GpaSessionAMD & operator=( GpaSessionAMD const & ) = delete;
+
+      GpaSessionAMD & operator=( GpaSessionAMD && rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        if ( this != &rhs )
+        {
+          std::swap( m_device, rhs.m_device );
+          std::swap( m_gpaSessionAMD, rhs.m_gpaSessionAMD );
+          std::swap( m_allocator, rhs.m_allocator );
+          std::swap( m_dispatcher, rhs.m_dispatcher );
+        }
+        return *this;
+      }
+
+      VULKAN_HPP_NAMESPACE::GpaSessionAMD const & operator*() const & VULKAN_HPP_NOEXCEPT
+      {
+        return m_gpaSessionAMD;
+      }
+
+      VULKAN_HPP_NAMESPACE::GpaSessionAMD const && operator*() const && VULKAN_HPP_NOEXCEPT
+      {
+        return std::move( m_gpaSessionAMD );
+      }
+
+      operator VULKAN_HPP_NAMESPACE::GpaSessionAMD() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_gpaSessionAMD;
+      }
+
+      void clear() VULKAN_HPP_NOEXCEPT
+      {
+        if ( m_gpaSessionAMD )
+        {
+          getDispatcher()->vkDestroyGpaSessionAMD( static_cast<VkDevice>( m_device ),
+                                                   static_cast<VkGpaSessionAMD>( m_gpaSessionAMD ),
+                                                   reinterpret_cast<VkAllocationCallbacks const *>( m_allocator ) );
+        }
+        m_device        = nullptr;
+        m_gpaSessionAMD = nullptr;
+        m_allocator     = nullptr;
+        m_dispatcher    = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::GpaSessionAMD release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return exchange( m_gpaSessionAMD, nullptr );
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const
+      {
+        return m_device;
+      }
+
+      detail::DeviceDispatcher const * getDispatcher() const
+      {
+        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
+        return m_dispatcher;
+      }
+
+      void swap( GpaSessionAMD & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        std::swap( m_device, rhs.m_device );
+        std::swap( m_gpaSessionAMD, rhs.m_gpaSessionAMD );
+        std::swap( m_allocator, rhs.m_allocator );
+        std::swap( m_dispatcher, rhs.m_dispatcher );
+      }
+
+      //=== VK_AMD_gpa_interface ===
+
+      // wrapper function for command vkGetGpaSessionStatusAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaSessionStatusAMD.html
+      typename ResultValueType<void>::type getStatus() const;
+
+      // wrapper function for command vkGetGpaSessionResultsAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaSessionResultsAMD.html
+      VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<uint8_t>>::type getResults( uint32_t sampleID ) const;
+
+      // wrapper function for command vkResetGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetGpaSessionAMD.html
+      typename ResultValueType<void>::type reset() const;
+
+    private:
+      VULKAN_HPP_NAMESPACE::Device        m_device        = {};
+      VULKAN_HPP_NAMESPACE::GpaSessionAMD m_gpaSessionAMD = {};
+      AllocationCallbacks const *         m_allocator     = {};
+      detail::DeviceDispatcher const *    m_dispatcher    = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<GpaSessionAMD>
     {
       static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
@@ -22156,6 +22357,160 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( buffer ) );
     }
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
+    //=== VK_AMD_gpa_interface ===
+
+    // wrapper function for command vkCreateGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateGpaSessionAMD.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<GpaSessionAMD>::type
+                         Device::createGpaSessionAMD( GpaSessionCreateInfoAMD const &     createInfo,
+                                                      Optional<AllocationCallbacks const> allocator ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCreateGpaSessionAMD && "Function <vkCreateGpaSessionAMD> requires <VK_AMD_gpa_interface>" );
+
+      VULKAN_HPP_NAMESPACE::GpaSessionAMD gpaSession;
+      Result result = static_cast<Result>( getDispatcher()->vkCreateGpaSessionAMD( static_cast<VkDevice>( m_device ),
+                                                                                   reinterpret_cast<VkGpaSessionCreateInfoAMD const *>( &createInfo ),
+                                                                                   reinterpret_cast<VkAllocationCallbacks const *>( allocator.get() ),
+                                                                                   reinterpret_cast<VkGpaSessionAMD *>( &gpaSession ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::createGpaSessionAMD" );
+      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result,
+                                                                  GpaSessionAMD( *this, *reinterpret_cast<VkGpaSessionAMD *>( &gpaSession ), allocator ) );
+    }
+
+    // wrapper function for command vkSetGpaDeviceClockModeAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetGpaDeviceClockModeAMD.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<GpaDeviceClockModeInfoAMD>::type Device::setGpaClockModeAMD() const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkSetGpaDeviceClockModeAMD && "Function <vkSetGpaDeviceClockModeAMD> requires <VK_AMD_gpa_interface>" );
+
+      GpaDeviceClockModeInfoAMD info;
+      Result                    result = static_cast<Result>(
+        getDispatcher()->vkSetGpaDeviceClockModeAMD( static_cast<VkDevice>( m_device ), reinterpret_cast<VkGpaDeviceClockModeInfoAMD *>( &info ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::setGpaClockModeAMD" );
+
+      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( info ) );
+    }
+
+    // wrapper function for command vkGetGpaDeviceClockInfoAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaDeviceClockInfoAMD.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<GpaDeviceGetClockInfoAMD>::type Device::getGpaClockInfoAMD() const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetGpaDeviceClockInfoAMD && "Function <vkGetGpaDeviceClockInfoAMD> requires <VK_AMD_gpa_interface>" );
+
+      GpaDeviceGetClockInfoAMD info;
+      Result                   result = static_cast<Result>(
+        getDispatcher()->vkGetGpaDeviceClockInfoAMD( static_cast<VkDevice>( m_device ), reinterpret_cast<VkGpaDeviceGetClockInfoAMD *>( &info ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::getGpaClockInfoAMD" );
+
+      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( info ) );
+    }
+
+    // wrapper function for command vkCmdBeginGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginGpaSessionAMD.html
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type CommandBuffer::beginGpaSessionAMD( VULKAN_HPP_NAMESPACE::GpaSessionAMD gpaSession ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBeginGpaSessionAMD && "Function <vkCmdBeginGpaSessionAMD> requires <VK_AMD_gpa_interface>" );
+
+      Result result = static_cast<Result>(
+        getDispatcher()->vkCmdBeginGpaSessionAMD( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkGpaSessionAMD>( gpaSession ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::CommandBuffer::beginGpaSessionAMD" );
+
+      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result );
+    }
+
+    // wrapper function for command vkCmdEndGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndGpaSessionAMD.html
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type CommandBuffer::endGpaSessionAMD( VULKAN_HPP_NAMESPACE::GpaSessionAMD gpaSession ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdEndGpaSessionAMD && "Function <vkCmdEndGpaSessionAMD> requires <VK_AMD_gpa_interface>" );
+
+      Result result = static_cast<Result>(
+        getDispatcher()->vkCmdEndGpaSessionAMD( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkGpaSessionAMD>( gpaSession ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::CommandBuffer::endGpaSessionAMD" );
+
+      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result );
+    }
+
+    // wrapper function for command vkCmdBeginGpaSampleAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginGpaSampleAMD.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<uint32_t>::type
+      CommandBuffer::beginGpaSampleAMD( VULKAN_HPP_NAMESPACE::GpaSessionAMD gpaSession, GpaSampleBeginInfoAMD const & gpaSampleBeginInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBeginGpaSampleAMD && "Function <vkCmdBeginGpaSampleAMD> requires <VK_AMD_gpa_interface>" );
+
+      uint32_t sampleID;
+      Result   result = static_cast<Result>( getDispatcher()->vkCmdBeginGpaSampleAMD( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                                                      static_cast<VkGpaSessionAMD>( gpaSession ),
+                                                                                      reinterpret_cast<VkGpaSampleBeginInfoAMD const *>( &gpaSampleBeginInfo ),
+                                                                                      &sampleID ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::CommandBuffer::beginGpaSampleAMD" );
+
+      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( sampleID ) );
+    }
+
+    // wrapper function for command vkCmdEndGpaSampleAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndGpaSampleAMD.html
+    VULKAN_HPP_INLINE void CommandBuffer::endGpaSampleAMD( VULKAN_HPP_NAMESPACE::GpaSessionAMD gpaSession, uint32_t sampleID ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdEndGpaSampleAMD && "Function <vkCmdEndGpaSampleAMD> requires <VK_AMD_gpa_interface>" );
+
+      getDispatcher()->vkCmdEndGpaSampleAMD( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkGpaSessionAMD>( gpaSession ), sampleID );
+    }
+
+    // wrapper function for command vkGetGpaSessionStatusAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaSessionStatusAMD.html
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type GpaSessionAMD::getStatus() const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetGpaSessionStatusAMD && "Function <vkGetGpaSessionStatusAMD> requires <VK_AMD_gpa_interface>" );
+
+      Result result =
+        static_cast<Result>( getDispatcher()->vkGetGpaSessionStatusAMD( static_cast<VkDevice>( m_device ), static_cast<VkGpaSessionAMD>( m_gpaSessionAMD ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::GpaSessionAMD::getStatus" );
+
+      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result );
+    }
+
+    // wrapper function for command vkGetGpaSessionResultsAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaSessionResultsAMD.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<uint8_t>>::type GpaSessionAMD::getResults( uint32_t sampleID ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetGpaSessionResultsAMD && "Function <vkGetGpaSessionResultsAMD> requires <VK_AMD_gpa_interface>" );
+
+      std::vector<uint8_t> data;
+      size_t               sizeInBytes;
+      Result               result = static_cast<Result>( getDispatcher()->vkGetGpaSessionResultsAMD(
+        static_cast<VkDevice>( m_device ), static_cast<VkGpaSessionAMD>( m_gpaSessionAMD ), sampleID, &sizeInBytes, nullptr ) );
+      if ( result == Result::eSuccess )
+      {
+        data.resize( sizeInBytes );
+        result = static_cast<Result>( getDispatcher()->vkGetGpaSessionResultsAMD( static_cast<VkDevice>( m_device ),
+                                                                                  static_cast<VkGpaSessionAMD>( m_gpaSessionAMD ),
+                                                                                  sampleID,
+                                                                                  &sizeInBytes,
+                                                                                  reinterpret_cast<void *>( data.data() ) ) );
+      }
+
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::GpaSessionAMD::getResults" );
+      VULKAN_HPP_ASSERT( sizeInBytes <= data.size() );
+      if ( sizeInBytes < data.size() )
+      {
+        data.resize( sizeInBytes );
+      }
+      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( data ) );
+    }
+
+    // wrapper function for command vkResetGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetGpaSessionAMD.html
+    VULKAN_HPP_INLINE typename ResultValueType<void>::type GpaSessionAMD::reset() const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkResetGpaSessionAMD && "Function <vkResetGpaSessionAMD> requires <VK_AMD_gpa_interface>" );
+
+      Result result =
+        static_cast<Result>( getDispatcher()->vkResetGpaSessionAMD( static_cast<VkDevice>( m_device ), static_cast<VkGpaSessionAMD>( m_gpaSessionAMD ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_RAII_NAMESPACE_STRING "::GpaSessionAMD::reset" );
+
+      return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result );
+    }
+
+    // wrapper function for command vkCmdCopyGpaSessionResultsAMD, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyGpaSessionResultsAMD.html
+    VULKAN_HPP_INLINE void CommandBuffer::copyGpaSessionResultsAMD( VULKAN_HPP_NAMESPACE::GpaSessionAMD gpaSession ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdCopyGpaSessionResultsAMD && "Function <vkCmdCopyGpaSessionResultsAMD> requires <VK_AMD_gpa_interface>" );
+
+      getDispatcher()->vkCmdCopyGpaSessionResultsAMD( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkGpaSessionAMD>( gpaSession ) );
+    }
 
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_AMDX_shader_enqueue ===

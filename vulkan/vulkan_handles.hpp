@@ -932,6 +932,17 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct AndroidHardwareBufferFormatProperties2ANDROID;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
+  //=== VK_AMD_gpa_interface ===
+  struct GpaPerfBlockPropertiesAMD;
+  struct PhysicalDeviceGpaFeaturesAMD;
+  struct PhysicalDeviceGpaPropertiesAMD;
+  struct PhysicalDeviceGpaProperties2AMD;
+  struct GpaPerfCounterAMD;
+  struct GpaSampleBeginInfoAMD;
+  struct GpaDeviceClockModeInfoAMD;
+  struct GpaDeviceGetClockInfoAMD;
+  struct GpaSessionCreateInfoAMD;
+
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_AMDX_shader_enqueue ===
   struct PhysicalDeviceShaderEnqueueFeaturesAMDX;
@@ -1097,6 +1108,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_QCOM_cooperative_matrix_conversion ===
   struct PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM;
+
+  //=== VK_QCOM_elapsed_timer_query ===
+  struct PhysicalDeviceElapsedTimerQueryFeaturesQCOM;
 
   //=== VK_EXT_external_memory_host ===
   struct ImportMemoryHostPointerInfoEXT;
@@ -1384,6 +1398,17 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceQueuePerfHintFeaturesQCOM;
   struct PhysicalDeviceQueuePerfHintPropertiesQCOM;
 
+  //=== VK_QCOM_image_processing3 ===
+  struct PhysicalDeviceImageProcessing3FeaturesQCOM;
+
+  //=== VK_QCOM_shader_multiple_wait_queues ===
+  struct PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM;
+  struct PhysicalDeviceShaderMultipleWaitQueuesPropertiesQCOM;
+
+  //=== VK_EXT_shader_split_barrier ===
+  struct PhysicalDeviceShaderSplitBarrierFeaturesEXT;
+  struct PhysicalDeviceShaderSplitBarrierPropertiesEXT;
+
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_NV_cuda_kernel_launch ===
   struct CudaModuleCreateInfoNV;
@@ -1658,7 +1683,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct CopyMicromapInfoEXT;
   struct MicromapBuildSizesInfoEXT;
   struct AccelerationStructureTrianglesOpacityMicromapEXT;
-  struct MicromapTriangleEXT;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_NV_displacement_micromap ===
@@ -2348,6 +2372,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR;
   using PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT = PhysicalDevicePresentModeFifoLatestReadyFeaturesKHR;
 
+  //=== VK_KHR_opacity_micromap ===
+  struct AccelerationStructureGeometryMicromapDataKHR;
+  struct MicromapUsageKHR;
+  struct PhysicalDeviceOpacityMicromapFeaturesKHR;
+  struct PhysicalDeviceOpacityMicromapPropertiesKHR;
+  struct MicromapTriangleKHR;
+  using MicromapTriangleEXT = MicromapTriangleKHR;
+  struct AccelerationStructureTrianglesOpacityMicromapKHR;
+
   //=== VK_EXT_shader_64bit_indexing ===
   struct PhysicalDeviceShader64BitIndexingFeaturesEXT;
 
@@ -2482,6 +2515,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_debug_utils ===
   class DebugUtilsMessengerEXT;
+
+  //=== VK_AMD_gpa_interface ===
+  class GpaSessionAMD;
 
   //=== VK_EXT_descriptor_heap ===
   class TensorARM;
@@ -2905,6 +2941,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   using UniqueDebugUtilsMessengerEXT = UniqueHandle<DebugUtilsMessengerEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_AMD_gpa_interface ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<GpaSessionAMD, Dispatch>
+  {
+  public:
+    using deleter = detail::ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueGpaSessionAMD = UniqueHandle<GpaSessionAMD, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
   //=== VK_EXT_descriptor_heap ===
   template <typename Dispatch>
@@ -3852,6 +3898,92 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct isVulkanHandleType<PerformanceConfigurationINTEL>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+  };
+
+  // wrapper class for handle VkGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkGpaSessionAMD.html
+  class GpaSessionAMD
+  {
+  public:
+    using CType      = VkGpaSessionAMD;
+    using NativeType = VkGpaSessionAMD;
+
+    static VULKAN_HPP_CONST_OR_CONSTEXPR ObjectType               objectType            = ObjectType::eGpaSessionAMD;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DebugReportObjectTypeEXT debugReportObjectType = DebugReportObjectTypeEXT::eUnknown;
+
+  public:
+    GpaSessionAMD() VULKAN_HPP_NOEXCEPT {}  // = default; - try to workaround a compiler issue
+
+    GpaSessionAMD( GpaSessionAMD const & rhs )             = default;
+    GpaSessionAMD & operator=( GpaSessionAMD const & rhs ) = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    GpaSessionAMD( GpaSessionAMD && rhs )             = default;
+    GpaSessionAMD & operator=( GpaSessionAMD && rhs ) = default;
+#else
+    GpaSessionAMD( GpaSessionAMD && rhs ) VULKAN_HPP_NOEXCEPT : m_gpaSessionAMD( exchange( rhs.m_gpaSessionAMD, {} ) ) {}
+
+    GpaSessionAMD & operator=( GpaSessionAMD && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_gpaSessionAMD = exchange( rhs.m_gpaSessionAMD, {} );
+      return *this;
+    }
+#endif
+
+    VULKAN_HPP_CONSTEXPR GpaSessionAMD( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT GpaSessionAMD( VkGpaSessionAMD gpaSessionAMD ) VULKAN_HPP_NOEXCEPT : m_gpaSessionAMD( gpaSessionAMD ) {}
+
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
+    GpaSessionAMD & operator=( VkGpaSessionAMD gpaSessionAMD ) VULKAN_HPP_NOEXCEPT
+    {
+      m_gpaSessionAMD = gpaSessionAMD;
+      return *this;
+    }
+#endif
+
+    GpaSessionAMD & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+    {
+      m_gpaSessionAMD = {};
+      return *this;
+    }
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkGpaSessionAMD() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_gpaSessionAMD;
+    }
+
+    explicit operator bool() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_gpaSessionAMD != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_gpaSessionAMD == VK_NULL_HANDLE;
+    }
+
+  private:
+    VkGpaSessionAMD m_gpaSessionAMD = {};
+  };
+
+  template <>
+  struct CppType<ObjectType, ObjectType::eGpaSessionAMD>
+  {
+    using Type = GpaSessionAMD;
+  };
+
+#if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
+  template <>
+  struct CppType<VkGpaSessionAMD, VK_NULL_HANDLE>
+  {
+    using Type = GpaSessionAMD;
+  };
+#endif
+
+  template <>
+  struct isVulkanHandleType<GpaSessionAMD>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
@@ -6739,6 +6871,56 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     void insertDebugUtilsLabelEXT( DebugUtilsLabelEXT const & labelInfo,
                                    Dispatch const & d         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_AMD_gpa_interface ===
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdBeginGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdBeginGpaSessionAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result beginGpaSessionAMD( GpaSessionAMD      gpaSession,
+                                                    Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#else
+    // wrapper function for command vkCmdBeginGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdBeginGpaSessionAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      beginGpaSessionAMD( GpaSessionAMD gpaSession, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdEndGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdEndGpaSessionAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result endGpaSessionAMD( GpaSessionAMD      gpaSession,
+                                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#else
+    // wrapper function for command vkCmdEndGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdEndGpaSessionAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      endGpaSessionAMD( GpaSessionAMD gpaSession, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    // wrapper function for command vkCmdBeginGpaSampleAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginGpaSampleAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdBeginGpaSampleAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result beginGpaSampleAMD( GpaSessionAMD                 gpaSession,
+                                                   GpaSampleBeginInfoAMD const * pGpaSampleBeginInfo,
+                                                   uint32_t *                    pSampleID,
+                                                   Dispatch const & d            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCmdBeginGpaSampleAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdBeginGpaSampleAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdBeginGpaSampleAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<uint32_t>::type beginGpaSampleAMD( GpaSessionAMD                 gpaSession,
+                                                                                     GpaSampleBeginInfoAMD const & gpaSampleBeginInfo,
+                                                                                     Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkCmdEndGpaSampleAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdEndGpaSampleAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCmdEndGpaSampleAMD ), bool>::type = true>
+    void endGpaSampleAMD( GpaSessionAMD gpaSession, uint32_t sampleID, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    // wrapper function for command vkCmdCopyGpaSessionResultsAMD, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdCopyGpaSessionResultsAMD.html
+    template <typename Dispatch                                                                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkCmdCopyGpaSessionResultsAMD ), bool>::type = true>
+    void copyGpaSessionResultsAMD( GpaSessionAMD gpaSession, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_AMDX_shader_enqueue ===
@@ -15473,6 +15655,130 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                              Dispatch const & d                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_ANDROID_KHR*/
+
+    //=== VK_AMD_gpa_interface ===
+
+    // wrapper function for command vkCreateGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCreateGpaSessionAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result createGpaSessionAMD( GpaSessionCreateInfoAMD const * pCreateInfo,
+                                                     AllocationCallbacks const *     pAllocator,
+                                                     GpaSessionAMD *                 pGpaSession,
+                                                     Dispatch const & d              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkCreateGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCreateGpaSessionAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<GpaSessionAMD>::type
+      createGpaSessionAMD( GpaSessionCreateInfoAMD const &               createInfo,
+                           Optional<AllocationCallbacks const> allocator VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
+                           Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
+    // wrapper function for command vkCreateGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkCreateGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkCreateGpaSessionAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<UniqueHandle<GpaSessionAMD, Dispatch>>::type
+      createGpaSessionAMDUnique( GpaSessionCreateInfoAMD const &               createInfo,
+                                 Optional<AllocationCallbacks const> allocator VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
+                                 Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /* VULKAN_HPP_NO_SMART_HANDLE */
+#endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkDestroyGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkDestroyGpaSessionAMD ), bool>::type = true>
+    void destroyGpaSessionAMD( GpaSessionAMD               gpaSession,
+                               AllocationCallbacks const * pAllocator,
+                               Dispatch const & d          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkDestroyGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkDestroyGpaSessionAMD ), bool>::type = true>
+    void destroyGpaSessionAMD( GpaSessionAMD gpaSession                      VULKAN_HPP_DEFAULT_ASSIGNMENT( {} ),
+                               Optional<AllocationCallbacks const> allocator VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
+                               Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkDestroyGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkDestroyGpaSessionAMD ), bool>::type = true>
+    void destroy( GpaSessionAMD               gpaSession,
+                  AllocationCallbacks const * pAllocator,
+                  Dispatch const & d          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkDestroyGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkDestroyGpaSessionAMD ), bool>::type = true>
+    void destroy( GpaSessionAMD                                 gpaSession,
+                  Optional<AllocationCallbacks const> allocator VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ),
+                  Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkSetGpaDeviceClockModeAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetGpaDeviceClockModeAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkSetGpaDeviceClockModeAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result setGpaClockModeAMD( GpaDeviceClockModeInfoAMD * pInfo,
+                                                    Dispatch const & d          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkSetGpaDeviceClockModeAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetGpaDeviceClockModeAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkSetGpaDeviceClockModeAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<GpaDeviceClockModeInfoAMD>::type
+      setGpaClockModeAMD( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    // wrapper function for command vkGetGpaDeviceClockInfoAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaDeviceClockInfoAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkGetGpaDeviceClockInfoAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result getGpaClockInfoAMD( GpaDeviceGetClockInfoAMD * pInfo,
+                                                    Dispatch const & d         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetGpaDeviceClockInfoAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaDeviceClockInfoAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkGetGpaDeviceClockInfoAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<GpaDeviceGetClockInfoAMD>::type
+      getGpaClockInfoAMD( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetGpaSessionStatusAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaSessionStatusAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkGetGpaSessionStatusAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result getGpaSessionStatusAMD( GpaSessionAMD      gpaSession,
+                                                        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#else
+    // wrapper function for command vkGetGpaSessionStatusAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaSessionStatusAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkGetGpaSessionStatusAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      getGpaSessionStatusAMD( GpaSessionAMD gpaSession, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    // wrapper function for command vkGetGpaSessionResultsAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaSessionResultsAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkGetGpaSessionResultsAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result getGpaSessionResultsAMD( GpaSessionAMD      gpaSession,
+                                                         uint32_t           sampleID,
+                                                         size_t *           pSizeInBytes,
+                                                         void *             pData,
+                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetGpaSessionResultsAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaSessionResultsAMD.html
+    template <typename Uint8_tAllocator                                                                               = std::allocator<uint8_t>,
+              typename Dispatch                                                                                       = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type = 0,
+              typename std::enable_if<IS_DISPATCHED( vkGetGpaSessionResultsAMD ), bool>::type                         = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
+      getGpaSessionResultsAMD( GpaSessionAMD gpaSession, uint32_t sampleID, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    // wrapper function for command vkGetGpaSessionResultsAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetGpaSessionResultsAMD.html
+    template <typename Uint8_tAllocator                                                                               = std::allocator<uint8_t>,
+              typename Dispatch                                                                                       = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type = 0,
+              typename std::enable_if<IS_DISPATCHED( vkGetGpaSessionResultsAMD ), bool>::type                         = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
+      getGpaSessionResultsAMD( GpaSessionAMD            gpaSession,
+                               uint32_t                 sampleID,
+                               Uint8_tAllocator const & uint8_tAllocator,
+                               Dispatch const & d       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkResetGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkResetGpaSessionAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result resetGpaSessionAMD( GpaSessionAMD      gpaSession,
+                                                    Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#else
+    // wrapper function for command vkResetGpaSessionAMD, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkResetGpaSessionAMD.html
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkResetGpaSessionAMD ), bool>::type = true>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      resetGpaSessionAMD( GpaSessionAMD gpaSession, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_AMDX_shader_enqueue ===

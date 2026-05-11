@@ -27,7 +27,7 @@ export module vulkan;
 
 export import std;
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 350, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 351, "Wrong VK_HEADER_VERSION!" );
 
 #if defined( _MSC_VER )
 #  pragma warning( push )
@@ -601,6 +601,20 @@ export {
   using ::PFN_vkGetAndroidHardwareBufferPropertiesANDROID;
   using ::PFN_vkGetMemoryAndroidHardwareBufferANDROID;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
+  //=== VK_AMD_gpa_interface ===
+  using ::PFN_vkCmdBeginGpaSampleAMD;
+  using ::PFN_vkCmdBeginGpaSessionAMD;
+  using ::PFN_vkCmdCopyGpaSessionResultsAMD;
+  using ::PFN_vkCmdEndGpaSampleAMD;
+  using ::PFN_vkCmdEndGpaSessionAMD;
+  using ::PFN_vkCreateGpaSessionAMD;
+  using ::PFN_vkDestroyGpaSessionAMD;
+  using ::PFN_vkGetGpaDeviceClockInfoAMD;
+  using ::PFN_vkGetGpaSessionResultsAMD;
+  using ::PFN_vkGetGpaSessionStatusAMD;
+  using ::PFN_vkResetGpaSessionAMD;
+  using ::PFN_vkSetGpaDeviceClockModeAMD;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_AMDX_shader_enqueue ===

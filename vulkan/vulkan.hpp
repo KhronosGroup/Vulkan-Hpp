@@ -37,7 +37,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 350, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 351, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -1105,6 +1105,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkCmdBeginConditionalRenderingEXT )
     DECLARE_IS_DISPATCHED( vkCmdBeginCustomResolveEXT )
     DECLARE_IS_DISPATCHED( vkCmdBeginDebugUtilsLabelEXT )
+    DECLARE_IS_DISPATCHED( vkCmdBeginGpaSampleAMD )
+    DECLARE_IS_DISPATCHED( vkCmdBeginGpaSessionAMD )
     DECLARE_IS_DISPATCHED( vkCmdBeginPerTileExecutionQCOM )
     DECLARE_IS_DISPATCHED( vkCmdBeginQuery )
     DECLARE_IS_DISPATCHED( vkCmdBeginQueryIndexedEXT )
@@ -1164,6 +1166,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkCmdCopyBufferToImage )
     DECLARE_IS_DISPATCHED( vkCmdCopyBufferToImage2 )
     DECLARE_IS_DISPATCHED( vkCmdCopyBufferToImage2KHR )
+    DECLARE_IS_DISPATCHED( vkCmdCopyGpaSessionResultsAMD )
     DECLARE_IS_DISPATCHED( vkCmdCopyImage )
     DECLARE_IS_DISPATCHED( vkCmdCopyImage2 )
     DECLARE_IS_DISPATCHED( vkCmdCopyImage2KHR )
@@ -1235,6 +1238,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkCmdEncodeVideoKHR )
     DECLARE_IS_DISPATCHED( vkCmdEndConditionalRenderingEXT )
     DECLARE_IS_DISPATCHED( vkCmdEndDebugUtilsLabelEXT )
+    DECLARE_IS_DISPATCHED( vkCmdEndGpaSampleAMD )
+    DECLARE_IS_DISPATCHED( vkCmdEndGpaSessionAMD )
     DECLARE_IS_DISPATCHED( vkCmdEndPerTileExecutionQCOM )
     DECLARE_IS_DISPATCHED( vkCmdEndQuery )
     DECLARE_IS_DISPATCHED( vkCmdEndQueryIndexedEXT )
@@ -1458,6 +1463,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkCreateExternalComputeQueueNV )
     DECLARE_IS_DISPATCHED( vkCreateFence )
     DECLARE_IS_DISPATCHED( vkCreateFramebuffer )
+    DECLARE_IS_DISPATCHED( vkCreateGpaSessionAMD )
     DECLARE_IS_DISPATCHED( vkCreateGraphicsPipelines )
     DECLARE_IS_DISPATCHED( vkCreateHeadlessSurfaceEXT )
     DECLARE_IS_DISPATCHED( vkCreateIOSSurfaceMVK )
@@ -1534,6 +1540,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkDestroyExternalComputeQueueNV )
     DECLARE_IS_DISPATCHED( vkDestroyFence )
     DECLARE_IS_DISPATCHED( vkDestroyFramebuffer )
+    DECLARE_IS_DISPATCHED( vkDestroyGpaSessionAMD )
     DECLARE_IS_DISPATCHED( vkDestroyImage )
     DECLARE_IS_DISPATCHED( vkDestroyImageView )
     DECLARE_IS_DISPATCHED( vkDestroyIndirectCommandsLayoutEXT )
@@ -1666,6 +1673,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkGetFramebufferTilePropertiesQCOM )
     DECLARE_IS_DISPATCHED( vkGetGeneratedCommandsMemoryRequirementsEXT )
     DECLARE_IS_DISPATCHED( vkGetGeneratedCommandsMemoryRequirementsNV )
+    DECLARE_IS_DISPATCHED( vkGetGpaDeviceClockInfoAMD )
+    DECLARE_IS_DISPATCHED( vkGetGpaSessionResultsAMD )
+    DECLARE_IS_DISPATCHED( vkGetGpaSessionStatusAMD )
     DECLARE_IS_DISPATCHED( vkGetImageDrmFormatModifierPropertiesEXT )
     DECLARE_IS_DISPATCHED( vkGetImageMemoryRequirements )
     DECLARE_IS_DISPATCHED( vkGetImageMemoryRequirements2 )
@@ -1875,6 +1885,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkResetDescriptorPool )
     DECLARE_IS_DISPATCHED( vkResetEvent )
     DECLARE_IS_DISPATCHED( vkResetFences )
+    DECLARE_IS_DISPATCHED( vkResetGpaSessionAMD )
     DECLARE_IS_DISPATCHED( vkResetQueryPool )
     DECLARE_IS_DISPATCHED( vkResetQueryPoolEXT )
     DECLARE_IS_DISPATCHED( vkSetBufferCollectionBufferConstraintsFUCHSIA )
@@ -1883,6 +1894,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkSetDebugUtilsObjectTagEXT )
     DECLARE_IS_DISPATCHED( vkSetDeviceMemoryPriorityEXT )
     DECLARE_IS_DISPATCHED( vkSetEvent )
+    DECLARE_IS_DISPATCHED( vkSetGpaDeviceClockModeAMD )
     DECLARE_IS_DISPATCHED( vkSetHdrMetadataEXT )
     DECLARE_IS_DISPATCHED( vkSetLatencyMarkerNV )
     DECLARE_IS_DISPATCHED( vkSetLatencySleepModeNV )
@@ -4799,6 +4811,76 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkGetMemoryAndroidHardwareBufferANDROID( device, pInfo, pBuffer );
       }
 #    endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
+      //=== VK_AMD_gpa_interface ===
+
+      VULKAN_HPP_INLINE VkResult vkCreateGpaSessionAMD( VkDevice                          device,
+                                                        VkGpaSessionCreateInfoAMD const * pCreateInfo,
+                                                        VkAllocationCallbacks const *     pAllocator,
+                                                        VkGpaSessionAMD *                 pGpaSession ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkCreateGpaSessionAMD( device, pCreateInfo, pAllocator, pGpaSession );
+      }
+
+      VULKAN_HPP_INLINE void
+        vkDestroyGpaSessionAMD( VkDevice device, VkGpaSessionAMD gpaSession, VkAllocationCallbacks const * pAllocator ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkDestroyGpaSessionAMD( device, gpaSession, pAllocator );
+      }
+
+      VULKAN_HPP_INLINE VkResult vkSetGpaDeviceClockModeAMD( VkDevice device, VkGpaDeviceClockModeInfoAMD * pInfo ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkSetGpaDeviceClockModeAMD( device, pInfo );
+      }
+
+      VULKAN_HPP_INLINE VkResult vkGetGpaDeviceClockInfoAMD( VkDevice device, VkGpaDeviceGetClockInfoAMD * pInfo ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetGpaDeviceClockInfoAMD( device, pInfo );
+      }
+
+      VULKAN_HPP_INLINE VkResult vkCmdBeginGpaSessionAMD( VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkCmdBeginGpaSessionAMD( commandBuffer, gpaSession );
+      }
+
+      VULKAN_HPP_INLINE VkResult vkCmdEndGpaSessionAMD( VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkCmdEndGpaSessionAMD( commandBuffer, gpaSession );
+      }
+
+      VULKAN_HPP_INLINE VkResult vkCmdBeginGpaSampleAMD( VkCommandBuffer                 commandBuffer,
+                                                         VkGpaSessionAMD                 gpaSession,
+                                                         VkGpaSampleBeginInfoAMD const * pGpaSampleBeginInfo,
+                                                         uint32_t *                      pSampleID ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkCmdBeginGpaSampleAMD( commandBuffer, gpaSession, pGpaSampleBeginInfo, pSampleID );
+      }
+
+      VULKAN_HPP_INLINE void vkCmdEndGpaSampleAMD( VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession, uint32_t sampleID ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkCmdEndGpaSampleAMD( commandBuffer, gpaSession, sampleID );
+      }
+
+      VULKAN_HPP_INLINE VkResult vkGetGpaSessionStatusAMD( VkDevice device, VkGpaSessionAMD gpaSession ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetGpaSessionStatusAMD( device, gpaSession );
+      }
+
+      VULKAN_HPP_INLINE VkResult vkGetGpaSessionResultsAMD(
+        VkDevice device, VkGpaSessionAMD gpaSession, uint32_t sampleID, size_t * pSizeInBytes, void * pData ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetGpaSessionResultsAMD( device, gpaSession, sampleID, pSizeInBytes, pData );
+      }
+
+      VULKAN_HPP_INLINE VkResult vkResetGpaSessionAMD( VkDevice device, VkGpaSessionAMD gpaSession ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkResetGpaSessionAMD( device, gpaSession );
+      }
+
+      VULKAN_HPP_INLINE void vkCmdCopyGpaSessionResultsAMD( VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkCmdCopyGpaSessionResultsAMD( commandBuffer, gpaSession );
+      }
 
 #    if defined( VK_ENABLE_BETA_EXTENSIONS )
       //=== VK_AMDX_shader_enqueue ===
@@ -9758,6 +9840,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_DEPRECATED( "The VK_AMD_gpu_shader_int16 extension has been deprecated by VK_KHR_shader_float16_int8." )
   VULKAN_HPP_CONSTEXPR_INLINE auto AMDGpuShaderInt16ExtensionName = VK_AMD_GPU_SHADER_INT16_EXTENSION_NAME;
 
+  //=== VK_AMD_gpa_interface ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto AMDGpaInterfaceSpecVersion   = VK_AMD_GPA_INTERFACE_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto AMDGpaInterfaceExtensionName = VK_AMD_GPA_INTERFACE_EXTENSION_NAME;
+
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_AMDX_shader_enqueue ===
   VULKAN_HPP_CONSTEXPR_INLINE auto AMDXShaderEnqueueSpecVersion   = VK_AMDX_SHADER_ENQUEUE_SPEC_VERSION;
@@ -9903,6 +9989,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_QCOM_cooperative_matrix_conversion ===
   VULKAN_HPP_CONSTEXPR_INLINE auto QCOMCooperativeMatrixConversionSpecVersion   = VK_QCOM_COOPERATIVE_MATRIX_CONVERSION_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto QCOMCooperativeMatrixConversionExtensionName = VK_QCOM_COOPERATIVE_MATRIX_CONVERSION_EXTENSION_NAME;
+
+  //=== VK_QCOM_elapsed_timer_query ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto QCOMElapsedTimerQuerySpecVersion   = VK_QCOM_ELAPSED_TIMER_QUERY_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto QCOMElapsedTimerQueryExtensionName = VK_QCOM_ELAPSED_TIMER_QUERY_EXTENSION_NAME;
 
   //=== VK_EXT_global_priority ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTGlobalPrioritySpecVersion   = VK_EXT_GLOBAL_PRIORITY_SPEC_VERSION;
@@ -10339,6 +10429,18 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_QCOM_queue_perf_hint ===
   VULKAN_HPP_CONSTEXPR_INLINE auto QCOMQueuePerfHintSpecVersion   = VK_QCOM_QUEUE_PERF_HINT_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto QCOMQueuePerfHintExtensionName = VK_QCOM_QUEUE_PERF_HINT_EXTENSION_NAME;
+
+  //=== VK_QCOM_image_processing3 ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto QCOMImageProcessing3SpecVersion   = VK_QCOM_IMAGE_PROCESSING_3_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto QCOMImageProcessing3ExtensionName = VK_QCOM_IMAGE_PROCESSING_3_EXTENSION_NAME;
+
+  //=== VK_QCOM_shader_multiple_wait_queues ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto QCOMShaderMultipleWaitQueuesSpecVersion   = VK_QCOM_SHADER_MULTIPLE_WAIT_QUEUES_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto QCOMShaderMultipleWaitQueuesExtensionName = VK_QCOM_SHADER_MULTIPLE_WAIT_QUEUES_EXTENSION_NAME;
+
+  //=== VK_EXT_shader_split_barrier ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderSplitBarrierSpecVersion   = VK_EXT_SHADER_SPLIT_BARRIER_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderSplitBarrierExtensionName = VK_EXT_SHADER_SPLIT_BARRIER_EXTENSION_NAME;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_NV_cuda_kernel_launch ===
@@ -11139,6 +11241,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_present_mode_fifo_latest_ready ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRPresentModeFifoLatestReadySpecVersion   = VK_KHR_PRESENT_MODE_FIFO_LATEST_READY_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRPresentModeFifoLatestReadyExtensionName = VK_KHR_PRESENT_MODE_FIFO_LATEST_READY_EXTENSION_NAME;
+
+  //=== VK_KHR_opacity_micromap ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHROpacityMicromapSpecVersion   = VK_KHR_OPACITY_MICROMAP_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHROpacityMicromapExtensionName = VK_KHR_OPACITY_MICROMAP_EXTENSION_NAME;
 
   //=== VK_EXT_shader_64bit_indexing ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShader64BitIndexingSpecVersion   = VK_EXT_SHADER_64BIT_INDEXING_SPEC_VERSION;
@@ -14403,6 +14509,43 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
+  //=== VK_AMD_gpa_interface ===
+  template <>
+  struct StructExtends<PhysicalDeviceGpaFeaturesAMD, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceGpaFeaturesAMD, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceGpaPropertiesAMD, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceGpaProperties2AMD, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_AMDX_shader_enqueue ===
   template <>
@@ -15023,6 +15166,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceCooperativeMatrixConversionFeaturesQCOM, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_QCOM_elapsed_timer_query ===
+  template <>
+  struct StructExtends<PhysicalDeviceElapsedTimerQueryFeaturesQCOM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceElapsedTimerQueryFeaturesQCOM, DeviceCreateInfo>
   {
     enum
     {
@@ -16489,6 +16651,81 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceQueuePerfHintPropertiesQCOM, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_QCOM_image_processing3 ===
+  template <>
+  struct StructExtends<PhysicalDeviceImageProcessing3FeaturesQCOM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceImageProcessing3FeaturesQCOM, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_QCOM_shader_multiple_wait_queues ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderMultipleWaitQueuesPropertiesQCOM, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_shader_split_barrier ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderSplitBarrierFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderSplitBarrierFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderSplitBarrierPropertiesEXT, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -21832,6 +22069,62 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_KHR_opacity_micromap ===
+  template <>
+  struct StructExtends<AccelerationStructureGeometryMicromapDataKHR, AccelerationStructureGeometryKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceOpacityMicromapFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceOpacityMicromapFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceOpacityMicromapPropertiesKHR, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<AccelerationStructureTrianglesOpacityMicromapKHR, AccelerationStructureGeometryTrianglesDataKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  template <>
+  struct StructExtends<AccelerationStructureTrianglesOpacityMicromapKHR, AccelerationStructureDenseGeometryFormatTrianglesDataAMDX>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_EXT_shader_64bit_indexing ===
   template <>
   struct StructExtends<PhysicalDeviceShader64BitIndexingFeaturesEXT, PhysicalDeviceFeatures2>
@@ -22999,6 +23292,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       PFN_dummy vkGetAndroidHardwareBufferPropertiesANDROID_placeholder = 0;
       PFN_dummy vkGetMemoryAndroidHardwareBufferANDROID_placeholder     = 0;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
+      //=== VK_AMD_gpa_interface ===
+      PFN_vkCreateGpaSessionAMD         vkCreateGpaSessionAMD         = 0;
+      PFN_vkDestroyGpaSessionAMD        vkDestroyGpaSessionAMD        = 0;
+      PFN_vkSetGpaDeviceClockModeAMD    vkSetGpaDeviceClockModeAMD    = 0;
+      PFN_vkGetGpaDeviceClockInfoAMD    vkGetGpaDeviceClockInfoAMD    = 0;
+      PFN_vkCmdBeginGpaSessionAMD       vkCmdBeginGpaSessionAMD       = 0;
+      PFN_vkCmdEndGpaSessionAMD         vkCmdEndGpaSessionAMD         = 0;
+      PFN_vkCmdBeginGpaSampleAMD        vkCmdBeginGpaSampleAMD        = 0;
+      PFN_vkCmdEndGpaSampleAMD          vkCmdEndGpaSampleAMD          = 0;
+      PFN_vkGetGpaSessionStatusAMD      vkGetGpaSessionStatusAMD      = 0;
+      PFN_vkGetGpaSessionResultsAMD     vkGetGpaSessionResultsAMD     = 0;
+      PFN_vkResetGpaSessionAMD          vkResetGpaSessionAMD          = 0;
+      PFN_vkCmdCopyGpaSessionResultsAMD vkCmdCopyGpaSessionResultsAMD = 0;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       //=== VK_AMDX_shader_enqueue ===
@@ -24506,6 +24813,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
           PFN_vkGetMemoryAndroidHardwareBufferANDROID( vkGetInstanceProcAddr( instance, "vkGetMemoryAndroidHardwareBufferANDROID" ) );
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
+        //=== VK_AMD_gpa_interface ===
+        vkCreateGpaSessionAMD         = PFN_vkCreateGpaSessionAMD( vkGetInstanceProcAddr( instance, "vkCreateGpaSessionAMD" ) );
+        vkDestroyGpaSessionAMD        = PFN_vkDestroyGpaSessionAMD( vkGetInstanceProcAddr( instance, "vkDestroyGpaSessionAMD" ) );
+        vkSetGpaDeviceClockModeAMD    = PFN_vkSetGpaDeviceClockModeAMD( vkGetInstanceProcAddr( instance, "vkSetGpaDeviceClockModeAMD" ) );
+        vkGetGpaDeviceClockInfoAMD    = PFN_vkGetGpaDeviceClockInfoAMD( vkGetInstanceProcAddr( instance, "vkGetGpaDeviceClockInfoAMD" ) );
+        vkCmdBeginGpaSessionAMD       = PFN_vkCmdBeginGpaSessionAMD( vkGetInstanceProcAddr( instance, "vkCmdBeginGpaSessionAMD" ) );
+        vkCmdEndGpaSessionAMD         = PFN_vkCmdEndGpaSessionAMD( vkGetInstanceProcAddr( instance, "vkCmdEndGpaSessionAMD" ) );
+        vkCmdBeginGpaSampleAMD        = PFN_vkCmdBeginGpaSampleAMD( vkGetInstanceProcAddr( instance, "vkCmdBeginGpaSampleAMD" ) );
+        vkCmdEndGpaSampleAMD          = PFN_vkCmdEndGpaSampleAMD( vkGetInstanceProcAddr( instance, "vkCmdEndGpaSampleAMD" ) );
+        vkGetGpaSessionStatusAMD      = PFN_vkGetGpaSessionStatusAMD( vkGetInstanceProcAddr( instance, "vkGetGpaSessionStatusAMD" ) );
+        vkGetGpaSessionResultsAMD     = PFN_vkGetGpaSessionResultsAMD( vkGetInstanceProcAddr( instance, "vkGetGpaSessionResultsAMD" ) );
+        vkResetGpaSessionAMD          = PFN_vkResetGpaSessionAMD( vkGetInstanceProcAddr( instance, "vkResetGpaSessionAMD" ) );
+        vkCmdCopyGpaSessionResultsAMD = PFN_vkCmdCopyGpaSessionResultsAMD( vkGetInstanceProcAddr( instance, "vkCmdCopyGpaSessionResultsAMD" ) );
+
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         //=== VK_AMDX_shader_enqueue ===
         vkCreateExecutionGraphPipelinesAMDX =
@@ -25951,6 +26272,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         vkGetMemoryAndroidHardwareBufferANDROID =
           PFN_vkGetMemoryAndroidHardwareBufferANDROID( vkGetDeviceProcAddr( device, "vkGetMemoryAndroidHardwareBufferANDROID" ) );
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
+        //=== VK_AMD_gpa_interface ===
+        vkCreateGpaSessionAMD         = PFN_vkCreateGpaSessionAMD( vkGetDeviceProcAddr( device, "vkCreateGpaSessionAMD" ) );
+        vkDestroyGpaSessionAMD        = PFN_vkDestroyGpaSessionAMD( vkGetDeviceProcAddr( device, "vkDestroyGpaSessionAMD" ) );
+        vkSetGpaDeviceClockModeAMD    = PFN_vkSetGpaDeviceClockModeAMD( vkGetDeviceProcAddr( device, "vkSetGpaDeviceClockModeAMD" ) );
+        vkGetGpaDeviceClockInfoAMD    = PFN_vkGetGpaDeviceClockInfoAMD( vkGetDeviceProcAddr( device, "vkGetGpaDeviceClockInfoAMD" ) );
+        vkCmdBeginGpaSessionAMD       = PFN_vkCmdBeginGpaSessionAMD( vkGetDeviceProcAddr( device, "vkCmdBeginGpaSessionAMD" ) );
+        vkCmdEndGpaSessionAMD         = PFN_vkCmdEndGpaSessionAMD( vkGetDeviceProcAddr( device, "vkCmdEndGpaSessionAMD" ) );
+        vkCmdBeginGpaSampleAMD        = PFN_vkCmdBeginGpaSampleAMD( vkGetDeviceProcAddr( device, "vkCmdBeginGpaSampleAMD" ) );
+        vkCmdEndGpaSampleAMD          = PFN_vkCmdEndGpaSampleAMD( vkGetDeviceProcAddr( device, "vkCmdEndGpaSampleAMD" ) );
+        vkGetGpaSessionStatusAMD      = PFN_vkGetGpaSessionStatusAMD( vkGetDeviceProcAddr( device, "vkGetGpaSessionStatusAMD" ) );
+        vkGetGpaSessionResultsAMD     = PFN_vkGetGpaSessionResultsAMD( vkGetDeviceProcAddr( device, "vkGetGpaSessionResultsAMD" ) );
+        vkResetGpaSessionAMD          = PFN_vkResetGpaSessionAMD( vkGetDeviceProcAddr( device, "vkResetGpaSessionAMD" ) );
+        vkCmdCopyGpaSessionResultsAMD = PFN_vkCmdCopyGpaSessionResultsAMD( vkGetDeviceProcAddr( device, "vkCmdCopyGpaSessionResultsAMD" ) );
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         //=== VK_AMDX_shader_enqueue ===

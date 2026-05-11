@@ -1,0 +1,26 @@
+version = 1
+
+# ---- Repo infrastructure and documentation ----
+
+[[annotations]]
+path = "**"
+SPDX-FileCopyrightText = "The Khronos Group Inc."
+SPDX-License-Identifier = "Apache-2.0 OR MIT"
+
+[[annotations]]
+path = [
+"generator/**",
+"tests/**",
+"samples/**",
+"RAII_Samples/**",
+"CMakeLists.txt",
+"CmakePresets.json",
+"VulkanHpp.natvis",
+]
+SPDX-FileCopyrightText = "NVIDIA Corporation"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "samples/SharedHandles/SharedHandles.cpp"
+SPDX-FileCopyrightText = "2023 Ilya Doroshenko"
+SPDX-License-Identifier = "Apache-2.0"

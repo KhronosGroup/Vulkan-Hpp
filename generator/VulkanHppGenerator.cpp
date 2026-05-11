@@ -307,27 +307,29 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, tinyxml2::XMLDocument co
     // Note: even though the arrays are not marked as optional, they still might be mutually exclusive (like in
     // VkWriteDescriptorSet)! That is, there's not enough information available in vk.xml to decide on that, so we
     // need this external knowledge!
-    static std::set<std::string> mutualExclusiveStructs = {
-      "VkAccelerationStructureBuildGeometryInfoKHR", "VkAccelerationStructureTrianglesOpacityMicromapEXT", "VkMicromapBuildInfoEXT", "VkWriteDescriptorSet"
-    };
-    static std::set<std::string> multipleLenStructs = { "VkAccelerationStructureTrianglesDisplacementMicromapNV",
-                                                        "VkImageConstraintsInfoFUCHSIA",
-                                                        "VkIndirectCommandsLayoutTokenNV",
-                                                        "VkIndirectExecutionSetShaderInfoEXT",
-                                                        "VkPipelineBinaryKeysAndDataKHR",
-                                                        "VkPresentInfoKHR",
-                                                        "VkSemaphoreWaitInfo",
-                                                        "VkSetDescriptorBufferOffsetsInfoEXT",
-                                                        "VkSubmitInfo",
-                                                        "VkSubpassDescription",
-                                                        "VkSubpassDescription2",
-                                                        "VkSwapchainTimeDomainPropertiesEXT",
-                                                        "VkTensorCopyARM",
-                                                        "VkTensorDescriptionARM",
-                                                        "VkVideoDecodeAV1PictureInfoKHR",
-                                                        "VkWin32KeyedMutexAcquireReleaseInfoKHR",
-                                                        "VkWin32KeyedMutexAcquireReleaseInfoNV" };
-    bool                         warned             = false;
+    static std::set<std::string> mutualExclusiveStructs = { "VkAccelerationStructureBuildGeometryInfoKHR",
+                                                            "VkAccelerationStructureGeometryMicromapDataKHR",
+                                                            "VkAccelerationStructureTrianglesOpacityMicromapEXT",
+                                                            "VkMicromapBuildInfoEXT",
+                                                            "VkWriteDescriptorSet" };
+    static std::set<std::string> multipleLenStructs     = { "VkAccelerationStructureTrianglesDisplacementMicromapNV",
+                                                            "VkImageConstraintsInfoFUCHSIA",
+                                                            "VkIndirectCommandsLayoutTokenNV",
+                                                            "VkIndirectExecutionSetShaderInfoEXT",
+                                                            "VkPipelineBinaryKeysAndDataKHR",
+                                                            "VkPresentInfoKHR",
+                                                            "VkSemaphoreWaitInfo",
+                                                            "VkSetDescriptorBufferOffsetsInfoEXT",
+                                                            "VkSubmitInfo",
+                                                            "VkSubpassDescription",
+                                                            "VkSubpassDescription2",
+                                                            "VkSwapchainTimeDomainPropertiesEXT",
+                                                            "VkTensorCopyARM",
+                                                            "VkTensorDescriptionARM",
+                                                            "VkVideoDecodeAV1PictureInfoKHR",
+                                                            "VkWin32KeyedMutexAcquireReleaseInfoKHR",
+                                                            "VkWin32KeyedMutexAcquireReleaseInfoNV" };
+    bool                         warned                 = false;
     for ( auto m0It = structIt->second.members.begin(); !warned && ( m0It != structIt->second.members.end() ); ++m0It )
     {
       if ( !m0It->lenExpressions.empty() && ( m0It->lenExpressions.front() != "null-terminated" ) )

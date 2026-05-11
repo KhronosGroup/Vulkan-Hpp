@@ -31,10 +31,13 @@ std::pair<std::string, Constant>                                     parseConsta
 CategoryAlias parseCategoryAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & category );
 std::pair<std::vector<std::string>, std::pair<std::string, Define>> parseDefine( tinyxml2::XMLElement const *               element,
                                                                                  std::map<std::string, std::string> const & attributes );
+Deprecate                                                           parseDeprecate( tinyxml2::XMLElement const * element );
 std::pair<std::string, Enum>         parseEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 void                                 parseEnum( tinyxml2::XMLElement const * element, std::pair<std::string const, EnumValues> & enumValues );
 Enums                                parseEnums( tinyxml2::XMLElement const * element );
 std::pair<std::string, ExternalType> parseExternalType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+Feature                              parseFeature( tinyxml2::XMLElement const * element );
+FeatureElement                       parseFeatureElement( tinyxml2::XMLElement const * element );
 std::pair<std::string, FuncPointer>  parseFuncPointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 std::pair<std::string, Handle>       parseHandle( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 void                                 parseImplicitExternSyncParams( tinyxml2::XMLElement const * element );
@@ -44,14 +47,20 @@ std::string                          parseMemberEnum( tinyxml2::XMLElement const
 std::string                          parseName( tinyxml2::XMLElement const * element );
 std::pair<std::string, Type>         parseNameAndType( tinyxml2::XMLElement const * element );
 std::tuple<std::string, Type, std::vector<std::string>, std::string> parseNameAndTypeModified( tinyxml2::XMLElement const * element );
+NameElement                                                          parseNameElement( tinyxml2::XMLElement const * element );
 Param                                                                parseParam( tinyxml2::XMLElement const * element );
 std::pair<std::string, Platform>                                     parsePlatform( tinyxml2::XMLElement const * element );
 std::map<std::string, Platform>                                      parsePlatforms( tinyxml2::XMLElement const * element );
 std::pair<std::string, Type>                                         parseProto( tinyxml2::XMLElement const * element );
 Vkxml                                                                parseRegistry( tinyxml2::XMLElement const * element, std::string const & api );
+Remove                                                               parseRemove( tinyxml2::XMLElement const * element );
+Require                                                              parseRequire( tinyxml2::XMLElement const * element );
+RequireEnum                                                          parseRequireEnum( tinyxml2::XMLElement const * element );
+RequireType                                                          parseRequireType( tinyxml2::XMLElement const * element );
 std::pair<std::string, Struct>
                             parseStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & api );
 StructMember                parseStructMember( tinyxml2::XMLElement const * element );
+SupersededName              parseSupersededName( tinyxml2::XMLElement const * element );
 std::pair<std::string, Tag> parseTag( tinyxml2::XMLElement const * element );
 std::map<std::string, Tag>  parseTags( tinyxml2::XMLElement const * element );
 Type                        parseType( tinyxml2::XMLElement const * element );
@@ -60,9 +69,28 @@ void                        parseTypesType( tinyxml2::XMLElement const * element
 std::pair<std::string, Union> parseUnion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 UnionMember                   parseUnionMember( tinyxml2::XMLElement const * element );
 
+std::string concatenate( std::vector<std::string> const & list )
+{
+  std::string str;
+  for ( auto const & entry : list )
+  {
+    if ( !str.empty() )
+    {
+      str += ", ";
+    }
+    str += entry;
+  }
+  return str;
+}
+
 void checkNoList( std::string const & item, int line )
 {
   checkForError( "vk.xml", item.find( ',' ) == std::string::npos, line, "item <" + item + "> contains unexpected coma, looks like list" );
+}
+
+void checkNumber( std::string const & number, int line, std::string const & message )
+{
+  checkForError( "vk.xml", std::ranges::all_of( number, []( char c ) { return std::isdigit( c ); } ), line, message + " <" + number + ">" );
 }
 
 bool containsByNameAndExport( std::vector<Command> const & commands, std::string const & name, std::vector<std::string> const & exports )
@@ -113,22 +141,22 @@ CategoryAlias parseCategoryAlias( tinyxml2::XMLElement const * element, std::map
   checkAttributes( "vk.xml", line, attributes, { { "alias", {} }, { "category", { category } }, { "name", {} } }, {} );
   checkElements( "vk.xml", line, getChildElements( element ), {} );
 
-  std::string alias, name;
+  CategoryAlias categoryAlias{ .xmlLine = line };
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "alias" )
     {
       checkNoList( attribute.second, line );
-      alias = attribute.second;
+      categoryAlias.alias = attribute.second;
     }
     else if ( attribute.first == "name" )
     {
       checkNoList( attribute.second, line );
-      name = attribute.second;
+      categoryAlias.name = attribute.second;
     }
   }
 
-  return { .alias = alias, .name = name, .xmlLine = line };
+  return categoryAlias;
 }
 
 std::pair<std::vector<std::string>, std::pair<std::string, Bitmask>> parseBitmask( tinyxml2::XMLElement const *               element,
@@ -143,7 +171,7 @@ std::pair<std::vector<std::string>, std::pair<std::string, Bitmask>> parseBitmas
                    { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "bitvalues", {} }, { "requires", {} } } );
 
   std::vector<std::string> api = { "vulkan" };  // default is vulkan, if api attribute is not specified
-  std::string              bitvalues, require;
+  Bitmask                  bitmask;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "api" )
@@ -153,30 +181,27 @@ std::pair<std::vector<std::string>, std::pair<std::string, Bitmask>> parseBitmas
     else if ( attribute.first == "bitvalues" )
     {
       checkNoList( attribute.second, line );
-      bitvalues = attribute.second;
+      bitmask.bitValues = attribute.second;
     }
     else if ( attribute.first == "requires" )
     {
       checkNoList( attribute.second, line );
-      require = attribute.second;
+      bitmask.require = attribute.second;
     }
   }
 
-  checkForError( "vk.xml", bitvalues.empty() || require.empty(), line, "attributes <bitvalues> and <requires> are both specified" );
+  checkForError( "vk.xml", bitmask.bitValues.empty() || bitmask.require.empty(), line, "attributes <bitvalues> and <requires> are both specified" );
 
-  auto [name, type] = parseNameAndType( element );
+  std::string name;
+  std::tie( name, bitmask.type ) = parseNameAndType( element );
 
-  checkForError( "vk.xml", name.starts_with( "Vk" ), line, "name <" + name + "> does not begin with <Vk>" );
-  checkForWarning( "vk.xml", ( type.name == "VkFlags" ) || ( type.name == "VkFlags64" ), line, "unexpected bitmask type <" + type.name + ">" );
-  checkForError( "vk.xml", type.postfix != "*", line, "unexpected pointer type <" + type.name + ">" );
-  checkForError( "vk.xml", ( type.name != "VkFlags64" ) || !bitvalues.empty(), line, "bitmask of type <VkFlags64> needs attribute bitvalues to be set" );
+  checkForWarning(
+    "vk.xml", ( bitmask.type.name == "VkFlags" ) || ( bitmask.type.name == "VkFlags64" ), line, "unexpected bitmask type <" + bitmask.type.name + ">" );
+  checkForError( "vk.xml", bitmask.type.postfix != "*", line, "unexpected pointer type <" + bitmask.type.name + ">" );
+  checkForError(
+    "vk.xml", ( bitmask.type.name != "VkFlags64" ) || !bitmask.bitValues.empty(), line, "bitmask of type <VkFlags64> needs attribute bitvalues to be set" );
 
-  if ( !bitvalues.empty() )
-  {
-    require = bitvalues;
-  }
-
-  return { api, { name, { .require = require, .type = type, .xmlLine = line } } };
+  return { api, { name, bitmask } };
 }
 
 void parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & commands )
@@ -305,6 +330,10 @@ void parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & 
         auto  paramIt = findByName( command.params, param.name );
         if ( paramIt == command.params.end() )
         {
+          checkForError( "vk.xml",
+                         !containsByName( command.params, param.name ),
+                         param.xmlLine,
+                         "parameter <" + param.name + "> specified multiple times for command <" + command.name + ">" );
           command.params.push_back( std::move( param ) );
         }
         else
@@ -368,6 +397,7 @@ void parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & 
 
     checkForError( "vk.xml", !containsByNameAndExport( commands, command.name, command.exports ), line, "command <" + command.name + "> already specified" );
     commands.push_back( std::move( command ) );
+    // CHECK: errorcodes, queues, successcodes after extensions
   }
 }
 
@@ -395,7 +425,8 @@ std::pair<std::string, Constant> parseConstant( tinyxml2::XMLElement const * ele
   checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "type", {} }, { "value", {} } }, { { "comment", {} } } );
   checkElements( "vk.xml", line, getChildElements( element ), {} );
 
-  std::string name, type, value;
+  Constant    constant{ .xmlLine = line };
+  std::string name;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "name" )
@@ -406,16 +437,15 @@ std::pair<std::string, Constant> parseConstant( tinyxml2::XMLElement const * ele
     else if ( attribute.first == "type" )
     {
       checkNoList( attribute.second, line );
-      type = attribute.second;
+      constant.type = attribute.second;
     }
     else if ( attribute.first == "value" )
     {
       checkNoList( attribute.second, line );
-      value = attribute.second;
+      constant.value = attribute.second;
     }
   }
-  assert( !name.empty() && !type.empty() && !value.empty() );
-  return { name, { .type = type, .value = value, .xmlLine = line } };
+  return { name, constant };
 }
 
 std::pair<std::vector<std::string>, std::pair<std::string, Define>> parseDefine( tinyxml2::XMLElement const *               element,
@@ -481,15 +511,57 @@ std::pair<std::vector<std::string>, std::pair<std::string, Define>> parseDefine(
   return { apis, { name, { .macro = definesVisitor.macro, .require = require, .xmlLine = line } } };
 }
 
+Deprecate parseDeprecate( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "explanationlink", {} } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml", line, children, {}, { { "command", MultipleAllowed::Yes }, { "type", MultipleAllowed::Yes } } );
+
+  Deprecate deprecate{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "explanationlink" )
+    {
+      checkNoList( attribute.second, line );
+      deprecate.explanationLink = attribute.second;
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "command" )
+    {
+      SupersededName deprecateCommand = parseSupersededName( child );
+      checkForError( "vk.xml",
+                     !containsByName( deprecate.commands, deprecateCommand.name ),
+                     line,
+                     "deprecate command <" + deprecateCommand.name + "> already listed for this deprecate block" );
+      deprecate.commands.push_back( std::move( deprecateCommand ) );
+    }
+    else if ( value == "type" )
+    {
+      SupersededName deprecateType = parseSupersededName( child );
+      checkForError( "vk.xml",
+                     !containsByName( deprecate.types, deprecateType.name ),
+                     line,
+                     "deprecate type <" + deprecateType.name + "> already listed for this deprecate block" );
+      deprecate.types.push_back( std::move( deprecateType ) );
+    }
+  }
+
+  return deprecate;
+}
+
 std::pair<std::string, Enum> parseEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
 {
   int const line = element->GetLineNum();
   checkAttributes( "vk.xml", line, attributes, { { "category", { "enum" } }, { "name", {} } }, {} );
   checkElements( "vk.xml", line, getChildElements( element ), {} );
 
-  std::string name = attributes.find( "name" )->second;
-
-  return { name, { .xmlLine = line } };
+  return { attributes.find( "name" )->second, { .xmlLine = line } };
 }
 
 void parseEnum( tinyxml2::XMLElement const * element, std::pair<std::string const, EnumValues> & enumValues )
@@ -545,13 +617,13 @@ void parseEnum( tinyxml2::XMLElement const * element, std::pair<std::string cons
       checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "value", {} } }, { { "comment", {} } } );
     }
 
-    std::string bitpos, name, value;
+    std::string bitPos, name, value;
     for ( auto const & attribute : attributes )
     {
       if ( attribute.first == "bitpos" )
       {
         checkNoList( attribute.second, line );
-        bitpos = attribute.second;
+        bitPos = attribute.second;
       }
       else if ( attribute.first == "name" )
       {
@@ -569,10 +641,10 @@ void parseEnum( tinyxml2::XMLElement const * element, std::pair<std::string cons
     checkForError(
       "vk.xml", !containsByName( enumValues.second.values, name ), line, "enum value <" + name + "> already specified for enum <" + enumValues.first + ">" );
     checkForError( "vk.xml",
-                   ( enumValues.second.type != "bitmask" ) || ( bitpos.empty() ^ value.empty() ),
+                   ( enumValues.second.type != "bitmask" ) || ( bitPos.empty() ^ value.empty() ),
                    line,
-                   "both or none of \"bitpos\" and \"value\" are set for bitmask enum <" + name + "> which is invalid" );
-    enumValues.second.values.push_back( { .bitpos = bitpos, .name = name, .value = value, .xmlLine = line } );
+                   "both or none of \"bitPos\" and \"value\" are set for bitmask enum <" + name + "> which is invalid" );
+    enumValues.second.values.push_back( { .bitPos = bitPos, .name = name, .value = value, .xmlLine = line } );
   }
 }
 
@@ -605,7 +677,7 @@ Enums parseEnums( tinyxml2::XMLElement const * element )
   }
   assert( !name.empty() );
 
-  Enums enums;
+  Enums enums{ .xmlLine = line };
   if ( type == "constants" )
   {
     assert( bitwidth.empty() && ( name == "API Constants" ) );
@@ -613,7 +685,7 @@ Enums parseEnums( tinyxml2::XMLElement const * element )
     for ( auto const & child : children )
     {
       auto constant = parseConstant( child );
-      checkForError( "vk.xml", enums.constants.insert( constant ).second, line, "enum constant <" + constant.first + "> already specified" );
+      checkForError( "vk.xml", enums.constants.insert( constant ).second, constant.second.xmlLine, "enum constant <" + constant.first + "> already specified" );
     }
   }
   else
@@ -650,7 +722,7 @@ std::pair<std::string, ExternalType> parseExternalType( tinyxml2::XMLElement con
       checkNoList( attribute.second, line );
       name = attribute.second;
     }
-    else
+    else if ( attribute.first == "requires" )
     {
       checkNoList( attribute.second, line );
       require = attribute.second;
@@ -658,6 +730,204 @@ std::pair<std::string, ExternalType> parseExternalType( tinyxml2::XMLElement con
   }
 
   return { name, { .includedBy = require, .xmlLine = line } };
+}
+
+Feature parseFeature( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml",
+                   line,
+                   attributes,
+                   { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "comment", {} }, { "name", {} }, { "number", {} } },
+                   { { "apitype", { "internal" } }, { "depends", {} } } );
+
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements(
+    "vk.xml", line, children, { { "require", MultipleAllowed::Yes } }, { { "deprecate", MultipleAllowed::Yes }, { "remove", MultipleAllowed::Yes } } );
+
+  Feature feature{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "api" )
+    {
+      feature.api = tokenize( attribute.second, "," );
+    }
+    else if ( attribute.first == "apitype" )
+    {
+      checkNoList( attribute.second, line );
+      feature.apiType = attribute.second;
+    }
+    else if ( attribute.first == "comment" )
+    {
+      feature.comment = attribute.second;
+    }
+    else if ( attribute.first == "depends" )
+    {
+      feature.depends = tokenize( attribute.second, "," );
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      feature.name = attribute.second;
+    }
+    else if ( attribute.first == "number " )
+    {
+      checkNoList( attribute.second, line );
+      checkForError( "vk.xml",
+                     ( attribute.second.length() == 3 ) && std::isdigit( attribute.second[0] ) && ( attribute.second[1] == '.' ) &&
+                       std::isdigit( attribute.second[2] ),
+                     line,
+                     "feature <" + feature.name + "> has ill-formatted attribute number = \"" + attribute.second + "\"" );
+      std::string nameEnd = attribute.second;
+      nameEnd[1]          = '_';
+      checkForError(
+        "vk.xml", feature.name.ends_with( nameEnd ), line, "feature <" + feature.name + "> does not end with the expected number <" + nameEnd + ">" );
+      feature.number = attribute.second;
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "deprecate" )
+    {
+      Deprecate deprecate = parseDeprecate( child );
+      for ( auto const & deprecateCommand : deprecate.commands )
+      {
+        checkForError( "vk.xml",
+                       std::ranges::none_of( feature.deprecates,
+                                             [&deprecateCommand]( auto const & deprecate )
+                                             { return containsByName( deprecate.commands, deprecateCommand.name ); } ),
+                       deprecateCommand.xmlLine,
+                       "deprecate command <" + deprecateCommand.name + "> already listed as deprecated for feature <" + feature.name + ">" );
+      }
+      for ( auto const & deprecateType : deprecate.types )
+      {
+        checkForError( "vk.xml",
+                       std::ranges::none_of( feature.deprecates,
+                                             [&deprecateType]( auto const & deprecate ) { return containsByName( deprecate.types, deprecateType.name ); } ),
+                       deprecateType.xmlLine,
+                       "deprecate type <" + deprecateType.name + "> already listed as deprecated for feature <" + feature.name + ">" );
+      }
+      feature.deprecates.push_back( std::move( deprecate ) );
+    }
+    else if ( value == "remove" )
+    {
+      Remove remove = parseRemove( child );
+      for ( auto const & removeCommand : remove.commands )
+      {
+        checkForError(
+          "vk.xml",
+          std::ranges::none_of( feature.removes, [&removeCommand]( auto const & remove ) { return containsByName( remove.commands, removeCommand.name ); } ),
+          removeCommand.xmlLine,
+          "command <" + removeCommand.name + "> already listed as removed for feature <" + feature.name + ">" );
+      }
+      for ( auto const & removeEnum : remove.enums )
+      {
+        checkForError(
+          "vk.xml",
+          std::ranges::none_of( feature.removes, [&removeEnum]( auto const & remove ) { return containsByName( remove.enums, removeEnum.name ); } ),
+          removeEnum.xmlLine,
+          "remove enum <" + removeEnum.name + "> already listed as removed for feature <" + feature.name + ">" );
+      }
+      for ( auto const & removeFeature : remove.features )
+      {
+        checkForError( "vk.xml",
+                       std::ranges::none_of( feature.removes,
+                                             [&removeFeature]( auto const & remove )
+                                             {
+                                               return std::ranges::any_of(
+                                                 remove.features,
+                                                 [&removeFeature]( FeatureElement const & feature )
+                                                 { return ( feature.name == removeFeature.name ) && ( feature.structure == removeFeature.structure ); } );
+                                             } ),
+                       removeFeature.xmlLine,
+                       "feature <" + removeFeature.name + "> with struct <" + removeFeature.structure + "> already listed as removed for feature <" +
+                         feature.name + ">" );
+      }
+      for ( auto const & removeType : remove.types )
+      {
+        checkForError(
+          "vk.xml",
+          std::ranges::none_of( feature.removes, [&removeType]( auto const & remove ) { return containsByName( remove.types, removeType.name ); } ),
+          removeType.xmlLine,
+          "type <" + removeType.name + "> already listed as removed for feature <" + feature.name + ">" );
+      }
+      feature.removes.push_back( std::move( remove ) );
+    }
+    else if ( value == "require" )
+    {
+      Require require = parseRequire( child );
+      for ( auto const & requireCommand : require.commands )
+      {
+        checkForError( "vk.xml",
+                       std::ranges::none_of( feature.require,
+                                             [&requireCommand]( auto const & require ) { return containsByName( require.commands, requireCommand.name ); } ),
+                       require.xmlLine,
+                       "command <" + requireCommand.name + "> already listed as required for feature <" + feature.name + ">" );
+      }
+      for ( auto const & requireEnum : require.enums )
+      {
+        checkForError(
+          "vk.xml",
+          std::ranges::none_of( feature.require, [&requireEnum]( auto const & require ) { return containsByName( require.enums, requireEnum.name ); } ),
+          require.xmlLine,
+          "enum <" + requireEnum.name + "> already listed as required for feature <" + feature.name + ">" );
+      }
+      for ( auto const & requireFeature : require.features )
+      {
+        checkForError( "vk.xml",
+                       std::ranges::none_of( feature.require,
+                                             [&requireFeature]( auto const & require )
+                                             {
+                                               return std::ranges::any_of(
+                                                 require.features,
+                                                 [&requireFeature]( FeatureElement const & feature )
+                                                 { return ( feature.name == requireFeature.name ) && ( feature.structure == requireFeature.structure ); } );
+                                             } ),
+                       require.xmlLine,
+                       "feature <" + requireFeature.name + "> with struct <" + requireFeature.structure + "> already listed as required for feature <" +
+                         feature.name + ">" );
+      }
+      for ( auto const & requireType : require.types )
+      {
+        checkForError(
+          "vk.xml",
+          std::ranges::none_of( feature.require, [&requireType]( auto const & require ) { return containsByName( require.types, requireType.name ); } ),
+          require.xmlLine,
+          "type <" + requireType.name + "> already listed as required for feature <" + feature.name + ">" );
+      }
+      feature.require.push_back( std::move( require ) );
+    }
+  }
+
+  return feature;
+}
+
+FeatureElement parseFeatureElement( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "struct", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  FeatureElement feature{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      feature.name = attribute.second;
+    }
+    else if ( attribute.first == "struct" )
+    {
+      checkNoList( attribute.second, line );
+      feature.structure = attribute.second;
+    }
+  }
+
+  return feature;
 }
 
 std::pair<std::string, FuncPointer> parseFuncPointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
@@ -731,6 +1001,7 @@ std::pair<std::string, Handle> parseHandle( tinyxml2::XMLElement const * handleE
                  ( type.name == "VK_DEFINE_HANDLE" ) || ( type.name == "VK_DEFINE_NON_DISPATCHABLE_HANDLE" ),
                  line,
                  "handle with invalid type <" + type.name + ">" );
+  // CHECK: objtypeenum after extensions
 
   return { name, { .objTypeEnum = objTypeEnum, .parent = parent, .type = type, .xmlLine = line } };
 }
@@ -845,6 +1116,26 @@ std::tuple<std::string, Type, std::vector<std::string>, std::string> parseNameAn
     }
   }
   return { name, type, arraySizes, bitCount };
+}
+
+NameElement parseNameElement( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  NameElement nameElement{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      nameElement.name = attribute.second;
+    }
+  }
+
+  return nameElement;
 }
 
 Param parseParam( tinyxml2::XMLElement const * element )
@@ -1069,10 +1360,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
                          param.xmlLine,
                          "unknown len <" + param.len + "> specified for parameter <" + param.name + "> of command <" + command.name + ">" );
           checkForError( "vk.xml",
-                         vkxml.baseTypes.contains( param.type.name ) || vkxml.bitmasks.contains( param.type.name ) ||
-                           containsByNameOrAlias( vkxml.enums, param.type.name ) || vkxml.externalTypes.contains( param.type.name ) ||
-                           vkxml.handles.contains( param.type.name ) || containsByNameOrAlias( vkxml.structs, param.type.name ) ||
-                           vkxml.unions.contains( param.type.name ),
+                         vkxml.types.contains( param.type.name ),
                          param.xmlLine,
                          "unknown type <" + param.type.name + "> of parameter <" + param.name + "> of command <" + command.name + ">" );
           checkForError( "vk.xml",
@@ -1101,6 +1389,13 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
       if ( !enums.constants.empty() )
       {
         assert( vkxml.constants.empty() );
+        for ( auto const & constant : enums.constants )
+        {
+          checkForError( "vk.xml",
+                         vkxml.externalTypes.contains( constant.second.type ),
+                         constant.second.xmlLine,
+                         "enum constant <" + constant.first + "> has unknown type <" + constant.second.type + ">" );
+        }
         vkxml.constants = std::move( enums.constants );
       }
       for ( auto & enumValue : enums.enumValues )
@@ -1111,6 +1406,107 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
         enumIt->second.type     = enumValue.second.type;
         enumIt->second.values   = std::move( enumValue.second.values );
       }
+    }
+    else if ( value == "feature" )
+    {
+      Feature feature = parseFeature( child );
+      checkForError( "vk.xml", !containsByName( vkxml.features, feature.name ), feature.xmlLine, "A feature named <" + feature.name + "> already specified" );
+      checkForError( "vk.xml",
+                     std::ranges::all_of( feature.depends, [&vkxml]( auto const & depends ) { return containsByName( vkxml.features, depends ); } ),
+                     feature.xmlLine,
+                     "feature <" + feature.name + "> depends on unknown feature(s) <" + concatenate( feature.depends ) + ">" );
+      for ( auto const & deprecate : feature.deprecates )
+      {
+        for ( auto const & type : deprecate.types )
+        {
+          checkForError(
+            "vk.xml", vkxml.types.contains( type.name ), deprecate.xmlLine, "feature <" + feature.name + "> deprecates unknown type <" + type.name + ">" );
+          checkForError( "vk.xml",
+                         type.supersededBy.empty() || vkxml.types.contains( type.supersededBy ),
+                         deprecate.xmlLine,
+                         "feature <" + feature.name + "> deprecates type <" + type.name + "> superseded by unknown type <" + type.supersededBy + ">" );
+        }
+      }
+      for ( auto const & remove : feature.removes )
+      {
+        for ( auto const & e : remove.enums )
+        {
+          auto enumIt = std::ranges::find_if( vkxml.enums, [&e]( auto const & enum_ ) { return containsByName( enum_.second.values, e.name ); } );
+          checkForError( "vk.xml", enumIt != vkxml.enums.end(), e.xmlLine, "feature <" + feature.name + "> removes unknown enum <" + e.name + ">" );
+        }
+      }
+      for ( auto const & require : feature.require )
+      {
+        for ( auto const & depend : require.depends )
+        {
+          std::vector<std::string> tokens = tokenize( depend, "::" );
+          if ( tokens.size() == 2 )
+          {
+            auto structIt = vkxml.structs.find( tokens[0] );
+            checkForError( "vk.xml",
+                           structIt != vkxml.structs.end(),
+                           require.xmlLine,
+                           "feature <" + feature.name + "> has a require-member depending on unknown struct <" + tokens[0] + ">" );
+            checkForError( "vk.xml",
+                           containsByName( structIt->second.members, tokens[1] ),
+                           require.xmlLine,
+                           "feature <" + feature.name + "> has a require-member depending on unknown member <" + tokens[1] + "> of structure <" + tokens[0] +
+                             ">" );
+          }
+          // CHECK: after extensions: tokens.size() == 1 -> is extension
+        }
+        for ( auto const & e : require.enums )
+        {
+          if ( !e.extends.empty() )
+          {
+            auto enumIt = vkxml.enums.find( e.extends );
+            checkForError(
+              "vk.xml", enumIt != vkxml.enums.end(), e.xmlLine, "feature <" + feature.name + "> requires extending an unknown enum <" + e.extends + ">" );
+            if ( e.alias.empty() )
+            {
+              checkForError( "vk.xml",
+                             !containsByName( enumIt->second.values, e.name ),
+                             e.xmlLine,
+                             "feature <" + feature.name + "> requires to extend enum <" + e.extends + "> with an already specified value <" + e.name + ">" );
+              enumIt->second.values.push_back( { .bitPos = e.bitPos, .name = e.name, .value = e.value, .xmlLine = e.xmlLine } );
+            }
+            else
+            {
+              auto valueIt = findByName( enumIt->second.values, e.alias );
+              checkForError( "vk.xml",
+                             valueIt != enumIt->second.values.end(),
+                             e.xmlLine,
+                             "feature <" + feature.name + "> requires to extend enum <" + e.extends + "> with an alias <" + e.name +
+                               "> for an unknown enum value <" + e.alias + ">" );
+              checkForError( "vk.xml",
+                             valueIt->aliases.insert( { e.name, { .api = e.api, .deprecated = e.deprectated, .xmlLine = e.xmlLine } } ).second,
+                             e.xmlLine,
+                             "feature <" + feature.name + "> requires to extend enum <" + e.extends + "> with an already know alias <" + e.name +
+                               "> for enum value <" + e.alias + ">" );
+            }
+          }
+        }
+        for ( auto const & requireFeature : require.features )
+        {
+          auto structIt = vkxml.structs.find( requireFeature.structure );
+          checkForError( "vk.xml",
+                         structIt != vkxml.structs.end(),
+                         requireFeature.xmlLine,
+                         "feature <" + feature.name + "> requires feature <" + requireFeature.name + "> of unknown struct <" + requireFeature.structure + ">" );
+          checkForError( "vk.xml",
+                         containsByName( structIt->second.members, requireFeature.name ),
+                         requireFeature.xmlLine,
+                         "feature <" + feature.name + "> requires unknown member <" + requireFeature.name + "> in struct <" + requireFeature.structure + ">" );
+        }
+        for ( auto const & type : require.types )
+        {
+          checkForError( "vk.xml",
+                         vkxml.types.contains( type.name ),
+                         type.xmlLine,
+                         "feature <" + feature.name + "> has a require depending on unknown type <" + type.name + ">" );
+        }
+      }
+      vkxml.features.push_back( std::move( feature ) );
     }
     else if ( value == "platforms" )
     {
@@ -1133,6 +1529,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
       vkxml.includes      = std::move( types.includes );
       vkxml.structs       = std::move( types.structs );
       vkxml.unions        = std::move( types.unions );
+      vkxml.types         = std::move( types.types );
     }
     // else
     //{
@@ -1142,6 +1539,288 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
   checkForError( "VkXMLParser", !vkxml.copyright.text.empty(), line, "Copyright message is missing" );
 
   return vkxml;
+}
+
+Remove parseRemove( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, {}, { { "comment", {} }, { "reasonlink", {} } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml",
+                 line,
+                 children,
+                 {},
+                 { { "command", MultipleAllowed::Yes },
+                   { "comment", MultipleAllowed::Yes },
+                   { "enum", MultipleAllowed::Yes },
+                   { "feature", MultipleAllowed::Yes },
+                   { "type", MultipleAllowed::Yes } } );
+
+  Remove remove{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      remove.comment = attribute.second;
+    }
+    else if ( attribute.first == "reasonlink" )
+    {
+      remove.reasonLink = attribute.second;
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "command" )
+    {
+      NameElement removeCommand = parseNameElement( child );
+      checkForError( "vk.xml",
+                     !containsByName( remove.commands, removeCommand.name ),
+                     removeCommand.xmlLine,
+                     "remove command <" + removeCommand.name + "> already listed for this remove block" );
+      remove.commands.push_back( std::move( removeCommand ) );
+    }
+    else if ( value == "comment" )
+    {
+      readComment( "vk.xml", child );
+    }
+    else if ( value == "enum" )
+    {
+      NameElement removeEnum = parseNameElement( child );
+      checkForError( "vk.xml",
+                     !containsByName( remove.enums, removeEnum.name ),
+                     removeEnum.xmlLine,
+                     "remove enum <" + removeEnum.name + "> already listed for this remove block" );
+      remove.enums.push_back( std::move( removeEnum ) );
+    }
+    else if ( value == "feature" )
+    {
+      FeatureElement removeFeature = parseFeatureElement( child );
+      checkForError( "vk.xml",
+                     std::ranges::none_of( remove.features,
+                                           [&removeFeature]( FeatureElement const & feature )
+                                           { return ( feature.name == removeFeature.name ) && ( feature.structure == removeFeature.structure ); } ),
+                     removeFeature.xmlLine,
+                     "remove feature <" + removeFeature.name + "> with struct <" + removeFeature.structure + "> already listed for this remove block" );
+      remove.features.push_back( std::move( removeFeature ) );
+    }
+    else if ( value == "type" )
+    {
+      NameElement removeType = parseNameElement( child );
+      checkForError( "vk.xml",
+                     !containsByName( remove.types, removeType.name ),
+                     removeType.xmlLine,
+                     "remove type <" + removeType.name + "> already listed for this remove block" );
+      remove.types.push_back( std::move( removeType ) );
+    }
+  }
+
+  return remove;
+}
+
+Require parseRequire( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, {}, { { "comment", {} }, { "depends", {} } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml",
+                 line,
+                 children,
+                 {},
+                 { { "command", MultipleAllowed::Yes },
+                   { "comment", MultipleAllowed::Yes },
+                   { "enum", MultipleAllowed::Yes },
+                   { "feature", MultipleAllowed::Yes },
+                   { "type", MultipleAllowed::Yes } } );
+
+  Require require{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      require.comment = attribute.second;
+    }
+    else if ( attribute.first == "depends" )
+    {
+      require.depends = tokenize( attribute.second, "," );
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "command" )
+    {
+      NameElement requireCommand = parseNameElement( child );
+      checkForError( "vk.xml",
+                     !containsByName( require.commands, requireCommand.name ),
+                     requireCommand.xmlLine,
+                     "require command <" + requireCommand.name + "> already listed for this require block" );
+      require.commands.push_back( std::move( requireCommand ) );
+    }
+    else if ( value == "comment" )
+    {
+      readComment( "vk.xml", child );
+    }
+    else if ( value == "enum" )
+    {
+      RequireEnum requireEnum = parseRequireEnum( child );
+      checkForError( "vk.xml",
+                     !containsByName( require.enums, requireEnum.name ),
+                     requireEnum.xmlLine,
+                     "require enum <" + requireEnum.name + "> already listed for this require block" );
+      require.enums.push_back( std::move( requireEnum ) );
+    }
+    else if ( value == "feature" )
+    {
+      FeatureElement requireFeature = parseFeatureElement( child );
+      checkForError( "vk.xml",
+                     std::ranges::none_of( require.features,
+                                           [&requireFeature]( FeatureElement const & feature )
+                                           { return ( feature.name == requireFeature.name ) && ( feature.structure == requireFeature.structure ); } ),
+                     requireFeature.xmlLine,
+                     "require feature <" + requireFeature.name + "> with struct <" + requireFeature.structure + "> already listed for this require block" );
+      require.features.push_back( std::move( requireFeature ) );
+    }
+    else if ( value == "type" )
+    {
+      RequireType requireType = parseRequireType( child );
+      checkForError( "vk.xml",
+                     !containsByName( require.types, requireType.name ),
+                     requireType.xmlLine,
+                     "require type <" + requireType.name + "> already listed for this require block" );
+      require.types.push_back( std::move( requireType ) );
+    }
+  }
+
+  return require;
+}
+
+RequireEnum parseRequireEnum( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  if ( attributes.contains( "extends" ) )
+  {
+    if ( attributes.contains( "alias" ) )
+    {
+      checkAttributes(
+        "vk.xml", line, attributes, { { "alias", {} }, { "extends", {} }, { "name", {} } }, { { "api", { "vulkan" } }, { "deprecated", { "aliased" } } } );
+    }
+    else
+    {
+      checkAttributes( "vk.xml",
+                       line,
+                       attributes,
+                       { { "extends", {} }, { "name", {} } },
+                       { { "bitpos", {} }, { "comment", {} }, { "offset", {} }, { "dir", { "-" } }, { "extnumber", {} }, { "value", {} } } );
+    }
+  }
+  else
+  {
+    checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, {} );
+  }
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  RequireEnum requireEnum{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "alias" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.alias = attribute.second;
+    }
+    else if ( attribute.first == "api" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.api = attribute.second;
+    }
+    else if ( attribute.first == "bitpos" )
+    {
+      checkNoList( attribute.second, line );
+      checkNumber( attribute.second, line, "require enum with non-numeric bitPos" );
+      requireEnum.bitPos = attribute.second;
+    }
+    else if ( attribute.first == "comment" )
+    {
+      requireEnum.comment = attribute.second;
+    }
+    else if ( attribute.first == "deprecated" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.deprectated = attribute.second;
+    }
+    else if ( attribute.first == "dir" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.dir = attribute.second;
+    }
+    else if ( attribute.first == "extends" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.extends = attribute.second;
+    }
+    else if ( attribute.first == "extnumber" )
+    {
+      checkNoList( attribute.second, line );
+      checkNumber( attribute.second, line, "require enum with non-numeric extnumber" );
+      requireEnum.extNumber = attribute.second;
+      // CHECK: extnumber after extensions
+    }
+    else if ( attribute.first == "offset" )
+    {
+      checkNoList( attribute.second, line );
+      checkNumber( attribute.second, line, "require enum with non-numeric offset" );
+      requireEnum.offset = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.name = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      checkNoList( attribute.second, line );
+      checkNumber( attribute.second, line, "require enum with non-numeric value" );
+      requireEnum.value = attribute.second;
+    }
+  }
+
+  checkForError( "vk.xml",
+                 requireEnum.extends.empty() || !requireEnum.alias.empty() ||
+                   ( !requireEnum.bitPos.empty() + !requireEnum.offset.empty() + !requireEnum.value.empty() ) == 1,
+                 line,
+                 "require enum <" + requireEnum.name +
+                   "> has attribute <extends> but none or more than one of attributes <bitPos>, <offset>, and <value> are set" );
+
+  return requireEnum;
+}
+
+RequireType parseRequireType( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, { { "comment", {} } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  RequireType type{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      type.comment = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      type.name = attribute.second;
+    }
+  }
+
+  return type;
 }
 
 std::pair<std::string, Struct>
@@ -1355,8 +2034,34 @@ StructMember parseStructMember( tinyxml2::XMLElement const * element )
                  member.len.empty() || !member.arraySizes.empty() || member.type.isPointer(),
                  line,
                  "member <" + member.name + "> has attribute <len> but is not a pointer" );
+  // CHECK: values after extensions
 
   return member;
+}
+
+SupersededName parseSupersededName( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, { { "supersededby", {} } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  SupersededName deprecateCommand{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      deprecateCommand.name = attribute.second;
+    }
+    else if ( attribute.first == "supersededby" )
+    {
+      checkNoList( attribute.second, line );
+      deprecateCommand.supersededBy = attribute.second;
+    }
+  }
+
+  return deprecateCommand;
 }
 
 std::pair<std::string, Tag> parseTag( tinyxml2::XMLElement const * element )
@@ -1489,6 +2194,31 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
   }
   types.structAliases.clear();
 
+  for ( auto const & [defineName, define] : types.defines )
+  {
+    if ( !define.require.empty() )
+    {
+      checkForError(
+        "vk.xml", types.defines.contains( define.require ), define.xmlLine, "define <" + defineName + "> requires unknown define <" + define.require + ">" );
+    }
+  }
+  for ( auto const & [funcPointerName, funcPointer] : types.funcPointers )
+  {
+    if ( !funcPointer.require.empty() )
+    {
+      checkForError( "vk.xml",
+                     types.handles.contains( funcPointer.require ) || types.structs.contains( funcPointer.require ),
+                     funcPointer.xmlLine,
+                     "funcpointer <" + funcPointerName + "> requires unknown type <" + funcPointer.require + ">" );
+    }
+  }
+  for ( auto const & [handleName, handle] : types.handles )
+  {
+    checkForError( "vk.xml",
+                   handle.parent.empty() || types.handles.contains( handle.parent ),
+                   handle.xmlLine,
+                   "handle <" + handleName + "> specifies unknown parent handle <" + handle.parent + ">" );
+  }
   for ( auto const & [structName, structure] : types.structs )
   {
     for ( auto const & member : structure.members )
@@ -1506,10 +2236,7 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
                          member.type.name + "> is not a union" );
       }
       checkForError( "vk.xml",
-                     containsByNameOrAlias( types.bitmasks, member.type.name ) || types.baseTypes.contains( member.type.name ) ||
-                       containsByNameOrAlias( types.enums, member.type.name ) || types.externalTypes.contains( member.type.name ) ||
-                       types.funcPointers.contains( member.type.name ) || types.handles.contains( member.type.name ) ||
-                       containsByNameOrAlias( types.structs, member.type.name ) || types.unions.contains( member.type.name ),
+                     types.types.contains( member.type.name ),
                      member.xmlLine,
                      "struct member <" + member.name + "> in struct <" + structName + "> has unknown type <" + member.type.name + ">" );
     }
@@ -1544,14 +2271,19 @@ void parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::s
     if ( categoryIt->second == "basetype" )
     {
       std::pair<std::string, BaseType> baseType = parseBaseType( element, attributes );
+
+      checkForError(
+        "vk.xml", types.types.insert( baseType.first ).second, baseType.second.xmlLine, "base type <" + baseType.first + "> already specified as a type" );
       checkForError( "vk.xml", types.baseTypes.insert( baseType ).second, baseType.second.xmlLine, "basetype <" + baseType.first + "> already specified" );
     }
     else if ( categoryIt->second == "bitmask" )
     {
       if ( attributes.contains( "alias" ) )
       {
-        CategoryAlias alias     = parseCategoryAlias( element, attributes, "bitmask" );
-        auto          bitmaskIt = types.bitmasks.find( alias.alias );
+        CategoryAlias alias = parseCategoryAlias( element, attributes, "bitmask" );
+
+        checkForError( "vk.xml", types.types.insert( alias.name ).second, alias.xmlLine, "bitmask alias <" + alias.name + "> already specified as a type" );
+        auto bitmaskIt = types.bitmasks.find( alias.alias );
         checkForError(
           "vk.xml", bitmaskIt != types.bitmasks.end(), alias.xmlLine, "bitmask <" + alias.name + "> is an alias of an unknown bitmask <" + alias.alias + ">." );
         checkForError( "vk.xml",
@@ -1562,8 +2294,11 @@ void parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::s
       else
       {
         auto [bitmaskApi, bitmask] = parseBitmask( element, attributes );
+
         if ( std::ranges::any_of( bitmaskApi, [&api]( auto const & a ) { return a == api; } ) )
         {
+          checkForError(
+            "vk.xml", types.types.insert( bitmask.first ).second, bitmask.second.xmlLine, "bitmask <" + bitmask.first + "> already specified as a type" );
           checkForError( "vk.xml", types.bitmasks.insert( bitmask ).second, bitmask.second.xmlLine, "bitmask <" + bitmask.first + "> already specified" );
         }
       }
@@ -1573,6 +2308,8 @@ void parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::s
       auto [defineApi, define] = parseDefine( element, attributes );
       if ( std::ranges::any_of( defineApi, [&api]( auto const & a ) { return a == api; } ) )
       {
+        checkForError(
+          "vk.xml", types.types.insert( define.first ).second, define.second.xmlLine, "define <" + define.first + "> already specified as a type" );
         checkForError( "vk.xml", types.defines.insert( define ).second, define.second.xmlLine, "define <" + define.first + "> already specified" );
       }
     }
@@ -1580,27 +2317,35 @@ void parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::s
     {
       if ( attributes.contains( "alias" ) )
       {
-        CategoryAlias alias  = parseCategoryAlias( element, attributes, "enum" );
-        auto          enumIt = types.enums.find( alias.alias );
+        CategoryAlias alias = parseCategoryAlias( element, attributes, "enum" );
+
+        checkForError( "vk.xml", types.types.insert( alias.name ).second, alias.xmlLine, "enum alias <" + alias.name + "> already specified as a type" );
+
+        auto enumIt = types.enums.find( alias.alias );
         checkForError(
-          "vk.xml", enumIt != types.enums.end(), alias.xmlLine, "handle <" + alias.name + "> is an alias of an unknown handle <" + alias.alias + ">." );
+          "vk.xml", enumIt != types.enums.end(), alias.xmlLine, "enum <" + alias.name + "> is an alias of an unknown enum <" + alias.alias + ">." );
         checkForError( "vk.xml",
                        enumIt->second.aliases.insert( { alias.name, alias.xmlLine } ).second,
                        alias.xmlLine,
-                       "handle alias <" + alias.name + "> is already listed as an alias for handle <" + alias.alias + ">" );
+                       "enum alias <" + alias.name + "> is already listed as an alias for enum <" + alias.alias + ">" );
       }
       else
       {
         std::pair<std::string, Enum> enumData = parseEnum( element, attributes );
-        checkForError( "vk.xml", types.enums.insert( enumData ).second, enumData.second.xmlLine, "handle <" + enumData.first + "> already specified" );
+
+        checkForError(
+          "vk.xml", types.types.insert( enumData.first ).second, enumData.second.xmlLine, "enum <" + enumData.first + "> already specified as a type" );
+        checkForError( "vk.xml", types.enums.insert( enumData ).second, enumData.second.xmlLine, "enum <" + enumData.first + "> already specified" );
       }
     }
     else if ( categoryIt->second == "handle" )
     {
       if ( attributes.contains( "alias" ) )
       {
-        CategoryAlias alias    = parseCategoryAlias( element, attributes, "handle" );
-        auto          handleIt = types.handles.find( alias.alias );
+        CategoryAlias alias = parseCategoryAlias( element, attributes, "handle" );
+
+        checkForError( "vk.xml", types.types.insert( alias.name ).second, alias.xmlLine, "handle alias <" + alias.name + "> already specified as a type" );
+        auto handleIt = types.handles.find( alias.alias );
         checkForError(
           "vk.xml", handleIt != types.handles.end(), alias.xmlLine, "handle <" + alias.name + "> is an alias of an unknown handle <" + alias.alias + ">." );
         checkForError( "vk.xml",
@@ -1611,17 +2356,27 @@ void parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::s
       else
       {
         std::pair<std::string, Handle> handle = parseHandle( element, attributes );
+
+        checkForError(
+          "vk.xml", types.types.insert( handle.first ).second, handle.second.xmlLine, "handle <" + handle.first + "> already specified as a type" );
         checkForError( "vk.xml", types.handles.insert( handle ).second, handle.second.xmlLine, "handle <" + handle.first + "> already specified" );
       }
     }
     else if ( categoryIt->second == "include" )
     {
       std::pair<std::string, int> include = parseInclude( element, attributes );
+
+      checkForError( "vk.xml", types.types.insert( include.first ).second, include.second, "include <" + include.first + "> already specified as a type" );
       checkForError( "vk.xml", types.includes.insert( include ).second, include.second, "include <" + include.first + "> already specified" );
     }
     else if ( categoryIt->second == "funcpointer" )
     {
       std::pair<std::string, FuncPointer> funcPointer = parseFuncPointer( element, attributes );
+
+      checkForError( "vk.xml",
+                     types.types.insert( funcPointer.first ).second,
+                     funcPointer.second.xmlLine,
+                     "funcpointer <" + funcPointer.first + "> already specified as a type" );
       checkForError(
         "vk.xml", types.funcPointers.insert( funcPointer ).second, funcPointer.second.xmlLine, "funcpointer <" + funcPointer.first + "> already specified" );
     }
@@ -1630,18 +2385,25 @@ void parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::s
       if ( attributes.contains( "alias" ) )
       {
         CategoryAlias alias = parseCategoryAlias( element, attributes, "struct" );
+
+        checkForError( "vk.xml", types.types.insert( alias.name ).second, alias.xmlLine, "struct alias <" + alias.name + "> already specified as a type" );
         checkForError( "vk.xml", !containsByName( types.structAliases, alias.name ), alias.xmlLine, "struct alias <" + alias.name + "> already encountered" );
         types.structAliases.push_back( std::move( alias ) );
       }
       else
       {
         std::pair<std::string, Struct> structure = parseStruct( element, attributes, api );
+
+        checkForError(
+          "vk.xml", types.types.insert( structure.first ).second, structure.second.xmlLine, "struct <" + structure.first + "> already specified as a type" );
         checkForError( "vk.xml", types.structs.insert( structure ).second, structure.second.xmlLine, "struct <" + structure.first + "> already specified" );
       }
     }
     else if ( categoryIt->second == "union" )
     {
       std::pair<std::string, Union> u = parseUnion( element, attributes );
+
+      checkForError( "vk.xml", types.types.insert( u.first ).second, u.second.xmlLine, "union <" + u.first + "> already specified as a type" );
       checkForError( "vk.xml", types.unions.insert( u ).second, u.second.xmlLine, "union <" + u.first + "> already specified" );
     }
     else
@@ -1655,6 +2417,11 @@ void parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::s
     checkForError( "vk.xml", requiresIt != attributes.end(), line, "encountered type without category and requires" );
 
     std::pair<std::string, ExternalType> externalType = parseExternalType( element, attributes );
+
+    checkForError( "vk.xml",
+                   types.types.insert( externalType.first ).second,
+                   externalType.second.xmlLine,
+                   "external type <" + externalType.first + "> already specified as a type" );
     checkForError( "vk.xml",
                    types.includes.contains( externalType.second.includedBy ),
                    externalType.second.xmlLine,
@@ -1664,6 +2431,44 @@ void parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::s
                    externalType.second.xmlLine,
                    "external type <" + externalType.first + "> already specified" );
   }
+}
+
+std::pair<std::string, Union> parseUnion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, attributes, { { "category", { "union" } }, { "name", {} } }, { { "comment", {} }, { "returnedonly", { "true" } } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml", line, children, { { "member", MultipleAllowed::Yes } }, { { "comment", MultipleAllowed::Yes } } );
+
+  std::string name;
+  Union       u{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      name = attribute.second;
+    }
+    else if ( attribute.first == "returnedonly" )
+    {
+      checkNoList( attribute.second, line );
+      u.returnedOnly = attribute.second;
+    }
+  }
+  assert( !name.empty() );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "member" )
+    {
+      UnionMember member = parseUnionMember( child );
+      checkForError( "vk.xml", !containsByName( u.members, member.name ), line, "member <" + member.name + "> already listed for union <" + name + ">" );
+      u.members.push_back( std::move( member ) );
+    }
+  }
+
+  return { name, std::move( u ) };
 }
 
 UnionMember parseUnionMember( tinyxml2::XMLElement const * element )
@@ -1704,46 +2509,33 @@ UnionMember parseUnionMember( tinyxml2::XMLElement const * element )
   checkForError( "vk.xml", bitCount.empty(), line, "unexpected array size or bit count specification for name <" + member.name + ">" );
   assert( !member.name.empty() );
 
+  // CHECK: selection after extensions
+#if 0
+  for ( auto const & [unionName, u] : vkxml.unions )
+  {
+    if ( !u.members.front().selection.empty() )
+    {
+      auto selectionEnumIt = std::ranges::find_if(
+        vkxml.enums, [selection = u.members.front().selection.front()]( auto const & e ) { return containsByName( e.second.values, selection ); } );
+      checkForError( "vk.xml",
+                     selectionEnumIt != types.enums.end(),
+                     u.xmlLine,
+                     "union <" + unionName + "> uses a selection attribute <" + u.members.front().selection.front() + "> of unknown type" );
+      for ( auto const & member : u.members )
+      {
+        for ( auto const & selection : member.selection )
+        {
+          checkForError( "vk.xml",
+                         containsByName( selectionEnumIt->second.values, selection ),
+                         member.xmlLine,
+                         "union <" + unionName + "> uses unknow selection <" + selection + ">" );
+        }
+      }
+    }
+  }
+#endif
+
   return member;
-}
-
-std::pair<std::string, Union> parseUnion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( "vk.xml", line, attributes, { { "category", { "union" } }, { "name", {} } }, { { "comment", {} }, { "returnedonly", { "true" } } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( "vk.xml", line, children, { { "member", MultipleAllowed::Yes } }, { { "comment", MultipleAllowed::Yes } } );
-
-  std::string name;
-  Union       u{ .xmlLine = line };
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      checkNoList( attribute.second, line );
-      name = attribute.second;
-    }
-    else if ( attribute.first == "returnedonly" )
-    {
-      checkNoList( attribute.second, line );
-      u.returnedOnly = attribute.second;
-    }
-  }
-  assert( !name.empty() );
-
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "member" )
-    {
-      UnionMember member = parseUnionMember( child );
-      checkForError( "vk.xml", !containsByName( u.members, member.name ), line, "member <" + member.name + "> already listed for union <" + name + ">" );
-
-      u.members.push_back( std::move( member ) );
-    }
-  }
-
-  return { name, std::move( u ) };
 }
 
 Vkxml parseVkXml( tinyxml2::XMLDocument const & document, std::string const & api )

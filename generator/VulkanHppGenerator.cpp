@@ -182,7 +182,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, tinyxml2::XMLDocument co
       {
         enumValueData.aliases.push_back( { enumValue.name, alias.first, "", true, alias.second.xmlLine } );
       }
-      enumValueData.bitpos    = enumValue.bitpos;
+      enumValueData.bitpos    = enumValue.bitPos;
       enumValueData.name      = enumValue.name;
       enumValueData.supported = true;
       enumValueData.value     = enumValue.value;
@@ -243,7 +243,6 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, tinyxml2::XMLDocument co
                                             "alias <" + alias.first + "> of struc <" + structure.first + "> already specified" );
                            } );
 
-    // for structs, we compile some more data than is read from the vk.xml, so we insert the structs from the vk.xml into our own map
     auto [structIt, inserted] = m_structs.insert( { structure.first, {} } );
     assert( inserted );
     structIt->second.aliases           = structure.second.aliases;
@@ -383,6 +382,17 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, tinyxml2::XMLDocument co
       structIt->second.members.push_back( std::move( memberData ) );
     }
     structIt->second.xmlLine = u.second.xmlLine;
+  }
+  for ( auto const & feature : m_vkxml.features )
+  {
+    if ( feature.api.empty() || std::ranges::any_of( feature.api, [&api]( std::string const & featureApi ) { return featureApi == api; } ) )
+    {
+      m_features.push_back( featureToFeatureData( feature, true ) );
+    }
+    else
+    {
+      m_unsupportedFeatures.push_back( featureToFeatureData( feature, false ) );
+    }
   }
 
   auto versionIt = m_defines.find( "VK_HEADER_VERSION" );
@@ -911,7 +921,8 @@ void VulkanHppGenerator::checkEnumCorrectness() const
       if ( std::ranges::any_of( e.second.values, []( auto const & v ) { return v.supported; } ) )
       {
         // check that any enum of a bitmask with supported values is listed as "require" or "bitvalues" for a bitmask
-        auto bitmaskIt = std::ranges::find_if( m_vkxml.bitmasks, [&e]( auto const & bitmask ) { return bitmask.second.require == e.first; } );
+        auto bitmaskIt = std::ranges::find_if(
+          m_vkxml.bitmasks, [&e]( auto const & bitmask ) { return ( bitmask.second.bitValues == e.first ) || ( bitmask.second.require == e.first ); } );
         checkForError( bitmaskIt != m_vkxml.bitmasks.end(),
                        e.second.xmlLine,
                        "enum <" + e.first + "> is not listed as an requires or bitvalues for any bitmask in the types section" );
@@ -2088,6 +2099,106 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
       }
     }
   }
+}
+
+VulkanHppGenerator::FeatureData VulkanHppGenerator::featureToFeatureData( Feature const & feature, bool supported )
+{
+  auto structureTypeIt = m_enums.find( "VkStructureType" );
+  assert( structureTypeIt != m_enums.end() );
+
+  FeatureData featureData;
+  featureData.api        = feature.api;
+  featureData.name       = feature.name;
+  featureData.number     = feature.number;
+  featureData.isInternal = ( feature.apiType == "internal" );
+  featureData.depends    = feature.depends;
+  for ( auto const & deprecate : feature.deprecates )
+  {
+    DeprecateData deprecateData;
+    deprecateData.explanationLink = deprecate.explanationLink;
+    for ( auto const & deprecateCommand : deprecate.commands )
+    {
+      deprecateData.commands.push_back( { deprecateCommand.name, deprecateCommand.supersededBy } );
+    }
+    for ( auto const & deprecateType : deprecate.types )
+    {
+      deprecateData.types.push_back( { deprecateType.name, deprecateType.supersededBy } );
+    }
+    featureData.deprecateData.push_back( std::move( deprecateData ) );
+  }
+  for ( auto const & remove : feature.removes )
+  {
+    RemoveData removeData;
+    for ( auto const & removeCommand : remove.commands )
+    {
+      removeData.commands.push_back( removeCommand.name );
+    }
+    for ( auto const & removeEnum : remove.enums )
+    {
+      removeData.enums.push_back( removeEnum.name );
+    }
+    for ( auto const & removeFeature : remove.features )
+    {
+      removeData.features.push_back( { { removeFeature.name }, removeFeature.structure, removeFeature.xmlLine } );
+    }
+    for ( auto const & removeType : remove.types )
+    {
+      removeData.types.push_back( removeType.name );
+    }
+    removeData.xmlLine = remove.xmlLine;
+    featureData.removeData.push_back( std::move( removeData ) );
+  }
+  for ( auto const & require : feature.require )
+  {
+    RequireData requireData;
+    requireData.depends = concatenate( require.depends );
+    for ( auto const & requireCommand : require.commands )
+    {
+      requireData.commands.push_back( { requireCommand.name, requireCommand.xmlLine } );
+    }
+    for ( auto const & requireEnum : require.enums )
+    {
+      if ( requireEnum.extends.empty() )
+      {
+        requireData.constants.push_back( { requireEnum.name, requireEnum.xmlLine } );
+      }
+      else if ( !supported )
+      {
+        auto enumIt = m_enums.find( requireEnum.extends );
+        assert( enumIt != m_enums.end() );
+        auto valueIt = findByName( enumIt->second.values, requireEnum.name );
+        assert( valueIt != enumIt->second.values.end() );
+        valueIt->supported = supported;
+      }
+    }
+    for ( auto const & requireFeature : require.features )
+    {
+      requireData.features.push_back( { { requireFeature.name }, requireFeature.structure, requireFeature.xmlLine } );
+    }
+    for ( auto const & requireType : require.types )
+    {
+      requireData.types.push_back( { requireType.name, requireType.xmlLine } );
+
+      auto typeIt = m_types.find( requireType.name );
+      assert( typeIt != m_types.end() );
+      typeIt->second.requiredBy.insert( feature.name );
+      if ( !supported && typeIt->second.category == TypeCategory::Struct )
+      {
+        auto structIt = findByNameOrAlias( m_structs, requireType.name );
+        assert( structIt != m_structs.end() );
+        if ( !structIt->second.members.empty() && !structIt->second.members.front().value.empty() )
+        {
+          assert( structIt->second.members.front().name == "sType" );
+          auto valueIt = findByName( structureTypeIt->second.values, structIt->second.members.front().value );
+          assert( valueIt != structureTypeIt->second.values.end() );
+          valueIt->supported = supported;
+        }
+      }
+    }
+    requireData.xmlLine = require.xmlLine;
+    featureData.requireData.push_back( std::move( requireData ) );
+  }
+  return featureData;
 }
 
 void VulkanHppGenerator::filterLenMembers()
@@ -13721,165 +13832,6 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
   }
 }
 
-void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line,
-                   attributes,
-                   { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "comment", {} }, { "name", {} }, { "number", {} } },
-                   { { "apitype", { "internal" } }, { "depends", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "require", MultipleAllowed::Yes } }, { { "deprecate", MultipleAllowed::Yes }, { "remove", MultipleAllowed::Yes } } );
-
-  FeatureData featureData;
-  featureData.xmlLine = line;
-  std::string modifiedNumber;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "api" )
-    {
-      featureData.api = tokenize( attribute.second, "," );
-    }
-    else if ( attribute.first == "depends" )
-    {
-      featureData.depends = tokenize( attribute.second, "," );
-      for ( auto const & dep : featureData.depends )
-      {
-        checkForError( findByName( m_features, dep ) != m_features.end(),
-                       featureData.xmlLine,
-                       "feature <" + featureData.name + "> depends on unknown feature <" + dep + ">" );
-      }
-    }
-    else if ( attribute.first == "name" )
-    {
-      featureData.name = attribute.second;
-    }
-    else if ( attribute.first == "number" )
-    {
-      featureData.number = attribute.second;
-      modifiedNumber     = featureData.number;
-      std::replace( modifiedNumber.begin(), modifiedNumber.end(), '.', '_' );
-    }
-    else if ( attribute.first == "apitype" )
-    {
-      featureData.isInternal = ( attribute.second == "internal" );
-    }
-  }
-
-  bool const featureSupported = std::ranges::any_of( featureData.api, [this]( auto const & a ) { return a == m_api; } );
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "deprecate" )
-    {
-      featureData.deprecateData.push_back( readDeprecateData( child ) );
-    }
-    else if ( value == "remove" )
-    {
-      featureData.removeData.push_back( readRemoveData( child ) );
-    }
-    else if ( value == "require" )
-    {
-      readFeatureRequire( child, featureData, featureSupported );
-    }
-  }
-
-  if ( std::ranges::any_of( featureData.api, []( auto const & a ) { return a == "vulkanbase"; } ) )
-  {
-    checkForError( ( featureData.name == "VK_BASE_VERSION_" + modifiedNumber ) || ( featureData.name == "VK_COMPUTE_VERSION_" + modifiedNumber ) ||
-                     ( featureData.name == "VK_GRAPHICS_VERSION_" + modifiedNumber ) || ( featureData.name == "VK_VERSION_" + modifiedNumber ),
-                   line,
-                   "unexpected formatting of name <" + featureData.name + ">" );
-  }
-  else
-  {
-    checkForError( featureData.name ==
-                     ( std::ranges::any_of( featureData.api, []( auto const & a ) { return a == "vulkan"; } ) ? "VK_VERSION_" : "VKSC_VERSION_" ) +
-                       modifiedNumber,
-                   line,
-                   "unexpected formatting of name <" + featureData.name + ">" );
-  }
-
-  checkForError( !isFeature( featureData.name ), line, "feature <" + featureData.name + "> already specified" );
-  if ( featureSupported )
-  {
-    m_features.push_back( featureData );
-  }
-  else
-  {
-    m_unsupportedFeatures.push_back( featureData );
-  }
-}
-
-void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * element, FeatureData & featureData, bool featureSupported )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, { { "comment", {} }, { "depends", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line,
-                 children,
-                 {},
-                 { { "command", MultipleAllowed::Yes },
-                   { "comment", MultipleAllowed::Yes },
-                   { "enum", MultipleAllowed::Yes },
-                   { "feature", MultipleAllowed::Yes },
-                   { "type", MultipleAllowed::Yes } } );
-
-  std::string depends;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "depends" )
-    {
-      assert( depends.empty() );
-      depends = attribute.second;
-      checkForError( std::ranges::none_of( featureData.requireData, [&depends]( RequireData const & rd ) { return rd.depends == depends; } ),
-                     line,
-                     "require depends <" + depends + "> already listed for feature <" + featureData.name + ">" );
-    }
-  }
-
-  featureData.requireData.push_back( {} );
-  RequireData & requireData = featureData.requireData.back();
-  requireData.depends       = depends;
-  requireData.xmlLine       = line;
-
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "command" )
-    {
-      requireData.commands.push_back( readRequireCommand( child ) );
-      auto commandIt = m_commands.find( requireData.commands.back().name );
-      checkForError( commandIt != m_commands.end(),
-                     requireData.commands.back().xmlLine,
-                     "feature <" + featureData.name + "> requires unknown command <" + requireData.commands.back().name + ">" );
-      checkForError( ( std::stoi( m_version ) < 319 ) || !commandIt->second.exports.empty(),
-                     commandIt->second.xmlLine,
-                     "command <" + commandIt->first + "> is required by feature <" + featureData.name + "> but is not marked as exported" );
-      checkForError( commandIt->second.exports.empty() ||
-                       std::ranges::any_of( commandIt->second.exports,
-                                            [&featureData]( auto const & api ) { return std::ranges::find( featureData.api, api ) != featureData.api.end(); } ),
-                     commandIt->second.xmlLine,
-                     "command <" + commandIt->first + "> is required by feature <" + featureData.name + "> but is not exported for the feature's api" );
-    }
-    else if ( value == "enum" )
-    {
-      readRequireEnum( child, featureData.name, "", featureSupported, requireData );
-    }
-    else if ( value == "feature" )
-    {
-      requireData.features.push_back( readRequireFeature( child ) );
-    }
-    else if ( value == "type" )
-    {
-      requireData.types.push_back( readRequireType( child ) );
-    }
-  }
-  checkForError( requireData.enumConstants.empty(), line, "Need to handle enumConstants in features as well!" );
-}
-
 void VulkanHppGenerator::readFormat( tinyxml2::XMLElement const * element )
 {
   int const                          line       = element->GetLineNum();
@@ -14161,10 +14113,6 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     if ( value == "extensions" )
     {
       readExtensions( child );
-    }
-    else if ( value == "feature" )
-    {
-      readFeature( child );
     }
     else if ( value == "formats" )
     {

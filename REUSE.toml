@@ -11,7 +11,7 @@ path = [
 
     ".github/workflows/**",
     "docs/**",
-    "generator/**",
+    "generator/.clang-format_*",
     "RAII_Samples/**",
     "samples/**",
     "tests/**",

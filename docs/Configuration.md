@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2026 NVIDIA CORPORATION
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Configuration Options
 
 Vulkan-Hpp has several configurable options and features for consumer projects.

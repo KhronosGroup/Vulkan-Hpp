@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 NVIDIA CORPORATION
+// SPDX-License-Identifier: Apache-2.0
+
 #if ( 14 <= VULKAN_HPP_CPP_VERSION )
   using std::exchange;
 #else

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 NVIDIA CORPORATION
+// SPDX-License-Identifier: Apache-2.0
+
 template <typename T, size_t N>
 class ArrayWrapper1D : public std::array<T, N>
 {

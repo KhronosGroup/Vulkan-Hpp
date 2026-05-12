@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 NVIDIA CORPORATION
+// SPDX-License-Identifier: Apache-2.0
+
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
 // which is an expression in a constructor initializer list.

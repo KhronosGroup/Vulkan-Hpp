@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 NVIDIA CORPORATION
+// SPDX-License-Identifier: Apache-2.0
+
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
   class DynamicLoader
   {

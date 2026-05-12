@@ -422,6 +422,13 @@ inline std::string readSnippet( std::string const & snippetFile )
 {
   std::ifstream ifs( std::string( BASE_PATH ) + "/generator/snippets/" + snippetFile );
   assert( !ifs.fail() );
+  // skip the snippet license header (3 loc)
+  std::string line;
+  for ( uint32_t i = 0; i < 3; i++ )
+  {
+    std::getline(ifs, line);
+  }
+  // return the remainder
   std::ostringstream oss;
   oss << ifs.rdbuf();
   return oss.str();

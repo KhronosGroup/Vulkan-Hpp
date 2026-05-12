@@ -68,6 +68,15 @@ Types                       parseTypes( tinyxml2::XMLElement const * element, st
 void                        parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::string const & api );
 std::pair<std::string, Union> parseUnion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 UnionMember                   parseUnionMember( tinyxml2::XMLElement const * element );
+VideoCapabilities             parseVideoCapabilities( tinyxml2::XMLElement const * element );
+VideoCodec                    parseVideoCodec( tinyxml2::XMLElement const * element );
+std::vector<VideoCodec>       parseVideoCodecs( tinyxml2::XMLElement const * element );
+VideoFormat                   parseVideoFormat( tinyxml2::XMLElement const * element );
+VideoFormatProperties         parseVideoFormatProperties( tinyxml2::XMLElement const * element );
+VideoProfile                  parseVideoProfile( tinyxml2::XMLElement const * element );
+VideoProfileMember            parseVideoProfileMember( tinyxml2::XMLElement const * element );
+VideoProfiles                 parseVideoProfiles( tinyxml2::XMLElement const * element );
+VideoRequireCapabilities      parseVideoRequireCapabilities( tinyxml2::XMLElement const * element );
 
 std::string concatenate( std::vector<std::string> const & list )
 {
@@ -1531,6 +1540,57 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
       vkxml.unions        = std::move( types.unions );
       vkxml.types         = std::move( types.types );
     }
+    else if ( value == "videocodecs" )
+    {
+      vkxml.videoCodecs = parseVideoCodecs( child );
+      for ( auto const & videoCodec : vkxml.videoCodecs )
+      {
+        for ( auto const & videoCapabilities : videoCodec.videoCapabilities )
+        {
+          checkForError( "vk.xml",
+                         vkxml.structs.contains( videoCapabilities.structure ),
+                         videoCapabilities.xmlLine,
+                         "videocodec <" + videoCodec.name + "> has video capabilities with unknown struct <" + videoCapabilities.structure + ">" );
+        }
+        for ( auto const & videoFormat : videoCodec.videoFormats )
+        {
+          if ( videoFormat.videoFormatProperties.has_value() )
+          {
+            auto const & videoFormatProperties = videoFormat.videoFormatProperties.value();
+            auto         structIt              = vkxml.structs.find( videoFormatProperties.structure );
+            checkForError( "vk.xml",
+                           structIt != vkxml.structs.end(),
+                           videoFormatProperties.xmlLine,
+                           "videoformat <" + videoFormat.name + "> in videocodec <" + videoCodec.name + "> has videoformatproperties with unknown struct <" +
+                             videoFormatProperties.structure + ">" );
+          }
+          if ( videoFormat.videoRequireCapabilities.has_value() )
+          {
+            auto const & videoRequireCapabilities = videoFormat.videoRequireCapabilities.value();
+            auto         structIt                 = vkxml.structs.find( videoRequireCapabilities.structure );
+            checkForError( "vk.xml",
+                           structIt != vkxml.structs.end(),
+                           videoRequireCapabilities.xmlLine,
+                           "videoformat <" + videoFormat.name + "> in videocodec <" + videoCodec.name + "> has videorequirecapabilities with unknown struct <" +
+                             videoRequireCapabilities.structure + ">" );
+            checkForError( "vk.xml",
+                           containsByName( structIt->second.members, videoRequireCapabilities.member ),
+                           videoRequireCapabilities.xmlLine,
+                           "videorformat <" + videoFormat.name + "> in videocodec <" + videoCodec.name +
+                             "> has videorequirecapabilities with unknown member <" + videoRequireCapabilities.member + "> for struct <" +
+                             videoRequireCapabilities.structure + ">" );
+          }
+        }
+        if ( videoCodec.videoProfiles.has_value() )
+        {
+          auto const & videoProfiles = videoCodec.videoProfiles.value();
+          checkForError( "vk.xml",
+                         vkxml.structs.contains( videoProfiles.structure ),
+                         videoProfiles.xmlLine,
+                         "videocodec <" + videoCodec.name + "> has videoprofiles with unknown struct <" + videoProfiles.structure + ">" );
+        }
+      }
+    }
     // else
     //{
     //   checkForError( "vk.xml", false, line, "unknown element <" + value + ">" );
@@ -2536,6 +2596,327 @@ UnionMember parseUnionMember( tinyxml2::XMLElement const * element )
 #endif
 
   return member;
+}
+
+VideoCapabilities parseVideoCapabilities( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "struct", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {}, {} );
+
+  VideoCapabilities videoCapabilities{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "struct" )
+    {
+      checkNoList( attribute.second, line );
+      videoCapabilities.structure = attribute.second;
+    }
+  }
+
+  return videoCapabilities;
+}
+
+VideoCodec parseVideoCodec( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, { { "extend", {} }, { "value", {} } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml",
+                 line,
+                 children,
+                 { { "videocapabilities", MultipleAllowed::Yes } },
+                 { { "videoformat", MultipleAllowed::Yes }, { "videoprofiles", MultipleAllowed::No } } );
+
+  VideoCodec videoCodec{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "extend" )
+    {
+      checkNoList( attribute.second, line );
+      videoCodec.extend = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      videoCodec.name = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      checkNoList( attribute.second, line );
+      videoCodec.value = attribute.second;
+      // CHECK: value after extensions
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "videocapabilities" )
+    {
+      VideoCapabilities videoCapabilities = parseVideoCapabilities( child );
+      checkForError( "vk.xml",
+                     std::ranges::none_of( videoCodec.videoCapabilities,
+                                           [&videoCapabilities]( VideoCapabilities const & vc ) { return vc.structure == videoCapabilities.structure; } ),
+                     videoCapabilities.xmlLine,
+                     "videocodec <" + videoCodec.name + "> already lists videocapabilities on <" + videoCapabilities.structure + ">" );
+      videoCodec.videoCapabilities.push_back( std::move( videoCapabilities ) );
+    }
+    else if ( value == "videoformat" )
+    {
+      VideoFormat videoFormat = parseVideoFormat( child );
+      checkForError( "vk.xml",
+                     videoFormat.name.empty() || !containsByName( videoCodec.videoFormats, videoFormat.name ),
+                     videoFormat.xmlLine,
+                     "videocodec <" + videoCodec.name + "> already lists a videoformat <" + videoFormat.name + ">" );
+      videoCodec.videoFormats.push_back( std::move( videoFormat ) );
+    }
+    else if ( value == "videoprofiles" )
+    {
+      videoCodec.videoProfiles = std::make_optional<VideoProfiles>( parseVideoProfiles( child ) );
+    }
+  }
+
+  return videoCodec;
+}
+
+std::vector<VideoCodec> parseVideoCodecs( tinyxml2::XMLElement const * element )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, getAttributes( element ), {}, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml", line, children, { { "videocodec", MultipleAllowed::Yes } } );
+
+  std::vector<VideoCodec> videoCodecs;
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "videocodec" )
+    {
+      VideoCodec videoCodec = parseVideoCodec( child );
+      checkForError( "vk.xml", !containsByName( videoCodecs, videoCodec.name ), line, "video codec <" + videoCodec.name + "> already specified" );
+      if ( !videoCodec.extend.empty() )
+      {
+        checkForError( "vk.xml",
+                       containsByName( videoCodecs, videoCodec.extend ),
+                       line,
+                       "video codec <" + videoCodec.name + "> extends unknown video codec <" + videoCodec.extend + ">" );
+      }
+      for ( auto const & videoFormat : videoCodec.videoFormats )
+      {
+        if ( !videoFormat.extend.empty() )
+        {
+          checkForError(
+            "vk.xml",
+            std::ranges::any_of( videoCodecs, [&videoFormat]( VideoCodec const & vc ) { return containsByName( vc.videoFormats, videoFormat.extend ); } ),
+            videoFormat.xmlLine,
+            "videocodec <" + videoCodec.name + "> extends unknown video format <" + videoFormat.extend + ">" );
+        }
+      }
+      videoCodecs.push_back( std::move( videoCodec ) );
+    }
+  }
+
+  return videoCodecs;
+}
+
+VideoFormat parseVideoFormat( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  if ( attributes.contains( "extend" ) )
+  {
+    checkAttributes( "vk.xml", line, attributes, { { "extend", {} } }, {} );
+  }
+  else
+  {
+    checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "usage", {} } }, {} );
+  }
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml", line, children, {}, { { "videoformatproperties", MultipleAllowed::No }, { "videorequirecapabilities", MultipleAllowed::No } } );
+
+  VideoFormat videoFormat{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "extend" )
+    {
+      checkNoList( attribute.second, line );
+      videoFormat.extend = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      videoFormat.name = attribute.second;
+    }
+    else if ( attribute.first == "usage" )
+    {
+      checkNoList( attribute.second, line );
+      videoFormat.usage = attribute.second;
+      // CHECK: usage after extensions
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "videoformatproperties" )
+    {
+      videoFormat.videoFormatProperties = std::make_optional<VideoFormatProperties>( parseVideoFormatProperties( child ) );
+    }
+    else if ( value == "videorequirecapabilities" )
+    {
+      videoFormat.videoRequireCapabilities = std::make_optional<VideoRequireCapabilities>( parseVideoRequireCapabilities( child ) );
+    }
+  }
+
+  return videoFormat;
+}
+
+VideoFormatProperties parseVideoFormatProperties( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "struct", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {}, {} );
+
+  VideoFormatProperties videoFormatProperties{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "struct" )
+    {
+      checkNoList( attribute.second, line );
+      videoFormatProperties.structure = attribute.second;
+    }
+  }
+  return videoFormatProperties;
+}
+
+VideoProfile parseVideoProfile( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "value", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {}, {} );
+
+  VideoProfile videoProfile{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      videoProfile.name = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      checkNoList( attribute.second, line );
+      videoProfile.value = attribute.second;
+    }
+  }
+
+  return videoProfile;
+}
+
+VideoProfileMember parseVideoProfileMember( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml", line, children, { { "videoprofile", MultipleAllowed::Yes } }, {} );
+
+  VideoProfileMember videoProfileMember{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      videoProfileMember.name = attribute.second;
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "videoprofile" )
+    {
+      VideoProfile videoProfile = parseVideoProfile( child );
+      checkForError( "vk.xml",
+                     !containsByName( videoProfileMember.videoProfiles, videoProfile.name ),
+                     videoProfile.xmlLine,
+                     "videoprofilemember <" + videoProfileMember.name + "> already lists a videoprofile <" + videoProfile.name + ">" );
+      videoProfileMember.videoProfiles.push_back( std::move( videoProfile ) );
+    }
+  }
+
+  return videoProfileMember;
+}
+
+VideoProfiles parseVideoProfiles( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "struct", {} } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml", line, children, { { "videoprofilemember", MultipleAllowed::Yes } } );
+
+  VideoProfiles videoProfiles{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "struct" )
+    {
+      checkNoList( attribute.second, line );
+      videoProfiles.structure = attribute.second;
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "videoprofilemember" )
+    {
+      VideoProfileMember videoProfileMember = parseVideoProfileMember( child );
+      checkForError( "vk.xml",
+                     !containsByName( videoProfiles.videoProfileMembers, videoProfileMember.name ),
+                     videoProfileMember.xmlLine,
+                     "videoprofilemember <" + videoProfileMember.name + "> already listed for videoprofiles <" + videoProfiles.structure + ">" );
+      videoProfiles.videoProfileMembers.push_back( std::move( videoProfileMember ) );
+    }
+  }
+
+  return videoProfiles;
+}
+
+VideoRequireCapabilities parseVideoRequireCapabilities( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "member", {} }, { "struct", {} }, { "value", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  VideoRequireCapabilities videoRequireCapabilities{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "member" )
+    {
+      checkNoList( attribute.second, line );
+      videoRequireCapabilities.member = attribute.second;
+    }
+    else if ( attribute.first == "struct" )
+    {
+      checkNoList( attribute.second, line );
+      videoRequireCapabilities.structure = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      checkNoList( attribute.second, line );
+      videoRequireCapabilities.value = attribute.second;
+      // CHECK: value after extensions
+    }
+  }
+
+  return videoRequireCapabilities;
 }
 
 Vkxml parseVkXml( tinyxml2::XMLDocument const & document, std::string const & api )

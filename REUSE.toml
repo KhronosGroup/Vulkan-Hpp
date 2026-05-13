@@ -12,7 +12,6 @@ path = [
     ".github/workflows/**",
     "docs/**",
     "generator/.clang-format_*",
-    "RAII_Samples/**",
     "tests/**",
 ]
 SPDX-FileCopyrightText = "2026 NVIDIA Corporation"

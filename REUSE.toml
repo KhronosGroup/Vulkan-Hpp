@@ -4,7 +4,6 @@ version = 1
 
 [[annotations]]
 path = [
-    ".gitmodules",
     "CMakeLists.txt",
     "CMakePresets.json",
     "VulkanHpp.natvis",

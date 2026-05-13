@@ -420,10 +420,12 @@ inline std::string readSnippet( std::string const & snippetFile )
     std::getline( ifs, line );
     switch ( i )
     {
+      // REUSE-IgnoreStart
       case 0: compliant = line.starts_with( "// SPDX-FileCopyrightText:" ); break;
       case 1: compliant = line.starts_with( "// SPDX-License-Identifier:" ); break;
       case 2: compliant = line.empty(); break;
       default: compliant = false; // unreachable
+      // REUSE-IgnoreEnd
     }
     if ( !compliant )
     {

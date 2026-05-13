@@ -61,6 +61,15 @@ std::pair<std::string, Struct>
                             parseStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & api );
 StructMember                parseStructMember( tinyxml2::XMLElement const * element );
 SupersededName              parseSupersededName( tinyxml2::XMLElement const * element );
+Sync                        parseSync( tinyxml2::XMLElement const * element );
+SyncAccess                  parseSyncAccess( tinyxml2::XMLElement const * element );
+SyncAccessSupport           parseSyncAccessSupport( tinyxml2::XMLElement const * element );
+SyncAccessEquivalent        parseSyncAccessEquivalent( tinyxml2::XMLElement const * element );
+SyncPipeline                parseSyncPipeline( tinyxml2::XMLElement const * element );
+SyncPipelineStage           parseSyncPipelineStage( tinyxml2::XMLElement const * element );
+SyncStage                   parseSyncStage( tinyxml2::XMLElement const * element );
+SyncStageEquivalent         parseSyncStageEquivalent( tinyxml2::XMLElement const * element );
+SyncStageSupport            parseSyncStageSupport( tinyxml2::XMLElement const * element );
 std::pair<std::string, Tag> parseTag( tinyxml2::XMLElement const * element );
 std::map<std::string, Tag>  parseTags( tinyxml2::XMLElement const * element );
 Type                        parseType( tinyxml2::XMLElement const * element );
@@ -1521,6 +1530,10 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
     {
       vkxml.platforms = parsePlatforms( child );
     }
+    else if ( value == "sync" )
+    {
+      vkxml.sync = parseSync( child );
+    }
     else if ( value == "tags" )
     {
       vkxml.tags = parseTags( child );
@@ -2124,6 +2137,285 @@ SupersededName parseSupersededName( tinyxml2::XMLElement const * element )
   return deprecateCommand;
 }
 
+Sync parseSync( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, {}, { { "comment", {} } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements(
+    "vk.xml", line, children, { { "syncaccess", MultipleAllowed::Yes }, { "syncpipeline", MultipleAllowed::Yes }, { "syncstage", MultipleAllowed::Yes } }, {} );
+
+  Sync sync{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      sync.comment = attribute.second;
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "syncaccess" )
+    {
+      SyncAccess syncAccess = parseSyncAccess( child );
+      checkForError( "vk.xml", !containsByName( sync.accesses, syncAccess.name ), syncAccess.xmlLine, "syncaccess <" + syncAccess.name + "> already listed" );
+      sync.accesses.push_back( std::move( syncAccess ) );
+    }
+    else if ( value == "syncpipeline" )
+    {
+      SyncPipeline syncPipeline = parseSyncPipeline( child );
+      checkForError(
+        "vk.xml", !containsByName( sync.pipelines, syncPipeline.name ), syncPipeline.xmlLine, "syncpipeline <" + syncPipeline.name + "> already listed" );
+      sync.pipelines.push_back( std::move( syncPipeline ) );
+    }
+    else if ( value == "syncstage" )
+    {
+      SyncStage syncStage = parseSyncStage( child );
+      checkForError( "vk.xml", !containsByName( sync.stages, syncStage.name ), syncStage.xmlLine, "syncstage <" + syncStage.name + "> already listed" );
+      sync.stages.push_back( std::move( syncStage ) );
+    }
+  }
+
+  return sync;
+}
+
+SyncAccess parseSyncAccess( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, { { "alias", {} } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements(
+    "vk.xml", line, children, {}, { { "comment", MultipleAllowed::No }, { "syncequivalent", MultipleAllowed::No }, { "syncsupport", MultipleAllowed::No } } );
+
+  SyncAccess syncAccess{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "alias" )
+    {
+      checkNoList( attribute.second, line );
+      syncAccess.alias = attribute.second;
+      // CHECK: alias after extensions
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      syncAccess.name = attribute.second;
+      // CHECK: name after extensions
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "comment" )
+    {
+      syncAccess.comment = readComment( "vk.xml", child );
+    }
+    else if ( value == "syncequivalent" )
+    {
+      syncAccess.equivalent = std::make_optional( parseSyncAccessEquivalent( child ) );
+    }
+    else if ( value == "syncsupport" )
+    {
+      syncAccess.support = std::make_optional( parseSyncAccessSupport( child ) );
+    }
+  }
+
+  return syncAccess;
+}
+
+SyncAccessEquivalent parseSyncAccessEquivalent( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "access", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {}, {} );
+
+  SyncAccessEquivalent syncEquivalent{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "access" )
+    {
+      syncEquivalent.accesses = tokenize( attribute.second, "," );
+      // CHECK: stages after extensions
+    }
+  }
+
+  return syncEquivalent;
+}
+
+SyncAccessSupport parseSyncAccessSupport( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "stage", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {}, {} );
+
+  SyncAccessSupport syncSupport{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "stage" )
+    {
+      syncSupport.stages = tokenize( attribute.second, "," );
+      // CHECK: stages after extensions
+    }
+  }
+
+  return syncSupport;
+}
+
+SyncPipeline parseSyncPipeline( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, { { "depends", {} } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml", line, children, {}, { { "syncpipelinestage", MultipleAllowed::Yes } } );
+
+  SyncPipeline syncPipeline{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "depends" )
+    {
+      syncPipeline.depends = tokenize( attribute.second, "," );
+      // CHECK: depends after extensions
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      syncPipeline.name = attribute.second;
+    }
+  }
+
+  for ( auto const & child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "syncpipelinestage" )
+    {
+      SyncPipelineStage syncPipelineStage = parseSyncPipelineStage( child );
+      checkForError( "vk.xml",
+                     !containsByName( syncPipeline.stages, syncPipelineStage.name ),
+                     syncPipelineStage.xmlLine,
+                     "syncpipelinestage <" + syncPipelineStage.name + "> already listed for syncpipeline <" + syncPipeline.name + ">" );
+      syncPipeline.stages.push_back( std::move( syncPipelineStage ) );
+    }
+  }
+
+  return syncPipeline;
+}
+
+SyncPipelineStage parseSyncPipelineStage( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, {}, { { "before", { "VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT" } }, { "order", { "None" } } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {}, {} );
+
+  SyncPipelineStage syncPipelineStage{ .name = element->GetText(), .xmlLine = line };
+  // CHECK: name after extensions
+
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "before" )
+    {
+      checkNoList( attribute.second, line );
+      syncPipelineStage.before = attribute.second;
+    }
+    else if ( attribute.first == "order" )
+    {
+      checkNoList( attribute.second, line );
+      syncPipelineStage.order = attribute.second;
+    }
+  }
+
+  return syncPipelineStage;
+}
+
+SyncStage parseSyncStage( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, { { "alias", {} } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml", line, children, {}, { { "syncequivalent", MultipleAllowed::No }, { "syncsupport", MultipleAllowed::No } } );
+
+  SyncStage syncStage{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "alias" )
+    {
+      checkNoList( attribute.second, line );
+      syncStage.alias = attribute.second;
+      // CHECK: alias after extensions
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      syncStage.name = attribute.second;
+      // CHECK: name after extensions
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "syncequivalent" )
+    {
+      syncStage.equivalent = std::make_optional( parseSyncStageEquivalent( child ) );
+    }
+    else if ( value == "syncsupport" )
+    {
+      syncStage.support = std::make_optional( parseSyncStageSupport( child ) );
+    }
+  }
+
+  return syncStage;
+}
+
+SyncStageEquivalent parseSyncStageEquivalent( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "stage", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {}, {} );
+
+  SyncStageEquivalent syncEquivalent{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "stage" )
+    {
+      syncEquivalent.stages = tokenize( attribute.second, "," );
+      // CHECK: stages after extensions
+    }
+  }
+
+  return syncEquivalent;
+}
+
+SyncStageSupport parseSyncStageSupport( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "queues", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {}, {} );
+
+  SyncStageSupport syncSupport{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "queues" )
+    {
+      syncSupport.queues = tokenize( attribute.second, "," );
+      // CHECK: queues after extensions
+    }
+  }
+
+  return syncSupport;
+}
+
 std::pair<std::string, Tag> parseTag( tinyxml2::XMLElement const * element )
 {
   int                                line       = element->GetLineNum();
@@ -2158,7 +2450,6 @@ std::map<std::string, Tag> parseTags( tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
   checkAttributes( "vk.xml", line, getAttributes( element ), { { "comment", {} } }, {} );
-
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( "vk.xml", line, children, { { "tag", MultipleAllowed::Yes } } );
 

@@ -6,6 +6,7 @@
 #include "XMLHelper.hpp"
 
 #include <map>
+#include <optional>
 #include <regex>
 #include <string>
 #include <tinyxml2.h>
@@ -352,6 +353,68 @@ struct Types
   std::set<std::string>      types         = {};
 };
 
+struct VideoCapabilities
+{
+  std::string structure = {};
+  int         xmlLine   = {};
+};
+
+struct VideoFormatProperties
+{
+  std::string structure = {};
+  int         xmlLine   = {};
+};
+
+struct VideoRequireCapabilities
+{
+  std::string member    = {};
+  std::string structure = {};
+  std::string value     = {};
+  int         xmlLine   = {};
+};
+
+struct VideoFormat
+{
+  std::string                             extend                   = {};
+  std::string                             name                     = {};
+  std::string                             usage                    = {};
+  std::optional<VideoFormatProperties>    videoFormatProperties    = {};
+  std::optional<VideoRequireCapabilities> videoRequireCapabilities = {};
+  int                                     xmlLine                  = {};
+};
+
+struct VideoProfile
+{
+  std::string name    = {};
+  std::string value   = {};
+  int         xmlLine = {};
+};
+
+struct VideoProfileMember
+{
+  std::string               name          = {};
+  std::vector<VideoProfile> videoProfiles = {};
+  int                       xmlLine       = {};
+};
+
+struct VideoProfiles
+{
+  std::string                     structure           = {};
+  std::vector<VideoProfileMember> videoProfileMembers = {};
+  int                             xmlLine             = {};
+};
+
+struct VideoCodec
+{
+  std::string                    extend            = {};
+  std::string                    name              = {};
+  std::string                    value             = {};
+  std::vector<VideoCapabilities> videoCapabilities = {};
+  std::vector<VideoFormat>       videoFormats      = {};
+  std::optional<VideoProfiles>   videoProfiles     = {};
+  int                            xmlLine           = {};
+};
+
 struct Vkxml
 {
   std::map<std::string, BaseType>     baseTypes     = {};
@@ -370,6 +433,7 @@ struct Vkxml
   std::map<std::string, Struct>       structs       = {};
   std::map<std::string, Tag>          tags          = {};
   std::map<std::string, Union>        unions        = {};
+  std::vector<VideoCodec>             videoCodecs   = {};
 
   std::set<std::string> types = {};
 };

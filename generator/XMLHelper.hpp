@@ -429,7 +429,7 @@ inline std::string readSnippet( std::string const & snippetFile )
     }
     if ( !compliant )
     {
-      throw std::runtime_error( std::format( "The snippet {} contains a broken license header", snippetFile ) );
+      throw std::runtime_error( "The snippet " + snippetFile + " contains a broken license header" );
     }
   }
   // return the remainder of the snippet

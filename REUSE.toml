@@ -8,9 +8,6 @@ path = [
     "CMakeLists.txt",
     "CMakePresets.json",
     "VulkanHpp.natvis",
-
-    ".github/workflows/**",
-    "docs/**",
     "generator/.clang-format_*",
 ]
 SPDX-FileCopyrightText = "2026 NVIDIA Corporation"

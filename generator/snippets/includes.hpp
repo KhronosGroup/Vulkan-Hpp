@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 NVIDIA CORPORATION
+// SPDX-License-Identifier: Apache-2.0
+
 #if !defined( VULKAN_HPP_CXX_MODULE )
 #  include <vulkan/${vulkan_h}>
 // clang-format off

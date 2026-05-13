@@ -415,55 +415,6 @@ private:
     bool   byStructure = false;
   };
 
-  struct VideoRequireCapabilities
-  {
-    int         xmlLine = {};
-    std::string name;
-    std::string member;
-    std::string value;
-  };
-
-  struct VideoFormat
-  {
-    int                                   xmlLine = {};
-    std::vector<std::string>              formatProperties;
-    std::string                           name;
-    std::vector<std::string>              usage;
-    std::vector<VideoRequireCapabilities> requireCapabilities;
-  };
-
-  struct VideoProfile
-  {
-    int         xmlLine = {};
-    std::string name;
-    std::string value;
-  };
-
-  struct VideoProfileMember
-  {
-    int                       xmlLine = {};
-    std::string               name;
-    std::vector<VideoProfile> profiles;
-  };
-
-  struct VideoProfiles
-  {
-    int                             xmlLine = {};
-    std::string                     name;
-    std::vector<VideoProfileMember> members;
-  };
-
-  struct VideoCodec
-  {
-    int                        xmlLine = {};
-    std::string                name;
-    std::vector<std::string>   capabilities;
-    std::string                extend;
-    std::string                value;
-    std::vector<VideoFormat>   formats;
-    std::vector<VideoProfiles> profiles;
-  };
-
 private:
   void        addCommandToHandle( std::pair<std::string, CommandData> const & commandData );
   void        addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredBy );
@@ -1184,15 +1135,6 @@ private:
   void                     readSyncStageEquivalent( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::const_iterator stageFlagBits2It );
   void                     readSyncStageSupport( tinyxml2::XMLElement const * element );
   DefinesPartition         partitionDefines( std::map<std::string, DefineData> const & defines );
-  void                     readVideoCapabilities( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
-  void                     readVideoCodec( tinyxml2::XMLElement const * element );
-  void                     readVideoCodecs( tinyxml2::XMLElement const * element );
-  void                     readVideoFormat( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
-  void                     readVideoProfileMember( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
-  void                     readVideoProfile( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
-  void                     readVideoProfiles( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
-  void                     readVideoFormatProperties( tinyxml2::XMLElement const * element, std::string const & videoCodec, VideoFormat & videoFormat );
-  void                     readVideoRequireCapabilities( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
   void                     registerDeleter( std::string const & commandName, CommandData const & commandData );
   void                     rescheduleRAIIHandle( std::string &                              str,
                                                  std::pair<std::string, HandleData> const & handle,
@@ -1231,7 +1173,6 @@ private:
   std::vector<ExtensionData>                 m_unsupportedExtensions;
   std::vector<FeatureData>                   m_unsupportedFeatures;
   std::string                                m_version;
-  std::vector<VideoCodec>                    m_videoCodecs;
   Vkxml                                      m_vkxml;
 
   mutable std::set<std::string> m_generatedCommands;

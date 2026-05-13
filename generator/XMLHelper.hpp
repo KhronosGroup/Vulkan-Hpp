@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <assert.h>
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -411,13 +412,25 @@ inline std::string readSnippet( std::string const & snippetFile )
 {
   std::ifstream ifs( std::string( BASE_PATH ) + "/generator/snippets/" + snippetFile );
   assert( !ifs.fail() );
-  // skip the snippet license header (3 loc)
+  // skip the snippet license header and validate its contents
   std::string line;
   for ( uint32_t i = 0; i < 3; i++ )
   {
-    std::getline(ifs, line);
+    bool compliant = true;
+    std::getline( ifs, line );
+    switch ( i )
+    {
+      case 0: compliant = line.starts_with( "// SPDX-FileCopyrightText:" ); break;
+      case 1: compliant = line.starts_with( "// SPDX-License-Identifier:" ); break;
+      case 2: compliant = line.empty(); break;
+      default: compliant = false; // unreachable
+    }
+    if ( !compliant )
+    {
+      throw std::runtime_error( std::format( "The snippet {} contains a broken license header", snippetFile ) );
+    }
   }
-  // return the remainder
+  // return the remainder of the snippet
   std::ostringstream oss;
   oss << ifs.rdbuf();
   return oss.str();

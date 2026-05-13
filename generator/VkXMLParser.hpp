@@ -310,6 +310,74 @@ struct Struct
   int                        xmlLine           = {};
 };
 
+struct SyncAccessEquivalent
+{
+  std::vector<std::string> accesses = {};
+  int                      xmlLine  = {};
+};
+
+struct SyncAccessSupport
+{
+  std::vector<std::string> stages  = {};
+  int                      xmlLine = {};
+};
+
+struct SyncAccess
+{
+  std::string                         alias      = {};
+  std::string                         comment    = {};
+  std::string                         name       = {};
+  std::optional<SyncAccessEquivalent> equivalent = {};
+  std::optional<SyncAccessSupport>    support    = {};
+  int                                 xmlLine    = {};
+};
+
+struct SyncPipelineStage
+{
+  std::string before  = {};
+  std::string name    = {};
+  std::string order   = {};
+  int         xmlLine = {};
+};
+
+struct SyncPipeline
+{
+  std::vector<std::string>       depends = {};
+  std::string                    name    = {};
+  std::vector<SyncPipelineStage> stages  = {};
+  int                            xmlLine = {};
+};
+
+struct SyncStageEquivalent
+{
+  std::vector<std::string> stages  = {};
+  int                      xmlLine = {};
+};
+
+struct SyncStageSupport
+{
+  std::vector<std::string> queues  = {};
+  int                      xmlLine = {};
+};
+
+struct SyncStage
+{
+  std::string                        alias      = {};
+  std::string                        name       = {};
+  std::optional<SyncStageEquivalent> equivalent = {};
+  std::optional<SyncStageSupport>    support    = {};
+  int                                xmlLine    = {};
+};
+
+struct Sync
+{
+  std::string               comment   = {};
+  std::vector<SyncAccess>   accesses  = {};
+  std::vector<SyncPipeline> pipelines = {};
+  std::vector<SyncStage>    stages    = {};
+  int                       xmlLine   = {};
+};
+
 struct Tag
 {
   std::string author  = {};
@@ -431,6 +499,7 @@ struct Vkxml
   std::map<std::string, int>          includes      = {};
   std::map<std::string, Platform>     platforms     = {};
   std::map<std::string, Struct>       structs       = {};
+  Sync                                sync          = {};
   std::map<std::string, Tag>          tags          = {};
   std::map<std::string, Union>        unions        = {};
   std::vector<VideoCodec>             videoCodecs   = {};

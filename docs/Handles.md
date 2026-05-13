@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2026 The Khronos Group, Inc.
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Handles in Vulkan-Hpp
 
 The default handle types in Vulkan-Hpp are thin wrappers around the Vulkan C handles.

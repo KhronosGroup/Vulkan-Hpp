@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2026 The Khronos Group, Inc.
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Usage
 
 This manual assumes familiarity with Vulkan; it details improvements and differences introduced by Vulkan-Hpp.

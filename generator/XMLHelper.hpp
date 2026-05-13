@@ -5,7 +5,6 @@
 
 #include <algorithm>
 #include <assert.h>
-#include <format>
 #include <fstream>
 #include <iostream>
 #include <map>

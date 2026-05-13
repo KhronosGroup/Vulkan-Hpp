@@ -4,22 +4,10 @@ version = 1
 
 [[annotations]]
 path = [
-    ".gitmodules",
     "CMakeLists.txt",
     "CMakePresets.json",
     "VulkanHpp.natvis",
-
-    ".github/workflows/**",
-    "docs/**",
     "generator/.clang-format_*",
-    "RAII_Samples/**",
-    "samples/**",
-    "tests/**",
 ]
-SPDX-FileCopyrightText = "NVIDIA Corporation"
-SPDX-License-Identifier = "Apache-2.0"
-
-[[annotations]]
-path = "samples/SharedHandles/SharedHandles.cpp"
-SPDX-FileCopyrightText = "2023 Ilya Doroshenko"
+SPDX-FileCopyrightText = "2026 NVIDIA Corporation"
 SPDX-License-Identifier = "Apache-2.0"

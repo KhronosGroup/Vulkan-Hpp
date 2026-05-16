@@ -2454,6 +2454,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_primitive_restart_index ===
   struct PhysicalDevicePrimitiveRestartIndexFeaturesEXT;
 
+  //=== VK_NV_cooperative_matrix_decode_vector ===
+  struct PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV;
+
   //===================================
   //=== HANDLE forward declarations ===
   //===================================

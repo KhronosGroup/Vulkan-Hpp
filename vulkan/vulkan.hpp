@@ -37,7 +37,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 351, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 352, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -11312,6 +11312,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTPrimitiveRestartIndexSpecVersion   = VK_EXT_PRIMITIVE_RESTART_INDEX_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTPrimitiveRestartIndexExtensionName = VK_EXT_PRIMITIVE_RESTART_INDEX_EXTENSION_NAME;
 
+  //=== VK_NV_cooperative_matrix_decode_vector ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVCooperativeMatrixDecodeVectorSpecVersion   = VK_NV_COOPERATIVE_MATRIX_DECODE_VECTOR_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVCooperativeMatrixDecodeVectorExtensionName = VK_NV_COOPERATIVE_MATRIX_DECODE_VECTOR_EXTENSION_NAME;
+
 }  // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off
@@ -22565,6 +22569,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDevicePrimitiveRestartIndexFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_cooperative_matrix_decode_vector ===
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV, DeviceCreateInfo>
   {
     enum
     {

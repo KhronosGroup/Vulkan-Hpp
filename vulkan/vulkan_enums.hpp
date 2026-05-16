@@ -1851,7 +1851,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eDataGraphPipelineNeuralStatisticsCreateInfoARM                = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_NEURAL_STATISTICS_CREATE_INFO_ARM,
     eDataGraphPipelineSessionNeuralStatisticsCreateInfoARM         = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_SESSION_NEURAL_STATISTICS_CREATE_INFO_ARM,
     ePhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_FEATURES_ARM,
-    ePhysicalDevicePrimitiveRestartIndexFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT
+    ePhysicalDevicePrimitiveRestartIndexFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT,
+    ePhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV
   };
 
   // wrapper class for enum VkObjectType, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkObjectType.html
@@ -4887,7 +4888,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eImaginationOpenSourceMESA  = VK_DRIVER_ID_IMAGINATION_OPEN_SOURCE_MESA,
     eMesaHoneykrisp             = VK_DRIVER_ID_MESA_HONEYKRISP,
     eVulkanScEmulationOnVulkan  = VK_DRIVER_ID_VULKAN_SC_EMULATION_ON_VULKAN,
-    eMesaKosmickrisp            = VK_DRIVER_ID_MESA_KOSMICKRISP
+    eMesaKosmickrisp            = VK_DRIVER_ID_MESA_KOSMICKRISP,
+    eMesaGfxstream              = VK_DRIVER_ID_MESA_GFXSTREAM
   };
 
   using DriverIdKHR = DriverId;

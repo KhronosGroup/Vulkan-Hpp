@@ -543,7 +543,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                             "VK_VALVE_shader_mixed_float_dot_product",
                                                             "VK_SEC_throttle_hint",
                                                             "VK_ARM_data_graph_neural_accelerator_statistics",
-                                                            "VK_EXT_primitive_restart_index" };
+                                                            "VK_EXT_primitive_restart_index",
+                                                            "VK_NV_cooperative_matrix_decode_vector" };
     return deviceExtensions;
   }
 
@@ -3223,7 +3224,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } },
-          { "VK_VERSION_1_1", { {} } } } }
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_NV_cooperative_matrix_decode_vector",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_NV_cooperative_matrix2",
+            } } } } }
     };
     auto depIt = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
@@ -4205,7 +4211,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_NV_compute_occupancy_priority" ) || ( extension == "VK_KHR_maintenance11" ) ||
            ( extension == "VK_EXT_shader_subgroup_partitioned" ) || ( extension == "VK_VALVE_shader_mixed_float_dot_product" ) ||
            ( extension == "VK_SEC_throttle_hint" ) || ( extension == "VK_ARM_data_graph_neural_accelerator_statistics" ) ||
-           ( extension == "VK_EXT_primitive_restart_index" );
+           ( extension == "VK_EXT_primitive_restart_index" ) || ( extension == "VK_NV_cooperative_matrix_decode_vector" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

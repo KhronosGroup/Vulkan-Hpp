@@ -6008,8 +6008,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case StructureType::eDataGraphPipelineSessionNeuralStatisticsCreateInfoARM: return "DataGraphPipelineSessionNeuralStatisticsCreateInfoARM";
       case StructureType::ePhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM:
         return "PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM";
-      case StructureType::ePhysicalDevicePrimitiveRestartIndexFeaturesEXT: return "PhysicalDevicePrimitiveRestartIndexFeaturesEXT";
-      default                                                            : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+      case StructureType::ePhysicalDevicePrimitiveRestartIndexFeaturesEXT       : return "PhysicalDevicePrimitiveRestartIndexFeaturesEXT";
+      case StructureType::ePhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV: return "PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV";
+      default                                                                   : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -8058,6 +8059,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case DriverId::eMesaHoneykrisp           : return "MesaHoneykrisp";
       case DriverId::eVulkanScEmulationOnVulkan: return "VulkanScEmulationOnVulkan";
       case DriverId::eMesaKosmickrisp          : return "MesaKosmickrisp";
+      case DriverId::eMesaGfxstream            : return "MesaGfxstream";
       default                                  : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

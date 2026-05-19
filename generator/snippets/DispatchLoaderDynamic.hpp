@@ -55,18 +55,23 @@ public:
 
     // This interface does not require a linked vulkan library.
     void init( VkInstance                instance,
-               PFN_vkGetInstanceProcAddr getInstanceProcAddr,
-               VkDevice                  device              = {},
-               PFN_vkGetDeviceProcAddr   getDeviceProcAddr = nullptr ) VULKAN_HPP_NOEXCEPT
+               PFN_vkGetInstanceProcAddr getInstanceProcAddr) VULKAN_HPP_NOEXCEPT
     {
         VULKAN_HPP_ASSERT(instance && getInstanceProcAddr);
         vkGetInstanceProcAddr = getInstanceProcAddr;
-        vkGetDeviceProcAddr = getDeviceProcAddr;
         init( Instance(instance) );
-        if (device)
-        {
+    }
+
+    // This interface does not require a linked vulkan library.
+    void init( VkInstance                instance,
+               PFN_vkGetInstanceProcAddr getInstanceProcAddr,
+               VkDevice                  device,
+               PFN_vkGetDeviceProcAddr   getDeviceProcAddr ) VULKAN_HPP_NOEXCEPT
+    {
+        init( instance, getInstanceProcAddr );
+        VULKAN_HPP_ASSERT( device && getDeviceProcAddr );
+        vkGetDeviceProcAddr = getDeviceProcAddr;
         init( Device(device) );
-        }
     }
 
     void init( Instance instanceCpp ) VULKAN_HPP_NOEXCEPT

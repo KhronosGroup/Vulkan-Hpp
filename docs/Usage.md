@@ -891,6 +891,7 @@ add_executable( YourProject main.cpp )
 target_link_libraries( YourProject PRIVATE Vulkan-HppModule )
 ```
 
+The example creates `Vulkan-HppModule` in the consuming project so CMake compiles the named module with the same compiler and options as the rest of the build.
 Configuring the named module is straightforward; add any required Vulkan-Hpp feature macros listed in [Configuration](./Configuration.md) (or any C macros) to `target_compile_definitions`.
 Ensure the macros are `PUBLIC` so they can be propagated to user code.
 For instance:

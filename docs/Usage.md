@@ -828,11 +828,11 @@ CMake provides the [FindVulkan module](https://cmake.org/cmake/help/latest/modul
 <details>
 <summary>For CMake versions earlier than 4.3.0</summary>
 
-If you have CMake versions between 3.30 and 4.2, where the [`CXX_MODULE_STD`](https://cmake.org/cmake/help/v4.2/prop_tgt/CXX_MODULE_STD.html) variable is still experimental, then make sure to provide the following UUID to enable CMake's experimental support for the C++ standard library module.
+If you have CMake versions between 3.30 and 4.3, where the [`CXX_MODULE_STD`](https://cmake.org/cmake/help/v4.3/prop_tgt/CXX_MODULE_STD.html) variable is still experimental, then make sure to provide the following UUID to enable CMake's experimental support for the C++ standard library module.
 To find the precise value for your specific version, check out the correct release tag and look for `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` in [Help/dev/experimental.rst](https://gitlab.kitware.com/cmake/cmake/-/blob/master/Help/dev/experimental.rst).
 
 ```bash
-cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444 ...
+cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=451f2fe2-a8a2-47c3-bc32-94786d8fc91b ...
 ```
 
 This UUID variable may also be set before the `project()` call, or in a [CMake preset file](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#configure-preset) in the `cacheVariables` key for a configure preset.
@@ -843,17 +843,50 @@ A complete example `CMakeLists.txt` file for a project using the Vulkan-Hpp name
 
 ```cmake
 # CMake 3.30 has experimental support for `import std;`
-# But we recommend using CMake 4.3 or later, which has stable support for this feature
-cmake_minimum_required( VERSION 4.3.0 )
+# But we recommend using CMake 4.3 or later, which has more stable support for this feature
+cmake_minimum_required( VERSION 4.3 )
 
+# either set this here or on the CLI (example UUID for 4.3)
+if( NOT CMAKE_EXPERIMENTAL_CXX_IMPORT_STD )
+    set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 451f2fe2-a8a2-47c3-bc32-94786d8fc91b)
+endif()
 project( vulkan_hpp_modules_example LANGUAGES CXX )
 
 # Although modules were first made available in Vulkan-Headers v1.3.256,
-# they have changed drastically since then and this example assumes version 1.4.344
-find_package( Vulkan 1.4.344 QUIET )
-if ( Vulkan_FOUND )
-    # set up Vulkan C++ module as a static library
-    add_library( Vulkan-HppModule STATIC )
+# they have changed drastically since then and this example assumes version 1.4.350
+find_package( Vulkan 1.4.350 QUIET )
+if( NOT Vulkan_FOUND )
+    # when you do not have the right version installed, just fetch the headers directly
+    include(FetchContent)
+    # disable the automatic module target since it results in cmake ICE (last tested with 4.3.20260521-gd36a884)
+    set(VULKAN_HEADERS_ENABLE_MODULE OFF)
+    if( TRUE ) # Option 1: Fetch only the released .zip or .tar.gz
+        FetchContent_Declare(vulkan-headers
+            URL https://github.com/KhronosGroup/Vulkan-Headers/archive/refs/tags/v1.4.350.zip
+            URL_HASH SHA256=92b80c2d746297e1856e2864e1e244ca116de20d72c728f33596aaa79120d565
+            # URL https://github.com/KhronosGroup/Vulkan-Headers/archive/refs/tags/v1.4.350.tar.gz
+            # URL_HASH SHA256=6dd105e5cc7ddab6e7b611ae2c1872740d1727557cc8bf9daf13d6de1e4b3999
+            USES_TERMINAL_DOWNLOAD TRUE
+            OVERRIDE_FIND_PACKAGE
+            EXCLUDE_FROM_ALL
+            SYSTEM)
+    else() # Option 2: Fetch the full repository
+        FetchContent_Declare(vulkan-headers
+            GIT_REPOSITORY "https://github.com/KhronosGroup/Vulkan-Headers.git"
+            GIT_TAG "v1.4.350"
+            GIT_SHALLOW ON
+            OVERRIDE_FIND_PACKAGE
+            EXCLUDE_FROM_ALL
+            SYSTEM)
+    endif()
+    FetchContent_MakeAvailable(vulkan-headers)
+    # make sure to set up the include path as if found by find_package
+    set(Vulkan_INCLUDE_DIR "${vulkan-headers_SOURCE_DIR}/include")
+endif()
+
+# manually create module target if it was not previously provided
+if( NOT TARGET Vulkan::HppModule )
+    add_library( Vulkan-HppModule OBJECT )
     add_library( Vulkan::HppModule ALIAS Vulkan-HppModule )
     target_sources( Vulkan-HppModule PUBLIC
         FILE_SET CXX_MODULES
@@ -861,34 +894,20 @@ if ( Vulkan_FOUND )
         FILES
             ${Vulkan_INCLUDE_DIR}/vulkan/vulkan.cppm
             ${Vulkan_INCLUDE_DIR}/vulkan/vulkan_video.cppm)
-else()
-    # when you do not have the right version installed, just fetch the headers directly
-    include(FetchContent)
-    FetchContent_Declare(vulkan-headers
-        GIT_REPOSITORY "https://github.com/KhronosGroup/Vulkan-Headers.git"
-        GIT_TAG "v1.4.344"
-        GIT_SHALLOW ON
-        OVERRIDE_FIND_PACKAGE
-        SYSTEM)
-    FetchContent_MakeAvailable(vulkan-headers)
-    # make sure to set up the include path for CMake
-    set(Vulkan_INCLUDE_DIR "${vulkan-headers_SOURCE_DIR}/include")
+    target_compile_features( Vulkan-HppModule PUBLIC cxx_std_23 )
+    set_target_properties( Vulkan-HppModule PROPERTIES CXX_MODULE_STD ON )
+    target_include_directories( Vulkan-HppModule PUBLIC ${Vulkan_INCLUDE_DIR} )
 endif()
 
-# configure the module target (import std currently requires C++23 with CMake)
-target_compile_features( Vulkan-HppModule PUBLIC cxx_std_23 )
-set_target_properties( Vulkan-HppModule PROPERTIES CXX_MODULE_STD ON )
-
 if( TRUE ) # if you want to use the dynamic dispatcher
-    target_link_libraries( Vulkan-HppModule PUBLIC Vulkan::Headers )
     target_compile_definitions( Vulkan-HppModule PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
-else() # otherwise, use Vulkan::Vulkan to link to vulkan-1
+else() # otherwise, use Vulkan::Vulkan to link to vulkan-1 (requires discovery via find_package)
     target_link_libraries( Vulkan-HppModule PUBLIC Vulkan::Vulkan )
 endif()
 
 # link Vulkan-Hpp C++ module into user project
-add_executable( YourProject main.cpp )
-target_link_libraries( YourProject PRIVATE Vulkan-HppModule )
+add_executable( ${PROJECT_NAME} "main.cpp" )
+target_link_libraries( ${PROJECT_NAME} PRIVATE Vulkan::HppModule )
 ```
 
 Configuring the named module is straightforward; add any required Vulkan-Hpp feature macros listed in [Configuration](./Configuration.md) (or any C macros) to `target_compile_definitions`.

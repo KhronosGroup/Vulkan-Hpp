@@ -832,6 +832,7 @@ If you have CMake versions between 3.30 and 4.3, where the [`CXX_MODULE_STD`](ht
 To find the precise value for your specific version, check out the correct release tag and look for `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` in [Help/dev/experimental.rst](https://gitlab.kitware.com/cmake/cmake/-/blob/master/Help/dev/experimental.rst).
 
 ```bash
+# example UUID for CMake 4.3
 cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=451f2fe2-a8a2-47c3-bc32-94786d8fc91b ...
 ```
 
@@ -842,7 +843,7 @@ This UUID variable may also be set before the `project()` call, or in a [CMake p
 A complete example `CMakeLists.txt` file for a project using the Vulkan-Hpp named module is provided below.
 
 ```cmake
-cmake_minimum_required( VERSION 4.3 )
+cmake_minimum_required( VERSION 3.30...4.3 )
 
 # either set the experimental gate here or via CLI
 if( NOT CMAKE_EXPERIMENTAL_CXX_IMPORT_STD )

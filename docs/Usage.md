@@ -864,27 +864,15 @@ find_package( Vulkan 1.4.350 QUIET )
 if( NOT Vulkan_FOUND )
     # when you do not have the right version installed, just fetch the headers directly
     include(FetchContent)
-    # disable the automatic module target since it results in cmake ICE (last tested with 4.3.20260521-gd36a884)
+    # disable the automatic module target since may result in cmake ICE (last tested with 4.3.20260521-gd36a884)
     set(VULKAN_HEADERS_ENABLE_MODULE OFF)
-    if( TRUE ) # Option 1: Fetch only the released .zip or .tar.gz
-        FetchContent_Declare(vulkan-headers
-            URL https://github.com/KhronosGroup/Vulkan-Headers/archive/refs/tags/v1.4.350.zip
-            URL_HASH SHA256=92b80c2d746297e1856e2864e1e244ca116de20d72c728f33596aaa79120d565
-            # URL https://github.com/KhronosGroup/Vulkan-Headers/archive/refs/tags/v1.4.350.tar.gz
-            # URL_HASH SHA256=6dd105e5cc7ddab6e7b611ae2c1872740d1727557cc8bf9daf13d6de1e4b3999
-            USES_TERMINAL_DOWNLOAD TRUE
-            OVERRIDE_FIND_PACKAGE
-            EXCLUDE_FROM_ALL
-            SYSTEM)
-    else() # Option 2: Fetch the full repository
-        FetchContent_Declare(vulkan-headers
-            GIT_REPOSITORY "https://github.com/KhronosGroup/Vulkan-Headers.git"
-            GIT_TAG "v1.4.350"
-            GIT_SHALLOW ON
-            OVERRIDE_FIND_PACKAGE
-            EXCLUDE_FROM_ALL
-            SYSTEM)
-    endif()
+    FetchContent_Declare(vulkan-headers
+        URL https://github.com/KhronosGroup/Vulkan-Headers/archive/refs/tags/v1.4.350.zip
+        URL_HASH SHA256=92b80c2d746297e1856e2864e1e244ca116de20d72c728f33596aaa79120d565
+        USES_TERMINAL_DOWNLOAD TRUE
+        OVERRIDE_FIND_PACKAGE
+        EXCLUDE_FROM_ALL
+        SYSTEM)
     FetchContent_MakeAvailable(vulkan-headers)
     # make sure to set up the include path as if found by find_package
     set(Vulkan_INCLUDE_DIR "${vulkan-headers_SOURCE_DIR}/include")

@@ -865,8 +865,6 @@ find_package( Vulkan 1.4.350 QUIET )
 if( NOT Vulkan_FOUND )
     # when you do not have the right version installed, just fetch the headers directly
     include(FetchContent)
-    # disable the automatic module target since may result in cmake ICE (last tested with 4.3.20260521-gd36a884)
-    set(VULKAN_HEADERS_ENABLE_MODULE OFF)
     FetchContent_Declare(vulkan-headers
         URL https://github.com/KhronosGroup/Vulkan-Headers/archive/refs/tags/v1.4.350.zip
         URL_HASH SHA256=92b80c2d746297e1856e2864e1e244ca116de20d72c728f33596aaa79120d565

@@ -55,7 +55,7 @@ jobs:
       VAR_CMAKE_FLAGS: |
         ${{ matrix.env.c && format('-D CMAKE_C_COMPILER={0}', matrix.env.c) }} \
         ${{ matrix.env.cxx && format('-D CMAKE_CXX_COMPILER={0}', matrix.env.cxx) }} \
-        ${{ matrix.env.c_flags && format('-D CMAKE_C_FLAGS''={0}''', matrix.env.c_flags) }} \
+        ${{ matrix.env.c_flags && format('-D CMAKE_C_FLAGS={0}', matrix.env.c_flags) }} \
         ${{ matrix.env.cxx_flags && format('-D CMAKE_CXX_FLAGS''={0}''', matrix.env.cxx_flags) }} \
         ${{ matrix.env.linker_flags && format('-D CMAKE_EXE_LINKER_FLAGS=''{0}''', matrix.env.linker_flags) }} \
 
@@ -116,7 +116,7 @@ jobs:
 
     # Build samples using highest available C++ standard.
     - name: Build Samples with C++${{matrix.env.cxx_max}}
-      if: (!matrix.env.modules) && (!matrix.env.skip_samples) # Exclude module and cross-compilation runners.
+      if: (!matrix.env.modules) && (!contains(matrix.env.arch, 'x86')) # Exclude module and cross-compilation runners.
       run: |
         for BUILD_TYPE in Debug Release; do
           cmake -B build -G '${{matrix.env.gen}}' --fresh --preset samples \

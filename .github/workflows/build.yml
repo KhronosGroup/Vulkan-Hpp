@@ -31,7 +31,7 @@ jobs:
           { os: ubuntu-24.04,        cxx: g++-12,           c: gcc-12,         arch: x64, gen: Ninja,                 cxx_max: 23 },
           { os: ubuntu-24.04,        cxx: g++-13,           c: gcc-13,         arch: x64, gen: Ninja,                 cxx_max: 23 },
           { os: ubuntu-24.04,        cxx: g++-14,           c: gcc-14,         arch: x64, gen: Ninja,                 cxx_max: 23 },
-          { os: ubuntu-24.04,        cxx: g++-14,           c: gcc-14,         arch: x86, gen: Ninja,                 cxx_max: 23, c_flags: '-m32', cxx_flags: '-m32', linker_flags: '-m32', ubuntu_packages: 'gcc-14-multilib g++-14-multilib', skip_samples: true },
+          { os: ubuntu-24.04,        cxx: g++-14,           c: gcc-14,         arch: x86, gen: Ninja,                 cxx_max: 23, c_flags: '-m32', cxx_flags: '-m32', linker_flags: '-m32' },
           { os: ubuntu-24.04,        cxx: clang++-16,       c: clang-16,       arch: x64, gen: Ninja,                 cxx_max: 20 },
           { os: ubuntu-24.04,        cxx: clang++-17,       c: clang-17,       arch: x64, gen: Ninja,                 cxx_max: 20 },
           { os: ubuntu-24.04,        cxx: clang++-18,       c: clang-18,       arch: x64, gen: Ninja,                 cxx_max: 23 },

@@ -13341,10 +13341,15 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
       auto commandIt = m_commands.find( requireData.commands.back().name );
       if ( commandIt != m_commands.end() )
       {
-        checkForError( commandIt->second.exports.empty(),
-                       commandIt->second.xmlLine,
-                       "command <" + commandIt->first + "> is required by extension <" + extensionData.name +
-                         "> but is specified to be exported by some feature" );
+        checkForError(
+          commandIt->second.exports.empty() ||
+            std::ranges::any_of(
+              commandIt->second.exports,
+              [&extensionData]( std::string const & exports )
+              { return std::ranges::any_of( extensionData.supported, [&exports]( std::string const & supported ) { return exports == supported; } ); } ),
+          commandIt->second.xmlLine,
+          "extension <" + extensionData.name + "> requires command <" + commandIt->first + "> but the extensions support <" +
+            concatenate( extensionData.supported ) + "> does not contain any of the commands exports <" + concatenate( commandIt->second.exports ) + ">" );
       }
       else
       {

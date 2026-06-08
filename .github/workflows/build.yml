@@ -75,7 +75,7 @@ jobs:
       if: contains(matrix.env.os, 'ubuntu')
       run: |
         sudo apt update
-        sudo apt install -y libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev ${{ matrix.env.ubuntu_packages || '' }}
+        sudo apt install -y libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev ${{ contains(matrix.env.arch, 'x86') && format('{0}-multilib {1}-multilib', matrix.env.c, matrix.env.cxx) || '' }}
     - name: Setup MacOS
       if: contains(matrix.env.os, 'macos')
       run: brew install molten-vk

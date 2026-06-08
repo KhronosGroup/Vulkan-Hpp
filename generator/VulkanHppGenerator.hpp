@@ -490,7 +490,6 @@ private:
   void                                    extendSpecialCommands( std::string const & name, bool definition, bool raii, std::string & cmd ) const;
   FeatureData                             featureToFeatureData( Feature const & feature, bool supported );
   void                                    filterLenMembers();
-  std::string                             findTag( std::string const & name, std::string const & postfix = "" ) const;
   std::vector<MemberData>::const_iterator findHandleMember( std::vector<MemberData> const & memberData ) const;
   std::vector<MemberData>::const_iterator findVectorMember( std::vector<MemberData> const & memberData ) const;
   void                                    forEachRequiredBitmask( std::vector<RequireData> const &                                       requireData,
@@ -798,7 +797,6 @@ private:
   std::string generateEnumsToString() const;
   std::string generateEnumsToString( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
-  std::pair<std::string, std::string> generateEnumSuffixes( std::string const & name, bool bitmask ) const;
   std::string                         generateEnumValueName( std::string const & enumName, std::string const & valueName, bool bitmask ) const;
   std::string                         generateExtensionDependencies() const;
   template <class Predicate, class Extraction>

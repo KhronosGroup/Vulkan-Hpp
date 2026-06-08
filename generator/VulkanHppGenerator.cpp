@@ -5888,7 +5888,7 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicDeviceCommandAssign
   forEachRequiredCommand( requireData,
                           [&]( NameLine const & command, auto const & commandData )
                           {
-                            if ( !listedCommands.contains( command.name ) && command.name.compare( "vkGetDeviceProcAddr" ) && !commandData.second.handle.empty() && isDeviceCommand( commandData.second ) )
+                            if ( !listedCommands.contains( command.name ) && ( command.name != "vkGetDeviceProcAddr" ) && !commandData.second.handle.empty() && isDeviceCommand( commandData.second ) )
                             {
                               deviceCommandAssignments += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "device" );
                             }

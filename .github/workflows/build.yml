@@ -6,7 +6,10 @@ name: CI Build
 on:
   pull_request:
     branches: [ main ]
-
+    paths:
+      - '**'
+      - '!**.md'
+      
 jobs:
   build:
     name: ${{matrix.env.modules && '[modules] ' || ' '}}${{matrix.env.os}} ${{matrix.env.arch}}, ${{matrix.env.gen}}, ${{matrix.env.cxx && matrix.env.cxx || 'default'}}

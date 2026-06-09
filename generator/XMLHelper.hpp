@@ -423,8 +423,9 @@ inline std::string readSnippet( std::string const & snippetFile )
       case 0: compliant = line.starts_with( "// SPDX-FileCopyrightText:" ); break;
       case 1: compliant = line.starts_with( "// SPDX-License-Identifier:" ); break;
       case 2: compliant = line.empty(); break;
-      default: compliant = false; // unreachable
-      // REUSE-IgnoreEnd
+      default:
+        compliant = false;  // unreachable
+                            // REUSE-IgnoreEnd
     }
     if ( !compliant )
     {
@@ -605,8 +606,9 @@ inline std::string toUpperCase( std::string const & name )
   size_t n = name.length();
   for ( size_t i = 1; i < n; ++i )
   {
-    if ( ( isupper( name[i] ) && ( islower( name[i - 1] ) || isdigit( name[i - 1] ) || ( ( i < n - 1 ) && islower( name[i + 1] ) ) ) ) ||
-         ( isdigit( name[i] ) && islower( name[i - 1] ) ) )
+    if ( ( convertedName.back() != '_' ) &&
+         ( ( isupper( name[i] ) && ( islower( name[i - 1] ) || isdigit( name[i - 1] ) || ( ( i < n - 1 ) && islower( name[i + 1] ) ) ) ) ||
+           ( isdigit( name[i] ) && islower( name[i - 1] ) ) ) )
     {
       convertedName.push_back( '_' );
     }

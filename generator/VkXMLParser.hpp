@@ -507,6 +507,7 @@ struct Vkxml
   std::set<std::string> types = {};
 };
 
-std::string concatenate( std::vector<std::string> const & list );
-
-Vkxml parseVkXml( tinyxml2::XMLDocument const & document, std::string const & api );
+std::string                         concatenate( std::vector<std::string> const & list );
+std::pair<std::string, std::string> determineEnumSuffixes( std::string const & name, bool bitmask, std::map<std::string, Tag> const & tags );
+std::string                         findTag( std::string const & name, std::map<std::string, Tag> const & tags, std::string const & postfix = "" );
+Vkxml                               parseVkXml( tinyxml2::XMLDocument const & document, std::string const & api );

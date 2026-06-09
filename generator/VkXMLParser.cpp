@@ -76,20 +76,6 @@ VideoProfileMember            parseVideoProfileMember( tinyxml2::XMLElement cons
 VideoProfiles                 parseVideoProfiles( tinyxml2::XMLElement const * element );
 VideoRequireCapabilities      parseVideoRequireCapabilities( tinyxml2::XMLElement const * element );
 
-std::string concatenate( std::vector<std::string> const & list )
-{
-  std::string str;
-  for ( auto const & entry : list )
-  {
-    if ( !str.empty() )
-    {
-      str += ", ";
-    }
-    str += entry;
-  }
-  return str;
-}
-
 void checkNoList( std::string const & item, int line )
 {
   checkForError( "vk.xml", item.find( ',' ) == std::string::npos, line, "item <" + item + "> contains unexpected coma, looks like list" );
@@ -1409,6 +1395,17 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
       {
         auto enumIt = vkxml.enums.find( enumValue.first );
         checkForError( "vk.xml", enumIt != vkxml.enums.end(), line, "enum <" + enumValue.first + "> not specified" );
+
+        auto [prefix, postfix] = determineEnumSuffixes( enumValue.first, ( enumValue.second.type == "bitmask" ), vkxml.tags );
+        for ( auto const & v : enumValue.second.values )
+        {
+          checkForError( "vk.xml", v.name.starts_with( prefix ), v.xmlLine, "enum value <" + v.name + "> does not start with expected prefix <" + prefix + ">" );
+          checkForError( "vk.xml",
+                         postfix.empty() || v.name.ends_with( postfix ),
+                         v.xmlLine,
+                         "enum value <" + v.name + "> does not end with expected postfix <" + postfix + ">" );
+        }
+
         enumIt->second.bitwidth = enumValue.second.bitwidth;
         enumIt->second.type     = enumValue.second.type;
         enumIt->second.values   = std::move( enumValue.second.values );
@@ -3197,6 +3194,75 @@ VideoRequireCapabilities parseVideoRequireCapabilities( tinyxml2::XMLElement con
   }
 
   return videoRequireCapabilities;
+}
+
+// public interface
+
+std::string concatenate( std::vector<std::string> const & list )
+{
+  std::string str;
+  for ( auto const & entry : list )
+  {
+    if ( !str.empty() )
+    {
+      str += ", ";
+    }
+    str += entry;
+  }
+  return str;
+}
+
+std::pair<std::string, std::string> determineEnumSuffixes( std::string const & name, bool bitmask, std::map<std::string, Tag> const & tags )
+{
+  std::string prefix, postfix;
+  if ( name == "VkResult" )
+  {
+    prefix = "VK_";
+  }
+  else
+  {
+    if ( bitmask )
+    {
+      // for a bitmask enum, start with "VK", cut off the trailing "FlagBits", and convert that name to upper case
+      // end that with "Bit"
+      size_t const pos = name.find( "FlagBits" );
+      assert( pos != std::string::npos );
+      std::string shortenedName = name;
+      shortenedName.erase( pos, strlen( "FlagBits" ) );
+      std::string tag = findTag( shortenedName, tags );
+      prefix          = toUpperCase( stripPostfix( shortenedName, tag ) ) + "_";
+    }
+    else
+    {
+      // for a non-bitmask enum, convert the name to upper case
+      prefix = toUpperCase( name ) + "_";
+    }
+
+    // if the enum name contains a tag move it from the prefix to the postfix to generate correct enum value
+    // names.
+    for ( auto const & tag : tags )
+    {
+      if ( prefix.ends_with( tag.first + "_" ) )
+      {
+        prefix.erase( prefix.length() - tag.first.length() - 1 );
+        postfix = "_" + tag.first;
+        break;
+      }
+      else if ( name.ends_with( tag.first ) )
+      {
+        postfix = "_" + tag.first;
+        break;
+      }
+    }
+  }
+
+  return { prefix, postfix };
+}
+
+std::string findTag( std::string const & name, std::map<std::string, Tag> const & tags, std::string const & postfix )
+{
+  auto tagIt = std::ranges::find_if( tags, [&name, &postfix]( std::pair<std::string const, Tag> const & t ) { return name.ends_with( t.first + postfix ); } );
+  return ( tagIt != tags.end() ) ? tagIt->first : "";
 }
 
 Vkxml parseVkXml( tinyxml2::XMLDocument const & document, std::string const & api )

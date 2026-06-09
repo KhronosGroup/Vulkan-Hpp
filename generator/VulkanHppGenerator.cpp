@@ -2149,13 +2149,6 @@ void VulkanHppGenerator::filterLenMembers()
   }
 }
 
-std::string VulkanHppGenerator::findTag( std::string const & name, std::string const & postfix ) const
-{
-  auto tagIt =
-    std::ranges::find_if( m_vkxml.tags, [&name, &postfix]( std::pair<std::string const, Tag> const & t ) { return name.ends_with( t.first + postfix ); } );
-  return ( tagIt != m_vkxml.tags.end() ) ? tagIt->first : "";
-}
-
 std::vector<VulkanHppGenerator::MemberData>::const_iterator VulkanHppGenerator::findHandleMember( std::vector<MemberData> const & memberData ) const
 {
   return std::ranges::find_if( memberData, [this]( auto const & md ) { return isHandleType( md.type.name ); } );
@@ -4480,7 +4473,7 @@ std::string VulkanHppGenerator::generateCommandName( std::string const &        
   {
     std::string const & argumentType = params[i].type.name;
     std::string         searchName   = stripPrefix( argumentType, "Vk" );
-    std::string         argumentTag  = findTag( argumentType );
+    std::string         argumentTag  = findTag( argumentType, m_vkxml.tags );
     if ( !argumentTag.empty() )
     {
       searchName = stripPostfix( searchName, argumentTag );
@@ -4510,7 +4503,7 @@ std::string VulkanHppGenerator::generateCommandName( std::string const &        
     {
       commandName = startLowerCase( commandName );
     }
-    std::string commandTag = findTag( commandName );
+    std::string commandTag = findTag( commandName, m_vkxml.tags );
     if ( !argumentTag.empty() && ( argumentTag == commandTag ) )
     {
       commandName = stripPostfix( commandName, argumentTag );
@@ -6226,9 +6219,9 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
           for ( auto aliasIt = enumData.second.aliases.begin(); ( aliasIt != enumData.second.aliases.end() ) && ( enumName == enumData.first ); ++aliasIt )
           {
             auto        enumAliasIt = enumData.second.aliases.begin();
-            std::string enumTag     = findTag( enumData.first );
-            std::string aliasTag    = findTag( enumAliasIt->first );
-            std::string valueTag    = findTag( valueAlias.name );
+            std::string enumTag     = findTag( enumData.first, m_vkxml.tags );
+            std::string aliasTag    = findTag( enumAliasIt->first, m_vkxml.tags );
+            std::string valueTag    = findTag( valueAlias.name, m_vkxml.tags );
             if ( ( stripPostfix( enumData.first, enumTag ) == stripPostfix( enumAliasIt->first, aliasTag ) ) && ( aliasTag == valueTag ) )
             {
               enumName = enumAliasIt->first;
@@ -6257,11 +6250,11 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
                                "> is already generated from different enum value <" + mapIt->second + ">" );
             }
 
-            if ( ( enumName != enumData.first ) && ( findTag( enumName ) != findTag( enumData.first ) ) )
+            if ( ( enumName != enumData.first ) && ( findTag( enumName, m_vkxml.tags ) != findTag( enumData.first, m_vkxml.tags ) ) )
             {
               // the enum value was introduced with a tagged enum, but is now an alias of an enum with a different, potentially empty, tag
               // even though, there has never been this generated with that tag, we add a tagged version here for consistency reasons
-              assert( findTag( valueAlias.name ) == findTag( enumName ) );
+              assert( findTag( valueAlias.name, m_vkxml.tags ) == findTag( enumName, m_vkxml.tags ) );
               aliasName                   = generateEnumValueName( enumData.first, valueAlias.name, enumData.second.isBitmask );
               std::tie( mapIt, inserted ) = valueToNameMap.insert( { aliasName, valueAlias.name } );
               if ( inserted )
@@ -6521,67 +6514,19 @@ ${functionBody}
   return replaceWithMap( enumToStringTemplate, { { "argument", isEmpty ? "" : " value" }, { "enumName", enumName }, { "functionBody", functionBody } } );
 }
 
-std::pair<std::string, std::string> VulkanHppGenerator::generateEnumSuffixes( std::string const & name, bool bitmask ) const
-{
-  std::string prefix, postfix;
-  if ( name == "VkResult" )
-  {
-    prefix = "VK_";
-  }
-  else
-  {
-    if ( bitmask )
-    {
-      // for a bitmask enum, start with "VK", cut off the trailing "FlagBits", and convert that name to upper case
-      // end that with "Bit"
-      size_t const pos = name.find( "FlagBits" );
-      assert( pos != std::string::npos );
-      std::string shortenedName = name;
-      shortenedName.erase( pos, strlen( "FlagBits" ) );
-      std::string tag = findTag( shortenedName );
-      prefix          = toUpperCase( stripPostfix( shortenedName, tag ) ) + "_";
-    }
-    else
-    {
-      // for a non-bitmask enum, convert the name to upper case
-      prefix = toUpperCase( name ) + "_";
-    }
-
-    // if the enum name contains a tag move it from the prefix to the postfix to generate correct enum value
-    // names.
-    for ( auto const & tag : m_vkxml.tags )
-    {
-      if ( prefix.ends_with( tag.first + "_" ) )
-      {
-        prefix.erase( prefix.length() - tag.first.length() - 1 );
-        postfix = "_" + tag.first;
-        break;
-      }
-      else if ( name.ends_with( tag.first ) )
-      {
-        postfix = "_" + tag.first;
-        break;
-      }
-    }
-  }
-
-  return { prefix, postfix };
-}
-
 std::string VulkanHppGenerator::generateEnumValueName( std::string const & enumName, std::string const & valueName, bool bitmask ) const
 {
-  std::string prefix, postfix;
-  std::tie( prefix, postfix ) = generateEnumSuffixes( enumName, bitmask );
-  std::string tag             = findTag( valueName, "" );
+  auto [prefix, postfix] = determineEnumSuffixes( enumName, bitmask, m_vkxml.tags );
+  std::string tag        = findTag( valueName, m_vkxml.tags, "" );
   if ( postfix == "_" + tag )
   {
-    tag = findTag( valueName, postfix );
+    tag = findTag( valueName, m_vkxml.tags, postfix );
   }
 
-  // skip enum values that start with the wrong prefix
+  std::string result;
   if ( valueName.starts_with( prefix ) )
   {
-    std::string result = "e" + toCamelCase( stripPostfix( stripPrefix( valueName, prefix ), postfix ) );
+    result = "e" + toCamelCase( stripPostfix( stripPrefix( valueName, prefix ), postfix ) );
     if ( bitmask )
     {
       size_t const pos = result.rfind( "Bit" );
@@ -6594,12 +6539,9 @@ std::string VulkanHppGenerator::generateEnumValueName( std::string const & enumN
     {
       result = result.substr( 0, result.length() - tag.length() ) + tag;
     }
-    return result;
   }
-  else
-  {
-    return "";
-  }
+
+  return result;
 }
 
 std::string VulkanHppGenerator::generateExtensionDependencies() const
@@ -12899,7 +12841,7 @@ bool VulkanHppGenerator::isDeviceCommand( CommandData const & commandData ) cons
 
 bool VulkanHppGenerator::isEnumerated( std::string const & type ) const
 {
-  std::string tag      = findTag( type );
+  std::string tag      = findTag( type, m_vkxml.tags );
   std::string untagged = stripPostfix( type, tag );
   assert( !untagged.ends_with( "s" ) );
   if ( untagged.ends_with( "y" ) )
@@ -14599,7 +14541,7 @@ void VulkanHppGenerator::registerDeleter( std::string const & commandName, Comma
     "vkReleaseCapturedPipelineData", "vkReleaseFullScreenExclusiveMode", "vkReleaseProfilingLock", "vkReleaseSwapchainImages"
   };
 
-  std::string tag = findTag( commandName );
+  std::string tag = findTag( commandName, m_vkxml.tags );
   if ( ( commandName.substr( 2, 7 ) == "Destroy" ) || ( commandName.substr( 2, 4 ) == "Free" ) ||
        ( ( commandName.substr( 2, 7 ) == "Release" ) && !noDeleterFunctions.contains( stripPostfix( commandName, tag ) ) ) )
   {
@@ -14710,7 +14652,7 @@ bool VulkanHppGenerator::skipLeadingGrandParent( std::pair<std::string, HandleDa
 std::string VulkanHppGenerator::stripPluralS( std::string const & name ) const
 {
   std::string strippedName = name;
-  std::string tag          = findTag( name );
+  std::string tag          = findTag( name, m_vkxml.tags );
   if ( strippedName.ends_with( "s" + tag ) )
   {
     size_t const pos = strippedName.rfind( 's' );

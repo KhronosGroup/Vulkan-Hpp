@@ -26,6 +26,7 @@ These are exposed as the following compiler macros, which be defined in a build 
 - [`VULKAN_HPP_INLINE`](#vulkan_hpp_inline)
 - [`VULKAN_HPP_NAMESPACE`](#vulkan_hpp_namespace)
 - [`VULKAN_HPP_NO_CONSTRUCTORS`](#vulkan_hpp_no_constructors)
+- [`VULKAN_HPP_NO_DEFAULT_DISPATCHER`](#vulkan_hpp_no_default_dispatcher)
 - [`VULKAN_HPP_NO_EXCEPTIONS`](#vulkan_hpp_no_exceptions)
 - [`VULKAN_HPP_NO_NODISCARD_WARNINGS`](#vulkan_hpp_no_nodiscard_warnings)
 - [`VULKAN_HPP_NO_SETTERS`](#vulkan_hpp_no_setters)
@@ -129,6 +130,10 @@ By default, the namespace used with `vulkan.hpp` is `vk`. By defining `VULKAN_HP
 ## `VULKAN_HPP_NO_CONSTRUCTORS`
 
 With C++20, designated initializers are available. Their use requires the absence of any user-defined constructors. Define `VULKAN_HPP_NO_CONSTRUCTORS` to remove constructors from structs and unions.
+
+## `VULKAN_HPP_NO_DEFAULT_DISPATCHER`
+
+The last argument to functions in the Vulkan-Hpp header is an argument which defaults to the VULKAN_HPP_DEFAULT_DISPATCHER. For workflows where explicitly providing the DispatchLoader to each function call is desired (such as ones where a DispatchLoader instance is expliclty created per-device), setting this define will cause all functions to require the DispatchLoader to be explicitly passed. This allows compile-time errors for calls that accidentally omit the DispatchLoader argument.
 
 ## `VULKAN_HPP_NO_EXCEPTIONS`
 

@@ -38,6 +38,7 @@ jobs:
           { os: ubuntu-24.04,        cxx: clang++-16,       c: clang-16,       arch: x64, gen: Ninja,                 cxx_max: 20 },
           { os: ubuntu-24.04,        cxx: clang++-17,       c: clang-17,       arch: x64, gen: Ninja,                 cxx_max: 20 },
           { os: ubuntu-24.04,        cxx: clang++-18,       c: clang-18,       arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: ubuntu-24.04,        cxx: clang++-18,       c: clang-18,       arch: x86, gen: Ninja,                 cxx_max: 23, c_flags: '--target=i686-linux-gnu', cxx_flags: '--target=i686-linux-gnu', linker_flags: '--target=i686-linux-gnu' },
 
           { os: windows-2022,        cxx: cl,               c: cl,             arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
           { os: windows-2022,        cxx: cl,               c: cl,             arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
@@ -78,7 +79,7 @@ jobs:
       if: contains(matrix.env.os, 'ubuntu')
       run: |
         sudo apt update
-        sudo apt install -y libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev ${{ contains(matrix.env.arch, 'x86') && format('{0}-multilib {1}-multilib', matrix.env.c, matrix.env.cxx) || '' }}
+        sudo apt install -y libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev ${{ contains(matrix.env.arch, 'x86') && (contains(matrix.env.cxx, 'clang') && 'gcc-multilib g++-multilib' || format('{0}-multilib {1}-multilib', matrix.env.c, matrix.env.cxx)) || '' }}
     - name: Setup MacOS
       if: contains(matrix.env.os, 'macos')
       run: brew install molten-vk

@@ -57,8 +57,8 @@ jobs:
 
     env:
       VAR_CMAKE_FLAGS: |
-        ${{ matrix.env.c && (contains(matrix.env.os, 'ubuntu') && contains(matrix.env.arch, 'x86') && format('-D CMAKE_C_COMPILER=''{0} {1}''', matrix.env.c, contains(matrix.env.cxx, 'clang') && '--target=i686-linux-gnu' || '-m32') || format('-D CMAKE_C_COMPILER={0}', matrix.env.c)) }} \
-        ${{ matrix.env.cxx && (contains(matrix.env.os, 'ubuntu') && contains(matrix.env.arch, 'x86') && format('-D CMAKE_CXX_COMPILER=''{0} {1}''', matrix.env.cxx, contains(matrix.env.cxx, 'clang') && '--target=i686-linux-gnu' || '-m32') || format('-D CMAKE_CXX_COMPILER={0}', matrix.env.cxx)) }} \
+        ${{ matrix.env.c && (contains(matrix.env.os, 'ubuntu') && contains(matrix.env.arch, 'x86') && format('-D CMAKE_C_COMPILER=''{0};{1}''', matrix.env.c, contains(matrix.env.cxx, 'clang') && '--target=i686-linux-gnu' || '-m32') || format('-D CMAKE_C_COMPILER={0}', matrix.env.c)) }} \
+        ${{ matrix.env.cxx && (contains(matrix.env.os, 'ubuntu') && contains(matrix.env.arch, 'x86') && format('-D CMAKE_CXX_COMPILER=''{0};{1}''', matrix.env.cxx, contains(matrix.env.cxx, 'clang') && '--target=i686-linux-gnu' || '-m32') || format('-D CMAKE_CXX_COMPILER={0}', matrix.env.cxx)) }} \
         ${{ matrix.env.c_flags && format('-D CMAKE_C_FLAGS={0}', matrix.env.c_flags) }} \
         ${{ matrix.env.cxx_flags && format('-D CMAKE_CXX_FLAGS''={0}''', matrix.env.cxx_flags) }} \
         ${{ matrix.env.linker_flags && format('-D CMAKE_EXE_LINKER_FLAGS=''{0}''', matrix.env.linker_flags) }} \

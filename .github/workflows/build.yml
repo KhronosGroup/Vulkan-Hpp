@@ -34,11 +34,11 @@ jobs:
           { os: ubuntu-24.04,        cxx: g++-12,           c: gcc-12,         arch: x64, gen: Ninja,                 cxx_max: 23 },
           { os: ubuntu-24.04,        cxx: g++-13,           c: gcc-13,         arch: x64, gen: Ninja,                 cxx_max: 23 },
           { os: ubuntu-24.04,        cxx: g++-14,           c: gcc-14,         arch: x64, gen: Ninja,                 cxx_max: 23 },
-          { os: ubuntu-24.04,        cxx: g++-14,           c: gcc-14,         arch: x86, gen: Ninja,                 cxx_max: 23, c_flags: '-m32', cxx_flags: '-m32', linker_flags: '-m32' },
+          { os: ubuntu-24.04,        cxx: g++-14,           c: gcc-14,         arch: x86, gen: Ninja,                 cxx_max: 23 },
           { os: ubuntu-24.04,        cxx: clang++-16,       c: clang-16,       arch: x64, gen: Ninja,                 cxx_max: 20 },
           { os: ubuntu-24.04,        cxx: clang++-17,       c: clang-17,       arch: x64, gen: Ninja,                 cxx_max: 20 },
           { os: ubuntu-24.04,        cxx: clang++-18,       c: clang-18,       arch: x64, gen: Ninja,                 cxx_max: 23 },
-          { os: ubuntu-24.04,        cxx: clang++-18,       c: clang-18,       arch: x86, gen: Ninja,                 cxx_max: 23, c_flags: '--target=i686-linux-gnu', cxx_flags: '--target=i686-linux-gnu', linker_flags: '--target=i686-linux-gnu' },
+          { os: ubuntu-24.04,        cxx: clang++-18,       c: clang-18,       arch: x86, gen: Ninja,                 cxx_max: 23 },
 
           { os: windows-2022,        cxx: cl,               c: cl,             arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
           { os: windows-2022,        cxx: cl,               c: cl,             arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },

@@ -55,10 +55,21 @@ class SystemError : public Error, public std::system_error
   virtual char const * what() const VULKAN_HPP_NOEXCEPT { return std::system_error::what(); }
 };
 
+#if defined( VULKAN_HPP_CXX_MODULE )
+namespace detail
+{
+  inline ErrorCategoryImpl errorCategoryInstance;
+}
+#endif
+
 VULKAN_HPP_INLINE std::error_category const & errorCategory() VULKAN_HPP_NOEXCEPT
 {
+#if defined( VULKAN_HPP_CXX_MODULE )
+  return detail::errorCategoryInstance;
+#else
   static ErrorCategoryImpl instance;
   return instance;
+#endif
 }
 
 VULKAN_HPP_INLINE std::error_code make_error_code(Result e) VULKAN_HPP_NOEXCEPT

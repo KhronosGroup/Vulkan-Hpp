@@ -34,10 +34,11 @@ jobs:
           { os: ubuntu-24.04,        cxx: g++-12,           c: gcc-12,         arch: x64, gen: Ninja,                 cxx_max: 23 },
           { os: ubuntu-24.04,        cxx: g++-13,           c: gcc-13,         arch: x64, gen: Ninja,                 cxx_max: 23 },
           { os: ubuntu-24.04,        cxx: g++-14,           c: gcc-14,         arch: x64, gen: Ninja,                 cxx_max: 23 },
-          { os: ubuntu-24.04,        cxx: g++-14,           c: gcc-14,         arch: x86, gen: Ninja,                 cxx_max: 23, c_flags: '-m32', cxx_flags: '-m32', linker_flags: '-m32' },
+          { os: ubuntu-24.04,        cxx: g++-14,           c: gcc-14,         arch: x86, gen: Ninja,                 cxx_max: 23 },
           { os: ubuntu-24.04,        cxx: clang++-16,       c: clang-16,       arch: x64, gen: Ninja,                 cxx_max: 20 },
           { os: ubuntu-24.04,        cxx: clang++-17,       c: clang-17,       arch: x64, gen: Ninja,                 cxx_max: 20 },
           { os: ubuntu-24.04,        cxx: clang++-18,       c: clang-18,       arch: x64, gen: Ninja,                 cxx_max: 23 },
+          { os: ubuntu-24.04,        cxx: clang++-18,       c: clang-18,       arch: x86, gen: Ninja,                 cxx_max: 23 },
 
           { os: windows-2022,        cxx: cl,               c: cl,             arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
           { os: windows-2022,        cxx: cl,               c: cl,             arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
@@ -58,9 +59,9 @@ jobs:
       VAR_CMAKE_FLAGS: |
         ${{ matrix.env.c && format('-D CMAKE_C_COMPILER={0}', matrix.env.c) }} \
         ${{ matrix.env.cxx && format('-D CMAKE_CXX_COMPILER={0}', matrix.env.cxx) }} \
-        ${{ matrix.env.c_flags && format('-D CMAKE_C_FLAGS={0}', matrix.env.c_flags) }} \
-        ${{ matrix.env.cxx_flags && format('-D CMAKE_CXX_FLAGS''={0}''', matrix.env.cxx_flags) }} \
-        ${{ matrix.env.linker_flags && format('-D CMAKE_EXE_LINKER_FLAGS=''{0}''', matrix.env.linker_flags) }} \
+        ${{ contains(matrix.env.os, 'ubuntu') && contains(matrix.env.arch, 'x86') && format('-D CMAKE_C_FLAGS''={0}''', contains(matrix.env.cxx, 'clang') && '--target=i686-linux-gnu' || '-m32') || (matrix.env.c_flags && format('-D CMAKE_C_FLAGS''={0}''', matrix.env.c_flags)) }} \
+        ${{ contains(matrix.env.os, 'ubuntu') && contains(matrix.env.arch, 'x86') && format('-D CMAKE_CXX_FLAGS''={0}''', contains(matrix.env.cxx, 'clang') && '--target=i686-linux-gnu' || '-m32') || (matrix.env.cxx_flags && format('-D CMAKE_CXX_FLAGS''={0}''', matrix.env.cxx_flags)) }} \
+        ${{ contains(matrix.env.os, 'ubuntu') && contains(matrix.env.arch, 'x86') && format('-D CMAKE_EXE_LINKER_FLAGS=''{0}''', contains(matrix.env.cxx, 'clang') && '--target=i686-linux-gnu' || '-m32') || (matrix.env.linker_flags && format('-D CMAKE_EXE_LINKER_FLAGS=''{0}''', matrix.env.linker_flags)) }} \
 
     steps:
     - name: Checkout
@@ -78,10 +79,37 @@ jobs:
       if: contains(matrix.env.os, 'ubuntu')
       run: |
         sudo apt update
-        sudo apt install -y libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev ${{ contains(matrix.env.arch, 'x86') && format('{0}-multilib {1}-multilib', matrix.env.c, matrix.env.cxx) || '' }}
+        sudo apt install -y libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev ${{ contains(matrix.env.arch, 'x86') && (contains(matrix.env.cxx, 'clang') && 'gcc-multilib g++-multilib' || format('{0}-multilib {1}-multilib', matrix.env.c, matrix.env.cxx)) || '' }}
     - name: Setup MacOS
       if: contains(matrix.env.os, 'macos')
       run: brew install molten-vk
+
+
+    - name: Verify Linux x86 target
+      if: contains(matrix.env.os, 'ubuntu') && contains(matrix.env.arch, 'x86')
+      run: |
+        rm -rf /tmp/check-linux-x86
+        mkdir -p /tmp/check-linux-x86
+        cat > /tmp/check-linux-x86/CMakeLists.txt <<'EOF'
+        cmake_minimum_required(VERSION 3.22)
+        project(CheckLinuxX86 LANGUAGES C CXX)
+        add_executable(check-linux-x86-c main.c)
+        add_executable(check-linux-x86-cxx main.cpp)
+        EOF
+        cat > /tmp/check-linux-x86/main.c <<'EOF'
+        _Static_assert(sizeof(void*) == 4, "expected 32-bit C target");
+        int main(void) { return 0; }
+        EOF
+        cat > /tmp/check-linux-x86/main.cpp <<'EOF'
+        static_assert(sizeof(void*) == 4, "expected 32-bit CXX target");
+        int main() { return 0; }
+        EOF
+        cmake -S /tmp/check-linux-x86 -B /tmp/check-linux-x86/build -G '${{matrix.env.gen}}' \
+          ${{ env.VAR_CMAKE_FLAGS }}                                                   \
+          -D CMAKE_BUILD_TYPE=Release
+        cmake --build /tmp/check-linux-x86/build --verbose
+        file /tmp/check-linux-x86/build/check-linux-x86-c
+        file /tmp/check-linux-x86/build/check-linux-x86-cxx
 
     # Additional setups for module testing
     - name: Setup Modules (CMake, Ninja)

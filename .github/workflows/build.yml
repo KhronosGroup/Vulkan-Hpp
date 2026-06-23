@@ -188,3 +188,61 @@ jobs:
             ctest -j --output-on-failure --test-dir build -C $BUILD_TYPE
           done
         done
+  # MinGW requires a dedicated MSYS2 toolchain and shell.
+  mingw:
+    name: Windows x64, MinGW GCC, Ninja
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6.0.0
+      with:
+        submodules: recursive
+
+    - name: Setup CMake and Ninja
+      uses: lukka/get-cmake@latest
+      with:
+        cmakeVersion: 4.3.4
+        ninjaVersion: latest
+
+    - name: Setup MinGW
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: UCRT64
+        update: true
+        path-type: inherit
+        install: >-
+          mingw-w64-ucrt-x86_64-gcc
+
+    - name: Verify MinGW toolchain
+      run: |
+        which gcc
+        which g++
+        gcc --version
+        g++ --version
+        gcc -dumpmachine
+        cmake --version
+        ninja --version
+
+    - name: Generate headers
+      run: |
+        cmake -B build-mingw -G Ninja --fresh --preset generator-run \
+          -D CMAKE_C_COMPILER=gcc \
+          -D CMAKE_CXX_COMPILER=g++ \
+          -D CMAKE_BUILD_TYPE=Release
+        cmake --build build-mingw --parallel --clean-first
+
+    - name: Build and test with C++23 modules
+      run: |
+        cmake -B build-mingw -G Ninja --fresh --preset samples-tests \
+          -D CMAKE_C_COMPILER=gcc \
+          -D CMAKE_CXX_COMPILER=g++ \
+          -D CMAKE_CXX_STANDARD=23 \
+          -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=451f2fe2-a8a2-47c3-bc32-94786d8fc91b \
+          -D VULKAN_HPP_BUILD_CXX_MODULE=ON \
+          -D CMAKE_BUILD_TYPE=Release
+        cmake --build build-mingw --parallel --clean-first
+        ctest -j --output-on-failure --test-dir build-mingw

@@ -1814,6 +1814,246 @@ int main()
     vk::Extent2D   granularity = device.getRenderAreaGranularity( renderPass );
   }
 
+  // Command buffer building commands
+  {
+    vk::CommandBuffer         commandBuffer;
+    uint32_t                  firstViewport = 0;
+    std::vector<vk::Viewport> viewports;
+    commandBuffer.setViewport( firstViewport, static_cast<uint32_t>( viewports.size() ), viewports.data() );
+  }
+  {
+    vk::CommandBuffer         commandBuffer;
+    uint32_t                  firstViewport = 0;
+    std::vector<vk::Viewport> viewports;
+    commandBuffer.setViewport( firstViewport, viewports );
+  }
+  {
+    vk::CommandBuffer       commandBuffer;
+    uint32_t                firstScissor = 0;
+    std::vector<vk::Rect2D> scissors;
+    commandBuffer.setScissor( firstScissor, static_cast<uint32_t>( scissors.size() ), scissors.data() );
+  }
+  {
+    vk::CommandBuffer       commandBuffer;
+    uint32_t                firstScissor = 0;
+    std::vector<vk::Rect2D> scissors;
+    commandBuffer.setScissor( firstScissor, scissors );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    float             lineWidth = 1.0f;
+    commandBuffer.setLineWidth( lineWidth );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    float             depthBiasConstantFactor = 0.0f;
+    float             depthBiasClamp          = 0.0f;
+    float             depthBiasSlopeFactor    = 0.0f;
+    commandBuffer.setDepthBias( depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    float             blendConstants[4] = {};
+    commandBuffer.setBlendConstants( blendConstants );
+  }
+  {
+    vk::CommandBuffer    commandBuffer;
+    std::array<float, 4> blendConstants = {};
+    commandBuffer.setBlendConstants( blendConstants.data() );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    float             minDepthBounds = 0.0f;
+    float             maxDepthBounds = 1.0f;
+    commandBuffer.setDepthBounds( minDepthBounds, maxDepthBounds );
+  }
+
+  {
+    vk::CommandBuffer    commandBuffer;
+    vk::StencilFaceFlags faceMask    = {};
+    uint32_t             compareMask = 0;
+    commandBuffer.setStencilCompareMask( faceMask, compareMask );
+  }
+
+  {
+    vk::CommandBuffer    commandBuffer;
+    vk::StencilFaceFlags faceMask  = {};
+    uint32_t             writeMask = 0;
+    commandBuffer.setStencilWriteMask( faceMask, writeMask );
+  }
+
+  {
+    vk::CommandBuffer    commandBuffer;
+    vk::StencilFaceFlags faceMask  = {};
+    int32_t              reference = 0;
+    commandBuffer.setStencilReference( faceMask, reference );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::Buffer        buffer;
+    vk::DeviceSize    offset    = 0;
+    vk::IndexType     indexType = {};
+    commandBuffer.bindIndexBuffer( buffer, offset, indexType );
+  }
+
+  {
+    vk::CommandBuffer           commandBuffer;
+    uint32_t                    firstBinding = 0;
+    std::vector<vk::DeviceSize> offsets;
+    std::vector<vk::Buffer>     buffers;
+    commandBuffer.bindVertexBuffers( firstBinding, static_cast<uint32_t>( buffers.size() ), buffers.data(), offsets.data() );
+  }
+
+  {
+    vk::CommandBuffer           commandBuffer;
+    uint32_t                    firstBinding = 0;
+    std::vector<vk::DeviceSize> offsets;
+    std::vector<vk::Buffer>     buffers;
+    commandBuffer.bindVertexBuffers( firstBinding, buffers, offsets );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    uint32_t          vertexCount   = 3;
+    uint32_t          instanceCount = 1;
+    uint32_t          firstVertex   = 0;
+    uint32_t          firstInstance = 0;
+    commandBuffer.draw( vertexCount, instanceCount, firstVertex, firstInstance );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    uint32_t          indexCount    = 3;
+    uint32_t          instanceCount = 1;
+    uint32_t          firstIndex    = 0;
+    uint32_t          vertexOffset  = 0;
+    uint32_t          firstInstance = 0;
+    commandBuffer.drawIndexed( indexCount, instanceCount, firstIndex, vertexOffset, firstInstance );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::Buffer        buffer;
+    vk::DeviceSize    offset    = 0;
+    uint32_t          drawCount = 1;
+    uint32_t          stride    = 0;
+    commandBuffer.drawIndirect( buffer, offset, drawCount, stride );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::Buffer        buffer;
+    vk::DeviceSize    offset    = 0;
+    uint32_t          drawCount = 1;
+    uint32_t          stride    = 0;
+    commandBuffer.drawIndexedIndirect( buffer, offset, drawCount, stride );
+  }
+
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::Image                  srcImage;
+    vk::ImageLayout            srcImageLayout = {};
+    vk::Image                  dstImage;
+    vk::ImageLayout            dstImageLayout = {};
+    std::vector<vk::ImageBlit> regions;
+    vk::Filter                 filter = {};
+    commandBuffer.blitImage( srcImage, srcImageLayout, dstImage, dstImageLayout, static_cast<uint32_t>( regions.size() ), regions.data(), filter );
+  }
+
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::Image                  srcImage;
+    vk::ImageLayout            srcImageLayout = {};
+    vk::Image                  dstImage;
+    vk::ImageLayout            dstImageLayout = {};
+    std::vector<vk::ImageBlit> regions;
+    vk::Filter                 filter = {};
+    commandBuffer.blitImage( srcImage, srcImageLayout, dstImage, dstImageLayout, regions, filter );
+  }
+
+  {
+    vk::CommandBuffer                      commandBuffer;
+    vk::Image                              image;
+    vk::ImageLayout                        imageLayout       = {};
+    vk::ClearDepthStencilValue             clearDepthStencil = {};
+    std::vector<vk::ImageSubresourceRange> ranges;
+    commandBuffer.clearDepthStencilImage( image, imageLayout, &clearDepthStencil, static_cast<uint32_t>( ranges.size() ), ranges.data() );
+  }
+
+  {
+    vk::CommandBuffer                      commandBuffer;
+    vk::Image                              image;
+    vk::ImageLayout                        imageLayout       = {};
+    vk::ClearDepthStencilValue             clearDepthStencil = {};
+    std::vector<vk::ImageSubresourceRange> ranges;
+    commandBuffer.clearDepthStencilImage( image, imageLayout, clearDepthStencil, ranges );
+  }
+
+  {
+    vk::CommandBuffer                commandBuffer;
+    std::vector<vk::ClearAttachment> clearAttachments;
+    std::vector<vk::ClearRect>       clearRectangles;
+    commandBuffer.clearAttachments(
+      static_cast<uint32_t>( clearAttachments.size() ), clearAttachments.data(), static_cast<uint32_t>( clearRectangles.size() ), clearRectangles.data() );
+  }
+
+  {
+    vk::CommandBuffer                commandBuffer;
+    std::vector<vk::ClearAttachment> clearAttachments;
+    std::vector<vk::ClearRect>       clearRectangles;
+    commandBuffer.clearAttachments( clearAttachments, clearRectangles );
+  }
+
+  {
+    vk::CommandBuffer             commandBuffer;
+    vk::Image                     srcImage;
+    vk::ImageLayout               srcImageLayout = {};
+    vk::Image                     dstImage;
+    vk::ImageLayout               dstImageLayout = {};
+    std::vector<vk::ImageResolve> regions;
+    commandBuffer.resolveImage( srcImage, srcImageLayout, dstImage, dstImageLayout, static_cast<uint32_t>( regions.size() ), regions.data() );
+  }
+
+  {
+    vk::CommandBuffer             commandBuffer;
+    vk::Image                     srcImage;
+    vk::ImageLayout               srcImageLayout = {};
+    vk::Image                     dstImage;
+    vk::ImageLayout               dstImageLayout = {};
+    std::vector<vk::ImageResolve> regions;
+    commandBuffer.resolveImage( srcImage, srcImageLayout, dstImage, dstImageLayout, regions );
+  }
+
+  {
+    vk::CommandBuffer       commandBuffer;
+    vk::RenderPassBeginInfo renderPassBeginInfo;
+    vk::SubpassContents     contents = {};
+    commandBuffer.beginRenderPass( &renderPassBeginInfo, contents );
+  }
+
+  {
+    vk::CommandBuffer       commandBuffer;
+    vk::RenderPassBeginInfo renderPassBeginInfo;
+    vk::SubpassContents     contents = {};
+    commandBuffer.beginRenderPass( renderPassBeginInfo, contents );
+  }
+
+  {
+    vk::CommandBuffer   commandBuffer;
+    vk::SubpassContents contents = {};
+    commandBuffer.nextSubpass( contents );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    commandBuffer.endRenderPass();
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

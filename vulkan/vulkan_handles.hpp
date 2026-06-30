@@ -1,5 +1,4 @@
 // Copyright 2015-2026 The Khronos Group Inc.
-//
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
 
@@ -2183,6 +2182,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_replicated_composites ===
   struct PhysicalDeviceShaderReplicatedCompositesFeaturesEXT;
 
+  //=== VK_ARM_tensor_controls ===
+  struct TensorRollingBackingCreateInfoARM;
+  struct TensorExplicitTilingFormatPropertiesARM;
+
   //=== VK_EXT_shader_float8 ===
   struct PhysicalDeviceShaderFloat8FeaturesEXT;
 
@@ -2311,6 +2314,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_ARM_pipeline_opacity_micromap ===
   struct PhysicalDevicePipelineOpacityMicromapFeaturesARM;
 
+  //=== VK_KHR_video_encode_feedback2 ===
+  struct PhysicalDeviceVideoEncodeFeedback2FeaturesKHR;
+  struct VideoEncodeFeedback2CapabilitiesKHR;
+  struct QueryPoolVideoEncodePerPartitionFeedbackCreateInfoKHR;
+
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_external_memory_metal ===
   struct ImportMemoryMetalHandleInfoEXT;
@@ -2356,6 +2364,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_present_metering ===
   struct SetPresentConfigNV;
   struct PhysicalDevicePresentMeteringFeaturesNV;
+
+  //=== VK_EXT_multisampled_render_to_swapchain ===
+  struct PhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT;
+  struct SwapchainFlagsSurfaceCapabilitiesEXT;
 
   //=== VK_EXT_fragment_density_map_offset ===
   struct PhysicalDeviceFragmentDensityMapOffsetFeaturesEXT;
@@ -2438,6 +2450,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_SEC_ubm_surface ===
   struct UbmSurfaceCreateInfoSEC;
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
+
+  //=== VK_KHR_extended_flags ===
+  struct FormatProperties4KHR;
+  struct ImageUsageFlags2CreateInfoKHR;
+  struct ImageCreateFlags2CreateInfoKHR;
+  struct ImageViewUsage2CreateInfoKHR;
+  struct PhysicalDeviceExtendedFlagsFeaturesKHR;
+  struct ImageStencilUsage2CreateInfoKHR;
+  struct SharedPresentSurfaceCapabilities2KHR;
 
   //=== VK_VALVE_shader_mixed_float_dot_product ===
   struct PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE;

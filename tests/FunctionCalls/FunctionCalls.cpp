@@ -2054,6 +2054,20 @@ int main()
     commandBuffer.endRenderPass();
   }
 
+  //==========================================
+  // Vulkan base 1.1 API interface definitions
+  //==========================================
+
+  // Device Initialization
+  {
+    uint32_t   apiVersion;
+    vk::Result result = vk::enumerateInstanceVersion( &apiVersion );
+  }
+
+  {
+    uint32_t apiVersion = vk::enumerateInstanceVersion();
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

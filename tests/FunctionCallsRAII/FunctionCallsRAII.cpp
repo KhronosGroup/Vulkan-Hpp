@@ -1011,5 +1011,15 @@ int main()
     commandBuffer.endRenderPass();
   }
 
+  //==========================================
+  // Vulkan base 1.1 API interface definitions
+  //==========================================
+
+  // Device Initialization
+  {
+    vk::raii::Context context;
+    uint32_t          apiVersion = context.enumerateInstanceVersion();
+  }
+
   return 0;
 }

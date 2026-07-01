@@ -1021,5 +1021,18 @@ int main()
     uint32_t          apiVersion = context.enumerateInstanceVersion();
   }
 
+  // Promoted from VK_KHR_bind_memory2
+  {
+    vk::raii::Device                      device = nullptr;
+    std::vector<vk::BindBufferMemoryInfo> bufferMemoryBindInfos;
+    device.bindBufferMemory2( bufferMemoryBindInfos );
+  }
+
+  {
+    vk::raii::Device                     device = nullptr;
+    std::vector<vk::BindImageMemoryInfo> imageMemoryBindInfos;
+    device.bindImageMemory2( imageMemoryBindInfos );
+  }
+
   return 0;
 }

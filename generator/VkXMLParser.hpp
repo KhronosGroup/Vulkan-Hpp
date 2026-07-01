@@ -280,23 +280,27 @@ struct Platform
 
 struct StructMember
 {
-  std::string              altLen         = {};
-  std::vector<std::string> api            = {};
-  std::vector<std::string> arraySizes     = {};
-  std::string              bitCount       = {};
-  std::string              deprecated     = {};
-  std::string              externSync     = {};
-  std::string              featureLink    = {};
-  std::vector<std::string> len            = {};
-  std::vector<std::string> limitType      = {};
-  std::string              name           = {};
-  std::string              noAutoValidity = {};
-  std::string              objectType     = {};
-  std::vector<std::string> optional       = {};
-  std::string              selector       = {};
-  Type                     type           = {};
-  std::string              values         = {};
-  int                      xmlLine        = {};
+  std::string              altLen            = {};
+  std::vector<std::string> api               = {};
+  std::vector<std::string> arraySizes        = {};
+  std::string              bitCount          = {};
+  std::string              comment           = {};
+  std::string              deprecated        = {};
+  std::string              externSync        = {};
+  std::string              featureLink       = {};
+  std::string              flagsExtend       = {};
+  std::string              flagsExtendMember = {};
+  std::vector<std::string> len               = {};
+  std::vector<std::string> limitType         = {};
+  std::string              name              = {};
+  std::string              alias             = {};
+  std::string              noAutoValidity    = {};
+  std::string              objectType        = {};
+  std::vector<std::string> optional          = {};
+  std::string              selector          = {};
+  Type                     type              = {};
+  std::string              values            = {};
+  int                      xmlLine           = {};
 };
 
 struct Struct

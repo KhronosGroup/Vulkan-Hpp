@@ -2063,9 +2063,31 @@ int main()
     uint32_t   apiVersion;
     vk::Result result = vk::enumerateInstanceVersion( &apiVersion );
   }
-
   {
     uint32_t apiVersion = vk::enumerateInstanceVersion();
+  }
+
+  // Promoted from VK_KHR_bind_memory2
+  {
+    vk::Device                            device;
+    std::vector<vk::BindBufferMemoryInfo> bufferMemoryBindInfos;
+    vk::Result result = device.bindBufferMemory2( static_cast<uint32_t>( bufferMemoryBindInfos.size() ), bufferMemoryBindInfos.data() );
+  }
+  {
+    vk::Device                            device;
+    std::vector<vk::BindBufferMemoryInfo> bufferMemoryBindInfos;
+    device.bindBufferMemory2( bufferMemoryBindInfos );
+  }
+
+  {
+    vk::Device                           device;
+    std::vector<vk::BindImageMemoryInfo> imageMemoryBindInfos;
+    vk::Result                           result = device.bindImageMemory2( static_cast<uint32_t>( imageMemoryBindInfos.size() ), imageMemoryBindInfos.data() );
+  }
+  {
+    vk::Device                           device;
+    std::vector<vk::BindImageMemoryInfo> imageMemoryBindInfos;
+    device.bindImageMemory2( imageMemoryBindInfos );
   }
 
 #if 0

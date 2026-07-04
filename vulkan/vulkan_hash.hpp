@@ -15619,6 +15619,24 @@ VULKAN_HPP_EXPORT namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT const & physicalDeviceShaderOCPMicroscalingTypesFeaturesEXT ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderOCPMicroscalingTypesFeaturesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderOCPMicroscalingTypesFeaturesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderOCPMicroscalingTypesFeaturesEXT.shaderFloat4 );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderOCPMicroscalingTypesFeaturesEXT.shaderFloat6 );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderOCPMicroscalingTypesFeaturesEXT.shaderFloat8UnsignedE8M0 );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderOCPMicroscalingTypesFeaturesEXT.shaderMXInt8 );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderObjectFeaturesEXT>
   {
     std::size_t

@@ -6172,6 +6172,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceExtendedFlagsFeaturesKHR               : return "PhysicalDeviceExtendedFlagsFeaturesKHR";
       case StructureType::eImageStencilUsage2CreateInfoKHR                      : return "ImageStencilUsage2CreateInfoKHR";
       case StructureType::eSharedPresentSurfaceCapabilities2KHR                 : return "SharedPresentSurfaceCapabilities2KHR";
+      case StructureType::ePhysicalDeviceShaderOcpMicroscalingTypesFeaturesEXT  : return "PhysicalDeviceShaderOcpMicroscalingTypesFeaturesEXT";
       case StructureType::ePhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE: return "PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE";
       case StructureType::ePhysicalDeviceThrottleHintFeaturesSEC                : return "PhysicalDeviceThrottleHintFeaturesSEC";
       case StructureType::eThrottleHintSubmitInfoSEC                            : return "ThrottleHintSubmitInfoSEC";
@@ -11088,23 +11089,28 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   {
     switch ( value )
     {
-      case ComponentTypeKHR::eFloat16      : return "Float16";
-      case ComponentTypeKHR::eFloat32      : return "Float32";
-      case ComponentTypeKHR::eFloat64      : return "Float64";
-      case ComponentTypeKHR::eSint8        : return "Sint8";
-      case ComponentTypeKHR::eSint16       : return "Sint16";
-      case ComponentTypeKHR::eSint32       : return "Sint32";
-      case ComponentTypeKHR::eSint64       : return "Sint64";
-      case ComponentTypeKHR::eUint8        : return "Uint8";
-      case ComponentTypeKHR::eUint16       : return "Uint16";
-      case ComponentTypeKHR::eUint32       : return "Uint32";
-      case ComponentTypeKHR::eUint64       : return "Uint64";
-      case ComponentTypeKHR::eBfloat16     : return "Bfloat16";
-      case ComponentTypeKHR::eSint8PackedNV: return "Sint8PackedNV";
-      case ComponentTypeKHR::eUint8PackedNV: return "Uint8PackedNV";
-      case ComponentTypeKHR::eFloat8E4M3EXT: return "Float8E4M3EXT";
-      case ComponentTypeKHR::eFloat8E5M2EXT: return "Float8E5M2EXT";
-      default                              : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+      case ComponentTypeKHR::eFloat16              : return "Float16";
+      case ComponentTypeKHR::eFloat32              : return "Float32";
+      case ComponentTypeKHR::eFloat64              : return "Float64";
+      case ComponentTypeKHR::eSint8                : return "Sint8";
+      case ComponentTypeKHR::eSint16               : return "Sint16";
+      case ComponentTypeKHR::eSint32               : return "Sint32";
+      case ComponentTypeKHR::eSint64               : return "Sint64";
+      case ComponentTypeKHR::eUint8                : return "Uint8";
+      case ComponentTypeKHR::eUint16               : return "Uint16";
+      case ComponentTypeKHR::eUint32               : return "Uint32";
+      case ComponentTypeKHR::eUint64               : return "Uint64";
+      case ComponentTypeKHR::eBfloat16             : return "Bfloat16";
+      case ComponentTypeKHR::eSint8PackedNV        : return "Sint8PackedNV";
+      case ComponentTypeKHR::eUint8PackedNV        : return "Uint8PackedNV";
+      case ComponentTypeKHR::eFloat8E4M3EXT        : return "Float8E4M3EXT";
+      case ComponentTypeKHR::eFloat8E5M2EXT        : return "Float8E5M2EXT";
+      case ComponentTypeKHR::eFloat6E2M3EXT        : return "Float6E2M3EXT";
+      case ComponentTypeKHR::eFloat6E3M2EXT        : return "Float6E3M2EXT";
+      case ComponentTypeKHR::eFloat4E2M1EXT        : return "Float4E2M1EXT";
+      case ComponentTypeKHR::eFloat8UnsignedE8M0EXT: return "Float8UnsignedE8M0EXT";
+      case ComponentTypeKHR::eMxint8EXT            : return "Mxint8EXT";
+      default                                      : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 

@@ -2460,6 +2460,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct ImageStencilUsage2CreateInfoKHR;
   struct SharedPresentSurfaceCapabilities2KHR;
 
+  //=== VK_EXT_shader_ocp_microscaling_types ===
+  struct PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT;
+
   //=== VK_VALVE_shader_mixed_float_dot_product ===
   struct PhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE;
 

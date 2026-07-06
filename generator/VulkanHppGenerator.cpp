@@ -5882,7 +5882,8 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicDeviceCommandAssign
                           [&]( NameLine const & command, auto const & commandData )
                           {
                             // ignore vkGetDeviceProcAddr as it is already part of instance command assignments
-                            if ( !listedCommands.contains( command.name ) && ( command.name != "vkGetDeviceProcAddr" ) && !commandData.second.handle.empty() && isDeviceCommand( commandData.second ) )
+                            if ( !listedCommands.contains( command.name ) && ( command.name != "vkGetDeviceProcAddr" ) && !commandData.second.handle.empty() &&
+                                 isDeviceCommand( commandData.second ) )
                             {
                               deviceCommandAssignments += generateDispatchLoaderDynamicCommandAssignment( command.name, commandData.first, "device" );
                             }
@@ -13069,6 +13070,30 @@ VulkanHppGenerator::DeprecatedCommandData VulkanHppGenerator::readDeprecatedComm
   return { name, supersededBy };
 }
 
+VulkanHppGenerator::DeprecatedFeatureData VulkanHppGenerator::readDeprecatedFeature( tinyxml2::XMLElement const * element ) const
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "name", {} } }, { { "struct", {} } } );
+  checkElements( line, getChildElements( element ), {} );
+
+  std::string name, structure;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      name = attribute.second;
+    }
+    else
+    {
+      assert( attribute.first == "struct" );
+      structure = attribute.second;
+    }
+  }
+
+  return { name, structure };
+}
+
 VulkanHppGenerator::DeprecatedTypeData VulkanHppGenerator::readDeprecatedType( tinyxml2::XMLElement const * element ) const
 {
   int const                          line       = element->GetLineNum();
@@ -13099,7 +13124,7 @@ VulkanHppGenerator::DeprecateData VulkanHppGenerator::readDeprecateData( tinyxml
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "explanationlink", {} } }, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { { "command", MultipleAllowed::Yes }, { "type", MultipleAllowed::Yes } } );
+  checkElements( line, children, {}, { { "command", MultipleAllowed::Yes }, { "feature", MultipleAllowed::Yes }, { "type", MultipleAllowed::Yes } } );
 
   DeprecateData deprecateData;
   deprecateData.xmlLine = line;
@@ -13125,6 +13150,19 @@ VulkanHppGenerator::DeprecateData VulkanHppGenerator::readDeprecateData( tinyxml
                      childLine,
                      "command <" + deprecateData.commands.back().supersededBy + ">, superseding command <" + deprecateData.commands.back().name +
                        "> is not listed as a command" );
+    }
+    else if ( value == "feature" )
+    {
+      deprecateData.features.push_back( readDeprecatedFeature( child ) );
+      auto structIt = m_structs.find( deprecateData.features.back().structure );
+      checkForError( structIt != m_structs.end(),
+                     childLine,
+                     "deprecated feature <" + deprecateData.features.back().name + "> specifies unknown struct <" + deprecateData.features.back().structure +
+                       "> is unknown" );
+      checkForError( containsByName( structIt->second.members, deprecateData.features.back().name ),
+                     childLine,
+                     "deprecated feature <" + deprecateData.features.back().name + "> is not a member of the specified struct <" +
+                       deprecateData.features.back().structure );
     }
     else if ( value == "type" )
     {

@@ -259,6 +259,12 @@ private:
     std::string supersededBy = {};
   };
 
+  struct DeprecatedFeatureData
+  {
+    std::string name      = {};
+    std::string structure = {};
+  };
+
   struct DeprecatedTypeData
   {
     std::string name         = {};
@@ -269,6 +275,7 @@ private:
   {
     std::string                        explanationLink = {};
     std::vector<DeprecatedCommandData> commands        = {};
+    std::vector<DeprecatedFeatureData> features        = {};
     std::vector<DeprecatedTypeData>    types           = {};
     int                                xmlLine         = 0;
   };
@@ -797,8 +804,8 @@ private:
   std::string generateEnumsToString() const;
   std::string generateEnumsToString( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
-  std::string                         generateEnumValueName( std::string const & enumName, std::string const & valueName, bool bitmask ) const;
-  std::string                         generateExtensionDependencies() const;
+  std::string generateEnumValueName( std::string const & enumName, std::string const & valueName, bool bitmask ) const;
+  std::string generateExtensionDependencies() const;
   template <class Predicate, class Extraction>
   std::string generateExtensionReplacedBy( Predicate p, Extraction e ) const;
   template <class Predicate>
@@ -1085,6 +1092,7 @@ private:
                                                                                std::set<size_t> const &                  skippedParams ) const;
   std::string                                            readComment( tinyxml2::XMLElement const * element ) const;
   DeprecatedCommandData                                  readDeprecatedCommand( tinyxml2::XMLElement const * element ) const;
+  DeprecatedFeatureData                                  readDeprecatedFeature( tinyxml2::XMLElement const * element ) const;
   DeprecatedTypeData                                     readDeprecatedType( tinyxml2::XMLElement const * element ) const;
   DeprecateData                                          readDeprecateData( tinyxml2::XMLElement const * element ) const;
   void                                                   readExtension( tinyxml2::XMLElement const * element );

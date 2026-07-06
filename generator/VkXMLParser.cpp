@@ -86,10 +86,10 @@ void checkExtensionOrStructAndMember( std::string const & depends, int xmlLine, 
   {
     auto structIt = structs.find( tokens[0] );
     checkForError( "vk.xml", structIt != structs.end(), xmlLine, prefix + " an unknown struct <" + tokens[0] + ">" );
-    checkForWarning( "vk.xml",
-                     containsByName( structIt->second.members, tokens[1] ),
-                     xmlLine,
-                     prefix + " an unknown member <" + tokens[1] + "> of structure <" + tokens[0] + ">" );
+    checkForError( "vk.xml",
+                   containsByName( structIt->second.members, tokens[1] ),
+                   xmlLine,
+                   prefix + " an unknown member <" + tokens[1] + "> of structure <" + tokens[0] + ">" );
   }
   // CHECK: after extensions: tokens.size() == 1 -> is extension
 }

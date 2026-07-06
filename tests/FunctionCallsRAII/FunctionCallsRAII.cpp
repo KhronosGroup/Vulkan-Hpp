@@ -1034,5 +1034,20 @@ int main()
     device.bindImageMemory2( imageMemoryBindInfos );
   }
 
+  // Promoted from VK_KHR_device_group
+  {
+    vk::raii::Device           device             = nullptr;
+    uint32_t                   heapIndex          = 0;
+    uint32_t                   localDeviceIndex   = 0;
+    uint32_t                   remoteDeviceIndex  = 0;
+    vk::PeerMemoryFeatureFlags peerMemoryFeatures = device.getGroupPeerMemoryFeatures( heapIndex, localDeviceIndex, remoteDeviceIndex );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    uint32_t                deviceMask    = 0;
+    commandBuffer.setDeviceMask( deviceMask );
+  }
+
   return 0;
 }

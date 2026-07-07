@@ -27,12 +27,12 @@ export import std;
 
 VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == ${headerVersion}, "Wrong VK_HEADER_VERSION!" );
 
-#if defined(_MSC_VER)
-#  pragma warning(push)
-#  pragma warning(disable : 5244)
-#elif defined(__clang__)
+#if defined(__clang__)
 #  pragma clang diagnostic push
 #  pragma clang diagnostic ignored "-Winclude-angled-in-module-purview"
+#elif defined(_MSC_VER)
+#  pragma warning(push)
+#  pragma warning(disable : 5244)
 #elif defined(__GNUC__)
 #endif
 
@@ -43,10 +43,10 @@ VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == ${headerVersion}, "Wrong VK_HEADE
 #include <vulkan/${api}_raii.hpp>
 #include <vulkan/${api}_shared.hpp>
 
-#if defined(_MSC_VER)
-#  pragma warning(pop)
-#elif defined(__clang__)
+#if defined(__clang__)
 #  pragma clang diagnostic pop
+#elif defined(_MSC_VER)
+#  pragma warning(pop)
 #elif defined(__GNUC__)
 #endif
 

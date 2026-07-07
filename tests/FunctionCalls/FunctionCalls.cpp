@@ -2090,6 +2090,29 @@ int main()
     device.bindImageMemory2( imageMemoryBindInfos );
   }
 
+  // Promoted from VK_KHR_device_group
+  {
+    vk::Device                 device;
+    uint32_t                   heapIndex          = 0;
+    uint32_t                   localDeviceIndex   = 0;
+    uint32_t                   remoteDeviceIndex  = 0;
+    vk::PeerMemoryFeatureFlags peerMemoryFeatures = {};
+    device.getGroupPeerMemoryFeatures( heapIndex, localDeviceIndex, remoteDeviceIndex, &peerMemoryFeatures );
+  }
+  {
+    vk::Device                 device;
+    uint32_t                   heapIndex          = 0;
+    uint32_t                   localDeviceIndex   = 0;
+    uint32_t                   remoteDeviceIndex  = 0;
+    vk::PeerMemoryFeatureFlags peerMemoryFeatures = device.getGroupPeerMemoryFeatures( heapIndex, localDeviceIndex, remoteDeviceIndex );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    uint32_t          deviceMask = 0;
+    commandBuffer.setDeviceMask( deviceMask );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

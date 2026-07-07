@@ -826,14 +826,14 @@ Refer to the [CMake documentation](https://cmake.org/cmake/help/latest/manual/cm
 CMake provides the [FindVulkan module](https://cmake.org/cmake/help/latest/module/FindVulkan.html), which may be used to source the Vulkan SDK and Vulkan headers on your system.
 
 <details>
-<summary>For CMake versions earlier than 4.3.0</summary>
+<summary>For CMake versions earlier than 4.4.0</summary>
 
-If you have CMake versions between 3.30 and 4.3, where the [`CXX_MODULE_STD`](https://cmake.org/cmake/help/v4.3/prop_tgt/CXX_MODULE_STD.html) variable is still experimental, then make sure to provide the following UUID to enable CMake's experimental support for the C++ standard library module.
+If you have CMake versions between 3.30 and 4.4, where the [`CXX_MODULE_STD`](https://cmake.org/cmake/help/v4.4/prop_tgt/CXX_MODULE_STD.html) variable is still experimental, then make sure to provide the following UUID to enable CMake's experimental support for the C++ standard library module.
 To find the precise value for your specific version, check out the correct release tag and look for `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` in [Help/dev/experimental.rst](https://gitlab.kitware.com/cmake/cmake/-/blob/master/Help/dev/experimental.rst).
 
 ```bash
-# example UUID for CMake 4.3
-cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=451f2fe2-a8a2-47c3-bc32-94786d8fc91b ...
+# example UUID for CMake 4.4
+cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=f35a9ac6-8463-4d38-8eec-5d6008153e7d ...
 ```
 
 This UUID variable may also be set before the `project()` call, or in a [CMake preset file](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#configure-preset) in the `cacheVariables` key for a configure preset.
@@ -843,7 +843,7 @@ This UUID variable may also be set before the `project()` call, or in a [CMake p
 A complete example `CMakeLists.txt` file for a project using the Vulkan-Hpp named module is provided below.
 
 ```cmake
-cmake_minimum_required( VERSION 3.30...4.3 )
+cmake_minimum_required( VERSION 3.30...4.4 )
 
 # either set the experimental gate here or via CLI
 if( NOT CMAKE_EXPERIMENTAL_CXX_IMPORT_STD )

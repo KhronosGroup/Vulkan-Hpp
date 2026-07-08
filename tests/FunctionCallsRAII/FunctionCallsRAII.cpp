@@ -1049,5 +1049,11 @@ int main()
     commandBuffer.setDeviceMask( deviceMask );
   }
 
+  // Promoted from VK_KHR_device_group_creation
+  {
+    vk::raii::Instance                             instance                      = nullptr;
+    std::vector<vk::PhysicalDeviceGroupProperties> physicalDeviceGroupProperties = instance.enumeratePhysicalDeviceGroups();
+  }
+
   return 0;
 }

@@ -2113,6 +2113,27 @@ int main()
     commandBuffer.setDeviceMask( deviceMask );
   }
 
+  // Promoted from VK_KHR_device_group_creation
+  {
+    vk::Instance instance;
+    uint32_t     physicalDeviceGroupCount;
+    vk::Result   result = instance.enumeratePhysicalDeviceGroups( &physicalDeviceGroupCount, nullptr );
+    if ( result == vk::Result::eSuccess )
+    {
+      std::vector<vk::PhysicalDeviceGroupProperties> physicalDeviceGroupProperties( physicalDeviceGroupCount );
+      result = instance.enumeratePhysicalDeviceGroups( &physicalDeviceGroupCount, physicalDeviceGroupProperties.data() );
+    }
+  }
+  {
+    vk::Instance                                   instance;
+    std::vector<vk::PhysicalDeviceGroupProperties> physicalDeviceGroupProperties = instance.enumeratePhysicalDeviceGroups();
+  }
+  {
+    vk::Instance                                      instance;
+    std::allocator<vk::PhysicalDeviceGroupProperties> allocator;
+    std::vector<vk::PhysicalDeviceGroupProperties>    physicalDeviceGroupProperties = instance.enumeratePhysicalDeviceGroups( allocator );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

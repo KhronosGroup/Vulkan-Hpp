@@ -19,6 +19,13 @@ public:
 
     // This interface does not require a linked vulkan library.
     DispatchLoaderDynamic( VkInstance                instance,
+                            PFN_vkGetInstanceProcAddr getInstanceProcAddr) VULKAN_HPP_NOEXCEPT
+    {
+        init( instance, getInstanceProcAddr );
+    }
+
+    // This interface does not require a linked vulkan library.
+    DispatchLoaderDynamic( VkInstance                instance,
                             PFN_vkGetInstanceProcAddr getInstanceProcAddr,
                             VkDevice                  device            = {},
                             PFN_vkGetDeviceProcAddr   getDeviceProcAddr = nullptr ) VULKAN_HPP_NOEXCEPT

@@ -1055,5 +1055,37 @@ int main()
     std::vector<vk::PhysicalDeviceGroupProperties> physicalDeviceGroupProperties = instance.enumeratePhysicalDeviceGroups();
   }
 
+  // Promoted from VK_KHR_get_memory_requirements2
+  {
+    vk::raii::Device                 device = nullptr;
+    vk::ImageMemoryRequirementsInfo2 imageMemoryRequirementsInfo2;
+    vk::MemoryRequirements2          memoryRequirements2 = device.getImageMemoryRequirements2( imageMemoryRequirementsInfo2 );
+  }
+  {
+    vk::raii::Device                                                             device = nullptr;
+    vk::ImageMemoryRequirementsInfo2                                             imageMemoryRequirementsInfo2;
+    vk::StructureChain<vk::MemoryRequirements2, vk::MemoryDedicatedRequirements> memoryRequirements2Chain =
+      device.getImageMemoryRequirements2<vk::MemoryRequirements2, vk::MemoryDedicatedRequirements>( imageMemoryRequirementsInfo2 );
+  }
+
+  {
+    vk::raii::Device                  device = nullptr;
+    vk::BufferMemoryRequirementsInfo2 bufferMemoryRequirementsInfo2;
+    vk::MemoryRequirements2           memoryRequirements2 = device.getBufferMemoryRequirements2( bufferMemoryRequirementsInfo2 );
+  }
+  {
+    vk::raii::Device                                                             device = nullptr;
+    vk::BufferMemoryRequirementsInfo2                                            bufferMemoryRequirementsInfo2;
+    vk::StructureChain<vk::MemoryRequirements2, vk::MemoryDedicatedRequirements> memoryRequirements2Chain =
+      device.getBufferMemoryRequirements2<vk::MemoryRequirements2, vk::MemoryDedicatedRequirements>( bufferMemoryRequirementsInfo2 );
+  }
+
+  {
+    vk::raii::Device                                device = nullptr;
+    vk::ImageSparseMemoryRequirementsInfo2          imageSparseMemoryRequirementsInfo2;
+    std::vector<vk::SparseImageMemoryRequirements2> sparseImageMemoryRequirements2 =
+      device.getImageSparseMemoryRequirements2( imageSparseMemoryRequirementsInfo2 );
+  }
+
   return 0;
 }

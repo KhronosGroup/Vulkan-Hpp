@@ -15,11 +15,7 @@ using namespace std::literals;
 
 namespace
 {
-  template <typename T>
-  bool                                        containsByNameOrAlias( std::vector<T> const & values, std::string const & name );
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names );
-  template <typename T>
-  typename std::map<std::string, T>::const_iterator findByNameOrAlias( std::map<std::string, T> const & values, std::string const & name );
   template <typename T>
   typename std::map<std::string, T>::iterator findByNameOrAlias( std::map<std::string, T> & values, std::string const & name );
   template <typename T>
@@ -36,7 +32,6 @@ namespace
   VulkanHppGenerator::MacroData           parseMacro( std::vector<std::string> const & completeMacro );
   std::string                             startLowerCase( std::string const & input );
   std::string                             startUpperCase( std::string const & input );
-  std::vector<std::string>                tokenizeAny( std::string const & tokenString, std::string const & separators );
 }  // namespace
 
 // Some types come in as non-const pointers, but are meant as const-pointers
@@ -381,6 +376,173 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, tinyxml2::XMLDocument co
     else
     {
       m_unsupportedFeatures.push_back( featureToFeatureData( feature, false ) );
+    }
+  }
+  for ( auto const & extension : m_vkxml.extensions.extensions )
+  {
+    bool const extensionSupported =
+      extension.supported.empty() || std::ranges::any_of( extension.supported, [this]( std::string const & s ) { return s == m_api; } );
+
+    ExtensionData extensionData{ .deprecatedBy = extension.deprecatedBy,
+                                 .isDeprecated = extension.isDeprecated,
+                                 .name         = extension.name,
+                                 .number       = extension.number,
+                                 .obsoletedBy  = extension.obsoletedBy,
+                                 .platform     = extension.platform,
+                                 .promotedTo   = extension.promotedTo,
+                                 .depends      = extension.depends,
+                                 .ratified     = extension.ratified,
+                                 .supported    = extension.supported,
+                                 .type         = extension.type,
+                                 .xmlLine      = extension.xmlLine };
+    for ( auto const & deprecate : extension.deprecates )
+    {
+      DeprecateData deprecateData{ .explanationLink = deprecate.explanationLink, .xmlLine = deprecate.xmlLine };
+      for ( auto const & command : deprecate.commands )
+      {
+        deprecateData.commands.push_back( { command.name, command.supersededBy } );
+      }
+      for ( auto const & feature : deprecate.features )
+      {
+        deprecateData.features.push_back( { feature.name, feature.structure } );
+      }
+      for ( auto const & type : deprecate.types )
+      {
+        deprecateData.types.push_back( { type.name, type.supersededBy } );
+      }
+      extensionData.deprecateData.push_back( std::move( deprecateData ) );
+    }
+    for ( auto const & remove : extension.removes )
+    {
+      RemoveData removeData{ .xmlLine = remove.xmlLine };
+      removeData.features.push_back( { .name = { remove.feature.name }, .xmlLine = remove.feature.xmlLine } );
+      extensionData.removeData.push_back( std::move( removeData ) );
+    }
+    for ( auto const & require : extension.require )
+    {
+      RequireData requireData{ .api = require.api, .depends = require.depends, .xmlLine = require.xmlLine };
+
+      bool const requireSupported = require.api.empty() || ( require.api == m_api );
+
+      for ( auto const & command : require.commands )
+      {
+        requireData.commands.push_back( { .name = command.name, .xmlLine = command.xmlLine } );
+      }
+      for ( auto const & e : require.enums )
+      {
+        std::string protect = e.protect.empty() ? getProtectFromPlatform( extensionData.platform ) : e.protect;
+        if ( e.api.empty() || ( e.api == m_api ) )
+        {
+          if ( e.alias.empty() )
+          {
+            if ( e.extends.empty() )
+            {
+              if ( e.value.empty() )
+              {
+                auto typeIt = m_types.find( e.name );
+                checkForError( typeIt != m_types.end(), e.xmlLine, "unknown required enum <" + e.name + ">" );
+                typeIt->second.requiredBy.insert( extensionData.name );
+                requireData.constants.push_back( { e.name, e.xmlLine } );
+              }
+              else
+              {
+                checkForError( m_types.insert( { e.name, TypeData{ TypeCategory::Constant, { extensionData.name }, e.xmlLine } } ).second,
+                               e.xmlLine,
+                               "required enum <" + e.name + "> specified by value <" + e.value + "> is already specified" );
+                requireData.enumConstants.push_back( { e.name, e.value, e.xmlLine } );
+              }
+            }
+            else
+            {
+              auto typeIt = m_types.find( e.extends );
+              checkForError( typeIt != m_types.end(), e.xmlLine, "enum value <" + e.name + "> extends unknown type <" + e.extends + ">" );
+              checkForError(
+                typeIt->second.category == TypeCategory::Enum, e.xmlLine, "enum value <" + e.name + "> extends non-enum type <" + e.extends + ">" );
+              typeIt->second.requiredBy.insert( extensionData.name );
+              auto enumIt = findByNameOrAlias( m_enums, e.extends );
+              assert( enumIt != m_enums.end() );
+
+              checkForError( enumIt->second.addEnumValue(
+                               e.xmlLine, e.name, protect, e.bitPos + e.offset, e.value, extensionSupported && requireSupported, e.deprecated == "true" ),
+                             e.xmlLine,
+                             "enum value <" + e.name + "> already listed with different properties" );
+            }
+          }
+          else
+          {
+            if ( e.extends.empty() )
+            {
+              // enum aliases that don't extend anything are listed as constants
+              auto typeIt = m_types.find( e.alias );
+              checkForError( typeIt != m_types.end(), e.xmlLine, "enum alias <" + e.name + "> is an alias of an unknown enum <" + e.alias + ">" );
+              checkForError( typeIt->second.category == TypeCategory::Constant,
+                             e.xmlLine,
+                             "enum alias <" + e.name + "> is an alias of a non-constant type <" + e.alias + ">" );
+              checkForError( m_types.insert( { e.name, TypeData{ TypeCategory::Constant, { extensionData.name }, e.xmlLine } } ).second,
+                             e.xmlLine,
+                             "required enum <" + e.name + "> already specified" );
+
+              auto constIt = m_vkxml.constants.find( e.alias );
+              if ( constIt != m_vkxml.constants.end() )
+              {
+                typeIt = m_types.find( e.name );
+                typeIt->second.requiredBy.insert( extensionData.name );
+                m_vkxml.constants[e.name] = { constIt->second.type, constIt->second.value, e.xmlLine };
+                requireData.constants.push_back( { e.name, e.xmlLine } );
+              }
+            }
+            else
+            {
+              auto typeIt = m_types.find( e.extends );
+              checkForError( typeIt != m_types.end(), e.xmlLine, "enum value <" + e.name + "> extends unknown type <" + e.extends + ">" );
+              checkForError(
+                typeIt->second.category == TypeCategory::Enum, e.xmlLine, "enum value <" + e.name + "> extends non-enum type <" + e.extends + ">" );
+              typeIt->second.requiredBy.insert( extensionData.name );
+              auto enumIt = findByNameOrAlias( m_enums, e.extends );
+              assert( enumIt != m_enums.end() );
+              checkForError( enumIt->second.addEnumAlias( e.xmlLine, e.name, e.alias, protect, extensionSupported && requireSupported ),
+                             e.xmlLine,
+                             "enum value alias <" + e.name + "> already listed with different properties" );
+            }
+          }
+        }
+      }
+      for ( auto const & feature : require.features )
+      {
+        requireData.features.push_back( { .name = feature.names, .structure = feature.structure, .xmlLine = feature.xmlLine } );
+      }
+      for ( auto const & type : require.types )
+      {
+        auto typeIt = m_types.find( type.name );
+        checkForError( typeIt != m_types.end(), type.xmlLine, "required type <" + type.name + "> is not listed as a type" );
+
+        requireData.types.push_back( { .name = type.name, .xmlLine = type.xmlLine } );
+        typeIt->second.requiredBy.insert( extensionData.name );
+      }
+
+      if ( !requireData.commands.empty() || !requireData.types.empty() || !requireData.enumConstants.empty() )
+      {
+        if ( requireSupported )
+        {
+          extensionData.requireData.push_back( requireData );
+        }
+        else
+        {
+          extensionData.unsupportedRequireData.push_back( requireData );
+        }
+      }
+    }
+
+    if ( extensionSupported )
+    {
+      m_extensions.push_back( std::move( extensionData ) );
+    }
+    else
+    {
+      checkForError( !containsByName( m_unsupportedExtensions, extensionData.name ),
+                     extensionData.xmlLine,
+                     "unsupported extension <" + extensionData.name + "> already specified" );
+      m_unsupportedExtensions.push_back( std::move( extensionData ) );
     }
   }
 
@@ -13041,607 +13203,6 @@ std::pair<bool, std::map<size_t, std::vector<size_t>>> VulkanHppGenerator::needs
            countToVectorMap };
 }
 
-std::string VulkanHppGenerator::readComment( tinyxml2::XMLElement const * element ) const
-{
-  return ::readComment( "VulkanHppGenerator", element );
-}
-
-VulkanHppGenerator::DeprecatedCommandData VulkanHppGenerator::readDeprecatedCommand( tinyxml2::XMLElement const * element ) const
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "supersededby", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name, supersededBy;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else
-    {
-      assert( attribute.first == "supersededby" );
-      supersededBy = attribute.second;
-    }
-  }
-
-  return { name, supersededBy };
-}
-
-VulkanHppGenerator::DeprecatedFeatureData VulkanHppGenerator::readDeprecatedFeature( tinyxml2::XMLElement const * element ) const
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "struct", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name, structure;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else
-    {
-      assert( attribute.first == "struct" );
-      structure = attribute.second;
-    }
-  }
-
-  return { name, structure };
-}
-
-VulkanHppGenerator::DeprecatedTypeData VulkanHppGenerator::readDeprecatedType( tinyxml2::XMLElement const * element ) const
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "supersededby", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name, supersededBy;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else
-    {
-      assert( attribute.first == "supersededby" );
-      supersededBy = attribute.second;
-    }
-  }
-
-  return { name, supersededBy };
-}
-
-VulkanHppGenerator::DeprecateData VulkanHppGenerator::readDeprecateData( tinyxml2::XMLElement const * element ) const
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "explanationlink", {} } }, {} );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { { "command", MultipleAllowed::Yes }, { "feature", MultipleAllowed::Yes }, { "type", MultipleAllowed::Yes } } );
-
-  DeprecateData deprecateData;
-  deprecateData.xmlLine = line;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "explanationlink" )
-    {
-      deprecateData.explanationLink = attribute.second;
-    }
-  }
-
-  for ( auto child : children )
-  {
-    int const   childLine = child->GetLineNum();
-    std::string value     = child->Value();
-    if ( value == "command" )
-    {
-      deprecateData.commands.push_back( readDeprecatedCommand( child ) );
-      checkForError( containsByNameOrAlias( m_commands, deprecateData.commands.back().name ),
-                     childLine,
-                     "deprecated command <" + deprecateData.commands.back().name + "> is not listed as a command" );
-      checkForError( deprecateData.commands.back().supersededBy.empty() || containsByNameOrAlias( m_commands, deprecateData.commands.back().supersededBy ),
-                     childLine,
-                     "command <" + deprecateData.commands.back().supersededBy + ">, superseding command <" + deprecateData.commands.back().name +
-                       "> is not listed as a command" );
-    }
-    else if ( value == "feature" )
-    {
-      deprecateData.features.push_back( readDeprecatedFeature( child ) );
-      auto structIt = m_structs.find( deprecateData.features.back().structure );
-      checkForError( structIt != m_structs.end(),
-                     childLine,
-                     "deprecated feature <" + deprecateData.features.back().name + "> specifies unknown struct <" + deprecateData.features.back().structure +
-                       "> is unknown" );
-      checkForError( containsByName( structIt->second.members, deprecateData.features.back().name ),
-                     childLine,
-                     "deprecated feature <" + deprecateData.features.back().name + "> is not a member of the specified struct <" +
-                       deprecateData.features.back().structure );
-    }
-    else if ( value == "type" )
-    {
-      deprecateData.types.push_back( readDeprecatedType( child ) );
-      checkForError(
-        m_types.contains( deprecateData.types.back().name ), childLine, "deprecated type <" + deprecateData.types.back().name + "> is not listed as a type" );
-      checkForError( deprecateData.types.back().supersededBy.empty() || m_types.contains( deprecateData.types.back().supersededBy ),
-                     childLine,
-                     "type <" + deprecateData.types.back().supersededBy + ">, superseding type <" + deprecateData.types.back().name +
-                       "> is not listed as a type" );
-    }
-  }
-  return deprecateData;
-}
-
-void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData, bool extensionSupported )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "depends", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line,
-                 children,
-                 {},
-                 { { "command", MultipleAllowed::Yes },
-                   { "comment", MultipleAllowed::Yes },
-                   { "enum", MultipleAllowed::Yes },
-                   { "feature", MultipleAllowed::Yes },
-                   { "type", MultipleAllowed::Yes } } );
-
-  RequireData requireData{ .xmlLine = line };
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "api" )
-    {
-      requireData.api = attribute.second;
-    }
-    else if ( attribute.first == "depends" )
-    {
-      assert( requireData.depends.empty() );
-      requireData.depends = attribute.second;
-      checkForWarning( std::ranges::none_of( extensionData.requireData,
-                                             [&requireData]( RequireData const & rd )
-                                             { return ( rd.api == requireData.api ) && ( rd.depends == requireData.depends ); } ),
-                       line,
-                       "required dependency <" + requireData.depends + "> already listed for extension <" + extensionData.name + "> with the same api" );
-    }
-  }
-
-  bool const requireSupported = requireData.api.empty() || ( requireData.api == m_api );
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "command" )
-    {
-      requireData.commands.push_back( readRequireCommand( child ) );
-      auto commandIt = m_commands.find( requireData.commands.back().name );
-      if ( commandIt != m_commands.end() )
-      {
-        checkForError(
-          commandIt->second.exports.empty() ||
-            std::ranges::any_of(
-              commandIt->second.exports,
-              [&extensionData]( std::string const & exports )
-              { return std::ranges::any_of( extensionData.supported, [&exports]( std::string const & supported ) { return exports == supported; } ); } ),
-          commandIt->second.xmlLine,
-          "extension <" + extensionData.name + "> requires command <" + commandIt->first + "> but the extensions support <" +
-            concatenate( extensionData.supported ) + "> does not contain any of the commands exports <" + concatenate( commandIt->second.exports ) + ">" );
-      }
-      else
-      {
-        commandIt = findByNameOrAlias( m_commands, requireData.commands.back().name );
-        checkForError( commandIt != m_commands.end(),
-                       requireData.commands.back().xmlLine,
-                       "extension <" + extensionData.name + "> requires unknown command <" + requireData.commands.back().name + ">" );
-      }
-    }
-    else if ( value == "enum" )
-    {
-      readRequireEnum( child, extensionData.name, extensionData.platform, extensionSupported && requireSupported, requireData );
-    }
-    else if ( value == "feature" )
-    {
-      requireData.features.push_back( readRequireFeature( child ) );
-    }
-    else if ( value == "type" )
-    {
-      requireData.types.push_back( readRequireType( child ) );
-    }
-  }
-  if ( !requireData.commands.empty() || !requireData.types.empty() || !requireData.enumConstants.empty() )
-  {
-    if ( requireSupported )
-    {
-      extensionData.requireData.push_back( requireData );
-    }
-    else
-    {
-      extensionData.unsupportedRequireData.push_back( requireData );
-    }
-  }
-}
-
-void VulkanHppGenerator::readExtensions( tinyxml2::XMLElement const * element )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, { { "comment", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "extension", MultipleAllowed::Yes } } );
-
-  for ( auto child : children )
-  {
-    readExtension( child );
-  }
-}
-
-enum class NodeType
-{
-  AND,
-  OR,
-  VAR
-};
-
-struct Node
-{
-  NodeType              type;
-  std::string           value;
-  std::shared_ptr<Node> left;
-  std::shared_ptr<Node> right;
-
-  Node( NodeType t, std::string const & val ) : type( t ), value( val ), left( nullptr ), right( nullptr ) {}
-
-  Node( NodeType t, std::shared_ptr<Node> l, std::shared_ptr<Node> r ) : type( t ), left( l ), right( r ) {}
-};
-
-class Parser
-{
-public:
-  Parser( std::string const & expr ) : expr( expr ), pos( 0 ) {}
-
-  std::shared_ptr<Node> parse()
-  {
-    auto result = parse_or();
-    if ( pos != expr.length() )
-    {
-      throw std::runtime_error( "Unexpected characters at end of expression" );
-    }
-    return result;
-  }
-
-private:
-  std::string expr;
-  size_t      pos;
-
-  std::shared_ptr<Node> parse_or()
-  {
-    auto left = parse_and();
-    while ( match( "," ) )
-    {
-      auto right = parse_and();
-      left       = std::make_shared<Node>( NodeType::OR, left, right );
-    }
-    return left;
-  }
-
-  std::shared_ptr<Node> parse_and()
-  {
-    auto left = parse_primary();
-    while ( match( "+" ) )
-    {
-      auto right = parse_primary();
-      left       = std::make_shared<Node>( NodeType::AND, left, right );
-    }
-    return left;
-  }
-
-  std::shared_ptr<Node> parse_primary()
-  {
-    if ( match( "(" ) )
-    {
-      auto result = parse_or();
-      if ( !match( ")" ) )
-      {
-        throw std::runtime_error( "Expected closing parenthesis" );
-      }
-      return result;
-    }
-    return parse_variable();
-  }
-
-  std::shared_ptr<Node> parse_variable()
-  {
-    size_t start = pos;
-    while ( pos < expr.length() && ( std::isalnum( expr[pos] ) || ( expr[pos] == '_' ) ) )
-    {
-      pos++;
-    }
-    if ( start == pos )
-    {
-      throw std::runtime_error( "Expected variable" );
-    }
-    return std::make_shared<Node>( NodeType::VAR, expr.substr( start, pos - start ) );
-  }
-
-  bool match( std::string const & token )
-  {
-    skip_whitespace();
-    if ( expr.substr( pos, token.length() ) == token )
-    {
-      pos += token.length();
-      skip_whitespace();
-      return true;
-    }
-    return false;
-  }
-
-  void skip_whitespace()
-  {
-    while ( pos < expr.length() && std::isspace( expr[pos] ) )
-    {
-      pos++;
-    }
-  }
-};
-
-std::shared_ptr<Node> distribute_and_over_or( std::shared_ptr<Node> node )
-{
-  if ( node->type == NodeType::AND )
-  {
-    if ( node->left->type == NodeType::OR )
-    {
-      return std::make_shared<Node>( NodeType::OR,
-                                     distribute_and_over_or( std::make_shared<Node>( NodeType::AND, node->left->left, node->right ) ),
-                                     distribute_and_over_or( std::make_shared<Node>( NodeType::AND, node->left->right, node->right ) ) );
-    }
-    else if ( node->right->type == NodeType::OR )
-    {
-      return std::make_shared<Node>( NodeType::OR,
-                                     distribute_and_over_or( std::make_shared<Node>( NodeType::AND, node->left, node->right->left ) ),
-                                     distribute_and_over_or( std::make_shared<Node>( NodeType::AND, node->left, node->right->right ) ) );
-    }
-  }
-  return node;
-}
-
-std::shared_ptr<Node> normalize( std::shared_ptr<Node> node )
-{
-  if ( node->left )
-  {
-    node->left = normalize( node->left );
-  }
-  if ( node->right )
-  {
-    node->right = normalize( node->right );
-  }
-  if ( node->type == NodeType::AND )
-  {
-    node = distribute_and_over_or( node );
-  }
-  return node;
-}
-
-std::vector<std::vector<std::string>> vectorize( std::shared_ptr<Node> node )
-{
-  if ( node->type == NodeType::VAR )
-  {
-    return { { node->value } };
-  }
-  else if ( node->type == NodeType::OR )
-  {
-    auto left  = vectorize( node->left );
-    auto right = vectorize( node->right );
-    left.insert( left.end(), right.begin(), right.end() );
-    return left;
-  }
-  else
-  {
-    assert( node->type == NodeType::AND );
-    auto                                  left  = vectorize( node->left );
-    auto                                  right = vectorize( node->right );
-    std::vector<std::vector<std::string>> result;
-    for ( auto const & l : left )
-    {
-      for ( auto const & r : right )
-      {
-        result.push_back( l );
-        result.back().insert( result.back().end(), r.begin(), r.end() );
-      }
-    }
-    return result;
-  }
-}
-
-void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
-{
-  int const                                 line       = element->GetLineNum();
-  std::map<std::string, std::string>        attributes = getAttributes( element );
-  std::vector<tinyxml2::XMLElement const *> children   = getChildElements( element );
-
-  checkAttributes( line,
-                   attributes,
-                   { { "name", {} }, { "number", {} }, { "supported", { "disabled", "vulkan", "vulkanbase", "vulkansc" } } },
-                   { { "author", {} },
-                     { "comment", {} },
-                     { "contact", {} },
-                     { "depends", {} },
-                     { "deprecatedby", {} },
-                     { "nofeatures", { "true" } },
-                     { "obsoletedby", {} },
-                     { "platform", {} },
-                     { "promotedto", {} },
-                     { "provisional", { "true" } },
-                     { "ratified", { "vulkan", "vulkansc" } },
-                     { "sortorder", { "1" } },
-                     { "specialuse", { "cadsupport", "d3demulation", "debugging", "devtools", "glemulation" } },
-                     { "type", { "device", "instance" } } } );
-  checkElements( line, children, { { "require", MultipleAllowed::Yes } }, { { "deprecate", MultipleAllowed::Yes }, { "remove", MultipleAllowed::No } } );
-
-  // some special handling for two extensions
-  std::string name = attributes.find( "name" )->second;
-  if ( ( name == "VK_EXT_fragment_density_map_offset" ) || ( name == "VK_KHR_swapchain_mutable_format" ) )
-  {
-    auto dependsIt = attributes.find( "depends" );
-    assert( dependsIt != attributes.end() );
-    std::string depends = dependsIt->second;
-    assert(
-      ( name == "VK_EXT_fragment_density_map_offset" )
-        ? ( depends ==
-            "(VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)+VK_EXT_fragment_density_map+(VK_KHR_create_renderpass2,VK_VERSION_1_2)+(VK_VERSION_1_3,VK_KHR_dynamic_rendering)" )
-        : ( depends == "VK_KHR_swapchain+(VK_KHR_maintenance2,VK_VERSION_1_1)+(VK_KHR_image_format_list,VK_VERSION_1_2)" ) );
-    dependsIt->second =
-      ( name == "VK_EXT_fragment_density_map_offset" )
-        ? "VK_EXT_fragment_density_map+(((VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)+VK_KHR_create_renderpass2,VK_VERSION_1_2)+VK_KHR_dynamic_rendering,VK_VERSION_1_3)"
-        : "VK_KHR_swapchain+((VK_KHR_maintenance2,VK_VERSION_1_1)+VK_KHR_image_format_list,VK_VERSION_1_2)";
-  }
-
-  ExtensionData extensionData{ .xmlLine = line };
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "depends" )
-    {
-      Parser                                parser( attribute.second );
-      std::vector<std::vector<std::string>> dependencies = vectorize( normalize( parser.parse() ) );
-      for ( auto & dep : dependencies )
-      {
-        auto featureIt = std::ranges::find_if( dep, []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
-        if ( featureIt == dep.end() )
-        {
-          dep.insert( dep.begin(), "VK_VERSION_1_0" );
-        }
-        else if ( featureIt != dep.begin() )
-        {
-          auto nextFeatureIt = std::find_if( std::next( featureIt ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
-          while ( nextFeatureIt != dep.end() )
-          {
-            if ( *featureIt < *nextFeatureIt )
-            {
-              featureIt = nextFeatureIt;
-            }
-            nextFeatureIt = std::find_if( std::next( nextFeatureIt ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
-          }
-          std::iter_swap( featureIt, dep.begin() );
-        }
-      }
-      assert( std::ranges::all_of( dependencies, []( std::vector<std::string> const & dep ) { return dep[0].starts_with( "VK_VERSION" ); } ) );
-      for ( auto & dep : dependencies )
-      {
-        auto it = extensionData.depends.insert( { dep[0], {} } ).first;
-        it->second.push_back( {} );
-        for ( auto depIt = std::next( dep.begin() ); depIt != dep.end(); ++depIt )
-        {
-          if ( !depIt->starts_with( "VK_VERSION" ) )
-          {
-            it->second.back().insert( *depIt );
-          }
-        }
-      }
-    }
-    else if ( attribute.first == "deprecatedby" )
-    {
-      extensionData.deprecatedBy = attribute.second;
-      extensionData.isDeprecated = true;
-    }
-    else if ( attribute.first == "name" )
-    {
-      extensionData.name = attribute.second;
-      checkForError( !isExtension( extensionData.name ), line, "already encountered extension <" + extensionData.name + ">" );
-    }
-    else if ( attribute.first == "number" )
-    {
-      extensionData.number = attribute.second;
-      checkForError( isNumber( extensionData.number ), line, "extension number <" + extensionData.number + "> is not a number" );
-      checkForError( std::ranges::none_of( m_extensions, [&extensionData]( auto const & extension ) { return extension.number == extensionData.number; } ),
-                     line,
-                     "extension number <" + extensionData.number + "> already encountered" );
-    }
-    else if ( attribute.first == "obsoletedby" )
-    {
-      extensionData.obsoletedBy = attribute.second;
-    }
-    else if ( attribute.first == "platform" )
-    {
-      extensionData.platform = attribute.second;
-      checkForError( m_vkxml.platforms.contains( extensionData.platform ), line, "unknown platform <" + extensionData.platform + ">" );
-    }
-    else if ( attribute.first == "promotedto" )
-    {
-      extensionData.promotedTo = attribute.second;
-    }
-    else if ( attribute.first == "provisional" )
-    {
-      if ( extensionData.platform.empty() )
-      {
-        // for now, having the attribute provisional="true" implies attribute platform="provisional" to get
-        // stuff protected by VK_ENABLE_BETA_EXTENSIONS
-        extensionData.platform = "provisional";
-      }
-      checkForError( extensionData.platform == "provisional",
-                     line,
-                     "while attribute <provisional> is set to \"true\", attribute <platform> is not set to \"provisional\" but to \"" + extensionData.platform +
-                       "\"" );
-    }
-    else if ( attribute.first == "ratified" )
-    {
-      extensionData.ratified = tokenize( attribute.second, "," );
-    }
-    else if ( attribute.first == "supported" )
-    {
-      extensionData.supported = tokenize( attribute.second, "," );
-    }
-    else if ( attribute.first == "type" )
-    {
-      extensionData.type = attribute.second;
-    }
-  }
-
-  bool const extensionSupported =
-    extensionData.supported.empty() || std::ranges::any_of( extensionData.supported, [this]( std::string const & s ) { return s == m_api; } );
-  checkForError( !extensionSupported || !extensionData.type.empty(), line, "missing attribute \"type\" for supported extension <" + extensionData.name + ">" );
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "deprecate" )
-    {
-      extensionData.deprecateData.push_back( readDeprecateData( child ) );
-    }
-    else if ( value == "remove" )
-    {
-      extensionData.removeData.push_back( readRemoveData( child ) );
-    }
-    else if ( value == "require" )
-    {
-      readExtensionRequire( child, extensionData, extensionSupported );
-    }
-  }
-
-  if ( std::ranges::none_of( extensionData.supported, []( std::string const & s ) { return s == "disabled"; } ) )
-  {
-    // extract the tag from the name, which is supposed to look like VK_<tag>_<other>
-    size_t const tagStart = extensionData.name.find( '_' );
-    checkForError( tagStart != std::string::npos, line, "name <" + extensionData.name + "> is missing an underscore '_'" );
-    size_t const tagEnd = extensionData.name.find( '_', tagStart + 1 );
-    checkForError( tagEnd != std::string::npos, line, "name <" + extensionData.name + "> is missing an underscore '_'" );
-    std::string tag = extensionData.name.substr( tagStart + 1, tagEnd - tagStart - 1 );
-    checkForError( ( m_vkxml.tags.find( tag ) != m_vkxml.tags.end() ), line, "name <" + extensionData.name + "> is using an unknown tag <" + tag + ">" );
-  }
-
-  if ( extensionSupported )
-  {
-    m_extensions.push_back( extensionData );
-  }
-  else
-  {
-    checkForError(
-      !containsByName( m_unsupportedExtensions, extensionData.name ), line, "unsupported extension <" + extensionData.name + "> already specified" );
-    m_unsupportedExtensions.push_back( extensionData );
-  }
-}
-
 void VulkanHppGenerator::readFormat( tinyxml2::XMLElement const * element )
 {
   int const                          line       = element->GetLineNum();
@@ -13842,60 +13403,6 @@ void VulkanHppGenerator::readFormatSPIRVImageFormat( tinyxml2::XMLElement const 
   formatData.spirvImageFormat = name;
 }
 
-std::pair<std::vector<std::string>, std::string> VulkanHppGenerator::readModifiers( tinyxml2::XMLNode const * node ) const
-{
-  return ::readModifiers( "VulkanHppGenerator", node );
-}
-
-std::string VulkanHppGenerator::readName( tinyxml2::XMLElement const * element ) const
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  return attributes.find( "name" )->second;
-}
-
-std::pair<VulkanHppGenerator::NameData, Type> VulkanHppGenerator::readNameAndType( tinyxml2::XMLElement const * element )
-{
-  int                                       line     = element->GetLineNum();
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "name", MultipleAllowed::No } }, { { "enum", MultipleAllowed::No }, { "type", MultipleAllowed::No } } );
-
-  NameData nameData;
-  Type     type;
-  for ( auto child : children )
-  {
-    line = child->GetLineNum();
-    checkAttributes( line, getAttributes( child ), {}, {} );
-    checkElements( line, getChildElements( child ), {} );
-
-    std::string value = child->Value();
-    if ( value == "enum" )
-    {
-      nameData.arraySizes.push_back( child->GetText() );
-      checkForError( child->PreviousSibling() && ( strcmp( child->PreviousSibling()->Value(), "[" ) == 0 ) && child->NextSibling() &&
-                       ( strcmp( child->NextSibling()->Value(), "]" ) == 0 ),
-                     line,
-                     std::string( "array specifiation is ill-formatted: <" ) + nameData.arraySizes.back() + ">" );
-      checkForError( m_vkxml.constants.contains( nameData.arraySizes.back() ), line, "using unknown enum value <" + nameData.arraySizes.back() + ">" );
-    }
-    else if ( value == "name" )
-    {
-      nameData.name = child->GetText();
-      std::string bitCount;
-      std::tie( nameData.arraySizes, bitCount ) = readModifiers( child->NextSibling() );
-      checkForError( bitCount.empty(), line, "name <" + nameData.name + "> with unsupported bitCount <" + bitCount + ">" );
-    }
-    else if ( value == "type" )
-    {
-      type = readType( child );
-    }
-  }
-  return { nameData, type };
-}
-
 void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
@@ -13920,11 +13427,7 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
   for ( auto child : children )
   {
     std::string const value = child->Value();
-    if ( value == "extensions" )
-    {
-      readExtensions( child );
-    }
-    else if ( value == "formats" )
+    if ( value == "formats" )
     {
       readFormats( child );
     }
@@ -13946,297 +13449,6 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
   distributeEnumValueAliases();
   distributeRequirements();
   markExtendedStructs();
-}
-
-VulkanHppGenerator::RemoveData VulkanHppGenerator::readRemoveData( tinyxml2::XMLElement const * element )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, { { "comment", {} }, { "reasonlink", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line,
-                 children,
-                 {},
-                 { { "command", MultipleAllowed::Yes },
-                   { "comment", MultipleAllowed::Yes },
-                   { "enum", MultipleAllowed::Yes },
-                   { "feature", MultipleAllowed::Yes },
-                   { "type", MultipleAllowed::Yes } } );
-
-  RemoveData removeData;
-  removeData.xmlLine = line;
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "command" )
-    {
-      removeData.commands.push_back( readName( child ) );
-    }
-    else if ( value == "enum" )
-    {
-      removeData.enums.push_back( readName( child ) );
-    }
-    else if ( value == "feature" )
-    {
-      removeData.features.push_back( readRequireFeature( child ) );
-    }
-    else if ( value == "type" )
-    {
-      removeData.types.push_back( readName( child ) );
-    }
-  }
-  return removeData;
-}
-
-VulkanHppGenerator::NameLine VulkanHppGenerator::readRequireCommand( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "comment", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  return { attributes.find( "name" )->second, line };
-}
-
-void VulkanHppGenerator::readRequireEnum(
-  tinyxml2::XMLElement const * element, std::string const & requiredBy, std::string const & platform, bool supported, RequireData & requireData )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkElements( line, getChildElements( element ), {} );
-
-  if ( attributes.contains( "alias" ) )
-  {
-    checkAttributes( line,
-                     attributes,
-                     { { "alias", {} }, { "name", {} } },
-                     { { "api", { "vulkan", "vulkansc" } },
-                       { "comment", {} },
-                       { "deprecated", { "aliased" } },
-                       { "extends", {} },
-                       { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } } } );
-
-    std::string alias, api, extends, name, protect;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "alias" )
-      {
-        alias = attribute.second;
-      }
-      else if ( attribute.first == "api" )
-      {
-        api = attribute.second;
-      }
-      else if ( attribute.first == "extends" )
-      {
-        extends = attribute.second;
-      }
-      else if ( attribute.first == "name" )
-      {
-        name = attribute.second;
-      }
-      else if ( attribute.first == "protect" )
-      {
-        protect = attribute.second;
-      }
-    }
-
-    if ( extends.empty() )
-    {
-      checkForError( protect.empty(), line, "protect <" + protect + "> of enum alias <" + alias + "> with empty <extends> is not expected" );
-
-      // enum aliases that don't extend something are listed as constants
-      auto typeIt = m_types.find( alias );
-      checkForError( typeIt != m_types.end(), line, "enum alias <" + name + "> is an alias of an unknown enum <" + alias + ">" );
-      checkForError( typeIt->second.category == TypeCategory::Constant, line, "enum alias <" + name + "> is an alias of a non-constant type <" + alias + ">" );
-      checkForError(
-        m_types.insert( { name, TypeData{ TypeCategory::Constant, { requiredBy }, line } } ).second, line, "required enum <" + name + "> already specified" );
-
-      auto constIt = m_vkxml.constants.find( alias );
-      if ( constIt != m_vkxml.constants.end() )
-      {
-        typeIt = m_types.find( name );
-        typeIt->second.requiredBy.insert( requiredBy );
-        m_vkxml.constants[name] = { constIt->second.type, constIt->second.value, line };
-        requireData.constants.push_back( { name, line } );
-      }
-    }
-    else
-    {
-      if ( protect.empty() )
-      {
-        protect = getProtectFromPlatform( platform );
-      }
-
-      auto typeIt = m_types.find( extends );
-      checkForError( typeIt != m_types.end(), line, "enum value <" + name + "> extends unknown type <" + extends + ">" );
-      checkForError( typeIt->second.category == TypeCategory::Enum, line, "enum value <" + name + "> extends non-enum type <" + extends + ">" );
-      typeIt->second.requiredBy.insert( requiredBy );
-      auto enumIt = findByNameOrAlias( m_enums, extends );
-      assert( enumIt != m_enums.end() );
-      checkForError( enumIt->second.addEnumAlias( line, name, alias, protect, supported ),
-                     line,
-                     "enum value alias <" + name + "> already listed with different properties" );
-    }
-  }
-  else
-  {
-    checkAttributes( line,
-                     attributes,
-                     { { "name", {} } },
-                     { { "api", { "vulkan", "vulkansc" } },
-                       { "bitpos", {} },
-                       { "comment", {} },
-                       { "deprecated", { "true" } },
-                       { "dir", { "-" } },
-                       { "extends", {} },
-                       { "extnumber", {} },
-                       { "offset", {} },
-                       { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } },
-                       { "type", { "float", "uint32_t" } },
-                       { "value", {} } } );
-
-    std::string api, bitpos, extends, name, offset, protect, type, value;
-    bool        deprecated = false;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "api" )
-      {
-        api = attribute.second;
-      }
-      else if ( attribute.first == "bitpos" )
-      {
-        bitpos = attribute.second;
-      }
-      else if ( attribute.first == "deprecated" )
-      {
-        deprecated = true;
-      }
-      else if ( attribute.first == "extends" )
-      {
-        extends = attribute.second;
-      }
-      else if ( attribute.first == "name" )
-      {
-        name = attribute.second;
-        checkForError( name.starts_with( "VK_" ), line, "enum value <" + name + "> does not start with <VK_>" );
-      }
-      else if ( attribute.first == "offset" )
-      {
-        offset = attribute.second;
-      }
-      else if ( attribute.first == "protect" )
-      {
-        protect = attribute.second;
-      }
-      else if ( attribute.first == "type" )
-      {
-        type = attribute.second;
-      }
-      else if ( attribute.first == "value" )
-      {
-        value = attribute.second;
-      }
-    }
-
-    if ( extends.empty() )
-    {
-      checkForError( protect.empty(), line, "protect <" + protect + "> of required enum <" + name + "> with empty <extends> is not expected" );
-
-      if ( value.empty() )
-      {
-        auto typeIt = m_types.find( name );
-        checkForError( typeIt != m_types.end(), line, "unknown required enum <" + name + ">" );
-        typeIt->second.requiredBy.insert( requiredBy );
-        requireData.constants.push_back( { name, line } );
-      }
-      else
-      {
-        if ( api.empty() || ( api == m_api ) )
-        {
-          checkForError( m_types.insert( { name, TypeData{ TypeCategory::Constant, { requiredBy }, line } } ).second,
-                         line,
-                         "required enum <" + name + "> specified by value <" + value + "> is already specified" );
-          if ( !type.empty() )
-          {
-            assert( !m_vkxml.constants.contains( name ) );
-            m_vkxml.constants[name] = { type, value, line };
-          }
-        }
-
-        requireData.enumConstants.push_back( { name, value, line } );
-      }
-    }
-    else
-    {
-      checkForError( bitpos.empty() + offset.empty() + value.empty() == 2,
-                     line,
-                     "exactly one out of bitpos = <" + bitpos + ">, offset = <" + offset + ">, and value = <" + value + "> are supposed to be empty" );
-      auto typeIt = m_types.find( extends );
-      checkForError( typeIt != m_types.end(), line, "enum value <" + name + "> extends unknown type <" + extends + ">" );
-      checkForError( typeIt->second.category == TypeCategory::Enum, line, "enum value <" + name + "> extends non-enum type <" + extends + ">" );
-      typeIt->second.requiredBy.insert( requiredBy );
-      auto enumIt = findByNameOrAlias( m_enums, extends );
-      assert( enumIt != m_enums.end() );
-
-      checkForError( enumIt->second.addEnumValue( line,
-                                                  name,
-                                                  protect.empty() ? getProtectFromPlatform( platform ) : protect,
-                                                  bitpos + offset,
-                                                  value,
-                                                  ( api.empty() || ( api == m_api ) ) && supported,
-                                                  deprecated ),
-                     line,
-                     "enum value <" + name + "> already listed with different properties" );
-    }
-  }
-}
-
-VulkanHppGenerator::RequireFeature VulkanHppGenerator::readRequireFeature( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} }, { "struct", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::vector<std::string> name;
-  std::string              structure;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = tokenize( attribute.second, "," );
-    }
-    else if ( attribute.first == "struct" )
-    {
-      structure = attribute.second;
-    }
-  }
-  assert( !name.empty() && !structure.empty() );
-
-  auto structIt = findByNameOrAlias( m_structs, structure );
-  checkForError( structIt != m_structs.end(), line, "encountered unknown required feature struct <" + structure + ">" );
-
-  for ( auto const & n : name )
-  {
-    auto memberIt = std::ranges::find_if( structIt->second.members, [&n]( MemberData const & md ) { return md.name == n; } );
-    checkForError(
-      memberIt != structIt->second.members.end(), line, "required feature name <" + n + "> not part of the required feature struct <" + structure + ">" );
-    checkForError( ( memberIt->type.isValue() && ( memberIt->type.name == "VkBool32" ) ),
-                   line,
-                   "required feature name <" + n + "> is not a VkBool32 member of the required feature struct <" + structure + ">" );
-  }
-
-  return { name, structure, line };
-}
-
-VulkanHppGenerator::NameLine VulkanHppGenerator::readRequireType( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "comment", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  return { attributes.find( "name" )->second, line };
 }
 
 void VulkanHppGenerator::readSPIRVCapability( tinyxml2::XMLElement const * element )
@@ -14714,12 +13926,6 @@ bool VulkanHppGenerator::EnumData::addEnumValue(
 
 namespace
 {
-  template <typename T>
-  bool containsByNameOrAlias( std::vector<T> const & values, std::string const & name )
-  {
-    return std::ranges::any_of( values, [&name]( T const & value ) { return value.name == name || containsByName( value.aliases, name ); } );
-  }
-
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names )
   {
     std::vector<std::pair<std::string, size_t>> filteredNames;
@@ -14731,17 +13937,6 @@ namespace
       }
     }
     return filteredNames;
-  }
-
-  template <typename T>
-  typename std::map<std::string, T>::const_iterator findByNameOrAlias( std::map<std::string, T> const & values, std::string const & name )
-  {
-    auto it = values.find( name );
-    if ( it == values.end() )
-    {
-      it = std::ranges::find_if( values, [&name]( auto const & value ) { return value.second.aliases.contains( name ); } );
-    }
-    return it;
   }
 
   template <typename T>
@@ -14886,26 +14081,6 @@ namespace
   {
     assert( !input.empty() );
     return static_cast<char>( toupper( input[0] ) ) + input.substr( 1 );
-  }
-
-  std::vector<std::string> tokenizeAny( std::string const & tokenString, std::string const & separators )
-  {
-    size_t const             len = tokenString.length();
-    std::vector<std::string> tokens;
-    if ( !tokenString.empty() )
-    {
-      size_t start = 0, end;
-      do
-      {
-        end = tokenString.find_first_of( separators, start );
-        if ( ( start != end ) && ( start < len ) )
-        {
-          tokens.push_back( trim( tokenString.substr( start, end - start ) ) );
-        }
-        start = end + 1;
-      } while ( end != std::string::npos );
-    }
-    return tokens;
   }
 }  // namespace
 

@@ -37,14 +37,20 @@ void checkElements( std::string const &                               intro,
 void checkForError( std::string const & intro, bool condition, int line, std::string const & message );
 void checkForWarning( std::string const & intro, bool condition, int line, std::string const & message );
 template <typename T>
+bool containsByName( std::map<std::string, T> const & values, std::string const & name );
+template <typename T>
 bool containsByName( std::vector<T> const & values, std::string const & name );
 template <typename T>
 bool containsByNameOrAlias( std::map<std::string, T> const & values, std::string const & name );
 template <typename T>
+bool containsByNameOrAlias( std::vector<T> const & values, std::string const & name );
+template <typename T>
 typename std::vector<T>::const_iterator findByName( std::vector<T> const & values, std::string const & name );
 template <typename T>
 typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name );
-std::string                       generateCopyrightMessage( std::string const & comment );
+template <typename T>
+typename std::map<std::string, T>::const_iterator findByNameOrAlias( std::map<std::string, T> const & values, std::string const & name );
+std::string                                       generateCopyrightMessage( std::string const & comment );
 void        generateFileFromTemplate( std::string const & fileName, std::string const & snippetFile, std::map<std::string, std::string> const & replacements );
 std::string generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes );
 std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element );
@@ -59,6 +65,7 @@ std::string                                      stripPostfix( std::string const
 std::string                                      stripPrefix( std::string const & value, std::string const & prefix );
 std::string                                      toCamelCase( std::string const & value, bool keepSeparatedNumbersSeparated = false );
 std::vector<std::string>                         tokenize( std::string const & tokenString, std::string const & separator );
+std::vector<std::string>                         tokenizeAny( std::string const & tokenString, std::string const & separators );
 std::string                                      toString( tinyxml2::XMLError error );
 std::string                                      toUpperCase( std::string const & name );
 std::string                                      trim( std::string const & input );
@@ -273,6 +280,12 @@ inline void checkForWarning( std::string const & intro, bool condition, int line
 }
 
 template <typename T>
+bool containsByName( std::map<std::string, T> const & values, std::string const & name )
+{
+  return values.contains( name );
+}
+
+template <typename T>
 bool containsByName( std::vector<T> const & values, std::string const & name )
 {
   return std::ranges::any_of( values, [&name]( T const & value ) { return value.name == name; } );
@@ -286,6 +299,12 @@ bool containsByNameOrAlias( std::map<std::string, T> const & values, std::string
 }
 
 template <typename T>
+bool containsByNameOrAlias( std::vector<T> const & values, std::string const & name )
+{
+  return std::ranges::any_of( values, [&name]( T const & value ) { return value.name == name || containsByName( value.aliases, name ); } );
+}
+
+template <typename T>
 typename std::vector<T>::const_iterator findByName( std::vector<T> const & values, std::string const & name )
 {
   return std::ranges::find_if( values, [&name]( T const & value ) { return value.name == name; } );
@@ -295,6 +314,17 @@ template <typename T>
 typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name )
 {
   return std::ranges::find_if( values, [&name]( T const & value ) { return value.name == name; } );
+}
+
+template <typename T>
+typename std::map<std::string, T>::const_iterator findByNameOrAlias( std::map<std::string, T> const & values, std::string const & name )
+{
+  auto it = values.find( name );
+  if ( it == values.end() )
+  {
+    it = std::ranges::find_if( values, [&name]( auto const & value ) { return value.second.aliases.contains( name ); } );
+  }
+  return it;
 }
 
 inline std::string generateCopyrightMessage( std::string const & comment )
@@ -363,6 +393,12 @@ inline bool isHexNumber( std::string const & name ) noexcept
 inline bool isNumber( std::string const & name ) noexcept
 {
   return name.find_first_not_of( "0123456789" ) == std::string::npos;
+}
+
+inline bool isSignedNumber( std::string const & name ) noexcept
+{
+  assert( !name.empty() );
+  return name.find_first_not_of( "0123456789", name[0] == '-' ? 1 : 0 ) == std::string::npos;
 }
 
 inline std::string readComment( std::string const & intro, tinyxml2::XMLElement const * element )
@@ -567,6 +603,26 @@ inline std::vector<std::string> tokenize( std::string const & tokenString, std::
         tokens.push_back( trim( tokenString.substr( start, end - start ) ) );
       }
       start = end + separator.length();
+    } while ( end != std::string::npos );
+  }
+  return tokens;
+}
+
+inline std::vector<std::string> tokenizeAny( std::string const & tokenString, std::string const & separators )
+{
+  size_t const             len = tokenString.length();
+  std::vector<std::string> tokens;
+  if ( !tokenString.empty() )
+  {
+    size_t start = 0, end;
+    do
+    {
+      end = tokenString.find_first_of( separators, start );
+      if ( ( start != end ) && ( start < len ) )
+      {
+        tokens.push_back( trim( tokenString.substr( start, end - start ) ) );
+      }
+      start = end + 1;
     } while ( end != std::string::npos );
   }
   return tokens;

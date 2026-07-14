@@ -3,6 +3,7 @@
 
 #include "VkXMLParser.hpp"
 
+#include "DependencyParser.hpp"
 #include "XMLHelper.hpp"
 
 #include <vector>
@@ -25,6 +26,10 @@ Deprecate                                                           parseDepreca
 std::pair<std::string, Enum>         parseEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 void                                 parseEnum( tinyxml2::XMLElement const * element, std::pair<std::string const, EnumValues> & enumValues );
 Enums                                parseEnums( tinyxml2::XMLElement const * element );
+ExtensionRemove                      parseExtensionRemove( tinyxml2::XMLElement const * element );
+ExtensionRequire                     parseExtensionRequire( tinyxml2::XMLElement const * element );
+ExtensionRequireEnum                 parseExtensionRequireEnum( tinyxml2::XMLElement const * element );
+Extensions                           parseExtensions( tinyxml2::XMLElement const * element );
 std::pair<std::string, ExternalType> parseExternalType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 Feature                              parseFeature( tinyxml2::XMLElement const * element );
 FeatureElement                       parseFeatureElement( tinyxml2::XMLElement const * element );
@@ -34,6 +39,7 @@ void                                 parseImplicitExternSyncParams( tinyxml2::XM
 void                                 parseImplicitExternSyncParamsParam( tinyxml2::XMLElement const * element );
 std::pair<std::string, int>          parseInclude( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 std::string                          parseMemberEnum( tinyxml2::XMLElement const * element );
+MultiFeatureElement                  parseMultiFeatureElement( tinyxml2::XMLElement const * element );
 std::pair<std::string, Type>         parseNameAndType( tinyxml2::XMLElement const * element );
 std::tuple<std::string, Type, std::vector<std::string>, std::string> parseNameAndTypeModified( tinyxml2::XMLElement const * element );
 NameElement                                                          parseNameElement( tinyxml2::XMLElement const * element );
@@ -528,7 +534,7 @@ Deprecate parseDeprecate( tinyxml2::XMLElement const * element )
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( "vk.xml", line, attributes, { { "explanationlink", {} } }, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( "vk.xml", line, children, {}, { { "command", MultipleAllowed::Yes }, { "type", MultipleAllowed::Yes } } );
+  checkElements( "vk.xml", line, children, {}, { { "command", MultipleAllowed::Yes }, { "feature", MultipleAllowed::Yes }, { "type", MultipleAllowed::Yes } } );
 
   Deprecate deprecate{ .xmlLine = line };
   for ( auto const & attribute : attributes )
@@ -551,6 +557,10 @@ Deprecate parseDeprecate( tinyxml2::XMLElement const * element )
                      line,
                      "deprecate command <" + deprecateCommand.name + "> already listed for this deprecate block" );
       deprecate.commands.push_back( std::move( deprecateCommand ) );
+    }
+    else if ( value == "feature" )
+    {
+      deprecate.features.push_back( parseFeatureElement( child ) );
     }
     else if ( value == "type" )
     {
@@ -719,6 +729,605 @@ Enums parseEnums( tinyxml2::XMLElement const * element )
   return enums;
 }
 
+Extension parseExtension( tinyxml2::XMLElement const * element )
+{
+  int const                                 line       = element->GetLineNum();
+  std::map<std::string, std::string>        attributes = getAttributes( element );
+  std::vector<tinyxml2::XMLElement const *> children   = getChildElements( element );
+  checkElements(
+    "vk.xml", line, children, { { "require", MultipleAllowed::Yes } }, { { "deprecate", MultipleAllowed::Yes }, { "remove", MultipleAllowed::No } } );
+
+  auto supportedIt = attributes.find( "supported" );
+  assert( supportedIt != attributes.end() );
+  if ( supportedIt->second == "disabled" )
+  {
+    checkAttributes( "vk.xml",
+                     line,
+                     attributes,
+                     { { "name", {} }, { "number", {} }, { "supported", { "disabled" } } },
+                     { { "author", {} },
+                       { "comment", {} },
+                       { "contact", {} },
+                       { "depends", {} },
+                       { "nofeatures", { "true" } },
+                       { "platform", {} },
+                       { "ratified", { "vulkan" } },
+                       { "specialuse", { "glemulation" } },
+                       { "type", { "device", "instance" } } } );
+  }
+  else
+  {
+    checkAttributes( "vk.xml",
+                     line,
+                     attributes,
+                     { { "author", {} },
+                       { "contact", {} },
+                       { "name", {} },
+                       { "number", {} },
+                       { "supported", { "vulkan", "vulkansc" } },
+                       { "type", { "device", "instance" } } },
+                     { { "comment", {} },
+                       { "depends", {} },
+                       { "deprecatedby", {} },
+                       { "nofeatures", { "true" } },
+                       { "obsoletedby", {} },
+                       { "platform", {} },
+                       { "promotedto", {} },
+                       { "provisional", { "true" } },
+                       { "ratified", { "vulkan", "vulkansc" } },
+                       { "sortorder", { "1" } },
+                       { "specialuse", { "cadsupport", "d3demulation", "debugging", "devtools", "glemulation" } } } );
+  }
+
+  // some special handling for two extensions with too complex depends for our simple parser
+  std::string name = attributes.find( "name" )->second;
+  if ( ( name == "VK_EXT_fragment_density_map_offset" ) || ( name == "VK_KHR_swapchain_mutable_format" ) )
+  {
+    auto dependsIt = attributes.find( "depends" );
+    assert( dependsIt != attributes.end() );
+    if ( name == "VK_EXT_fragment_density_map_offset" )
+    {
+      checkForError(
+        "vk.xml",
+        dependsIt->second ==
+          "(VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)+VK_EXT_fragment_density_map+(VK_KHR_create_renderpass2,VK_VERSION_1_2)+(VK_VERSION_1_3,VK_KHR_dynamic_rendering)",
+        line,
+        "unexpected depends attribute for extension <" + name + ">" );
+      dependsIt->second =
+        "VK_EXT_fragment_density_map+(((VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)+VK_KHR_create_renderpass2,VK_VERSION_1_2)+VK_KHR_dynamic_rendering,VK_VERSION_1_3)";
+    }
+    else
+    {
+      checkForError( "vk.xml",
+                     dependsIt->second == "VK_KHR_swapchain+(VK_KHR_maintenance2,VK_VERSION_1_1)+(VK_KHR_image_format_list,VK_VERSION_1_2)",
+                     line,
+                     "unexpected depends attribute for extension <" + name + ">" );
+      dependsIt->second = "VK_KHR_swapchain+((VK_KHR_maintenance2,VK_VERSION_1_1)+VK_KHR_image_format_list,VK_VERSION_1_2)";
+    }
+  }
+
+  Extension extension{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "author" )
+    {
+      checkNoList( attribute.second, line );
+      extension.author = attribute.second;
+    }
+    else if ( attribute.first == "comment" )
+    {
+      extension.comment = attribute.second;
+    }
+    else if ( attribute.first == "contact" )
+    {
+      extension.contacts = tokenize( attribute.second, "," );
+    }
+    else if ( attribute.first == "depends" )
+    {
+      DependencyParser                      dependencyParser( attribute.second );
+      std::vector<std::vector<std::string>> dependencies = vectorize( normalize( dependencyParser.parse() ) );
+      for ( auto & dep : dependencies )
+      {
+        auto featureIt = std::ranges::find_if( dep, []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
+        if ( featureIt == dep.end() )
+        {
+          // the dependency does not start with a VK_VERSION -> prepend a VK_VERSION_1_0 as a fallback
+          dep.insert( dep.begin(), "VK_VERSION_1_0" );
+        }
+        else if ( featureIt != dep.begin() )
+        {
+          // if the VK_VERSION dependency is not at the beginning of the dependencies, move it there, keeping the order of the other dependencies
+          assert( std::find_if( std::next( featureIt ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } ) == dep.end() );
+          std::string version = *featureIt;
+          dep.erase( featureIt );
+          dep.insert( dep.begin(), version );
+        }
+      }
+      assert( std::ranges::all_of( dependencies, []( std::vector<std::string> const & dep ) { return dep[0].starts_with( "VK_VERSION" ); } ) );
+      for ( auto & dep : dependencies )
+      {
+        auto it = extension.depends.insert( { dep[0], {} } ).first;
+        it->second.push_back( {} );
+        for ( auto depIt = std::next( dep.begin() ); depIt != dep.end(); ++depIt )
+        {
+          if ( !depIt->starts_with( "VK_VERSION" ) )
+          {
+            it->second.back().insert( *depIt );
+          }
+        }
+      }
+    }
+    else if ( attribute.first == "deprecatedby" )
+    {
+      checkNoList( attribute.second, line );
+      extension.deprecatedBy = attribute.second;
+      extension.isDeprecated = true;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      extension.name = attribute.second;
+    }
+    else if ( attribute.first == "nofeatures" )
+    {
+      checkNoList( attribute.second, line );
+      extension.noFeatures = ( attribute.second == "true" );
+    }
+    else if ( attribute.first == "number" )
+    {
+      checkNoList( attribute.second, line );
+      checkForError( "vk.xml", isNumber( attribute.second ), line, "extension attribute \"number\" is not a number: <" + attribute.second + ">" );
+      extension.number = attribute.second;
+    }
+    else if ( attribute.first == "obsoletedby" )
+    {
+      checkNoList( attribute.second, line );
+      extension.obsoletedBy = attribute.second;
+    }
+    else if ( attribute.first == "platform" )
+    {
+      checkNoList( attribute.second, line );
+      extension.platform = attribute.second;
+    }
+    else if ( attribute.first == "promotedto" )
+    {
+      checkNoList( attribute.second, line );
+      extension.promotedTo = attribute.second;
+    }
+    else if ( attribute.first == "provisional" )
+    {
+      checkNoList( attribute.second, line );
+      extension.provisional = ( attribute.second == "true" );
+      checkForError( "vk.xml",
+                     !extension.provisional || ( extension.platform == "provisional" ),
+                     line,
+                     "extension <" + extension.name + "> is marked as provisional but the platform <" + extension.platform + "> is not \"provisional\"" );
+    }
+    else if ( attribute.first == "ratified" )
+    {
+      extension.ratified = tokenize( attribute.second, "," );
+    }
+    else if ( attribute.first == "specialuse" )
+    {
+      extension.specialUse = tokenize( attribute.second, "," );
+    }
+    else if ( attribute.first == "sortorder" )
+    {
+      checkNoList( attribute.second, line );
+      checkForError( "vk.xml", isNumber( attribute.second ), line, "extension attribute \"sortorder\" is not a number: <" + attribute.second + ">" );
+      extension.sortOrder = std::stoi( attribute.second );
+    }
+    else if ( attribute.first == "supported" )
+    {
+      extension.supported = tokenize( attribute.second, "," );
+    }
+    else if ( attribute.first == "type" )
+    {
+      checkNoList( attribute.second, line );
+      extension.type = attribute.second;
+    }
+  }
+
+  checkForError( "vk.xml",
+                 ( ( extension.supported.size() == 1 ) && ( extension.supported[0] == "disabled" ) ) ||
+                   std::ranges::all_of( extension.ratified,
+                                        [&supported = extension.supported]( auto const & ratified )
+                                        { return std::ranges::any_of( supported, [&ratified]( auto const & supported ) { return ratified == supported; } ); } ),
+                 line,
+                 "extension <" + extension.name + "> is ratified for <" + concatenate( extension.ratified ) + "> but not all of them are supported <" +
+                   concatenate( extension.supported ) + ")" );
+
+  for ( auto const & child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "deprecate" )
+    {
+      Deprecate deprecate = parseDeprecate( child );
+      for ( auto const & deprecateCommand : deprecate.commands )
+      {
+        checkForError( "vk.xml",
+                       std::ranges::none_of( extension.deprecates,
+                                             [&deprecateCommand]( auto const & deprecate )
+                                             { return containsByName( deprecate.commands, deprecateCommand.name ); } ),
+                       deprecateCommand.xmlLine,
+                       "deprecate command <" + deprecateCommand.name + "> already listed as deprecated for extension <" + extension.name + ">" );
+      }
+      for ( auto const & deprecateType : deprecate.types )
+      {
+        checkForError( "vk.xml",
+                       std::ranges::none_of( extension.deprecates,
+                                             [&deprecateType]( auto const & deprecate ) { return containsByName( deprecate.types, deprecateType.name ); } ),
+                       deprecateType.xmlLine,
+                       "deprecate type <" + deprecateType.name + "> already listed as deprecated for extension <" + extension.name + ">" );
+      }
+      extension.deprecates.push_back( std::move( deprecate ) );
+    }
+    else if ( value == "remove" )
+    {
+      extension.removes.push_back( parseExtensionRemove( child ) );
+    }
+    else if ( value == "require" )
+    {
+      ExtensionRequire require         = parseExtensionRequire( child );
+      auto             extensionNameIt = std::ranges::find_if( require.enums, []( auto const & e ) { return e.name.ends_with( "_EXTENSION_NAME" ); } );
+      if ( extensionNameIt != require.enums.end() )
+      {
+        checkForError( "vk.xml",
+                       extension.require.empty(),
+                       extensionNameIt->xmlLine,
+                       "extension name enum <" + extensionNameIt->name + "> encountered in second or later require section" );
+      }
+      for ( auto const & alreadyRequired : extension.require )
+      {
+        for ( auto const & command : require.commands )
+        {
+          checkForError( "vk.xml",
+                         !containsByName( alreadyRequired.commands, command.name ),
+                         command.xmlLine,
+                         "command <" + command.name + "> already listed as required for extension <" + extension.name + ">" );
+        }
+        if ( alreadyRequired.depends == require.depends )
+        {
+          for ( auto const & e : require.enums )
+          {
+            checkForError( "vk.xml",
+                           !containsByName( alreadyRequired.enums, e.name ),
+                           e.xmlLine,
+                           "require enum <" + e.name + "> already listed as required for extension <" + extension.name + ">" );
+          }
+          for ( auto const & feature : require.features )
+          {
+            for ( auto const & featureName : feature.names )
+            {
+              checkForError( "vk.xml",
+                             std::ranges::none_of( alreadyRequired.features,
+                                                   [&feature, &featureName]( MultiFeatureElement const & alreadyRequiredFeature )
+                                                   {
+                                                     return std::ranges::any_of( alreadyRequiredFeature.names,
+                                                                                 [&featureName]( auto const & alreadyRequiredFeatureName )
+                                                                                 { return alreadyRequiredFeatureName == featureName; } ) &&
+                                                            ( alreadyRequiredFeature.structure == feature.structure );
+                                                   } ),
+                             feature.xmlLine,
+                             "require feature <" + featureName + "> with struct <" + feature.structure + "> already listed as required for extension <" +
+                               extension.name + ">" );
+            }
+          }
+        }
+        for ( auto const & type : require.types )
+        {
+          checkForError( "vk.xml",
+                         !containsByName( alreadyRequired.types, type.name ),
+                         require.xmlLine,
+                         "type <" + type.name + "> already listed as required for extension <" + extension.name + ">" );
+        }
+      }
+      extension.require.push_back( std::move( require ) );
+    }
+  }
+
+  return extension;
+}
+
+ExtensionRemove parseExtensionRemove( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, {}, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml", line, children, { { "feature", MultipleAllowed::No } }, {} );
+
+  ExtensionRemove remove{ .xmlLine = line };
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "feature" )
+    {
+      remove.feature = parseFeatureElement( child );
+    }
+  }
+
+  return remove;
+}
+
+ExtensionRequire parseExtensionRequire( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, {}, { { "api", { "vulkansc" } }, { "comment", {} }, { "depends", {} } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml",
+                 line,
+                 children,
+                 {},
+                 { { "command", MultipleAllowed::Yes },
+                   { "comment", MultipleAllowed::Yes },
+                   { "enum", MultipleAllowed::Yes },
+                   { "feature", MultipleAllowed::Yes },
+                   { "type", MultipleAllowed::Yes } } );
+
+  ExtensionRequire require{ .xmlLine = line };
+  std::string      att;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "api" )
+    {
+      checkNoList( attribute.second, line );
+      require.api = attribute.second;
+    }
+    else if ( attribute.first == "comment" )
+    {
+      require.comment = attribute.second;
+    }
+    else if ( attribute.first == "depends" )
+    {
+      require.depends = attribute.second;
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "command" )
+    {
+      NameElement requireCommand = parseNameElement( child );
+      checkForError( "vk.xml",
+                     !containsByName( require.commands, requireCommand.name ),
+                     requireCommand.xmlLine,
+                     "require command <" + requireCommand.name + "> already listed for this require block" );
+      require.commands.push_back( std::move( requireCommand ) );
+    }
+    else if ( value == "comment" )
+    {
+      readComment( "vk.xml", child );
+    }
+    else if ( value == "enum" )
+    {
+      ExtensionRequireEnum requireEnum = parseExtensionRequireEnum( child );
+      checkForError( "vk.xml",
+                     !containsByName( require.enums, requireEnum.name ),
+                     requireEnum.xmlLine,
+                     "require enum <" + requireEnum.name + "> already listed for this require block" );
+      checkForError( "vk.xml",
+                     !requireEnum.alias.empty() || !requireEnum.name.ends_with( "_EXTENSION_NAME" ) ||
+                       std::ranges::none_of( require.enums, []( auto const & e ) { return e.name.ends_with( "_EXTENSION_NAME" ); } ),
+                     requireEnum.xmlLine,
+                     "extension name enum <" + requireEnum.name + "> is not the first enum ending with \"_EXTENSION_NAME\"" );
+      require.enums.push_back( std::move( requireEnum ) );
+    }
+    else if ( value == "feature" )
+    {
+      MultiFeatureElement requireFeature = parseMultiFeatureElement( child );
+      for ( auto const & name : requireFeature.names )
+      {
+        checkForError( "vk.xml",
+                       std::ranges::none_of( require.features,
+                                             [&requireFeature, &name]( MultiFeatureElement const & feature )
+                                             {
+                                               return std::ranges::any_of( feature.names,
+                                                                           [&name]( auto const & featureName ) { return featureName == name; } ) &&
+                                                      ( feature.structure == requireFeature.structure );
+                                             } ),
+                       requireFeature.xmlLine,
+                       "require feature <" + name + "> with struct <" + requireFeature.structure + "> already listed for this require block" );
+      }
+      require.features.push_back( std::move( requireFeature ) );
+    }
+    else if ( value == "type" )
+    {
+      NameElement requireType = parseNameElement( child );
+      checkForError( "vk.xml",
+                     !containsByName( require.types, requireType.name ),
+                     requireType.xmlLine,
+                     "require type <" + requireType.name + "> already listed for this require block" );
+      require.types.push_back( std::move( requireType ) );
+    }
+  }
+
+  return require;
+}
+
+ExtensionRequireEnum parseExtensionRequireEnum( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  if ( attributes.contains( "alias" ) )
+  {
+    checkAttributes(
+      "vk.xml",
+      line,
+      attributes,
+      { { "alias", {} }, { "name", {} } },
+      { { "api", { "vulkan" } }, { "comment", {} }, { "deprecated", { "aliased" } }, { "extends", {} }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } } } );
+  }
+  else if ( attributes.contains( "bitpos" ) )
+  {
+    checkAttributes( "vk.xml",
+                     line,
+                     attributes,
+                     { { "bitpos", {} }, { "extends", {} }, { "name", {} } },
+                     { { "comment", {} }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } } } );
+  }
+  else if ( attributes.contains( "offset" ) )
+  {
+    checkAttributes(
+      "vk.xml",
+      line,
+      attributes,
+      { { "extends", {} }, { "name", {} }, { "offset", {} } },
+      { { "comment", {} }, { "dir", { "-" } }, { "deprecated", { "true" } }, { "extnumber", {} }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } } } );
+  }
+  else if ( attributes.contains( "value" ) )
+  {
+    checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "value", {} } }, { { "comment", {} }, { "extends", {} } } );
+  }
+  else
+  {
+    checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, {} );
+  }
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  ExtensionRequireEnum requireEnum{ .xmlLine = line };
+  std::string          attr;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "alias" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.alias = attribute.second;
+    }
+    else if ( attribute.first == "api" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.api = attribute.second;
+    }
+    else if ( attribute.first == "bitpos" )
+    {
+      checkNoList( attribute.second, line );
+      checkForError( "vk.xml", isNumber( attribute.second ), line, "require enum with non-numeric bitpos <" + attribute.second + ">" );
+      requireEnum.bitPos = attribute.second;
+    }
+    else if ( attribute.first == "comment" )
+    {
+      requireEnum.comment = attribute.second;
+    }
+    else if ( attribute.first == "deprecated" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.deprecated = attribute.second;
+    }
+    else if ( attribute.first == "dir" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.dir = attribute.second;
+    }
+    else if ( attribute.first == "extends" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.extends = attribute.second;
+    }
+    else if ( attribute.first == "extnumber" )
+    {
+      checkNoList( attribute.second, line );
+      checkForError( "vk.xml", isNumber( attribute.second ), line, "require enum with non-numeric extnumber <" + attribute.second + ">" );
+      requireEnum.extNumber = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.name = attribute.second;
+    }
+    else if ( attribute.first == "offset" )
+    {
+      checkNoList( attribute.second, line );
+      checkForError( "vk.xml", isNumber( attribute.second ), line, "require enum with non-numeric offset <" + attribute.second + ">" );
+      requireEnum.offset = attribute.second;
+    }
+    else if ( attribute.first == "protect" )
+    {
+      checkNoList( attribute.second, line );
+      requireEnum.protect = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      checkNoList( attribute.second, line );
+      checkForError( "vk.xml",
+                     requireEnum.name.ends_with( "_EXTENSION_NAME" ) || isSignedNumber( attribute.second ),
+                     line,
+                     "require enum with non-numeric value <" + attribute.second + ">" );
+      requireEnum.value = attribute.second;
+    }
+  }
+
+  return requireEnum;
+}
+
+Extensions parseExtensions( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "comment", {} } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml", line, children, { { "extension", MultipleAllowed::Yes } } );
+
+  Extensions extensions{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      extensions.comment = attribute.second;
+    }
+  }
+
+  for ( auto const & child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "extension" )
+    {
+      Extension extension = parseExtension( child );
+      checkForError(
+        "vk.xml", !containsByName( extensions.extensions, extension.name ), extension.xmlLine, "extension <" + extension.name + "> already specified" );
+      checkForError( "vk.xml",
+                     std::ranges::none_of( extensions.extensions, [&extension]( auto const & e ) { return e.number == extension.number; } ),
+                     extension.xmlLine,
+                     "extension <" + extension.name + "> has the same number <" + extension.number + "> as another extension" );
+      for ( auto const & deprecate : extension.deprecates )
+      {
+        for ( auto const & deprecateCommand : deprecate.commands )
+        {
+          checkForError( "vk.xml",
+                         std::ranges::none_of( extensions.extensions,
+                                               [&deprecateCommand]( auto const & e )
+                                               {
+                                                 return std::ranges::any_of( e.deprecates,
+                                                                             [&deprecateCommand]( auto const & deprecate )
+                                                                             { return containsByName( deprecate.commands, deprecateCommand.name ); } );
+                                               } ),
+                         deprecateCommand.xmlLine,
+                         "extension <" + extension.name + "> deprecates command <" + deprecateCommand.name +
+                           "> which is already deprecated by another extension" );
+        }
+        for ( auto const & deprecateType : deprecate.types )
+        {
+          checkForError( "vk.xml",
+                         std::ranges::none_of( extensions.extensions,
+                                               [&deprecateType]( auto const & e )
+                                               {
+                                                 return std::ranges::any_of( e.deprecates,
+                                                                             [&deprecateType]( auto const & deprecate )
+                                                                             { return containsByName( deprecate.types, deprecateType.name ); } );
+                                               } ),
+                         deprecateType.xmlLine,
+                         "extension <" + extension.name + "> deprecates type <" + deprecateType.name + "> which is already deprecated by another extension" );
+        }
+      }
+      extensions.extensions.push_back( std::move( extension ) );
+    }
+  }
+  return extensions;
+}
+
 std::pair<std::string, ExternalType> parseExternalType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
 {
   int const line = element->GetLineNum();
@@ -813,6 +1422,7 @@ Feature parseFeature( tinyxml2::XMLElement const * element )
                        deprecateCommand.xmlLine,
                        "deprecate command <" + deprecateCommand.name + "> already listed as deprecated for feature <" + feature.name + ">" );
       }
+      checkForWarning( "vk.xml", deprecate.features.empty(), deprecate.xmlLine, "feature <" + feature.name + "> has deprecated features" );
       for ( auto const & deprecateType : deprecate.types )
       {
         checkForError( "vk.xml",
@@ -1068,6 +1678,30 @@ std::string parseMemberEnum( tinyxml2::XMLElement const * element )
   return enumString;
 }
 
+MultiFeatureElement parseMultiFeatureElement( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "struct", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  MultiFeatureElement feature{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      feature.names = tokenize( attribute.second, "," );
+    }
+    else if ( attribute.first == "struct" )
+    {
+      checkNoList( attribute.second, line );
+      feature.structure = attribute.second;
+    }
+  }
+
+  return feature;
+}
+
 std::pair<std::string, Type> parseNameAndType( tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
@@ -1122,13 +1756,17 @@ NameElement parseNameElement( tinyxml2::XMLElement const * element )
 {
   int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, {} );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, { { "comment", {} } } );
   checkElements( "vk.xml", line, getChildElements( element ), {} );
 
   NameElement nameElement{ .xmlLine = line };
   for ( auto const & attribute : attributes )
   {
-    if ( attribute.first == "name" )
+    if ( attribute.first == "comment" )
+    {
+      nameElement.comment = attribute.second;
+    }
+    else if ( attribute.first == "name" )
     {
       checkNoList( attribute.second, line );
       nameElement.name = attribute.second;
@@ -1439,6 +2077,149 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
         enumIt->second.bitwidth = enumValue.second.bitwidth;
         enumIt->second.type     = enumValue.second.type;
         enumIt->second.values   = std::move( enumValue.second.values );
+      }
+    }
+    else if ( value == "extensions" )
+    {
+      vkxml.extensions = parseExtensions( child );
+      for ( auto const & extension : vkxml.extensions.extensions )
+      {
+        checkForError( "vk.xml",
+                       extension.platform.empty() || vkxml.platforms.contains( extension.platform ),
+                       extension.xmlLine,
+                       "extension <" + extension.name + "> references an unknown platform <" + extension.platform + ">" );
+        checkForError( "vk.xml",
+                       extension.deprecatedBy.empty() || containsByName( vkxml.extensions.extensions, extension.deprecatedBy ) ||
+                         containsByName( vkxml.features, extension.deprecatedBy ),
+                       extension.xmlLine,
+                       "extension <" + extension.name + "> is deprecated by an unknown feature or extension <" + extension.deprecatedBy + ">" );
+        checkForError( "vk.xml",
+                       extension.promotedTo.empty() || containsByName( vkxml.extensions.extensions, extension.promotedTo ) ||
+                         containsByName( vkxml.features, extension.promotedTo ),
+                       extension.xmlLine,
+                       "extension <" + extension.name + "> is promoted to an unknown feature or extension <" + extension.promotedTo + ">" );
+        checkForError( "vk.xml",
+                       extension.obsoletedBy.empty() || containsByName( vkxml.extensions.extensions, extension.obsoletedBy ),
+                       extension.xmlLine,
+                       "extension <" + extension.name + "> is obsoleted by an unknown extension <" + extension.obsoletedBy + ">" );
+        for ( auto const & deprecate : extension.deprecates )
+        {
+          for ( auto const & command : deprecate.commands )
+          {
+            checkForError( "vk.xml",
+                           containsByNameOrAlias( vkxml.commands, command.name ),
+                           command.xmlLine,
+                           "extension <" + extension.name + "> deprecates unknown command <" + command.name + ">" );
+            checkForError( "vk.xml",
+                           command.supersededBy.empty() || containsByName( vkxml.commands, command.supersededBy ),
+                           command.xmlLine,
+                           "deprecated command <" + command.name + "> superseded by unknown command <" + command.supersededBy + ">" );
+          }
+          for ( auto const & feature : deprecate.features )
+          {
+            auto structIt = vkxml.structs.find( feature.structure );
+            checkForError( "vk.xml",
+                           structIt != vkxml.structs.end(),
+                           feature.xmlLine,
+                           "deprecated feature <" + feature.name + "> specifies unknown struct <" + feature.structure + ">" );
+            checkForError( "vk.xml",
+                           std::ranges::any_of( structIt->second.members, [&feature]( auto const & member ) { return member.name == feature.name; } ),
+                           feature.xmlLine,
+                           "deprecated feature <" + feature.name + "> is not a member of struct <" + feature.structure + ">" );
+          }
+          for ( auto const & type : deprecate.types )
+          {
+            checkForError(
+              "vk.xml", vkxml.types.contains( type.name ), type.xmlLine, "extension <" + extension.name + "> deprecates unknown type <" + type.name + ">" );
+            checkForError( "vk.xml",
+                           type.supersededBy.empty() || vkxml.types.contains( type.supersededBy ),
+                           type.xmlLine,
+                           "extension <" + extension.name + "> deprecates type <" + type.name + "> superseded by unknown type <" + type.supersededBy + ">" );
+          }
+        }
+
+        for ( auto const & remove : extension.removes )
+        {
+          auto structIt = vkxml.structs.find( remove.feature.structure );
+          checkForError( "vk.xml",
+                         structIt != vkxml.structs.end(),
+                         remove.feature.xmlLine,
+                         "extension <" + extension.name + "> removes feature <" + remove.feature.name + "> in unknown struct <" + remove.feature.structure +
+                           " >" );
+          checkForError( "vk.xml",
+                         std::ranges::any_of( structIt->second.members, [&remove]( auto const & member ) { return member.name == remove.feature.name; } ),
+                         remove.feature.xmlLine,
+                         "extension <" + extension.name + "> removes feature <" + remove.feature.name + "> that is not a member of struct <" +
+                           remove.feature.structure + " >" );
+        }
+
+        for ( auto const & require : extension.require )
+        {
+          for ( auto const & command : require.commands )
+          {
+            checkForError( "vk.xml",
+                           containsByNameOrAlias( vkxml.commands, command.name ),
+                           command.xmlLine,
+                           "extension <" + extension.name + "> requires unknown command <" + command.name + ">" );
+          }
+          for ( auto const & e : require.enums )
+          {
+            checkForError( "vk.xml",
+                           e.extNumber.empty() ||
+                             std::ranges::any_of( vkxml.extensions.extensions,
+                                                  [&extNumber = e.extNumber]( auto const & extension ) { return extNumber == extension.number; } ),
+                           e.xmlLine,
+                           "enum value <" + e.name + "> references an unknown extension by number <" + e.extNumber + ">" );
+            if ( !e.extends.empty() )
+            {
+              auto enumIt = vkxml.enums.find( e.extends );
+              checkForError( "vk.xml", enumIt != vkxml.enums.end(), e.xmlLine, "enum value <" + e.name + "> extends unknown enum <" + e.extends + ">" );
+
+              auto valueIt = findByName( enumIt->second.values, e.name );
+              if ( valueIt != enumIt->second.values.end() )
+              {
+                checkForError( "vk.xml",
+                               ( valueIt->value == e.value ) && ( valueIt->bitPos == e.bitPos ),
+                               e.xmlLine,
+                               "enum value <" + e.name + "> already listed for enum <" + e.extends + "> with the same value or bitpos" );
+              }
+            }
+          }
+          for ( auto const & feature : require.features )
+          {
+            auto structIt = findByNameOrAlias( vkxml.structs, feature.structure );
+            checkForError( "vk.xml",
+                           structIt != vkxml.structs.end(),
+                           feature.xmlLine,
+                           "extension <" + extension.name + "> requires some feature in unknown struct <" + feature.structure + " >" );
+            for ( auto const & featureName : feature.names )
+            {
+              auto memberIt = std::ranges::find_if( structIt->second.members, [&featureName]( auto const & member ) { return member.name == featureName; } );
+              checkForError( "vk.xml",
+                             memberIt != structIt->second.members.end(),
+                             feature.xmlLine,
+                             "extension <" + extension.name + "> requires feature <" + featureName + "> that is not a member of the required feature struct <" +
+                               feature.structure + ">" );
+              checkForError( "vk.xml",
+                             ( memberIt->type.isValue() && ( memberIt->type.name == "VkBool32" ) ),
+                             feature.xmlLine,
+                             "extension <" + extension.name + "> requires feature <" + featureName +
+                               "> that is not a VkBool32 member of the required feature struct <" + feature.structure + ">" );
+            }
+          }
+        }
+
+        if ( std::ranges::none_of( extension.supported, []( std::string const & s ) { return s == "disabled"; } ) )
+        {
+          // extract the tag from the name, which is supposed to look like VK_<tag>_<other>
+          size_t const tagStart = extension.name.find( '_' );
+          checkForError( "vk.xml", tagStart != std::string::npos, line, "name <" + extension.name + "> is missing an underscore '_'" );
+          size_t const tagEnd = extension.name.find( '_', tagStart + 1 );
+          checkForError( "vk.xml", tagEnd != std::string::npos, line, "name <" + extension.name + "> is missing an underscore '_'" );
+          std::string tag = extension.name.substr( tagStart + 1, tagEnd - tagStart - 1 );
+          checkForError(
+            "vk.xml", ( vkxml.tags.find( tag ) != vkxml.tags.end() ), line, "name <" + extension.name + "> is using an unknown tag <" + tag + ">" );
+        }
       }
     }
     else if ( value == "feature" )

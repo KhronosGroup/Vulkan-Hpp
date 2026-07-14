@@ -105,10 +105,18 @@ struct SupersededName
   int         xmlLine      = {};
 };
 
+struct FeatureElement
+{
+  std::string name      = {};
+  std::string structure = {};
+  int         xmlLine   = {};
+};
+
 struct Deprecate
 {
   std::string                 explanationLink = {};
   std::vector<SupersededName> commands        = {};
+  std::vector<FeatureElement> features        = {};
   std::vector<SupersededName> types           = {};
   int                         xmlLine         = {};
 };
@@ -153,16 +161,92 @@ struct Enums
   int                               xmlLine    = {};
 };
 
-struct ExternalType
+struct ExtensionRemove
 {
-  std::string includedBy = {};
+  FeatureElement feature = {};
+  int            xmlLine = {};
+};
+
+struct ExtensionRequireEnum
+{
+  std::string name       = {};
+  std::string alias      = {};
+  std::string api        = {};
+  std::string bitPos     = {};
+  std::string comment    = {};
+  std::string deprecated = {};
+  std::string dir        = {};
+  std::string extends    = {};
+  std::string extNumber  = {};
+  std::string offset     = {};
+  std::string protect    = {};
+  std::string value      = {};
   int         xmlLine    = {};
 };
 
 struct NameElement
 {
+  std::string comment = {};
   std::string name    = {};
   int         xmlLine = {};
+};
+
+struct MultiFeatureElement
+{
+  std::vector<std::string> names     = {};
+  std::string              structure = {};
+  int                      xmlLine   = {};
+};
+
+struct ExtensionRequire
+{
+  std::string                       api      = {};
+  std::vector<NameElement>          commands = {};
+  std::string                       comment  = {};
+  std::string                       depends  = {};
+  std::vector<ExtensionRequireEnum> enums    = {};
+  std::vector<MultiFeatureElement>  features = {};
+  std::vector<NameElement>          types    = {};
+  int                               xmlLine  = {};
+};
+
+struct Extension
+{
+  std::string                                               author       = {};
+  std::string                                               comment      = {};
+  std::vector<std::string>                                  contacts     = {};
+  std::map<std::string, std::vector<std::set<std::string>>> depends      = {};
+  std::string                                               deprecatedBy = {};
+  std::vector<Deprecate>                                    deprecates   = {};
+  bool                                                      isDeprecated = {};
+  std::string                                               name         = {};
+  bool                                                      noFeatures   = {};
+  std::string                                               number       = {};
+  std::string                                               obsoletedBy  = {};
+  std::string                                               platform     = {};
+  std::string                                               promotedTo   = {};
+  bool                                                      provisional  = {};
+  std::vector<std::string>                                  ratified     = {};
+  std::vector<ExtensionRemove>                              removes      = {};
+  std::vector<ExtensionRequire>                             require      = {};
+  std::vector<std::string>                                  specialUse   = {};
+  int32_t                                                   sortOrder    = {};
+  std::vector<std::string>                                  supported    = {};
+  std::string                                               type         = {};
+  int                                                       xmlLine      = {};
+};
+
+struct Extensions
+{
+  std::string            comment    = {};
+  std::vector<Extension> extensions = {};
+  int                    xmlLine    = {};
+};
+
+struct ExternalType
+{
+  std::string includedBy = {};
+  int         xmlLine    = {};
 };
 
 struct RequireEnum
@@ -179,13 +263,6 @@ struct RequireEnum
   std::string name        = {};
   std::string value       = {};
   int         xmlLine     = {};
-};
-
-struct FeatureElement
-{
-  std::string name      = {};
-  std::string structure = {};
-  int         xmlLine   = {};
 };
 
 struct RequireType
@@ -496,6 +573,7 @@ struct Vkxml
   Comment                             copyright     = {};
   std::map<std::string, Define>       defines       = {};
   std::map<std::string, Enum>         enums         = {};
+  Extensions                          extensions    = {};
   std::map<std::string, ExternalType> externalTypes = {};
   std::vector<Feature>                features      = {};
   std::map<std::string, FuncPointer>  funcPointers  = {};

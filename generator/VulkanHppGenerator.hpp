@@ -1090,52 +1090,35 @@ private:
                                                                                std::vector<size_t> const &               returnParams,
                                                                                std::set<size_t> const &                  singularParams,
                                                                                std::set<size_t> const &                  skippedParams ) const;
-  std::string                                            readComment( tinyxml2::XMLElement const * element ) const;
-  DeprecatedCommandData                                  readDeprecatedCommand( tinyxml2::XMLElement const * element ) const;
-  DeprecatedFeatureData                                  readDeprecatedFeature( tinyxml2::XMLElement const * element ) const;
-  DeprecatedTypeData                                     readDeprecatedType( tinyxml2::XMLElement const * element ) const;
-  DeprecateData                                          readDeprecateData( tinyxml2::XMLElement const * element ) const;
-  void                                                   readExtension( tinyxml2::XMLElement const * element );
-  void readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData, bool extensionSupported );
-  void readExtensions( tinyxml2::XMLElement const * element );
-  void readFormat( tinyxml2::XMLElement const * element );
-  void readFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData );
-  void readFormatPlane( tinyxml2::XMLElement const * element, FormatData & formatData );
-  void readFormats( tinyxml2::XMLElement const * element );
-  void readFormatSPIRVImageFormat( tinyxml2::XMLElement const * element, FormatData & formatData );
-  std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node ) const;
-  std::string                                      readName( tinyxml2::XMLElement const * elements ) const;
-  std::pair<NameData, Type>                        readNameAndType( tinyxml2::XMLElement const * elements );
-  void                                             readRegistry( tinyxml2::XMLElement const * element );
-  RemoveData                                       readRemoveData( tinyxml2::XMLElement const * element );
-  NameLine                                         readRequireCommand( tinyxml2::XMLElement const * element );
-  void                                             readRequireEnum(
-    tinyxml2::XMLElement const * element, std::string const & requiredBy, std::string const & platform, bool supported, RequireData & requireData );
-  RequireFeature           readRequireFeature( tinyxml2::XMLElement const * element );
-  NameLine                 readRequireType( tinyxml2::XMLElement const * element );
-  void                     readSPIRVCapability( tinyxml2::XMLElement const * element );
-  void                     readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element, SpirVCapabilityData & capability );
-  void                     readSPIRVCapabilities( tinyxml2::XMLElement const * element );
-  void                     readSPIRVExtension( tinyxml2::XMLElement const * element );
-  void                     readSPIRVExtensionEnable( tinyxml2::XMLElement const * element );
-  void                     readSPIRVExtensions( tinyxml2::XMLElement const * element );
-  DefinesPartition         partitionDefines( std::map<std::string, DefineData> const & defines );
-  void                     registerDeleter( std::string const & commandName, CommandData const & commandData );
-  void                     rescheduleRAIIHandle( std::string &                              str,
-                                                 std::pair<std::string, HandleData> const & handle,
-                                                 std::set<std::string> &                    listedHandles,
-                                                 std::set<std::string> const &              specialFunctions ) const;
-  std::vector<std::string> selectCommandsByHandle( std::vector<RequireData> const & requireData,
-                                                   std::set<std::string> const &    handleCommands,
-                                                   std::set<std::string> &          listedCommands ) const;
-  bool                     skipLeadingGrandParent( std::pair<std::string, HandleData> const & handle ) const;
-  std::string              stripPluralS( std::string const & name ) const;
-  bool                     structureChainHoldsHandle( std::string const & name ) const;
-  bool                     structureChainHoldsVector( std::string const & name ) const;
-  bool                     structureHoldsHandle( StructData const & structData ) const;
-  bool                     structureHoldsVector( StructData const & structData ) const;
-  std::string              toString( TypeCategory category ) const;
-  MemberData const &       vectorMemberByStructure( std::string const & structureType ) const;
+  void                                                   readFormat( tinyxml2::XMLElement const * element );
+  void                                                   readFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData );
+  void                                                   readFormatPlane( tinyxml2::XMLElement const * element, FormatData & formatData );
+  void                                                   readFormats( tinyxml2::XMLElement const * element );
+  void                                                   readFormatSPIRVImageFormat( tinyxml2::XMLElement const * element, FormatData & formatData );
+  void                                                   readRegistry( tinyxml2::XMLElement const * element );
+  void                                                   readSPIRVCapability( tinyxml2::XMLElement const * element );
+  void                                                   readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element, SpirVCapabilityData & capability );
+  void                                                   readSPIRVCapabilities( tinyxml2::XMLElement const * element );
+  void                                                   readSPIRVExtension( tinyxml2::XMLElement const * element );
+  void                                                   readSPIRVExtensionEnable( tinyxml2::XMLElement const * element );
+  void                                                   readSPIRVExtensions( tinyxml2::XMLElement const * element );
+  DefinesPartition                                       partitionDefines( std::map<std::string, DefineData> const & defines );
+  void                                                   registerDeleter( std::string const & commandName, CommandData const & commandData );
+  void                                                   rescheduleRAIIHandle( std::string &                              str,
+                                                                               std::pair<std::string, HandleData> const & handle,
+                                                                               std::set<std::string> &                    listedHandles,
+                                                                               std::set<std::string> const &              specialFunctions ) const;
+  std::vector<std::string>                               selectCommandsByHandle( std::vector<RequireData> const & requireData,
+                                                                                 std::set<std::string> const &    handleCommands,
+                                                                                 std::set<std::string> &          listedCommands ) const;
+  bool                                                   skipLeadingGrandParent( std::pair<std::string, HandleData> const & handle ) const;
+  std::string                                            stripPluralS( std::string const & name ) const;
+  bool                                                   structureChainHoldsHandle( std::string const & name ) const;
+  bool                                                   structureChainHoldsVector( std::string const & name ) const;
+  bool                                                   structureHoldsHandle( StructData const & structData ) const;
+  bool                                                   structureHoldsVector( StructData const & structData ) const;
+  std::string                                            toString( TypeCategory category ) const;
+  MemberData const &                                     vectorMemberByStructure( std::string const & structureType ) const;
 
 private:
   std::string                                m_api;

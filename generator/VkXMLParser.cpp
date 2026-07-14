@@ -837,10 +837,20 @@ Extension parseExtension( tinyxml2::XMLElement const * element )
         else if ( featureIt != dep.begin() )
         {
           // if the VK_VERSION dependency is not at the beginning of the dependencies, move it there, keeping the order of the other dependencies
-          assert( std::find_if( std::next( featureIt ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } ) == dep.end() );
           std::string version = *featureIt;
           dep.erase( featureIt );
           dep.insert( dep.begin(), version );
+        }
+
+        featureIt = std::find_if( std::next( dep.begin() ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
+        while ( featureIt != dep.end() )
+        {
+          if ( dep.front() < *featureIt )
+          {
+            dep.front() = *featureIt;
+          }
+          dep.erase( featureIt );
+          featureIt = std::find_if( std::next( dep.begin() ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
         }
       }
       assert( std::ranges::all_of( dependencies, []( std::vector<std::string> const & dep ) { return dep[0].starts_with( "VK_VERSION" ); } ) );
@@ -850,10 +860,7 @@ Extension parseExtension( tinyxml2::XMLElement const * element )
         it->second.push_back( {} );
         for ( auto depIt = std::next( dep.begin() ); depIt != dep.end(); ++depIt )
         {
-          if ( !depIt->starts_with( "VK_VERSION" ) )
-          {
-            it->second.back().insert( *depIt );
-          }
+          it->second.back().insert( *depIt );
         }
       }
     }

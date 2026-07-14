@@ -3281,13 +3281,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             } } },
           { "VK_VERSION_1_1",
             { {
-                "VK_KHR_shader_float16_int8",
-              },
-              {} } },
+              "VK_KHR_shader_float16_int8",
+            } } },
           { "VK_VERSION_1_2",
             { {
-              "VK_KHR_get_physical_device_properties2",
-            } } } } },
+                "VK_KHR_get_physical_device_properties2",
+              },
+              {} } } } },
       { "VK_EXT_primitive_restart_index",
         { { "VK_VERSION_1_0",
             { {

@@ -1141,7 +1141,9 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
       {
         for ( auto const & d : *depsIt )
         {
-          checkForError( isExtension( d ), extension.xmlLine, "extension <" + extension.name + "> lists an unknown extension dependency <" + d + ">" );
+          checkForError( isFeature( d ) || isExtension( d ),
+                         extension.xmlLine,
+                         "extension <" + extension.name + "> lists an unknown feature or extension dependency <" + d + ">" );
         }
         checkForError( std::none_of( std::next( depsIt ), dep.second.end(), [&depsIt]( auto const & d ) { return *depsIt == d; } ),
                        extension.xmlLine,

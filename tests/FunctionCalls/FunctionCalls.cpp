@@ -2193,6 +2193,137 @@ int main()
       device.getImageSparseMemoryRequirements2( imageSparseMemoryRequirementsInfo2, allocator );
   }
 
+  // Promoted from VK_KHR_get_physical_device_properties2
+  {
+    vk::PhysicalDevice          physicalDevice;
+    vk::PhysicalDeviceFeatures2 physicalDeviceFeatures2;
+    physicalDevice.getFeatures2( &physicalDeviceFeatures2 );
+  }
+  {
+    vk::PhysicalDevice          physicalDevice;
+    vk::PhysicalDeviceFeatures2 physicalDeviceFeatures2 = physicalDevice.getFeatures2();
+  }
+  {
+    vk::PhysicalDevice                                                                     physicalDevice;
+    vk::StructureChain<vk::PhysicalDeviceFeatures2, vk::PhysicalDevicePrivateDataFeatures> physicalDeviceFeatures2Chain =
+      physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDevicePrivateDataFeatures>();
+  }
+
+  {
+    vk::PhysicalDevice            physicalDevice;
+    vk::PhysicalDeviceProperties2 physicalDeviceProperties2;
+    physicalDevice.getProperties2( &physicalDeviceProperties2 );
+  }
+  {
+    vk::PhysicalDevice            physicalDevice;
+    vk::PhysicalDeviceProperties2 physicalDeviceProperties2 = physicalDevice.getProperties2();
+  }
+  {
+    vk::PhysicalDevice                                                                          physicalDevice;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMultiDrawPropertiesEXT> physicalDeviceProperties2Chain =
+      physicalDevice.getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMultiDrawPropertiesEXT>();
+  }
+
+  {
+    vk::PhysicalDevice    physicalDevice;
+    vk::Format            format = {};
+    vk::FormatProperties2 formatProperties2;
+    physicalDevice.getFormatProperties2( format, &formatProperties2 );
+  }
+  {
+    vk::PhysicalDevice    physicalDevice;
+    vk::Format            format            = {};
+    vk::FormatProperties2 formatProperties2 = physicalDevice.getFormatProperties2( format );
+  }
+  {
+    vk::PhysicalDevice                                               physicalDevice;
+    vk::Format                                                       format = {};
+    vk::StructureChain<vk::FormatProperties2, vk::FormatProperties3> formatProperties2Chain =
+      physicalDevice.getFormatProperties2<vk::FormatProperties2, vk::FormatProperties3>( format );
+  }
+
+  {
+    vk::PhysicalDevice                 physicalDevice;
+    vk::PhysicalDeviceImageFormatInfo2 imageFormatInfo2;
+    vk::ImageFormatProperties2         imageFormatProperties2;
+    vk::Result                         result = physicalDevice.getImageFormatProperties2( &imageFormatInfo2, &imageFormatProperties2 );
+  }
+  {
+    vk::PhysicalDevice                 physicalDevice;
+    vk::PhysicalDeviceImageFormatInfo2 imageFormatInfo2;
+    vk::ImageFormatProperties2         imageFormatProperties2 = physicalDevice.getImageFormatProperties2( imageFormatInfo2 );
+  }
+  {
+    vk::PhysicalDevice                                                                physicalDevice;
+    vk::PhysicalDeviceImageFormatInfo2                                                imageFormatInfo2;
+    vk::StructureChain<vk::ImageFormatProperties2, vk::ExternalImageFormatProperties> imageFormatProperties2Chain =
+      physicalDevice.getImageFormatProperties2<vk::ImageFormatProperties2, vk::ExternalImageFormatProperties>( imageFormatInfo2 );
+  }
+
+  {
+    vk::PhysicalDevice physicalDevice;
+    uint32_t           queueFamilyPropertyCount = 0;
+    physicalDevice.getQueueFamilyProperties2( &queueFamilyPropertyCount, nullptr );
+    std::vector<vk::QueueFamilyProperties2> queueFamilyProperties2( queueFamilyPropertyCount );
+    physicalDevice.getQueueFamilyProperties2( &queueFamilyPropertyCount, queueFamilyProperties2.data() );
+  }
+  {
+    vk::PhysicalDevice                      physicalDevice;
+    std::vector<vk::QueueFamilyProperties2> queueFamilyProperties2 = physicalDevice.getQueueFamilyProperties2();
+  }
+  {
+    vk::PhysicalDevice                         physicalDevice;
+    std::allocator<vk::QueueFamilyProperties2> allocator;
+    std::vector<vk::QueueFamilyProperties2>    queueFamilyProperties2 = physicalDevice.getQueueFamilyProperties2( allocator );
+  }
+  {
+    vk::PhysicalDevice physicalDevice;
+    using QueueFamilyProperties2Chain = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointProperties2NV>;
+    std::vector<QueueFamilyProperties2Chain> queueFamilyProperties2Chain = physicalDevice.getQueueFamilyProperties2<QueueFamilyProperties2Chain>();
+  }
+  {
+    vk::PhysicalDevice physicalDevice;
+    using QueueFamilyProperties2Chain = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointProperties2NV>;
+    std::allocator<QueueFamilyProperties2Chain> allocator;
+    std::vector<QueueFamilyProperties2Chain> queueFamilyProperties2Chain = physicalDevice.getQueueFamilyProperties2<QueueFamilyProperties2Chain>( allocator );
+  }
+
+  {
+    vk::PhysicalDevice                  physicalDevice;
+    vk::PhysicalDeviceMemoryProperties2 memoryProperties2;
+    physicalDevice.getMemoryProperties2( &memoryProperties2 );
+  }
+  {
+    vk::PhysicalDevice                  physicalDevice;
+    vk::PhysicalDeviceMemoryProperties2 memoryProperties2 = physicalDevice.getMemoryProperties2();
+  }
+  {
+    vk::PhysicalDevice                                                                                   physicalDevice;
+    vk::StructureChain<vk::PhysicalDeviceMemoryProperties2, vk::PhysicalDeviceMemoryBudgetPropertiesEXT> memoryProperties2Chain =
+      physicalDevice.getMemoryProperties2<vk::PhysicalDeviceMemoryProperties2, vk::PhysicalDeviceMemoryBudgetPropertiesEXT>();
+  }
+
+  {
+    vk::PhysicalDevice                       physicalDevice;
+    vk::PhysicalDeviceSparseImageFormatInfo2 sparseImageFormatInfo2;
+    uint32_t                                 propertyCount = {};
+    physicalDevice.getSparseImageFormatProperties2( &sparseImageFormatInfo2, &propertyCount, nullptr );
+    std::vector<vk::SparseImageFormatProperties2> sparseImageFormatProperties2( propertyCount );
+    physicalDevice.getSparseImageFormatProperties2( &sparseImageFormatInfo2, &propertyCount, sparseImageFormatProperties2.data() );
+  }
+  {
+    vk::PhysicalDevice                            physicalDevice;
+    vk::PhysicalDeviceSparseImageFormatInfo2      sparseImageFormatInfo2;
+    std::vector<vk::SparseImageFormatProperties2> sparseImageFormatProperties2 = physicalDevice.getSparseImageFormatProperties2( sparseImageFormatInfo2 );
+  }
+  {
+    vk::PhysicalDevice                                            physicalDevice;
+    vk::PhysicalDeviceSparseImageFormatInfo2                      sparseImageFormatInfo2;
+    std::vector<vk::SparseImageFormatProperties2>::allocator_type allocator;
+    std::vector<vk::SparseImageFormatProperties2>                 sparseImageFormatProperties2 =
+      physicalDevice.getSparseImageFormatProperties2( sparseImageFormatInfo2, allocator );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

@@ -12,6 +12,7 @@ void checkExtensionOrStructAndMember( std::string const & depends, int xmlLine, 
 void checkNoList( std::string const & item, int line );
 bool containsByNameAndExport( std::vector<Command> const & commands, std::string const & name, std::vector<std::string> const & exports );
 bool isLenByStructMember( std::string const & name, std::vector<Param> const & params, std::map<std::string, Struct> const & structs );
+void normalizeVersion( std::vector<std::vector<std::string>> & dependencies );
 std::pair<std::string, BaseType>
   parseBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & api );
 std::pair<std::vector<std::string>, std::pair<std::string, Bitmask>> parseBitmask( tinyxml2::XMLElement const *               element,
@@ -139,6 +140,39 @@ bool isLenByStructMember( std::string const & name, std::vector<Param> const & p
     }
   }
   return false;
+}
+
+void normalizeVersion( std::vector<std::vector<std::string>> & dependencies )
+{
+  for ( auto & dep : dependencies )
+  {
+    auto featureIt = std::ranges::find_if( dep, []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
+    if ( featureIt == dep.end() )
+    {
+      // the dependency does not start with a VK_VERSION -> prepend a VK_VERSION_1_0 as a fallback
+      dep.insert( dep.begin(), "VK_VERSION_1_0" );
+    }
+    else if ( featureIt != dep.begin() )
+    {
+      // the VK_VERSION dependency is not at the beginning of the dependencies, move it there, keeping the order of the other dependencies
+      std::string version = *featureIt;
+      dep.erase( featureIt );
+      dep.insert( dep.begin(), version );
+    }
+
+    // remove any other VK_VERSION dependencies, keeping only the highest one
+    featureIt = std::find_if( std::next( dep.begin() ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
+    while ( featureIt != dep.end() )
+    {
+      if ( dep.front() < *featureIt )
+      {
+        dep.front() = *featureIt;
+      }
+      dep.erase( featureIt );
+      featureIt = std::find_if( std::next( dep.begin() ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
+    }
+  }
+  assert( std::ranges::all_of( dependencies, []( std::vector<std::string> const & dep ) { return dep[0].starts_with( "VK_VERSION" ); } ) );
 }
 
 std::pair<std::string, BaseType> parseBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
@@ -779,33 +813,6 @@ Extension parseExtension( tinyxml2::XMLElement const * element )
                        { "specialuse", { "cadsupport", "d3demulation", "debugging", "devtools", "glemulation" } } } );
   }
 
-  // some special handling for two extensions with too complex depends for our simple parser
-  std::string name = attributes.find( "name" )->second;
-  if ( ( name == "VK_EXT_fragment_density_map_offset" ) || ( name == "VK_KHR_swapchain_mutable_format" ) )
-  {
-    auto dependsIt = attributes.find( "depends" );
-    assert( dependsIt != attributes.end() );
-    if ( name == "VK_EXT_fragment_density_map_offset" )
-    {
-      checkForError(
-        "vk.xml",
-        dependsIt->second ==
-          "(VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)+VK_EXT_fragment_density_map+(VK_KHR_create_renderpass2,VK_VERSION_1_2)+(VK_VERSION_1_3,VK_KHR_dynamic_rendering)",
-        line,
-        "unexpected depends attribute for extension <" + name + ">" );
-      dependsIt->second =
-        "VK_EXT_fragment_density_map+(((VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)+VK_KHR_create_renderpass2,VK_VERSION_1_2)+VK_KHR_dynamic_rendering,VK_VERSION_1_3)";
-    }
-    else
-    {
-      checkForError( "vk.xml",
-                     dependsIt->second == "VK_KHR_swapchain+(VK_KHR_maintenance2,VK_VERSION_1_1)+(VK_KHR_image_format_list,VK_VERSION_1_2)",
-                     line,
-                     "unexpected depends attribute for extension <" + name + ">" );
-      dependsIt->second = "VK_KHR_swapchain+((VK_KHR_maintenance2,VK_VERSION_1_1)+VK_KHR_image_format_list,VK_VERSION_1_2)";
-    }
-  }
-
   Extension extension{ .xmlLine = line };
   for ( auto const & attribute : attributes )
   {
@@ -826,34 +833,7 @@ Extension parseExtension( tinyxml2::XMLElement const * element )
     {
       DependencyParser                      dependencyParser( attribute.second );
       std::vector<std::vector<std::string>> dependencies = vectorize( normalize( dependencyParser.parse() ) );
-      for ( auto & dep : dependencies )
-      {
-        auto featureIt = std::ranges::find_if( dep, []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
-        if ( featureIt == dep.end() )
-        {
-          // the dependency does not start with a VK_VERSION -> prepend a VK_VERSION_1_0 as a fallback
-          dep.insert( dep.begin(), "VK_VERSION_1_0" );
-        }
-        else if ( featureIt != dep.begin() )
-        {
-          // if the VK_VERSION dependency is not at the beginning of the dependencies, move it there, keeping the order of the other dependencies
-          std::string version = *featureIt;
-          dep.erase( featureIt );
-          dep.insert( dep.begin(), version );
-        }
-
-        featureIt = std::find_if( std::next( dep.begin() ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
-        while ( featureIt != dep.end() )
-        {
-          if ( dep.front() < *featureIt )
-          {
-            dep.front() = *featureIt;
-          }
-          dep.erase( featureIt );
-          featureIt = std::find_if( std::next( dep.begin() ), dep.end(), []( std::string const & d ) { return d.starts_with( "VK_VERSION" ); } );
-        }
-      }
-      assert( std::ranges::all_of( dependencies, []( std::vector<std::string> const & dep ) { return dep[0].starts_with( "VK_VERSION" ); } ) );
+      normalizeVersion( dependencies );
       for ( auto & dep : dependencies )
       {
         auto it = extension.depends.insert( { dep[0], {} } ).first;
@@ -1332,6 +1312,45 @@ Extensions parseExtensions( tinyxml2::XMLElement const * element )
       extensions.extensions.push_back( std::move( extension ) );
     }
   }
+
+  // filter out dependencies that are already promoted to a version less or equal to the base version of the dependency set
+  // also filter out dependency sets that are equal to a previous dependency set
+  for ( auto & extension : extensions.extensions )
+  {
+    for ( auto & depend : extension.depends )
+    {
+      for ( auto depSetIt = depend.second.begin(); depSetIt != depend.second.end(); )
+      {
+        for ( auto depIt = depSetIt->begin(); depIt != depSetIt->end(); )
+        {
+          // dependency extensions that are promoted to a version less or equal to the base version of this dependency set can be erased
+          auto extIt = std::ranges::find_if( extensions.extensions, [depIt]( auto const & e ) { return e.name == *depIt; } );
+          checkForError( "vk.xml",
+                         extIt != extensions.extensions.end(),
+                         extension.xmlLine,
+                         "extension <" + extension.name + "> depends on unknown extension <" + *depIt + ">" );
+          if ( ( extIt->promotedTo.starts_with( "VK_VERSION_" ) ) && ( extIt->promotedTo <= depend.first ) )
+          {
+            depIt = depSetIt->erase( depIt );
+          }
+          else
+          {
+            ++depIt;
+          }
+        }
+        // if any of the previous dependency sets equals the current one, it can be erased
+        if ( std::any_of( depend.second.begin(), depSetIt, [depSetIt]( std::set<std::string> const & depSet ) { return depSet == *depSetIt; } ) )
+        {
+          depSetIt = depend.second.erase( depSetIt );
+        }
+        else
+        {
+          ++depSetIt;
+        }
+      }
+    }
+  }
+
   return extensions;
 }
 

@@ -19,6 +19,7 @@ std::pair<std::vector<std::string>, std::pair<std::string, Bitmask>> parseBitmas
                                                                                    std::map<std::string, std::string> const & attributes );
 void                                                                 parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & commands );
 std::vector<Command>                                                 parseCommands( tinyxml2::XMLElement const * element );
+Component                                                            parseComponent( tinyxml2::XMLElement const * element );
 std::pair<std::string, Constant>                                     parseConstant( tinyxml2::XMLElement const * element );
 CategoryAlias parseCategoryAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & category );
 std::pair<std::vector<std::string>, std::pair<std::string, Define>> parseDefine( tinyxml2::XMLElement const *               element,
@@ -34,6 +35,8 @@ Extensions                           parseExtensions( tinyxml2::XMLElement const
 std::pair<std::string, ExternalType> parseExternalType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 Feature                              parseFeature( tinyxml2::XMLElement const * element );
 FeatureElement                       parseFeatureElement( tinyxml2::XMLElement const * element );
+Format                               parseFormat( tinyxml2::XMLElement const * element );
+std::vector<Format>                  parseFormats( tinyxml2::XMLElement const * element );
 std::pair<std::string, FuncPointer>  parseFuncPointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 std::pair<std::string, Handle>       parseHandle( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 void                                 parseImplicitExternSyncParams( tinyxml2::XMLElement const * element );
@@ -41,11 +44,12 @@ void                                 parseImplicitExternSyncParamsParam( tinyxml
 std::pair<std::string, int>          parseInclude( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 std::string                          parseMemberEnum( tinyxml2::XMLElement const * element );
 MultiFeatureElement                  parseMultiFeatureElement( tinyxml2::XMLElement const * element );
+NameElement                          parseNameElement( tinyxml2::XMLElement const * element );
 std::pair<std::string, Type>         parseNameAndType( tinyxml2::XMLElement const * element );
 std::tuple<std::string, Type, std::vector<std::string>, std::string> parseNameAndTypeModified( tinyxml2::XMLElement const * element );
-NameElement                                                          parseNameElement( tinyxml2::XMLElement const * element );
 std::pair<std::string, std::string>                                  parseNameWithAlias( tinyxml2::XMLElement const * element );
 Param                                                                parseParam( tinyxml2::XMLElement const * element );
+Plane                                                                parsePlane( tinyxml2::XMLElement const * element );
 std::pair<std::string, Platform>                                     parsePlatform( tinyxml2::XMLElement const * element );
 std::map<std::string, Platform>                                      parsePlatforms( tinyxml2::XMLElement const * element );
 std::pair<std::string, Type>                                         parseProto( tinyxml2::XMLElement const * element );
@@ -467,6 +471,50 @@ std::vector<Command> parseCommands( tinyxml2::XMLElement const * element )
   }
 
   return commands;
+}
+
+Component parseComponent( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml",
+                   line,
+                   attributes,
+                   { { "bits", {} },
+                     { "name", {} },
+                     { "numericFormat", { "BOOL", "SINT", "SFIXED5", "SFLOAT", "SNORM", "SRGB", "SSCALED", "UFLOAT", "UINT", "UNORM", "USCALED" } } },
+                   { { "planeIndex", { "0", "1", "2" } } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  Component component{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "bits" )
+    {
+      checkNoList( attribute.second, line );
+      checkForError( "vk.xml",
+                     isNumber( attribute.second ) || ( attribute.second == "compressed" ),
+                     line,
+                     "unexpected value for attribute \"bits\": <" + attribute.second + ">" );
+      component.bits = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      component.name = attribute.second;
+    }
+    else if ( attribute.first == "numericFormat" )
+    {
+      checkNoList( attribute.second, line );
+      component.numericFormat = attribute.second;
+    }
+    else if ( attribute.first == "planeIndex" )
+    {
+      checkNoList( attribute.second, line );
+      component.planeIndex = attribute.second;
+    }
+  }
+  return component;
 }
 
 std::pair<std::string, Constant> parseConstant( tinyxml2::XMLElement const * element )
@@ -1579,6 +1627,159 @@ FeatureElement parseFeatureElement( tinyxml2::XMLElement const * element )
   return feature;
 }
 
+Format parseFormat( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml",
+                   line,
+                   attributes,
+                   { { "blockSize", {} }, { "class", {} }, { "name", {} }, { "texelsPerBlock", {} } },
+                   { { "blockExtent", {} }, { "chroma", { "420", "422", "444" } }, { "compressed", {} }, { "packed", { "8", "16", "32" } } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements(
+    "vk.xml", line, children, { { "component", MultipleAllowed::Yes } }, { { "plane", MultipleAllowed::Yes }, { "spirvimageformat", MultipleAllowed::No } } );
+
+  Format format{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "blockExtent" )
+    {
+      format.blockExtent = tokenize( attribute.second, "," );
+    }
+    else if ( attribute.first == "blockSize" )
+    {
+      checkNoList( attribute.second, line );
+      format.blockSize = attribute.second;
+    }
+    else if ( attribute.first == "chroma" )
+    {
+      checkNoList( attribute.second, line );
+      format.chroma = attribute.second;
+    }
+    else if ( attribute.first == "class" )
+    {
+      checkNoList( attribute.second, line );
+      format.classAttribute = attribute.second;
+    }
+    else if ( attribute.first == "compressed" )
+    {
+      checkNoList( attribute.second, line );
+      format.compressed = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( attribute.second, line );
+      format.name = attribute.second;
+    }
+    else if ( attribute.first == "packed" )
+    {
+      checkNoList( attribute.second, line );
+      format.packed = attribute.second;
+    }
+    else if ( attribute.first == "texelsPerBlock" )
+    {
+      checkNoList( attribute.second, line );
+      format.texelsPerBlock = attribute.second;
+    }
+  }
+
+  checkForError( "vk.xml",
+                 format.blockExtent.empty() ||
+                   ( ( format.blockExtent.size() == 3 ) && std::ranges::all_of( format.blockExtent, []( auto const & e ) { return isNumber( e ); } ) ),
+                 format.xmlLine,
+                 "format <" + format.name + "> has ill-formatted attribute blockExtent = <" + concatenate( format.blockExtent ) + ">" );
+  checkForError(
+    "vk.xml", isNumber( format.blockSize ), format.xmlLine, "format <" + format.name + "> has non-number <" + format.blockSize + "> as blockSize" );
+  checkForError( "vk.xml",
+                 isNumber( format.texelsPerBlock ),
+                 format.xmlLine,
+                 "format <" + format.name + "> has non-number <" + format.texelsPerBlock + "> as texelsPerBlock" );
+  checkForError( "vk.xml",
+                 ( format.texelsPerBlock == "1" ) || ( !format.blockExtent.empty() && !format.compressed.empty() ),
+                 format.xmlLine,
+                 "format <" + format.name + "> has texelsPerBlock > 1 but no \"blockExtent\" or no \"compressed\" attribute" );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "component" )
+    {
+      format.components.push_back( parseComponent( child ) );
+    }
+    else if ( value == "plane" )
+    {
+      format.planes.push_back( parsePlane( child ) );
+    }
+    else if ( value == "spirvimageformat" )
+    {
+      format.spirvImageFormat = parseNameElement( child );
+    }
+  }
+
+  bool isCompressed = ( format.components.front().bits == "compressed" );
+  auto componentIt  = std::find_if( std::next( format.components.begin() ),
+                                    format.components.end(),
+                                    [&isCompressed]( auto const & component ) { return isCompressed != ( component.bits == "compressed" ); } );
+  if ( componentIt != format.components.end() )
+  {
+    checkForError( "vk.xml",
+                   false,
+                   componentIt->xmlLine,
+                   isCompressed ? "in format <" + format.name + "> component <" + componentIt->name + "> should be marked as compressed"
+                                : "in format <" + format.name + "> component <" + componentIt->name + "> should not be marked as compressed" );
+  }
+
+  bool hasPlaneIndex = !format.components.front().planeIndex.empty();
+  componentIt        = std::find_if( std::next( format.components.begin() ),
+                                     format.components.end(),
+                                     [&hasPlaneIndex]( auto const & component ) { return hasPlaneIndex != !component.planeIndex.empty(); } );
+  if ( componentIt != format.components.end() )
+  {
+    checkForError( "vk.xml",
+                   false,
+                   componentIt->xmlLine,
+                   hasPlaneIndex ? "in format <" + format.name + "> component <" + componentIt->name + "> is missing a planeIndex"
+                                 : "in format <" + format.name + "> component <" + componentIt->name + "> has an unexpected planeIndex" );
+  }
+  if ( hasPlaneIndex )
+  {
+    auto planeCount = format.planes.size();
+    componentIt =
+      std::ranges::find_if( format.components, [&planeCount]( auto const & component ) { return planeCount <= std::stoul( component.planeIndex ); } );
+    if ( componentIt != format.components.end() )
+    {
+      checkForError( "vk.xml",
+                     false,
+                     componentIt->xmlLine,
+                     "in format <" + format.name + "> component <" + componentIt->name + "> has an unexpected planeIndex <" + componentIt->planeIndex + ">" );
+    }
+  }
+
+  return format;
+}
+
+std::vector<Format> parseFormats( tinyxml2::XMLElement const * element )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, getAttributes( element ), {}, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml", line, children, { { "format", MultipleAllowed::Yes } } );
+
+  std::vector<Format> formats;
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "format" )
+    {
+      Format format = parseFormat( child );
+      checkForError( "vk.xml", !containsByName( formats, format.name ), format.xmlLine, "format <" + format.name + "> already specified in formats block" );
+      formats.push_back( std::move( format ) );
+    }
+  }
+  return formats;
+}
+
 std::pair<std::string, FuncPointer> parseFuncPointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
 {
   int const line = element->GetLineNum();
@@ -1914,6 +2115,49 @@ Param parseParam( tinyxml2::XMLElement const * element )
   checkForError( "vk.xml", param.len.empty() || param.type.isPointer(), line, "param <" + param.name + "> has attribute <len> but is not a pointer" );
 
   return param;
+}
+
+Plane parsePlane( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml",
+                   line,
+                   attributes,
+                   { { "compatible", {} }, { "heightDivisor", { "1", "2" } }, { "index", { "0", "1", "2" } }, { "widthDivisor", { "1", "2" } } },
+                   { { "planeIndex", { "0", "1", "2" } } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  Plane plane{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "compatible" )
+    {
+      checkNoList( attribute.second, line );
+      plane.compatible = attribute.second;
+    }
+    else if ( attribute.first == "heightDivisor" )
+    {
+      checkNoList( attribute.second, line );
+      plane.heightDivisor = attribute.second;
+    }
+    else if ( attribute.first == "index" )
+    {
+      checkNoList( attribute.second, line );
+      plane.index = attribute.second;
+    }
+    else if ( attribute.first == "planeIndex" )
+    {
+      checkNoList( attribute.second, line );
+      plane.planeIndex = attribute.second;
+    }
+    else if ( attribute.first == "widthDivisor" )
+    {
+      checkNoList( attribute.second, line );
+      plane.widthDivisor = attribute.second;
+    }
+  }
+  return plane;
 }
 
 std::pair<std::string, Platform> parsePlatform( tinyxml2::XMLElement const * element )
@@ -2332,6 +2576,20 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
         }
       }
       vkxml.features.push_back( std::move( feature ) );
+    }
+    else if ( value == "formats" )
+    {
+      std::vector<Format> formats = parseFormats( child );
+
+      for ( auto const & format : formats )
+      {
+        std::string tag = findTag( format.name, vkxml.tags );
+        checkForError( "vk.xml",
+                       format.packed.empty() || format.name.ends_with( "PACK" + format.packed + ( tag.empty() ? "" : "_" + tag ) ),
+                       format.xmlLine,
+                       "format <" + format.name + "> has ill-formatted attribute packed = <" + format.packed + ">" );
+      }
+      vkxml.formats = std::move( formats );
     }
     else if ( value == "platforms" )
     {

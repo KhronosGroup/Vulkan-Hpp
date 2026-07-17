@@ -18,6 +18,7 @@ jobs:
       run:
         shell: bash
 
+    # Keep the full compiler matrix visible so CI consumers can inspect every job.
     strategy:
       matrix:
         env: [

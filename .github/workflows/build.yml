@@ -19,6 +19,7 @@ jobs:
         shell: bash
 
     # Keep the full compiler matrix visible so CI consumers can inspect every job.
+    # Matrix smoke-test push marker: behavior and coverage remain unchanged.
     strategy:
       matrix:
         env: [

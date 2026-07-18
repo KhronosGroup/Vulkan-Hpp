@@ -173,6 +173,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       eBaseline          = STD_VIDEO_H264_PROFILE_IDC_BASELINE,
       eMain              = STD_VIDEO_H264_PROFILE_IDC_MAIN,
       eHigh              = STD_VIDEO_H264_PROFILE_IDC_HIGH,
+      eHigh10            = STD_VIDEO_H264_PROFILE_IDC_HIGH_10,
+      eHigh422           = STD_VIDEO_H264_PROFILE_IDC_HIGH_422,
       eHigh444Predictive = STD_VIDEO_H264_PROFILE_IDC_HIGH_444_PREDICTIVE,
       eInvalid           = STD_VIDEO_H264_PROFILE_IDC_INVALID
     };

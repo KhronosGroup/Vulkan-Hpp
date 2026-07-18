@@ -72,6 +72,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                                              { "VK_NV_ray_tracing", "VK_KHR_ray_tracing_pipeline" },
                                                                              { "VK_EXT_buffer_device_address", "VK_KHR_buffer_device_address" },
                                                                              { "VK_EXT_validation_features", "VK_EXT_layer_settings" },
+                                                                             { "VK_NV_low_latency", "VK_NV_low_latency2" },
                                                                              { "VK_EXT_descriptor_buffer", "VK_EXT_descriptor_heap" },
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
                                                                              { "VK_NV_displacement_micromap", "VK_NV_cluster_acceleration_structure" },
@@ -3533,6 +3534,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     {
       return "VK_EXT_layer_settings";
     }
+    if ( extension == "VK_NV_low_latency" )
+    {
+      return "VK_NV_low_latency2";
+    }
     if ( extension == "VK_EXT_descriptor_buffer" )
     {
       return "VK_EXT_descriptor_heap";
@@ -4038,7 +4043,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         || ( extension == "VK_MVK_macos_surface" )
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
         || ( extension == "VK_AMD_gpu_shader_int16" ) || ( extension == "VK_NV_ray_tracing" ) || ( extension == "VK_EXT_buffer_device_address" ) ||
-           ( extension == "VK_EXT_validation_features" ) || ( extension == "VK_EXT_descriptor_buffer" )
+           ( extension == "VK_EXT_validation_features" ) || ( extension == "VK_NV_low_latency" ) || ( extension == "VK_EXT_descriptor_buffer" )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         || ( extension == "VK_NV_displacement_micromap" )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/

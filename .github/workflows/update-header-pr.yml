@@ -73,4 +73,4 @@ jobs:
         branch: update-vulkan-headers-pr
         base: ${{ github.head_ref }}
         body: |
-          Please close and reopen this PR to trigger the CI!
+          Please trigger the CI!

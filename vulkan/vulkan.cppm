@@ -26,7 +26,7 @@ export module vulkan;
 
 export import std;
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 356, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 357, "Wrong VK_HEADER_VERSION!" );
 
 #if defined( __clang__ )
 #  pragma clang diagnostic push
@@ -905,6 +905,15 @@ export {
   using ::PFN_vkCmdBeginPerTileExecutionQCOM;
   using ::PFN_vkCmdDispatchTileQCOM;
   using ::PFN_vkCmdEndPerTileExecutionQCOM;
+
+  //=== VK_NV_low_latency ===
+  using ::PFN_vkGetLatencyTimingsLegacyNV;
+  using ::PFN_vkGetSleepStatusLegacyNV;
+  using ::PFN_vkLatencySleepLegacyNV;
+  using ::PFN_vkQueueNotifyOutOfBandLegacyNV;
+  using ::PFN_vkSetLatencyMarkerLegacyNV;
+  using ::PFN_vkSetLatencySleepModeLegacyNV;
+  using ::PFN_vkShutdownLatencyDeviceLegacyNV;
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_objects ===

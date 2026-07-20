@@ -24167,6 +24167,103 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+  //=== VK_NV_low_latency ===
+
+  // wrapper function for command vkSetLatencySleepModeLegacyNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetLatencySleepModeLegacyNV.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkSetLatencySleepModeLegacyNV ), bool>::type>
+  VULKAN_HPP_INLINE void Device::setLatencySleepModeLegacyNV( Bool32 lowLatencyMode, Bool32 lowLatencyBoost, uint32_t minimumIntervalUs, Dispatch const & d )
+    const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkSetLatencySleepModeLegacyNV(
+      static_cast<VkDevice>( m_device ), static_cast<VkBool32>( lowLatencyMode ), static_cast<VkBool32>( lowLatencyBoost ), minimumIntervalUs );
+  }
+
+  // wrapper function for command vkLatencySleepLegacyNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkLatencySleepLegacyNV.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkLatencySleepLegacyNV ), bool>::type>
+  VULKAN_HPP_INLINE void Device::latencySleepLegacyNV( Semaphore signalSemaphore, uint64_t value, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkLatencySleepLegacyNV( static_cast<VkDevice>( m_device ), static_cast<VkSemaphore>( signalSemaphore ), value );
+  }
+
+  // wrapper function for command vkSetLatencyMarkerLegacyNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetLatencyMarkerLegacyNV.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkSetLatencyMarkerLegacyNV ), bool>::type>
+  VULKAN_HPP_INLINE void Device::setLatencyMarkerLegacyNV( uint64_t frameID, uint32_t marker, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkSetLatencyMarkerLegacyNV( static_cast<VkDevice>( m_device ), frameID, marker );
+  }
+
+  // wrapper function for command vkGetLatencyTimingsLegacyNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetLatencyTimingsLegacyNV.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetLatencyTimingsLegacyNV ), bool>::type>
+  VULKAN_HPP_INLINE void Device::getLatencyTimingsLegacyNV( void * pTimings, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkGetLatencyTimingsLegacyNV( static_cast<VkDevice>( m_device ), pTimings );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkGetLatencyTimingsLegacyNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetLatencyTimingsLegacyNV.html
+  template <typename TimingsType, typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetLatencyTimingsLegacyNV ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE TimingsType Device::getLatencyTimingsLegacyNV( Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetLatencyTimingsLegacyNV && "Function <vkGetLatencyTimingsLegacyNV> requires <VK_NV_low_latency>" );
+#  endif
+
+    TimingsType timings;
+    d.vkGetLatencyTimingsLegacyNV( m_device, &timings );
+
+    return timings;
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  // wrapper function for command vkQueueNotifyOutOfBandLegacyNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueNotifyOutOfBandLegacyNV.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkQueueNotifyOutOfBandLegacyNV ), bool>::type>
+  VULKAN_HPP_INLINE void Queue::notifyOutOfBandLegacyNV( uint32_t queueType, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkQueueNotifyOutOfBandLegacyNV( static_cast<VkQueue>( m_queue ), queueType );
+  }
+
+  // wrapper function for command vkGetSleepStatusLegacyNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSleepStatusLegacyNV.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetSleepStatusLegacyNV ), bool>::type>
+  VULKAN_HPP_INLINE void Device::getSleepStatusLegacyNV( Bool32 * pLowLatencyMode, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkGetSleepStatusLegacyNV( static_cast<VkDevice>( m_device ), reinterpret_cast<VkBool32 *>( pLowLatencyMode ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkGetSleepStatusLegacyNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSleepStatusLegacyNV.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetSleepStatusLegacyNV ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Bool32 Device::getSleepStatusLegacyNV( Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetSleepStatusLegacyNV && "Function <vkGetSleepStatusLegacyNV> requires <VK_NV_low_latency>" );
+#  endif
+
+    Bool32 lowLatencyMode;
+    d.vkGetSleepStatusLegacyNV( m_device, reinterpret_cast<VkBool32 *>( &lowLatencyMode ) );
+
+    return lowLatencyMode;
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  // wrapper function for command vkShutdownLatencyDeviceLegacyNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkShutdownLatencyDeviceLegacyNV.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkShutdownLatencyDeviceLegacyNV ), bool>::type>
+  VULKAN_HPP_INLINE void Device::shutdownLatencyLegacyNV( Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkShutdownLatencyDeviceLegacyNV( static_cast<VkDevice>( m_device ) );
+  }
+
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_objects ===
 

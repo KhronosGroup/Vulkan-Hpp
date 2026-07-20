@@ -36,7 +36,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 356, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 357, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -1693,6 +1693,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkGetImageViewHandleNVX )
     DECLARE_IS_DISPATCHED( vkGetImageViewOpaqueCaptureDescriptorDataEXT )
     DECLARE_IS_DISPATCHED( vkGetInstanceProcAddr )
+    DECLARE_IS_DISPATCHED( vkGetLatencyTimingsLegacyNV )
     DECLARE_IS_DISPATCHED( vkGetLatencyTimingsNV )
     DECLARE_IS_DISPATCHED( vkGetMemoryAndroidHardwareBufferANDROID )
     DECLARE_IS_DISPATCHED( vkGetMemoryFdKHR )
@@ -1824,6 +1825,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkGetShaderInstrumentationValuesARM )
     DECLARE_IS_DISPATCHED( vkGetShaderModuleCreateInfoIdentifierEXT )
     DECLARE_IS_DISPATCHED( vkGetShaderModuleIdentifierEXT )
+    DECLARE_IS_DISPATCHED( vkGetSleepStatusLegacyNV )
     DECLARE_IS_DISPATCHED( vkGetSwapchainCounterEXT )
     DECLARE_IS_DISPATCHED( vkGetSwapchainGrallocUsage2ANDROID )
     DECLARE_IS_DISPATCHED( vkGetSwapchainGrallocUsageANDROID )
@@ -1849,6 +1851,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkImportSemaphoreZirconHandleFUCHSIA )
     DECLARE_IS_DISPATCHED( vkInitializePerformanceApiINTEL )
     DECLARE_IS_DISPATCHED( vkInvalidateMappedMemoryRanges )
+    DECLARE_IS_DISPATCHED( vkLatencySleepLegacyNV )
     DECLARE_IS_DISPATCHED( vkLatencySleepNV )
     DECLARE_IS_DISPATCHED( vkMapMemory )
     DECLARE_IS_DISPATCHED( vkMapMemory2 )
@@ -1859,6 +1862,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkQueueBindSparse )
     DECLARE_IS_DISPATCHED( vkQueueEndDebugUtilsLabelEXT )
     DECLARE_IS_DISPATCHED( vkQueueInsertDebugUtilsLabelEXT )
+    DECLARE_IS_DISPATCHED( vkQueueNotifyOutOfBandLegacyNV )
     DECLARE_IS_DISPATCHED( vkQueueNotifyOutOfBandNV )
     DECLARE_IS_DISPATCHED( vkQueuePresentKHR )
     DECLARE_IS_DISPATCHED( vkQueueSetPerfHintQCOM )
@@ -1895,12 +1899,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkSetEvent )
     DECLARE_IS_DISPATCHED( vkSetGpaDeviceClockModeAMD )
     DECLARE_IS_DISPATCHED( vkSetHdrMetadataEXT )
+    DECLARE_IS_DISPATCHED( vkSetLatencyMarkerLegacyNV )
     DECLARE_IS_DISPATCHED( vkSetLatencyMarkerNV )
+    DECLARE_IS_DISPATCHED( vkSetLatencySleepModeLegacyNV )
     DECLARE_IS_DISPATCHED( vkSetLatencySleepModeNV )
     DECLARE_IS_DISPATCHED( vkSetLocalDimmingAMD )
     DECLARE_IS_DISPATCHED( vkSetPrivateData )
     DECLARE_IS_DISPATCHED( vkSetPrivateDataEXT )
     DECLARE_IS_DISPATCHED( vkSetSwapchainPresentTimingQueueSizeEXT )
+    DECLARE_IS_DISPATCHED( vkShutdownLatencyDeviceLegacyNV )
     DECLARE_IS_DISPATCHED( vkSignalSemaphore )
     DECLARE_IS_DISPATCHED( vkSignalSemaphoreKHR )
     DECLARE_IS_DISPATCHED( vkSubmitDebugUtilsMessageEXT )
@@ -6260,6 +6267,46 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdEndPerTileExecutionQCOM( commandBuffer, pPerTileEndInfo );
       }
 
+      //=== VK_NV_low_latency ===
+
+      VULKAN_HPP_INLINE void vkSetLatencySleepModeLegacyNV( VkDevice device,
+                                                            VkBool32 lowLatencyMode,
+                                                            VkBool32 lowLatencyBoost,
+                                                            uint32_t minimumIntervalUs ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkSetLatencySleepModeLegacyNV( device, lowLatencyMode, lowLatencyBoost, minimumIntervalUs );
+      }
+
+      VULKAN_HPP_INLINE void vkLatencySleepLegacyNV( VkDevice device, VkSemaphore signalSemaphore, uint64_t value ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkLatencySleepLegacyNV( device, signalSemaphore, value );
+      }
+
+      VULKAN_HPP_INLINE void vkSetLatencyMarkerLegacyNV( VkDevice device, uint64_t frameID, uint32_t marker ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkSetLatencyMarkerLegacyNV( device, frameID, marker );
+      }
+
+      VULKAN_HPP_INLINE void vkGetLatencyTimingsLegacyNV( VkDevice device, void * pTimings ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetLatencyTimingsLegacyNV( device, pTimings );
+      }
+
+      VULKAN_HPP_INLINE void vkQueueNotifyOutOfBandLegacyNV( VkQueue queue, uint32_t queueType ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkQueueNotifyOutOfBandLegacyNV( queue, queueType );
+      }
+
+      VULKAN_HPP_INLINE void vkGetSleepStatusLegacyNV( VkDevice device, VkBool32 * pLowLatencyMode ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetSleepStatusLegacyNV( device, pLowLatencyMode );
+      }
+
+      VULKAN_HPP_INLINE void vkShutdownLatencyDeviceLegacyNV( VkDevice device ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkShutdownLatencyDeviceLegacyNV( device );
+      }
+
 #    if defined( VK_USE_PLATFORM_METAL_EXT )
       //=== VK_EXT_metal_objects ===
 
@@ -9254,6 +9301,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_video_decode_vp9 ===
   VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxVideoVp9ReferencesPerFrameKHR = VK_MAX_VIDEO_VP9_REFERENCES_PER_FRAME_KHR;
 
+  //=== VK_ARM_tensor_controls ===
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxTensorCreateInfoRollingBackingWrapCountARM = VK_MAX_TENSOR_CREATE_INFO_ROLLING_BACKING_WRAP_COUNT_ARM;
+
   //=== VK_NV_partitioned_acceleration_structure ===
   VULKAN_HPP_CONSTEXPR_INLINE uint32_t PartitionedAccelerationStructurePartitionIndexGlobalNV = VK_PARTITIONED_ACCELERATION_STRUCTURE_PARTITION_INDEX_GLOBAL_NV;
 
@@ -10452,7 +10502,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto QCOMTileShadingExtensionName = VK_QCOM_TILE_SHADING_EXTENSION_NAME;
 
   //=== VK_NV_low_latency ===
-  VULKAN_HPP_CONSTEXPR_INLINE auto NVLowLatencySpecVersion   = VK_NV_LOW_LATENCY_SPEC_VERSION;
+  VULKAN_HPP_DEPRECATED( "The VK_NV_low_latency extension has been deprecated by VK_NV_low_latency2." )
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVLowLatencySpecVersion = VK_NV_LOW_LATENCY_SPEC_VERSION;
+  VULKAN_HPP_DEPRECATED( "The VK_NV_low_latency extension has been deprecated by VK_NV_low_latency2." )
   VULKAN_HPP_CONSTEXPR_INLINE auto NVLowLatencyExtensionName = VK_NV_LOW_LATENCY_EXTENSION_NAME;
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
@@ -15939,6 +15991,42 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<ValidationFeaturesEXT, ShaderCreateInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ValidationFeaturesEXT, PipelineShaderStageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ValidationFeaturesEXT, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ValidationFeaturesEXT, ComputePipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ValidationFeaturesEXT, RayTracingPipelineCreateInfoKHR>
   {
     enum
     {
@@ -23943,6 +24031,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdBeginPerTileExecutionQCOM vkCmdBeginPerTileExecutionQCOM = 0;
       PFN_vkCmdEndPerTileExecutionQCOM   vkCmdEndPerTileExecutionQCOM   = 0;
 
+      //=== VK_NV_low_latency ===
+      PFN_vkSetLatencySleepModeLegacyNV   vkSetLatencySleepModeLegacyNV   = 0;
+      PFN_vkLatencySleepLegacyNV          vkLatencySleepLegacyNV          = 0;
+      PFN_vkSetLatencyMarkerLegacyNV      vkSetLatencyMarkerLegacyNV      = 0;
+      PFN_vkGetLatencyTimingsLegacyNV     vkGetLatencyTimingsLegacyNV     = 0;
+      PFN_vkQueueNotifyOutOfBandLegacyNV  vkQueueNotifyOutOfBandLegacyNV  = 0;
+      PFN_vkGetSleepStatusLegacyNV        vkGetSleepStatusLegacyNV        = 0;
+      PFN_vkShutdownLatencyDeviceLegacyNV vkShutdownLatencyDeviceLegacyNV = 0;
+
 #if defined( VK_USE_PLATFORM_METAL_EXT )
       //=== VK_EXT_metal_objects ===
       PFN_vkExportMetalObjectsEXT vkExportMetalObjectsEXT = 0;
@@ -25599,6 +25696,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         vkCmdBeginPerTileExecutionQCOM = PFN_vkCmdBeginPerTileExecutionQCOM( vkGetInstanceProcAddr( instance, "vkCmdBeginPerTileExecutionQCOM" ) );
         vkCmdEndPerTileExecutionQCOM   = PFN_vkCmdEndPerTileExecutionQCOM( vkGetInstanceProcAddr( instance, "vkCmdEndPerTileExecutionQCOM" ) );
 
+        //=== VK_NV_low_latency ===
+        vkSetLatencySleepModeLegacyNV   = PFN_vkSetLatencySleepModeLegacyNV( vkGetInstanceProcAddr( instance, "vkSetLatencySleepModeLegacyNV" ) );
+        vkLatencySleepLegacyNV          = PFN_vkLatencySleepLegacyNV( vkGetInstanceProcAddr( instance, "vkLatencySleepLegacyNV" ) );
+        vkSetLatencyMarkerLegacyNV      = PFN_vkSetLatencyMarkerLegacyNV( vkGetInstanceProcAddr( instance, "vkSetLatencyMarkerLegacyNV" ) );
+        vkGetLatencyTimingsLegacyNV     = PFN_vkGetLatencyTimingsLegacyNV( vkGetInstanceProcAddr( instance, "vkGetLatencyTimingsLegacyNV" ) );
+        vkQueueNotifyOutOfBandLegacyNV  = PFN_vkQueueNotifyOutOfBandLegacyNV( vkGetInstanceProcAddr( instance, "vkQueueNotifyOutOfBandLegacyNV" ) );
+        vkGetSleepStatusLegacyNV        = PFN_vkGetSleepStatusLegacyNV( vkGetInstanceProcAddr( instance, "vkGetSleepStatusLegacyNV" ) );
+        vkShutdownLatencyDeviceLegacyNV = PFN_vkShutdownLatencyDeviceLegacyNV( vkGetInstanceProcAddr( instance, "vkShutdownLatencyDeviceLegacyNV" ) );
+
 #if defined( VK_USE_PLATFORM_METAL_EXT )
         //=== VK_EXT_metal_objects ===
         vkExportMetalObjectsEXT = PFN_vkExportMetalObjectsEXT( vkGetInstanceProcAddr( instance, "vkExportMetalObjectsEXT" ) );
@@ -27004,6 +27110,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         vkCmdDispatchTileQCOM          = PFN_vkCmdDispatchTileQCOM( vkGetDeviceProcAddr( device, "vkCmdDispatchTileQCOM" ) );
         vkCmdBeginPerTileExecutionQCOM = PFN_vkCmdBeginPerTileExecutionQCOM( vkGetDeviceProcAddr( device, "vkCmdBeginPerTileExecutionQCOM" ) );
         vkCmdEndPerTileExecutionQCOM   = PFN_vkCmdEndPerTileExecutionQCOM( vkGetDeviceProcAddr( device, "vkCmdEndPerTileExecutionQCOM" ) );
+
+        //=== VK_NV_low_latency ===
+        vkSetLatencySleepModeLegacyNV   = PFN_vkSetLatencySleepModeLegacyNV( vkGetDeviceProcAddr( device, "vkSetLatencySleepModeLegacyNV" ) );
+        vkLatencySleepLegacyNV          = PFN_vkLatencySleepLegacyNV( vkGetDeviceProcAddr( device, "vkLatencySleepLegacyNV" ) );
+        vkSetLatencyMarkerLegacyNV      = PFN_vkSetLatencyMarkerLegacyNV( vkGetDeviceProcAddr( device, "vkSetLatencyMarkerLegacyNV" ) );
+        vkGetLatencyTimingsLegacyNV     = PFN_vkGetLatencyTimingsLegacyNV( vkGetDeviceProcAddr( device, "vkGetLatencyTimingsLegacyNV" ) );
+        vkQueueNotifyOutOfBandLegacyNV  = PFN_vkQueueNotifyOutOfBandLegacyNV( vkGetDeviceProcAddr( device, "vkQueueNotifyOutOfBandLegacyNV" ) );
+        vkGetSleepStatusLegacyNV        = PFN_vkGetSleepStatusLegacyNV( vkGetDeviceProcAddr( device, "vkGetSleepStatusLegacyNV" ) );
+        vkShutdownLatencyDeviceLegacyNV = PFN_vkShutdownLatencyDeviceLegacyNV( vkGetDeviceProcAddr( device, "vkShutdownLatencyDeviceLegacyNV" ) );
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
         //=== VK_EXT_metal_objects ===

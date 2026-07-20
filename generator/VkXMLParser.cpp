@@ -1410,7 +1410,9 @@ Feature parseFeature( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "depends" )
     {
-      feature.depends = tokenize( attribute.second, "," );
+      // Feature depends uses '+' (AND) per the dependency syntax, but ',' was used historically with the same meaning.
+      // Accept both so this works with both old (comma-separated) and new (plus-separated) XML.
+      feature.depends = tokenizeAny( attribute.second, ",+" );
     }
     else if ( attribute.first == "name" )
     {

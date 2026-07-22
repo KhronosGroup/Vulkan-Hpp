@@ -1094,9 +1094,6 @@ private:
   void                                                   readSPIRVCapability( tinyxml2::XMLElement const * element );
   void                                                   readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element, SpirVCapabilityData & capability );
   void                                                   readSPIRVCapabilities( tinyxml2::XMLElement const * element );
-  void                                                   readSPIRVExtension( tinyxml2::XMLElement const * element );
-  void                                                   readSPIRVExtensionEnable( tinyxml2::XMLElement const * element );
-  void                                                   readSPIRVExtensions( tinyxml2::XMLElement const * element );
   DefinesPartition                                       partitionDefines( std::map<std::string, DefineData> const & defines );
   void                                                   registerDeleter( std::string const & commandName, CommandData const & commandData );
   void                                                   rescheduleRAIIHandle( std::string &                              str,

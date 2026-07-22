@@ -13267,10 +13267,6 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     {
       readSPIRVCapabilities( child );
     }
-    else if ( value == "spirvextensions" )
-    {
-      readSPIRVExtensions( child );
-    }
   }
 
   if ( m_api != "vulkanbase" )
@@ -13420,60 +13416,6 @@ void VulkanHppGenerator::readSPIRVCapabilities( tinyxml2::XMLElement const * ele
   for ( auto child : children )
   {
     readSPIRVCapability( child );
-  }
-}
-
-void VulkanHppGenerator::readSPIRVExtension( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, {} );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "enable", MultipleAllowed::Yes } } );
-
-  for ( auto child : children )
-  {
-    readSPIRVExtensionEnable( child );
-  }
-}
-
-void VulkanHppGenerator::readSPIRVExtensionEnable( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, { { "extension", {} }, { "version", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "extension" )
-    {
-      checkForError( isExtension( attribute.second ), line, "unknown extension <" + attribute.second + "> specified for SPIR-V extension" );
-    }
-    else
-    {
-      assert( attribute.first == "version" );
-      std::string feature = attribute.second;
-      if ( feature.starts_with( "VK_API_" ) )
-      {
-        feature.erase( 3, 4 );  // remove "API_" from the version -> VK_VERSION_x_y
-      }
-      checkForError( isFeature( feature ), line, "unknown version <" + attribute.second + "> specified for SPIR-V extension" );
-    }
-  }
-}
-
-void VulkanHppGenerator::readSPIRVExtensions( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "comment", {} } }, {} );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "spirvextension", MultipleAllowed::Yes } } );
-
-  for ( auto child : children )
-  {
-    readSPIRVExtension( child );
   }
 }
 

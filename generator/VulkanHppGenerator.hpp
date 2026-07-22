@@ -1090,11 +1090,6 @@ private:
                                                                                std::vector<size_t> const &               returnParams,
                                                                                std::set<size_t> const &                  singularParams,
                                                                                std::set<size_t> const &                  skippedParams ) const;
-  void                                                   readFormat( tinyxml2::XMLElement const * element );
-  void                                                   readFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData );
-  void                                                   readFormatPlane( tinyxml2::XMLElement const * element, FormatData & formatData );
-  void                                                   readFormats( tinyxml2::XMLElement const * element );
-  void                                                   readFormatSPIRVImageFormat( tinyxml2::XMLElement const * element, FormatData & formatData );
   void                                                   readRegistry( tinyxml2::XMLElement const * element );
   void                                                   readSPIRVCapability( tinyxml2::XMLElement const * element );
   void                                                   readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element, SpirVCapabilityData & capability );

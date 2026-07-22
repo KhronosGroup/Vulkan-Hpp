@@ -545,6 +545,40 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, tinyxml2::XMLDocument co
       m_unsupportedExtensions.push_back( std::move( extensionData ) );
     }
   }
+  for ( auto const & format : m_vkxml.formats )
+  {
+    auto formatIt = m_enums.find( "VkFormat" );
+    assert( formatIt != m_enums.end() );
+
+    checkForError( containsByName( formatIt->second.values, format.name ), format.xmlLine, "format <" + format.name + "> not listed in enum VkFormat" );
+
+    FormatData formatData{ .blockExtent      = concatenate( format.blockExtent ),
+                           .blockSize        = format.blockSize,
+                           .chroma           = format.chroma,
+                           .classAttribute   = format.classAttribute,
+                           .compressed       = format.compressed,
+                           .packed           = format.packed,
+                           .spirvImageFormat = format.spirvImageFormat.name,
+                           .texelsPerBlock   = format.texelsPerBlock,
+                           .xmlLine          = format.xmlLine };
+    for ( auto const & component : format.components )
+    {
+      formatData.components.push_back( { .bits          = component.bits,
+                                         .name          = component.name,
+                                         .numericFormat = component.numericFormat,
+                                         .planeIndex    = component.planeIndex,
+                                         .xmlLine       = component.xmlLine } );
+    }
+    for ( auto const & plane : format.planes )
+    {
+      checkForError( containsByNameOrAlias( formatIt->second.values, plane.compatible ),
+                     plane.xmlLine,
+                     "format <" + format.name + "> contains unknown plane compatible format <" + plane.compatible + ">" );
+      formatData.planes.push_back(
+        { .compatible = plane.compatible, .heightDivisor = plane.heightDivisor, .widthDivisor = plane.widthDivisor, .xmlLine = plane.xmlLine } );
+    }
+    m_formats.insert( { format.name, std::move( formatData ) } );
+  }
 
   auto versionIt = m_defines.find( "VK_HEADER_VERSION" );
   assert( versionIt != m_defines.end() );
@@ -13205,206 +13239,6 @@ std::pair<bool, std::map<size_t, std::vector<size_t>>> VulkanHppGenerator::needs
            countToVectorMap };
 }
 
-void VulkanHppGenerator::readFormat( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes(
-    line,
-    attributes,
-    { { "blockSize", { "1", "2", "3", "4", "5", "6", "8", "12", "16", "24", "27", "32", "36", "48", "64", "80", "100", "125", "150", "180", "216" } },
-      { "class", {} },
-      { "name", {} },
-      { "texelsPerBlock", { "1", "16", "20", "25", "27", "30", "36", "40", "48", "50", "60", "64", "80", "100", "120", "125", "144", "150", "180", "216" } } },
-    { { "blockExtent", { "1", "2", "3", "4", "5", "6", "8", "10", "12" } },
-      { "chroma", { "420", "422", "444" } },
-      { "compressed", { "ASTC HDR", "ASTC LDR", "BC", "EAC", "ETC", "ETC2", "PVRTC" } },
-      { "packed", { "8", "16", "32" } } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements(
-    line, children, { { "component", MultipleAllowed::Yes } }, { { "plane", MultipleAllowed::Yes }, { "spirvimageformat", MultipleAllowed::No } } );
-
-  FormatData format;
-  format.xmlLine = line;
-  std::string name;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "blockExtent" )
-    {
-      checkForError( tokenize( attribute.second, "," ).size() == 3, line, "unexpected number of elements in attribute <blockExtent>" );
-      format.blockExtent = attribute.second;
-    }
-    if ( attribute.first == "blockSize" )
-    {
-      format.blockSize = attribute.second;
-    }
-    else if ( attribute.first == "chroma" )
-    {
-      format.chroma = attribute.second;
-    }
-    else if ( attribute.first == "class" )
-    {
-      format.classAttribute = attribute.second;
-    }
-    else if ( attribute.first == "compressed" )
-    {
-      format.compressed = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else if ( attribute.first == "packed" )
-    {
-      format.packed = attribute.second;
-    }
-    else if ( attribute.first == "texelsPerBlock" )
-    {
-      format.texelsPerBlock = attribute.second;
-    }
-  }
-
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "component" )
-    {
-      readFormatComponent( child, format );
-    }
-    else if ( value == "plane" )
-    {
-      readFormatPlane( child, format );
-    }
-    else if ( value == "spirvimageformat" )
-    {
-      readFormatSPIRVImageFormat( child, format );
-    }
-  }
-
-  if ( format.components.front().bits == "compressed" )
-  {
-    for ( auto componentIt = std::next( format.components.begin() ); componentIt != format.components.end(); ++componentIt )
-    {
-      checkForError( componentIt->bits == "compressed", line, "component is expected to be marked as compressed in attribute <bits>" );
-    }
-  }
-  if ( !format.components.front().planeIndex.empty() )
-  {
-    for ( auto componentIt = std::next( format.components.begin() ); componentIt != format.components.end(); ++componentIt )
-    {
-      checkForError( !componentIt->planeIndex.empty(), line, "component is expected to have a planeIndex" );
-    }
-    size_t const planeCount = 1 + static_cast<size_t>( std::stoi( format.components.back().planeIndex ) );
-    checkForError( format.planes.size() == planeCount, line, "number of planes does not fit to largest planeIndex of the components" );
-  }
-
-  auto formatIt = m_enums.find( "VkFormat" );
-  assert( formatIt != m_enums.end() );
-
-  checkForError(
-    containsByNameOrAlias( formatIt->second.values, name ) && m_formats.insert( { name, format } ).second, line, "format <" + name + "> already specified" );
-}
-
-void VulkanHppGenerator::readFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line,
-                   attributes,
-                   { { "bits", { "1", "2", "4", "5", "6", "8", "9", "10", "11", "12", "14", "16", "24", "32", "64", "compressed" } },
-                     { "name", {} },
-                     { "numericFormat", { "BOOL", "SFLOAT", "SINT", "SNORM", "SRGB", "SFIXED5", "SSCALED", "UFLOAT", "UINT", "UNORM", "USCALED" } } },
-                   { { "planeIndex", { "0", "1", "2" } } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  formatData.components.emplace_back();
-  ComponentData & component = formatData.components.back();
-  component.xmlLine         = line;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "bits" )
-    {
-      checkForError(
-        ( attribute.second != "compressed" ) || !formatData.compressed.empty(), line, "component of a not compressed format is marked as compressed" );
-      component.bits = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      component.name = attribute.second;
-    }
-    else if ( attribute.first == "numericFormat" )
-    {
-      component.numericFormat = attribute.second;
-    }
-    else if ( attribute.first == "planeIndex" )
-    {
-      component.planeIndex = attribute.second;
-    }
-  }
-}
-
-void VulkanHppGenerator::readFormatPlane( tinyxml2::XMLElement const * element, FormatData & formatData )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes(
-    line, attributes, { { "compatible", {} }, { "index", { "0", "1", "2" } }, { "heightDivisor", { "1", "2" } }, { "widthDivisor", { "1", "2" } } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  formatData.planes.emplace_back();
-  PlaneData & plane = formatData.planes.back();
-  plane.xmlLine     = line;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "compatible" )
-    {
-      plane.compatible = attribute.second;
-      auto formatIt    = m_enums.find( "VkFormat" );
-      assert( formatIt != m_enums.end() );
-      checkForError( containsByNameOrAlias( formatIt->second.values, plane.compatible ), line, "encountered unknown format <" + plane.compatible + ">" );
-    }
-    else if ( attribute.first == "index" )
-    {
-      size_t const index = std::stoi( attribute.second );
-      checkForError( index + 1 == formatData.planes.size(), line, "unexpected index <" + attribute.second + ">" );
-    }
-    else if ( attribute.first == "heightDivisor" )
-    {
-      plane.heightDivisor = attribute.second;
-    }
-    else if ( attribute.first == "widthDivisor" )
-    {
-      plane.widthDivisor = attribute.second;
-    }
-  }
-}
-
-void VulkanHppGenerator::readFormats( tinyxml2::XMLElement const * element )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, { { "comment", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "format", MultipleAllowed::Yes } } );
-
-  for ( auto child : children )
-  {
-    readFormat( child );
-  }
-}
-
-void VulkanHppGenerator::readFormatSPIRVImageFormat( tinyxml2::XMLElement const * element, FormatData & formatData )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name = attributes.find( "name" )->second;
-
-  checkForError( formatData.spirvImageFormat.empty(), line, "spirvimageformat <" + name + "> already specified" );
-  formatData.spirvImageFormat = name;
-}
-
 void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
@@ -13429,11 +13263,7 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
   for ( auto child : children )
   {
     std::string const value = child->Value();
-    if ( value == "formats" )
-    {
-      readFormats( child );
-    }
-    else if ( value == "spirvcapabilities" )
+    if ( value == "spirvcapabilities" )
     {
       readSPIRVCapabilities( child );
     }

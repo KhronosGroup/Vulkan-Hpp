@@ -78,6 +78,15 @@ struct Command
   int                        xmlLine              = {};
 };
 
+struct Component
+{
+  std::string bits          = {};
+  std::string name          = {};
+  std::string numericFormat = {};
+  std::string planeIndex    = {};
+  int         xmlLine       = {};
+};
+
 struct Constant
 {
   std::string type    = {};
@@ -564,6 +573,32 @@ struct VideoCodec
   int                            xmlLine           = {};
 };
 
+struct Plane
+{
+  std::string compatible    = {};
+  std::string heightDivisor = {};
+  std::string index         = {};
+  std::string planeIndex    = {};
+  std::string widthDivisor  = {};
+  int         xmlLine       = {};
+};
+
+struct Format
+{
+  std::vector<std::string> blockExtent      = {};
+  std::string              blockSize        = {};
+  std::string              chroma           = {};
+  std::string              classAttribute   = {};
+  std::vector<Component>   components       = {};
+  std::string              compressed       = {};
+  std::string              name             = {};
+  std::string              packed           = {};
+  std::vector<Plane>       planes           = {};
+  NameElement              spirvImageFormat = {};
+  std::string              texelsPerBlock   = {};
+  int                      xmlLine          = {};
+};
+
 struct Vkxml
 {
   std::map<std::string, BaseType>     baseTypes     = {};
@@ -576,6 +611,7 @@ struct Vkxml
   Extensions                          extensions    = {};
   std::map<std::string, ExternalType> externalTypes = {};
   std::vector<Feature>                features      = {};
+  std::vector<Format>                 formats       = {};
   std::map<std::string, FuncPointer>  funcPointers  = {};
   std::map<std::string, Handle>       handles       = {};
   std::map<std::string, int>          includes      = {};

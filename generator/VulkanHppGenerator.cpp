@@ -175,9 +175,9 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   }
   for ( auto const & externalType : m_vkxml.externalTypes )
   {
-    checkForError( m_types.insert( { externalType.first, TypeData{ TypeCategory::ExternalType, {}, externalType.second.xmlLine } } ).second,
-                   externalType.second.xmlLine,
-                   "type <" + externalType.first + "> already specified" );
+    checkForError( m_types.insert( { externalType.name, TypeData{ TypeCategory::ExternalType, {}, externalType.xmlLine } } ).second,
+                   externalType.xmlLine,
+                   "type <" + externalType.name + "> already specified" );
   }
   for ( auto const & funcPointer : m_vkxml.funcPointers )
   {
@@ -209,9 +209,9 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   }
   for ( auto const & include : m_vkxml.includes )
   {
-    checkForError( m_types.insert( { include.first, TypeData{ TypeCategory::Include, {}, include.second } } ).second,
-                   include.second,
-                   "include <" + include.first + "> already specified" );
+    checkForError( m_types.insert( { include.name, TypeData{ TypeCategory::Include, {}, include.xmlLine } } ).second,
+                   include.xmlLine,
+                   "include <" + include.name + "> already specified" );
   }
   for ( auto const & structure : m_vkxml.structs )
   {
@@ -1344,8 +1344,9 @@ void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & requi
           findByNameOrAlias( m_enums, type.name ) != m_enums.end(), typeIt->second.xmlLine, "required enum type <" + type.name + "> is not listed as an enum" );
         break;
       case TypeCategory::ExternalType:
-        checkForError(
-          m_vkxml.externalTypes.contains( type.name ), typeIt->second.xmlLine, "required external type <" + type.name + "> is not listed as an external type" );
+        checkForError( containsByName( m_vkxml.externalTypes, type.name ),
+                       typeIt->second.xmlLine,
+                       "required external type <" + type.name + "> is not listed as an external type" );
         break;
       case TypeCategory::FuncPointer:
         checkForError(
@@ -1357,7 +1358,8 @@ void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & requi
                        "required handle type <" + type.name + "> is not listed as a handle" );
         break;
       case TypeCategory::Include:
-        checkForError( m_vkxml.includes.contains( type.name ), typeIt->second.xmlLine, "required include <" + type.name + "> is not listed as an include" );
+        checkForError(
+          containsByName( m_vkxml.includes, type.name ), typeIt->second.xmlLine, "required include <" + type.name + "> is not listed as an include" );
         break;
       case TypeCategory::Struct:
       case TypeCategory::Union:
@@ -3805,7 +3807,7 @@ std::string VulkanHppGenerator::generateCommand1ReturnsValue( std::string const 
 {
   std::string const & returnType = commandData.params[returnParam].type.name;
   if ( bool isHandle = isHandleType( returnType ); isHandle || m_vkxml.baseTypes.contains( returnType ) || m_vkxml.bitmasks.contains( returnType ) ||
-                                                   m_enums.contains( returnType ) || m_vkxml.externalTypes.contains( returnType ) )
+                                                   m_enums.contains( returnType ) || containsByName( m_vkxml.externalTypes, returnType ) )
   {
     // the returnType is a handle or some basic type
     bool unique = isHandle && ( commandData.returnType.name == "VkResult" );  // only if the return type is VkResult, we need to have a unique version
@@ -4094,7 +4096,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
                                           { CommandFlavourFlagBits::enhanced } );
     }
   }
-  else if ( m_vkxml.externalTypes.contains( returnType0 ) )
+  else if ( containsByName( m_vkxml.externalTypes, returnType0 ) )
   {
     if ( returnType1 == "void" )
     {
@@ -4115,7 +4117,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
         if ( structIt->second.extendedBy.empty() )
         {
           // the first return param is a single, not extendable struct without handles or vectors
-          if ( m_vkxml.externalTypes.contains( returnType1 ) )
+          if ( containsByName( m_vkxml.externalTypes, returnType1 ) )
           {
             // the second return param is just some basic type
             return generateCommandSetInclusive( name,
@@ -4134,7 +4136,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
         else
         {
           // the first return param is an extendable struct
-          if ( m_vkxml.externalTypes.contains( returnType1 ) )
+          if ( containsByName( m_vkxml.externalTypes, returnType1 ) )
           {
             // the second return param is just some basic type
             return generateCommandSetInclusive( name,
@@ -4269,10 +4271,10 @@ std::string VulkanHppGenerator::generateCommand3ReturnsEnumEnum( std::string con
 {
   assert( returnParams.size() == 3 );
 
-  if ( m_vkxml.externalTypes.contains( commandData.params[returnParams[1]].type.name ) )
+  if ( containsByName( m_vkxml.externalTypes, commandData.params[returnParams[1]].type.name ) )
   {
     // the first enumerated type is some external type
-    if ( m_vkxml.externalTypes.contains( commandData.params[returnParams[2]].type.name ) )
+    if ( containsByName( m_vkxml.externalTypes, commandData.params[returnParams[2]].type.name ) )
     {
       // both enumerated types are some external types
       return generateCommandSetInclusive( name,
@@ -5262,7 +5264,7 @@ std::string VulkanHppGenerator::generateDataDeclarations2Returns( CommandData co
     case 0:
       assert( !singular );
       assert( !chained || ( isStructureChainAnchor( commandData.params[returnParams[0]].type.name ) &&
-                            m_vkxml.externalTypes.contains( commandData.params[returnParams[1]].type.name ) ) );
+                            containsByName( m_vkxml.externalTypes, commandData.params[returnParams[1]].type.name ) ) );
       {
         std::string const dataDeclarationTemplate        = R"(    std::pair<${firstDataType},${secondDataType}> data_;
     ${firstDataType} & ${firstDataVariable} = data_.first;
@@ -10358,7 +10360,7 @@ std::string VulkanHppGenerator::generateReturnType( std::vector<size_t> const & 
         }
         else
         {
-          assert( isStructureChainAnchor( "Vk" + dataTypes[0] ) && m_vkxml.externalTypes.contains( dataTypes[1] ) );
+          assert( isStructureChainAnchor( "Vk" + dataTypes[0] ) && containsByName( m_vkxml.externalTypes, dataTypes[1] ) );
           returnType = "std::pair<StructureChain<X, Y, Z...>, " + dataTypes[1] + ">";
         }
       }

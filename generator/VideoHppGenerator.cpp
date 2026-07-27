@@ -9,13 +9,42 @@
 #include <iostream>
 #include <vector>
 
-VideoHppGenerator::VideoHppGenerator( tinyxml2::XMLDocument const & document )
+VideoHppGenerator::VideoHppGenerator( VideoXML && videoXML, tinyxml2::XMLDocument const & document ) : m_videoXML( std::move( videoXML ) )
 {
+  for ( auto const & define : m_videoXML.types.defines )
+  {
+    checkForError( m_types.insert( { define.name, TypeData{ TypeCategory::Define, {}, define.xmlLine } } ).second,
+                   define.xmlLine,
+                   "define <" + define.name + "> already specified" );
+  }
+  for ( auto const & e : m_videoXML.types.enums )
+  {
+    checkForError( m_types.insert( { e.name, TypeData{ TypeCategory::Enum, {}, e.xmlLine } } ).second, e.xmlLine, "enum <" + e.name + "> already specified" );
+    m_enums[e.name] = { .xmlLine = e.xmlLine };
+  }
+  for ( auto const & externalType : m_videoXML.types.externalTypes )
+  {
+    checkForError( m_types.insert( { externalType.name, TypeData{ TypeCategory::ExternalType, {}, externalType.xmlLine } } ).second,
+                   externalType.xmlLine,
+                   "external type <" + externalType.name + "> already specified" );
+  }
+  for ( auto const & include : m_videoXML.types.includes )
+  {
+    checkForError( m_types.insert( { include.name, TypeData{ TypeCategory::Include, {}, include.xmlLine } } ).second,
+                   include.xmlLine,
+                   "type <" + include.name + "> already specified" );
+  }
+  for ( auto const & structure : m_videoXML.types.structs )
+  {
+    checkForError( m_types.insert( { structure.name, TypeData{ TypeCategory::Struct, {}, structure.xmlLine } } ).second,
+                   structure.xmlLine,
+                   "struct <" + structure.name + "> already specified" );
+  }
+
   // read the document and check its correctness
   int                                       line     = document.GetLineNum();
   std::vector<tinyxml2::XMLElement const *> elements = getChildElements( &document );
   checkElements( line, elements, { { "registry", MultipleAllowed::No } } );
-  checkForError( elements.size() == 1, line, "encountered " + std::to_string( elements.size() ) + " elements named <registry> but only one is allowed" );
   readRegistry( elements[0] );
   addImplicitlyRequiredTypes();
   sortStructs();
@@ -24,7 +53,8 @@ VideoHppGenerator::VideoHppGenerator( tinyxml2::XMLDocument const & document )
 
 void VideoHppGenerator::generateCppmFile() const
 {
-  generateFileFromTemplate( "vulkan_video.cppm", "VideoCppmTemplate.hpp", { { "copyrightMessage", m_copyrightMessage }, { "includes", generateIncludes() } } );
+  generateFileFromTemplate(
+    "vulkan_video.cppm", "VideoCppmTemplate.hpp", { { "copyrightMessage", m_videoXML.copyrightMessage }, { "includes", generateIncludes() } } );
 }
 
 void VideoHppGenerator::generateHppFile() const
@@ -32,7 +62,7 @@ void VideoHppGenerator::generateHppFile() const
   generateFileFromTemplate( "vulkan_video.hpp",
                             "VideoHppTemplate.hpp",
                             { { "constants", generateConstants() },
-                              { "copyrightMessage", m_copyrightMessage },
+                              { "copyrightMessage", m_videoXML.copyrightMessage },
                               { "enums", generateEnums() },
                               { "includes", generateIncludes() },
                               { "structs", generateStructs() } } );
@@ -59,9 +89,9 @@ std::vector<std::string>::iterator VideoHppGenerator::addImplicitlyRequiredTypes
                                                                                   ExtensionData &                           extensionData,
                                                                                   std::vector<std::string>::iterator        reqIt )
 {
-  auto structIt = m_structs.find( typeIt->first );
-  assert( structIt != m_structs.end() );
-  for ( auto const & member : structIt->second.members )
+  auto structIt = findByName( m_videoXML.types.structs, typeIt->first );
+  assert( structIt != m_videoXML.types.structs.end() );
+  for ( auto const & member : structIt->members )
   {
     auto memberTypeIt = m_types.find( member.type.name );
     if ( ( memberTypeIt != m_types.end() ) && ( memberTypeIt->second.category == TypeCategory::Struct ) )
@@ -69,8 +99,7 @@ std::vector<std::string>::iterator VideoHppGenerator::addImplicitlyRequiredTypes
       reqIt = addImplicitlyRequiredTypes( memberTypeIt, extensionData, reqIt );
     }
   }
-  assert( typeIt->second.requiredBy.empty() ||
-          ( *typeIt->second.requiredBy.begin() == extensionData.name ) ||
+  assert( typeIt->second.requiredBy.empty() || ( *typeIt->second.requiredBy.begin() == extensionData.name ) ||
           ( *typeIt->second.requiredBy.begin() == extensionData.depends ) );
   if ( typeIt->second.requiredBy.empty() && ( std::find( extensionData.requireData.types.begin(), reqIt, typeIt->first ) == reqIt ) )
   {
@@ -92,20 +121,20 @@ void VideoHppGenerator::checkAttributes( int                                    
 void VideoHppGenerator::checkCorrectness() const
 {
   // only structs to check here!
-  for ( auto const & structure : m_structs )
+  for ( auto const & structure : m_videoXML.types.structs )
   {
     // check that a struct is referenced somewhere
     // I think, it's not forbidden to not reference a struct, but it would probably be not intended?
-    auto typeIt = m_types.find( structure.first );
+    auto typeIt = m_types.find( structure.name );
     assert( typeIt != m_types.end() );
-    checkForError( !typeIt->second.requiredBy.empty(), structure.second.xmlLine, "structure <" + structure.first + "> not required by any extension" );
+    checkForError( !typeIt->second.requiredBy.empty(), structure.xmlLine, "structure <" + structure.name + "> not required by any extension" );
 
     assert( typeIt->second.requiredBy.size() == 1 );
     auto extIt = std::ranges::find_if( m_extensions, [&typeIt]( ExtensionData const & ed ) { return ed.name == *typeIt->second.requiredBy.begin(); } );
     assert( extIt != m_extensions.end() );
 
     // checks on the members of a struct
-    for ( auto const & member : structure.second.members )
+    for ( auto const & member : structure.members )
     {
       // check that each member type is known
       checkForError( m_types.contains( member.type.name ), member.xmlLine, "struct member uses unknown type <" + member.type.name + ">" );
@@ -117,7 +146,7 @@ void VideoHppGenerator::checkCorrectness() const
         assert( memberTypeIt != m_types.end() );
         checkForWarning( !memberTypeIt->second.requiredBy.empty(),
                          member.xmlLine,
-                         "struct member type <" + member.type.name + "> used in struct <" + structure.first + "> is never required for any extension" );
+                         "struct member type <" + member.type.name + "> used in struct <" + structure.name + "> is never required for any extension" );
       }
 
       // check that all array sizes are a known constant
@@ -186,13 +215,8 @@ std::string VideoHppGenerator::generateConstants( ExtensionData const & extensio
   std::string str;
   for ( auto const & constant : extensionData.requireData.constants )
   {
-    str += "VULKAN_HPP_CONSTEXPR_INLINE " +
-           constant.second.type +
-           " " +
-           toCamelCase( stripPrefix( constant.first, "STD_VIDEO_" ), true ) +
-           " = " +
-           constant.second.value +
-           ";\n";
+    str += "VULKAN_HPP_CONSTEXPR_INLINE " + constant.second.type + " " + toCamelCase( stripPrefix( constant.first, "STD_VIDEO_" ), true ) + " = " +
+           constant.second.value + ";\n";
   }
   if ( !str.empty() )
   {
@@ -220,15 +244,8 @@ std::string VideoHppGenerator::generateEnum( std::pair<std::string, EnumData> co
     {
       std::string aliasName = "e" + toCamelCase( stripPrefix( alias.first, prefix ), true );
       assert( valueToNameMap.insert( { aliasName, alias.first } ).second );
-      enumValues += "    " +
-                    aliasName +
-                    " VULKAN_HPP_DEPRECATED_17( \"" +
-                    aliasName +
-                    " is deprecated, " +
-                    valueName +
-                    " should be used instead.\" ) = " +
-                    alias.first +
-                    ",\n";
+      enumValues += "    " + aliasName + " VULKAN_HPP_DEPRECATED_17( \"" + aliasName + " is deprecated, " + valueName +
+                    " should be used instead.\" ) = " + alias.first + ",\n";
     }
   }
 
@@ -300,7 +317,7 @@ std::string VideoHppGenerator::generateIncludes() const
   return includes;
 }
 
-std::string VideoHppGenerator::generateStruct( std::pair<std::string, StructureData> const & structData ) const
+std::string VideoHppGenerator::generateStruct( CategoryStruct const & categoryStruct ) const
 {
   static std::string const structureTemplate = R"(  struct ${structureType}
   {
@@ -332,12 +349,12 @@ ${members}
 )";
 
   return replaceWithMap( structureTemplate,
-                         { { "compareOperators", generateStructCompareOperators( structData ) },
-                           { "members", generateStructMembers( structData ) },
-                           { "structureType", stripPrefix( structData.first, "StdVideo" ) } } );
+                         { { "compareOperators", generateStructCompareOperators( categoryStruct ) },
+                           { "members", generateStructMembers( categoryStruct ) },
+                           { "structureType", stripPrefix( categoryStruct.name, "StdVideo" ) } } );
 }
 
-std::string VideoHppGenerator::generateStructCompareOperators( std::pair<std::string, StructureData> const & structData ) const
+std::string VideoHppGenerator::generateStructCompareOperators( CategoryStruct const & categoryStruct ) const
 {
   static std::set<std::string> const simpleTypes = { "char",   "double",  "DWORD",    "float",    "HANDLE",  "HINSTANCE", "HMONITOR",
                                                      "HWND",   "int",     "int8_t",   "int16_t",  "int32_t", "int64_t",   "LPCWSTR",
@@ -346,10 +363,10 @@ std::string VideoHppGenerator::generateStructCompareOperators( std::pair<std::st
   // two structs are compared by comparing each of the elements
   std::string compareMembers;
   std::string intro = "";
-  for ( size_t i = 0; i < structData.second.members.size(); i++ )
+  for ( size_t i = 0; i < categoryStruct.members.size(); i++ )
   {
-    MemberData const & member = structData.second.members[i];
-    auto               typeIt = m_types.find( member.type.name );
+    StructMember const & member = categoryStruct.members[i];
+    auto                 typeIt = m_types.find( member.type.name );
     assert( typeIt != m_types.end() );
     if ( ( typeIt->second.category == TypeCategory::ExternalType ) && member.type.postfix.empty() && !simpleTypes.contains( member.type.name ) )
     {
@@ -377,13 +394,13 @@ std::string VideoHppGenerator::generateStructCompareOperators( std::pair<std::st
     }
 )";
 
-  return replaceWithMap( compareTemplate, { { "name", stripPrefix( structData.first, "StdVideo" ) }, { "compareMembers", compareMembers } } );
+  return replaceWithMap( compareTemplate, { { "name", stripPrefix( categoryStruct.name, "StdVideo" ) }, { "compareMembers", compareMembers } } );
 }
 
-std::string VideoHppGenerator::generateStructMembers( std::pair<std::string, StructureData> const & structData ) const
+std::string VideoHppGenerator::generateStructMembers( CategoryStruct const & categoryStruct ) const
 {
   std::string members;
-  for ( auto const & member : structData.second.members )
+  for ( auto const & member : categoryStruct.members )
   {
     members += "    ";
     std::string type;
@@ -456,8 +473,8 @@ std::string VideoHppGenerator::generateStructs( ExtensionData const & extensionD
   std::string str;
   for ( auto const & type : extensionData.requireData.types )
   {
-    auto structIt = m_structs.find( type );
-    if ( structIt != m_structs.end() )
+    auto structIt = findByName( m_videoXML.types.structs, type );
+    if ( structIt != m_videoXML.types.structs.end() )
     {
       str += "\n" + generateStruct( *structIt );
     }
@@ -472,11 +489,6 @@ std::string VideoHppGenerator::generateStructs( ExtensionData const & extensionD
 bool VideoHppGenerator::isExtension( std::string const & name ) const
 {
   return std::ranges::any_of( m_extensions, [&name]( ExtensionData const & ed ) { return ed.name == name; } );
-}
-
-std::string VideoHppGenerator::readComment( tinyxml2::XMLElement const * element ) const
-{
-  return ::readComment( "VideoHppGenerator", element );
 }
 
 void VideoHppGenerator::readEnums( tinyxml2::XMLElement const * element )
@@ -666,11 +678,6 @@ void VideoHppGenerator::readExtensions( tinyxml2::XMLElement const * element )
   }
 }
 
-std::pair<std::vector<std::string>, std::string> VideoHppGenerator::readModifiers( tinyxml2::XMLNode const * node ) const
-{
-  return ::readModifiers( "VulkanHppGenerator", node );
-}
-
 void VideoHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
 {
   int line = element->GetLineNum();
@@ -684,15 +691,7 @@ void VideoHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
   for ( auto child : children )
   {
     std::string const value = child->Value();
-    if ( value == "comment" )
-    {
-      std::string comment = readComment( child );
-      if ( comment.find( "\nCopyright" ) == 0 )
-      {
-        m_copyrightMessage = generateCopyrightMessage( comment );
-      }
-    }
-    else if ( value == "enums" )
+    if ( value == "enums" )
     {
       readEnums( child );
     }
@@ -700,13 +699,7 @@ void VideoHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     {
       readExtensions( child );
     }
-    else
-    {
-      assert( value == "types" );
-      readTypes( child );
-    }
   }
-  checkForError( !m_copyrightMessage.empty(), -1, "missing copyright message" );
 }
 
 void VideoHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, std::map<std::string, ConstantData> & constants )
@@ -764,264 +757,6 @@ void VideoHppGenerator::readRequireType( tinyxml2::XMLElement const * element, E
   }
 }
 
-void VideoHppGenerator::readStructMember( tinyxml2::XMLElement const * element, std::vector<MemberData> & members )
-{
-  (void)members;
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, { { "len", {} }, { "optional", { "false", "true" } } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line,
-                 children,
-                 { { "name", MultipleAllowed::No }, { "type", MultipleAllowed::No } },
-                 { { "comment", MultipleAllowed::No }, { "enum", MultipleAllowed::Yes } } );
-
-  MemberData memberData;
-  memberData.xmlLine = line;
-
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "len" )
-    {
-      memberData.len = attribute.second;
-      // the "len" attribute can be something completely unrelated to this struct!! Can't to a checkForError whatsoever.
-    }
-    else if ( attribute.first == "optional" )
-    {
-      memberData.optional = attribute.second;
-    }
-  }
-
-  std::string name;
-  for ( auto child : children )
-  {
-    int childLine = child->GetLineNum();
-    checkAttributes( childLine, getAttributes( child ), {}, {} );
-    checkElements( childLine, getChildElements( child ), {} );
-
-    std::string value = child->Value();
-    if ( value == "enum" )
-    {
-      std::string enumString = child->GetText();
-
-      checkForError( child->PreviousSibling() && child->NextSibling(), line, "struct member array specification is ill-formatted: <" + enumString + ">" );
-      std::string previous = child->PreviousSibling()->Value();
-      std::string next     = child->NextSibling()->Value();
-      checkForError( previous.ends_with( "[" ) && next.starts_with( "]" ), line, "struct member array specification is ill-formatted: <" + enumString + ">" );
-
-      memberData.arraySizes.push_back( enumString );
-    }
-    else if ( value == "name" )
-    {
-      name                                                   = child->GetText();
-      std::tie( memberData.arraySizes, memberData.bitCount ) = readModifiers( child->NextSibling() );
-    }
-    else if ( value == "type" )
-    {
-      memberData.type = readType( child );
-    }
-  }
-  assert( !name.empty() );
-
-  checkForError(
-    std::ranges::none_of( members, [&name]( MemberData const & md ) { return md.name == name; } ), line, "struct member name <" + name + "> already used" );
-  memberData.name = name;
-  members.push_back( memberData );
-}
-
-void VideoHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "category", { "define" } } }, { { "requires", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "name", MultipleAllowed::No } }, { { "type", MultipleAllowed::No } } );
-
-  std::string require;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "requires" )
-    {
-      require = attribute.second;
-    }
-  }
-
-  std::string name, type;
-  for ( auto child : children )
-  {
-    std::string const value = child->Value();
-    if ( value == "name" )
-    {
-      name = child->GetText();
-    }
-    else if ( value == "type" )
-    {
-      type = child->GetText();
-    }
-  }
-  checkForError( require.empty() || m_defines.contains( require ), line, "define <" + name + "> requires unknown type <" + require + ">" );
-  checkForError( type.empty() || m_defines.contains( type ), line, "define <" + name + "> of unknown type <" + type + ">" );
-
-  checkForError( m_types.insert( { name, TypeData{ TypeCategory::Define, {}, line } } ).second, line, "define <" + name + "> already specified" );
-  assert( !m_defines.contains( name ) );
-  m_defines[name] = { require, line };
-}
-
-void VideoHppGenerator::readTypeEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "category", { "enum" } }, { "name", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-  }
-
-  checkForError( m_types.insert( { name, TypeData{ TypeCategory::Enum, {}, line } } ).second, line, "enum <" + name + "> already specified" );
-  assert( !m_enums.contains( name ) );
-  m_enums[name] = EnumData{ .xmlLine = line };
-}
-
-void VideoHppGenerator::readTypeInclude( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "category", { "include" } }, { "name", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name = attributes.find( "name" )->second;
-  checkForError( m_types.insert( { name, TypeData{ TypeCategory::Include, {}, line } } ).second, line, "type <" + name + "> already specified" );
-  assert( !m_includes.contains( name ) );
-  m_includes[name] = { line };
-}
-
-void VideoHppGenerator::readTypeRequires( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "name", {} }, { "requires", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name, require;
-  for ( auto attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else
-    {
-      assert( attribute.first == "requires" );
-      require = attribute.second;
-    }
-  }
-
-  checkForError( m_includes.contains( require ), line, "type <" + name + "> requires unknown <" + require + ">" );
-  checkForError( m_types.insert( { name, TypeData{ TypeCategory::ExternalType, {}, line } } ).second, line, "type <" + name + "> already specified" );
-  assert( !m_externalTypes.contains( name ) );
-  m_externalTypes[name] = { require, line };
-}
-
-void VideoHppGenerator::readTypes( tinyxml2::XMLElement const * element )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), { { "comment", {} } }, {} );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "type", MultipleAllowed::Yes } } );
-
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "type" )
-    {
-      readTypesType( child );
-    }
-  }
-}
-
-void VideoHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "category", { "struct" } }, { "name", {} } }, { { "comment", {} }, { "requires", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "member", MultipleAllowed::Yes } }, { { "comment", MultipleAllowed::Yes } } );
-
-  StructureData structureData{ .xmlLine = line };
-
-  std::string name, require;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else if ( attribute.first == "requires" )
-    {
-      require = attribute.second;
-    }
-  }
-  assert( !name.empty() );
-  checkForError( require.empty() || m_types.contains( require ), line, "struct <" + name + "> requires unknown type <" + require + ">" );
-  checkForError( m_types.insert( { name, TypeData{ TypeCategory::Struct, {}, line } } ).second, line, "struct <" + name + "> already specified" );
-  assert( !m_structs.contains( name ) );
-  std::map<std::string, StructureData>::iterator it = m_structs.insert( { name, structureData } ).first;
-
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "member" )
-    {
-      readStructMember( child, it->second.members );
-    }
-  }
-}
-
-void VideoHppGenerator::readTypesType( tinyxml2::XMLElement const * element )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-
-  auto categoryIt = attributes.find( "category" );
-  if ( categoryIt != attributes.end() )
-  {
-    if ( categoryIt->second == "define" )
-    {
-      readTypeDefine( element, attributes );
-    }
-    else if ( categoryIt->second == "enum" )
-    {
-      readTypeEnum( element, attributes );
-    }
-    else if ( categoryIt->second == "include" )
-    {
-      readTypeInclude( element, attributes );
-    }
-    else if ( categoryIt->second == "struct" )
-    {
-      readTypeStruct( element, attributes );
-    }
-    else
-    {
-      checkForError( false, line, "unknown category <" + categoryIt->second + "> encountered" );
-    }
-  }
-  else
-  {
-    auto requiresIt = attributes.find( "requires" );
-    if ( requiresIt != attributes.end() )
-    {
-      readTypeRequires( element, attributes );
-    }
-    else
-    {
-      checkForError( ( attributes.size() == 1 ) && ( attributes.begin()->first == "name" ) && ( attributes.begin()->second == "int" ), line, "unknown type" );
-      checkForError( m_types.insert( { "int", TypeData{ TypeCategory::Unknown, {}, line } } ).second, line, "type <int> already specified" );
-    }
-  }
-}
-
 void VideoHppGenerator::sortStructs()
 {
   for ( auto & ext : m_extensions )
@@ -1032,9 +767,9 @@ void VideoHppGenerator::sortStructs()
       auto        typeIt = m_types.find( *reqIt );
       if ( ( typeIt != m_types.end() ) && ( typeIt->second.category == TypeCategory::Struct ) )
       {
-        auto structIt = m_structs.find( typeIt->first );
-        assert( structIt != m_structs.end() );
-        for ( auto const & member : structIt->second.members )
+        auto structIt = findByName( m_videoXML.types.structs, typeIt->first );
+        assert( structIt != m_videoXML.types.structs.end() );
+        for ( auto const & member : structIt->members )
         {
           auto memberTypeIt = m_types.find( member.type.name );
           assert( memberTypeIt != m_types.end() );
@@ -1106,7 +841,7 @@ int main( int argc, char ** argv )
   try
   {
     std::cout << "VideoHppGenerator: Parsing " << filename << std::endl;
-    VideoHppGenerator generator( doc );
+    VideoHppGenerator generator( parseVideoXML( doc ), doc );
 
     generator.generateCppmFile();
     generator.generateHppFile();

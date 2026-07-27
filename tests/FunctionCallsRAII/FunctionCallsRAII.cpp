@@ -1087,5 +1087,87 @@ int main()
       device.getImageSparseMemoryRequirements2( imageSparseMemoryRequirementsInfo2 );
   }
 
+  // Promoted from VK_KHR_get_physical_device_properties2
+  {
+    vk::raii::PhysicalDevice    physicalDevice          = nullptr;
+    vk::PhysicalDeviceFeatures2 physicalDeviceFeatures2 = physicalDevice.getFeatures2();
+  }
+  {
+    vk::raii::PhysicalDevice                                                               physicalDevice = nullptr;
+    vk::StructureChain<vk::PhysicalDeviceFeatures2, vk::PhysicalDevicePrivateDataFeatures> physicalDeviceFeatures2Chain =
+      physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDevicePrivateDataFeatures>();
+  }
+
+  {
+    vk::raii::PhysicalDevice      physicalDevice = nullptr;
+    vk::PhysicalDeviceProperties2 physicalDeviceProperties2;
+    physicalDevice.getProperties2( &physicalDeviceProperties2 );
+  }
+  {
+    vk::raii::PhysicalDevice      physicalDevice            = nullptr;
+    vk::PhysicalDeviceProperties2 physicalDeviceProperties2 = physicalDevice.getProperties2();
+  }
+  {
+    vk::raii::PhysicalDevice                                                                    physicalDevice = nullptr;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMultiDrawPropertiesEXT> physicalDeviceProperties2Chain =
+      physicalDevice.getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMultiDrawPropertiesEXT>();
+  }
+
+  {
+    vk::raii::PhysicalDevice physicalDevice = nullptr;
+    vk::Format               format         = {};
+    vk::FormatProperties2    formatProperties2;
+    physicalDevice.getFormatProperties2( format, &formatProperties2 );
+  }
+  {
+    vk::raii::PhysicalDevice physicalDevice    = nullptr;
+    vk::Format               format            = {};
+    vk::FormatProperties2    formatProperties2 = physicalDevice.getFormatProperties2( format );
+  }
+  {
+    vk::raii::PhysicalDevice                                         physicalDevice = nullptr;
+    vk::Format                                                       format         = {};
+    vk::StructureChain<vk::FormatProperties2, vk::FormatProperties3> formatProperties2Chain =
+      physicalDevice.getFormatProperties2<vk::FormatProperties2, vk::FormatProperties3>( format );
+  }
+
+  {
+    vk::raii::PhysicalDevice           physicalDevice = nullptr;
+    vk::PhysicalDeviceImageFormatInfo2 imageFormatInfo2;
+    vk::ImageFormatProperties2         imageFormatProperties2 = physicalDevice.getImageFormatProperties2( imageFormatInfo2 );
+  }
+  {
+    vk::raii::PhysicalDevice                                                          physicalDevice = nullptr;
+    vk::PhysicalDeviceImageFormatInfo2                                                imageFormatInfo2;
+    vk::StructureChain<vk::ImageFormatProperties2, vk::ExternalImageFormatProperties> imageFormatProperties2Chain =
+      physicalDevice.getImageFormatProperties2<vk::ImageFormatProperties2, vk::ExternalImageFormatProperties>( imageFormatInfo2 );
+  }
+
+  {
+    vk::raii::PhysicalDevice                physicalDevice         = nullptr;
+    std::vector<vk::QueueFamilyProperties2> queueFamilyProperties2 = physicalDevice.getQueueFamilyProperties2();
+  }
+  {
+    vk::raii::PhysicalDevice physicalDevice = nullptr;
+    using QueueFamilyProperties2Chain       = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointProperties2NV>;
+    std::vector<QueueFamilyProperties2Chain> queueFamilyProperties2Chain = physicalDevice.getQueueFamilyProperties2<QueueFamilyProperties2Chain>();
+  }
+
+  {
+    vk::raii::PhysicalDevice            physicalDevice    = nullptr;
+    vk::PhysicalDeviceMemoryProperties2 memoryProperties2 = physicalDevice.getMemoryProperties2();
+  }
+  {
+    vk::raii::PhysicalDevice                                                                             physicalDevice = nullptr;
+    vk::StructureChain<vk::PhysicalDeviceMemoryProperties2, vk::PhysicalDeviceMemoryBudgetPropertiesEXT> memoryProperties2Chain =
+      physicalDevice.getMemoryProperties2<vk::PhysicalDeviceMemoryProperties2, vk::PhysicalDeviceMemoryBudgetPropertiesEXT>();
+  }
+
+  {
+    vk::raii::PhysicalDevice                      physicalDevice = nullptr;
+    vk::PhysicalDeviceSparseImageFormatInfo2      sparseImageFormatInfo2;
+    std::vector<vk::SparseImageFormatProperties2> sparseImageFormatProperties2 = physicalDevice.getSparseImageFormatProperties2( sparseImageFormatInfo2 );
+  }
+
   return 0;
 }

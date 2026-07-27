@@ -77,7 +77,7 @@ constexpr CommandFlavourFlags operator|( CommandFlavourFlagBits const & lhs, Com
 class VulkanHppGenerator
 {
 public:
-  VulkanHppGenerator( Vkxml && vkxml, tinyxml2::XMLDocument const & document, std::string const & api );
+  VulkanHppGenerator( Vkxml && vkxml, std::string const & api );
 
   VulkanHppGenerator()                                             = delete;
   VulkanHppGenerator( VulkanHppGenerator const & rhs )             = delete;
@@ -381,12 +381,6 @@ private:
     std::string                                 selector       = {};
     std::string                                 value          = {};
     int                                         xmlLine        = {};
-  };
-
-  struct SpirVCapabilityData
-  {
-    std::map<std::string, std::map<std::string, int>> structs = {};  // map from structure to map from member to xmlLine
-    int                                               xmlLine = {};
   };
 
   struct StructData
@@ -1090,10 +1084,6 @@ private:
                                                                                std::vector<size_t> const &               returnParams,
                                                                                std::set<size_t> const &                  singularParams,
                                                                                std::set<size_t> const &                  skippedParams ) const;
-  void                                                   readRegistry( tinyxml2::XMLElement const * element );
-  void                                                   readSPIRVCapability( tinyxml2::XMLElement const * element );
-  void                                                   readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element, SpirVCapabilityData & capability );
-  void                                                   readSPIRVCapabilities( tinyxml2::XMLElement const * element );
   DefinesPartition                                       partitionDefines( std::map<std::string, DefineData> const & defines );
   void                                                   registerDeleter( std::string const & commandName, CommandData const & commandData );
   void                                                   rescheduleRAIIHandle( std::string &                              str,
@@ -1113,25 +1103,24 @@ private:
   MemberData const &                                     vectorMemberByStructure( std::string const & structureType ) const;
 
 private:
-  std::string                                m_api;
-  std::set<std::string>                      m_commandQueues;
-  std::map<std::string, CommandData>         m_commands;
-  std::string                                m_copyrightMessage;
-  std::map<std::string, DefineData>          m_defines;
-  DefinesPartition                           m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
-  std::map<std::string, EnumData>            m_enums;
-  std::vector<ExtensionData>                 m_extensions;
-  std::vector<FeatureData>                   m_features;
-  std::map<std::string, FormatData>          m_formats;
-  std::map<std::string, HandleData>          m_handles;
-  std::set<std::string>                      m_RAIISpecialFunctions;
-  std::map<std::string, SpirVCapabilityData> m_spirVCapabilities;
-  std::map<std::string, StructData>          m_structs;
-  std::map<std::string, TypeData>            m_types;
-  std::vector<ExtensionData>                 m_unsupportedExtensions;
-  std::vector<FeatureData>                   m_unsupportedFeatures;
-  std::string                                m_version;
-  Vkxml                                      m_vkxml;
+  std::string                        m_api;
+  std::set<std::string>              m_commandQueues;
+  std::map<std::string, CommandData> m_commands;
+  std::string                        m_copyrightMessage;
+  std::map<std::string, DefineData>  m_defines;
+  DefinesPartition                   m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
+  std::map<std::string, EnumData>    m_enums;
+  std::vector<ExtensionData>         m_extensions;
+  std::vector<FeatureData>           m_features;
+  std::map<std::string, FormatData>  m_formats;
+  std::map<std::string, HandleData>  m_handles;
+  std::set<std::string>              m_RAIISpecialFunctions;
+  std::map<std::string, StructData>  m_structs;
+  std::map<std::string, TypeData>    m_types;
+  std::vector<ExtensionData>         m_unsupportedExtensions;
+  std::vector<FeatureData>           m_unsupportedFeatures;
+  std::string                        m_version;
+  Vkxml                              m_vkxml;
 
   mutable std::set<std::string> m_generatedCommands;
 };

@@ -41,7 +41,7 @@ std::set<std::string> const specialPointerTypes = { "Display", "IDirectFB", "wl_
 // VulkanHppGenerator public interface
 //
 
-VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, tinyxml2::XMLDocument const & document, std::string const & api )
+VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api )
   : m_api( api ), m_vkxml( std::move( vkxml ) )
 {
   m_copyrightMessage = generateCopyrightMessage( m_vkxml.copyright.text );
@@ -587,11 +587,14 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, tinyxml2::XMLDocument co
   // insert the default "handle" without class (for createInstance, and such)
   m_handles.insert( { "", {} } );
 
-  // read the document and check its correctness
-  int const                                 line     = document.GetLineNum();
-  std::vector<tinyxml2::XMLElement const *> elements = getChildElements( &document );
-  checkElements( line, elements, { { "registry", MultipleAllowed::No } } );
-  readRegistry( elements[0] );
+  if ( m_api != "vulkanbase" )
+  {
+    // for all api but vulkanbase, we merge the internal features into the normal ones
+    mergeInternalFeatures();
+  }
+  distributeEnumValueAliases();
+  distributeRequirements();
+  markExtendedStructs();
   filterLenMembers();
   checkCorrectness();
   handleRemovals();
@@ -1371,21 +1374,27 @@ void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & requi
 
 void VulkanHppGenerator::checkSpirVCapabilityCorrectness() const
 {
-  for ( auto const & capability : m_spirVCapabilities )
+  for ( auto const & spirvCapability : m_vkxml.spirvCapabilities.capabilities )
   {
-    for ( auto const & enable : capability.second.structs )
+    for ( auto const & enable : spirvCapability.enables )
     {
-      assert( !enable.second.empty() );
-      auto structIt = findByNameOrAlias( m_structs, enable.first );
-      checkForError( structIt != m_structs.end(),
-                     enable.second.begin()->second,
-                     "unknown structure <" + enable.first + "> specified for SPIR-V capability <" + capability.first + ">" );
-
-      for ( auto const & member : enable.second )
+      if ( !enable.property.empty() )
       {
-        checkForError( std::ranges::any_of( structIt->second.members, [&member]( auto const & md ) { return md.name == member.first; } ),
-                       member.second,
-                       "unknown member <" + member.first + "> in struct <" + enable.first + "> specified for SPIR-V capability <" + capability.first + ">" );
+        auto structIt = m_vkxml.structs.find( enable.property );
+        assert( structIt != m_vkxml.structs.end() );
+        auto memberIt = findByName( structIt->second.members, enable.member );
+        assert( memberIt != structIt->second.members.end() );
+        if ( memberIt->type.name != "VkBool32" )
+        {
+          assert( memberIt->type.name.ends_with( "Flags" ) );
+          std::string flagBitsType = memberIt->type.name.substr( 0, memberIt->type.name.length() - 5 ) + "FlagBits";
+          auto        flagBitsIt   = m_enums.find( flagBitsType );
+          assert( flagBitsIt != m_enums.end() );
+          checkForError( containsByNameOrAlias( flagBitsIt->second.values, enable.value ),
+                         enable.xmlLine,
+                         "spirvcapability <" + spirvCapability.name + "> enables member <" + enable.member + "> in property struct <" + enable.property +
+                           "> with unexpected value <" + enable.value + ">" );
+        }
       }
     }
   }
@@ -13239,186 +13248,6 @@ std::pair<bool, std::map<size_t, std::vector<size_t>>> VulkanHppGenerator::needs
            countToVectorMap };
 }
 
-void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, {} );
-
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line,
-                 children,
-                 { { "commands", MultipleAllowed::No },
-                   { "comment", MultipleAllowed::Yes },
-                   { "enums", MultipleAllowed::Yes },
-                   { "extensions", MultipleAllowed::No },
-                   { "feature", MultipleAllowed::Yes },
-                   { "formats", MultipleAllowed::No },
-                   { "platforms", MultipleAllowed::No },
-                   { "spirvcapabilities", MultipleAllowed::No },
-                   { "spirvextensions", MultipleAllowed::No },
-                   { "sync", MultipleAllowed::No },
-                   { "tags", MultipleAllowed::No },
-                   { "types", MultipleAllowed::No },
-                   { "videocodecs", MultipleAllowed::No } } );
-  for ( auto child : children )
-  {
-    std::string const value = child->Value();
-    if ( value == "spirvcapabilities" )
-    {
-      readSPIRVCapabilities( child );
-    }
-  }
-
-  if ( m_api != "vulkanbase" )
-  {
-    // for all api but vulkanbase, we merge the internal features into the normal ones
-    mergeInternalFeatures();
-  }
-  distributeEnumValueAliases();
-  distributeRequirements();
-  markExtendedStructs();
-}
-
-void VulkanHppGenerator::readSPIRVCapability( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, {} );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "enable", MultipleAllowed::Yes } } );
-
-  std::string name              = attributes.find( "name" )->second;
-  auto [capabilityIt, inserted] = m_spirVCapabilities.insert( { name, { {}, line } } );
-  checkForError( inserted, line, "spirvcapability <" + name + "> already listed" );
-
-  for ( auto child : children )
-  {
-    readSPIRVCapabilityEnable( child, capabilityIt->second );
-  }
-}
-
-void VulkanHppGenerator::readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element, SpirVCapabilityData & capability )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkElements( line, getChildElements( element ), {} );
-
-  if ( attributes.contains( "extension" ) )
-  {
-    checkAttributes( line, attributes, { { "extension", {} } }, {} );
-
-    std::string const & extension = attributes.find( "extension" )->second;
-    checkForError( isExtension( extension ), line, "unknown extension <" + extension + "> specified for SPIR-V capability" );
-  }
-  else if ( attributes.contains( "property" ) )
-  {
-    checkAttributes( line, attributes, { { "member", {} }, { "property", {} }, { "requires", {} }, { "value", {} } }, {} );
-
-    std::string member, property, value;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "member" )
-      {
-        member = attribute.second;
-      }
-      else if ( attribute.first == "property" )
-      {
-        property = attribute.second;
-      }
-      if ( attribute.first == "requires" )
-      {
-        std::vector<std::string> require = tokenize( attribute.second, "," );
-        for ( auto const & r : require )
-        {
-          checkForError( isFeature( r ) || isExtension( r ), line, "unknown requires <" + r + "> specified for SPIR-V capability" );
-        }
-      }
-      else if ( attribute.first == "value" )
-      {
-        value = attribute.second;
-      }
-    }
-
-    auto propertyIt = m_structs.find( property );
-    checkForError( propertyIt != m_structs.end(), line, "unknown property <" + property + "> specified for SPIR-V capability" );
-    auto memberIt = findByName( propertyIt->second.members, member );
-    checkForError( memberIt != propertyIt->second.members.end(), line, "unknown member <" + member + "> specified for SPIR-V capability" );
-    if ( memberIt->type.name == "VkBool32" )
-    {
-      checkForError( ( value == "VK_FALSE" ) || ( value == "VK_TRUE" ),
-                     line,
-                     "unknown value <" + value + "> for boolean member <" + member + "> specified for SPIR-V capability" );
-    }
-    else
-    {
-      auto bitmaskIt = m_vkxml.bitmasks.find( memberIt->type.name );
-      checkForError( bitmaskIt != m_vkxml.bitmasks.end(), line, "member <" + member + "> specified for SPIR-V capability is not a bitmask" );
-      checkForError( !bitmaskIt->second.require.empty(), line, "member <" + member + "> specified for SPIR-V capability has no required enum" );
-      auto const enumIt = m_enums.find( bitmaskIt->second.require );
-      checkForError(
-        enumIt != m_enums.end(), line, "member <" + member + "> specified for SPIR-V capability requires an unknown enum <" + bitmaskIt->second.require + ">" );
-      checkForError( containsByName( enumIt->second.values, value ) || containsByName( enumIt->second.valueAliases, value ),
-                     line,
-                     "unknown attribute value <" + value + "> specified for SPIR-V capability" );
-    }
-  }
-  else if ( attributes.contains( "struct" ) )
-  {
-    checkAttributes( line, attributes, { { "feature", {} }, { "struct", {} } }, { { "alias", {} }, { "requires", {} } } );
-
-    std::string feature, structure;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "feature" )
-      {
-        feature = attribute.second;
-      }
-      else if ( attribute.first == "requires" )
-      {
-        std::vector<std::string> require = tokenize( attribute.second, "," );
-        for ( auto const & r : require )
-        {
-          checkForError( isFeature( r ) || isExtension( r ), line, "unknown requires <" + r + "> specified for SPIR-V capability" );
-        }
-      }
-      else if ( attribute.first == "struct" )
-      {
-        structure = attribute.second;
-      }
-    }
-
-    auto structIt = capability.structs.insert( { structure, {} } ).first;
-    checkForError( structIt->second.insert( { feature, line } ).second,
-                   line,
-                   "feature <" + feature + "> already specified for struct <" + structure + "> for SPIR-V capability" );
-  }
-  else if ( attributes.contains( "version" ) )
-  {
-    checkAttributes( line, attributes, { { "version", {} } }, {} );
-
-    std::string version = attributes.find( "version" )->second;
-    if ( version.starts_with( "VK_API_" ) )
-    {
-      version.erase( 3, 4 );  // remove "API_" from the version -> VK_VERSION_x_y
-    }
-    checkForError( isFeature( version ), line, "unknown version <" + version + "> specified for SPIR-V capability" );
-  }
-}
-
-void VulkanHppGenerator::readSPIRVCapabilities( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "comment", {} } }, {} );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "spirvcapability", MultipleAllowed::Yes } } );
-
-  for ( auto child : children )
-  {
-    readSPIRVCapability( child );
-  }
-}
-
 VulkanHppGenerator::DefinesPartition VulkanHppGenerator::partitionDefines( std::map<std::string, DefineData> const & defines )
 {
   DefinesPartition partition{};
@@ -13919,7 +13748,7 @@ int main( int argc, char const ** argv )
   {
     std::cout << "VulkanHppGenerator: Parsing " << filename << std::endl;
 
-    VulkanHppGenerator generator( parseVkXml( doc, api ), doc, api );
+    VulkanHppGenerator generator( parseVkXml( doc, api ), api );
 
     generator.prepareRAIIHandles();
     generator.generateCppmFile();

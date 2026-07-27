@@ -599,7 +599,7 @@ struct Format
   int                      xmlLine          = {};
 };
 
-struct Enable
+struct SPIRVExtensionEnable
 {
   std::string version   = {};
   std::string extension = {};
@@ -608,9 +608,9 @@ struct Enable
 
 struct SPIRVExtension
 {
-  std::vector<Enable> enables = {};
-  std::string         name    = {};
-  int                 xmlLine = {};
+  std::vector<SPIRVExtensionEnable> enables = {};
+  std::string                       name    = {};
+  int                               xmlLine = {};
 };
 
 struct SPIRVExtensions
@@ -620,29 +620,58 @@ struct SPIRVExtensions
   int                         xmlLine    = {};
 };
 
+struct SPIRVCapabilityEnable
+{
+  std::string              alias     = {};
+  std::string              extension = {};
+  std::string              feature   = {};
+  std::string              member    = {};
+  std::string              property  = {};
+  std::vector<std::string> require   = {};
+  std::string              structure = {};
+  std::string              value     = {};
+  std::string              version   = {};
+  int                      xmlLine   = {};
+};
+
+struct SPIRVCapability
+{
+  std::vector<SPIRVCapabilityEnable> enables = {};
+  std::string                        name    = {};
+  int                                xmlLine = {};
+};
+
+struct SPIRVCapabilities
+{
+  std::string                  comment      = {};
+  std::vector<SPIRVCapability> capabilities = {};
+  int                          xmlLine      = {};
+};
+
 struct Vkxml
 {
-  std::map<std::string, BaseType>     baseTypes       = {};
-  std::map<std::string, Bitmask>      bitmasks        = {};
-  std::vector<Command>                commands        = {};
-  std::map<std::string, Constant>     constants       = {};
-  Comment                             copyright       = {};
-  std::map<std::string, Define>       defines         = {};
-  std::map<std::string, Enum>         enums           = {};
-  Extensions                          extensions      = {};
-  std::map<std::string, ExternalType> externalTypes   = {};
-  std::vector<Feature>                features        = {};
-  std::vector<Format>                 formats         = {};
-  std::map<std::string, FuncPointer>  funcPointers    = {};
-  std::map<std::string, Handle>       handles         = {};
-  std::map<std::string, int>          includes        = {};
-  std::map<std::string, Platform>     platforms       = {};
-  SPIRVExtensions                     spirvExtensions = {};
-  std::map<std::string, Struct>       structs         = {};
-  Sync                                sync            = {};
-  std::map<std::string, Tag>          tags            = {};
-  std::map<std::string, Union>        unions          = {};
-  std::vector<VideoCodec>             videoCodecs     = {};
+  std::map<std::string, BaseType>     baseTypes         = {};
+  std::map<std::string, Bitmask>      bitmasks          = {};
+  std::vector<Command>                commands          = {};
+  std::map<std::string, Constant>     constants         = {};
+  Comment                             copyright         = {};
+  std::map<std::string, Define>       defines           = {};
+  std::map<std::string, Enum>         enums             = {};
+  Extensions                          extensions        = {};
+  std::map<std::string, ExternalType> externalTypes     = {};
+  std::vector<Feature>                features          = {};
+  std::vector<Format>                 formats           = {};
+  std::map<std::string, FuncPointer>  funcPointers      = {};
+  std::map<std::string, Handle>       handles           = {};
+  std::map<std::string, int>          includes          = {};
+  std::map<std::string, Platform>     platforms         = {};
+  SPIRVCapabilities                   spirvCapabilities = {};
+  SPIRVExtensions                     spirvExtensions   = {};
+  std::map<std::string, Struct>       structs           = {};
+  Sync                                sync              = {};
+  std::map<std::string, Tag>          tags              = {};
+  std::map<std::string, Union>        unions            = {};
+  std::vector<VideoCodec>             videoCodecs       = {};
 
   std::set<std::string> types = {};
 };

@@ -2324,6 +2324,14 @@ int main()
       physicalDevice.getSparseImageFormatProperties2( sparseImageFormatInfo2, allocator );
   }
 
+  // Promoted from VK_KHR_maintenance1
+  {
+    vk::Device               device;
+    vk::CommandPool          commandPool;
+    vk::CommandPoolTrimFlags trimFlags = {};
+    device.trimCommandPool( commandPool, trimFlags );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

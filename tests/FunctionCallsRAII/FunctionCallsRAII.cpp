@@ -1169,5 +1169,12 @@ int main()
     std::vector<vk::SparseImageFormatProperties2> sparseImageFormatProperties2 = physicalDevice.getSparseImageFormatProperties2( sparseImageFormatInfo2 );
   }
 
+  // Promoted from VK_KHR_maintenance1
+  {
+    vk::raii::CommandPool    commandPool = nullptr;
+    vk::CommandPoolTrimFlags trimFlags   = {};
+    commandPool.trim( trimFlags );
+  }
+
   return 0;
 }

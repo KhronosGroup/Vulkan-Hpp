@@ -10495,7 +10495,19 @@ std::string VulkanHppGenerator::generateReturnVariable( CommandData const &     
     case 2:
       if ( chained )
       {
-        returnVariable = "structureChains";
+        if ( vectorParams.empty() )
+        {
+          // the return variable is simply named "data_", and holds the multi-return value stuff
+          returnVariable = "data_";
+        }
+        else
+        {
+#if !defined(NDEBUG)
+          auto vectorParamIt = vectorParams.find( returnParams[1] );
+#endif
+          assert( ( vectorParamIt != vectorParams.end() ) && ( vectorParamIt->second.lenParam == returnParams[0] ) );
+          returnVariable = "structureChains";
+        }
       }
       else
       {

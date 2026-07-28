@@ -41,8 +41,7 @@ std::set<std::string> const specialPointerTypes = { "Display", "IDirectFB", "wl_
 // VulkanHppGenerator public interface
 //
 
-VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api )
-  : m_api( api ), m_vkxml( std::move( vkxml ) )
+VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api ) : m_api( api ), m_vkxml( std::move( vkxml ) )
 {
   m_copyrightMessage = generateCopyrightMessage( m_vkxml.copyright.text );
 
@@ -4112,7 +4111,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
       if ( !structureHoldsVector( structIt->second ) )
       {
         // the first return param is a single struct without handles or vectors
-        if ( !isStructureChainAnchor( returnType0 ) )
+        if ( structIt->second.extendedBy.empty() )
         {
           // the first return param is a single, not extendable struct without handles or vectors
           if ( m_vkxml.externalTypes.contains( returnType1 ) )
@@ -4129,6 +4128,25 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
                                                 raii,
                                                 false,
                                                 { CommandFlavourFlagBits::enhanced } );
+          }
+        }
+        else
+        {
+          // the first return param is an extendable struct
+          if ( m_vkxml.externalTypes.contains( returnType1 ) )
+          {
+            // the second return param is just some basic type
+            return generateCommandSetInclusive( name,
+                                                commandData,
+                                                initialSkipCount,
+                                                definition,
+                                                returnParams,
+                                                vectorParams,
+                                                false,
+                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained },
+                                                raii,
+                                                false,
+                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
           }
         }
       }
@@ -5241,16 +5259,20 @@ std::string VulkanHppGenerator::generateDataDeclarations2Returns( CommandData co
   switch ( vectorParams.size() )
   {
     case 0:
-      assert( !singular && !chained );
+      assert( !singular );
+      assert( !chained || ( isStructureChainAnchor( commandData.params[returnParams[0]].type.name ) &&
+                            m_vkxml.externalTypes.contains( commandData.params[returnParams[1]].type.name ) ) );
       {
-        std::string firstDataVariable  = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
-        std::string secondDataVariable = startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) );
-
-        std::string const dataDeclarationTemplate = R"(std::pair<${firstDataType},${secondDataType}> data_;
+        std::string const dataDeclarationTemplate        = R"(    std::pair<${firstDataType},${secondDataType}> data_;
     ${firstDataType} & ${firstDataVariable} = data_.first;
     ${secondDataType} & ${secondDataVariable} = data_.second;)";
+        std::string const dataDeclarationTemplateChained = R"(    std::pair<StructureChain<X, Y, Z...>,${secondDataType}> data_;
+    ${firstDataType} & ${firstDataVariable} = data_.first.get();
+    ${secondDataType} & ${secondDataVariable} = data_.second;)";
 
-        return replaceWithMap( dataDeclarationTemplate,
+        std::string firstDataVariable  = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
+        std::string secondDataVariable = startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) );
+        return replaceWithMap( chained ? dataDeclarationTemplateChained : dataDeclarationTemplate,
                                { { "firstDataType", dataTypes[0] },
                                  { "firstDataVariable", firstDataVariable },
                                  { "secondDataType", dataTypes[1] },
@@ -10327,11 +10349,17 @@ std::string VulkanHppGenerator::generateReturnType( std::vector<size_t> const & 
       assert( !unique );
       if ( chained )
       {
-#if !defined( NDEBUG )
         auto vectorIt = vectorParams.find( returnParams[1] );
-#endif
-        assert( ( vectorIt != vectorParams.end() ) && ( vectorIt->second.lenParam == returnParams[0] ) );
-        returnType = std::string( "std::vector<StructureChain" ) + ( raii ? "" : ", StructureChainAllocator" ) + ">";
+        if ( vectorIt != vectorParams.end() )
+        {
+          assert( vectorIt->second.lenParam == returnParams[0] );
+          returnType = std::string( "std::vector<StructureChain" ) + ( raii ? "" : ", StructureChainAllocator" ) + ">";
+        }
+        else
+        {
+          assert( isStructureChainAnchor( "Vk" + dataTypes[0] ) && m_vkxml.externalTypes.contains( dataTypes[1] ) );
+          returnType = "std::pair<StructureChain<X, Y, Z...>, " + dataTypes[1] + ">";
+        }
       }
       else
       {

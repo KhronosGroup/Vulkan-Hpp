@@ -3034,7 +3034,8 @@ std::string VulkanHppGenerator::generateCallArgumentsEnhanced( CommandData const
     {
       assert( isHandleType( commandData.params[i].type.name ) && commandData.params[i].type.isValue() );
       assert( commandData.params[i].arraySizes.empty() && commandData.params[i].lenExpression.empty() );
-      arguments.push_back( "m_" + startLowerCase( stripPrefix( commandData.params[i].type.name, "Vk" ) ) );
+      arguments.push_back( "static_cast<" + commandData.params[i].type.name + ">( m_" + startLowerCase( stripPrefix( commandData.params[i].type.name, "Vk" ) ) +
+                           " )" );
     }
   }
   for ( size_t i = initialSkipCount; i < commandData.params.size(); ++i )

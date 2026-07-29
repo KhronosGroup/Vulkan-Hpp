@@ -9,7 +9,6 @@
 #include <vector>
 
 void checkExtensionOrStructAndMember( std::string const & depends, int xmlLine, std::string const & prefix, std::map<std::string, Struct> const & structs );
-void checkNoList( std::string const & item, int line );
 bool containsByNameAndExport( std::vector<Command> const & commands, std::string const & name, std::vector<std::string> const & exports );
 bool isLenByStructMember( std::string const & name, std::vector<Param> const & params, std::map<std::string, Struct> const & structs );
 void normalizeVersion( std::vector<std::vector<std::string>> & dependencies );
@@ -25,27 +24,25 @@ CategoryAlias parseCategoryAlias( tinyxml2::XMLElement const * element, std::map
 std::pair<std::vector<std::string>, std::pair<std::string, Define>> parseDefine( tinyxml2::XMLElement const *               element,
                                                                                  std::map<std::string, std::string> const & attributes );
 Deprecate                                                           parseDeprecate( tinyxml2::XMLElement const * element );
-std::pair<std::string, Enum>         parseEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-void                                 parseEnum( tinyxml2::XMLElement const * element, std::pair<std::string const, EnumValues> & enumValues );
-Enums                                parseEnums( tinyxml2::XMLElement const * element );
-ExtensionRemove                      parseExtensionRemove( tinyxml2::XMLElement const * element );
-ExtensionRequire                     parseExtensionRequire( tinyxml2::XMLElement const * element );
-ExtensionRequireEnum                 parseExtensionRequireEnum( tinyxml2::XMLElement const * element );
-Extensions                           parseExtensions( tinyxml2::XMLElement const * element );
-std::pair<std::string, ExternalType> parseExternalType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-Feature                              parseFeature( tinyxml2::XMLElement const * element );
-FeatureElement                       parseFeatureElement( tinyxml2::XMLElement const * element );
-Format                               parseFormat( tinyxml2::XMLElement const * element );
-std::vector<Format>                  parseFormats( tinyxml2::XMLElement const * element );
-std::pair<std::string, FuncPointer>  parseFuncPointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-std::pair<std::string, Handle>       parseHandle( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-void                                 parseImplicitExternSyncParams( tinyxml2::XMLElement const * element );
-void                                 parseImplicitExternSyncParamsParam( tinyxml2::XMLElement const * element );
-std::pair<std::string, int>          parseInclude( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-std::string                          parseMemberEnum( tinyxml2::XMLElement const * element );
-MultiFeatureElement                  parseMultiFeatureElement( tinyxml2::XMLElement const * element );
-NameElement                          parseNameElement( tinyxml2::XMLElement const * element );
-std::pair<std::string, Type>         parseNameAndType( tinyxml2::XMLElement const * element );
+std::pair<std::string, Enum>        parseEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+void                                parseEnum( tinyxml2::XMLElement const * element, std::pair<std::string const, EnumValues> & enumValues );
+Enums                               parseEnums( tinyxml2::XMLElement const * element );
+ExtensionRemove                     parseExtensionRemove( tinyxml2::XMLElement const * element );
+ExtensionRequire                    parseExtensionRequire( tinyxml2::XMLElement const * element );
+ExtensionRequireEnum                parseExtensionRequireEnum( tinyxml2::XMLElement const * element );
+Extensions                          parseExtensions( tinyxml2::XMLElement const * element );
+Feature                             parseFeature( tinyxml2::XMLElement const * element );
+FeatureElement                      parseFeatureElement( tinyxml2::XMLElement const * element );
+Format                              parseFormat( tinyxml2::XMLElement const * element );
+std::vector<Format>                 parseFormats( tinyxml2::XMLElement const * element );
+std::pair<std::string, FuncPointer> parseFuncPointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+std::pair<std::string, Handle>      parseHandle( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+void                                parseImplicitExternSyncParams( tinyxml2::XMLElement const * element );
+void                                parseImplicitExternSyncParamsParam( tinyxml2::XMLElement const * element );
+std::string                         parseMemberEnum( tinyxml2::XMLElement const * element );
+MultiFeatureElement                 parseMultiFeatureElement( tinyxml2::XMLElement const * element );
+NameElement                         parseNameElement( tinyxml2::XMLElement const * element );
+std::pair<std::string, Type>        parseNameAndType( tinyxml2::XMLElement const * element );
 std::tuple<std::string, Type, std::vector<std::string>, std::string> parseNameAndTypeModified( tinyxml2::XMLElement const * element );
 std::pair<std::string, std::string>                                  parseNameWithAlias( tinyxml2::XMLElement const * element );
 Param                                                                parseParam( tinyxml2::XMLElement const * element );
@@ -109,11 +106,6 @@ void checkExtensionOrStructAndMember( std::string const & depends, int xmlLine, 
                    prefix + " an unknown member <" + tokens[1] + "> of structure <" + tokens[0] + ">" );
   }
   // CHECK: after extensions: tokens.size() == 1 -> is extension
-}
-
-void checkNoList( std::string const & item, int line )
-{
-  checkForError( "vk.xml", item.find( ',' ) == std::string::npos, line, "item <" + item + "> contains unexpected coma, looks like list" );
 }
 
 void checkNumber( std::string const & number, int line, std::string const & message )
@@ -207,12 +199,12 @@ CategoryAlias parseCategoryAlias( tinyxml2::XMLElement const * element, std::map
   {
     if ( attribute.first == "alias" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       categoryAlias.alias = attribute.second;
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       categoryAlias.name = attribute.second;
     }
   }
@@ -241,12 +233,12 @@ std::pair<std::vector<std::string>, std::pair<std::string, Bitmask>> parseBitmas
     }
     else if ( attribute.first == "bitvalues" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       bitmask.bitValues = attribute.second;
     }
     else if ( attribute.first == "requires" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       bitmask.require = attribute.second;
     }
   }
@@ -280,12 +272,12 @@ void parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & 
     {
       if ( attribute.first == "alias" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         alias = attribute.second;
       }
       else if ( attribute.first == "name" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         name = attribute.second;
       }
     }
@@ -330,7 +322,7 @@ void parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & 
     {
       if ( attribute.first == "allownoqueues" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         command.allowNoQueues = attribute.second;
       }
       else if ( attribute.first == "api" )
@@ -343,7 +335,7 @@ void parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & 
       }
       else if ( attribute.first == "conditionalrendering" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         command.conditionalRendering = attribute.second;
       }
       else if ( attribute.first == "errorcodes" )
@@ -364,7 +356,7 @@ void parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & 
       }
       else if ( attribute.first == "renderpass" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         command.renderPass = attribute.second;
       }
       else if ( attribute.first == "successcodes" )
@@ -373,7 +365,7 @@ void parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & 
       }
       else if ( attribute.first == "videocoding" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         command.videoCoding = attribute.second;
       }
     }
@@ -497,7 +489,7 @@ Component parseComponent( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "bits" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       checkForError( "vk.xml",
                      isNumber( attribute.second ) || ( attribute.second == "compressed" ),
                      line,
@@ -506,17 +498,17 @@ Component parseComponent( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       component.name = attribute.second;
     }
     else if ( attribute.first == "numericFormat" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       component.numericFormat = attribute.second;
     }
     else if ( attribute.first == "planeIndex" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       component.planeIndex = attribute.second;
     }
   }
@@ -536,17 +528,17 @@ std::pair<std::string, Constant> parseConstant( tinyxml2::XMLElement const * ele
   {
     if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       name = attribute.second;
     }
     else if ( attribute.first == "type" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       constant.type = attribute.second;
     }
     else if ( attribute.first == "value" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       constant.value = attribute.second;
     }
   }
@@ -573,12 +565,12 @@ std::pair<std::vector<std::string>, std::pair<std::string, Define>> parseDefine(
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       name = attribute.second;
     }
     else if ( attribute.first == "requires" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       require = attribute.second;
     }
   }
@@ -629,7 +621,7 @@ Deprecate parseDeprecate( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "explanationlink" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       deprecate.explanationLink = attribute.second;
     }
   }
@@ -687,22 +679,22 @@ void parseEnum( tinyxml2::XMLElement const * element, std::pair<std::string cons
     {
       if ( attribute.first == "alias" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         alias = attribute.second;
       }
       else if ( attribute.first == "api" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         api = attribute.second;
       }
       else if ( attribute.first == "deprecated" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         deprecated = attribute.second;
       }
       else if ( attribute.first == "name" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         name = attribute.second;
       }
     }
@@ -731,17 +723,17 @@ void parseEnum( tinyxml2::XMLElement const * element, std::pair<std::string cons
     {
       if ( attribute.first == "bitpos" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         bitPos = attribute.second;
       }
       else if ( attribute.first == "name" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         name = attribute.second;
       }
       else if ( attribute.first == "value" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         value = attribute.second;
       }
     }
@@ -770,17 +762,17 @@ Enums parseEnums( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "bitwidth" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       bitwidth = attribute.second;
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       name = attribute.second;
     }
     else if ( attribute.first == "type" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       type = attribute.second;
     }
   }
@@ -872,7 +864,7 @@ Extension parseExtension( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "author" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       extension.author = attribute.second;
     }
     else if ( attribute.first == "comment" )
@@ -900,44 +892,44 @@ Extension parseExtension( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "deprecatedby" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       extension.deprecatedBy = attribute.second;
       extension.isDeprecated = true;
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       extension.name = attribute.second;
     }
     else if ( attribute.first == "nofeatures" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       extension.noFeatures = ( attribute.second == "true" );
     }
     else if ( attribute.first == "number" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       checkForError( "vk.xml", isNumber( attribute.second ), line, "extension attribute \"number\" is not a number: <" + attribute.second + ">" );
       extension.number = attribute.second;
     }
     else if ( attribute.first == "obsoletedby" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       extension.obsoletedBy = attribute.second;
     }
     else if ( attribute.first == "platform" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       extension.platform = attribute.second;
     }
     else if ( attribute.first == "promotedto" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       extension.promotedTo = attribute.second;
     }
     else if ( attribute.first == "provisional" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       extension.provisional = ( attribute.second == "true" );
       checkForError( "vk.xml",
                      !extension.provisional || ( extension.platform == "provisional" ),
@@ -954,7 +946,7 @@ Extension parseExtension( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "sortorder" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       checkForError( "vk.xml", isNumber( attribute.second ), line, "extension attribute \"sortorder\" is not a number: <" + attribute.second + ">" );
       extension.sortOrder = std::stoi( attribute.second );
     }
@@ -964,7 +956,7 @@ Extension parseExtension( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "type" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       extension.type = attribute.second;
     }
   }
@@ -1114,7 +1106,7 @@ ExtensionRequire parseExtensionRequire( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "api" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       require.api = attribute.second;
     }
     else if ( attribute.first == "comment" )
@@ -1138,10 +1130,6 @@ ExtensionRequire parseExtensionRequire( tinyxml2::XMLElement const * element )
                      requireCommand.xmlLine,
                      "require command <" + requireCommand.name + "> already listed for this require block" );
       require.commands.push_back( std::move( requireCommand ) );
-    }
-    else if ( value == "comment" )
-    {
-      readComment( "vk.xml", child );
     }
     else if ( value == "enum" )
     {
@@ -1235,17 +1223,17 @@ ExtensionRequireEnum parseExtensionRequireEnum( tinyxml2::XMLElement const * ele
   {
     if ( attribute.first == "alias" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.alias = attribute.second;
     }
     else if ( attribute.first == "api" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.api = attribute.second;
     }
     else if ( attribute.first == "bitpos" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       checkForError( "vk.xml", isNumber( attribute.second ), line, "require enum with non-numeric bitpos <" + attribute.second + ">" );
       requireEnum.bitPos = attribute.second;
     }
@@ -1255,44 +1243,44 @@ ExtensionRequireEnum parseExtensionRequireEnum( tinyxml2::XMLElement const * ele
     }
     else if ( attribute.first == "deprecated" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.deprecated = attribute.second;
     }
     else if ( attribute.first == "dir" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.dir = attribute.second;
     }
     else if ( attribute.first == "extends" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.extends = attribute.second;
     }
     else if ( attribute.first == "extnumber" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       checkForError( "vk.xml", isNumber( attribute.second ), line, "require enum with non-numeric extnumber <" + attribute.second + ">" );
       requireEnum.extNumber = attribute.second;
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.name = attribute.second;
     }
     else if ( attribute.first == "offset" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       checkForError( "vk.xml", isNumber( attribute.second ), line, "require enum with non-numeric offset <" + attribute.second + ">" );
       requireEnum.offset = attribute.second;
     }
     else if ( attribute.first == "protect" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.protect = attribute.second;
     }
     else if ( attribute.first == "value" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       checkForError( "vk.xml",
                      requireEnum.name.ends_with( "_EXTENSION_NAME" ) || isSignedNumber( attribute.second ),
                      line,
@@ -1408,30 +1396,6 @@ Extensions parseExtensions( tinyxml2::XMLElement const * element )
   return extensions;
 }
 
-std::pair<std::string, ExternalType> parseExternalType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "requires", {} } }, {} );
-  checkElements( "vk.xml", line, getChildElements( element ), {} );
-
-  std::string name, require;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      checkNoList( attribute.second, line );
-      name = attribute.second;
-    }
-    else if ( attribute.first == "requires" )
-    {
-      checkNoList( attribute.second, line );
-      require = attribute.second;
-    }
-  }
-
-  return { name, { .includedBy = require, .xmlLine = line } };
-}
-
 Feature parseFeature( tinyxml2::XMLElement const * element )
 {
   int const                          line       = element->GetLineNum();
@@ -1455,7 +1419,7 @@ Feature parseFeature( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "apitype" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       feature.apiType = attribute.second;
     }
     else if ( attribute.first == "comment" )
@@ -1470,12 +1434,12 @@ Feature parseFeature( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       feature.name = attribute.second;
     }
     else if ( attribute.first == "number " )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       checkForError( "vk.xml",
                      ( attribute.second.length() == 3 ) && std::isdigit( attribute.second[0] ) && ( attribute.second[1] == '.' ) &&
                        std::isdigit( attribute.second[2] ),
@@ -1620,12 +1584,12 @@ FeatureElement parseFeatureElement( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       feature.name = attribute.second;
     }
     else if ( attribute.first == "struct" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       feature.structure = attribute.second;
     }
   }
@@ -1655,37 +1619,37 @@ Format parseFormat( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "blockSize" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       format.blockSize = attribute.second;
     }
     else if ( attribute.first == "chroma" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       format.chroma = attribute.second;
     }
     else if ( attribute.first == "class" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       format.classAttribute = attribute.second;
     }
     else if ( attribute.first == "compressed" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       format.compressed = attribute.second;
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       format.name = attribute.second;
     }
     else if ( attribute.first == "packed" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       format.packed = attribute.second;
     }
     else if ( attribute.first == "texelsPerBlock" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       format.texelsPerBlock = attribute.second;
     }
   }
@@ -1799,7 +1763,7 @@ std::pair<std::string, FuncPointer> parseFuncPointer( tinyxml2::XMLElement const
   {
     if ( attribute.first == "requires" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       require = attribute.second;
     }
   }
@@ -1840,12 +1804,12 @@ std::pair<std::string, Handle> parseHandle( tinyxml2::XMLElement const * handleE
   {
     if ( attribute.first == "objtypeenum" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       objTypeEnum = attribute.second;
     }
     else if ( attribute.first == "parent" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       parent = attribute.second;
     }
   }
@@ -1887,15 +1851,6 @@ void parseImplicitExternSyncParamsParam( tinyxml2::XMLElement const * element )
   checkElements( "vk.xml", line, getChildElements( element ), {} );
 }
 
-std::pair<std::string, int> parseInclude( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( "vk.xml", line, attributes, { { "category", { "include" } }, { "name", {} } }, {} );
-  checkElements( "vk.xml", line, getChildElements( element ), {} );
-
-  return { attributes.find( "name" )->second, line };
-}
-
 std::string parseMemberEnum( tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
@@ -1929,7 +1884,7 @@ MultiFeatureElement parseMultiFeatureElement( tinyxml2::XMLElement const * eleme
     }
     else if ( attribute.first == "struct" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       feature.structure = attribute.second;
     }
   }
@@ -1958,33 +1913,32 @@ std::tuple<std::string, Type, std::vector<std::string>, std::string> parseNameAn
                  { { "name", MultipleAllowed::No } },
                  { { "comment", MultipleAllowed::No }, { "enum", MultipleAllowed::No }, { "type", MultipleAllowed::No } } );
 
-  std::string              name;
-  Type                     type;
-  std::vector<std::string> arraySizes;
-  std::string              bitCount;
+  std::string   name;
+  Type          type;
+  NameModifiers modifiers;
   for ( auto child : children )
   {
     std::string const value = child->Value();
     if ( value == "enum" )
     {
-      arraySizes.push_back( child->GetText() );
+      modifiers.arraySizes.push_back( child->GetText() );
       checkForError( "vk.xml",
                      child->PreviousSibling() && ( strcmp( child->PreviousSibling()->Value(), "[" ) == 0 ) && child->NextSibling() &&
                        ( strcmp( child->NextSibling()->Value(), "]" ) == 0 ),
                      line,
-                     std::string( "array specifiation is ill-formatted: <" ) + arraySizes.back() + ">" );
+                     std::string( "array specifiation is ill-formatted: <" ) + modifiers.arraySizes.back() + ">" );
     }
     else if ( value == "name" )
     {
-      name                             = parseText( child );
-      std::tie( arraySizes, bitCount ) = readModifiers( "vk.xml", child->NextSibling() );
+      name      = parseText( child );
+      modifiers = parseNameModifiers( "vk.xml", child->NextSibling() );
     }
     else if ( value == "type" )
     {
       type = parseType( child );
     }
   }
-  return { name, type, arraySizes, bitCount };
+  return { name, type, modifiers.arraySizes, modifiers.bitCount };
 }
 
 NameElement parseNameElement( tinyxml2::XMLElement const * element )
@@ -2003,7 +1957,7 @@ NameElement parseNameElement( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       nameElement.name = attribute.second;
     }
   }
@@ -2023,7 +1977,7 @@ std::pair<std::string, std::string> parseNameWithAlias( tinyxml2::XMLElement con
   {
     if ( attribute.first == "alias" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       alias = attribute.second;
     }
   }
@@ -2056,7 +2010,7 @@ Param parseParam( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "altlen" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       param.altLen = attribute.second;
     }
     else if ( attribute.first == "api" )
@@ -2065,22 +2019,22 @@ Param parseParam( tinyxml2::XMLElement const * element )
     }
     if ( attribute.first == "externsync" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       param.externSync = attribute.second;
     }
     else if ( attribute.first == "len" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       param.len = attribute.second;
     }
     else if ( attribute.first == "noautovalidity" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       param.noAutoValidity = attribute.second;
     }
     else if ( attribute.first == "objecttype" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       param.objectType = attribute.second;
     }
     else if ( attribute.first == "optional" )
@@ -2089,12 +2043,12 @@ Param parseParam( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "stride" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       param.stride = attribute.second;
     }
     else if ( attribute.first == "validstructs" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       param.validStructs = attribute.second;
     }
   }
@@ -2139,27 +2093,27 @@ Plane parsePlane( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "compatible" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       plane.compatible = attribute.second;
     }
     else if ( attribute.first == "heightDivisor" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       plane.heightDivisor = attribute.second;
     }
     else if ( attribute.first == "index" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       plane.index = attribute.second;
     }
     else if ( attribute.first == "planeIndex" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       plane.planeIndex = attribute.second;
     }
     else if ( attribute.first == "widthDivisor" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       plane.widthDivisor = attribute.second;
     }
   }
@@ -2185,12 +2139,12 @@ std::pair<std::string, Platform> parsePlatform( tinyxml2::XMLElement const * ele
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       name = attribute.second;
     }
     else if ( attribute.first == "protect" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       platform.protect = attribute.second;
     }
   }
@@ -2310,15 +2264,13 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
     }
     else if ( value == "comment" )
     {
-      std::string comment = readComment( "VkXMLParser", child );
+      Comment comment = parseComment( "vk.xml", child );
 
-      if ( comment.starts_with( "\nCopyright" ) )
+      if ( comment.text.starts_with( "\nCopyright" ) )
       {
-        checkForError( "VkXMLParser",
-                       vkxml.copyright.text.empty(),
-                       line,
-                       "Copyright message has already been encountered on line " + std::to_string( vkxml.copyright.xmlLine ) );
-        vkxml.copyright = { .text = comment, .xmlLine = line };
+        checkForError(
+          "vk.xml", vkxml.copyright.text.empty(), line, "Copyright message has already been encountered on line " + std::to_string( vkxml.copyright.xmlLine ) );
+        vkxml.copyright = std::move( comment );
       }
     }
     else if ( value == "enums" )
@@ -2330,7 +2282,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
         for ( auto const & constant : enums.constants )
         {
           checkForError( "vk.xml",
-                         vkxml.externalTypes.contains( constant.second.type ),
+                         containsByName( vkxml.externalTypes, constant.second.type ),
                          constant.second.xmlLine,
                          "enum constant <" + constant.first + "> has unknown type <" + constant.second.type + ">" );
         }
@@ -2853,10 +2805,6 @@ Remove parseRemove( tinyxml2::XMLElement const * element )
                      "remove command <" + removeCommand.name + "> already listed for this remove block" );
       remove.commands.push_back( std::move( removeCommand ) );
     }
-    else if ( value == "comment" )
-    {
-      readComment( "vk.xml", child );
-    }
     else if ( value == "enum" )
     {
       NameElement removeEnum = parseNameElement( child );
@@ -2932,10 +2880,6 @@ Require parseRequire( tinyxml2::XMLElement const * element )
                      "require command <" + requireCommand.name + "> already listed for this require block" );
       require.commands.push_back( std::move( requireCommand ) );
     }
-    else if ( value == "comment" )
-    {
-      readComment( "vk.xml", child );
-    }
     else if ( value == "enum" )
     {
       RequireEnum requireEnum = parseRequireEnum( child );
@@ -3001,17 +2945,17 @@ RequireEnum parseRequireEnum( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "alias" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.alias = attribute.second;
     }
     else if ( attribute.first == "api" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.api = attribute.second;
     }
     else if ( attribute.first == "bitpos" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       checkNumber( attribute.second, line, "require enum with non-numeric bitPos" );
       requireEnum.bitPos = attribute.second;
     }
@@ -3021,40 +2965,40 @@ RequireEnum parseRequireEnum( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "deprecated" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.deprectated = attribute.second;
     }
     else if ( attribute.first == "dir" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.dir = attribute.second;
     }
     else if ( attribute.first == "extends" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.extends = attribute.second;
     }
     else if ( attribute.first == "extnumber" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       checkNumber( attribute.second, line, "require enum with non-numeric extnumber" );
       requireEnum.extNumber = attribute.second;
       // CHECK: extnumber after extensions
     }
     else if ( attribute.first == "offset" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       checkNumber( attribute.second, line, "require enum with non-numeric offset" );
       requireEnum.offset = attribute.second;
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       requireEnum.name = attribute.second;
     }
     else if ( attribute.first == "value" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       checkNumber( attribute.second, line, "require enum with non-numeric value" );
       requireEnum.value = attribute.second;
     }
@@ -3086,7 +3030,7 @@ RequireType parseRequireType( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       type.name = attribute.second;
     }
   }
@@ -3141,7 +3085,7 @@ SPIRVCapability parseSPIRVCapability( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       spirvCapability.name = attribute.second;
     }
   }
@@ -3172,7 +3116,7 @@ SPIRVCapabilityEnable parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * e
     {
       if ( attribute.first == "extension" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         enable.extension = attribute.second;
       }
     }
@@ -3185,12 +3129,12 @@ SPIRVCapabilityEnable parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * e
     {
       if ( attribute.first == "member" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         enable.member = attribute.second;
       }
       else if ( attribute.first == "property" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         enable.property = attribute.second;
       }
       else if ( attribute.first == "requires" )
@@ -3199,7 +3143,7 @@ SPIRVCapabilityEnable parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * e
       }
       else if ( attribute.first == "value" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         enable.value = attribute.second;
       }
     }
@@ -3212,12 +3156,12 @@ SPIRVCapabilityEnable parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * e
     {
       if ( attribute.first == "alias" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         enable.alias = attribute.second;
       }
       else if ( attribute.first == "feature" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         enable.feature = attribute.second;
       }
       else if ( attribute.first == "requires" )
@@ -3226,7 +3170,7 @@ SPIRVCapabilityEnable parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * e
       }
       else if ( attribute.first == "struct" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         enable.structure = attribute.second;
       }
     }
@@ -3239,7 +3183,7 @@ SPIRVCapabilityEnable parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * e
     {
       if ( attribute.first == "version" )
       {
-        checkNoList( attribute.second, line );
+        checkNoList( "vk.xml", attribute.second, line );
         enable.version = attribute.second;
       }
     }
@@ -3263,7 +3207,7 @@ SPIRVExtension parseSPIRVExtension( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       spirvExtension.name = attribute.second;
     }
   }
@@ -3308,12 +3252,12 @@ SPIRVExtensionEnable parseSPIRVExtensionEnable( tinyxml2::XMLElement const * ele
   {
     if ( attribute.first == "extension" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       enable.extension = attribute.second;
     }
     else if ( attribute.first == "version" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       enable.version = attribute.second;
     }
   }
@@ -3372,22 +3316,22 @@ std::pair<std::string, Struct>
   {
     if ( attribute.first == "allowduplicate" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       structure.allowDuplicate = attribute.second;
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       name = attribute.second;
     }
     else if ( attribute.first == "requiredlimittype" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       structure.requiredLimitType = attribute.second;
     }
     else if ( attribute.first == "returnedonly" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       structure.returnedOnly = attribute.second;
     }
     else if ( attribute.first == "structextends" )
@@ -3492,7 +3436,7 @@ StructMember parseStructMember( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "altlen" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.altLen = attribute.second;
     }
     else if ( attribute.first == "api" )
@@ -3501,27 +3445,27 @@ StructMember parseStructMember( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "deprecated" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.deprecated = attribute.second;
     }
     else if ( attribute.first == "externsync" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.externSync = attribute.second;
     }
     else if ( attribute.first == "featurelink" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.featureLink = attribute.second;
     }
     else if ( attribute.first == "flagsextend" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.flagsExtend = attribute.second;
     }
     else if ( attribute.first == "flagsextendmember" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.flagsExtendMember = attribute.second;
     }
     else if ( attribute.first == "len" )
@@ -3542,12 +3486,12 @@ StructMember parseStructMember( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "noautovalidity" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.noAutoValidity = attribute.second;
     }
     else if ( attribute.first == "objecttype" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.objectType = attribute.second;
     }
     else if ( attribute.first == "optional" )
@@ -3556,12 +3500,12 @@ StructMember parseStructMember( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "selector" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.selector = attribute.second;
     }
     else if ( attribute.first == "values" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.values = attribute.second;
     }
   }
@@ -3585,8 +3529,10 @@ StructMember parseStructMember( tinyxml2::XMLElement const * element )
     }
     else if ( value == "name" )
     {
-      std::tie( member.name, member.alias )          = parseNameWithAlias( child );
-      std::tie( member.arraySizes, member.bitCount ) = readModifiers( "vk.xml", child->NextSibling() );
+      std::tie( member.name, member.alias ) = parseNameWithAlias( child );
+      NameModifiers modifiers               = parseNameModifiers( "vk.xml", child->NextSibling() );
+      member.arraySizes                     = modifiers.arraySizes;
+      member.bitCount                       = modifiers.bitCount;
     }
     else if ( value == "type" )
     {
@@ -3620,12 +3566,12 @@ SupersededName parseSupersededName( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       deprecateCommand.name = attribute.second;
     }
     else if ( attribute.first == "supersededby" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       deprecateCommand.supersededBy = attribute.second;
     }
   }
@@ -3692,13 +3638,13 @@ SyncAccess parseSyncAccess( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "alias" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       syncAccess.alias = attribute.second;
       // CHECK: alias after extensions
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       syncAccess.name = attribute.second;
       // CHECK: name after extensions
     }
@@ -3709,7 +3655,7 @@ SyncAccess parseSyncAccess( tinyxml2::XMLElement const * element )
     std::string value = child->Value();
     if ( value == "comment" )
     {
-      syncAccess.comment = readComment( "vk.xml", child );
+      syncAccess.comment = parseComment( "vk.xml", child );
     }
     else if ( value == "syncequivalent" )
     {
@@ -3782,7 +3728,7 @@ SyncPipeline parseSyncPipeline( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       syncPipeline.name = attribute.second;
     }
   }
@@ -3818,12 +3764,12 @@ SyncPipelineStage parseSyncPipelineStage( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "before" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       syncPipelineStage.before = attribute.second;
     }
     else if ( attribute.first == "order" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       syncPipelineStage.order = attribute.second;
     }
   }
@@ -3844,13 +3790,13 @@ SyncStage parseSyncStage( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "alias" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       syncStage.alias = attribute.second;
       // CHECK: alias after extensions
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       syncStage.name = attribute.second;
       // CHECK: name after extensions
     }
@@ -3935,7 +3881,7 @@ std::pair<std::string, Tag> parseTag( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       name = attribute.second;
     }
   }
@@ -4244,10 +4190,12 @@ void parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::s
     }
     else if ( categoryIt->second == "include" )
     {
-      std::pair<std::string, int> include = parseInclude( element, attributes );
+      CategoryInclude include = parseCategoryInclude( "vk.xml", element, attributes );
 
-      checkForError( "vk.xml", types.types.insert( include.first ).second, include.second, "include <" + include.first + "> already specified as a type" );
-      checkForError( "vk.xml", types.includes.insert( include ).second, include.second, "include <" + include.first + "> already specified" );
+      checkForError( "vk.xml", types.types.insert( include.name ).second, include.xmlLine, "include <" + include.name + "> already specified as a type" );
+      checkForError( "vk.xml", !containsByName( types.includes, include.name ), include.xmlLine, "include <" + include.name + "> already specified" );
+
+      types.includes.push_back( std::move( include ) );
     }
     else if ( categoryIt->second == "funcpointer" )
     {
@@ -4296,20 +4244,20 @@ void parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::s
     auto requiresIt = attributes.find( "requires" );
     checkForError( "vk.xml", requiresIt != attributes.end(), line, "encountered type without category and requires" );
 
-    std::pair<std::string, ExternalType> externalType = parseExternalType( element, attributes );
+    ExternalType externalType = parseExternalType( "vk.xml", element, attributes );
 
+    checkForError(
+      "vk.xml", types.types.insert( externalType.name ).second, externalType.xmlLine, "external type <" + externalType.name + "> already specified as a type" );
     checkForError( "vk.xml",
-                   types.types.insert( externalType.first ).second,
-                   externalType.second.xmlLine,
-                   "external type <" + externalType.first + "> already specified as a type" );
+                   containsByName( types.includes, externalType.require ),
+                   externalType.xmlLine,
+                   "external type <" + externalType.name + "> requires unknown <" + externalType.require + ">" );
     checkForError( "vk.xml",
-                   types.includes.contains( externalType.second.includedBy ),
-                   externalType.second.xmlLine,
-                   "type <" + externalType.first + "> requires unknown <" + externalType.second.includedBy + ">" );
-    checkForError( "vk.xml",
-                   types.externalTypes.insert( externalType ).second,
-                   externalType.second.xmlLine,
-                   "external type <" + externalType.first + "> already specified" );
+                   !containsByName( types.externalTypes, externalType.name ),
+                   externalType.xmlLine,
+                   "external type <" + externalType.name + "> already specified" );
+
+    types.externalTypes.push_back( std::move( externalType ) );
   }
 }
 
@@ -4326,12 +4274,12 @@ std::pair<std::string, Union> parseUnion( tinyxml2::XMLElement const * element, 
   {
     if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       name = attribute.second;
     }
     else if ( attribute.first == "returnedonly" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       u.returnedOnly = attribute.second;
     }
   }
@@ -4365,17 +4313,17 @@ UnionMember parseUnionMember( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "len" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.len = attribute.second;
     }
     else if ( attribute.first == "noautovalidity" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.noAutoValidity = attribute.second;
     }
     else if ( attribute.first == "optional" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       member.optional = attribute.second;
     }
     else if ( attribute.first == "selection" )
@@ -4430,7 +4378,7 @@ VideoCapabilities parseVideoCapabilities( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "struct" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoCapabilities.structure = attribute.second;
     }
   }
@@ -4455,17 +4403,17 @@ VideoCodec parseVideoCodec( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "extend" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoCodec.extend = attribute.second;
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoCodec.name = attribute.second;
     }
     else if ( attribute.first == "value" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoCodec.value = attribute.second;
       // CHECK: value after extensions
     }
@@ -4562,17 +4510,17 @@ VideoFormat parseVideoFormat( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "extend" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoFormat.extend = attribute.second;
     }
     else if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoFormat.name = attribute.second;
     }
     else if ( attribute.first == "usage" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoFormat.usage = attribute.second;
       // CHECK: usage after extensions
     }
@@ -4606,7 +4554,7 @@ VideoFormatProperties parseVideoFormatProperties( tinyxml2::XMLElement const * e
   {
     if ( attribute.first == "struct" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoFormatProperties.structure = attribute.second;
     }
   }
@@ -4625,12 +4573,12 @@ VideoProfile parseVideoProfile( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoProfile.name = attribute.second;
     }
     else if ( attribute.first == "value" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoProfile.value = attribute.second;
     }
   }
@@ -4651,7 +4599,7 @@ VideoProfileMember parseVideoProfileMember( tinyxml2::XMLElement const * element
   {
     if ( attribute.first == "name" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoProfileMember.name = attribute.second;
     }
   }
@@ -4686,7 +4634,7 @@ VideoProfiles parseVideoProfiles( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "struct" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoProfiles.structure = attribute.second;
     }
   }
@@ -4720,17 +4668,17 @@ VideoRequireCapabilities parseVideoRequireCapabilities( tinyxml2::XMLElement con
   {
     if ( attribute.first == "member" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoRequireCapabilities.member = attribute.second;
     }
     else if ( attribute.first == "struct" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoRequireCapabilities.structure = attribute.second;
     }
     else if ( attribute.first == "value" )
     {
-      checkNoList( attribute.second, line );
+      checkNoList( "vk.xml", attribute.second, line );
       videoRequireCapabilities.value = attribute.second;
       // CHECK: value after extensions
     }

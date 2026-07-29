@@ -24,6 +24,37 @@ enum class MultipleAllowed
   Yes
 };
 
+struct CategoryEnum
+{
+  std::string name    = {};
+  int         xmlLine = {};
+};
+
+struct CategoryInclude
+{
+  std::string name    = {};
+  int         xmlLine = {};
+};
+
+struct Comment
+{
+  std::string text    = {};
+  int         xmlLine = {};
+};
+
+struct ExternalType
+{
+  std::string name    = {};
+  std::string require = {};
+  int         xmlLine = {};
+};
+
+struct NameModifiers
+{
+  std::vector<std::string> arraySizes;
+  std::string              bitCount;
+};
+
 void checkAttributes( std::string const &                                  intro,
                       int                                                  line,
                       std::map<std::string, std::string> const &           attributes,
@@ -36,6 +67,7 @@ void checkElements( std::string const &                               intro,
                     std::map<std::string, MultipleAllowed> const &    optional = {} );
 void checkForError( std::string const & intro, bool condition, int line, std::string const & message );
 void checkForWarning( std::string const & intro, bool condition, int line, std::string const & message );
+void checkNoList( std::string const & intro, std::string const & item, int line );
 template <typename T>
 bool containsByName( std::map<std::string, T> const & values, std::string const & name );
 template <typename T>
@@ -55,23 +87,26 @@ void        generateFileFromTemplate( std::string const & fileName, std::string 
 std::string generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes );
 std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element );
 template <typename ElementContainer>
-std::vector<tinyxml2::XMLElement const *>        getChildElements( ElementContainer const * element );
-std::string                                      readComment( std::string const & intro, tinyxml2::XMLElement const * element );
-std::pair<std::vector<std::string>, std::string> readModifiers( std::string const & intro, tinyxml2::XMLNode const * node );
-std::string                                      readSnippet( std::string const & snippetFile );
-Type                                             readType( tinyxml2::XMLElement const * element );
-std::string                                      replaceWithMap( std::string const & input, std::map<std::string, std::string> const & replacements );
-std::string                                      stripPostfix( std::string const & value, std::string const & postfix );
-std::string                                      stripPrefix( std::string const & value, std::string const & prefix );
-std::string                                      toCamelCase( std::string const & value, bool keepSeparatedNumbersSeparated = false );
-std::vector<std::string>                         tokenize( std::string const & tokenString, std::string const & separator );
-std::vector<std::string>                         tokenizeAny( std::string const & tokenString, std::string const & separators );
-std::string                                      toString( tinyxml2::XMLError error );
-std::string                                      toUpperCase( std::string const & name );
-std::string                                      trim( std::string const & input );
-std::string                                      trimEnd( std::string const & input );
-std::string                                      trimStars( std::string const & input );
-void                                             writeToFile( std::string const & str, std::string const & fileName );
+std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContainer const * element );
+CategoryEnum    parseCategoryEnum( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+CategoryInclude parseCategoryInclude( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+Comment         parseComment( std::string const & intro, tinyxml2::XMLElement const * element );
+ExternalType    parseExternalType( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+NameModifiers   parseNameModifiers( std::string const & intro, tinyxml2::XMLNode const * node );
+Type            parseType( std::string const & intro, tinyxml2::XMLElement const * element );
+std::string     readSnippet( std::string const & snippetFile );
+std::string     replaceWithMap( std::string const & input, std::map<std::string, std::string> const & replacements );
+std::string     stripPostfix( std::string const & value, std::string const & postfix );
+std::string     stripPrefix( std::string const & value, std::string const & prefix );
+std::string     toCamelCase( std::string const & value, bool keepSeparatedNumbersSeparated = false );
+std::vector<std::string> tokenize( std::string const & tokenString, std::string const & separator );
+std::vector<std::string> tokenizeAny( std::string const & tokenString, std::string const & separators );
+std::string              toString( tinyxml2::XMLError error );
+std::string              toUpperCase( std::string const & name );
+std::string              trim( std::string const & input );
+std::string              trimEnd( std::string const & input );
+std::string              trimStars( std::string const & input );
+void                     writeToFile( std::string const & str, std::string const & fileName );
 
 class SyncedMessageHandler
 {
@@ -137,12 +172,6 @@ struct Type
   std::string prefix  = {};
   std::string name    = {};
   std::string postfix = {};
-};
-
-struct ExternalTypeData
-{
-  std::string require = {};
-  int         xmlLine = 0;
 };
 
 struct IncludeData
@@ -279,6 +308,11 @@ inline void checkForWarning( std::string const & intro, bool condition, int line
   }
 }
 
+inline void checkNoList( std::string const & intro, std::string const & item, int line )
+{
+  checkForError( intro, item.find( ',' ) == std::string::npos, line, "item <" + item + "> contains unexpected coma, looks like list" );
+}
+
 template <typename T>
 bool containsByName( std::map<std::string, T> const & values, std::string const & name )
 {
@@ -401,15 +435,78 @@ inline bool isSignedNumber( std::string const & name ) noexcept
   return name.find_first_not_of( "0123456789", name[0] == '-' ? 1 : 0 ) == std::string::npos;
 }
 
-inline std::string readComment( std::string const & intro, tinyxml2::XMLElement const * element )
+inline CategoryEnum parseCategoryEnum( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int line = element->GetLineNum();
+  checkAttributes( intro, line, attributes, { { "category", { "enum" } }, { "name", {} } }, {} );
+  checkElements( intro, line, getChildElements( element ), {} );
+
+  CategoryEnum categoryEnum{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      categoryEnum.name = attribute.second;
+    }
+  }
+
+  return categoryEnum;
+}
+
+inline CategoryInclude
+  parseCategoryInclude( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( intro, line, attributes, { { "category", { "include" } }, { "name", {} } }, {} );
+  checkElements( intro, line, getChildElements( element ), {} );
+
+  CategoryInclude include{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      include.name = attribute.second;
+    }
+  }
+
+  return include;
+}
+
+inline Comment parseComment( std::string const & intro, tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
   checkAttributes( intro, line, getAttributes( element ), {}, {} );
   checkElements( intro, line, getChildElements( element ), {} );
-  return element->GetText();
+  return { .text = element->GetText() ? element->GetText() : "", .xmlLine = line };
 }
 
-inline std::pair<std::vector<std::string>, std::string> readModifiers( std::string const & intro, tinyxml2::XMLNode const * node )
+inline ExternalType parseExternalType( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( intro, line, attributes, { { "name", {} }, { "requires", {} } }, {} );
+  checkElements( intro, line, getChildElements( element ), {} );
+
+  ExternalType externalType{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( intro, attribute.second, line );
+      externalType.name = attribute.second;
+    }
+    else if ( attribute.first == "requires" )
+    {
+      checkNoList( intro, attribute.second, line );
+      externalType.require = attribute.second;
+    }
+  }
+
+  return externalType;
+}
+
+inline NameModifiers parseNameModifiers( std::string const & intro, tinyxml2::XMLNode const * node )
 {
   std::vector<std::string> arraySizes;
   std::string              bitCount;
@@ -443,6 +540,32 @@ inline std::pair<std::vector<std::string>, std::string> readModifiers( std::stri
   return { arraySizes, bitCount };
 }
 
+inline Type parseType( std::string const & intro, tinyxml2::XMLElement const * element )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( intro, line, getAttributes( element ), {}, {} );
+  checkElements( intro, line, getChildElements( element ), {} );
+
+  Type                      type;
+  tinyxml2::XMLNode const * previousSibling = element->PreviousSibling();
+  if ( previousSibling && previousSibling->ToText() )
+  {
+    type.prefix = trim( previousSibling->Value() );
+  }
+  type.name                             = element->GetText();
+  tinyxml2::XMLNode const * nextSibling = element->NextSibling();
+  if ( nextSibling && nextSibling->ToText() )
+  {
+    type.postfix = trimStars( trimEnd( nextSibling->Value() ) );
+  }
+  if ( type.prefix.starts_with( "const" ) )
+  {
+    type.prefix  = trim( type.prefix.substr( 5 ) );
+    type.postfix = ( type.postfix.empty() ? "const" : ( "const " + type.postfix ) );
+  }
+  return type;
+}
+
 inline std::string readSnippet( std::string const & snippetFile )
 {
   std::ifstream ifs( std::string( BASE_PATH ) + "/generator/snippets/" + snippetFile );
@@ -472,28 +595,6 @@ inline std::string readSnippet( std::string const & snippetFile )
   std::ostringstream oss;
   oss << ifs.rdbuf();
   return oss.str();
-}
-
-inline Type readType( tinyxml2::XMLElement const * element )
-{
-  Type                      type;
-  tinyxml2::XMLNode const * previousSibling = element->PreviousSibling();
-  if ( previousSibling && previousSibling->ToText() )
-  {
-    type.prefix = trim( previousSibling->Value() );
-  }
-  type.name                             = element->GetText();
-  tinyxml2::XMLNode const * nextSibling = element->NextSibling();
-  if ( nextSibling && nextSibling->ToText() )
-  {
-    type.postfix = trimStars( trimEnd( nextSibling->Value() ) );
-  }
-  if ( type.prefix.starts_with( "const" ) )
-  {
-    type.prefix  = trim( type.prefix.substr( 5 ) );
-    type.postfix = ( type.postfix.empty() ? "const" : ( "const " + type.postfix ) );
-  }
-  return type;
 }
 
 inline std::string replaceWithMap( std::string const & input, std::map<std::string, std::string> const & replacements )

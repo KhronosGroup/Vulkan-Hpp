@@ -121,7 +121,9 @@ if( VULKAN_HPP_GENERATOR_BUILD )
 	endif()
 
 	# The video generator executable
-	add_executable( VideoHppGenerator "generator/VideoHppGenerator.cpp" "generator/VideoHppGenerator.hpp" "generator/XMLHelper.hpp" ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
+  set( VIDEO_GENERATOR_SOURCES generator/VideoHppGenerator.cpp generator/VideoXMLParser.cpp )
+  set( VIDEO_GENERATOR_HEADERS generator/VideoHppGenerator.hpp generator/VideoXMLParser.hpp generator/XMLHelper.hpp )
+	add_executable( VideoHppGenerator ${VIDEO_GENERATOR_SOURCES} ${VIDEO_GENERATOR_HEADERS} ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
 	vulkan_hpp__setup_warning_level( NAME VideoHppGenerator )
 	file( TO_NATIVE_PATH ${VulkanRegistry_DIR}/video.xml video_spec )
 	string( REPLACE "\\" "\\\\" video_spec ${video_spec} )

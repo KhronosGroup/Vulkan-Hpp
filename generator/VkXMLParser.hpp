@@ -94,12 +94,6 @@ struct Constant
   int         xmlLine = {};
 };
 
-struct Comment
-{
-  std::string text    = {};
-  int         xmlLine = {};
-};
-
 struct Define
 {
   std::vector<std::string> macro   = {};
@@ -250,12 +244,6 @@ struct Extensions
   std::string            comment    = {};
   std::vector<Extension> extensions = {};
   int                    xmlLine    = {};
-};
-
-struct ExternalType
-{
-  std::string includedBy = {};
-  int         xmlLine    = {};
 };
 
 struct RequireEnum
@@ -415,7 +403,7 @@ struct SyncAccessSupport
 struct SyncAccess
 {
   std::string                         alias      = {};
-  std::string                         comment    = {};
+  Comment                             comment    = {};
   std::string                         name       = {};
   std::optional<SyncAccessEquivalent> equivalent = {};
   std::optional<SyncAccessSupport>    support    = {};
@@ -496,16 +484,16 @@ struct Union
 
 struct Types
 {
-  std::map<std::string, BaseType>     baseTypes     = {};
-  std::map<std::string, Bitmask>      bitmasks      = {};
-  std::map<std::string, Define>       defines       = {};
-  std::map<std::string, Enum>         enums         = {};
-  std::map<std::string, ExternalType> externalTypes = {};
-  std::map<std::string, FuncPointer>  funcPointers  = {};
-  std::map<std::string, Handle>       handles       = {};
-  std::map<std::string, int>          includes      = {};
-  std::map<std::string, Struct>       structs       = {};
-  std::map<std::string, Union>        unions        = {};
+  std::map<std::string, BaseType>    baseTypes     = {};
+  std::map<std::string, Bitmask>     bitmasks      = {};
+  std::map<std::string, Define>      defines       = {};
+  std::map<std::string, Enum>        enums         = {};
+  std::vector<ExternalType>          externalTypes = {};
+  std::map<std::string, FuncPointer> funcPointers  = {};
+  std::map<std::string, Handle>      handles       = {};
+  std::vector<CategoryInclude>       includes      = {};
+  std::map<std::string, Struct>      structs       = {};
+  std::map<std::string, Union>       unions        = {};
 
   std::vector<CategoryAlias> structAliases = {};
   std::set<std::string>      types         = {};
@@ -650,28 +638,28 @@ struct SPIRVCapabilities
 
 struct Vkxml
 {
-  std::map<std::string, BaseType>     baseTypes         = {};
-  std::map<std::string, Bitmask>      bitmasks          = {};
-  std::vector<Command>                commands          = {};
-  std::map<std::string, Constant>     constants         = {};
-  Comment                             copyright         = {};
-  std::map<std::string, Define>       defines           = {};
-  std::map<std::string, Enum>         enums             = {};
-  Extensions                          extensions        = {};
-  std::map<std::string, ExternalType> externalTypes     = {};
-  std::vector<Feature>                features          = {};
-  std::vector<Format>                 formats           = {};
-  std::map<std::string, FuncPointer>  funcPointers      = {};
-  std::map<std::string, Handle>       handles           = {};
-  std::map<std::string, int>          includes          = {};
-  std::map<std::string, Platform>     platforms         = {};
-  SPIRVCapabilities                   spirvCapabilities = {};
-  SPIRVExtensions                     spirvExtensions   = {};
-  std::map<std::string, Struct>       structs           = {};
-  Sync                                sync              = {};
-  std::map<std::string, Tag>          tags              = {};
-  std::map<std::string, Union>        unions            = {};
-  std::vector<VideoCodec>             videoCodecs       = {};
+  std::map<std::string, BaseType>    baseTypes         = {};
+  std::map<std::string, Bitmask>     bitmasks          = {};
+  std::vector<Command>               commands          = {};
+  std::map<std::string, Constant>    constants         = {};
+  Comment                            copyright         = {};
+  std::map<std::string, Define>      defines           = {};
+  std::map<std::string, Enum>        enums             = {};
+  Extensions                         extensions        = {};
+  std::vector<ExternalType>          externalTypes     = {};
+  std::vector<Feature>               features          = {};
+  std::vector<Format>                formats           = {};
+  std::map<std::string, FuncPointer> funcPointers      = {};
+  std::map<std::string, Handle>      handles           = {};
+  std::vector<CategoryInclude>       includes          = {};
+  std::map<std::string, Platform>    platforms         = {};
+  SPIRVCapabilities                  spirvCapabilities = {};
+  SPIRVExtensions                    spirvExtensions   = {};
+  std::map<std::string, Struct>      structs           = {};
+  Sync                               sync              = {};
+  std::map<std::string, Tag>         tags              = {};
+  std::map<std::string, Union>       unions            = {};
+  std::vector<VideoCodec>            videoCodecs       = {};
 
   std::set<std::string> types = {};
 };

@@ -9,6 +9,7 @@
 
 CategoryDefine parseCategoryDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 CategoryStruct parseCategoryStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+EnumValue      parseEnumValue( tinyxml2::XMLElement const * element );
 VideoXML       parseRegistry( tinyxml2::XMLElement const * element );
 StructMember   parseStructMember( tinyxml2::XMLElement const * element );
 Text           parseText( tinyxml2::XMLElement const * element );
@@ -85,6 +86,101 @@ CategoryStruct parseCategoryStruct( tinyxml2::XMLElement const * element, std::m
   return structure;
 }
 
+Enum parseEnum( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "video.xml", line, attributes, { { "name", {} }, { "type", { "enum" } } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "video.xml", line, children, { { "enum", MultipleAllowed::Yes } }, { { "comment", MultipleAllowed::No } } );
+
+  Enum enumStruct;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( "video.xml", attribute.second, line );
+      enumStruct.name = attribute.second;
+    }
+  }
+
+  std::string prefix = toUpperCase( enumStruct.name ) + "_";
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "enum" )
+    {
+      EnumValue enumValue = parseEnumValue( child );
+
+      if ( enumValue.alias.empty() )
+      {
+        checkForError( "video.xml",
+                       enumValue.name.starts_with( prefix ),
+                       enumValue.xmlLine,
+                       "encountered enum value <" + enumValue.name + "> that does not begin with expected prefix <" + prefix + ">" );
+      }
+
+      enumStruct.values.push_back( std::move( enumValue ) );
+    }
+  }
+
+  return enumStruct;
+}
+
+EnumValue parseEnumValue( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkElements( "video.xml", line, getChildElements( element ), {} );
+
+  EnumValue value;
+  if ( attributes.contains( "alias" ) )
+  {
+    checkAttributes( "video.xml", line, attributes, { { "alias", {} }, { "deprecated", { "aliased" } }, { "name", {} } }, {} );
+
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "alias" )
+      {
+        checkNoList( "video.xml", attribute.second, line );
+        value.alias = attribute.second;
+      }
+      else if ( attribute.first == "name" )
+      {
+        checkNoList( "video.xml", attribute.second, line );
+        value.name = attribute.second;
+      }
+    }
+  }
+  else
+  {
+    checkAttributes( "video.xml", line, attributes, { { "name", {} }, { "value", {} } }, { { "comment", {} } } );
+
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "comment" )
+      {
+        value.comment = attribute.second;
+      }
+      if ( attribute.first == "name" )
+      {
+        checkNoList( "video.xml", attribute.second, line );
+        value.name = attribute.second;
+      }
+      else if ( attribute.first == "value" )
+      {
+        checkNoList( "video.xml", attribute.second, line );
+        checkForError(
+          "video.xml", isNumber( attribute.second ) || isHexNumber( attribute.second ), line, "enum value uses non-number value <" + attribute.second + ">" );
+        value.value = attribute.second;
+      }
+    }
+  }
+
+  return value;
+}
+
 VideoXML parseRegistry( tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
@@ -108,7 +204,11 @@ VideoXML parseRegistry( tinyxml2::XMLElement const * element )
         videoXML.copyrightMessage = generateCopyrightMessage( comment.text );
       }
     }
-    else if (value == "types")
+    else if (value == "enums")
+    {
+      videoXML.enums.push_back( parseEnum( child ) );
+    }
+    else if ( value == "types" )
     {
       videoXML.types = parseTypes( child );
     }

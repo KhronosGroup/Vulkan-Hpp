@@ -40,6 +40,31 @@ VideoHppGenerator::VideoHppGenerator( VideoXML && videoXML, tinyxml2::XMLDocumen
                    structure.xmlLine,
                    "struct <" + structure.name + "> already specified" );
   }
+  for ( auto const & e : m_videoXML.enums )
+  {
+    auto enumIt = m_enums.find( e.name );
+    checkForError( enumIt != m_enums.end(), e.xmlLine, "enum <" + e.name + "> is not listed as enum in the types section" );
+    checkForError( enumIt->second.values.empty(), e.xmlLine, "enum <" + e.name + "> already holds values" );
+    for ( auto const & value : e.values )
+    {
+      if ( value.alias.empty() )
+      {
+        checkForError(
+          !containsByName( enumIt->second.values, value.name ), value.xmlLine, "enum value <" + value.name + "> already part of enum <" + e.name + ">" );
+        enumIt->second.values.push_back( { {}, value.name, value.value, value.xmlLine } );
+      }
+      else
+      {
+        auto valueIt = findByName( enumIt->second.values, value.alias );
+        checkForError( valueIt != enumIt->second.values.end(), value.xmlLine, "enum value <" + value.name + "> uses unknown alias <" + value.alias + ">" );
+        checkForError( std::ranges::find_if( valueIt->aliases, [&name = value.name]( auto const & alias ) { return alias.first == name; } ) ==
+                         valueIt->aliases.end(),
+                       value.xmlLine,
+                       "enum alias <" + value.name + "> already listed for enum value <" + value.alias + ">" );
+        valueIt->aliases.push_back( { value.name, value.xmlLine } );
+      }
+    }
+  }
 
   // read the document and check its correctness
   int                                       line     = document.GetLineNum();
@@ -491,104 +516,6 @@ bool VideoHppGenerator::isExtension( std::string const & name ) const
   return std::ranges::any_of( m_extensions, [&name]( ExtensionData const & ed ) { return ed.name == name; } );
 }
 
-void VideoHppGenerator::readEnums( tinyxml2::XMLElement const * element )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "type", { "enum" } } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "enum", MultipleAllowed::Yes } }, { { "comment", MultipleAllowed::No } } );
-
-  std::string name;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else if ( attribute.first == "type" )
-    {
-      assert( !name.empty() );
-      checkForError( attribute.second == "enum", line, "unknown type <" + attribute.second + "> for enum <" + name + ">" );
-    }
-  }
-
-  // get the EnumData entry in enum map
-  auto enumIt = m_enums.find( name );
-  checkForError( enumIt != m_enums.end(), line, "enum <" + name + "> is not listed as enum in the types section" );
-  checkForError( enumIt->second.values.empty(), line, "enum <" + name + "> already holds values" );
-
-  // read the names of the enum values
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "enum" )
-    {
-      readEnumsEnum( child, enumIt );
-    }
-  }
-}
-
-void VideoHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  if ( attributes.contains( "alias" ) )
-  {
-    checkAttributes( line, attributes, { { "alias", {} }, { "deprecated", { "aliased" } }, { "name", {} } }, {} );
-    checkElements( line, getChildElements( element ), {} );
-
-    std::string alias, name;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "alias" )
-      {
-        alias = attribute.second;
-      }
-      else if ( attribute.first == "name" )
-      {
-        name = attribute.second;
-      }
-    }
-    assert( !name.empty() );
-
-    auto valueIt = std::ranges::find_if( enumIt->second.values, [&alias]( EnumValueData const & evd ) { return evd.name == alias; } );
-    checkForError( valueIt != enumIt->second.values.end(), line, "enum value <" + name + "> uses unknown alias <" + alias + ">" );
-    checkForError( std::ranges::find_if( valueIt->aliases, [&name]( auto const & alias ) { return alias.first == name; } ) == valueIt->aliases.end(),
-                   line,
-                   "enum alias <" + name + "> already listed for enum value <" + alias + ">" );
-
-    valueIt->aliases.push_back( { name, line } );
-  }
-  else
-  {
-    checkAttributes( line, attributes, { { "name", {} }, { "value", {} } }, { { "comment", {} } } );
-    checkElements( line, getChildElements( element ), {} );
-
-    std::string name, value;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "name" )
-      {
-        name = attribute.second;
-      }
-      else if ( attribute.first == "value" )
-      {
-        value = attribute.second;
-      }
-    }
-
-    std::string prefix = toUpperCase( enumIt->first ) + "_";
-    checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
-    checkForError( isNumber( value ) || isHexNumber( value ), line, "enum value uses unknown constant <" + value + ">" );
-
-    checkForError( std::ranges::none_of( enumIt->second.values, [&name]( EnumValueData const & evd ) { return evd.name == name; } ),
-                   line,
-                   "enum value <" + name + "> already part of enum <" + enumIt->first + ">" );
-    enumIt->second.values.push_back( { {}, name, value, line } );
-  }
-}
-
 void VideoHppGenerator::readExtension( tinyxml2::XMLElement const * element )
 {
   int                                       line       = element->GetLineNum();
@@ -691,11 +618,7 @@ void VideoHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
   for ( auto child : children )
   {
     std::string const value = child->Value();
-    if ( value == "enums" )
-    {
-      readEnums( child );
-    }
-    else if ( value == "extensions" )
+    if ( value == "extensions" )
     {
       readExtensions( child );
     }

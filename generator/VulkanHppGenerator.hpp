@@ -409,23 +409,14 @@ private:
   void        addCommandToHandle( std::pair<std::string, CommandData> const & commandData );
   void        addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredBy );
   std::string addTitleAndProtection( std::string const & title, std::string const & strIf, std::string const & strElse = {} ) const;
-  bool        allVectorSizesSupported( std::vector<ParamData> const & params, std::map<size_t, VectorParamData> const & vectorParams ) const;
   void        appendCppModuleCommands( std::vector<RequireData> const & requireData,
                                        std::set<std::string> &          listedCommands,
                                        std::string const &              title,
                                        std::string &                    commandMembers ) const;
-  void        checkAttributes( int                                                  line,
-                               std::map<std::string, std::string> const &           attributes,
-                               std::map<std::string, std::set<std::string>> const & required,
-                               std::map<std::string, std::set<std::string>> const & optional = {} ) const;
   void        checkBitmaskCorrectness() const;
   void        checkCommandCorrectness() const;
   void        checkCorrectness() const;
   void        checkDefineCorrectness() const;
-  void        checkElements( int                                               line,
-                             std::vector<tinyxml2::XMLElement const *> const & elements,
-                             std::map<std::string, MultipleAllowed> const &    required,
-                             std::map<std::string, MultipleAllowed> const &    optional = {} ) const;
   void        checkEnumCorrectness() const;
   bool        checkEquivalentSingularConstructor( std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts,
                                                   std::map<std::string, CommandData>::const_iterator                      constructorIt,
@@ -504,8 +495,6 @@ private:
   void forEachRequiredEnumConstant( std::vector<RequireData> const &                        requireData,
                                     std::set<std::string> &                                 encounteredEnumConstants,
                                     std::function<void( EnumConstantData const & )> const & enumConstantAction ) const;
-  void forEachRequiredFuncPointer( std::vector<RequireData> const &                                           requireData,
-                                   std::function<void( std::pair<std::string, FuncPointer> const & )> const & funcPointerAction ) const;
   void forEachRequiredHandle( std::vector<RequireData> const &                                          requireData,
                               std::function<void( std::pair<std::string, HandleData> const & )> const & handleAction ) const;
   void forEachRequiredStruct( std::vector<RequireData> const &                                          requireData,
@@ -1008,7 +997,6 @@ private:
   std::tuple<std::string, std::string, std::string, std::string> generateStructMembers( std::pair<std::string, StructData> const & structData ) const;
   std::string generateStructSetter( std::string const & structureName, std::vector<MemberData> const & memberData, size_t index ) const;
   std::string generateStructSubConstructor( std::pair<std::string, StructData> const & structData ) const;
-  std::string generateSuccessCheck( std::vector<std::string> const & successCodes ) const;
   std::string generateSuccessCode( std::string const & code ) const;
   std::string generateSuccessCodeList( std::vector<std::string> const & successCodes, bool enumerating ) const;
   std::string generateThrowResultException() const;
@@ -1036,7 +1024,6 @@ private:
                                        std::set<size_t> const &                      skippedParams,
                                        bool                                          onlyThrows ) const;
   std::pair<std::string, std::string> getParentTypeAndName( std::pair<std::string, HandleData> const & handle ) const;
-  std::string                         getPlatform( std::string const & title ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
   std::string                         getProtectFromPlatform( std::string const & platformName ) const;
   std::string                         getProtectFromTitle( std::string const & title ) const;

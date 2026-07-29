@@ -938,16 +938,6 @@ std::string VulkanHppGenerator::addTitleAndProtection( std::string const & title
   return str;
 }
 
-bool VulkanHppGenerator::allVectorSizesSupported( std::vector<ParamData> const & params, std::map<size_t, VectorParamData> const & vectorParams ) const
-{
-  return std::ranges::all_of( vectorParams,
-                              [&params]( auto const & vpi )
-                              {
-                                static std::set<std::string> const sizeTypes = { "size_t", "uint32_t", "VkDeviceSize", "VkSampleCountFlagBits" };
-                                return sizeTypes.contains( params[vpi.second.lenParam].type.name );
-                              } );
-}
-
 void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireData> const & requireData,
                                                   std::set<std::string> &          listedCommands,
                                                   std::string const &              title,
@@ -963,14 +953,6 @@ void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireData> const
                             }
                           } );
   commandMembers += addTitleAndProtection( title, members );
-}
-
-void VulkanHppGenerator::checkAttributes( int                                                  line,
-                                          std::map<std::string, std::string> const &           attributes,
-                                          std::map<std::string, std::set<std::string>> const & required,
-                                          std::map<std::string, std::set<std::string>> const & optional ) const
-{
-  ::checkAttributes( "VulkanHppGenerator", line, attributes, required, optional );
 }
 
 void VulkanHppGenerator::checkBitmaskCorrectness() const
@@ -1081,14 +1063,6 @@ void VulkanHppGenerator::checkDefineCorrectness() const
                    d.second.xmlLine,
                    "define <" + d.first + "> uses unknown require <" + d.second.require + ">" );
   }
-}
-
-void VulkanHppGenerator::checkElements( int                                               line,
-                                        std::vector<tinyxml2::XMLElement const *> const & elements,
-                                        std::map<std::string, MultipleAllowed> const &    required,
-                                        std::map<std::string, MultipleAllowed> const &    optional ) const
-{
-  ::checkElements( "VulkanHppGenerator", line, elements, required, optional );
 }
 
 void VulkanHppGenerator::checkEnumCorrectness() const
@@ -2426,21 +2400,6 @@ void VulkanHppGenerator::forEachRequiredEnumConstant( std::vector<RequireData> c
       if ( encounteredEnumConstants.insert( enumConstant.name ).second )
       {
         enumConstantAction( enumConstant );
-      }
-    }
-  }
-}
-
-void VulkanHppGenerator::forEachRequiredFuncPointer( std::vector<RequireData> const &                                           requireData,
-                                                     std::function<void( std::pair<std::string, FuncPointer> const & )> const & funcPointerAction ) const
-{
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      if ( auto funcPointerIt = m_vkxml.funcPointers.find( type.name ); funcPointerIt != m_vkxml.funcPointers.end() )
-      {
-        funcPointerAction( *funcPointerIt );
       }
     }
   }
@@ -12024,21 +11983,6 @@ ${subCopies}    {}
   return "";
 }
 
-std::string VulkanHppGenerator::generateSuccessCheck( std::vector<std::string> const & successCodes ) const
-{
-  assert( !successCodes.empty() );
-  std::string successCheck = "result == " + generateSuccessCode( successCodes[0] );
-  if ( 1 < successCodes.size() )
-  {
-    successCheck = "( " + successCheck + " )";
-    for ( size_t i = 1; i < successCodes.size(); ++i )
-    {
-      successCheck += "|| ( result == " + generateSuccessCode( successCodes[i] ) + " )";
-    }
-  }
-  return successCheck;
-}
-
 std::string VulkanHppGenerator::generateSuccessCode( std::string const & code ) const
 {
   // on each success code: prepend 'Result::e' to the tagged camel case version of the code
@@ -12677,17 +12621,6 @@ std::pair<std::string, std::string> VulkanHppGenerator::getParentTypeAndName( st
     parentName = param.name;
   }
   return { parentType, parentName };
-}
-
-std::string VulkanHppGenerator::getPlatform( std::string const & title ) const
-{
-  if ( !containsByName( m_features, title ) )
-  {
-    auto extensionIt = findByName( m_extensions, title );
-    assert( extensionIt != m_extensions.end() );
-    return extensionIt->platform;
-  }
-  return "";
 }
 
 std::pair<std::string, std::string> VulkanHppGenerator::getPoolTypeAndName( std::string const & type ) const

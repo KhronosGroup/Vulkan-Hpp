@@ -2332,6 +2332,19 @@ int main()
     device.trimCommandPool( commandPool, trimFlags );
   }
 
+  // Originally based on VK_KHR_protected_memory
+  {
+    vk::Device           device;
+    vk::DeviceQueueInfo2 queueInfo2;
+    vk::Queue            queue;
+    device.getQueue2( &queueInfo2, &queue );
+  }
+  {
+    vk::Device           device;
+    vk::DeviceQueueInfo2 queueInfo2;
+    vk::Queue            queue = device.getQueue2( queueInfo2 );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

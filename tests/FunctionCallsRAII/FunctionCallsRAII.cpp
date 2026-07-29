@@ -1176,5 +1176,12 @@ int main()
     commandPool.trim( trimFlags );
   }
 
+  // Originally based on VK_KHR_protected_memory
+  {
+    vk::raii::Device     device = nullptr;
+    vk::DeviceQueueInfo2 queueInfo2;
+    vk::raii::Queue      queue = device.getQueue2( queueInfo2 );
+  }
+
   return 0;
 }

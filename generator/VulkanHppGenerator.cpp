@@ -66,59 +66,72 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   }
   for ( auto const & command : m_vkxml.commands )
   {
-    if ( command.api.empty() || std::ranges::any_of( command.api, [&api]( std::string const & commandApi ) { return commandApi == api; } ) )
+    if ( std::holds_alternative<CommandReal>( command.variant ) )
     {
-      auto [commandIt, inserted] = m_commands.insert( { command.name, { .xmlLine = command.xmlLine } } );
-      assert( inserted );
-      commandIt->second.aliases    = command.aliases;
-      commandIt->second.errorCodes = command.errorCodes;
-      commandIt->second.exports    = command.exports;
-
-      // find the handle this command is going to be associated to
-      auto handleIt            = m_vkxml.handles.find( command.params[0].type.name );
-      commandIt->second.handle = ( handleIt != m_vkxml.handles.end() ) ? handleIt->first : "";
-
-      for ( auto const & param : command.params )
+      auto const & commandReal = std::get<CommandReal>( command.variant );
+      if ( commandReal.api.empty() || std::ranges::any_of( commandReal.api, [&api]( std::string const & commandApi ) { return commandApi == api; } ) )
       {
-        commandIt->second.params.emplace_back( param.name, param.type, param.xmlLine );
-        commandIt->second.params.back().arraySizes = std::move( param.arraySizes );
-        if ( !param.altLen.empty() )
+        auto [commandIt, inserted] = m_commands.insert( { command.name, { .xmlLine = command.xmlLine } } );
+        assert( inserted );
+        commandIt->second.errorCodes = commandReal.errorCodes;
+        commandIt->second.exports    = commandReal.exports;
+
+        // find the handle this command is going to be associated to
+        auto handleIt            = m_vkxml.handles.find( commandReal.params[0].type.name );
+        commandIt->second.handle = ( handleIt != m_vkxml.handles.end() ) ? handleIt->first : "";
+
+        for ( auto const & param : commandReal.params )
         {
-          commandIt->second.params.back().lenParams = filterNumbers( tokenizeAny( param.altLen, " /()+" ) );
-          for ( auto & lenParam : commandIt->second.params.back().lenParams )
+          commandIt->second.params.emplace_back( param.name, param.type, param.xmlLine );
+          commandIt->second.params.back().arraySizes = std::move( param.arraySizes );
+          if ( !param.altLen.empty() )
           {
-            auto paramIt = findByName( command.params, lenParam.first );
-            checkForError( paramIt != command.params.end(),
-                           param.xmlLine,
-                           "param <" + param.name + "> uses unknown len parameter <" + lenParam.first + "> in its \"altlen\" attribute <" + param.altLen +
-                             ">" );
-            lenParam.second = std::distance( command.params.begin(), paramIt );
+            commandIt->second.params.back().lenParams = filterNumbers( tokenizeAny( param.altLen, " /()+" ) );
+            for ( auto & lenParam : commandIt->second.params.back().lenParams )
+            {
+              auto paramIt = findByName( commandReal.params, lenParam.first );
+              checkForError( paramIt != commandReal.params.end(),
+                             param.xmlLine,
+                             "param <" + param.name + "> uses unknown len parameter <" + lenParam.first + "> in its \"altlen\" attribute <" + param.altLen +
+                               ">" );
+              lenParam.second = std::distance( commandReal.params.begin(), paramIt );
+            }
+            commandIt->second.params.back().lenExpression = std::move( param.altLen );
           }
-          commandIt->second.params.back().lenExpression = std::move( param.altLen );
-        }
-        else if ( !param.len.empty() )
-        {
-          auto paramIt = findByName( command.params, param.len );
-          if ( paramIt != command.params.end() )
+          else if ( !param.len.empty() )
           {
-            commandIt->second.params.back().lenParams.push_back( { param.len, std::distance( command.params.begin(), paramIt ) } );
+            auto paramIt = findByName( commandReal.params, param.len );
+            if ( paramIt != commandReal.params.end() )
+            {
+              commandIt->second.params.back().lenParams.push_back( { param.len, std::distance( commandReal.params.begin(), paramIt ) } );
+            }
+            commandIt->second.params.back().lenExpression = std::move( param.len );
           }
-          commandIt->second.params.back().lenExpression = std::move( param.len );
+          commandIt->second.params.back().optional = param.optional.size() == 1 && ( param.optional[0] == "true" );
+          if ( !param.stride.empty() )
+          {
+            auto paramIt = findByName( commandReal.params, param.stride );
+            assert( paramIt != commandReal.params.end() );
+            commandIt->second.params.back().strideParam = { param.stride, std::distance( commandReal.params.begin(), paramIt ) };
+          }
         }
-        commandIt->second.params.back().optional = param.optional.size() == 1 && ( param.optional[0] == "true" );
-        if ( !param.stride.empty() )
-        {
-          auto paramIt = findByName( command.params, param.stride );
-          assert( paramIt != command.params.end() );
-          commandIt->second.params.back().strideParam = { param.stride, std::distance( command.params.begin(), paramIt ) };
-        }
+
+        // commandIt->second.requiredBy is filled later on by distributeRequirements
+        commandIt->second.returnType   = commandReal.returnType;
+        commandIt->second.successCodes = commandReal.successCodes;
+
+        m_commandQueues.insert( commandReal.queues.begin(), commandReal.queues.end() );
       }
-
-      // commandIt->second.requiredBy is filled later on by distributeRequirements
-      commandIt->second.returnType   = command.returnType;
-      commandIt->second.successCodes = command.successCodes;
-
-      m_commandQueues.insert( command.queues.begin(), command.queues.end() );
+    }
+    else
+    {
+      assert( std::holds_alternative<CommandAlias>( command.variant ) );
+      auto const & commandAlias = std::get<CommandAlias>( command.variant );
+      auto         commandIt    = m_commands.find( commandAlias.alias );
+      checkForError( commandIt != m_commands.end(), command.xmlLine, "command alias <" + command.name + "> is an alias to the unknown command <" + commandAlias.alias + ">" );
+      checkForError( commandIt->second.aliases.insert( { command.name, command.xmlLine }).second,
+                     command.xmlLine,
+                     "command alias <" + command.name + "> to command <" + command.name + "> is already listed as an alias to this command" );
     }
   }
   for ( auto const & constant : m_vkxml.constants )
@@ -1033,9 +1046,13 @@ void VulkanHppGenerator::checkCommandCorrectness() const
   assert( queueFlagBitsIt != m_enums.end() );
   for ( auto const & command : m_vkxml.commands )
   {
-    for ( auto const & q : command.queues )
+    if ( std::holds_alternative<CommandReal>( command.variant ) )
     {
-      checkForError( containsByName( queueFlagBitsIt->second.values, q ), command.xmlLine, "command <" + command.name + "> uses unknown queue <" + q + ">" );
+      auto const & commandReal = std::get<CommandReal>( command.variant );
+      for ( auto const & q : commandReal.queues )
+      {
+        checkForError( containsByName( queueFlagBitsIt->second.values, q ), command.xmlLine, "command <" + command.name + "> uses unknown queue <" + q + ">" );
+      }
     }
   }
 }
@@ -10463,7 +10480,7 @@ std::string VulkanHppGenerator::generateReturnVariable( CommandData const &     
         }
         else
         {
-#if !defined(NDEBUG)
+#if !defined( NDEBUG )
           auto vectorParamIt = vectorParams.find( returnParams[1] );
 #endif
           assert( ( vectorParamIt != vectorParams.end() ) && ( vectorParamIt->second.lenParam == returnParams[0] ) );

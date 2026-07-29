@@ -10,6 +10,7 @@
 #include <regex>
 #include <string>
 #include <tinyxml2.h>
+#include <variant>
 #include <vector>
 
 struct BaseType
@@ -58,24 +59,34 @@ struct Param
   }
 };
 
+struct CommandAlias
+{
+  std::string alias = {};
+};
+
+struct CommandReal
+{
+  std::string              allowNoQueues        = {};
+  std::vector<std::string> api                  = {};
+  std::vector<std::string> cmdBufferLevel       = {};
+  std::string              comment              = {};
+  std::string              conditionalRendering = {};
+  std::vector<std::string> errorCodes           = {};
+  std::vector<std::string> exports              = {};
+  std::vector<Param>       params               = {};
+  std::vector<std::string> queues               = {};
+  std::string              renderPass           = {};
+  Type                     returnType           = {};
+  std::vector<std::string> successCodes         = {};
+  std::vector<std::string> tasks                = {};
+  std::string              videoCoding          = {};
+};
+
 struct Command
 {
-  std::string                name                 = {};
-  std::string                allowNoQueues        = {};
-  std::map<std::string, int> aliases              = {};
-  std::vector<std::string>   api                  = {};
-  std::vector<std::string>   cmdBufferLevel       = {};
-  std::string                conditionalRendering = {};
-  std::vector<std::string>   errorCodes           = {};
-  std::vector<std::string>   exports              = {};
-  std::vector<Param>         params               = {};
-  std::vector<std::string>   queues               = {};
-  std::string                renderPass           = {};
-  Type                       returnType           = {};
-  std::vector<std::string>   successCodes         = {};
-  std::vector<std::string>   tasks                = {};
-  std::string                videoCoding          = {};
-  int                        xmlLine              = {};
+  std::string                             name    = {};
+  std::variant<CommandAlias, CommandReal> variant = {};
+  int                                     xmlLine = {};
 };
 
 struct Component

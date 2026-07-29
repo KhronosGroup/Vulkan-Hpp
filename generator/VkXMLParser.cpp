@@ -41,7 +41,6 @@ void                                parseImplicitExternSyncParams( tinyxml2::XML
 void                                parseImplicitExternSyncParamsParam( tinyxml2::XMLElement const * element );
 std::string                         parseMemberEnum( tinyxml2::XMLElement const * element );
 MultiFeatureElement                 parseMultiFeatureElement( tinyxml2::XMLElement const * element );
-NameElement                         parseNameElement( tinyxml2::XMLElement const * element );
 std::pair<std::string, Type>        parseNameAndType( tinyxml2::XMLElement const * element );
 std::tuple<std::string, Type, std::vector<std::string>, std::string> parseNameAndTypeModified( tinyxml2::XMLElement const * element );
 std::pair<std::string, std::string>                                  parseNameWithAlias( tinyxml2::XMLElement const * element );
@@ -1939,30 +1938,6 @@ std::tuple<std::string, Type, std::vector<std::string>, std::string> parseNameAn
     }
   }
   return { name, type, modifiers.arraySizes, modifiers.bitCount };
-}
-
-NameElement parseNameElement( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, { { "comment", {} } } );
-  checkElements( "vk.xml", line, getChildElements( element ), {} );
-
-  NameElement nameElement{ .xmlLine = line };
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "comment" )
-    {
-      nameElement.comment = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      nameElement.name = attribute.second;
-    }
-  }
-
-  return nameElement;
 }
 
 std::pair<std::string, std::string> parseNameWithAlias( tinyxml2::XMLElement const * element )

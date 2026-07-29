@@ -18,6 +18,22 @@ struct CategoryDefine
   int         xmlLine = {};
 };
 
+struct EnumValue
+{
+  std::string name    = {};
+  std::string value   = {};
+  std::string comment = {};
+  std::string alias   = {};
+  int         xmlLine = {};
+};
+
+struct Enum
+{
+  std::string            name    = {};
+  std::vector<EnumValue> values  = {};
+  int                    xmlLine = {};
+};
+
 struct StructMember
 {
   Type                     type       = {};
@@ -56,11 +72,13 @@ struct Types
 
 struct VideoXML
 {
-  std::string copyrightMessage = {};
-  Types       types            = {};
-  int         xmlLine          = {};
+  std::string       copyrightMessage = {};
+  std::vector<Enum> enums            = {};
+  Types             types            = {};
+  int               xmlLine          = {};
 };
 
+Enum  parseEnum( tinyxml2::XMLElement const * element );
 Types parseTypes( tinyxml2::XMLElement const * element );
 
 VideoXML parseVideoXML( tinyxml2::XMLDocument const & document );

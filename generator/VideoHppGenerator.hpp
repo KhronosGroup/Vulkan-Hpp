@@ -84,8 +84,6 @@ private:
   std::string generateStructs() const;
   std::string generateStructs( ExtensionData const & extensionData ) const;
   bool        isExtension( std::string const & name ) const;
-  void        readEnums( tinyxml2::XMLElement const * element );
-  void        readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt );
   void        readExtension( tinyxml2::XMLElement const * element );
   void        readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData );
   void        readExtensions( tinyxml2::XMLElement const * element );

@@ -7,13 +7,19 @@
 
 #include <vector>
 
-CategoryDefine parseCategoryDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-CategoryStruct parseCategoryStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-EnumValue      parseEnumValue( tinyxml2::XMLElement const * element );
-VideoXML       parseRegistry( tinyxml2::XMLElement const * element );
-StructMember   parseStructMember( tinyxml2::XMLElement const * element );
-Text           parseText( tinyxml2::XMLElement const * element );
-void           parseTypesType( tinyxml2::XMLElement const * element, Types & types );
+CategoryDefine         parseCategoryDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+CategoryStruct         parseCategoryStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+Constant               parseConstant( tinyxml2::XMLElement const * element );
+Enum                   parseEnum( tinyxml2::XMLElement const * element );
+EnumValue              parseEnumValue( tinyxml2::XMLElement const * element );
+Extension              parseExtension( tinyxml2::XMLElement const * element );
+std::vector<Extension> parseExtensions( tinyxml2::XMLElement const * element );
+VideoXML               parseRegistry( tinyxml2::XMLElement const * element );
+Require                parseRequire( tinyxml2::XMLElement const * element );
+StructMember           parseStructMember( tinyxml2::XMLElement const * element );
+Text                   parseText( tinyxml2::XMLElement const * element );
+Types                  parseTypes( tinyxml2::XMLElement const * element );
+void                   parseTypesType( tinyxml2::XMLElement const * element, Types & types );
 
 CategoryDefine parseCategoryDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
 {
@@ -84,6 +90,43 @@ CategoryStruct parseCategoryStruct( tinyxml2::XMLElement const * element, std::m
   }
 
   return structure;
+}
+
+Constant parseConstant( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "video.xml", line, attributes, { { "name", {} }, { "value", {} } }, { { "type", { "uint32_t", "uint8_t" } } } );
+  checkElements( "videao.xml", line, getChildElements( element ), {} );
+
+  Constant constant{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( "video.xml", attribute.second, line );
+      constant.name = attribute.second;
+    }
+    else if ( attribute.first == "type" )
+    {
+      checkNoList( "video.xml", attribute.second, line );
+      constant.type = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      checkNoList( "video.xml", attribute.second, line );
+      constant.value = attribute.second;
+    }
+  }
+
+  if ( !( constant.name.ends_with( "_SPEC_VERSION" ) || constant.name.ends_with( "_EXTENSION_NAME" ) ) )
+  {
+    checkForError( "video.xml", !constant.type.empty(), line, "constant <" + constant.name + "> has no type specified" );
+    checkForError(
+      "video.xml", isNumber( constant.value ) || isHexNumber( constant.value ), line, "enum value uses unknown constant <" + constant.value + ">" );
+  }
+
+  return constant;
 }
 
 Enum parseEnum( tinyxml2::XMLElement const * element )
@@ -181,6 +224,84 @@ EnumValue parseEnumValue( tinyxml2::XMLElement const * element )
   return value;
 }
 
+Extension parseExtension( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "video.xml", line, attributes, { { "comment", {} }, { "name", {} }, { "number", {} }, { "supported", { "vulkan" } } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "video.xml", line, children, { { "require", MultipleAllowed::No } } );
+
+  Extension extension{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      checkNoList( "video.xml", attribute.second, line );
+      checkForError( "video.xml",
+                     attribute.second.starts_with( "protect with VULKAN_VIDEO_CODEC" ),
+                     line,
+                     "unexpected content of attribute <comment>: \"" + attribute.second + "\"" );
+      extension.protect = attribute.second.substr( strlen( "protect with " ) );
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( "video.xml", attribute.second, line );
+      extension.name = attribute.second;
+    }
+    else if ( attribute.first == "number" )
+    {
+      checkNoList( "video.xml", attribute.second, line );
+      checkForError( "video.xml", isNumber( attribute.second ), line, "extension number <" + attribute.second + "> is not a number" );
+      extension.number = attribute.second;
+    }
+    else if ( attribute.first == "supported" )
+    {
+      checkNoList( "video.xml", attribute.second, line );
+      extension.supported = attribute.second;
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string const value = child->Value();
+    if ( value == "require" )
+    {
+      extension.require = parseRequire( child );
+    }
+  }
+
+  return extension;
+}
+
+std::vector<Extension> parseExtensions( tinyxml2::XMLElement const * element )
+{
+  int line = element->GetLineNum();
+  checkAttributes( "video.xml", line, getAttributes( element ), {}, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "video.xml", line, children, { { "extension", MultipleAllowed::Yes } } );
+
+  std::vector<Extension> extensions;
+  for ( auto child : children )
+  {
+    std::string const value = child->Value();
+    if ( value == "extension" )
+    {
+      Extension extension = parseExtension( child );
+
+      checkForError( "video.xml", !containsByName( extensions, extension.name ), extension.xmlLine, "already encountered extension <" + extension.name + ">" );
+      checkForError( "video.xml",
+                     std::ranges::none_of( extensions, [&number = extension.number]( auto const & extension ) { return extension.number == number; } ),
+                     extension.xmlLine,
+                     "extension number <" + extension.number + "> already encountered" );
+
+      extensions.push_back( std::move( extension ) );
+    }
+  }
+
+  return extensions;
+}
+
 VideoXML parseRegistry( tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
@@ -204,9 +325,23 @@ VideoXML parseRegistry( tinyxml2::XMLElement const * element )
         videoXML.copyrightMessage = generateCopyrightMessage( comment.text );
       }
     }
-    else if (value == "enums")
+    else if ( value == "enums" )
     {
       videoXML.enums.push_back( parseEnum( child ) );
+    }
+    else if ( value == "extensions" )
+    {
+      std::vector<Extension> extensions = parseExtensions( child );
+
+      for ( auto const & extension : extensions )
+      {
+        checkForError( "video.xml",
+                       extension.require.include.name.empty() || containsByName( videoXML.types.includes, extension.require.include.name ),
+                       extension.require.xmlLine,
+                       "extension <" + extension.name + "> uses unknown header <" + extension.require.include.name + ">" );
+      }
+
+      videoXML.extensions = std::move( extensions );
     }
     else if ( value == "types" )
     {
@@ -215,6 +350,43 @@ VideoXML parseRegistry( tinyxml2::XMLElement const * element )
   }
   checkForError( "video.xml", !videoXML.copyrightMessage.empty(), -1, "missing copyright message" );
   return videoXML;
+}
+
+Require parseRequire( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "video.xml", line, attributes, {}, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "video.xml", line, children, { { "type", MultipleAllowed::Yes } }, { { "enum", MultipleAllowed::Yes } } );
+
+  Require require{ .xmlLine = line };
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "enum" )
+    {
+      Constant constant = parseConstant( child );
+      checkForError(
+        "video.xml", !containsByName( require.enums, constant.name ), constant.xmlLine, "required enum <" + constant.name + "> already specified" );
+      require.enums.push_back( std::move( constant ) );
+    }
+    else if ( value == "type" )
+    {
+      NameElement type = parseNameElement( child );
+      if ( type.name.starts_with( "vk_video/vulkan_video_codec" ) && type.name.ends_with( ".h" ) )
+      {
+        checkForError( "video.xml", require.include.name.empty(), type.xmlLine, "require section holds more than one include type: <" + type.name + ">" );
+        require.include = std::move( type );
+      }
+      else
+      {
+        checkForError( "video.xml", !containsByName( require.types, type.name ), type.xmlLine, "required type <" + type.name + "> already specified" );
+        require.types.push_back( std::move( type ) );
+      }
+    }
+  }
+  return require;
 }
 
 StructMember parseStructMember( tinyxml2::XMLElement const * element )

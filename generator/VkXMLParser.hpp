@@ -187,13 +187,6 @@ struct ExtensionRequireEnum
   int         xmlLine    = {};
 };
 
-struct NameElement
-{
-  std::string comment = {};
-  std::string name    = {};
-  int         xmlLine = {};
-};
-
 struct MultiFeatureElement
 {
   std::vector<std::string> names     = {};

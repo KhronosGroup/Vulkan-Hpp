@@ -13,7 +13,7 @@
 class VideoHppGenerator
 {
 public:
-  VideoHppGenerator( VideoXML && videoXML, tinyxml2::XMLDocument const & document );
+  VideoHppGenerator( VideoXML && videoXML );
 
   void generateCppmFile() const;
   void generateHppFile() const;
@@ -61,15 +61,7 @@ private:
   void addImplicitlyRequiredTypes();
   std::vector<std::string>::iterator
        addImplicitlyRequiredTypes( std::map<std::string, TypeData>::iterator typeIt, ExtensionData & extensionData, std::vector<std::string>::iterator reqIt );
-  void checkAttributes( int                                                  line,
-                        std::map<std::string, std::string> const &           attributes,
-                        std::map<std::string, std::set<std::string>> const & required,
-                        std::map<std::string, std::set<std::string>> const & optional = {} ) const;
   void checkCorrectness() const;
-  void checkElements( int                                               line,
-                      std::vector<tinyxml2::XMLElement const *> const & elements,
-                      std::map<std::string, MultipleAllowed> const &    required,
-                      std::map<std::string, MultipleAllowed> const &    optional = {} ) const;
   void checkForError( bool condition, int line, std::string const & message ) const;
   void checkForWarning( bool condition, int line, std::string const & message ) const;
   std::string generateConstants() const;
@@ -83,13 +75,6 @@ private:
   std::string generateStructMembers( CategoryStruct const & categoryStruct ) const;
   std::string generateStructs() const;
   std::string generateStructs( ExtensionData const & extensionData ) const;
-  bool        isExtension( std::string const & name ) const;
-  void        readExtension( tinyxml2::XMLElement const * element );
-  void        readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData );
-  void        readExtensions( tinyxml2::XMLElement const * element );
-  void        readRegistry( tinyxml2::XMLElement const * element );
-  void        readRequireEnum( tinyxml2::XMLElement const * element, std::map<std::string, ConstantData> & constants );
-  void        readRequireType( tinyxml2::XMLElement const * element, ExtensionData & extensionData );
   void        sortStructs();
 
 private:

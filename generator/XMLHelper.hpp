@@ -49,6 +49,13 @@ struct ExternalType
   int         xmlLine = {};
 };
 
+struct NameElement
+{
+  std::string name    = {};
+  std::string comment = {};
+  int         xmlLine = {};
+};
+
 struct NameModifiers
 {
   std::vector<std::string> arraySizes;
@@ -92,6 +99,7 @@ CategoryEnum    parseCategoryEnum( std::string const & intro, tinyxml2::XMLEleme
 CategoryInclude parseCategoryInclude( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 Comment         parseComment( std::string const & intro, tinyxml2::XMLElement const * element );
 ExternalType    parseExternalType( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+NameElement     parseNameElement( tinyxml2::XMLElement const * element );
 NameModifiers   parseNameModifiers( std::string const & intro, tinyxml2::XMLNode const * node );
 Type            parseType( std::string const & intro, tinyxml2::XMLElement const * element );
 std::string     readSnippet( std::string const & snippetFile );
@@ -504,6 +512,30 @@ inline ExternalType parseExternalType( std::string const & intro, tinyxml2::XMLE
   }
 
   return externalType;
+}
+
+inline NameElement parseNameElement( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, { { "comment", {} } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  NameElement nameElement{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      nameElement.comment = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      nameElement.name = attribute.second;
+    }
+  }
+
+  return nameElement;
 }
 
 inline NameModifiers parseNameModifiers( std::string const & intro, tinyxml2::XMLNode const * node )

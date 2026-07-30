@@ -9,7 +9,7 @@
 #include <iostream>
 #include <vector>
 
-VideoHppGenerator::VideoHppGenerator( VideoXML && videoXML, tinyxml2::XMLDocument const & document ) : m_videoXML( std::move( videoXML ) )
+VideoHppGenerator::VideoHppGenerator( VideoXML && videoXML ) : m_videoXML( std::move( videoXML ) )
 {
   for ( auto const & define : m_videoXML.types.defines )
   {
@@ -65,12 +65,38 @@ VideoHppGenerator::VideoHppGenerator( VideoXML && videoXML, tinyxml2::XMLDocumen
       }
     }
   }
+  for ( auto const & extension : m_videoXML.extensions )
+  {
+    for ( auto const & type : extension.require.types )
+    {
+      auto typeIt = m_types.find( type.name );
+      checkForError( typeIt != m_types.end(), type.xmlLine, "unknown required type <" + type.name + ">" );
+      typeIt->second.requiredBy.insert( extension.name );
+    }
 
-  // read the document and check its correctness
-  int                                       line     = document.GetLineNum();
-  std::vector<tinyxml2::XMLElement const *> elements = getChildElements( &document );
-  checkElements( line, elements, { { "registry", MultipleAllowed::No } } );
-  readRegistry( elements[0] );
+    ExtensionData extensionData{
+      .depends = extension.require.include.name.empty() ? "" : stripPrefix( stripPostfix( extension.require.include.name, ".h" ), "vk_video/" ),
+      .name    = extension.name,
+      .number  = extension.number,
+      .protect = extension.protect,
+      .xmlLine = extension.xmlLine,
+    };
+    for ( auto const & constant : extension.require.enums )
+    {
+      if ( !constant.type.empty() )
+      {
+        extensionData.requireData.constants[constant.name] = { .type = constant.type, .value = constant.value, .xmlLine = constant.xmlLine };
+      }
+    }
+    for ( auto const & type : extension.require.types )
+    {
+      extensionData.requireData.types.push_back( type.name );
+    }
+    extensionData.requireData.xmlLine = extension.require.xmlLine;
+
+    m_extensions.push_back( std::move( extensionData ) );
+  }
+
   addImplicitlyRequiredTypes();
   sortStructs();
   checkCorrectness();
@@ -135,14 +161,6 @@ std::vector<std::string>::iterator VideoHppGenerator::addImplicitlyRequiredTypes
   return reqIt;
 }
 
-void VideoHppGenerator::checkAttributes( int                                                  line,
-                                         std::map<std::string, std::string> const &           attributes,
-                                         std::map<std::string, std::set<std::string>> const & required,
-                                         std::map<std::string, std::set<std::string>> const & optional ) const
-{
-  ::checkAttributes( "VideoHppGenerator", line, attributes, required, optional );
-}
-
 void VideoHppGenerator::checkCorrectness() const
 {
   // only structs to check here!
@@ -194,14 +212,6 @@ void VideoHppGenerator::checkCorrectness() const
       }
     }
   }
-}
-
-void VideoHppGenerator::checkElements( int                                               line,
-                                       std::vector<tinyxml2::XMLElement const *> const & elements,
-                                       std::map<std::string, MultipleAllowed> const &    required,
-                                       std::map<std::string, MultipleAllowed> const &    optional ) const
-{
-  ::checkElements( "VideoHppGenerator", line, elements, required, optional );
 }
 
 void VideoHppGenerator::checkForError( bool condition, int line, std::string const & message ) const
@@ -511,175 +521,6 @@ std::string VideoHppGenerator::generateStructs( ExtensionData const & extensionD
   return str;
 }
 
-bool VideoHppGenerator::isExtension( std::string const & name ) const
-{
-  return std::ranges::any_of( m_extensions, [&name]( ExtensionData const & ed ) { return ed.name == name; } );
-}
-
-void VideoHppGenerator::readExtension( tinyxml2::XMLElement const * element )
-{
-  int                                       line       = element->GetLineNum();
-  std::map<std::string, std::string>        attributes = getAttributes( element );
-  std::vector<tinyxml2::XMLElement const *> children   = getChildElements( element );
-
-  checkAttributes( line, attributes, { { "name", {} }, { "comment", {} }, { "number", {} }, { "supported", { "vulkan" } } }, {} );
-  checkElements( line, children, { { "require", MultipleAllowed::No } } );
-
-  ExtensionData extensionData{ .xmlLine = line };
-  std::string   supported;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "comment" )
-    {
-      checkForError(
-        attribute.second.starts_with( "protect with VULKAN_VIDEO_CODEC" ), line, "unexpected content of attribute <comment>: \"" + attribute.second + "\"" );
-      extensionData.protect = attribute.second.substr( strlen( "protect with " ) );
-    }
-    else if ( attribute.first == "name" )
-    {
-      extensionData.name = attribute.second;
-      checkForError( !isExtension( extensionData.name ), line, "already encountered extension <" + extensionData.name + ">" );
-    }
-    else if ( attribute.first == "number" )
-    {
-      extensionData.number = attribute.second;
-      checkForError( isNumber( extensionData.number ), line, "extension number <" + extensionData.number + "> is not a number" );
-      checkForError( std::ranges::none_of( m_extensions, [&extensionData]( auto const & extension ) { return extension.number == extensionData.number; } ),
-                     line,
-                     "extension number <" + extensionData.number + "> already encountered" );
-    }
-    else if ( attribute.first == "supported" )
-    {
-      supported = attribute.second;
-    }
-  }
-  checkForError( supported == "vulkan", line, "extension <" + extensionData.name + "> has unknown supported type <" + supported + ">" );
-
-  for ( auto child : children )
-  {
-    std::string const value = child->Value();
-    assert( value == "require" );
-    readExtensionRequire( child, extensionData );
-  }
-
-  m_extensions.push_back( extensionData );
-}
-
-void VideoHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, {} );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "type", MultipleAllowed::Yes } }, { { "enum", MultipleAllowed::Yes } } );
-
-  extensionData.requireData.xmlLine = line;
-
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "enum" )
-    {
-      readRequireEnum( child, extensionData.requireData.constants );
-    }
-    else if ( value == "type" )
-    {
-      readRequireType( child, extensionData );
-    }
-  }
-  assert( !extensionData.requireData.types.empty() );
-}
-
-void VideoHppGenerator::readExtensions( tinyxml2::XMLElement const * element )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, {} );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "extension", MultipleAllowed::Yes } } );
-
-  for ( auto child : children )
-  {
-    std::string const value = child->Value();
-    assert( value == "extension" );
-    readExtension( child );
-  }
-}
-
-void VideoHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, {} );
-
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements(
-    line,
-    children,
-    { { "comment", MultipleAllowed::Yes }, { "enums", MultipleAllowed::Yes }, { "extensions", MultipleAllowed::No }, { "types", MultipleAllowed::No } } );
-  for ( auto child : children )
-  {
-    std::string const value = child->Value();
-    if ( value == "extensions" )
-    {
-      readExtensions( child );
-    }
-  }
-}
-
-void VideoHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, std::map<std::string, ConstantData> & constants )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} }, { "value", {} } }, { { "type", { "uint32_t", "uint8_t" } } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name, type, value;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else if ( attribute.first == "type" )
-    {
-      type = attribute.second;
-    }
-    else if ( attribute.first == "value" )
-    {
-      value = attribute.second;
-    }
-  }
-
-  if ( !name.ends_with( "_SPEC_VERSION" ) && !name.ends_with( "_EXTENSION_NAME" ) )
-  {
-    checkForError( !type.empty(), line, "constant <" + name + "> has no type specified" );
-    checkForError( isNumber( value ) || isHexNumber( value ), line, "enum value uses unknown constant <" + value + ">" );
-    checkForError( constants.insert( { name, { type, value, line } } ).second, line, "required enum <" + name + "> already specified" );
-  }
-}
-
-void VideoHppGenerator::readRequireType( tinyxml2::XMLElement const * element, ExtensionData & extensionData )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "comment", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name = attributes.find( "name" )->second;
-  if ( name.starts_with( "vk_video/vulkan_video_codec" ) && name.ends_with( ".h" ) )
-  {
-    checkForError( extensionData.depends.empty(), line, "extension <" + extensionData.name + "> already depends on <" + extensionData.name + ">" );
-    extensionData.depends = stripPrefix( stripPostfix( name, ".h" ), "vk_video/" );
-    checkForError( isExtension( extensionData.depends ), line, "extension <" + extensionData.name + "> uses unknown header <" + name + ">" );
-  }
-  else
-  {
-    auto typeIt = m_types.find( name );
-    checkForError( typeIt != m_types.end(), line, "unknown required type <" + name + ">" );
-    typeIt->second.requiredBy.insert( extensionData.name );
-    extensionData.requireData.types.push_back( name );
-  }
-}
-
 void VideoHppGenerator::sortStructs()
 {
   for ( auto & ext : m_extensions )
@@ -764,7 +605,7 @@ int main( int argc, char ** argv )
   try
   {
     std::cout << "VideoHppGenerator: Parsing " << filename << std::endl;
-    VideoHppGenerator generator( parseVideoXML( doc ), doc );
+    VideoHppGenerator generator( parseVideoXML( doc ) );
 
     generator.generateCppmFile();
     generator.generateHppFile();

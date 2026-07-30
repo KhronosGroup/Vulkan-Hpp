@@ -2345,6 +2345,19 @@ int main()
     vk::Queue            queue = device.getQueue2( queueInfo2 );
   }
 
+  // Promoted from VK_KHR_external_memory_capabilities
+  {
+    vk::PhysicalDevice                   physicalDevice;
+    vk::PhysicalDeviceExternalBufferInfo externalBufferInfo;
+    vk::ExternalBufferProperties         externalBufferProperties;
+    physicalDevice.getExternalBufferProperties( &externalBufferInfo, &externalBufferProperties );
+  }
+  {
+    vk::PhysicalDevice                   physicalDevice;
+    vk::PhysicalDeviceExternalBufferInfo externalBufferInfo;
+    vk::ExternalBufferProperties         externalBufferProperties = physicalDevice.getExternalBufferProperties( externalBufferInfo );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

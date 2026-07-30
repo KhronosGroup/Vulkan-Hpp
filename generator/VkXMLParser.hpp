@@ -12,6 +12,21 @@
 #include <tinyxml2.h>
 #include <vector>
 
+struct Platform
+{
+  std::string name    = {};
+  std::string comment = {};
+  std::string protect = {};
+  int         xmlLine = {};
+};
+
+struct Platforms
+{
+  std::string           comment   = {};
+  std::vector<Platform> platforms = {};
+  int                   xmlLine   = {};
+};
+
 struct BaseType
 {
   Type type    = {};
@@ -338,13 +353,6 @@ struct MacroVisitor final : tinyxml2::XMLVisitor
   }
 };
 
-struct Platform
-{
-  std::string comment = {};
-  std::string protect = {};
-  int         xmlLine = {};
-};
-
 struct StructMember
 {
   std::string              altLen            = {};
@@ -645,7 +653,7 @@ struct Vkxml
   std::map<std::string, FuncPointer> funcPointers      = {};
   std::map<std::string, Handle>      handles           = {};
   std::vector<CategoryInclude>       includes          = {};
-  std::map<std::string, Platform>    platforms         = {};
+  Platforms                          platforms         = {};
   SPIRVCapabilities                  spirvCapabilities = {};
   SPIRVExtensions                    spirvExtensions   = {};
   std::map<std::string, Struct>      structs           = {};

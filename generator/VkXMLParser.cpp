@@ -46,8 +46,8 @@ std::tuple<std::string, Type, std::vector<std::string>, std::string> parseNameAn
 std::pair<std::string, std::string>                                  parseNameWithAlias( tinyxml2::XMLElement const * element );
 Param                                                                parseParam( tinyxml2::XMLElement const * element );
 Plane                                                                parsePlane( tinyxml2::XMLElement const * element );
-std::pair<std::string, Platform>                                     parsePlatform( tinyxml2::XMLElement const * element );
-std::map<std::string, Platform>                                      parsePlatforms( tinyxml2::XMLElement const * element );
+Platform                                                             parsePlatform( tinyxml2::XMLElement const * element );
+Platforms                                                            parsePlatforms( tinyxml2::XMLElement const * element );
 std::pair<std::string, Type>                                         parseProto( tinyxml2::XMLElement const * element );
 Vkxml                                                                parseRegistry( tinyxml2::XMLElement const * element, std::string const & api );
 Remove                                                               parseRemove( tinyxml2::XMLElement const * element );
@@ -2095,17 +2095,14 @@ Plane parsePlane( tinyxml2::XMLElement const * element )
   return plane;
 }
 
-std::pair<std::string, Platform> parsePlatform( tinyxml2::XMLElement const * element )
+Platform parsePlatform( tinyxml2::XMLElement const * element )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( "vk.xml", line, attributes, { { "comment", {} }, { "name", {} }, { "protect", {} } }, {} );
   checkElements( "vk.xml", line, getChildElements( element ), {} );
 
-  Platform platform;
-  platform.xmlLine = line;
-
-  std::string name;
+  Platform platform{ .xmlLine = line };
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "comment" )
@@ -2115,7 +2112,7 @@ std::pair<std::string, Platform> parsePlatform( tinyxml2::XMLElement const * ele
     else if ( attribute.first == "name" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      name = attribute.second;
+      platform.name = attribute.second;
     }
     else if ( attribute.first == "protect" )
     {
@@ -2124,29 +2121,38 @@ std::pair<std::string, Platform> parsePlatform( tinyxml2::XMLElement const * ele
     }
   }
 
-  return { name, std::move( platform ) };
+  return platform;
 }
 
-std::map<std::string, Platform> parsePlatforms( tinyxml2::XMLElement const * element )
+Platforms parsePlatforms( tinyxml2::XMLElement const * element )
 {
-  int const line = element->GetLineNum();
-  checkAttributes( "vk.xml", line, getAttributes( element ), { { "comment", {} } }, {} );
-
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "comment", {} } }, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( "vk.xml", line, children, { { "platform", MultipleAllowed::Yes } } );
 
-  std::map<std::string, Platform> platforms;
+  Platforms platforms{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      platforms.comment = attribute.second;
+    }
+  }
+
   for ( auto child : children )
   {
-    std::pair<std::string, Platform> platform = parsePlatform( child );
+    Platform platform = parsePlatform( child );
 
-    checkForError(
-      "vk.xml",
-      std::ranges::find_if( platforms, [protect = platform.second.protect]( auto const & platform ) { return protect == platform.second.protect; } ) ==
-        platforms.end(),
-      line,
-      "platform <" + platform.first + "> uses protect <" + platform.second.protect + "> that is already used by some other platform" );
-    checkForError( "vk.xml", platforms.insert( std::move( platform ) ).second, line, "platform <" + platform.first + "> already specified" );
+    checkForError( "vk.xml", !containsByName( platforms.platforms, platform.name ), platform.xmlLine, "platform <" + platform.name + "> already specified" );
+    checkForError( "vk.xml",
+                   std::ranges::find_if( platforms.platforms, [protect = platform.protect]( auto const & platform ) { return protect == platform.protect; } ) ==
+                     platforms.platforms.end(),
+                   platform.xmlLine,
+                   "platform <" + platform.name + "> uses protect <" + platform.protect + "> that is already used by some other platform" );
+
+    platforms.platforms.push_back( std::move( platform ) );
   }
 
   return platforms;
@@ -2290,7 +2296,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
       for ( auto const & extension : vkxml.extensions.extensions )
       {
         checkForError( "vk.xml",
-                       extension.platform.empty() || vkxml.platforms.contains( extension.platform ),
+                       extension.platform.empty() || containsByName( vkxml.platforms.platforms, extension.platform ),
                        extension.xmlLine,
                        "extension <" + extension.name + "> references an unknown platform <" + extension.platform + ">" );
         checkForError( "vk.xml",

@@ -10463,7 +10463,7 @@ std::string VulkanHppGenerator::generateReturnVariable( CommandData const &     
         }
         else
         {
-#if !defined(NDEBUG)
+#if !defined( NDEBUG )
           auto vectorParamIt = vectorParams.find( returnParams[1] );
 #endif
           assert( ( vectorParamIt != vectorParams.end() ) && ( vectorParamIt->second.lenParam == returnParams[0] ) );
@@ -12638,8 +12638,8 @@ std::pair<std::string, std::string> VulkanHppGenerator::getPoolTypeAndName( std:
 
 std::string VulkanHppGenerator::getProtectFromPlatform( std::string const & platformName ) const
 {
-  auto platformIt = m_vkxml.platforms.find( platformName );
-  return ( platformIt != m_vkxml.platforms.end() ) ? platformIt->second.protect : "";
+  auto platformIt = findByName( m_vkxml.platforms.platforms, platformName );
+  return ( platformIt != m_vkxml.platforms.platforms.end() ) ? platformIt->protect : "";
 }
 
 std::string VulkanHppGenerator::getProtectFromTitle( std::string const & title ) const

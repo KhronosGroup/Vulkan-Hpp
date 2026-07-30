@@ -82,7 +82,7 @@ jobs:
         sudo apt install -y libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev ${{ contains(matrix.env.arch, 'x86') && (contains(matrix.env.cxx, 'clang') && 'gcc-multilib g++-multilib' || format('{0}-multilib {1}-multilib', matrix.env.c, matrix.env.cxx)) || '' }}
     - name: Setup MacOS
       if: contains(matrix.env.os, 'macos')
-      run: brew install molten-vk
+      run: brew update && brew install -y molten-vk
 
 
     - name: Verify Linux x86 target
@@ -129,7 +129,7 @@ jobs:
     - name: Setup Modules (MacOS)
       if: matrix.env.modules && contains(matrix.env.os, 'macos')
       run: |
-        brew install llvm
+        brew update && brew install -y llvm
         CMAKE_FIX=`which cmake`
         CMAKE_FIX="`dirname $CMAKE_FIX`/../share/cmake-4.1/Modules/Compiler/Clang-CXX-CXXImportStd.cmake"
         sed -i '' 's|\${_clang_modules_json_impl}.modules.json|/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json|g' $CMAKE_FIX # https://gitlab.kitware.com/cmake/cmake/-/issues/25965#note_1523575

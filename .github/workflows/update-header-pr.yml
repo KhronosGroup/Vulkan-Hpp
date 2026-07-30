@@ -20,13 +20,13 @@ jobs:
     - uses: actions/checkout@v6
       with:
         submodules: recursive
-    
+
     - name: Install libraries
       run: |
         sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
         export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
         # clang-format on brew is not versioned, it will always be the newest version available
-        brew install clang-format
+        brew update && brew install -y clang-format
         
     - name: Update Submodules
       run: |

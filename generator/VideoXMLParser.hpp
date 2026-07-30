@@ -88,12 +88,12 @@ struct Text
 
 struct Types
 {
-  std::vector<CategoryDefine>  defines       = {};
-  std::vector<CategoryEnum>    enums         = {};
-  std::vector<ExternalType>    externalTypes = {};
-  std::vector<CategoryInclude> includes      = {};
-  std::vector<CategoryStruct>  structs       = {};
-  int                          xmlLine       = {};
+  std::vector<CategoryDefine> defines   = {};
+  std::vector<CategoryEnum>   enums     = {};
+  std::vector<TypeExternal>   externals = {};
+  std::vector<TypeInclude>    includes  = {};
+  std::vector<CategoryStruct> structs   = {};
+  int                         xmlLine   = {};
 };
 
 struct VideoXML

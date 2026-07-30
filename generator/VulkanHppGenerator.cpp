@@ -19,8 +19,6 @@ namespace
   template <typename T>
   typename std::map<std::string, T>::iterator findByNameOrAlias( std::map<std::string, T> & values, std::string const & name );
   template <typename T>
-  typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const & values, std::string const & name );
-  template <typename T>
   typename std::vector<T>::iterator findByNameOrAlias( std::vector<T> & values, std::string const & name );
   template <typename T>
   typename std::vector<T>::const_iterator findByType( std::vector<T> const & values, std::string const & type );
@@ -47,21 +45,21 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
 
   for ( auto const & baseType : m_vkxml.baseTypes )
   {
-    checkForError( m_types.insert( { baseType.first, TypeData{ TypeCategory::BaseType, {}, baseType.second.xmlLine } } ).second,
-                   baseType.second.xmlLine,
-                   "basetype <" + baseType.first + "> already specified" );
+    checkForError( m_types.insert( { baseType.name, TypeData{ TypeCategory::BaseType, {}, baseType.xmlLine } } ).second,
+                   baseType.xmlLine,
+                   "basetype <" + baseType.name + "> already specified" );
   }
   for ( auto const & bitmask : m_vkxml.bitmasks )
   {
-    checkForError( m_types.insert( { bitmask.first, TypeData{ TypeCategory::Bitmask, {}, bitmask.second.xmlLine } } ).second,
-                   bitmask.second.xmlLine,
-                   "bitmask <" + bitmask.first + "> already specified" );
-    std::ranges::for_each( bitmask.second.aliases,
+    checkForError( m_types.insert( { bitmask.name, TypeData{ TypeCategory::Bitmask, {}, bitmask.xmlLine } } ).second,
+                   bitmask.xmlLine,
+                   "bitmask <" + bitmask.name + "> already specified" );
+    std::ranges::for_each( bitmask.aliases,
                            [&]( auto const & alias )
                            {
                              checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Bitmask, {}, alias.second } } ).second,
                                             alias.second,
-                                            "alias <" + alias.first + "> of bitmask <" + bitmask.first + "> already specified" );
+                                            "alias <" + alias.first + "> of bitmask <" + bitmask.name + "> already specified" );
                            } );
   }
   for ( auto const & command : m_vkxml.commands )
@@ -75,8 +73,8 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
       commandIt->second.exports    = command.exports;
 
       // find the handle this command is going to be associated to
-      auto handleIt            = m_vkxml.handles.find( command.params[0].type.name );
-      commandIt->second.handle = ( handleIt != m_vkxml.handles.end() ) ? handleIt->first : "";
+      auto handleIt            = findByName( m_vkxml.handles, command.params[0].type.name );
+      commandIt->second.handle = ( handleIt != m_vkxml.handles.end() ) ? handleIt->name : "";
 
       for ( auto const & param : command.params )
       {
@@ -129,36 +127,36 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   }
   for ( auto const & define : m_vkxml.defines )
   {
-    checkForError( m_types.insert( { define.first, TypeData{ TypeCategory::Define, {}, define.second.xmlLine } } ).second,
-                   define.second.xmlLine,
-                   "type <" + define.first + "> already specified" );
+    checkForError( m_types.insert( { define.name, TypeData{ TypeCategory::Define, {}, define.xmlLine } } ).second,
+                   define.xmlLine,
+                   "type <" + define.name + "> already specified" );
 
     // for defines, we compile some more data than is read from the vk.xml, so we insert the defines from the vk.xml into our own map
-    auto const & [possibleCallee, params, possibleDefinition] = parseMacro( define.second.macro );
-    m_defines[define.first]                                   = { define.second.require, define.second.xmlLine, possibleCallee, params, possibleDefinition };
+    auto const & [possibleCallee, params, possibleDefinition] = parseMacro( define.macro );
+    m_defines[define.name]                                    = { {}, define.xmlLine, possibleCallee, params, possibleDefinition };
   }
   for ( auto const & xmlEnum : m_vkxml.enums )
   {
-    checkForError( m_types.insert( { xmlEnum.first, TypeData{ TypeCategory::Enum, {}, xmlEnum.second.xmlLine } } ).second,
-                   xmlEnum.second.xmlLine,
-                   "type <" + xmlEnum.first + "> already specified" );
-    std::ranges::for_each( xmlEnum.second.aliases,
+    checkForError( m_types.insert( { xmlEnum.name, TypeData{ TypeCategory::Enum, {}, xmlEnum.xmlLine } } ).second,
+                   xmlEnum.xmlLine,
+                   "type <" + xmlEnum.name + "> already specified" );
+    std::ranges::for_each( xmlEnum.aliases,
                            [&]( auto const & alias )
                            {
                              checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Enum, {}, alias.second } } ).second,
                                             alias.second,
-                                            "alias <" + alias.first + "> of handle <" + xmlEnum.first + "> already specified" );
+                                            "alias <" + alias.first + "> of handle <" + xmlEnum.name + "> already specified" );
                            } );
 
     // for enums, we compile some more data than is read from the vk.xml, so we insert the enums from the vk.xml into our own map
-    auto [enumIt, inserted] = m_enums.insert( { xmlEnum.first, {} } );
+    auto [enumIt, inserted] = m_enums.insert( { xmlEnum.name, {} } );
     assert( inserted );
-    enumIt->second.aliases   = xmlEnum.second.aliases;
-    enumIt->second.bitwidth  = xmlEnum.second.bitwidth;
-    enumIt->second.isBitmask = xmlEnum.second.type == "bitmask";
-    enumIt->second.xmlLine   = xmlEnum.second.xmlLine;
+    enumIt->second.aliases   = xmlEnum.aliases;
+    enumIt->second.bitwidth  = xmlEnum.bitwidth;
+    enumIt->second.isBitmask = xmlEnum.type == "bitmask";
+    enumIt->second.xmlLine   = xmlEnum.xmlLine;
 
-    for ( auto const & enumValue : xmlEnum.second.values )
+    for ( auto const & enumValue : xmlEnum.values )
     {
       EnumValueData enumValueData;
       for ( auto const & alias : enumValue.aliases )
@@ -173,39 +171,39 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
       enumIt->second.values.push_back( std::move( enumValueData ) );
     }
   }
-  for ( auto const & externalType : m_vkxml.externalTypes )
+  for ( auto const & external : m_vkxml.externals )
   {
-    checkForError( m_types.insert( { externalType.name, TypeData{ TypeCategory::ExternalType, {}, externalType.xmlLine } } ).second,
-                   externalType.xmlLine,
-                   "type <" + externalType.name + "> already specified" );
+    checkForError( m_types.insert( { external.name, TypeData{ TypeCategory::External, {}, external.xmlLine } } ).second,
+                   external.xmlLine,
+                   "type <" + external.name + "> already specified" );
   }
   for ( auto const & funcPointer : m_vkxml.funcPointers )
   {
-    checkForError( m_types.insert( { funcPointer.first, TypeData{ TypeCategory::FuncPointer, {}, funcPointer.second.xmlLine } } ).second,
-                   funcPointer.second.xmlLine,
-                   "funcpointer <" + funcPointer.first + "> already specified" );
+    checkForError( m_types.insert( { funcPointer.name, TypeData{ TypeCategory::FuncPointer, {}, funcPointer.xmlLine } } ).second,
+                   funcPointer.xmlLine,
+                   "funcpointer <" + funcPointer.name + "> already specified" );
   }
   for ( auto const & handle : m_vkxml.handles )
   {
-    checkForError( m_types.insert( { handle.first, TypeData{ TypeCategory::Handle, {}, handle.second.xmlLine } } ).second,
-                   handle.second.xmlLine,
-                   "type <" + handle.first + "> already specified" );
-    std::ranges::for_each( handle.second.aliases,
+    checkForError( m_types.insert( { handle.name, TypeData{ TypeCategory::Handle, {}, handle.xmlLine } } ).second,
+                   handle.xmlLine,
+                   "type <" + handle.name + "> already specified" );
+    std::ranges::for_each( handle.aliases,
                            [&]( auto const & alias )
                            {
                              checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Handle, {}, alias.second } } ).second,
                                             alias.second,
-                                            "alias <" + alias.first + "> of handle <" + handle.first + "> already specified" );
+                                            "alias <" + alias.first + "> of handle <" + handle.name + "> already specified" );
                            } );
 
     // for handles, we compile some more data than is read from the vk.xml, so we insert the handles from the vk.xml into our own map
-    auto [handleIt, inserted] = m_handles.insert( { handle.first, {} } );
+    auto [handleIt, inserted] = m_handles.insert( { handle.name, {} } );
     assert( inserted );
-    handleIt->second.aliases        = handle.second.aliases;
-    handleIt->second.objTypeEnum    = handle.second.objTypeEnum;
-    handleIt->second.parent         = handle.second.parent;
-    handleIt->second.isDispatchable = ( handle.second.type.name == "VK_DEFINE_HANDLE" );
-    handleIt->second.xmlLine        = handle.second.xmlLine;
+    handleIt->second.aliases        = handle.aliases;
+    handleIt->second.objTypeEnum    = handle.objTypeEnum;
+    handleIt->second.parent         = handle.parent;
+    handleIt->second.isDispatchable = ( handle.type.name == "VK_DEFINE_HANDLE" );
+    handleIt->second.xmlLine        = handle.xmlLine;
   }
   for ( auto const & include : m_vkxml.includes )
   {
@@ -215,26 +213,26 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   }
   for ( auto const & structure : m_vkxml.structs )
   {
-    checkForError( m_types.insert( { structure.first, TypeData{ TypeCategory::Struct, {}, structure.second.xmlLine } } ).second,
-                   structure.second.xmlLine,
-                   "struct <" + structure.first + "> already specified" );
-    std::ranges::for_each( structure.second.aliases,
+    checkForError( m_types.insert( { structure.name, TypeData{ TypeCategory::Struct, {}, structure.xmlLine } } ).second,
+                   structure.xmlLine,
+                   "struct <" + structure.name + "> already specified" );
+    std::ranges::for_each( structure.aliases,
                            [&]( auto const & alias )
                            {
                              checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Struct, {}, alias.second } } ).second,
                                             alias.second,
-                                            "alias <" + alias.first + "> of struc <" + structure.first + "> already specified" );
+                                            "alias <" + alias.first + "> of struc <" + structure.name + "> already specified" );
                            } );
 
-    auto [structIt, inserted] = m_structs.insert( { structure.first, {} } );
+    auto [structIt, inserted] = m_structs.insert( { structure.name, {} } );
     assert( inserted );
-    structIt->second.aliases           = structure.second.aliases;
-    structIt->second.allowDuplicate    = ( structure.second.allowDuplicate == "true" );
+    structIt->second.aliases           = structure.aliases;
+    structIt->second.allowDuplicate    = ( structure.allowDuplicate == "true" );
     structIt->second.isUnion           = false;
-    structIt->second.requiredLimitType = ( structure.second.requiredLimitType == "true" );
-    structIt->second.returnedOnly      = ( structure.second.returnedOnly == "true" );
-    structIt->second.structExtends     = structure.second.structExtends;
-    for ( auto const & member : structure.second.members )
+    structIt->second.requiredLimitType = ( structure.requiredLimitType == "true" );
+    structIt->second.returnedOnly      = ( structure.returnedOnly == "true" );
+    structIt->second.structExtends     = structure.structExtends;
+    for ( auto const & member : structure.members )
     {
       MemberData memberData;
       memberData.type           = member.type;
@@ -261,14 +259,14 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
       }
       else if ( !member.len.empty() && ( member.len[0] != "null-terminated" ) )
       {
-        auto lenMemberIt = findByName( structure.second.members, member.len[0] );
-        checkForError( lenMemberIt != structure.second.members.end(), member.xmlLine, "member attribute <len> holds unknown value <" + member.len[0] + ">" );
-        memberData.lenMembers.push_back( { member.len[0], std::distance( structure.second.members.begin(), lenMemberIt ) } );
+        auto lenMemberIt = findByName( structure.members, member.len[0] );
+        checkForError( lenMemberIt != structure.members.end(), member.xmlLine, "member attribute <len> holds unknown value <" + member.len[0] + ">" );
+        memberData.lenMembers.push_back( { member.len[0], std::distance( structure.members.begin(), lenMemberIt ) } );
       }
 
       structIt->second.members.push_back( std::move( memberData ) );
     }
-    structIt->second.xmlLine   = structure.second.xmlLine;
+    structIt->second.xmlLine   = structure.xmlLine;
     structIt->second.subStruct = determineSubStruct( *structIt );
 
     // add some default values for some structures here!
@@ -340,16 +338,15 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   }
   for ( auto const & u : m_vkxml.unions )
   {
-    checkForError( m_types.insert( { u.first, TypeData{ TypeCategory::Struct, {}, u.second.xmlLine } } ).second,
-                   u.second.xmlLine,
-                   "union <" + u.first + "> already specified" );
+    checkForError(
+      m_types.insert( { u.name, TypeData{ TypeCategory::Struct, {}, u.xmlLine } } ).second, u.xmlLine, "union <" + u.name + "> already specified" );
 
     // we hold unions in the same map as structs, but mark them as union, to be able to check for correct usage of selectors
-    auto [structIt, inserted] = m_structs.insert( { u.first, {} } );
+    auto [structIt, inserted] = m_structs.insert( { u.name, {} } );
     assert( inserted );
     structIt->second.isUnion      = true;
-    structIt->second.returnedOnly = ( u.second.returnedOnly == "true" );
-    for ( auto const & member : u.second.members )
+    structIt->second.returnedOnly = ( u.returnedOnly == "true" );
+    for ( auto const & member : u.members )
     {
       MemberData memberData;
       memberData.type           = member.type;
@@ -364,7 +361,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
 
       structIt->second.members.push_back( std::move( memberData ) );
     }
-    structIt->second.xmlLine = u.second.xmlLine;
+    structIt->second.xmlLine = u.xmlLine;
   }
   for ( auto const & feature : m_vkxml.features )
   {
@@ -881,18 +878,18 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
     std::vector<NameLine> newTypes;
     for ( auto const & type : require.types )
     {
-      auto bitmaskIt = m_vkxml.bitmasks.find( type.name );
+      auto bitmaskIt = findByName( m_vkxml.bitmasks, type.name );
       if ( bitmaskIt != m_vkxml.bitmasks.end() )
       {
-        if ( bitmaskIt->second.require.empty() )
+        if ( bitmaskIt->require.empty() )
         {
           // generate the flagBits enum name out of the bitmask name: VkFooFlagsXXX -> VkFooFlagBitsXXX
-          size_t const pos = bitmaskIt->first.find( "Flags" );
+          size_t const pos = bitmaskIt->name.find( "Flags" );
           assert( pos != std::string::npos );
-          std::string flagBits = bitmaskIt->first.substr( 0, pos + 4 ) + "Bit" + bitmaskIt->first.substr( pos + 4 );
+          std::string flagBits = bitmaskIt->name.substr( 0, pos + 4 ) + "Bit" + bitmaskIt->name.substr( pos + 4 );
           assert( flagBits.find( "Flags" ) == std::string::npos );
 
-          bitmaskIt->second.require = flagBits;
+          bitmaskIt->require = flagBits;
 
           // some flagsBits are specified but never listed as required for any flags!
           // so, even if this bitmask has no enum listed as required, it might still already exist in the enums list
@@ -910,10 +907,10 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
             enumIt->second.isBitmask = true;
           }
         }
-        if ( std::ranges::none_of( require.types, [bitmaskIt]( auto const & requireType ) { return requireType.name == bitmaskIt->second.require; } ) )
+        if ( std::ranges::none_of( require.types, [bitmaskIt]( auto const & requireType ) { return requireType.name == bitmaskIt->require; } ) )
         {
           // this bitmask requires a flags type that is not listed in here, so add it
-          newTypes.push_back( { bitmaskIt->second.require, bitmaskIt->second.xmlLine } );
+          newTypes.push_back( { bitmaskIt->require, bitmaskIt->xmlLine } );
         }
       }
     }
@@ -961,23 +958,22 @@ void VulkanHppGenerator::checkBitmaskCorrectness() const
   {
     // check that a bitmask is required somewhere
     // I think, it's not forbidden to not reference a bitmask, but it would probably be not intended?
-    auto typeIt = m_types.find( bitmask.first );
+    auto typeIt = m_types.find( bitmask.name );
     assert( typeIt != m_types.end() );
-    checkForError( !typeIt->second.requiredBy.empty(), bitmask.second.xmlLine, "bitmask <" + bitmask.first + "> not required in any feature or extension" );
+    checkForError( !typeIt->second.requiredBy.empty(), bitmask.xmlLine, "bitmask <" + bitmask.name + "> not required in any feature or extension" );
 
     // check that the requirement is an enum
-    if ( !bitmask.second.require.empty() )
+    if ( !bitmask.require.empty() )
     {
-      auto requireTypeIt = m_types.find( bitmask.second.require );
-      checkForError(
-        requireTypeIt != m_types.end(), bitmask.second.xmlLine, "bitmask <" + bitmask.first + "> requires unknown type <" + bitmask.second.require + ">" );
+      auto requireTypeIt = m_types.find( bitmask.require );
+      checkForError( requireTypeIt != m_types.end(), bitmask.xmlLine, "bitmask <" + bitmask.name + "> requires unknown type <" + bitmask.require + ">" );
       checkForError( requireTypeIt->second.category == TypeCategory::Enum,
-                     bitmask.second.xmlLine,
-                     "bitmask <" + bitmask.first + "> requires non-enum type <" + bitmask.second.require + ">" );
-      assert( m_enums.contains( bitmask.second.require ) );
+                     bitmask.xmlLine,
+                     "bitmask <" + bitmask.name + "> requires non-enum type <" + bitmask.require + ">" );
+      assert( m_enums.contains( bitmask.require ) );
       checkForError( !requireTypeIt->second.requiredBy.empty(),
-                     bitmask.second.xmlLine,
-                     "bitmask <" + bitmask.first + "> requires <" + bitmask.second.require + "> which is not required by any feature or extension!" );
+                     bitmask.xmlLine,
+                     "bitmask <" + bitmask.name + "> requires <" + bitmask.require + "> which is not required by any feature or extension!" );
     }
   }
 }
@@ -1059,9 +1055,7 @@ void VulkanHppGenerator::checkDefineCorrectness() const
   // check that any requirements of a define is known
   for ( auto const & d : m_vkxml.defines )
   {
-    checkForError( d.second.require.empty() || m_types.contains( d.second.require ),
-                   d.second.xmlLine,
-                   "define <" + d.first + "> uses unknown require <" + d.second.require + ">" );
+    checkForError( d.require.empty() || m_types.contains( d.require ), d.xmlLine, "define <" + d.name + "> uses unknown require <" + d.require + ">" );
   }
 }
 
@@ -1080,16 +1074,16 @@ void VulkanHppGenerator::checkEnumCorrectness() const
       if ( std::ranges::any_of( e.second.values, []( auto const & v ) { return v.supported; } ) )
       {
         // check that any enum of a bitmask with supported values is listed as "require" or "bitvalues" for a bitmask
-        auto bitmaskIt = std::ranges::find_if(
-          m_vkxml.bitmasks, [&e]( auto const & bitmask ) { return ( bitmask.second.bitValues == e.first ) || ( bitmask.second.require == e.first ); } );
+        auto bitmaskIt =
+          std::ranges::find_if( m_vkxml.bitmasks, [&e]( auto const & bitmask ) { return ( bitmask.bitValues == e.first ) || ( bitmask.require == e.first ); } );
         checkForError( bitmaskIt != m_vkxml.bitmasks.end(),
                        e.second.xmlLine,
                        "enum <" + e.first + "> is not listed as an requires or bitvalues for any bitmask in the types section" );
 
         // check that bitwidth of the enum and type of the corresponding bitmask are equal
-        checkForError( ( e.second.bitwidth != "64" ) || ( bitmaskIt->second.type.name == "VkFlags64" ),
+        checkForError( ( e.second.bitwidth != "64" ) || ( bitmaskIt->type.name == "VkFlags64" ),
                        e.second.xmlLine,
-                       "enum <" + e.first + "> is marked with bitwidth <64> but corresponding bitmask <" + bitmaskIt->first + "> is not of type <VkFlags64>" );
+                       "enum <" + e.first + "> is marked with bitwidth <64> but corresponding bitmask <" + bitmaskIt->name + "> is not of type <VkFlags64>" );
       }
     }
   }
@@ -1196,10 +1190,10 @@ void VulkanHppGenerator::checkFuncPointerCorrectness() const
 {
   for ( auto const & funcPointer : m_vkxml.funcPointers )
   {
-    checkForError( funcPointer.second.require.empty() || m_types.contains( funcPointer.second.require ),
-                   funcPointer.second.xmlLine,
-                   "funcpointer requires unknown <" + funcPointer.second.require + ">" );
-    for ( auto const & param : funcPointer.second.params )
+    checkForError( funcPointer.require.empty() || m_types.contains( funcPointer.require ),
+                   funcPointer.xmlLine,
+                   "funcpointer requires unknown <" + funcPointer.require + ">" );
+    for ( auto const & param : funcPointer.params )
     {
       checkForError( m_types.contains( param.type.name ), param.xmlLine, "funcpointer param of unknown type <" + param.type.name + ">" );
     }
@@ -1305,26 +1299,28 @@ void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & requi
                        "required bitmask type <" + type.name + "> is not listed as bitmask" );
         break;
       case TypeCategory::BaseType:
-        checkForError( m_vkxml.baseTypes.contains( type.name ), typeIt->second.xmlLine, "required base type <" + type.name + "> is not listed as a base type" );
+        checkForError(
+          containsByName( m_vkxml.baseTypes, type.name ), typeIt->second.xmlLine, "required base type <" + type.name + "> is not listed as a base type" );
         break;
       case TypeCategory::Constant:
         checkForError( m_vkxml.constants.contains( type.name ), typeIt->second.xmlLine, "required constant <" + type.name + "> is not listed as a constant" );
         break;
       case TypeCategory::Define:
-        checkForError( m_vkxml.defines.contains( type.name ), typeIt->second.xmlLine, "required define <" + type.name + "> is not listed as a define" );
+        checkForError( containsByName( m_vkxml.defines, type.name ), typeIt->second.xmlLine, "required define <" + type.name + "> is not listed as a define" );
         break;
       case TypeCategory::Enum:
         checkForError(
           findByNameOrAlias( m_enums, type.name ) != m_enums.end(), typeIt->second.xmlLine, "required enum type <" + type.name + "> is not listed as an enum" );
         break;
-      case TypeCategory::ExternalType:
-        checkForError( containsByName( m_vkxml.externalTypes, type.name ),
+      case TypeCategory::External:
+        checkForError( containsByName( m_vkxml.externals, type.name ),
                        typeIt->second.xmlLine,
                        "required external type <" + type.name + "> is not listed as an external type" );
         break;
       case TypeCategory::FuncPointer:
-        checkForError(
-          m_vkxml.funcPointers.contains( type.name ), typeIt->second.xmlLine, "required funcpointer <" + type.name + "> is not listed as a funcpointer" );
+        checkForError( containsByName( m_vkxml.funcPointers, type.name ),
+                       typeIt->second.xmlLine,
+                       "required funcpointer <" + type.name + "> is not listed as a funcpointer" );
         break;
       case TypeCategory::Handle:
         checkForError( findByNameOrAlias( m_handles, type.name ) != m_handles.end(),
@@ -1355,10 +1351,10 @@ void VulkanHppGenerator::checkSpirVCapabilityCorrectness() const
     {
       if ( !enable.property.empty() )
       {
-        auto structIt = m_vkxml.structs.find( enable.property );
+        auto structIt = findByName( m_vkxml.structs, enable.property );
         assert( structIt != m_vkxml.structs.end() );
-        auto memberIt = findByName( structIt->second.members, enable.member );
-        assert( memberIt != structIt->second.members.end() );
+        auto memberIt = findByName( structIt->members, enable.member );
+        assert( memberIt != structIt->members.end() );
         if ( memberIt->type.name != "VkBool32" )
         {
           assert( memberIt->type.name.ends_with( "Flags" ) );
@@ -1429,7 +1425,7 @@ void VulkanHppGenerator::checkStructMemberArraySizesAreValid( std::vector<std::s
     if ( !isNumber( arraySize ) && !m_vkxml.constants.contains( arraySize ) )
     {
       auto typeIt = m_types.find( arraySize );
-      checkForError( ( typeIt != m_types.end() ) && isUpperCase( arraySize ) && ( typeIt->second.category == TypeCategory::ExternalType ),
+      checkForError( ( typeIt != m_types.end() ) && isUpperCase( arraySize ) && ( typeIt->second.category == TypeCategory::External ),
                      line,
                      "struct member array size uses unknown constant <" + arraySize + ">" );
     }
@@ -1559,11 +1555,12 @@ bool VulkanHppGenerator::containsFuncPointer( std::string const & type ) const
 {
   // a simple recursive check if a type contains a funcpointer
   auto structureIt = m_structs.find( type );
-  return ( structureIt != m_structs.end() ) &&
-         std::ranges::any_of(
-           structureIt->second.members,
-           [this, &type]( auto const & member )
-           { return m_vkxml.funcPointers.contains( member.type.name ) || ( ( member.type.name != type ) && containsFuncPointer( member.type.name ) ); } );
+  return ( structureIt != m_structs.end() ) && std::ranges::any_of( structureIt->second.members,
+                                                                    [this, &type]( auto const & member )
+                                                                    {
+                                                                      return containsByName( m_vkxml.funcPointers, member.type.name ) ||
+                                                                             ( ( member.type.name != type ) && containsFuncPointer( member.type.name ) );
+                                                                    } );
 }
 
 bool VulkanHppGenerator::containsFloatingPoints( std::vector<MemberData> const & members ) const
@@ -2341,16 +2338,16 @@ std::vector<VulkanHppGenerator::MemberData>::const_iterator VulkanHppGenerator::
   return std::ranges::find_if( memberData, []( auto const & md ) { return md.arraySizes.empty() && !md.lenMembers.empty(); } );
 }
 
-void VulkanHppGenerator::forEachRequiredBitmask( std::vector<RequireData> const &                                       requireData,
-                                                 std::set<std::string> &                                                encounteredBitmasks,
-                                                 std::function<void( std::pair<std::string, Bitmask> const & )> const & bitmaskAction ) const
+void VulkanHppGenerator::forEachRequiredBitmask( std::vector<RequireData> const &                   requireData,
+                                                 std::set<std::string> &                            encounteredBitmasks,
+                                                 std::function<void( TypeBitmask const & )> const & bitmaskAction ) const
 {
   for ( auto const & require : requireData )
   {
     for ( auto const & type : require.types )
     {
-      if ( auto bitmaskIt = m_vkxml.bitmasks.find( type.name );
-           ( bitmaskIt != m_vkxml.bitmasks.end() ) && encounteredBitmasks.insert( bitmaskIt->first ).second )
+      if ( auto bitmaskIt = findByName( m_vkxml.bitmasks, type.name );
+           ( bitmaskIt != m_vkxml.bitmasks.end() ) && encounteredBitmasks.insert( bitmaskIt->name ).second )
       {
         bitmaskAction( *bitmaskIt );
       }
@@ -2770,21 +2767,21 @@ ${basetypes}
   for ( auto const & baseType : m_vkxml.baseTypes )
   {
     // filter out VkFlags and VkFlags64, as they are mapped to our own Flags class, and basetypes without any type information
-    if ( ( baseType.first != "VkFlags" ) && ( baseType.first != "VkFlags64" ) && !baseType.second.type.name.empty() )
+    if ( ( baseType.name != "VkFlags" ) && ( baseType.name != "VkFlags64" ) && !baseType.type.name.empty() )
     {
-      basetypes += "  using " + stripPrefix( baseType.first, "Vk" ) + " = " + baseType.second.type.compose( "" ) + ";\n";
+      basetypes += "  using " + stripPrefix( baseType.name, "Vk" ) + " = " + baseType.type.compose( "" ) + ";\n";
     }
   }
 
   return replaceWithMap( basetypesTemplate, { { "basetypes", basetypes } } );
 }
 
-std::string VulkanHppGenerator::generateBitmask( std::map<std::string, Bitmask>::const_iterator bitmaskIt, std::string const & surroundingProtect ) const
+std::string VulkanHppGenerator::generateBitmask( std::vector<TypeBitmask>::const_iterator bitmaskIt, std::string const & surroundingProtect ) const
 {
-  auto bitmaskBitsIt = m_enums.find( bitmaskIt->second.require );
+  auto bitmaskBitsIt = m_enums.find( bitmaskIt->require );
   assert( bitmaskBitsIt != m_enums.end() );
 
-  std::string bitmaskName = stripPrefix( bitmaskIt->first, "Vk" );
+  std::string bitmaskName = stripPrefix( bitmaskIt->name, "Vk" );
   std::string enumName    = stripPrefix( bitmaskBitsIt->first, "Vk" );
 
   std::string allFlags, wrappedType;
@@ -2824,7 +2821,7 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, Bitmask>:
   }
 
   std::string aliases;
-  for ( auto const & a : bitmaskIt->second.aliases )
+  for ( auto const & a : bitmaskIt->aliases )
   {
     aliases += "  using " + stripPrefix( a.first, "Vk" ) + " = " + bitmaskName + ";\n";
   }
@@ -2876,17 +2873,16 @@ std::string VulkanHppGenerator::generateBitmasksToString( std::vector<RequireDat
                                                           std::string const &              title ) const
 {
   std::string str;
-  forEachRequiredBitmask(
-    requireData, listedBitmasks, [&str, this]( std::pair<std::string, Bitmask> const & bitmaskData ) { str += generateBitmaskToString( bitmaskData ); } );
+  forEachRequiredBitmask( requireData, listedBitmasks, [&str, this]( TypeBitmask const & bitmask ) { str += generateBitmaskToString( bitmask ); } );
   return addTitleAndProtection( title, str );
 }
 
-std::string VulkanHppGenerator::generateBitmaskToString( std::pair<std::string, Bitmask> const & bitmaskData ) const
+std::string VulkanHppGenerator::generateBitmaskToString( TypeBitmask const & bitmask ) const
 {
-  auto bitmaskBitsIt = m_enums.find( bitmaskData.second.require );
+  auto bitmaskBitsIt = m_enums.find( bitmask.require );
   assert( bitmaskBitsIt != m_enums.end() );
 
-  std::string bitmaskName = stripPrefix( bitmaskData.first, "Vk" );
+  std::string bitmaskName = stripPrefix( bitmask.name, "Vk" );
   std::string enumName    = stripPrefix( bitmaskBitsIt->first, "Vk" );
 
   std::string str;
@@ -3765,8 +3761,9 @@ std::string VulkanHppGenerator::generateCommand1ReturnsValue( std::string const 
                                                               std::map<size_t, VectorParamData> const & vectorParams ) const
 {
   std::string const & returnType = commandData.params[returnParam].type.name;
-  if ( bool isHandle = isHandleType( returnType ); isHandle || m_vkxml.baseTypes.contains( returnType ) || m_vkxml.bitmasks.contains( returnType ) ||
-                                                   m_enums.contains( returnType ) || containsByName( m_vkxml.externalTypes, returnType ) )
+  if ( bool isHandle = isHandleType( returnType ); isHandle || containsByName( m_vkxml.baseTypes, returnType ) ||
+                                                   containsByName( m_vkxml.bitmasks, returnType ) || containsByName( m_enums, returnType ) ||
+                                                   containsByName( m_vkxml.externals, returnType ) )
   {
     // the returnType is a handle or some basic type
     bool unique = isHandle && ( commandData.returnType.name == "VkResult" );  // only if the return type is VkResult, we need to have a unique version
@@ -4037,9 +4034,9 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
 {
   std::string const & returnType0 = commandData.params[returnParams[0]].type.name;
   std::string const & returnType1 = commandData.params[returnParams[1]].type.name;
-  if ( m_vkxml.baseTypes.contains( returnType0 ) )
+  if ( containsByName( m_vkxml.baseTypes, returnType0 ) )
   {
-    if ( m_vkxml.baseTypes.contains( returnType1 ) )
+    if ( containsByName( m_vkxml.baseTypes, returnType1 ) )
     {
       // both types are just base types -> create a standard and an enhanced version
       return generateCommandSetInclusive( name,
@@ -4055,7 +4052,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
                                           { CommandFlavourFlagBits::enhanced } );
     }
   }
-  else if ( containsByName( m_vkxml.externalTypes, returnType0 ) )
+  else if ( containsByName( m_vkxml.externals, returnType0 ) )
   {
     if ( returnType1 == "void" )
     {
@@ -4076,7 +4073,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
         if ( structIt->second.extendedBy.empty() )
         {
           // the first return param is a single, not extendable struct without handles or vectors
-          if ( containsByName( m_vkxml.externalTypes, returnType1 ) )
+          if ( containsByName( m_vkxml.externals, returnType1 ) )
           {
             // the second return param is just some basic type
             return generateCommandSetInclusive( name,
@@ -4095,7 +4092,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
         else
         {
           // the first return param is an extendable struct
-          if ( containsByName( m_vkxml.externalTypes, returnType1 ) )
+          if ( containsByName( m_vkxml.externals, returnType1 ) )
           {
             // the second return param is just some basic type
             return generateCommandSetInclusive( name,
@@ -4230,10 +4227,10 @@ std::string VulkanHppGenerator::generateCommand3ReturnsEnumEnum( std::string con
 {
   assert( returnParams.size() == 3 );
 
-  if ( containsByName( m_vkxml.externalTypes, commandData.params[returnParams[1]].type.name ) )
+  if ( containsByName( m_vkxml.externals, commandData.params[returnParams[1]].type.name ) )
   {
     // the first enumerated type is some external type
-    if ( containsByName( m_vkxml.externalTypes, commandData.params[returnParams[2]].type.name ) )
+    if ( containsByName( m_vkxml.externals, commandData.params[returnParams[2]].type.name ) )
     {
       // both enumerated types are some external types
       return generateCommandSetInclusive( name,
@@ -4307,7 +4304,7 @@ std::string VulkanHppGenerator::generateCommand3ReturnsEnumValue( std::string co
   if ( m_enums.contains( commandData.params[returnParams[1]].type.name ) )
   {
     // the enumerated type is an enum
-    if ( m_vkxml.bitmasks.contains( commandData.params[returnParams[2]].type.name ) )
+    if ( containsByName( m_vkxml.bitmasks, commandData.params[returnParams[2]].type.name ) )
     {
       // the third return type is a bitmask
       return generateCommandSetInclusive( name,
@@ -5223,7 +5220,7 @@ std::string VulkanHppGenerator::generateDataDeclarations2Returns( CommandData co
     case 0:
       assert( !singular );
       assert( !chained || ( isStructureChainAnchor( commandData.params[returnParams[0]].type.name ) &&
-                            containsByName( m_vkxml.externalTypes, commandData.params[returnParams[1]].type.name ) ) );
+                            containsByName( m_vkxml.externals, commandData.params[returnParams[1]].type.name ) ) );
       {
         std::string const dataDeclarationTemplate        = R"(    std::pair<${firstDataType},${secondDataType}> data_;
     ${firstDataType} & ${firstDataVariable} = data_.first;
@@ -6268,9 +6265,9 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
   std::string baseType, bitmask;
   if ( enumData.second.isBitmask )
   {
-    auto bitmaskIt = std::ranges::find_if( m_vkxml.bitmasks, [&enumData]( auto const & bitmask ) { return bitmask.second.require == enumData.first; } );
+    auto bitmaskIt = std::ranges::find_if( m_vkxml.bitmasks, [&enumData]( auto const & bitmask ) { return bitmask.require == enumData.first; } );
     assert( bitmaskIt != m_vkxml.bitmasks.end() );
-    baseType = " : " + bitmaskIt->first;
+    baseType = " : " + bitmaskIt->name;
     bitmask  = generateBitmask( bitmaskIt, surroundingProtect );
   }
 
@@ -7085,10 +7082,10 @@ std::string VulkanHppGenerator::generateFormatTraitsList( EnumData const & enumD
   return list;
 }
 
-std::string VulkanHppGenerator::generateFuncPointer( std::pair<std::string, FuncPointer> const & funcPointer, std::set<std::string> & listedStructs ) const
+std::string VulkanHppGenerator::generateFuncPointer( TypeFuncPointer const & funcPointer, std::set<std::string> & listedStructs ) const
 {
   std::string str;
-  for ( auto const & param : funcPointer.second.params )
+  for ( auto const & param : funcPointer.params )
   {
     auto typeIt = m_types.find( param.type.name );
     assert( typeIt != m_types.end() );
@@ -7107,12 +7104,12 @@ std::string VulkanHppGenerator::generateFuncPointer( std::pair<std::string, Func
     }
   }
 
-  auto const [enter, leave] = generateProtection( getProtectFromType( funcPointer.first ) );
+  auto const [enter, leave] = generateProtection( getProtectFromType( funcPointer.name ) );
 
   std::string funcPointerParams;
-  if ( !funcPointer.second.params.empty() )
+  if ( !funcPointer.params.empty() )
   {
-    for ( auto const & param : funcPointer.second.params )
+    for ( auto const & param : funcPointer.params )
     {
       if ( !funcPointerParams.empty() )
       {
@@ -7129,11 +7126,11 @@ std::string VulkanHppGenerator::generateFuncPointer( std::pair<std::string, Func
   str += "\n" + enter +
          replaceWithMap( funcPointerTemplate,
                          { { "funcPointerParams", funcPointerParams },
-                           { "funcPointerName", stripPrefix( funcPointer.first, "PFN_vk" ) },
-                           { "returnType", funcPointer.second.returnType.compose( "Vk" ) } } ) +
+                           { "funcPointerName", stripPrefix( funcPointer.name, "PFN_vk" ) },
+                           { "returnType", funcPointer.returnType.compose( "Vk" ) } } ) +
          leave;
 
-  listedStructs.insert( funcPointer.first );
+  listedStructs.insert( funcPointer.name );
   return str;
 }
 
@@ -7147,10 +7144,10 @@ std::string VulkanHppGenerator::generateFuncPointerReturns() const
     {
       auto commandIt = findByNameOrAlias( m_commands, command );
       assert( commandIt != m_commands.end() );
-      auto funcPointerIt = m_vkxml.funcPointers.find( commandIt->second.returnType.name );
+      auto funcPointerIt = findByName( m_vkxml.funcPointers, commandIt->second.returnType.name );
       if ( ( funcPointerIt != m_vkxml.funcPointers.end() ) && !listedFuncPointers.contains( commandIt->second.returnType.name ) )
       {
-        assert( funcPointerIt->second.params.empty() );
+        assert( funcPointerIt->params.empty() );
         str += generateFuncPointer( *funcPointerIt, listedFuncPointers );
       }
     }
@@ -10319,7 +10316,7 @@ std::string VulkanHppGenerator::generateReturnType( std::vector<size_t> const & 
         }
         else
         {
-          assert( isStructureChainAnchor( "Vk" + dataTypes[0] ) && containsByName( m_vkxml.externalTypes, dataTypes[1] ) );
+          assert( isStructureChainAnchor( "Vk" + dataTypes[0] ) && containsByName( m_vkxml.externals, dataTypes[1] ) );
           returnType = "std::pair<StructureChain<X, Y, Z...>, " + dataTypes[1] + ">";
         }
       }
@@ -10624,7 +10621,7 @@ std::string VulkanHppGenerator::generateStruct( std::pair<std::string, StructDat
     }
     else if ( typeIt->second.category == TypeCategory::FuncPointer )
     {
-      auto funcPtrIt = m_vkxml.funcPointers.find( member.type.name );
+      auto funcPtrIt = findByName( m_vkxml.funcPointers, member.type.name );
       assert( funcPtrIt != m_vkxml.funcPointers.end() );
       if ( !listedStructs.contains( member.type.name ) )
       {
@@ -10708,7 +10705,7 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
     {
       auto typeIt = m_types.find( member.type.name );
       assert( typeIt != m_types.end() );
-      if ( ( typeIt->second.category == TypeCategory::ExternalType ) && member.type.postfix.empty() && !simpleTypes.contains( member.type.name ) )
+      if ( ( typeIt->second.category == TypeCategory::External ) && member.type.postfix.empty() && !simpleTypes.contains( member.type.name ) )
       {
         nonDefaultCompare = true;
         // this type might support operator==() or operator<=>()... that is, use memcmp
@@ -13440,17 +13437,17 @@ std::string VulkanHppGenerator::toString( TypeCategory category ) const
 {
   switch ( category )
   {
-    case TypeCategory::Bitmask     : return "bitmask";
-    case TypeCategory::BaseType    : return "basetype";
-    case TypeCategory::Define      : return "define";
-    case TypeCategory::Enum        : return "enum";
-    case TypeCategory::ExternalType: return "ExternalType";
-    case TypeCategory::FuncPointer : return "funcpointer";
-    case TypeCategory::Handle      : return "handle";
-    case TypeCategory::Struct      : return "struct";
-    case TypeCategory::Union       : return "union";
-    case TypeCategory::Unknown     : return "unkown";
-    default                        : assert( false ); return "";
+    case TypeCategory::Bitmask    : return "bitmask";
+    case TypeCategory::BaseType   : return "basetype";
+    case TypeCategory::Define     : return "define";
+    case TypeCategory::Enum       : return "enum";
+    case TypeCategory::External   : return "external";
+    case TypeCategory::FuncPointer: return "funcpointer";
+    case TypeCategory::Handle     : return "handle";
+    case TypeCategory::Struct     : return "struct";
+    case TypeCategory::Union      : return "union";
+    case TypeCategory::Unknown    : return "unkown";
+    default                       : assert( false ); return "";
   }
 }
 
@@ -13528,12 +13525,6 @@ namespace
     }
     assert( it != values.end() );
     return it;
-  }
-
-  template <typename T>
-  typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const & values, std::string const & name )
-  {
-    return std::ranges::find_if( values, [&name]( auto const & value ) { return ( value.name == name ) || containsByName( value.aliases, name ); } );
   }
 
   template <typename T>

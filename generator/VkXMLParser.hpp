@@ -10,6 +10,7 @@
 #include <regex>
 #include <string>
 #include <tinyxml2.h>
+#include <variant>
 #include <vector>
 
 struct Platform
@@ -42,27 +43,159 @@ struct Tags
   int              xmlLine = {};
 };
 
-struct BaseType
+struct Alias
 {
-  Type type    = {};
-  int  xmlLine = {};
+  std::string name    = {};
+  std::string alias   = {};
+  int         xmlLine = {};
 };
 
-struct Bitmask
+struct TypeBaseType
 {
+  std::string name    = {};
+  Type        type    = {};
+  int         xmlLine = {};
+};
+
+struct TypeBitmask
+{
+  std::string                name      = {};
   std::map<std::string, int> aliases   = {};
+  std::vector<std::string>   api       = {};
   std::string                bitValues = {};
   std::string                require   = {};
   Type                       type      = {};
   int                        xmlLine   = {};
 };
 
-struct CategoryAlias
+using BitmaskVariant = std::variant<TypeBitmask, Alias>;
+
+struct TypeDefine
 {
-  std::string alias   = {};
+  std::string              name    = {};
+  std::vector<std::string> api     = {};
+  std::vector<std::string> macro   = {};
+  std::string              require = {};
+  int                      xmlLine = {};
+};
+
+struct EnumValueAlias
+{
+  std::string api        = {};
+  std::string deprecated = {};
+  int         xmlLine    = {};
+};
+
+struct EnumValue
+{
+  std::map<std::string, EnumValueAlias> aliases = {};
+  std::string                           bitPos  = {};
+  std::string                           name    = {};
+  std::string                           value   = {};
+  int                                   xmlLine = {};
+};
+
+struct TypeEnum
+{
+  std::string                name     = {};
+  std::map<std::string, int> aliases  = {};
+  std::string                bitwidth = {};
+  std::string                type     = {};
+  std::vector<EnumValue>     values   = {};
+  int                        xmlLine  = {};
+};
+
+using EnumVariant = std::variant<TypeEnum, Alias>;
+
+struct FuncPointerParam
+{
   std::string name    = {};
+  Type        type    = {};
   int         xmlLine = {};
 };
+
+struct TypeFuncPointer
+{
+  std::string                   name       = {};
+  std::vector<FuncPointerParam> params     = {};
+  std::string                   require    = {};
+  Type                          returnType = {};
+  int                           xmlLine    = {};
+};
+
+struct TypeHandle
+{
+  std::string                name        = {};
+  std::map<std::string, int> aliases     = {};
+  std::string                objTypeEnum = {};
+  std::string                parent      = {};
+  Type                       type        = {};
+  int                        xmlLine     = {};
+};
+
+using HandleVariant = std::variant<TypeHandle, Alias>;
+
+struct StructMember
+{
+  std::string              altLen            = {};
+  std::vector<std::string> api               = {};
+  std::vector<std::string> arraySizes        = {};
+  std::string              bitCount          = {};
+  std::string              comment           = {};
+  std::string              deprecated        = {};
+  std::string              externSync        = {};
+  std::string              featureLink       = {};
+  std::string              flagsExtend       = {};
+  std::string              flagsExtendMember = {};
+  std::vector<std::string> len               = {};
+  std::vector<std::string> limitType         = {};
+  std::string              name              = {};
+  std::string              alias             = {};
+  std::string              noAutoValidity    = {};
+  std::string              objectType        = {};
+  std::vector<std::string> optional          = {};
+  std::string              selector          = {};
+  Type                     type              = {};
+  std::string              values            = {};
+  int                      xmlLine           = {};
+};
+
+struct TypeStruct
+{
+  std::string                name              = {};
+  std::map<std::string, int> aliases           = {};
+  std::string                allowDuplicate    = {};
+  std::string                requiredLimitType = {};
+  std::string                returnedOnly      = {};
+  std::vector<StructMember>  members           = {};
+  std::vector<std::string>   structExtends     = {};
+  int                        xmlLine           = {};
+};
+
+using StructVariant = std::variant<TypeStruct, Alias>;
+
+struct UnionMember
+{
+  std::vector<std::string> arraySizes     = {};
+  std::string              len            = {};
+  std::string              name           = {};
+  std::string              noAutoValidity = {};
+  std::string              optional       = {};
+  std::vector<std::string> selection      = {};
+  Type                     type           = {};
+  int                      xmlLine        = {};
+};
+
+struct TypeUnion
+{
+  std::string              name         = {};
+  std::vector<UnionMember> members      = {};
+  std::string              returnedOnly = {};
+  int                      xmlLine      = {};
+};
+
+using TypeVariant =
+  std::variant<TypeBaseType, BitmaskVariant, TypeDefine, EnumVariant, TypeFuncPointer, HandleVariant, TypeInclude, StructVariant, TypeUnion, TypeExternal>;
 
 struct Param
 {
@@ -124,13 +257,6 @@ struct Constant
   int         xmlLine = {};
 };
 
-struct Define
-{
-  std::vector<std::string> macro   = {};
-  std::string              require = {};
-  int                      xmlLine = {};
-};
-
 struct SupersededName
 {
   std::string name         = {};
@@ -152,31 +278,6 @@ struct Deprecate
   std::vector<FeatureElement> features        = {};
   std::vector<SupersededName> types           = {};
   int                         xmlLine         = {};
-};
-
-struct EnumValueAlias
-{
-  std::string api        = {};
-  std::string deprecated = {};
-  int         xmlLine    = {};
-};
-
-struct EnumValue
-{
-  std::map<std::string, EnumValueAlias> aliases = {};
-  std::string                           bitPos  = {};
-  std::string                           name    = {};
-  std::string                           value   = {};
-  int                                   xmlLine = {};
-};
-
-struct Enum
-{
-  std::map<std::string, int> aliases  = {};
-  std::string                bitwidth = {};
-  std::string                type     = {};
-  std::vector<EnumValue>     values   = {};
-  int                        xmlLine  = {};
 };
 
 struct EnumValues
@@ -328,30 +429,6 @@ struct Feature
   int                      xmlLine    = {};
 };
 
-struct FuncPointerParam
-{
-  std::string name    = {};
-  Type        type    = {};
-  int         xmlLine = {};
-};
-
-struct FuncPointer
-{
-  std::vector<FuncPointerParam> params     = {};
-  std::string                   require    = {};
-  Type                          returnType = {};
-  int                           xmlLine    = {};
-};
-
-struct Handle
-{
-  std::map<std::string, int> aliases     = {};
-  std::string                objTypeEnum = {};
-  std::string                parent      = {};
-  Type                       type        = {};
-  int                        xmlLine     = {};
-};
-
 struct MacroVisitor final : tinyxml2::XMLVisitor
 {
   // comments, then name, then parameters and definition together, because that's how they appear in the xml!
@@ -366,42 +443,6 @@ struct MacroVisitor final : tinyxml2::XMLVisitor
     }
     return true;
   }
-};
-
-struct StructMember
-{
-  std::string              altLen            = {};
-  std::vector<std::string> api               = {};
-  std::vector<std::string> arraySizes        = {};
-  std::string              bitCount          = {};
-  std::string              comment           = {};
-  std::string              deprecated        = {};
-  std::string              externSync        = {};
-  std::string              featureLink       = {};
-  std::string              flagsExtend       = {};
-  std::string              flagsExtendMember = {};
-  std::vector<std::string> len               = {};
-  std::vector<std::string> limitType         = {};
-  std::string              name              = {};
-  std::string              alias             = {};
-  std::string              noAutoValidity    = {};
-  std::string              objectType        = {};
-  std::vector<std::string> optional          = {};
-  std::string              selector          = {};
-  Type                     type              = {};
-  std::string              values            = {};
-  int                      xmlLine           = {};
-};
-
-struct Struct
-{
-  std::map<std::string, int> aliases           = {};
-  std::string                allowDuplicate    = {};
-  std::string                requiredLimitType = {};
-  std::string                returnedOnly      = {};
-  std::vector<StructMember>  members           = {};
-  std::vector<std::string>   structExtends     = {};
-  int                        xmlLine           = {};
 };
 
 struct SyncAccessEquivalent
@@ -472,40 +513,21 @@ struct Sync
   int                       xmlLine   = {};
 };
 
-struct UnionMember
-{
-  std::vector<std::string> arraySizes     = {};
-  std::string              len            = {};
-  std::string              name           = {};
-  std::string              noAutoValidity = {};
-  std::string              optional       = {};
-  std::vector<std::string> selection      = {};
-  Type                     type           = {};
-  int                      xmlLine        = {};
-};
-
-struct Union
-{
-  std::vector<UnionMember> members      = {};
-  std::string              returnedOnly = {};
-  int                      xmlLine      = {};
-};
-
 struct Types
 {
-  std::map<std::string, BaseType>    baseTypes     = {};
-  std::map<std::string, Bitmask>     bitmasks      = {};
-  std::map<std::string, Define>      defines       = {};
-  std::map<std::string, Enum>        enums         = {};
-  std::vector<ExternalType>          externalTypes = {};
-  std::map<std::string, FuncPointer> funcPointers  = {};
-  std::map<std::string, Handle>      handles       = {};
-  std::vector<CategoryInclude>       includes      = {};
-  std::map<std::string, Struct>      structs       = {};
-  std::map<std::string, Union>       unions        = {};
+  std::vector<TypeBaseType>    baseTypes    = {};
+  std::vector<TypeBitmask>     bitmasks     = {};
+  std::vector<TypeDefine>      defines      = {};
+  std::vector<TypeEnum>        enums        = {};
+  std::vector<TypeExternal>    externals    = {};
+  std::vector<TypeFuncPointer> funcPointers = {};
+  std::vector<TypeHandle>      handles      = {};
+  std::vector<TypeInclude>     includes     = {};
+  std::vector<TypeStruct>      structs      = {};
+  std::vector<TypeUnion>       unions       = {};
 
-  std::vector<CategoryAlias> structAliases = {};
-  std::set<std::string>      types         = {};
+  std::vector<Alias>    structAliases = {};
+  std::set<std::string> types         = {};
 };
 
 struct VideoCapabilities
@@ -647,28 +669,28 @@ struct SPIRVCapabilities
 
 struct Vkxml
 {
-  std::map<std::string, BaseType>    baseTypes         = {};
-  std::map<std::string, Bitmask>     bitmasks          = {};
-  std::vector<Command>               commands          = {};
-  std::map<std::string, Constant>    constants         = {};
-  Comment                            copyright         = {};
-  std::map<std::string, Define>      defines           = {};
-  std::map<std::string, Enum>        enums             = {};
-  Extensions                         extensions        = {};
-  std::vector<ExternalType>          externalTypes     = {};
-  std::vector<Feature>               features          = {};
-  std::vector<Format>                formats           = {};
-  std::map<std::string, FuncPointer> funcPointers      = {};
-  std::map<std::string, Handle>      handles           = {};
-  std::vector<CategoryInclude>       includes          = {};
-  Platforms                          platforms         = {};
-  SPIRVCapabilities                  spirvCapabilities = {};
-  SPIRVExtensions                    spirvExtensions   = {};
-  std::map<std::string, Struct>      structs           = {};
-  Sync                               sync              = {};
-  Tags                               tags              = {};
-  std::map<std::string, Union>       unions            = {};
-  std::vector<VideoCodec>            videoCodecs       = {};
+  std::vector<TypeBaseType>       baseTypes         = {};
+  std::vector<TypeBitmask>        bitmasks          = {};
+  std::vector<Command>            commands          = {};
+  std::map<std::string, Constant> constants         = {};
+  Comment                         copyright         = {};
+  std::vector<TypeDefine>         defines           = {};
+  std::vector<TypeEnum>           enums             = {};
+  Extensions                      extensions        = {};
+  std::vector<TypeExternal>       externals         = {};
+  std::vector<Feature>            features          = {};
+  std::vector<Format>             formats           = {};
+  std::vector<TypeFuncPointer>    funcPointers      = {};
+  std::vector<TypeHandle>         handles           = {};
+  std::vector<TypeInclude>        includes          = {};
+  Platforms                       platforms         = {};
+  SPIRVCapabilities               spirvCapabilities = {};
+  SPIRVExtensions                 spirvExtensions   = {};
+  std::vector<TypeStruct>         structs           = {};
+  Sync                            sync              = {};
+  Tags                            tags              = {};
+  std::vector<TypeUnion>          unions            = {};
+  std::vector<VideoCodec>         videoCodecs       = {};
 
   std::set<std::string> types = {};
 };

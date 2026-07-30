@@ -8508,11 +8508,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== BASE TYPEs ===
   //==================
 
-  using Bool32          = uint32_t;
-  using DeviceAddress   = uint64_t;
-  using DeviceSize      = uint64_t;
-  using RemoteAddressNV = void *;
   using SampleMask      = uint32_t;
+  using Bool32          = uint32_t;
+  using DeviceSize      = uint64_t;
+  using DeviceAddress   = uint64_t;
+  using RemoteAddressNV = void *;
 
   template <typename Type, Type value = Type{}>
   struct CppType

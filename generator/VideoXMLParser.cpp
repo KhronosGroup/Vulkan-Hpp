@@ -518,7 +518,7 @@ void parseTypesType( tinyxml2::XMLElement const * element, Types & types )
     }
     else if ( categoryIt->second == "include" )
     {
-      CategoryInclude include = parseCategoryInclude( "video.xml", element, attributes );
+      TypeInclude include = parseTypeInclude( "video.xml", element, attributes );
 
       checkForError( "video.xml", !containsByName( types.enums, include.name ), include.xmlLine, "include <" + include.name + "> already specified" );
 
@@ -547,16 +547,15 @@ void parseTypesType( tinyxml2::XMLElement const * element, Types & types )
     checkForError(
       "video.xml", requiresIt != attributes.end(), line, "type with neither attribute <category> not attribute <requires> - don't know how to handle" );
 
-    ExternalType externalType = parseExternalType( "video.xml", element, attributes );
+    TypeExternal external = parseTypeExternal( "video.xml", element, attributes );
 
     checkForError( "video.xml",
-                   containsByName( types.includes, externalType.require ),
-                   externalType.xmlLine,
-                   "external type <" + externalType.name + "> requires unknown <" + externalType.require + ">" );
-    checkForError(
-      "video.xml", !containsByName( types.externalTypes, externalType.name ), externalType.xmlLine, "struct <" + externalType.name + "> already specified" );
+                   containsByName( types.includes, external.require ),
+                   external.xmlLine,
+                   "external type <" + external.name + "> requires unknown <" + external.require + ">" );
+    checkForError( "video.xml", !containsByName( types.externals, external.name ), external.xmlLine, "struct <" + external.name + "> already specified" );
 
-    types.externalTypes.push_back( std::move( externalType ) );
+    types.externals.push_back( std::move( external ) );
   }
 }
 

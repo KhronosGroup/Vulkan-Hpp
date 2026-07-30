@@ -484,9 +484,9 @@ private:
   void                                    filterLenMembers();
   std::vector<MemberData>::const_iterator findHandleMember( std::vector<MemberData> const & memberData ) const;
   std::vector<MemberData>::const_iterator findVectorMember( std::vector<MemberData> const & memberData ) const;
-  void                                    forEachRequiredBitmask( std::vector<RequireData> const &                                       requireData,
-                                                                  std::set<std::string> &                                                encounteredBitmasks,
-                                                                  std::function<void( std::pair<std::string, Bitmask> const & )> const & bitmaskAction ) const;
+  void                                    forEachRequiredBitmask( std::vector<RequireData> const &                   requireData,
+                                                                  std::set<std::string> &                            encounteredBitmasks,
+                                                                  std::function<void( TypeBitmask const & )> const & bitmaskAction ) const;
   void forEachRequiredCommand( std::vector<RequireData> const &                                                             requireData,
                                std::function<void( NameLine const &, std::pair<std::string, CommandData> const & )> const & commandAction ) const;
   void forEachRequiredConstant( std::vector<RequireData> const &                                        requireData,
@@ -526,10 +526,10 @@ private:
                                          std::vector<size_t> const &               chainedReturnParams,
                                          bool                                      raii ) const;
   std::string generateBaseTypes() const;
-  std::string generateBitmask( std::map<std::string, Bitmask>::const_iterator bitmaskIt, std::string const & surroundingProtect ) const;
+  std::string generateBitmask( std::vector<TypeBitmask>::const_iterator bitmaskIt, std::string const & surroundingProtect ) const;
   std::string generateBitmasksToString() const;
   std::string generateBitmasksToString( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const;
-  std::string generateBitmaskToString( std::pair<std::string, Bitmask> const & bitmaskData ) const;
+  std::string generateBitmaskToString( TypeBitmask const & bitmask ) const;
   std::string generateCallArgumentsEnhanced( CommandData const &      commandData,
                                              size_t                   initialSkipCount,
                                              bool                     nonConstPointerAsNullptr,
@@ -806,7 +806,7 @@ private:
                                             std::string const &                                         subCaseName,
                                             std::function<std::string( T const & subCaseData )>         generator,
                                             std::string const &                                         defaultReturn ) const;
-  std::string generateFuncPointer( std::pair<std::string, FuncPointer> const & funcPointer, std::set<std::string> & listedStructs ) const;
+  std::string generateFuncPointer( TypeFuncPointer const & funcPointer, std::set<std::string> & listedStructs ) const;
   std::string generateFuncPointerReturns() const;
   std::string generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy, bool raii ) const;
   std::string generateHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;

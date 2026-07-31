@@ -81797,6 +81797,130 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     using Type = ImageSwapchainCreateInfoKHR;
   };
 
+  // wrapper struct for struct VkImageTilingControlCreateInfoEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkImageTilingControlCreateInfoEXT.html
+  struct ImageTilingControlCreateInfoEXT
+  {
+    using NativeType = VkImageTilingControlCreateInfoEXT;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eImageTilingControlCreateInfoEXT;
+
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR ImageTilingControlCreateInfoEXT( ImageTilingControlEXT tilingControl_ = ImageTilingControlEXT::eDefault,
+                                                          void const *          pNext_         = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , tilingControl{ tilingControl_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR ImageTilingControlCreateInfoEXT( ImageTilingControlCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImageTilingControlCreateInfoEXT( VkImageTilingControlCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+      : ImageTilingControlCreateInfoEXT( *reinterpret_cast<ImageTilingControlCreateInfoEXT const *>( &rhs ) )
+    {
+    }
+
+    ImageTilingControlCreateInfoEXT & operator=( ImageTilingControlCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    ImageTilingControlCreateInfoEXT & operator=( VkImageTilingControlCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<ImageTilingControlCreateInfoEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 ImageTilingControlCreateInfoEXT & setPNext( void const * pNext_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 ImageTilingControlCreateInfoEXT && setPNext( void const * pNext_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 ImageTilingControlCreateInfoEXT & setTilingControl( ImageTilingControlEXT tilingControl_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      tilingControl = tilingControl_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 ImageTilingControlCreateInfoEXT && setTilingControl( ImageTilingControlEXT tilingControl_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      tilingControl = tilingControl_;
+      return std::move( *this );
+    }
+#endif /*VULKAN_HPP_NO_SETTERS*/
+
+    operator VkImageTilingControlCreateInfoEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkImageTilingControlCreateInfoEXT const *>( this );
+    }
+
+    operator VkImageTilingControlCreateInfoEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkImageTilingControlCreateInfoEXT *>( this );
+    }
+
+    operator VkImageTilingControlCreateInfoEXT const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkImageTilingControlCreateInfoEXT const *>( this );
+    }
+
+    operator VkImageTilingControlCreateInfoEXT *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkImageTilingControlCreateInfoEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &, void const * const &, ImageTilingControlEXT const &> reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, tilingControl );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( ImageTilingControlCreateInfoEXT const & ) const = default;
+#else
+    bool operator==( ImageTilingControlCreateInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( tilingControl == rhs.tilingControl );
+#  endif
+    }
+
+    bool operator!=( ImageTilingControlCreateInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    StructureType         sType         = StructureType::eImageTilingControlCreateInfoEXT;
+    void const *          pNext         = {};
+    ImageTilingControlEXT tilingControl = ImageTilingControlEXT::eDefault;
+  };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkImageTilingControlCreateInfoEXT>
+  {
+    using Type = ImageTilingControlCreateInfoEXT;
+  };
+#endif
+
+  template <>
+  struct CppType<StructureType, StructureType::eImageTilingControlCreateInfoEXT>
+  {
+    using Type = ImageTilingControlCreateInfoEXT;
+  };
+
   // wrapper struct for struct VkImageUsageFlags2CreateInfoKHR, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/VkImageUsageFlags2CreateInfoKHR.html
   struct ImageUsageFlags2CreateInfoKHR
@@ -123402,6 +123526,129 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::ePhysicalDeviceImageSlicedViewOf3DFeaturesEXT>
   {
     using Type = PhysicalDeviceImageSlicedViewOf3DFeaturesEXT;
+  };
+
+  // wrapper struct for struct VkPhysicalDeviceImageTilingControlFeaturesEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDeviceImageTilingControlFeaturesEXT.html
+  struct PhysicalDeviceImageTilingControlFeaturesEXT
+  {
+    using NativeType = VkPhysicalDeviceImageTilingControlFeaturesEXT;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePhysicalDeviceImageTilingControlFeaturesEXT;
+
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageTilingControlFeaturesEXT( Bool32 imageTilingControl_ = {}, void * pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , imageTilingControl{ imageTilingControl_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageTilingControlFeaturesEXT( PhysicalDeviceImageTilingControlFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceImageTilingControlFeaturesEXT( VkPhysicalDeviceImageTilingControlFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceImageTilingControlFeaturesEXT( *reinterpret_cast<PhysicalDeviceImageTilingControlFeaturesEXT const *>( &rhs ) )
+    {
+    }
+
+    PhysicalDeviceImageTilingControlFeaturesEXT & operator=( PhysicalDeviceImageTilingControlFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    PhysicalDeviceImageTilingControlFeaturesEXT & operator=( VkPhysicalDeviceImageTilingControlFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<PhysicalDeviceImageTilingControlFeaturesEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceImageTilingControlFeaturesEXT & setPNext( void * pNext_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceImageTilingControlFeaturesEXT && setPNext( void * pNext_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceImageTilingControlFeaturesEXT & setImageTilingControl( Bool32 imageTilingControl_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      imageTilingControl = imageTilingControl_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceImageTilingControlFeaturesEXT && setImageTilingControl( Bool32 imageTilingControl_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      imageTilingControl = imageTilingControl_;
+      return std::move( *this );
+    }
+#endif /*VULKAN_HPP_NO_SETTERS*/
+
+    operator VkPhysicalDeviceImageTilingControlFeaturesEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceImageTilingControlFeaturesEXT const *>( this );
+    }
+
+    operator VkPhysicalDeviceImageTilingControlFeaturesEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceImageTilingControlFeaturesEXT *>( this );
+    }
+
+    operator VkPhysicalDeviceImageTilingControlFeaturesEXT const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceImageTilingControlFeaturesEXT const *>( this );
+    }
+
+    operator VkPhysicalDeviceImageTilingControlFeaturesEXT *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceImageTilingControlFeaturesEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &, void * const &, Bool32 const &> reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, imageTilingControl );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceImageTilingControlFeaturesEXT const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceImageTilingControlFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( imageTilingControl == rhs.imageTilingControl );
+#  endif
+    }
+
+    bool operator!=( PhysicalDeviceImageTilingControlFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    StructureType sType              = StructureType::ePhysicalDeviceImageTilingControlFeaturesEXT;
+    void *        pNext              = {};
+    Bool32        imageTilingControl = {};
+  };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkPhysicalDeviceImageTilingControlFeaturesEXT>
+  {
+    using Type = PhysicalDeviceImageTilingControlFeaturesEXT;
+  };
+#endif
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceImageTilingControlFeaturesEXT>
+  {
+    using Type = PhysicalDeviceImageTilingControlFeaturesEXT;
   };
 
   // wrapper struct for struct VkPhysicalDeviceImageViewImageFormatInfoEXT, see
@@ -207066,50 +207313,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       *this = *reinterpret_cast<VideoEncodeFeedback2CapabilitiesKHR const *>( &rhs );
       return *this;
     }
-
-#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
-    VULKAN_HPP_CONSTEXPR_14 VideoEncodeFeedback2CapabilitiesKHR & setPNext( void * pNext_ ) & VULKAN_HPP_NOEXCEPT
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 VideoEncodeFeedback2CapabilitiesKHR && setPNext( void * pNext_ ) && VULKAN_HPP_NOEXCEPT
-    {
-      pNext = pNext_;
-      return std::move( *this );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 VideoEncodeFeedback2CapabilitiesKHR & setMaxPerPartitionFeedbackEntries( uint32_t maxPerPartitionFeedbackEntries_ ) &
-      VULKAN_HPP_NOEXCEPT
-    {
-      maxPerPartitionFeedbackEntries = maxPerPartitionFeedbackEntries_;
-      return *this;
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 VideoEncodeFeedback2CapabilitiesKHR && setMaxPerPartitionFeedbackEntries( uint32_t maxPerPartitionFeedbackEntries_ ) &&
-      VULKAN_HPP_NOEXCEPT
-    {
-      maxPerPartitionFeedbackEntries = maxPerPartitionFeedbackEntries_;
-      return std::move( *this );
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 VideoEncodeFeedback2CapabilitiesKHR &
-      setSupportedPerPartitionEncodeFeedbackFlags( VideoEncodePerPartitionFeedbackFlagsKHR supportedPerPartitionEncodeFeedbackFlags_ ) &
-      VULKAN_HPP_NOEXCEPT
-    {
-      supportedPerPartitionEncodeFeedbackFlags = supportedPerPartitionEncodeFeedbackFlags_;
-      return *this;
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 VideoEncodeFeedback2CapabilitiesKHR &&
-      setSupportedPerPartitionEncodeFeedbackFlags( VideoEncodePerPartitionFeedbackFlagsKHR supportedPerPartitionEncodeFeedbackFlags_ ) &&
-      VULKAN_HPP_NOEXCEPT
-    {
-      supportedPerPartitionEncodeFeedbackFlags = supportedPerPartitionEncodeFeedbackFlags_;
-      return std::move( *this );
-    }
-#endif /*VULKAN_HPP_NO_SETTERS*/
 
     operator VkVideoEncodeFeedback2CapabilitiesKHR const &() const VULKAN_HPP_NOEXCEPT
     {

@@ -6181,6 +6181,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM:
         return "PhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM";
       case StructureType::ePhysicalDevicePrimitiveRestartIndexFeaturesEXT       : return "PhysicalDevicePrimitiveRestartIndexFeaturesEXT";
+      case StructureType::ePhysicalDeviceImageTilingControlFeaturesEXT          : return "PhysicalDeviceImageTilingControlFeaturesEXT";
+      case StructureType::eImageTilingControlCreateInfoEXT                      : return "ImageTilingControlCreateInfoEXT";
       case StructureType::ePhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV: return "PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV";
       default                                                                   : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
@@ -12014,6 +12016,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case NeuralAcceleratorStatisticsModeARM::eStatistics0: return "Statistics0";
       case NeuralAcceleratorStatisticsModeARM::eStatistics1: return "Statistics1";
       default                                              : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_EXT_image_tiling_control ===
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string to_string( ImageTilingControlEXT value )
+  {
+    switch ( value )
+    {
+      case ImageTilingControlEXT::eDefault       : return "Default";
+      case ImageTilingControlEXT::eMinSize       : return "MinSize";
+      case ImageTilingControlEXT::eMaxPerformance: return "MaxPerformance";
+      default                                    : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 

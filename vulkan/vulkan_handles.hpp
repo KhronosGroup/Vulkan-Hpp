@@ -2478,6 +2478,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_primitive_restart_index ===
   struct PhysicalDevicePrimitiveRestartIndexFeaturesEXT;
 
+  //=== VK_EXT_image_tiling_control ===
+  struct PhysicalDeviceImageTilingControlFeaturesEXT;
+  struct ImageTilingControlCreateInfoEXT;
+
   //=== VK_NV_cooperative_matrix_decode_vector ===
   struct PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV;
 

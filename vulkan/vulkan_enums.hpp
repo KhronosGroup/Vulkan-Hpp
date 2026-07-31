@@ -1866,6 +1866,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eDataGraphPipelineSessionNeuralStatisticsCreateInfoARM         = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_SESSION_NEURAL_STATISTICS_CREATE_INFO_ARM,
     ePhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_FEATURES_ARM,
     ePhysicalDevicePrimitiveRestartIndexFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT,
+    ePhysicalDeviceImageTilingControlFeaturesEXT                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_TILING_CONTROL_FEATURES_EXT,
+    eImageTilingControlCreateInfoEXT                               = VK_STRUCTURE_TYPE_IMAGE_TILING_CONTROL_CREATE_INFO_EXT,
     ePhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV
   };
 
@@ -10631,6 +10633,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eDisabled    = VK_NEURAL_ACCELERATOR_STATISTICS_MODE_DISABLED_ARM,
     eStatistics0 = VK_NEURAL_ACCELERATOR_STATISTICS_MODE_STATISTICS0_ARM,
     eStatistics1 = VK_NEURAL_ACCELERATOR_STATISTICS_MODE_STATISTICS1_ARM
+  };
+
+  //=== VK_EXT_image_tiling_control ===
+
+  // wrapper class for enum VkImageTilingControlEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkImageTilingControlEXT.html
+  enum class ImageTilingControlEXT
+  {
+    eDefault        = VK_IMAGE_TILING_CONTROL_DEFAULT_EXT,
+    eMinSize        = VK_IMAGE_TILING_CONTROL_MIN_SIZE_EXT,
+    eMaxPerformance = VK_IMAGE_TILING_CONTROL_MAX_PERFORMANCE_EXT
   };
 
   //===========================================================

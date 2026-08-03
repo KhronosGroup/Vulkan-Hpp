@@ -61,24 +61,24 @@ SPIRVExtension                                                       parseSPIRVE
 SPIRVExtensionEnable                                                 parseSPIRVExtensionEnable( tinyxml2::XMLElement const * element );
 SPIRVExtensions                                                      parseSPIRVExtensions( tinyxml2::XMLElement const * element );
 std::pair<std::string, Struct>
-                            parseStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & api );
-StructMember                parseStructMember( tinyxml2::XMLElement const * element );
-SupersededName              parseSupersededName( tinyxml2::XMLElement const * element );
-Sync                        parseSync( tinyxml2::XMLElement const * element );
-SyncAccess                  parseSyncAccess( tinyxml2::XMLElement const * element );
-SyncAccessSupport           parseSyncAccessSupport( tinyxml2::XMLElement const * element );
-SyncAccessEquivalent        parseSyncAccessEquivalent( tinyxml2::XMLElement const * element );
-SyncPipeline                parseSyncPipeline( tinyxml2::XMLElement const * element );
-SyncPipelineStage           parseSyncPipelineStage( tinyxml2::XMLElement const * element );
-SyncStage                   parseSyncStage( tinyxml2::XMLElement const * element );
-SyncStageEquivalent         parseSyncStageEquivalent( tinyxml2::XMLElement const * element );
-SyncStageSupport            parseSyncStageSupport( tinyxml2::XMLElement const * element );
-std::pair<std::string, Tag> parseTag( tinyxml2::XMLElement const * element );
-std::map<std::string, Tag>  parseTags( tinyxml2::XMLElement const * element );
-std::string                 parseText( tinyxml2::XMLElement const * element );
-Type                        parseType( tinyxml2::XMLElement const * element );
-Types                       parseTypes( tinyxml2::XMLElement const * element, std::string const & api );
-void                        parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::string const & api );
+                     parseStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & api );
+StructMember         parseStructMember( tinyxml2::XMLElement const * element );
+SupersededName       parseSupersededName( tinyxml2::XMLElement const * element );
+Sync                 parseSync( tinyxml2::XMLElement const * element );
+SyncAccess           parseSyncAccess( tinyxml2::XMLElement const * element );
+SyncAccessSupport    parseSyncAccessSupport( tinyxml2::XMLElement const * element );
+SyncAccessEquivalent parseSyncAccessEquivalent( tinyxml2::XMLElement const * element );
+SyncPipeline         parseSyncPipeline( tinyxml2::XMLElement const * element );
+SyncPipelineStage    parseSyncPipelineStage( tinyxml2::XMLElement const * element );
+SyncStage            parseSyncStage( tinyxml2::XMLElement const * element );
+SyncStageEquivalent  parseSyncStageEquivalent( tinyxml2::XMLElement const * element );
+SyncStageSupport     parseSyncStageSupport( tinyxml2::XMLElement const * element );
+Tag                  parseTag( tinyxml2::XMLElement const * element );
+Tags                 parseTags( tinyxml2::XMLElement const * element );
+std::string          parseText( tinyxml2::XMLElement const * element );
+Type                 parseType( tinyxml2::XMLElement const * element );
+Types                parseTypes( tinyxml2::XMLElement const * element, std::string const & api );
+void                 parseTypesType( tinyxml2::XMLElement const * element, Types & types, std::string const & api );
 std::pair<std::string, Union> parseUnion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 UnionMember                   parseUnionMember( tinyxml2::XMLElement const * element );
 VideoCapabilities             parseVideoCapabilities( tinyxml2::XMLElement const * element );
@@ -2274,7 +2274,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
         auto enumIt = vkxml.enums.find( enumValue.first );
         checkForError( "vk.xml", enumIt != vkxml.enums.end(), line, "enum <" + enumValue.first + "> not specified" );
 
-        auto [prefix, postfix] = determineEnumSuffixes( enumValue.first, ( enumValue.second.type == "bitmask" ), vkxml.tags );
+        auto [prefix, postfix] = determineEnumSuffixes( enumValue.first, ( enumValue.second.type == "bitmask" ), vkxml.tags.tags );
         for ( auto const & v : enumValue.second.values )
         {
           checkForError(
@@ -2424,12 +2424,11 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
         {
           // extract the tag from the name, which is supposed to look like VK_<tag>_<other>
           size_t const tagStart = extension.name.find( '_' );
-          checkForError( "vk.xml", tagStart != std::string::npos, line, "name <" + extension.name + "> is missing an underscore '_'" );
+          checkForError( "vk.xml", tagStart != std::string::npos, extension.xmlLine, "extension name <" + extension.name + "> is missing an underscore '_'" );
           size_t const tagEnd = extension.name.find( '_', tagStart + 1 );
-          checkForError( "vk.xml", tagEnd != std::string::npos, line, "name <" + extension.name + "> is missing an underscore '_'" );
+          checkForError( "vk.xml", tagEnd != std::string::npos, extension.xmlLine, "extension name <" + extension.name + "> is missing an underscore '_'" );
           std::string tag = extension.name.substr( tagStart + 1, tagEnd - tagStart - 1 );
-          checkForError(
-            "vk.xml", ( vkxml.tags.find( tag ) != vkxml.tags.end() ), line, "name <" + extension.name + "> is using an unknown tag <" + tag + ">" );
+          checkForError( "vk.xml", containsByName( vkxml.tags.tags, tag ), extension.xmlLine, "extension name <" + extension.name + "> is using an unknown tag <" + tag + ">" );
         }
       }
     }
@@ -2522,7 +2521,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
 
       for ( auto const & format : formats )
       {
-        std::string tag = findTag( format.name, vkxml.tags );
+        std::string tag = findTag( format.name, vkxml.tags.tags );
         checkForError( "vk.xml",
                        format.packed.empty() || format.name.ends_with( "PACK" + format.packed + ( tag.empty() ? "" : "_" + tag ) ),
                        format.xmlLine,
@@ -3839,17 +3838,14 @@ SyncStageSupport parseSyncStageSupport( tinyxml2::XMLElement const * element )
   return syncSupport;
 }
 
-std::pair<std::string, Tag> parseTag( tinyxml2::XMLElement const * element )
+Tag parseTag( tinyxml2::XMLElement const * element )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( "vk.xml", line, attributes, { { "author", {} }, { "contact", {} }, { "name", {} } }, {} );
   checkElements( "vk.xml", line, getChildElements( element ), {} );
 
-  Tag tag;
-  tag.xmlLine = line;
-
-  std::string name;
+  Tag tag{ .xmlLine = line };
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "author" )
@@ -3863,25 +3859,37 @@ std::pair<std::string, Tag> parseTag( tinyxml2::XMLElement const * element )
     else if ( attribute.first == "name" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      name = attribute.second;
+      tag.name = attribute.second;
     }
   }
-  return { name, std::move( tag ) };
+
+  return tag;
 }
 
-std::map<std::string, Tag> parseTags( tinyxml2::XMLElement const * element )
+Tags parseTags( tinyxml2::XMLElement const * element )
 {
-  int const line = element->GetLineNum();
-  checkAttributes( "vk.xml", line, getAttributes( element ), { { "comment", {} } }, {} );
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "comment", {} } }, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( "vk.xml", line, children, { { "tag", MultipleAllowed::Yes } } );
 
-  std::map<std::string, Tag> tags;
+  Tags tags{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      tags.comment = attribute.second;
+    }
+  }
+
   for ( auto child : children )
   {
-    std::pair<std::string, Tag> tag = parseTag( child );
+    Tag tag = parseTag( child );
 
-    checkForError( "vk.xml", tags.insert( std::move( tag ) ).second, line, "tag <" + tag.first + "> already specified" );
+    checkForError( "vk.xml", !containsByName( tags.tags, tag.name ), tag.xmlLine, "tag <" + tag.name + "> already specfied" );
+
+    tags.tags.push_back( std::move( tag ) );
   }
 
   return tags;
@@ -4684,7 +4692,7 @@ std::string concatenate( std::vector<std::string> const & list )
   return str;
 }
 
-std::pair<std::string, std::string> determineEnumSuffixes( std::string const & name, bool bitmask, std::map<std::string, Tag> const & tags )
+std::pair<std::string, std::string> determineEnumSuffixes( std::string const & name, bool bitmask, std::vector<Tag> const & tags )
 {
   std::string prefix, postfix;
   if ( name == "VkResult" )
@@ -4714,15 +4722,15 @@ std::pair<std::string, std::string> determineEnumSuffixes( std::string const & n
     // names.
     for ( auto const & tag : tags )
     {
-      if ( prefix.ends_with( tag.first + "_" ) )
+      if ( prefix.ends_with( tag.name + "_" ) )
       {
-        prefix.erase( prefix.length() - tag.first.length() - 1 );
-        postfix = "_" + tag.first;
+        prefix.erase( prefix.length() - tag.name.length() - 1 );
+        postfix = "_" + tag.name;
         break;
       }
-      else if ( name.ends_with( tag.first ) )
+      else if ( name.ends_with( tag.name ) )
       {
-        postfix = "_" + tag.first;
+        postfix = "_" + tag.name;
         break;
       }
     }
@@ -4731,10 +4739,10 @@ std::pair<std::string, std::string> determineEnumSuffixes( std::string const & n
   return { prefix, postfix };
 }
 
-std::string findTag( std::string const & name, std::map<std::string, Tag> const & tags, std::string const & postfix )
+std::string findTag( std::string const & name, std::vector<Tag> const & tags, std::string const & postfix )
 {
-  auto tagIt = std::ranges::find_if( tags, [&name, &postfix]( std::pair<std::string const, Tag> const & t ) { return name.ends_with( t.first + postfix ); } );
-  return ( tagIt != tags.end() ) ? tagIt->first : "";
+  auto tagIt = std::ranges::find_if( tags, [&name, &postfix]( auto const & t ) { return name.ends_with( t.name + postfix ); } );
+  return ( tagIt != tags.end() ) ? tagIt->name : "";
 }
 
 Vkxml parseVkXml( tinyxml2::XMLDocument const & document, std::string const & api )

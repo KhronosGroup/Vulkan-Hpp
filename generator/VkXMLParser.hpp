@@ -27,6 +27,21 @@ struct Platforms
   int                   xmlLine   = {};
 };
 
+struct Tag
+{
+  std::string name    = {};
+  std::string author  = {};
+  std::string contact = {};
+  int         xmlLine = {};
+};
+
+struct Tags
+{
+  std::string      comment = {};
+  std::vector<Tag> tags    = {};
+  int              xmlLine = {};
+};
+
 struct BaseType
 {
   Type type    = {};
@@ -457,13 +472,6 @@ struct Sync
   int                       xmlLine   = {};
 };
 
-struct Tag
-{
-  std::string author  = {};
-  std::string contact = {};
-  int         xmlLine = {};
-};
-
 struct UnionMember
 {
   std::vector<std::string> arraySizes     = {};
@@ -658,7 +666,7 @@ struct Vkxml
   SPIRVExtensions                    spirvExtensions   = {};
   std::map<std::string, Struct>      structs           = {};
   Sync                               sync              = {};
-  std::map<std::string, Tag>         tags              = {};
+  Tags                               tags              = {};
   std::map<std::string, Union>       unions            = {};
   std::vector<VideoCodec>            videoCodecs       = {};
 
@@ -666,6 +674,6 @@ struct Vkxml
 };
 
 std::string                         concatenate( std::vector<std::string> const & list );
-std::pair<std::string, std::string> determineEnumSuffixes( std::string const & name, bool bitmask, std::map<std::string, Tag> const & tags );
-std::string                         findTag( std::string const & name, std::map<std::string, Tag> const & tags, std::string const & postfix = "" );
+std::pair<std::string, std::string> determineEnumSuffixes( std::string const & name, bool bitmask, std::vector<Tag> const & tags );
+std::string                         findTag( std::string const & name, std::vector<Tag> const & tags, std::string const & postfix = "" );
 Vkxml                               parseVkXml( tinyxml2::XMLDocument const & document, std::string const & api );

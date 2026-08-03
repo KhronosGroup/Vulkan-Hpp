@@ -2358,6 +2358,19 @@ int main()
     vk::ExternalBufferProperties         externalBufferProperties = physicalDevice.getExternalBufferProperties( externalBufferInfo );
   }
 
+  // Promoted from VK_KHR_external_fence_capabilities
+  {
+    vk::PhysicalDevice                  physicalDevice;
+    vk::PhysicalDeviceExternalFenceInfo externalFenceInfo;
+    vk::ExternalFenceProperties         externalFenceProperties;
+    physicalDevice.getExternalFenceProperties( &externalFenceInfo, &externalFenceProperties );
+  }
+  {
+    vk::PhysicalDevice                  physicalDevice;
+    vk::PhysicalDeviceExternalFenceInfo externalFenceInfo;
+    vk::ExternalFenceProperties         externalFenceProperties = physicalDevice.getExternalFenceProperties( externalFenceInfo );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

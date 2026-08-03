@@ -8072,6 +8072,19 @@ VULKAN_HPP_EXPORT namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ImageTilingControlCreateInfoEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::ImageTilingControlCreateInfoEXT const & imageTilingControlCreateInfoEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, imageTilingControlCreateInfoEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, imageTilingControlCreateInfoEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, imageTilingControlCreateInfoEXT.tilingControl );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::ImageUsageFlags2CreateInfoKHR>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::ImageUsageFlags2CreateInfoKHR const & imageUsageFlags2CreateInfoKHR ) const VULKAN_HPP_NOEXCEPT
@@ -12608,6 +12621,20 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceImageSlicedViewOf3DFeaturesEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceImageSlicedViewOf3DFeaturesEXT.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceImageSlicedViewOf3DFeaturesEXT.imageSlicedViewOf3D );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceImageTilingControlFeaturesEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceImageTilingControlFeaturesEXT const & physicalDeviceImageTilingControlFeaturesEXT ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceImageTilingControlFeaturesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceImageTilingControlFeaturesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceImageTilingControlFeaturesEXT.imageTilingControl );
       return seed;
     }
   };

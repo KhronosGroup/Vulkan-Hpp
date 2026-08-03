@@ -22,9 +22,9 @@ VideoHppGenerator::VideoHppGenerator( VideoXML && videoXML ) : m_videoXML( std::
     checkForError( m_types.insert( { e.name, TypeData{ TypeCategory::Enum, {}, e.xmlLine } } ).second, e.xmlLine, "enum <" + e.name + "> already specified" );
     m_enums[e.name] = { .xmlLine = e.xmlLine };
   }
-  for ( auto const & externalType : m_videoXML.types.externalTypes )
+  for ( auto const & externalType : m_videoXML.types.externals )
   {
-    checkForError( m_types.insert( { externalType.name, TypeData{ TypeCategory::ExternalType, {}, externalType.xmlLine } } ).second,
+    checkForError( m_types.insert( { externalType.name, TypeData{ TypeCategory::External, {}, externalType.xmlLine } } ).second,
                    externalType.xmlLine,
                    "external type <" + externalType.name + "> already specified" );
   }
@@ -403,7 +403,7 @@ std::string VideoHppGenerator::generateStructCompareOperators( CategoryStruct co
     StructMember const & member = categoryStruct.members[i];
     auto                 typeIt = m_types.find( member.type.name );
     assert( typeIt != m_types.end() );
-    if ( ( typeIt->second.category == TypeCategory::ExternalType ) && member.type.postfix.empty() && !simpleTypes.contains( member.type.name ) )
+    if ( ( typeIt->second.category == TypeCategory::External ) && member.type.postfix.empty() && !simpleTypes.contains( member.type.name ) )
     {
       // this type might support operator==() or operator<=>()... that is, use memcmp
       compareMembers += intro + "( memcmp( &" + member.name + ", &rhs." + member.name + ", sizeof( " + member.type.name + " ) ) == 0 )";

@@ -23,7 +23,7 @@ module;
 
 export module ${api};
 
-export import std;
+import std;
 
 VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == ${headerVersion}, "Wrong VK_HEADER_VERSION!" );
 

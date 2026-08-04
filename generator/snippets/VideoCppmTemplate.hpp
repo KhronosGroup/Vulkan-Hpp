@@ -15,6 +15,7 @@ ${includes}
 
 export module vulkan_video;
 
+import std;
 import vulkan;
 
 #if defined(__clang__)

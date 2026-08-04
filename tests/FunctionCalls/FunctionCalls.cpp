@@ -2371,6 +2371,19 @@ int main()
     vk::ExternalFenceProperties         externalFenceProperties = physicalDevice.getExternalFenceProperties( externalFenceInfo );
   }
 
+  // Promoted from VK_KHR_external_semaphore_capabilities
+  {
+    vk::PhysicalDevice                      physicalDevice;
+    vk::PhysicalDeviceExternalSemaphoreInfo externalSemaphoreInfo;
+    vk::ExternalSemaphoreProperties         externalSemaphoreProperties;
+    physicalDevice.getExternalSemaphoreProperties( &externalSemaphoreInfo, &externalSemaphoreProperties );
+  }
+  {
+    vk::PhysicalDevice                      physicalDevice;
+    vk::PhysicalDeviceExternalSemaphoreInfo externalSemaphoreInfo;
+    vk::ExternalSemaphoreProperties         externalSemaphoreProperties = physicalDevice.getExternalSemaphoreProperties( externalSemaphoreInfo );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

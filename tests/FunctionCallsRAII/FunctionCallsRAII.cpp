@@ -1197,5 +1197,12 @@ int main()
     vk::ExternalFenceProperties         externalFenceProperties = physicalDevice.getExternalFenceProperties( externalFenceInfo );
   }
 
+  // Promoted from VK_KHR_external_semaphore_capabilities
+  {
+    vk::raii::PhysicalDevice                physicalDevice = nullptr;
+    vk::PhysicalDeviceExternalSemaphoreInfo externalSemaphoreInfo;
+    vk::ExternalSemaphoreProperties         externalSemaphoreProperties = physicalDevice.getExternalSemaphoreProperties( externalSemaphoreInfo );
+  }
+
   return 0;
 }

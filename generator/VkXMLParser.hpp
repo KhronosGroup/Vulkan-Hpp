@@ -81,6 +81,8 @@ struct TypeDefine
 
 struct EnumValueAlias
 {
+  std::string name       = {};
+  std::string alias      = {};
   std::string api        = {};
   std::string deprecated = {};
   int         xmlLine    = {};
@@ -88,11 +90,12 @@ struct EnumValueAlias
 
 struct EnumValue
 {
-  std::map<std::string, EnumValueAlias> aliases = {};
-  std::string                           bitPos  = {};
-  std::string                           name    = {};
-  std::string                           value   = {};
-  int                                   xmlLine = {};
+  std::string                 name    = {};
+  std::string                 bitPos  = {};
+  std::string                 comment = {};
+  std::string                 value   = {};
+  std::vector<EnumValueAlias> aliases = {};
+  int                         xmlLine = {};
 };
 
 struct TypeEnum
@@ -100,7 +103,7 @@ struct TypeEnum
   std::string                name     = {};
   std::map<std::string, int> aliases  = {};
   std::string                bitwidth = {};
-  std::string                type     = {};
+  std::string                category = {};
   std::vector<EnumValue>     values   = {};
   int                        xmlLine  = {};
 };
@@ -293,6 +296,80 @@ struct Enums
   std::map<std::string, Constant>   constants  = {};
   std::map<std::string, EnumValues> enumValues = {};
   int                               xmlLine    = {};
+};
+
+struct BitmaskValueRegular
+{
+  std::string name    = {};
+  std::string bitPos  = {};
+  std::string comment = {};
+  std::string value   = {};
+  int         xmlLine = {};
+};
+
+using BitmaskValueVariant = std::variant<EnumValueAlias, BitmaskValueRegular>;
+
+struct BitmaskValue
+{
+  std::string                 name    = {};
+  std::string                 bitPos  = {};
+  std::string                 comment = {};
+  std::string                 value   = {};
+  std::vector<EnumValueAlias> aliases = {};
+  int                         xmlLine = {};
+};
+
+struct EnumsBitmask
+{
+  std::string               name     = {};
+  std::string               bitWidth = {};
+  std::string               comment  = {};
+  std::vector<BitmaskValue> values   = {};
+  int                       xmlLine  = {};
+};
+
+struct ConstantValue
+{
+  std::string name    = {};
+  std::string comment = {};
+  std::string type    = {};
+  std::string value   = {};
+  int         xmlLine = {};
+};
+
+struct EnumsConstants
+{
+  std::string                name    = {};
+  std::string                comment = {};
+  std::vector<ConstantValue> values  = {};
+  int                        xmlLine = {};
+};
+
+struct EnumValueRegular
+{
+  std::string name    = {};
+  std::string comment = {};
+  std::string value   = {};
+  int         xmlLine = {};
+};
+
+using EnumValueVariant = std::variant<EnumValueAlias, EnumValueRegular>;
+
+struct EnumsEnum
+{
+  std::string            name    = {};
+  std::string            comment = {};
+  std::vector<EnumValue> values  = {};
+  int                    xmlLine = {};
+};
+
+using EnumsVariant = std::variant<EnumsBitmask, EnumsConstants, EnumsEnum>;
+
+struct EnumUnused
+{
+  std::string start   = {};
+  std::string comment = {};
+  int         xmlLine = {};
 };
 
 struct ExtensionRemove
@@ -669,28 +746,28 @@ struct SPIRVCapabilities
 
 struct Vkxml
 {
-  std::vector<TypeBaseType>       baseTypes         = {};
-  std::vector<TypeBitmask>        bitmasks          = {};
-  std::vector<Command>            commands          = {};
-  std::map<std::string, Constant> constants         = {};
-  Comment                         copyright         = {};
-  std::vector<TypeDefine>         defines           = {};
-  std::vector<TypeEnum>           enums             = {};
-  Extensions                      extensions        = {};
-  std::vector<TypeExternal>       externals         = {};
-  std::vector<Feature>            features          = {};
-  std::vector<Format>             formats           = {};
-  std::vector<TypeFuncPointer>    funcPointers      = {};
-  std::vector<TypeHandle>         handles           = {};
-  std::vector<TypeInclude>        includes          = {};
-  Platforms                       platforms         = {};
-  SPIRVCapabilities               spirvCapabilities = {};
-  SPIRVExtensions                 spirvExtensions   = {};
-  std::vector<TypeStruct>         structs           = {};
-  Sync                            sync              = {};
-  Tags                            tags              = {};
-  std::vector<TypeUnion>          unions            = {};
-  std::vector<VideoCodec>         videoCodecs       = {};
+  std::vector<TypeBaseType>    baseTypes         = {};
+  std::vector<TypeBitmask>     bitmasks          = {};
+  std::vector<Command>         commands          = {};
+  EnumsConstants               constants         = {};
+  Comment                      copyright         = {};
+  std::vector<TypeDefine>      defines           = {};
+  std::vector<TypeEnum>        enums             = {};
+  Extensions                   extensions        = {};
+  std::vector<TypeExternal>    externals         = {};
+  std::vector<Feature>         features          = {};
+  std::vector<Format>          formats           = {};
+  std::vector<TypeFuncPointer> funcPointers      = {};
+  std::vector<TypeHandle>      handles           = {};
+  std::vector<TypeInclude>     includes          = {};
+  Platforms                    platforms         = {};
+  SPIRVCapabilities            spirvCapabilities = {};
+  SPIRVExtensions              spirvExtensions   = {};
+  std::vector<TypeStruct>      structs           = {};
+  Sync                         sync              = {};
+  Tags                         tags              = {};
+  std::vector<TypeUnion>       unions            = {};
+  std::vector<VideoCodec>      videoCodecs       = {};
 
   std::set<std::string> types = {};
 };

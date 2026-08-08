@@ -36,7 +36,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 358, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 359, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -1718,6 +1718,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceCalibrateableTimeDomainsKHR )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceCalibrateableTimeDomainsEXT )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV )
+    DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceCooperativeMatrixProperties2EXT )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceCooperativeMatrixPropertiesNV )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceCooperativeVectorPropertiesNV )
@@ -8205,6 +8206,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         return ::vkCmdSetComputeOccupancyPriorityNV( commandBuffer, pParameters );
       }
 
+      //=== VK_EXT_cooperative_matrix_maintenance1 ===
+
+      VULKAN_HPP_INLINE VkResult vkGetPhysicalDeviceCooperativeMatrixProperties2EXT( VkPhysicalDevice                                  physicalDevice,
+                                                                                     VkPhysicalDeviceCooperativeMatrixInfo2EXT const * pCooperativeMatrixInfo,
+                                                                                     uint32_t *                                        pPropertyCount,
+                                                                                     VkCooperativeMatrixProperties2EXT * pProperties ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetPhysicalDeviceCooperativeMatrixProperties2EXT( physicalDevice, pCooperativeMatrixInfo, pPropertyCount, pProperties );
+      }
+
 #    if defined( VK_USE_PLATFORM_UBM_SEC )
       //=== VK_SEC_ubm_surface ===
 
@@ -11352,6 +11363,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_maintenance11 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance11SpecVersion   = VK_KHR_MAINTENANCE_11_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance11ExtensionName = VK_KHR_MAINTENANCE_11_EXTENSION_NAME;
+
+  //=== VK_EXT_cooperative_matrix_maintenance1 ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTCooperativeMatrixMaintenance1SpecVersion   = VK_EXT_COOPERATIVE_MATRIX_MAINTENANCE_1_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTCooperativeMatrixMaintenance1ExtensionName = VK_EXT_COOPERATIVE_MATRIX_MAINTENANCE_1_EXTENSION_NAME;
 
   //=== VK_EXT_shader_subgroup_partitioned ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderSubgroupPartitionedSpecVersion   = VK_EXT_SHADER_SUBGROUP_PARTITIONED_SPEC_VERSION;
@@ -22653,6 +22668,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_cooperative_matrix_maintenance1 ===
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_shader_subgroup_partitioned ===
   template <>
   struct StructExtends<PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT, PhysicalDeviceFeatures2>
@@ -24524,6 +24558,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_compute_occupancy_priority ===
       PFN_vkCmdSetComputeOccupancyPriorityNV vkCmdSetComputeOccupancyPriorityNV = 0;
 
+      //=== VK_EXT_cooperative_matrix_maintenance1 ===
+      PFN_vkGetPhysicalDeviceCooperativeMatrixProperties2EXT vkGetPhysicalDeviceCooperativeMatrixProperties2EXT = 0;
+
 #if defined( VK_USE_PLATFORM_UBM_SEC )
       //=== VK_SEC_ubm_surface ===
       PFN_vkCreateUbmSurfaceSEC                        vkCreateUbmSurfaceSEC                        = 0;
@@ -26286,6 +26323,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_NV_compute_occupancy_priority ===
         vkCmdSetComputeOccupancyPriorityNV = PFN_vkCmdSetComputeOccupancyPriorityNV( vkGetInstanceProcAddr( instance, "vkCmdSetComputeOccupancyPriorityNV" ) );
+
+        //=== VK_EXT_cooperative_matrix_maintenance1 ===
+        vkGetPhysicalDeviceCooperativeMatrixProperties2EXT =
+          PFN_vkGetPhysicalDeviceCooperativeMatrixProperties2EXT( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCooperativeMatrixProperties2EXT" ) );
 
 #if defined( VK_USE_PLATFORM_UBM_SEC )
         //=== VK_SEC_ubm_surface ===

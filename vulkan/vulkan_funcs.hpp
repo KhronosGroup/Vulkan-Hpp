@@ -34153,6 +34153,119 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+  //=== VK_EXT_cooperative_matrix_maintenance1 ===
+
+  // wrapper function for command vkGetPhysicalDeviceCooperativeMatrixProperties2EXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceCooperativeMatrixProperties2EXT.html
+  template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceCooperativeMatrixProperties2EXT ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::getCooperativeMatrixProperties2EXT(
+    PhysicalDeviceCooperativeMatrixInfo2EXT const * pCooperativeMatrixInfo,
+    uint32_t *                                      pPropertyCount,
+    CooperativeMatrixProperties2EXT *               pProperties,
+    Dispatch const &                                d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkGetPhysicalDeviceCooperativeMatrixProperties2EXT( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                            reinterpret_cast<VkPhysicalDeviceCooperativeMatrixInfo2EXT const *>( pCooperativeMatrixInfo ),
+                                                            pPropertyCount,
+                                                            reinterpret_cast<VkCooperativeMatrixProperties2EXT *>( pProperties ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  // wrapper function for command vkGetPhysicalDeviceCooperativeMatrixProperties2EXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceCooperativeMatrixProperties2EXT.html
+  template <
+    typename CooperativeMatrixProperties2EXTAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename CooperativeMatrixProperties2EXTAllocator::value_type, CooperativeMatrixProperties2EXT>::value, int>::type,
+    typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceCooperativeMatrixProperties2EXT ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<CooperativeMatrixProperties2EXT, CooperativeMatrixProperties2EXTAllocator>>::type
+    PhysicalDevice::getCooperativeMatrixProperties2EXT( PhysicalDeviceCooperativeMatrixInfo2EXT const & cooperativeMatrixInfo, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetPhysicalDeviceCooperativeMatrixProperties2EXT &&
+                       "Function <vkGetPhysicalDeviceCooperativeMatrixProperties2EXT> requires <VK_EXT_cooperative_matrix_maintenance1>" );
+#  endif
+
+    std::vector<CooperativeMatrixProperties2EXT, CooperativeMatrixProperties2EXTAllocator> properties;
+    uint32_t                                                                               propertyCount;
+    Result                                                                                 result;
+    do
+    {
+      result = static_cast<Result>(
+        d.vkGetPhysicalDeviceCooperativeMatrixProperties2EXT( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                              reinterpret_cast<VkPhysicalDeviceCooperativeMatrixInfo2EXT const *>( &cooperativeMatrixInfo ),
+                                                              &propertyCount,
+                                                              nullptr ) );
+      if ( ( result == Result::eSuccess ) && propertyCount )
+      {
+        properties.resize( propertyCount );
+        result = static_cast<Result>(
+          d.vkGetPhysicalDeviceCooperativeMatrixProperties2EXT( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                reinterpret_cast<VkPhysicalDeviceCooperativeMatrixInfo2EXT const *>( &cooperativeMatrixInfo ),
+                                                                &propertyCount,
+                                                                reinterpret_cast<VkCooperativeMatrixProperties2EXT *>( properties.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getCooperativeMatrixProperties2EXT" );
+    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+    if ( propertyCount < properties.size() )
+    {
+      properties.resize( propertyCount );
+    }
+    return detail::createResultValueType( result, std::move( properties ) );
+  }
+
+  // wrapper function for command vkGetPhysicalDeviceCooperativeMatrixProperties2EXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceCooperativeMatrixProperties2EXT.html
+  template <
+    typename CooperativeMatrixProperties2EXTAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename CooperativeMatrixProperties2EXTAllocator::value_type, CooperativeMatrixProperties2EXT>::value, int>::type,
+    typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceCooperativeMatrixProperties2EXT ), bool>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<CooperativeMatrixProperties2EXT, CooperativeMatrixProperties2EXTAllocator>>::type
+    PhysicalDevice::getCooperativeMatrixProperties2EXT( PhysicalDeviceCooperativeMatrixInfo2EXT const &  cooperativeMatrixInfo,
+                                                        CooperativeMatrixProperties2EXTAllocator const & cooperativeMatrixProperties2EXTAllocator,
+                                                        Dispatch const &                                 d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetPhysicalDeviceCooperativeMatrixProperties2EXT &&
+                       "Function <vkGetPhysicalDeviceCooperativeMatrixProperties2EXT> requires <VK_EXT_cooperative_matrix_maintenance1>" );
+#  endif
+
+    std::vector<CooperativeMatrixProperties2EXT, CooperativeMatrixProperties2EXTAllocator> properties( cooperativeMatrixProperties2EXTAllocator );
+    uint32_t                                                                               propertyCount;
+    Result                                                                                 result;
+    do
+    {
+      result = static_cast<Result>(
+        d.vkGetPhysicalDeviceCooperativeMatrixProperties2EXT( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                              reinterpret_cast<VkPhysicalDeviceCooperativeMatrixInfo2EXT const *>( &cooperativeMatrixInfo ),
+                                                              &propertyCount,
+                                                              nullptr ) );
+      if ( ( result == Result::eSuccess ) && propertyCount )
+      {
+        properties.resize( propertyCount );
+        result = static_cast<Result>(
+          d.vkGetPhysicalDeviceCooperativeMatrixProperties2EXT( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                reinterpret_cast<VkPhysicalDeviceCooperativeMatrixInfo2EXT const *>( &cooperativeMatrixInfo ),
+                                                                &propertyCount,
+                                                                reinterpret_cast<VkCooperativeMatrixProperties2EXT *>( properties.data() ) ) );
+      }
+    } while ( result == Result::eIncomplete );
+    detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getCooperativeMatrixProperties2EXT" );
+    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+    if ( propertyCount < properties.size() )
+    {
+      properties.resize( propertyCount );
+    }
+    return detail::createResultValueType( result, std::move( properties ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
 #if defined( VK_USE_PLATFORM_UBM_SEC )
   //=== VK_SEC_ubm_surface ===
 

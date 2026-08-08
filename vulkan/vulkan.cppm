@@ -26,7 +26,7 @@ export module vulkan;
 
 export import std;
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 358, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 359, "Wrong VK_HEADER_VERSION!" );
 
 #if defined( __clang__ )
 #  pragma clang diagnostic push
@@ -1333,6 +1333,9 @@ export {
 
   //=== VK_NV_compute_occupancy_priority ===
   using ::PFN_vkCmdSetComputeOccupancyPriorityNV;
+
+  //=== VK_EXT_cooperative_matrix_maintenance1 ===
+  using ::PFN_vkGetPhysicalDeviceCooperativeMatrixProperties2EXT;
 
 #if defined( VK_USE_PLATFORM_UBM_SEC )
   //=== VK_SEC_ubm_surface ===

@@ -1847,6 +1847,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceComputeOccupancyPriorityFeaturesNV         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COMPUTE_OCCUPANCY_PRIORITY_FEATURES_NV,
     ePhysicalDeviceMaintenance11FeaturesKHR                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_11_FEATURES_KHR,
     eQueueFamilyOptimalImageTransferGranularityPropertiesKHR  = VK_STRUCTURE_TYPE_QUEUE_FAMILY_OPTIMAL_IMAGE_TRANSFER_GRANULARITY_PROPERTIES_KHR,
+    ePhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_MAINTENANCE_1_FEATURES_EXT,
+    ePhysicalDeviceCooperativeMatrixInfo2EXT                  = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_INFO_2_EXT,
+    eCooperativeMatrixProperties2EXT                          = VK_STRUCTURE_TYPE_COOPERATIVE_MATRIX_PROPERTIES_2_EXT,
     ePhysicalDeviceShaderSubgroupPartitionedFeaturesEXT       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_SUBGROUP_PARTITIONED_FEATURES_EXT,
 #if defined( VK_USE_PLATFORM_UBM_SEC )
     eUbmSurfaceCreateInfoSEC = VK_STRUCTURE_TYPE_UBM_SURFACE_CREATE_INFO_SEC,
@@ -4907,7 +4910,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eVulkanScEmulationOnVulkan  = VK_DRIVER_ID_VULKAN_SC_EMULATION_ON_VULKAN,
     eMesaKosmickrisp            = VK_DRIVER_ID_MESA_KOSMICKRISP,
     eMesaGfxstream              = VK_DRIVER_ID_MESA_GFXSTREAM,
-    eApeSoft                    = VK_DRIVER_ID_APE_SOFT
+    eApeSoft                    = VK_DRIVER_ID_APE_SOFT,
+    eReserved31                 = VK_DRIVER_ID_RESERVED_31
   };
 
   using DriverIdKHR = DriverId;
@@ -10484,6 +10488,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eOpticalFlowHint       = VK_DATA_GRAPH_PIPELINE_NODE_CONNECTION_TYPE_OPTICAL_FLOW_HINT_ARM,
     eOpticalFlowFlowVector = VK_DATA_GRAPH_PIPELINE_NODE_CONNECTION_TYPE_OPTICAL_FLOW_FLOW_VECTOR_ARM,
     eOpticalFlowCost       = VK_DATA_GRAPH_PIPELINE_NODE_CONNECTION_TYPE_OPTICAL_FLOW_COST_ARM
+  };
+
+  //=== VK_EXT_cooperative_matrix_maintenance1 ===
+
+  // wrapper class for enum VkCooperativeMatrixFlagBitsEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkCooperativeMatrixFlagBitsEXT.html
+  enum class CooperativeMatrixFlagBitsEXT : VkCooperativeMatrixFlagsEXT
+  {
+    eSaturatingAccumulation = VK_COOPERATIVE_MATRIX_SATURATING_ACCUMULATION_BIT_EXT
+  };
+
+  // wrapper using for bitmask VkCooperativeMatrixFlagsEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkCooperativeMatrixFlagsEXT.html
+  using CooperativeMatrixFlagsEXT = Flags<CooperativeMatrixFlagBitsEXT>;
+
+  template <>
+  struct FlagTraits<CooperativeMatrixFlagBitsEXT>
+  {
+    using WrappedType                                                        = VkCooperativeMatrixFlagBitsEXT;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                      isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR CooperativeMatrixFlagsEXT allFlags  = CooperativeMatrixFlagBitsEXT::eSaturatingAccumulation;
   };
 
 #if defined( VK_USE_PLATFORM_UBM_SEC )

@@ -1204,5 +1204,21 @@ int main()
     vk::ExternalSemaphoreProperties         externalSemaphoreProperties = physicalDevice.getExternalSemaphoreProperties( externalSemaphoreInfo );
   }
 
+  //=============================================
+  // Vulkan compute 1.1 API interface definitions
+  //=============================================
+
+  // Promoted from VK_KHR_device_group
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    uint32_t                baseGroupX    = 0;
+    uint32_t                baseGroupY    = 0;
+    uint32_t                baseGroupZ    = 0;
+    uint32_t                groupCountX   = 1;
+    uint32_t                groupCountY   = 1;
+    uint32_t                groupCountZ   = 1;
+    commandBuffer.dispatchBase( baseGroupX, baseGroupY, baseGroupZ, groupCountX, groupCountY, groupCountZ );
+  }
+
   return 0;
 }

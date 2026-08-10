@@ -244,6 +244,8 @@ struct Command
   int                        xmlLine              = {};
 };
 
+using CommandVariant = std::variant<Command, Alias>;
+
 struct Component
 {
   std::string bits          = {};

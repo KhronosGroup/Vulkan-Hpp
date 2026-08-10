@@ -14,7 +14,7 @@ bool  isLenByStructMember( std::string const & name, std::vector<Param> const & 
 void  normalizeVersion( std::vector<std::vector<std::string>> & dependencies );
 Alias parseAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & category );
 BitmaskValueVariant          parseBitmaskValue( tinyxml2::XMLElement const * element );
-void                         parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & commands );
+CommandVariant               parseCommand( tinyxml2::XMLElement const * element );
 std::vector<Command>         parseCommands( tinyxml2::XMLElement const * element );
 Component                    parseComponent( tinyxml2::XMLElement const * element );
 ConstantValue                parseConstantValue( tinyxml2::XMLElement const * element );
@@ -176,9 +176,14 @@ void normalizeVersion( std::vector<std::vector<std::string>> & dependencies )
 
 Alias parseAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & category )
 {
-  int const line = element->GetLineNum();
+  std::map<std::string, std::set<std::string>> required = { { "alias", {} }, { "name", {} } };
+  if ( !category.empty() )
+  {
+    required["category"] = { category };
+  }
 
-  checkAttributes( "vk.xml", line, attributes, { { "alias", {} }, { "category", { category } }, { "name", {} } }, {} );
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, attributes, required, {} );
   checkElements( "vk.xml", line, getChildElements( element ), {} );
 
   Alias alias{ .xmlLine = line };
@@ -272,39 +277,14 @@ BitmaskValueVariant parseBitmaskValue( tinyxml2::XMLElement const * element )
   }
 }
 
-void parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & commands )
+CommandVariant parseCommand( tinyxml2::XMLElement const * element )
 {
   int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
 
   if ( attributes.contains( "alias" ) )
   {
-    checkAttributes( "vk.xml", line, attributes, { { "alias", {} }, { "name", {} } }, {} );
-    checkElements( "vk.xml", line, getChildElements( element ), {} );
-
-    std::string alias, name;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "alias" )
-      {
-        checkNoList( "vk.xml", attribute.second, line );
-        alias = attribute.second;
-      }
-      else if ( attribute.first == "name" )
-      {
-        checkNoList( "vk.xml", attribute.second, line );
-        name = attribute.second;
-      }
-    }
-
-    auto commandIt = findByName( commands, alias );
-    checkForError( "vk.xml", commandIt != commands.end(), line, "command <" + name + "> is aliased to unknown command <" + alias + ">" );
-    checkForError( "vk.xml",
-                   std::find_if( std::next( commandIt ), commands.end(), [&alias]( Command const & c ) { return c.name == alias; } ) == commands.end(),
-                   line,
-                   "command <" + name + "> is aliased to multiply specfied command <" + alias + ">" );
-    checkForError(
-      "vk.xml", commandIt->aliases.insert( { name, line } ).second, line, "command <" + name + "> is already listed as alias for command <" + alias + ">" );
+    return parseAlias( element, attributes, "" );
   }
   else
   {
@@ -463,9 +443,7 @@ void parseCommand( tinyxml2::XMLElement const * element, std::vector<Command> & 
       line,
       "command <" + command.name + "> has disjunct attributes <api> and <export>" );
 
-    checkForError( "vk.xml", !containsByNameAndExport( commands, command.name, command.exports ), line, "command <" + command.name + "> already specified" );
-    commands.push_back( std::move( command ) );
-    // CHECK: errorcodes, queues, successcodes after extensions
+    return command;
   }
 }
 
@@ -480,7 +458,26 @@ std::vector<Command> parseCommands( tinyxml2::XMLElement const * element )
   std::vector<Command> commands;
   for ( auto child : children )
   {
-    parseCommand( child, commands );
+    auto commandVariant = parseCommand( child );
+    if ( std::holds_alternative<Command>( commandVariant ) )
+    {
+      auto const & command = std::get<Command>( commandVariant );
+      checkForError(
+        "vk.xml", !containsByNameAndExport( commands, command.name, command.exports ), command.xmlLine, "command <" + command.name + "> already specified" );
+      commands.push_back( command );
+    }
+    else
+    {
+      assert( std::holds_alternative<Alias>( commandVariant ) );
+
+      auto const & alias     = std::get<Alias>( commandVariant );
+      auto         commandIt = findByName( commands, alias.alias );
+      checkForError( "vk.xml", commandIt != commands.end(), alias.xmlLine, "command <" + alias.name + "> is aliased to unknown command <" + alias.alias + ">" );
+      checkForError( "vk.xml",
+                     commandIt->aliases.insert( { alias.name, line } ).second,
+                     alias.xmlLine,
+                     "command <" + alias.name + "> is already listed as alias for command <" + alias.alias + ">" );
+    }
   }
 
   return commands;

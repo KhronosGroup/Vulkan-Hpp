@@ -589,7 +589,9 @@ function( vulkan_hpp__setup_test_project )
 		if ( VULKAN_HPP_BUILD_CXX_MODULE )
 			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::HppModule )
 			target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_USE_CXX_MODULE )
-			set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
+			set_target_properties( ${TARGET_NAME} PROPERTIES
+				CXX_SCAN_FOR_MODULES ON
+				CXX_MODULE_STD ON )
 		else()
 			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::Hpp )
 		endif()

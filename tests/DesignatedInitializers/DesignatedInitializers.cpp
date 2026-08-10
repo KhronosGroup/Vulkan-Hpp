@@ -7,6 +7,7 @@
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <cstdint>
+import std;
 import vulkan;
 #else
 #  include <cstdint>

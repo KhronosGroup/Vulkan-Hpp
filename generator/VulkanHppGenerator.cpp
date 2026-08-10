@@ -119,11 +119,11 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
       m_commandQueues.insert( command.queues.begin(), command.queues.end() );
     }
   }
-  for ( auto const & constant : m_vkxml.constants )
+  for ( auto const & constant : m_vkxml.constants.values )
   {
-    checkForError( m_types.insert( { constant.first, TypeData{ TypeCategory::Constant, {}, constant.second.xmlLine } } ).second,
-                   constant.second.xmlLine,
-                   "type <" + constant.first + "> already specified" );
+    checkForError( m_types.insert( { constant.name, TypeData{ TypeCategory::Constant, {}, constant.xmlLine } } ).second,
+                   constant.xmlLine,
+                   "constant type <" + constant.name + "> already specified" );
   }
   for ( auto const & define : m_vkxml.defines )
   {
@@ -153,7 +153,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     assert( inserted );
     enumIt->second.aliases   = xmlEnum.aliases;
     enumIt->second.bitwidth  = xmlEnum.bitwidth;
-    enumIt->second.isBitmask = xmlEnum.type == "bitmask";
+    enumIt->second.isBitmask = xmlEnum.category == "bitmask";
     enumIt->second.xmlLine   = xmlEnum.xmlLine;
 
     for ( auto const & enumValue : xmlEnum.values )
@@ -161,7 +161,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
       EnumValueData enumValueData;
       for ( auto const & alias : enumValue.aliases )
       {
-        enumValueData.aliases.push_back( { enumValue.name, alias.first, "", true, alias.second.xmlLine } );
+        enumValueData.aliases.push_back( { enumValue.name, alias.name, "", true, alias.xmlLine } );
       }
       enumValueData.bitpos    = enumValue.bitPos;
       enumValueData.name      = enumValue.name;
@@ -477,13 +477,16 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
               checkForError( m_types.insert( { e.name, TypeData{ TypeCategory::Constant, { extensionData.name }, e.xmlLine } } ).second,
                              e.xmlLine,
                              "required enum <" + e.name + "> already specified" );
+              checkForError( !containsByName( m_vkxml.constants.values, e.name ),
+                             e.xmlLine,
+                             "required enum <" + e.name + "> already specified as a constant in the vk.xml" );
 
-              auto constIt = m_vkxml.constants.find( e.alias );
-              if ( constIt != m_vkxml.constants.end() )
+              auto constIt = findByName( m_vkxml.constants.values, e.alias );
+              if ( constIt != m_vkxml.constants.values.end() )
               {
                 typeIt = m_types.find( e.name );
                 typeIt->second.requiredBy.insert( extensionData.name );
-                m_vkxml.constants[e.name] = { constIt->second.type, constIt->second.value, e.xmlLine };
+                m_vkxml.constants.values.push_back( { .name = e.name, .type = constIt->type, .value = constIt->value, .xmlLine = e.xmlLine } );
                 requireData.constants.push_back( { e.name, e.xmlLine } );
               }
             }
@@ -1303,7 +1306,8 @@ void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & requi
           containsByName( m_vkxml.baseTypes, type.name ), typeIt->second.xmlLine, "required base type <" + type.name + "> is not listed as a base type" );
         break;
       case TypeCategory::Constant:
-        checkForError( m_vkxml.constants.contains( type.name ), typeIt->second.xmlLine, "required constant <" + type.name + "> is not listed as a constant" );
+        checkForError(
+          containsByName( m_vkxml.constants.values, type.name ), typeIt->second.xmlLine, "required constant <" + type.name + "> is not listed as a constant" );
         break;
       case TypeCategory::Define:
         checkForError( containsByName( m_vkxml.defines, type.name ), typeIt->second.xmlLine, "required define <" + type.name + "> is not listed as a define" );
@@ -1422,7 +1426,7 @@ void VulkanHppGenerator::checkStructMemberArraySizesAreValid( std::vector<std::s
   // check that any array size is either a number or a known constant
   for ( auto const & arraySize : arraySizes )
   {
-    if ( !isNumber( arraySize ) && !m_vkxml.constants.contains( arraySize ) )
+    if ( !isNumber( arraySize ) && !containsByName( m_vkxml.constants.values, arraySize ) )
     {
       auto typeIt = m_types.find( arraySize );
       checkForError( ( typeIt != m_types.end() ) && isUpperCase( arraySize ) && ( typeIt->second.category == TypeCategory::External ),
@@ -2310,7 +2314,8 @@ void VulkanHppGenerator::filterLenMembers()
   {
     for ( auto & member : sd.second.members )
     {
-      std::erase_if( member.lenMembers, [this]( std::pair<std::string, size_t> const & nameIndex ) { return m_vkxml.constants.contains( nameIndex.first ); } );
+      std::erase_if( member.lenMembers,
+                     [this]( std::pair<std::string, size_t> const & nameIndex ) { return containsByName( m_vkxml.constants.values, nameIndex.first ); } );
 
       for ( auto & lenMember : member.lenMembers )
       {
@@ -2370,17 +2375,17 @@ void
   }
 }
 
-void VulkanHppGenerator::forEachRequiredConstant( std::vector<RequireData> const &                                        requireData,
-                                                  std::set<std::string> &                                                 encounteredConstants,
-                                                  std::function<void( std::pair<std::string, Constant> const & )> const & constantAction ) const
+void VulkanHppGenerator::forEachRequiredConstant( std::vector<RequireData> const &                     requireData,
+                                                  std::set<std::string> &                              encounteredConstants,
+                                                  std::function<void( ConstantValue const & )> const & constantAction ) const
 {
   for ( auto const & require : requireData )
   {
     for ( auto const & constant : require.constants )
     {
-      auto constantIt = m_vkxml.constants.find( constant.name );
-      checkForError( constantIt != m_vkxml.constants.end(), constant.xmlLine, "unknown required constant <" + constant.name + ">" );
-      if ( encounteredConstants.insert( constantIt->first ).second )
+      auto constantIt = findByName( m_vkxml.constants.values, constant.name );
+      checkForError( constantIt != m_vkxml.constants.values.end(), constant.xmlLine, "unknown required constant <" + constant.name + ">" );
+      if ( encounteredConstants.insert( constantIt->name ).second )
       {
         constantAction( *constantIt );
       }
@@ -4941,15 +4946,15 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
       [&constexprValueTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedConstants )
     {
       std::string constants;
-      forEachRequiredConstant( requireData,
-                               listedConstants,
-                               [&constants, &constexprValueTemplate, this]( std::pair<std::string, Constant> const & constantData )
-                               {
-                                 constants += replaceWithMap( constexprValueTemplate,
-                                                              { { "type", constantData.second.type },
-                                                                { "constName", generateTaggedCamelCase( constantData.first ) },
-                                                                { "value", constantData.first } } );
-                               } );
+      forEachRequiredConstant(
+        requireData,
+        listedConstants,
+        [&constants, &constexprValueTemplate, this]( ConstantValue const & constantData )
+        {
+          constants +=
+            replaceWithMap( constexprValueTemplate,
+                            { { "type", constantData.type }, { "constName", generateTaggedCamelCase( constantData.name ) }, { "value", constantData.name } } );
+        } );
       return addTitleAndProtection( title, constants );
     };
 
@@ -6537,8 +6542,8 @@ std::string VulkanHppGenerator::generateEnumInitializer( Type const &           
   else
   {
     assert( arraySizes.size() == 1 );
-    auto      constIt = m_vkxml.constants.find( arraySizes[0] );
-    int const count   = std::stoi( ( constIt == m_vkxml.constants.end() ) ? arraySizes[0] : constIt->second.value );
+    auto      constIt = findByName( m_vkxml.constants.values, arraySizes[0] );
+    int const count   = std::stoi( ( constIt == m_vkxml.constants.values.end() ) ? arraySizes[0] : constIt->value );
     assert( 1 < count );
     str += "{ { " + value;
     for ( int i = 1; i < count; i++ )

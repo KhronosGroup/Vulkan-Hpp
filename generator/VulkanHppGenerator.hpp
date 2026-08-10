@@ -489,9 +489,9 @@ private:
                                                                   std::function<void( TypeBitmask const & )> const & bitmaskAction ) const;
   void forEachRequiredCommand( std::vector<RequireData> const &                                                             requireData,
                                std::function<void( NameLine const &, std::pair<std::string, CommandData> const & )> const & commandAction ) const;
-  void forEachRequiredConstant( std::vector<RequireData> const &                                        requireData,
-                                std::set<std::string> &                                                 encounteredConstants,
-                                std::function<void( std::pair<std::string, Constant> const & )> const & constantAction ) const;
+  void forEachRequiredConstant( std::vector<RequireData> const &                     requireData,
+                                std::set<std::string> &                              encounteredConstants,
+                                std::function<void( ConstantValue const & )> const & constantAction ) const;
   void forEachRequiredEnumConstant( std::vector<RequireData> const &                        requireData,
                                     std::set<std::string> &                                 encounteredEnumConstants,
                                     std::function<void( EnumConstantData const & )> const & enumConstantAction ) const;

@@ -3124,6 +3124,25 @@ VULKAN_HPP_EXPORT namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::CooperativeMatrixProperties2EXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::CooperativeMatrixProperties2EXT const & cooperativeMatrixProperties2EXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, cooperativeMatrixProperties2EXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, cooperativeMatrixProperties2EXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, cooperativeMatrixProperties2EXT.MGranularity );
+      VULKAN_HPP_HASH_COMBINE( seed, cooperativeMatrixProperties2EXT.NGranularity );
+      VULKAN_HPP_HASH_COMBINE( seed, cooperativeMatrixProperties2EXT.KGranularity );
+      VULKAN_HPP_HASH_COMBINE( seed, cooperativeMatrixProperties2EXT.AType );
+      VULKAN_HPP_HASH_COMBINE( seed, cooperativeMatrixProperties2EXT.BType );
+      VULKAN_HPP_HASH_COMBINE( seed, cooperativeMatrixProperties2EXT.CType );
+      VULKAN_HPP_HASH_COMBINE( seed, cooperativeMatrixProperties2EXT.ResultType );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesKHR>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesKHR const & cooperativeMatrixPropertiesKHR ) const VULKAN_HPP_NOEXCEPT
@@ -10577,6 +10596,41 @@ VULKAN_HPP_EXPORT namespace std
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixFeaturesNV.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixFeaturesNV.cooperativeMatrix );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixFeaturesNV.cooperativeMatrixRobustBufferAccess );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixInfo2EXT>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixInfo2EXT const & physicalDeviceCooperativeMatrixInfo2EXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixInfo2EXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixInfo2EXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixInfo2EXT.scope );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixInfo2EXT.invocations );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixInfo2EXT.subgroupSize );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixInfo2EXT.flags );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const &
+                              physicalDeviceCooperativeMatrixMaintenance1FeaturesEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixMaintenance1FeaturesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixMaintenance1FeaturesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixMaintenance1FeaturesEXT.cooperativeMatrixProperties2 );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixMaintenance1FeaturesEXT.cooperativeMatrixReductions );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixMaintenance1FeaturesEXT.cooperativeMatrixConversions );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixMaintenance1FeaturesEXT.cooperativeMatrixPerElementOperations );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCooperativeMatrixMaintenance1FeaturesEXT.cooperativeMatrixGetCoordinate );
       return seed;
     }
   };

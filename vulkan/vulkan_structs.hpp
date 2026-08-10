@@ -29379,6 +29379,132 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     using Type = CooperativeMatrixFlexibleDimensionsPropertiesNV;
   };
 
+  // wrapper struct for struct VkCooperativeMatrixProperties2EXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkCooperativeMatrixProperties2EXT.html
+  struct CooperativeMatrixProperties2EXT
+  {
+    using NativeType = VkCooperativeMatrixProperties2EXT;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eCooperativeMatrixProperties2EXT;
+
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR CooperativeMatrixProperties2EXT( uint32_t         MGranularity_ = {},
+                                                          uint32_t         NGranularity_ = {},
+                                                          uint32_t         KGranularity_ = {},
+                                                          ComponentTypeKHR AType_        = ComponentTypeKHR::eFloat16,
+                                                          ComponentTypeKHR BType_        = ComponentTypeKHR::eFloat16,
+                                                          ComponentTypeKHR CType_        = ComponentTypeKHR::eFloat16,
+                                                          ComponentTypeKHR ResultType_   = ComponentTypeKHR::eFloat16,
+                                                          void *           pNext_        = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , MGranularity{ MGranularity_ }
+      , NGranularity{ NGranularity_ }
+      , KGranularity{ KGranularity_ }
+      , AType{ AType_ }
+      , BType{ BType_ }
+      , CType{ CType_ }
+      , ResultType{ ResultType_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR CooperativeMatrixProperties2EXT( CooperativeMatrixProperties2EXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    CooperativeMatrixProperties2EXT( VkCooperativeMatrixProperties2EXT const & rhs ) VULKAN_HPP_NOEXCEPT
+      : CooperativeMatrixProperties2EXT( *reinterpret_cast<CooperativeMatrixProperties2EXT const *>( &rhs ) )
+    {
+    }
+
+    CooperativeMatrixProperties2EXT & operator=( CooperativeMatrixProperties2EXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    CooperativeMatrixProperties2EXT & operator=( VkCooperativeMatrixProperties2EXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<CooperativeMatrixProperties2EXT const *>( &rhs );
+      return *this;
+    }
+
+    operator VkCooperativeMatrixProperties2EXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkCooperativeMatrixProperties2EXT const *>( this );
+    }
+
+    operator VkCooperativeMatrixProperties2EXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkCooperativeMatrixProperties2EXT *>( this );
+    }
+
+    operator VkCooperativeMatrixProperties2EXT const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkCooperativeMatrixProperties2EXT const *>( this );
+    }
+
+    operator VkCooperativeMatrixProperties2EXT *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkCooperativeMatrixProperties2EXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &,
+               void * const &,
+               uint32_t const &,
+               uint32_t const &,
+               uint32_t const &,
+               ComponentTypeKHR const &,
+               ComponentTypeKHR const &,
+               ComponentTypeKHR const &,
+               ComponentTypeKHR const &> reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, MGranularity, NGranularity, KGranularity, AType, BType, CType, ResultType );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( CooperativeMatrixProperties2EXT const & ) const = default;
+#else
+    bool operator==( CooperativeMatrixProperties2EXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( MGranularity == rhs.MGranularity ) && ( NGranularity == rhs.NGranularity ) &&
+             ( KGranularity == rhs.KGranularity ) && ( AType == rhs.AType ) && ( BType == rhs.BType ) && ( CType == rhs.CType ) &&
+             ( ResultType == rhs.ResultType );
+#  endif
+    }
+
+    bool operator!=( CooperativeMatrixProperties2EXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    StructureType    sType        = StructureType::eCooperativeMatrixProperties2EXT;
+    void *           pNext        = {};
+    uint32_t         MGranularity = {};
+    uint32_t         NGranularity = {};
+    uint32_t         KGranularity = {};
+    ComponentTypeKHR AType        = ComponentTypeKHR::eFloat16;
+    ComponentTypeKHR BType        = ComponentTypeKHR::eFloat16;
+    ComponentTypeKHR CType        = ComponentTypeKHR::eFloat16;
+    ComponentTypeKHR ResultType   = ComponentTypeKHR::eFloat16;
+  };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkCooperativeMatrixProperties2EXT>
+  {
+    using Type = CooperativeMatrixProperties2EXT;
+  };
+#endif
+
+  template <>
+  struct CppType<StructureType, StructureType::eCooperativeMatrixProperties2EXT>
+  {
+    using Type = CooperativeMatrixProperties2EXT;
+  };
+
   // wrapper struct for struct VkCooperativeMatrixPropertiesKHR, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/VkCooperativeMatrixPropertiesKHR.html
   struct CooperativeMatrixPropertiesKHR
@@ -105856,6 +105982,388 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::ePhysicalDeviceCooperativeMatrixFeaturesNV>
   {
     using Type = PhysicalDeviceCooperativeMatrixFeaturesNV;
+  };
+
+  // wrapper struct for struct VkPhysicalDeviceCooperativeMatrixInfo2EXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDeviceCooperativeMatrixInfo2EXT.html
+  struct PhysicalDeviceCooperativeMatrixInfo2EXT
+  {
+    using NativeType = VkPhysicalDeviceCooperativeMatrixInfo2EXT;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePhysicalDeviceCooperativeMatrixInfo2EXT;
+
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceCooperativeMatrixInfo2EXT( ScopeKHR                  scope_        = ScopeKHR::eDevice,
+                                                                  uint32_t                  invocations_  = {},
+                                                                  uint32_t                  subgroupSize_ = {},
+                                                                  CooperativeMatrixFlagsEXT flags_        = {},
+                                                                  void const *              pNext_        = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , scope{ scope_ }
+      , invocations{ invocations_ }
+      , subgroupSize{ subgroupSize_ }
+      , flags{ flags_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceCooperativeMatrixInfo2EXT( PhysicalDeviceCooperativeMatrixInfo2EXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceCooperativeMatrixInfo2EXT( VkPhysicalDeviceCooperativeMatrixInfo2EXT const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceCooperativeMatrixInfo2EXT( *reinterpret_cast<PhysicalDeviceCooperativeMatrixInfo2EXT const *>( &rhs ) )
+    {
+    }
+
+    PhysicalDeviceCooperativeMatrixInfo2EXT & operator=( PhysicalDeviceCooperativeMatrixInfo2EXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    PhysicalDeviceCooperativeMatrixInfo2EXT & operator=( VkPhysicalDeviceCooperativeMatrixInfo2EXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<PhysicalDeviceCooperativeMatrixInfo2EXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixInfo2EXT & setPNext( void const * pNext_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixInfo2EXT && setPNext( void const * pNext_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixInfo2EXT & setScope( ScopeKHR scope_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      scope = scope_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixInfo2EXT && setScope( ScopeKHR scope_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      scope = scope_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixInfo2EXT & setInvocations( uint32_t invocations_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      invocations = invocations_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixInfo2EXT && setInvocations( uint32_t invocations_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      invocations = invocations_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixInfo2EXT & setSubgroupSize( uint32_t subgroupSize_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      subgroupSize = subgroupSize_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixInfo2EXT && setSubgroupSize( uint32_t subgroupSize_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      subgroupSize = subgroupSize_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixInfo2EXT & setFlags( CooperativeMatrixFlagsEXT flags_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixInfo2EXT && setFlags( CooperativeMatrixFlagsEXT flags_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      flags = flags_;
+      return std::move( *this );
+    }
+#endif /*VULKAN_HPP_NO_SETTERS*/
+
+    operator VkPhysicalDeviceCooperativeMatrixInfo2EXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceCooperativeMatrixInfo2EXT const *>( this );
+    }
+
+    operator VkPhysicalDeviceCooperativeMatrixInfo2EXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceCooperativeMatrixInfo2EXT *>( this );
+    }
+
+    operator VkPhysicalDeviceCooperativeMatrixInfo2EXT const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceCooperativeMatrixInfo2EXT const *>( this );
+    }
+
+    operator VkPhysicalDeviceCooperativeMatrixInfo2EXT *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceCooperativeMatrixInfo2EXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &, void const * const &, ScopeKHR const &, uint32_t const &, uint32_t const &, CooperativeMatrixFlagsEXT const &>
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, scope, invocations, subgroupSize, flags );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceCooperativeMatrixInfo2EXT const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceCooperativeMatrixInfo2EXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( scope == rhs.scope ) && ( invocations == rhs.invocations ) &&
+             ( subgroupSize == rhs.subgroupSize ) && ( flags == rhs.flags );
+#  endif
+    }
+
+    bool operator!=( PhysicalDeviceCooperativeMatrixInfo2EXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    StructureType             sType        = StructureType::ePhysicalDeviceCooperativeMatrixInfo2EXT;
+    void const *              pNext        = {};
+    ScopeKHR                  scope        = ScopeKHR::eDevice;
+    uint32_t                  invocations  = {};
+    uint32_t                  subgroupSize = {};
+    CooperativeMatrixFlagsEXT flags        = {};
+  };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkPhysicalDeviceCooperativeMatrixInfo2EXT>
+  {
+    using Type = PhysicalDeviceCooperativeMatrixInfo2EXT;
+  };
+#endif
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceCooperativeMatrixInfo2EXT>
+  {
+    using Type = PhysicalDeviceCooperativeMatrixInfo2EXT;
+  };
+
+  // wrapper struct for struct VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT.html
+  struct PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT
+  {
+    using NativeType = VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT;
+
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT( Bool32 cooperativeMatrixProperties2_          = {},
+                                                                                 Bool32 cooperativeMatrixReductions_           = {},
+                                                                                 Bool32 cooperativeMatrixConversions_          = {},
+                                                                                 Bool32 cooperativeMatrixPerElementOperations_ = {},
+                                                                                 Bool32 cooperativeMatrixGetCoordinate_        = {},
+                                                                                 void * pNext_                                 = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , cooperativeMatrixProperties2{ cooperativeMatrixProperties2_ }
+      , cooperativeMatrixReductions{ cooperativeMatrixReductions_ }
+      , cooperativeMatrixConversions{ cooperativeMatrixConversions_ }
+      , cooperativeMatrixPerElementOperations{ cooperativeMatrixPerElementOperations_ }
+      , cooperativeMatrixGetCoordinate{ cooperativeMatrixGetCoordinate_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT( PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const & rhs )
+      VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT( VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT( *reinterpret_cast<PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const *>( &rhs ) )
+    {
+    }
+
+    PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT &
+      operator=( PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT &
+      operator=( VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT & setPNext( void * pNext_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT && setPNext( void * pNext_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT & setCooperativeMatrixProperties2( Bool32 cooperativeMatrixProperties2_ ) &
+      VULKAN_HPP_NOEXCEPT
+    {
+      cooperativeMatrixProperties2 = cooperativeMatrixProperties2_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT && setCooperativeMatrixProperties2( Bool32 cooperativeMatrixProperties2_ ) &&
+      VULKAN_HPP_NOEXCEPT
+    {
+      cooperativeMatrixProperties2 = cooperativeMatrixProperties2_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT & setCooperativeMatrixReductions( Bool32 cooperativeMatrixReductions_ ) &
+      VULKAN_HPP_NOEXCEPT
+    {
+      cooperativeMatrixReductions = cooperativeMatrixReductions_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT && setCooperativeMatrixReductions( Bool32 cooperativeMatrixReductions_ ) &&
+      VULKAN_HPP_NOEXCEPT
+    {
+      cooperativeMatrixReductions = cooperativeMatrixReductions_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT & setCooperativeMatrixConversions( Bool32 cooperativeMatrixConversions_ ) &
+      VULKAN_HPP_NOEXCEPT
+    {
+      cooperativeMatrixConversions = cooperativeMatrixConversions_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT && setCooperativeMatrixConversions( Bool32 cooperativeMatrixConversions_ ) &&
+      VULKAN_HPP_NOEXCEPT
+    {
+      cooperativeMatrixConversions = cooperativeMatrixConversions_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT &
+      setCooperativeMatrixPerElementOperations( Bool32 cooperativeMatrixPerElementOperations_ ) &
+      VULKAN_HPP_NOEXCEPT
+    {
+      cooperativeMatrixPerElementOperations = cooperativeMatrixPerElementOperations_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT &&
+      setCooperativeMatrixPerElementOperations( Bool32 cooperativeMatrixPerElementOperations_ ) &&
+      VULKAN_HPP_NOEXCEPT
+    {
+      cooperativeMatrixPerElementOperations = cooperativeMatrixPerElementOperations_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT &
+      setCooperativeMatrixGetCoordinate( Bool32 cooperativeMatrixGetCoordinate_ ) &
+      VULKAN_HPP_NOEXCEPT
+    {
+      cooperativeMatrixGetCoordinate = cooperativeMatrixGetCoordinate_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT &&
+      setCooperativeMatrixGetCoordinate( Bool32 cooperativeMatrixGetCoordinate_ ) &&
+      VULKAN_HPP_NOEXCEPT
+    {
+      cooperativeMatrixGetCoordinate = cooperativeMatrixGetCoordinate_;
+      return std::move( *this );
+    }
+#endif /*VULKAN_HPP_NO_SETTERS*/
+
+    operator VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const *>( this );
+    }
+
+    operator VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT *>( this );
+    }
+
+    operator VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const *>( this );
+    }
+
+    operator VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &, void * const &, Bool32 const &, Bool32 const &, Bool32 const &, Bool32 const &, Bool32 const &>
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType,
+                       pNext,
+                       cooperativeMatrixProperties2,
+                       cooperativeMatrixReductions,
+                       cooperativeMatrixConversions,
+                       cooperativeMatrixPerElementOperations,
+                       cooperativeMatrixGetCoordinate );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( cooperativeMatrixProperties2 == rhs.cooperativeMatrixProperties2 ) &&
+             ( cooperativeMatrixReductions == rhs.cooperativeMatrixReductions ) && ( cooperativeMatrixConversions == rhs.cooperativeMatrixConversions ) &&
+             ( cooperativeMatrixPerElementOperations == rhs.cooperativeMatrixPerElementOperations ) &&
+             ( cooperativeMatrixGetCoordinate == rhs.cooperativeMatrixGetCoordinate );
+#  endif
+    }
+
+    bool operator!=( PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    StructureType sType                                 = StructureType::ePhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT;
+    void *        pNext                                 = {};
+    Bool32        cooperativeMatrixProperties2          = {};
+    Bool32        cooperativeMatrixReductions           = {};
+    Bool32        cooperativeMatrixConversions          = {};
+    Bool32        cooperativeMatrixPerElementOperations = {};
+    Bool32        cooperativeMatrixGetCoordinate        = {};
+  };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT>
+  {
+    using Type = PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT;
+  };
+#endif
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT>
+  {
+    using Type = PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT;
   };
 
   // wrapper struct for struct VkPhysicalDeviceCooperativeMatrixPropertiesKHR, see

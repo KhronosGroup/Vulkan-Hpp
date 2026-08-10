@@ -2443,6 +2443,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceMaintenance11FeaturesKHR;
   struct QueueFamilyOptimalImageTransferGranularityPropertiesKHR;
 
+  //=== VK_EXT_cooperative_matrix_maintenance1 ===
+  struct CooperativeMatrixProperties2EXT;
+  struct PhysicalDeviceCooperativeMatrixInfo2EXT;
+  struct PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT;
+
   //=== VK_EXT_shader_subgroup_partitioned ===
   struct PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT;
 
@@ -22845,6 +22850,40 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         DataGraphOpticalFlowImageFormatInfoARM const &                opticalFlowImageFormatInfo,
         DataGraphOpticalFlowImageFormatPropertiesARMAllocator const & dataGraphOpticalFlowImageFormatPropertiesARMAllocator,
         Dispatch const & d                                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_EXT_cooperative_matrix_maintenance1 ===
+
+    // wrapper function for command vkGetPhysicalDeviceCooperativeMatrixProperties2EXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceCooperativeMatrixProperties2EXT.html
+    template <typename Dispatch                                                                                        = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceCooperativeMatrixProperties2EXT ), bool>::type = true>
+    VULKAN_HPP_NODISCARD Result getCooperativeMatrixProperties2EXT( PhysicalDeviceCooperativeMatrixInfo2EXT const * pCooperativeMatrixInfo,
+                                                                    uint32_t *                                      pPropertyCount,
+                                                                    CooperativeMatrixProperties2EXT *               pProperties,
+                                                                    Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetPhysicalDeviceCooperativeMatrixProperties2EXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceCooperativeMatrixProperties2EXT.html
+    template <typename CooperativeMatrixProperties2EXTAllocator = std::allocator<CooperativeMatrixProperties2EXT>,
+              typename Dispatch                                 = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename CooperativeMatrixProperties2EXTAllocator::value_type, CooperativeMatrixProperties2EXT>::value,
+                                      int>::type                = 0,
+              typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceCooperativeMatrixProperties2EXT ), bool>::type = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<CooperativeMatrixProperties2EXT, CooperativeMatrixProperties2EXTAllocator>>::type
+      getCooperativeMatrixProperties2EXT( PhysicalDeviceCooperativeMatrixInfo2EXT const & cooperativeMatrixInfo,
+                                          Dispatch const & d                              VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    // wrapper function for command vkGetPhysicalDeviceCooperativeMatrixProperties2EXT, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceCooperativeMatrixProperties2EXT.html
+    template <typename CooperativeMatrixProperties2EXTAllocator = std::allocator<CooperativeMatrixProperties2EXT>,
+              typename Dispatch                                 = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename CooperativeMatrixProperties2EXTAllocator::value_type, CooperativeMatrixProperties2EXT>::value,
+                                      int>::type                = 0,
+              typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceCooperativeMatrixProperties2EXT ), bool>::type = true>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<CooperativeMatrixProperties2EXT, CooperativeMatrixProperties2EXTAllocator>>::type
+      getCooperativeMatrixProperties2EXT( PhysicalDeviceCooperativeMatrixInfo2EXT const &  cooperativeMatrixInfo,
+                                          CooperativeMatrixProperties2EXTAllocator const & cooperativeMatrixProperties2EXTAllocator,
+                                          Dispatch const & d                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
 #if defined( VK_USE_PLATFORM_UBM_SEC )

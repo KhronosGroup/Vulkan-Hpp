@@ -2263,17 +2263,17 @@ VulkanHppGenerator::FeatureData VulkanHppGenerator::featureToFeatureData( Featur
     {
       requireData.commands.push_back( { requireCommand.name, requireCommand.xmlLine } );
     }
-    for ( auto const & requireEnum : require.enums )
+    for ( auto const & requireEnum : require.enumConstants )
     {
-      if ( requireEnum.extends.empty() )
+      requireData.constants.push_back( { requireEnum.name, requireEnum.xmlLine } );
+    }
+    if ( !supported )
+    {
+      for ( auto const & enumRegular : require.enumRegulars )
       {
-        requireData.constants.push_back( { requireEnum.name, requireEnum.xmlLine } );
-      }
-      else if ( !supported )
-      {
-        auto enumIt = m_enums.find( requireEnum.extends );
+        auto enumIt = m_enums.find( enumRegular.extends );
         assert( enumIt != m_enums.end() );
-        auto valueIt = findByName( enumIt->second.values, requireEnum.name );
+        auto valueIt = findByName( enumIt->second.values, enumRegular.name );
         assert( valueIt != enumIt->second.values.end() );
         valueIt->supported = supported;
       }

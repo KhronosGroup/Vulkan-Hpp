@@ -449,21 +449,32 @@ struct Extensions
   int                    xmlLine    = {};
 };
 
-struct RequireEnum
+struct ExtendEnumAlias
 {
-  std::string alias       = {};
-  std::string api         = {};
-  std::string bitPos      = {};
-  std::string comment     = {};
-  std::string deprectated = {};
-  std::string dir         = {};
-  std::string extends     = {};
-  std::string extNumber   = {};
-  std::string offset      = {};
-  std::string name        = {};
-  std::string value       = {};
-  int         xmlLine     = {};
+  std::string name       = {};
+  std::string alias      = {};
+  std::string extends    = {};
+  std::string api        = {};
+  std::string deprecated = {};
+  int         xmlLine    = {};
 };
+
+using ExtendEnumConstant = NameElement;
+
+struct ExtendEnumRegular
+{
+  std::string name      = {};
+  std::string extends   = {};
+  std::string bitPos    = {};
+  std::string offset    = {};
+  std::string value     = {};
+  std::string comment   = {};
+  std::string dir       = {};
+  std::string extNumber = {};
+  int         xmlLine   = {};
+};
+
+using RequireEnumVariant = std::variant<ExtendEnumAlias, ExtendEnumConstant, ExtendEnumRegular>;
 
 struct RequireType
 {
@@ -485,13 +496,15 @@ struct Remove
 
 struct Require
 {
-  std::vector<NameElement>    commands = {};
-  std::string                 comment  = {};
-  std::vector<std::string>    depends  = {};
-  std::vector<RequireEnum>    enums    = {};
-  std::vector<FeatureElement> features = {};
-  std::vector<RequireType>    types    = {};
-  int                         xmlLine  = {};
+  std::vector<NameElement>        commands      = {};
+  std::string                     comment       = {};
+  std::vector<std::string>        depends       = {};
+  std::vector<ExtendEnumAlias>    enumAliases   = {};
+  std::vector<ExtendEnumConstant> enumConstants = {};
+  std::vector<ExtendEnumRegular>  enumRegulars  = {};
+  std::vector<FeatureElement>     features      = {};
+  std::vector<RequireType>        types         = {};
+  int                             xmlLine       = {};
 };
 
 struct Feature

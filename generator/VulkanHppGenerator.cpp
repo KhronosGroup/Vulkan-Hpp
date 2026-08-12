@@ -426,83 +426,117 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
       }
       for ( auto const & e : require.enums )
       {
-        std::string protect = e.protect.empty() ? getProtectFromPlatform( extensionData.platform ) : e.protect;
-        if ( e.api.empty() || ( e.api == m_api ) )
+        if ( std::holds_alternative<ExtensionRequireEnumAliasVariant>( e ) )
         {
-          if ( e.alias.empty() )
+          auto const & aliasVariant = std::get<ExtensionRequireEnumAliasVariant>( e );
+          if ( std::holds_alternative<ExtensionRequireEnumAlias>( aliasVariant ) )
           {
-            if ( e.extends.empty() )
-            {
-              if ( e.value.empty() )
-              {
-                auto typeIt = m_types.find( e.name );
-                checkForError( typeIt != m_types.end(), e.xmlLine, "unknown required enum <" + e.name + ">" );
-                typeIt->second.requiredBy.insert( extensionData.name );
-                requireData.constants.push_back( { e.name, e.xmlLine } );
-              }
-              else
-              {
-                checkForError( m_types.insert( { e.name, TypeData{ TypeCategory::Constant, { extensionData.name }, e.xmlLine } } ).second,
-                               e.xmlLine,
-                               "required enum <" + e.name + "> specified by value <" + e.value + "> is already specified" );
-                requireData.enumConstants.push_back( { e.name, e.value, e.xmlLine } );
-              }
-            }
-            else
-            {
-              auto typeIt = m_types.find( e.extends );
-              checkForError( typeIt != m_types.end(), e.xmlLine, "enum value <" + e.name + "> extends unknown type <" + e.extends + ">" );
-              checkForError(
-                typeIt->second.category == TypeCategory::Enum, e.xmlLine, "enum value <" + e.name + "> extends non-enum type <" + e.extends + ">" );
-              typeIt->second.requiredBy.insert( extensionData.name );
-              auto enumIt = findByNameOrAlias( m_enums, e.extends );
-              assert( enumIt != m_enums.end() );
-
-              checkForError( enumIt->second.addEnumValue(
-                               e.xmlLine, e.name, protect, e.bitPos + e.offset, e.value, extensionSupported && requireSupported, e.deprecated == "true" ),
-                             e.xmlLine,
-                             "enum value <" + e.name + "> already listed with different properties" );
-            }
+            auto const & requireEnumAlias = std::get<ExtensionRequireEnumAlias>( aliasVariant );
+            auto const & typeIt           = m_types.find( requireEnumAlias.extends );
+            checkForError( typeIt != m_types.end(),
+                           requireEnumAlias.xmlLine,
+                           "enum alias <" + requireEnumAlias.name + "> extends unknown type <" + requireEnumAlias.extends + ">" );
+            checkForError( typeIt->second.category == TypeCategory::Enum,
+                           requireEnumAlias.xmlLine,
+                           "enum alias <" + requireEnumAlias.name + "> extends non-enum type <" + requireEnumAlias.extends + ">" );
+            typeIt->second.requiredBy.insert( extensionData.name );
+            auto enumIt = findByNameOrAlias( m_enums, requireEnumAlias.extends );
+            assert( enumIt != m_enums.end() );
+            std::string protect = requireEnumAlias.protect.empty() ? getProtectFromPlatform( extensionData.platform ) : requireEnumAlias.protect;
+            checkForError( enumIt->second.addEnumAlias(
+                             requireEnumAlias.xmlLine, requireEnumAlias.name, requireEnumAlias.alias, protect, extensionSupported && requireSupported ),
+                           requireEnumAlias.xmlLine,
+                           "enum value alias <" + requireEnumAlias.name + "> already listed with different properties" );
           }
           else
           {
-            if ( e.extends.empty() )
+            // enum aliases that don't extend anything are listed as constants
+            assert( std::holds_alternative<Alias>( aliasVariant ) );
+            auto const & alias  = std::get<Alias>( aliasVariant );
+            auto         typeIt = m_types.find( alias.alias );
+            checkForError( typeIt != m_types.end(), alias.xmlLine, "enum alias <" + alias.name + "> is an alias of an unknown type <" + alias.alias + ">" );
+            checkForError( typeIt->second.category == TypeCategory::Constant,
+                           alias.xmlLine,
+                           "constant alias <" + alias.name + "> is an alias of a non-constant type <" + alias.alias + ">" );
+            checkForError( m_types.insert( { alias.name, TypeData{ TypeCategory::Constant, { extensionData.name }, alias.xmlLine } } ).second,
+                           alias.xmlLine,
+                           "constant alias <" + alias.name + "> already specified" );
+            checkForError( !containsByName( m_vkxml.constants.values, alias.name ),
+                           alias.xmlLine,
+                           "constant alias <" + alias.name + "> already specified as a constant in the vk.xml" );
+            auto constIt = findByName( m_vkxml.constants.values, alias.alias );
+            if ( constIt != m_vkxml.constants.values.end() )
             {
-              // enum aliases that don't extend anything are listed as constants
-              auto typeIt = m_types.find( e.alias );
-              checkForError( typeIt != m_types.end(), e.xmlLine, "enum alias <" + e.name + "> is an alias of an unknown enum <" + e.alias + ">" );
-              checkForError( typeIt->second.category == TypeCategory::Constant,
-                             e.xmlLine,
-                             "enum alias <" + e.name + "> is an alias of a non-constant type <" + e.alias + ">" );
-              checkForError( m_types.insert( { e.name, TypeData{ TypeCategory::Constant, { extensionData.name }, e.xmlLine } } ).second,
-                             e.xmlLine,
-                             "required enum <" + e.name + "> already specified" );
-              checkForError( !containsByName( m_vkxml.constants.values, e.name ),
-                             e.xmlLine,
-                             "required enum <" + e.name + "> already specified as a constant in the vk.xml" );
-
-              auto constIt = findByName( m_vkxml.constants.values, e.alias );
-              if ( constIt != m_vkxml.constants.values.end() )
-              {
-                typeIt = m_types.find( e.name );
-                typeIt->second.requiredBy.insert( extensionData.name );
-                m_vkxml.constants.values.push_back( { .name = e.name, .type = constIt->type, .value = constIt->value, .xmlLine = e.xmlLine } );
-                requireData.constants.push_back( { e.name, e.xmlLine } );
-              }
-            }
-            else
-            {
-              auto typeIt = m_types.find( e.extends );
-              checkForError( typeIt != m_types.end(), e.xmlLine, "enum value <" + e.name + "> extends unknown type <" + e.extends + ">" );
-              checkForError(
-                typeIt->second.category == TypeCategory::Enum, e.xmlLine, "enum value <" + e.name + "> extends non-enum type <" + e.extends + ">" );
+              typeIt = m_types.find( alias.name );
               typeIt->second.requiredBy.insert( extensionData.name );
-              auto enumIt = findByNameOrAlias( m_enums, e.extends );
-              assert( enumIt != m_enums.end() );
-              checkForError( enumIt->second.addEnumAlias( e.xmlLine, e.name, e.alias, protect, extensionSupported && requireSupported ),
-                             e.xmlLine,
-                             "enum value alias <" + e.name + "> already listed with different properties" );
+              m_vkxml.constants.values.push_back( { .name = alias.name, .type = constIt->type, .value = constIt->value, .xmlLine = alias.xmlLine } );
+              requireData.constants.push_back( { alias.name, alias.xmlLine } );
             }
+          }
+        }
+        else if ( std::holds_alternative<ExtensionRequireEnumExtendVariant>( e ) )
+        {
+          auto const &        extendVariant = std::get<ExtensionRequireEnumExtendVariant>( e );
+          std::string const & extends       = std::visit( []( auto const & val ) { return val.extends; }, extendVariant );
+          std::string const & name          = std::visit( []( auto const & val ) { return val.name; }, extendVariant );
+          int                 xmlLine       = std::visit( []( auto const & val ) { return val.xmlLine; }, extendVariant );
+          auto                typeIt        = m_types.find( extends );
+          checkForError( typeIt != m_types.end(), xmlLine, "enum value <" + name + "> extends unknown type <" + extends + ">" );
+          checkForError( typeIt->second.category == TypeCategory::Enum, xmlLine, "enum value <" + name + "> extends non-enum type <" + extends + ">" );
+          typeIt->second.requiredBy.insert( extensionData.name );
+          auto enumIt = findByNameOrAlias( m_enums, extends );
+          assert( enumIt != m_enums.end() );
+
+          if ( std::holds_alternative<ExtensionRequireEnumExtendByBitPos>( extendVariant ) )
+          {
+            auto const & extendByBitPos = std::get<ExtensionRequireEnumExtendByBitPos>( extendVariant );
+            std::string  protect        = extendByBitPos.protect.empty() ? getProtectFromPlatform( extensionData.platform ) : extendByBitPos.protect;
+            checkForError( enumIt->second.addEnumValue( xmlLine, name, protect, extendByBitPos.bitPos, "", extensionSupported && requireSupported, false ),
+                           xmlLine,
+                           "enum value <" + name + "> already listed with different properties" );
+          }
+          else if ( std::holds_alternative<ExtensionRequireEnumExtendByOffset>( extendVariant ) )
+          {
+            auto const & extendByOffset = std::get<ExtensionRequireEnumExtendByOffset>( extendVariant );
+
+            std::string protect = extendByOffset.protect.empty() ? getProtectFromPlatform( extensionData.platform ) : extendByOffset.protect;
+            checkForError( enumIt->second.addEnumValue(
+                             xmlLine, name, protect, extendByOffset.offset, "", extensionSupported && requireSupported, extendByOffset.deprecated == "true" ),
+                           xmlLine,
+                           "enum value <" + name + "> already listed with different properties" );
+          }
+          else
+          {
+            assert( std::holds_alternative<ExtensionRequireEnumExtendByValue>( extendVariant ) );
+            auto const & extendByValue = std::get<ExtensionRequireEnumExtendByValue>( extendVariant );
+
+            checkForError(
+              enumIt->second.addEnumValue(
+                xmlLine, name, getProtectFromPlatform( extensionData.platform ), "", extendByValue.value, extensionSupported && requireSupported, false ),
+              xmlLine,
+              "enum value <" + name + "> already listed with different properties" );
+          }
+        }
+        else
+        {
+          assert( std::holds_alternative<ExtensionRequireEnumConstantVariant>( e ) );
+          auto const & constantVariant = std::get<ExtensionRequireEnumConstantVariant>( e );
+          if ( std::holds_alternative<ExtensionRequireEnumConstant>( constantVariant ) )
+          {
+            auto const & enumConstant = std::get<ExtensionRequireEnumConstant>( constantVariant );
+            checkForError( m_types.insert( { enumConstant.name, TypeData{ TypeCategory::Constant, { extensionData.name }, enumConstant.xmlLine } } ).second,
+                           enumConstant.xmlLine,
+                           "required constant <" + enumConstant.name + "> specified by value <" + enumConstant.value + "> is already specified" );
+            requireData.enumConstants.push_back( { enumConstant.name, enumConstant.value, enumConstant.xmlLine } );
+          }
+          else
+          {
+            assert( std::holds_alternative<NameElement>( constantVariant ) );
+            auto const & nameElement = std::get<NameElement>( constantVariant );
+            auto         typeIt      = m_types.find( nameElement.name );
+            checkForError( typeIt != m_types.end(), nameElement.xmlLine, "unknown required enum <" + nameElement.name + ">" );
+            typeIt->second.requiredBy.insert( extensionData.name );
+            requireData.constants.push_back( { nameElement.name, nameElement.xmlLine } );
           }
         }
       }
@@ -544,6 +578,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
       m_unsupportedExtensions.push_back( std::move( extensionData ) );
     }
   }
+
   for ( auto const & format : m_vkxml.formats )
   {
     auto formatIt = m_enums.find( "VkFormat" );

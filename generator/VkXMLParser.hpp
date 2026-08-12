@@ -45,9 +45,10 @@ struct Tags
 
 struct Alias
 {
-  std::string name    = {};
-  std::string alias   = {};
-  int         xmlLine = {};
+  std::string name       = {};
+  std::string alias      = {};
+  std::string deprecated = {};
+  int         xmlLine    = {};
 };
 
 struct TypeBaseType
@@ -93,6 +94,7 @@ struct EnumValue
   std::string                 name    = {};
   std::string                 bitPos  = {};
   std::string                 comment = {};
+  std::string                 offset  = {};
   std::string                 value   = {};
   std::vector<EnumValueAlias> aliases = {};
   int                         xmlLine = {};
@@ -380,22 +382,65 @@ struct ExtensionRemove
   int            xmlLine = {};
 };
 
-struct ExtensionRequireEnum
+struct ExtensionRequireEnumAlias
 {
   std::string name       = {};
   std::string alias      = {};
+  std::string extends    = {};
   std::string api        = {};
-  std::string bitPos     = {};
   std::string comment    = {};
   std::string deprecated = {};
-  std::string dir        = {};
-  std::string extends    = {};
-  std::string extNumber  = {};
-  std::string offset     = {};
   std::string protect    = {};
-  std::string value      = {};
   int         xmlLine    = {};
 };
+
+using ExtensionRequireEnumAliasVariant = std::variant<ExtensionRequireEnumAlias, Alias>;
+
+struct ExtensionRequireEnumExtendByBitPos
+{
+  std::string name    = {};
+  std::string extends = {};
+  std::string bitPos  = {};
+  std::string comment = {};
+  std::string protect = {};
+  int         xmlLine = {};
+};
+
+struct ExtensionRequireEnumExtendByOffset
+{
+  std::string name       = {};
+  std::string extends    = {};
+  std::string offset     = {};
+  std::string comment    = {};
+  std::string dir        = {};
+  std::string deprecated = {};
+  std::string extNumber  = {};
+  std::string protect    = {};
+  int         xmlLine    = {};
+};
+
+struct ExtensionRequireEnumExtendByValue
+{
+  std::string name    = {};
+  std::string extends = {};
+  std::string value   = {};
+  std::string comment = {};
+  int         xmlLine = {};
+};
+
+using ExtensionRequireEnumExtendVariant =
+  std::variant<ExtensionRequireEnumExtendByBitPos, ExtensionRequireEnumExtendByOffset, ExtensionRequireEnumExtendByValue>;
+
+struct ExtensionRequireEnumConstant
+{
+  std::string name    = {};
+  std::string value   = {};
+  int         xmlLine = {};
+};
+
+using ExtensionRequireEnumConstantVariant = std::variant<ExtensionRequireEnumConstant, NameElement>;
+
+using ExtensionRequireEnumVariant = std::variant<ExtensionRequireEnumAliasVariant, ExtensionRequireEnumExtendVariant, ExtensionRequireEnumConstantVariant>;
 
 struct MultiFeatureElement
 {
@@ -406,14 +451,14 @@ struct MultiFeatureElement
 
 struct ExtensionRequire
 {
-  std::string                       api      = {};
-  std::vector<NameElement>          commands = {};
-  std::string                       comment  = {};
-  std::string                       depends  = {};
-  std::vector<ExtensionRequireEnum> enums    = {};
-  std::vector<MultiFeatureElement>  features = {};
-  std::vector<NameElement>          types    = {};
-  int                               xmlLine  = {};
+  std::string                              api      = {};
+  std::vector<NameElement>                 commands = {};
+  std::string                              comment  = {};
+  std::string                              depends  = {};
+  std::vector<ExtensionRequireEnumVariant> enums    = {};
+  std::vector<MultiFeatureElement>         features = {};
+  std::vector<NameElement>                 types    = {};
+  int                                      xmlLine  = {};
 };
 
 struct Extension

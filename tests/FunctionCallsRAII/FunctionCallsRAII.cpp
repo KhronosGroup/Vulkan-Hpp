@@ -1221,5 +1221,19 @@ int main()
     commandBuffer.dispatchBase( baseGroupX, baseGroupY, baseGroupZ, groupCountX, groupCountY, groupCountZ );
   }
 
+  // Promoted from VK_KHR_descriptor_update_template
+  {
+    vk::raii::Device                       device = nullptr;
+    vk::DescriptorUpdateTemplateCreateInfo descriptorUpdateTemplateCreateInfo;
+    vk::raii::DescriptorUpdateTemplate     descriptorUpdateTemplate = device.createDescriptorUpdateTemplate( descriptorUpdateTemplateCreateInfo );
+  }
+
+  {
+    vk::raii::DescriptorSet            descriptorSet            = nullptr;
+    vk::raii::DescriptorUpdateTemplate descriptorUpdateTemplate = nullptr;
+    uint32_t                           data = 0;
+    descriptorSet.updateWithTemplate( *descriptorUpdateTemplate, data );
+  }
+
   return 0;
 }

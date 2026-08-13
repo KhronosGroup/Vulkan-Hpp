@@ -2401,6 +2401,58 @@ int main()
     commandBuffer.dispatchBase( baseGroupX, baseGroupY, baseGroupZ, groupCountX, groupCountY, groupCountZ );
   }
 
+  // Promoted from VK_KHR_descriptor_update_template
+  {
+    vk::Device                             device;
+    vk::DescriptorUpdateTemplateCreateInfo descriptorUpdateTemplateCreateInfo;
+    vk::AllocationCallbacks                allocationCallbacks;
+    vk::DescriptorUpdateTemplate           descriptorUpdateTemplate;
+    vk::Result result = device.createDescriptorUpdateTemplate( &descriptorUpdateTemplateCreateInfo, &allocationCallbacks, &descriptorUpdateTemplate );
+  }
+  {
+    vk::Device                             device;
+    vk::DescriptorUpdateTemplateCreateInfo descriptorUpdateTemplateCreateInfo;
+    vk::DescriptorUpdateTemplate           descriptorUpdateTemplate = device.createDescriptorUpdateTemplate( descriptorUpdateTemplateCreateInfo );
+  }
+
+  {
+    vk::Device                   device;
+    vk::DescriptorUpdateTemplate descriptorUpdateTemplate;
+    vk::AllocationCallbacks      allocationCallbacks;
+    device.destroyDescriptorUpdateTemplate( descriptorUpdateTemplate, &allocationCallbacks );
+  }
+  {
+    vk::Device                   device;
+    vk::DescriptorUpdateTemplate descriptorUpdateTemplate;
+    device.destroyDescriptorUpdateTemplate( descriptorUpdateTemplate );
+  }
+  {
+    vk::Device                   device;
+    vk::DescriptorUpdateTemplate descriptorUpdateTemplate;
+    vk::AllocationCallbacks      allocationCallbacks;
+    device.destroy( descriptorUpdateTemplate, &allocationCallbacks );
+  }
+  {
+    vk::Device                   device;
+    vk::DescriptorUpdateTemplate descriptorUpdateTemplate;
+    device.destroy( descriptorUpdateTemplate );
+  }
+
+  {
+    vk::Device                   device;
+    vk::DescriptorSet            descriptorSet;
+    vk::DescriptorUpdateTemplate descriptorUpdateTemplate;
+    uint32_t                     data = 0;
+    device.updateDescriptorSetWithTemplate( descriptorSet, descriptorUpdateTemplate, &data );
+  }
+  {
+    vk::Device                   device;
+    vk::DescriptorSet            descriptorSet;
+    vk::DescriptorUpdateTemplate descriptorUpdateTemplate;
+    uint32_t                     data = 0;
+    device.updateDescriptorSetWithTemplate( descriptorSet, descriptorUpdateTemplate, data );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

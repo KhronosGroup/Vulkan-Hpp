@@ -1231,8 +1231,22 @@ int main()
   {
     vk::raii::DescriptorSet            descriptorSet            = nullptr;
     vk::raii::DescriptorUpdateTemplate descriptorUpdateTemplate = nullptr;
-    uint32_t                           data = 0;
+    uint32_t                           data                     = 0;
     descriptorSet.updateWithTemplate( *descriptorUpdateTemplate, data );
+  }
+
+  // Promoted from VK_KHR_maintenance3
+  {
+    vk::raii::Device                  device = nullptr;
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+    vk::DescriptorSetLayoutSupport    descriptorSetLayoutSupport = device.getDescriptorSetLayoutSupport( descriptorSetLayoutCreateInfo );
+  }
+  {
+    vk::raii::Device                                                                                          device = nullptr;
+    vk::DescriptorSetLayoutCreateInfo                                                                         descriptorSetLayoutCreateInfo;
+    vk::StructureChain<vk::DescriptorSetLayoutSupport, vk::DescriptorSetVariableDescriptorCountLayoutSupport> descriptorSetLayoutSupportChain =
+      device.getDescriptorSetLayoutSupport<vk::DescriptorSetLayoutSupport, vk::DescriptorSetVariableDescriptorCountLayoutSupport>(
+        descriptorSetLayoutCreateInfo );
   }
 
   return 0;

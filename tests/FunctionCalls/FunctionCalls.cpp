@@ -2453,6 +2453,26 @@ int main()
     device.updateDescriptorSetWithTemplate( descriptorSet, descriptorUpdateTemplate, data );
   }
 
+  // Promoted from VK_KHR_maintenance3
+  {
+    vk::Device                        device;
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+    vk::DescriptorSetLayoutSupport    descriptorSetLayoutSupport;
+    device.getDescriptorSetLayoutSupport( &descriptorSetLayoutCreateInfo, &descriptorSetLayoutSupport );
+  }
+  {
+    vk::Device                        device;
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo;
+    vk::DescriptorSetLayoutSupport    descriptorSetLayoutSupport = device.getDescriptorSetLayoutSupport( descriptorSetLayoutCreateInfo );
+  }
+  {
+    vk::Device                                                                                                device;
+    vk::DescriptorSetLayoutCreateInfo                                                                         descriptorSetLayoutCreateInfo;
+    vk::StructureChain<vk::DescriptorSetLayoutSupport, vk::DescriptorSetVariableDescriptorCountLayoutSupport> descriptorSetLayoutSupportChain =
+      device.getDescriptorSetLayoutSupport<vk::DescriptorSetLayoutSupport, vk::DescriptorSetVariableDescriptorCountLayoutSupport>(
+        descriptorSetLayoutCreateInfo );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

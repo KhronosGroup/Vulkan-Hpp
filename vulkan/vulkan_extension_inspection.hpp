@@ -3292,7 +3292,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_shader_float16_int8",
             } } },
           { "VK_VERSION_1_2", { {} } } } },
+      { "VK_ARM_data_graph_neural_accelerator_statistics",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_EXT_primitive_restart_index",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_image_tiling_control",
         { { "VK_VERSION_1_0",
             { {
               "VK_KHR_get_physical_device_properties2",

@@ -8,29 +8,45 @@
 
 #include <vector>
 
-void  checkExtensionOrStructAndMember( std::string const & depends, int xmlLine, std::string const & prefix, std::vector<TypeStruct> const & structs );
-bool  containsByNameAndExport( std::vector<Command> const & commands, std::string const & name, std::vector<std::string> const & exports );
-bool  isLenByStructMember( std::string const & name, std::vector<Param> const & params, std::vector<TypeStruct> const & structs );
-void  normalizeVersion( std::vector<std::vector<std::string>> & dependencies );
-Alias parseAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & category );
-BitmaskValueVariant          parseBitmaskValue( tinyxml2::XMLElement const * element );
-CommandVariant               parseCommand( tinyxml2::XMLElement const * element );
-std::vector<Command>         parseCommands( tinyxml2::XMLElement const * element );
-Component                    parseComponent( tinyxml2::XMLElement const * element );
-ConstantValue                parseConstantValue( tinyxml2::XMLElement const * element );
-Deprecate                    parseDeprecate( tinyxml2::XMLElement const * element );
-EnumsVariant                 parseEnums( tinyxml2::XMLElement const * element );
-EnumsBitmask                 parseEnumsBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-EnumsConstants               parseEnumsConstants( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-EnumsEnum                    parseEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-EnumUnused                   parseEnumUnused( tinyxml2::XMLElement const * element );
-EnumValueVariant             parseEnumValue( tinyxml2::XMLElement const * element );
-ExtensionRemove              parseExtensionRemove( tinyxml2::XMLElement const * element );
-ExtensionRequire             parseExtensionRequire( tinyxml2::XMLElement const * element );
-ExtensionRequireEnum         parseExtensionRequireEnum( tinyxml2::XMLElement const * element );
+void checkExtensionOrStructAndMember( std::string const & depends, int xmlLine, std::string const & prefix, std::vector<TypeStruct> const & structs );
+template <typename... T>
+bool                 containsByName( std::vector<ExtensionRequireEnumVariant> const & values, std::string const & name );
+bool                 containsByNameAndExport( std::vector<Command> const & commands, std::string const & name, std::vector<std::string> const & exports );
+std::string          getName( ExtensionRequireEnumVariant const & enumVariant );
+int                  getXMLLine( ExtensionRequireEnumVariant const & enumVariant );
+bool                 isLenByStructMember( std::string const & name, std::vector<Param> const & params, std::vector<TypeStruct> const & structs );
+void                 normalizeVersion( std::vector<std::vector<std::string>> & dependencies );
+Alias                parseAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & category );
+BitmaskValueVariant  parseBitmaskValue( tinyxml2::XMLElement const * element );
+CommandVariant       parseCommand( tinyxml2::XMLElement const * element );
+std::vector<Command> parseCommands( tinyxml2::XMLElement const * element );
+Component            parseComponent( tinyxml2::XMLElement const * element );
+ConstantValue        parseConstantValue( tinyxml2::XMLElement const * element );
+Deprecate            parseDeprecate( tinyxml2::XMLElement const * element );
+EnumsVariant         parseEnums( tinyxml2::XMLElement const * element );
+EnumsBitmask         parseEnumsBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+EnumsConstants       parseEnumsConstants( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+EnumsEnum            parseEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+EnumUnused           parseEnumUnused( tinyxml2::XMLElement const * element );
+EnumValueVariant     parseEnumValue( tinyxml2::XMLElement const * element );
+ExtensionRemove      parseExtensionRemove( tinyxml2::XMLElement const * element );
+ExtensionRequire     parseExtensionRequire( tinyxml2::XMLElement const * element );
+ExtensionRequireEnumVariant parseExtensionRequireEnum( tinyxml2::XMLElement const * element );
+ExtensionRequireEnumAlias   parseExtensionRequireEnumAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+ExtensionRequireEnumExtendByBitPos parseExtensionRequireEnumExtentByBitPos( tinyxml2::XMLElement const *               element,
+                                                                            std::map<std::string, std::string> const & attributes );
+ExtensionRequireEnumExtendByOffset parseExtensionRequireEnumExtentByOffset( tinyxml2::XMLElement const *               element,
+                                                                            std::map<std::string, std::string> const & attributes );
+ExtensionRequireEnumExtendByValue  parseExtensionRequireEnumExtentByValue( tinyxml2::XMLElement const *               element,
+                                                                           std::map<std::string, std::string> const & attributes );
+ExtensionRequireEnumConstant parseExtensionRequireEnumConstant( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 Extensions                   parseExtensions( tinyxml2::XMLElement const * element );
 Feature                      parseFeature( tinyxml2::XMLElement const * element );
 FeatureElement               parseFeatureElement( tinyxml2::XMLElement const * element );
+Require                      parseFeatureRequire( tinyxml2::XMLElement const * element );
+RequireEnumVariant           parseFeatureRequireEnum( tinyxml2::XMLElement const * element );
+ExtendEnumAlias              parseFeatureRequireEnumAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+ExtendEnumRegular            parseFeatureRequireEnumRegular( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 Format                       parseFormat( tinyxml2::XMLElement const * element );
 std::vector<Format>          parseFormats( tinyxml2::XMLElement const * element );
 void                         parseImplicitExternSyncParams( tinyxml2::XMLElement const * element );
@@ -46,10 +62,6 @@ Platforms                                                            parsePlatfo
 std::pair<std::string, Type>                                         parseProto( tinyxml2::XMLElement const * element );
 Vkxml                                                                parseRegistry( tinyxml2::XMLElement const * element, std::string const & api );
 Remove                                                               parseRemove( tinyxml2::XMLElement const * element );
-Require                                                              parseRequire( tinyxml2::XMLElement const * element );
-RequireEnumVariant                                                   parseRequireEnum( tinyxml2::XMLElement const * element );
-ExtendEnumAlias         parseRequireEnumAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-ExtendEnumRegular       parseRequireEnumRegular( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 RequireType             parseRequireType( tinyxml2::XMLElement const * element );
 SPIRVCapabilities       parseSPIRVCapabilities( tinyxml2::XMLElement const * element );
 SPIRVCapability         parseSPIRVCapability( tinyxml2::XMLElement const * element );
@@ -112,6 +124,12 @@ void checkNumber( std::string const & number, int line, std::string const & mess
   checkForError( "vk.xml", std::ranges::all_of( number, []( char c ) { return std::isdigit( c ); } ), line, message + " <" + number + ">" );
 }
 
+template <typename... T>
+bool containsByName( std::vector<ExtensionRequireEnumVariant> const & values, std::string const & name )
+{
+  return std::ranges::any_of( values, [&name]( auto const & value ) { return getName( value ) == name; } );
+}
+
 bool containsByNameAndExport( std::vector<Command> const & commands, std::string const & name, std::vector<std::string> const & exports )
 {
   // check if there is a command with the specified name and at least one export in the specified exports list
@@ -125,6 +143,16 @@ bool containsByNameAndExport( std::vector<Command> const & commands, std::string
                [&exports]( std::string const & commandExport )
                { return std::ranges::any_of( exports, [&commandExport]( std::string const & exportItem ) { return exportItem == commandExport; } ); } );
     } );
+}
+
+std::string getName( ExtensionRequireEnumVariant const & enumVariant )
+{
+  return std::visit( []( auto const & innerVariant ) { return std::visit( []( auto const & val ) { return val.name; }, innerVariant ); }, enumVariant );
+}
+
+int getXMLLine( ExtensionRequireEnumVariant const & enumVariant )
+{
+  return std::visit( []( auto const & innerVariant ) { return std::visit( []( auto const & val ) { return val.xmlLine; }, innerVariant ); }, enumVariant );
 }
 
 bool isLenByStructMember( std::string const & name, std::vector<Param> const & params, std::vector<TypeStruct> const & structs )
@@ -185,7 +213,7 @@ Alias parseAlias( tinyxml2::XMLElement const * element, std::map<std::string, st
   }
 
   int const line = element->GetLineNum();
-  checkAttributes( "vk.xml", line, attributes, required, {} );
+  checkAttributes( "vk.xml", line, attributes, required, { { "deprecated", { "aliased" } } } );
   checkElements( "vk.xml", line, getChildElements( element ), {} );
 
   Alias alias{ .xmlLine = line };
@@ -195,6 +223,11 @@ Alias parseAlias( tinyxml2::XMLElement const * element, std::map<std::string, st
     {
       checkNoList( "vk.xml", attribute.second, line );
       alias.alias = attribute.second;
+    }
+    else if ( attribute.first == "deprecated" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      alias.deprecated = attribute.second;
     }
     else if ( attribute.first == "name" )
     {
@@ -992,13 +1025,13 @@ Extension parseExtension( tinyxml2::XMLElement const * element )
     else if ( value == "require" )
     {
       ExtensionRequire require         = parseExtensionRequire( child );
-      auto             extensionNameIt = std::ranges::find_if( require.enums, []( auto const & e ) { return e.name.ends_with( "_EXTENSION_NAME" ); } );
+      auto             extensionNameIt = std::ranges::find_if( require.enums, []( auto const & e ) { return getName( e ).ends_with( "_EXTENSION_NAME" ); } );
       if ( extensionNameIt != require.enums.end() )
       {
         checkForError( "vk.xml",
                        extension.require.empty(),
-                       extensionNameIt->xmlLine,
-                       "extension name enum <" + extensionNameIt->name + "> encountered in second or later require section" );
+                       getXMLLine( *extensionNameIt ),
+                       "extension name enum <" + getName( *extensionNameIt ) + "> encountered in second or later require section" );
       }
       for ( auto const & alreadyRequired : extension.require )
       {
@@ -1013,10 +1046,11 @@ Extension parseExtension( tinyxml2::XMLElement const * element )
         {
           for ( auto const & e : require.enums )
           {
+            auto const & eName = getName( e );
             checkForError( "vk.xml",
-                           !containsByName( alreadyRequired.enums, e.name ),
-                           e.xmlLine,
-                           "require enum <" + e.name + "> already listed as required for extension <" + extension.name + ">" );
+                           !containsByName( alreadyRequired.enums, eName ),
+                           getXMLLine( e ),
+                           "enum <" + eName + "> already listed as required for extension <" + extension.name + ">" );
           }
           for ( auto const & feature : require.features )
           {
@@ -1145,9 +1179,8 @@ EnumValueVariant parseEnumValue( tinyxml2::XMLElement const * element )
 
 ExtensionRemove parseExtensionRemove( tinyxml2::XMLElement const * element )
 {
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( "vk.xml", line, attributes, {}, {} );
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, getAttributes( element ), {}, {} );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( "vk.xml", line, children, { { "feature", MultipleAllowed::No } }, {} );
 
@@ -1214,17 +1247,13 @@ ExtensionRequire parseExtensionRequire( tinyxml2::XMLElement const * element )
     }
     else if ( value == "enum" )
     {
-      ExtensionRequireEnum requireEnum = parseExtensionRequireEnum( child );
+      ExtensionRequireEnumVariant requireEnumVariant = parseExtensionRequireEnum( child );
+      std::string const &         name               = getName( requireEnumVariant );
       checkForError( "vk.xml",
-                     !containsByName( require.enums, requireEnum.name ),
-                     requireEnum.xmlLine,
-                     "require enum <" + requireEnum.name + "> already listed for this require block" );
-      checkForError( "vk.xml",
-                     !requireEnum.alias.empty() || !requireEnum.name.ends_with( "_EXTENSION_NAME" ) ||
-                       std::ranges::none_of( require.enums, []( auto const & e ) { return e.name.ends_with( "_EXTENSION_NAME" ); } ),
-                     requireEnum.xmlLine,
-                     "extension name enum <" + requireEnum.name + "> is not the first enum ending with \"_EXTENSION_NAME\"" );
-      require.enums.push_back( std::move( requireEnum ) );
+                     !containsByName( require.enums, name ),
+                     getXMLLine( requireEnumVariant ),
+                     "require enum <" + name + "> already listed for this require block" );
+      require.enums.push_back( requireEnumVariant );
     }
     else if ( value == "feature" )
     {
@@ -1258,119 +1287,265 @@ ExtensionRequire parseExtensionRequire( tinyxml2::XMLElement const * element )
   return require;
 }
 
-ExtensionRequireEnum parseExtensionRequireEnum( tinyxml2::XMLElement const * element )
+ExtensionRequireEnumVariant parseExtensionRequireEnum( tinyxml2::XMLElement const * element )
 {
-  int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   if ( attributes.contains( "alias" ) )
   {
-    checkAttributes(
-      "vk.xml",
-      line,
-      attributes,
-      { { "alias", {} }, { "name", {} } },
-      { { "api", { "vulkan" } }, { "comment", {} }, { "deprecated", { "aliased" } }, { "extends", {} }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } } } );
+    if ( attributes.contains( "extends" ) )
+    {
+      return parseExtensionRequireEnumAlias( element, attributes );
+    }
+    else
+    {
+      return parseAlias( element, attributes, "" );
+    }
   }
-  else if ( attributes.contains( "bitpos" ) )
+  else if ( attributes.contains( "extends" ) )
   {
-    checkAttributes( "vk.xml",
-                     line,
-                     attributes,
-                     { { "bitpos", {} }, { "extends", {} }, { "name", {} } },
-                     { { "comment", {} }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } } } );
-  }
-  else if ( attributes.contains( "offset" ) )
-  {
-    checkAttributes(
-      "vk.xml",
-      line,
-      attributes,
-      { { "extends", {} }, { "name", {} }, { "offset", {} } },
-      { { "comment", {} }, { "dir", { "-" } }, { "deprecated", { "true" } }, { "extnumber", {} }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } } } );
-  }
-  else if ( attributes.contains( "value" ) )
-  {
-    checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "value", {} } }, { { "comment", {} }, { "extends", {} } } );
+    if ( attributes.contains( "bitpos" ) )
+    {
+      return parseExtensionRequireEnumExtentByBitPos( element, attributes );
+    }
+    else if ( attributes.contains( "offset" ) )
+    {
+      return parseExtensionRequireEnumExtentByOffset( element, attributes );
+    }
+    else
+    {
+      assert( attributes.contains( "value" ) );
+      return parseExtensionRequireEnumExtentByValue( element, attributes );
+    }
   }
   else
   {
-    checkAttributes( "vk.xml", line, attributes, { { "name", {} } }, {} );
+    if ( attributes.contains( "value" ) )
+    {
+      return parseExtensionRequireEnumConstant( element, attributes );
+    }
+    else
+    {
+      return parseNameElement( element );
+    }
   }
-  checkElements( "vk.xml", line, getChildElements( element ), {} );
+}
 
-  ExtensionRequireEnum requireEnum{ .xmlLine = line };
-  std::string          attr;
+ExtensionRequireEnumAlias parseExtensionRequireEnumAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml",
+                   line,
+                   attributes,
+                   { { "alias", {} }, { "extends", {} }, { "name", {} } },
+                   { { "api", { "vulkan" } }, { "comment", {} }, { "deprecated", { "aliased" } }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } } } );
+
+  ExtensionRequireEnumAlias alias{ .xmlLine = line };
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "alias" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      requireEnum.alias = attribute.second;
+      alias.alias = attribute.second;
     }
     else if ( attribute.first == "api" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      requireEnum.api = attribute.second;
-    }
-    else if ( attribute.first == "bitpos" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      checkForError( "vk.xml", isNumber( attribute.second ), line, "require enum with non-numeric bitpos <" + attribute.second + ">" );
-      requireEnum.bitPos = attribute.second;
+      alias.api = attribute.second;
     }
     else if ( attribute.first == "comment" )
     {
-      requireEnum.comment = attribute.second;
+      alias.comment = attribute.second;
     }
     else if ( attribute.first == "deprecated" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      requireEnum.deprecated = attribute.second;
-    }
-    else if ( attribute.first == "dir" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      requireEnum.dir = attribute.second;
+      alias.deprecated = attribute.second;
     }
     else if ( attribute.first == "extends" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      requireEnum.extends = attribute.second;
+      alias.extends = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      alias.name = attribute.second;
+    }
+    else if ( attribute.first == "protect" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      alias.protect = attribute.second;
+    }
+  }
+
+  return alias;
+}
+
+ExtensionRequireEnumExtendByBitPos parseExtensionRequireEnumExtentByBitPos( tinyxml2::XMLElement const *               element,
+                                                                            std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml",
+                   line,
+                   attributes,
+                   { { "bitpos", {} }, { "extends", {} }, { "name", {} } },
+                   { { "comment", {} }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } } } );
+
+  ExtensionRequireEnumExtendByBitPos byBitPos{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "bitpos" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      checkForError( "vk.xml", isNumber( attribute.second ), line, "require enum with non-numeric bitpos <" + attribute.second + ">" );
+      byBitPos.bitPos = attribute.second;
+    }
+    else if ( attribute.first == "comment" )
+    {
+      byBitPos.comment = attribute.second;
+    }
+    else if ( attribute.first == "extends" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      byBitPos.extends = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      byBitPos.name = attribute.second;
+    }
+    else if ( attribute.first == "protect" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      byBitPos.protect = attribute.second;
+    }
+  }
+
+  return byBitPos;
+}
+
+ExtensionRequireEnumExtendByOffset parseExtensionRequireEnumExtentByOffset( tinyxml2::XMLElement const *               element,
+                                                                            std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes(
+    "vk.xml",
+    line,
+    attributes,
+    { { "extends", {} }, { "name", {} }, { "offset", {} } },
+    { { "comment", {} }, { "dir", { "-" } }, { "deprecated", { "true" } }, { "extnumber", {} }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  ExtensionRequireEnumExtendByOffset byOffset{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      byOffset.comment = attribute.second;
+    }
+    else if ( attribute.first == "deprecated" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      byOffset.deprecated = attribute.second;
+    }
+    else if ( attribute.first == "dir" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      byOffset.dir = attribute.second;
+    }
+    else if ( attribute.first == "extends" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      byOffset.extends = attribute.second;
     }
     else if ( attribute.first == "extnumber" )
     {
       checkNoList( "vk.xml", attribute.second, line );
       checkForError( "vk.xml", isNumber( attribute.second ), line, "require enum with non-numeric extnumber <" + attribute.second + ">" );
-      requireEnum.extNumber = attribute.second;
+      byOffset.extNumber = attribute.second;
     }
     else if ( attribute.first == "name" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      requireEnum.name = attribute.second;
+      byOffset.name = attribute.second;
     }
     else if ( attribute.first == "offset" )
     {
       checkNoList( "vk.xml", attribute.second, line );
       checkForError( "vk.xml", isNumber( attribute.second ), line, "require enum with non-numeric offset <" + attribute.second + ">" );
-      requireEnum.offset = attribute.second;
+      byOffset.offset = attribute.second;
     }
     else if ( attribute.first == "protect" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      requireEnum.protect = attribute.second;
+      byOffset.protect = attribute.second;
+    }
+  }
+
+  return byOffset;
+}
+
+ExtensionRequireEnumExtendByValue parseExtensionRequireEnumExtentByValue( tinyxml2::XMLElement const *               element,
+                                                                          std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, attributes, { { "extends", {} }, { "name", {} }, { "value", {} } }, { { "comment", {} } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  ExtensionRequireEnumExtendByValue byValue{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      byValue.comment = attribute.second;
+    }
+    else if ( attribute.first == "extends" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      byValue.extends = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      byValue.name = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      checkForError( "vk.xml", isSignedNumber( attribute.second ), line, "require enum with non-numeric value <" + attribute.second + ">" );
+      byValue.value = attribute.second;
+    }
+  }
+
+  return byValue;
+}
+
+ExtensionRequireEnumConstant parseExtensionRequireEnumConstant( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "value", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  ExtensionRequireEnumConstant constant{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      constant.name = attribute.second;
     }
     else if ( attribute.first == "value" )
     {
       checkNoList( "vk.xml", attribute.second, line );
       checkForError( "vk.xml",
-                     requireEnum.name.ends_with( "_EXTENSION_NAME" ) || isSignedNumber( attribute.second ),
+                     constant.name.ends_with( "_EXTENSION_NAME" ) || isSignedNumber( attribute.second ),
                      line,
                      "require enum with non-numeric value <" + attribute.second + ">" );
-      requireEnum.value = attribute.second;
+      constant.value = attribute.second;
     }
   }
 
-  return requireEnum;
+  return constant;
 }
 
 Extensions parseExtensions( tinyxml2::XMLElement const * element )
@@ -1606,7 +1781,7 @@ Feature parseFeature( tinyxml2::XMLElement const * element )
     }
     else if ( value == "require" )
     {
-      Require require = parseRequire( child );
+      Require require = parseFeatureRequire( child );
       for ( auto const & requireCommand : require.commands )
       {
         checkForError( "vk.xml",
@@ -1692,6 +1867,230 @@ FeatureElement parseFeatureElement( tinyxml2::XMLElement const * element )
   }
 
   return feature;
+}
+
+Require parseFeatureRequire( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, {}, { { "comment", {} }, { "depends", {} } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml",
+                 line,
+                 children,
+                 {},
+                 { { "command", MultipleAllowed::Yes },
+                   { "comment", MultipleAllowed::Yes },
+                   { "enum", MultipleAllowed::Yes },
+                   { "feature", MultipleAllowed::Yes },
+                   { "type", MultipleAllowed::Yes } } );
+
+  Require require{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      require.comment = attribute.second;
+    }
+    else if ( attribute.first == "depends" )
+    {
+      require.depends = tokenize( attribute.second, "," );
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "command" )
+    {
+      NameElement requireCommand = parseNameElement( child );
+      checkForError( "vk.xml",
+                     !containsByName( require.commands, requireCommand.name ),
+                     requireCommand.xmlLine,
+                     "require command <" + requireCommand.name + "> already listed for this require block" );
+      require.commands.push_back( std::move( requireCommand ) );
+    }
+    else if ( value == "enum" )
+    {
+      RequireEnumVariant requireEnumVariant = parseFeatureRequireEnum( child );
+      if ( std::holds_alternative<ExtendEnumAlias>( requireEnumVariant ) )
+      {
+        auto const & alias = std::get<ExtendEnumAlias>( requireEnumVariant );
+        checkForError( "vk.xml",
+                       !containsByName( require.enumAliases, alias.name ),
+                       alias.xmlLine,
+                       "require enum alias <" + alias.name + "> already listed for this require block" );
+        require.enumAliases.push_back( std::move( alias ) );
+      }
+      else if ( std::holds_alternative<ExtendEnumConstant>( requireEnumVariant ) )
+      {
+        auto const & constant = std::get<ExtendEnumConstant>( requireEnumVariant );
+        checkForError( "vk.xml",
+                       !containsByName( require.enumConstants, constant.name ),
+                       constant.xmlLine,
+                       "require enum constant <" + constant.name + "> already listed for this require block" );
+        require.enumConstants.push_back( std::move( constant ) );
+      }
+      else
+      {
+        assert( std::holds_alternative<ExtendEnumRegular>( requireEnumVariant ) );
+        auto const & regular = std::get<ExtendEnumRegular>( requireEnumVariant );
+        checkForError( "vk.xml",
+                       !containsByName( require.enumRegulars, regular.name ),
+                       regular.xmlLine,
+                       "require enum regular <" + regular.name + "> already listed for this require block" );
+        require.enumRegulars.push_back( std::move( regular ) );
+      }
+    }
+    else if ( value == "feature" )
+    {
+      FeatureElement requireFeature = parseFeatureElement( child );
+      checkForError( "vk.xml",
+                     std::ranges::none_of( require.features,
+                                           [&requireFeature]( FeatureElement const & feature )
+                                           { return ( feature.name == requireFeature.name ) && ( feature.structure == requireFeature.structure ); } ),
+                     requireFeature.xmlLine,
+                     "require feature <" + requireFeature.name + "> with struct <" + requireFeature.structure + "> already listed for this require block" );
+      require.features.push_back( std::move( requireFeature ) );
+    }
+    else if ( value == "type" )
+    {
+      RequireType requireType = parseRequireType( child );
+      checkForError( "vk.xml",
+                     !containsByName( require.types, requireType.name ),
+                     requireType.xmlLine,
+                     "require type <" + requireType.name + "> already listed for this require block" );
+      require.types.push_back( std::move( requireType ) );
+    }
+  }
+
+  return require;
+}
+
+RequireEnumVariant parseFeatureRequireEnum( tinyxml2::XMLElement const * element )
+{
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  if ( attributes.contains( "extends" ) )
+  {
+    if ( attributes.contains( "alias" ) )
+    {
+      return parseFeatureRequireEnumAlias( element, attributes );
+    }
+    else
+    {
+      return parseFeatureRequireEnumRegular( element, attributes );
+    }
+  }
+  else
+  {
+    return parseNameElement( element );
+  }
+}
+
+ExtendEnumAlias parseFeatureRequireEnumAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes(
+    "vk.xml", line, attributes, { { "alias", {} }, { "extends", {} }, { "name", {} } }, { { "api", { "vulkan" } }, { "deprecated", { "aliased" } } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  ExtendEnumAlias alias{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "alias" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      alias.alias = attribute.second;
+    }
+    else if ( attribute.first == "api" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      alias.api = attribute.second;
+    }
+    else if ( attribute.first == "deprecated" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      alias.deprecated = attribute.second;
+    }
+    else if ( attribute.first == "extends" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      alias.extends = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      alias.name = attribute.second;
+    }
+  }
+
+  return alias;
+}
+
+ExtendEnumRegular parseFeatureRequireEnumRegular( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml",
+                   line,
+                   attributes,
+                   { { "extends", {} }, { "name", {} } },
+                   { { "bitpos", {} }, { "comment", {} }, { "offset", {} }, { "dir", { "-" } }, { "extnumber", {} }, { "value", {} } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  ExtendEnumRegular regular{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "bitpos" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      checkNumber( attribute.second, line, "require enum with non-numeric bitPos" );
+      regular.bitPos = attribute.second;
+    }
+    else if ( attribute.first == "comment" )
+    {
+      regular.comment = attribute.second;
+    }
+    else if ( attribute.first == "dir" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      regular.dir = attribute.second;
+    }
+    else if ( attribute.first == "extends" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      regular.extends = attribute.second;
+    }
+    else if ( attribute.first == "extnumber" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      checkNumber( attribute.second, line, "require enum with non-numeric extnumber" );
+      regular.extNumber = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      regular.name = attribute.second;
+    }
+    else if ( attribute.first == "offset" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      checkNumber( attribute.second, line, "require enum with non-numeric offset" );
+      regular.offset = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      checkNumber( attribute.second, line, "require enum with non-numeric value" );
+      regular.value = attribute.second;
+    }
+  }
+
+  checkForError( "vk.xml",
+                 ( !regular.bitPos.empty() + !regular.offset.empty() + !regular.value.empty() ) == 1,
+                 line,
+                 "require enum <" + regular.name + "> extends <" + regular.extends + "> with more than of off attributes <bitpos>, <offset>, and <value>" );
+
+  return regular;
 }
 
 Format parseFormat( tinyxml2::XMLElement const * element )
@@ -2413,24 +2812,71 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
           }
           for ( auto const & e : require.enums )
           {
-            checkForError( "vk.xml",
-                           e.extNumber.empty() ||
-                             std::ranges::any_of( vkxml.extensions.extensions,
-                                                  [&extNumber = e.extNumber]( auto const & extension ) { return extNumber == extension.number; } ),
-                           e.xmlLine,
-                           "enum value <" + e.name + "> references an unknown extension by number <" + e.extNumber + ">" );
-            if ( !e.extends.empty() )
+            if ( std::holds_alternative<ExtensionRequireEnumExtendVariant>( e ) )
             {
-              auto enumIt = findByName( vkxml.enums, e.extends );
-              checkForError( "vk.xml", enumIt != vkxml.enums.end(), e.xmlLine, "enum value <" + e.name + "> extends unknown enum <" + e.extends + ">" );
+              auto const & extendVariant = std::get<ExtensionRequireEnumExtendVariant>( e );
+              if ( std::holds_alternative<ExtensionRequireEnumExtendByOffset>( extendVariant ) )
+              {
+                auto const & extendByOffset = std::get<ExtensionRequireEnumExtendByOffset>( extendVariant );
+                checkForError( "vk.xml",
+                               extendByOffset.extNumber.empty() || std::ranges::any_of( vkxml.extensions.extensions,
+                                                                                        [&extNumber = extendByOffset.extNumber]( auto const & extension )
+                                                                                        { return extNumber == extension.number; } ),
+                               extendByOffset.xmlLine,
+                               "enum value <" + extendByOffset.name + "> references an unknown extension by number <" + extendByOffset.extNumber + ">" );
+              }
+            }
+            std::string extends;
+            if ( std::holds_alternative<ExtensionRequireEnumAliasVariant>( e ) )
+            {
+              auto const & aliasVariant = std::get<ExtensionRequireEnumAliasVariant>( e );
+              if ( std::holds_alternative<ExtensionRequireEnumAlias>( aliasVariant ) )
+              {
+                extends = std::get<ExtensionRequireEnumAlias>( aliasVariant ).extends;
+              }
+            }
+            else if ( std::holds_alternative<ExtensionRequireEnumExtendVariant>( e ) )
+            {
+              auto const & extendVariant = std::get<ExtensionRequireEnumExtendVariant>( e );
+              extends                    = std::visit( []( auto const & val ) { return val.extends; }, extendVariant );
+            }
+            if ( !extends.empty() )
+            {
+              std::string name   = getName( e );
+              auto        enumIt = findByName( vkxml.enums, extends );
+              checkForError( "vk.xml", enumIt != vkxml.enums.end(), getXMLLine( e ), "enum value <" + name + "> extends unknown enum <" + extends + ">" );
 
-              auto valueIt = findByName( enumIt->values, e.name );
+              auto valueIt = findByName( enumIt->values, name );
               if ( valueIt != enumIt->values.end() )
               {
-                checkForError( "vk.xml",
-                               ( valueIt->value == e.value ) && ( valueIt->bitPos == e.bitPos ),
-                               e.xmlLine,
-                               "enum value <" + e.name + "> already listed for enum <" + e.extends + "> with the same value or bitpos" );
+                if ( std::holds_alternative<ExtensionRequireEnumExtendVariant>( e ) )
+                {
+                  auto const & extendVariant = std::get<ExtensionRequireEnumExtendVariant>( e );
+                  if ( std::holds_alternative<ExtensionRequireEnumExtendByBitPos>( extendVariant ) )
+                  {
+                    auto const & extendByBitPos = std::get<ExtensionRequireEnumExtendByBitPos>( extendVariant );
+                    checkForError( "vk.xml",
+                                   ( valueIt->bitPos == extendByBitPos.bitPos ) && valueIt->offset.empty() && valueIt->value.empty(),
+                                   extendByBitPos.xmlLine,
+                                   "enum value <" + extendByBitPos.name + "> already listed for enum <" + extendByBitPos.extends + "> with the same bitpos" );
+                  }
+                  else if ( std::holds_alternative<ExtensionRequireEnumExtendByOffset>( extendVariant ) )
+                  {
+                    auto const & extendByOffset = std::get<ExtensionRequireEnumExtendByOffset>( extendVariant );
+                    checkForError( "vk.xml",
+                                   valueIt->bitPos.empty() && ( valueIt->offset == extendByOffset.offset ) && valueIt->value.empty(),
+                                   extendByOffset.xmlLine,
+                                   "enum value <" + extendByOffset.name + "> already listed for enum <" + extendByOffset.extends + "> with the same offset" );
+                  }
+                  else if ( std::holds_alternative<ExtensionRequireEnumExtendByValue>( extendVariant ) )
+                  {
+                    auto const & extendByValue = std::get<ExtensionRequireEnumExtendByValue>( extendVariant );
+                    checkForError( "vk.xml",
+                                   valueIt->bitPos.empty() && valueIt->offset.empty() && ( valueIt->value == extendByValue.value ),
+                                   extendByValue.xmlLine,
+                                   "enum value <" + extendByValue.name + "> already listed for enum <" + extendByValue.extends + "> with the same value" );
+                  }
+                }
               }
             }
           }
@@ -2863,230 +3309,6 @@ Remove parseRemove( tinyxml2::XMLElement const * element )
   }
 
   return remove;
-}
-
-Require parseRequire( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( "vk.xml", line, attributes, {}, { { "comment", {} }, { "depends", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( "vk.xml",
-                 line,
-                 children,
-                 {},
-                 { { "command", MultipleAllowed::Yes },
-                   { "comment", MultipleAllowed::Yes },
-                   { "enum", MultipleAllowed::Yes },
-                   { "feature", MultipleAllowed::Yes },
-                   { "type", MultipleAllowed::Yes } } );
-
-  Require require{ .xmlLine = line };
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "comment" )
-    {
-      require.comment = attribute.second;
-    }
-    else if ( attribute.first == "depends" )
-    {
-      require.depends = tokenize( attribute.second, "," );
-    }
-  }
-
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "command" )
-    {
-      NameElement requireCommand = parseNameElement( child );
-      checkForError( "vk.xml",
-                     !containsByName( require.commands, requireCommand.name ),
-                     requireCommand.xmlLine,
-                     "require command <" + requireCommand.name + "> already listed for this require block" );
-      require.commands.push_back( std::move( requireCommand ) );
-    }
-    else if ( value == "enum" )
-    {
-      RequireEnumVariant requireEnumVariant = parseRequireEnum( child );
-      if ( std::holds_alternative<ExtendEnumAlias>( requireEnumVariant ) )
-      {
-        auto const & alias = std::get<ExtendEnumAlias>( requireEnumVariant );
-        checkForError( "vk.xml",
-                       !containsByName( require.enumAliases, alias.name ),
-                       alias.xmlLine,
-                       "require enum alias <" + alias.name + "> already listed for this require block" );
-        require.enumAliases.push_back( std::move( alias ) );
-      }
-      else if ( std::holds_alternative<ExtendEnumConstant>( requireEnumVariant ) )
-      {
-        auto const & constant = std::get<ExtendEnumConstant>( requireEnumVariant );
-        checkForError( "vk.xml",
-                       !containsByName( require.enumConstants, constant.name ),
-                       constant.xmlLine,
-                       "require enum constant <" + constant.name + "> already listed for this require block" );
-        require.enumConstants.push_back( std::move( constant ) );
-      }
-      else
-      {
-        assert( std::holds_alternative<ExtendEnumRegular>( requireEnumVariant ) );
-        auto const & regular = std::get<ExtendEnumRegular>( requireEnumVariant );
-        checkForError( "vk.xml",
-                       !containsByName( require.enumRegulars, regular.name ),
-                       regular.xmlLine,
-                       "require enum regular <" + regular.name + "> already listed for this require block" );
-        require.enumRegulars.push_back( std::move( regular ) );
-      }
-    }
-    else if ( value == "feature" )
-    {
-      FeatureElement requireFeature = parseFeatureElement( child );
-      checkForError( "vk.xml",
-                     std::ranges::none_of( require.features,
-                                           [&requireFeature]( FeatureElement const & feature )
-                                           { return ( feature.name == requireFeature.name ) && ( feature.structure == requireFeature.structure ); } ),
-                     requireFeature.xmlLine,
-                     "require feature <" + requireFeature.name + "> with struct <" + requireFeature.structure + "> already listed for this require block" );
-      require.features.push_back( std::move( requireFeature ) );
-    }
-    else if ( value == "type" )
-    {
-      RequireType requireType = parseRequireType( child );
-      checkForError( "vk.xml",
-                     !containsByName( require.types, requireType.name ),
-                     requireType.xmlLine,
-                     "require type <" + requireType.name + "> already listed for this require block" );
-      require.types.push_back( std::move( requireType ) );
-    }
-  }
-
-  return require;
-}
-
-RequireEnumVariant parseRequireEnum( tinyxml2::XMLElement const * element )
-{
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  if ( attributes.contains( "extends" ) )
-  {
-    if ( attributes.contains( "alias" ) )
-    {
-      return parseRequireEnumAlias( element, attributes );
-    }
-    else
-    {
-      return parseRequireEnumRegular( element, attributes );
-    }
-  }
-  else
-  {
-    return parseNameElement( element );
-  }
-}
-
-ExtendEnumAlias parseRequireEnumAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-  checkAttributes(
-    "vk.xml", line, attributes, { { "alias", {} }, { "extends", {} }, { "name", {} } }, { { "api", { "vulkan" } }, { "deprecated", { "aliased" } } } );
-  checkElements( "vk.xml", line, getChildElements( element ), {} );
-
-  ExtendEnumAlias alias{ .xmlLine = line };
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "alias" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      alias.alias = attribute.second;
-    }
-    else if ( attribute.first == "api" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      alias.api = attribute.second;
-    }
-    else if ( attribute.first == "deprecated" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      alias.deprecated = attribute.second;
-    }
-    else if ( attribute.first == "extends" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      alias.extends = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      alias.name = attribute.second;
-    }
-  }
-
-  return alias;
-}
-
-ExtendEnumRegular parseRequireEnumRegular( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
-{
-  int const line = element->GetLineNum();
-  checkAttributes( "vk.xml",
-                   line,
-                   attributes,
-                   { { "extends", {} }, { "name", {} } },
-                   { { "bitpos", {} }, { "comment", {} }, { "offset", {} }, { "dir", { "-" } }, { "extnumber", {} }, { "value", {} } } );
-  checkElements( "vk.xml", line, getChildElements( element ), {} );
-
-  ExtendEnumRegular regular{ .xmlLine = line };
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "bitpos" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      checkNumber( attribute.second, line, "require enum with non-numeric bitPos" );
-      regular.bitPos = attribute.second;
-    }
-    else if ( attribute.first == "comment" )
-    {
-      regular.comment = attribute.second;
-    }
-    else if ( attribute.first == "dir" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      regular.dir = attribute.second;
-    }
-    else if ( attribute.first == "extends" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      regular.extends = attribute.second;
-    }
-    else if ( attribute.first == "extnumber" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      checkNumber( attribute.second, line, "require enum with non-numeric extnumber" );
-      regular.extNumber = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      regular.name = attribute.second;
-    }
-    else if ( attribute.first == "offset" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      checkNumber( attribute.second, line, "require enum with non-numeric offset" );
-      regular.offset = attribute.second;
-    }
-    else if ( attribute.first == "value" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      checkNumber( attribute.second, line, "require enum with non-numeric value" );
-      regular.value = attribute.second;
-    }
-  }
-
-  checkForError( "vk.xml",
-                 ( !regular.bitPos.empty() + !regular.offset.empty() + !regular.value.empty() ) == 1,
-                 line,
-                 "require enum <" + regular.name + "> extends <" + regular.extends + "> with more than of off attributes <bitpos>, <offset>, and <value>" );
-
-  return regular;
 }
 
 RequireType parseRequireType( tinyxml2::XMLElement const * element )

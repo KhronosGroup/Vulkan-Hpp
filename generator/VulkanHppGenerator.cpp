@@ -1084,7 +1084,6 @@ void VulkanHppGenerator::checkCorrectness() const
   checkFuncPointerCorrectness();
   checkHandleCorrectness();
   checkRequireCorrectness();
-  checkSpirVCapabilityCorrectness();
   checkStructCorrectness();
 }
 
@@ -1378,34 +1377,6 @@ void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & requi
         break;
       case TypeCategory::Unknown: break;
       default                   : assert( false ); break;
-    }
-  }
-}
-
-void VulkanHppGenerator::checkSpirVCapabilityCorrectness() const
-{
-  for ( auto const & spirvCapability : m_vkxml.spirvCapabilities.capabilities )
-  {
-    for ( auto const & enable : spirvCapability.enables )
-    {
-      if ( !enable.property.empty() )
-      {
-        auto structIt = findByName( m_vkxml.structs, enable.property );
-        assert( structIt != m_vkxml.structs.end() );
-        auto memberIt = findByName( structIt->members, enable.member );
-        assert( memberIt != structIt->members.end() );
-        if ( memberIt->type.name != "VkBool32" )
-        {
-          assert( memberIt->type.name.ends_with( "Flags" ) );
-          std::string flagBitsType = memberIt->type.name.substr( 0, memberIt->type.name.length() - 5 ) + "FlagBits";
-          auto        flagBitsIt   = m_enums.find( flagBitsType );
-          assert( flagBitsIt != m_enums.end() );
-          checkForError( containsByNameOrAlias( flagBitsIt->second.values, enable.value ),
-                         enable.xmlLine,
-                         "spirvcapability <" + spirvCapability.name + "> enables member <" + enable.member + "> in property struct <" + enable.property +
-                           "> with unexpected value <" + enable.value + ">" );
-        }
-      }
     }
   }
 }

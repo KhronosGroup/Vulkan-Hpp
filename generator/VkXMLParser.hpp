@@ -783,25 +783,44 @@ struct SPIRVExtensions
   int                         xmlLine    = {};
 };
 
-struct SPIRVCapabilityEnable
+struct SPIRVCapabilityEnableByExtension
+{
+  std::string extension = {};
+  int         xmlLine   = {};
+};
+
+struct SPIRVCapabilityEnableByProperty
+{
+  std::string              member   = {};
+  std::string              property = {};
+  std::vector<std::string> require  = {};
+  std::string              value    = {};
+  int                      xmlLine  = {};
+};
+
+struct SPIRVCapabilityEnableByStruct
 {
   std::string              alias     = {};
-  std::string              extension = {};
   std::string              feature   = {};
-  std::string              member    = {};
-  std::string              property  = {};
   std::vector<std::string> require   = {};
   std::string              structure = {};
-  std::string              value     = {};
-  std::string              version   = {};
   int                      xmlLine   = {};
 };
 
+struct SPIRVCapabilityEnableByVersion
+{
+  std::string version = {};
+  int         xmlLine = {};
+};
+
+using SPIRVCapabilityEnableVariant =
+  std::variant<SPIRVCapabilityEnableByExtension, SPIRVCapabilityEnableByProperty, SPIRVCapabilityEnableByStruct, SPIRVCapabilityEnableByVersion>;
+
 struct SPIRVCapability
 {
-  std::vector<SPIRVCapabilityEnable> enables = {};
-  std::string                        name    = {};
-  int                                xmlLine = {};
+  std::vector<SPIRVCapabilityEnableVariant> enables = {};
+  std::string                               name    = {};
+  int                                       xmlLine = {};
 };
 
 struct SPIRVCapabilities

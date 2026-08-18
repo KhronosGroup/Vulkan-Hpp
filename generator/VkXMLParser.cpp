@@ -65,9 +65,16 @@ Remove                                                               parseRemove
 RequireType                                                          parseRequireType( tinyxml2::XMLElement const * element );
 SPIRVCapabilities                                                    parseSPIRVCapabilities( tinyxml2::XMLElement const * element );
 SPIRVCapability                                                      parseSPIRVCapability( tinyxml2::XMLElement const * element );
-SPIRVCapabilityEnable                                                parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );
-SPIRVExtension                                                       parseSPIRVExtension( tinyxml2::XMLElement const * element );
-SPIRVExtensionEnableVariant                                          parseSPIRVExtensionEnable( tinyxml2::XMLElement const * element );
+SPIRVCapabilityEnableVariant                                         parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );
+SPIRVCapabilityEnableByExtension parseSPIRVCapabilityEnableByExtension( tinyxml2::XMLElement const *               element,
+                                                                        std::map<std::string, std::string> const & attributes );
+SPIRVCapabilityEnableByProperty  parseSPIRVCapabilityEnableByProperty( tinyxml2::XMLElement const *               element,
+                                                                       std::map<std::string, std::string> const & attributes );
+SPIRVCapabilityEnableByStruct parseSPIRVCapabilityEnableByStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+SPIRVCapabilityEnableByVersion  parseSPIRVCapabilityEnableByVersion( tinyxml2::XMLElement const *               element,
+                                                                     std::map<std::string, std::string> const & attributes );
+SPIRVExtension                  parseSPIRVExtension( tinyxml2::XMLElement const * element );
+SPIRVExtensionEnableVariant     parseSPIRVExtensionEnable( tinyxml2::XMLElement const * element );
 SPIRVExtensionEnableByExtension parseSPIRVExtensionEnableByExtension( tinyxml2::XMLElement const *               element,
                                                                       std::map<std::string, std::string> const & attributes );
 SPIRVExtensionEnableByVersion parseSPIRVExtensionEnableByVersion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
@@ -3036,74 +3043,85 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
       {
         for ( auto const & enable : spirvCapability.enables )
         {
-          checkForError( "vk.xml",
-                         enable.extension.empty() || containsByName( vkxml.extensions.extensions, enable.extension ),
-                         enable.xmlLine,
-                         "spirvcapability <" + spirvCapability.name + "> enables unknown extension <" + enable.extension + ">" );
-          if ( !enable.property.empty() )
+          if ( std::holds_alternative<SPIRVCapabilityEnableByExtension>( enable ) )
           {
+            auto const & byExtension = std::get<SPIRVCapabilityEnableByExtension>( enable );
             checkForError( "vk.xml",
-                           std::ranges::all_of( enable.require,
+                           containsByName( vkxml.extensions.extensions, byExtension.extension ),
+                           byExtension.xmlLine,
+                           "spirvcapability <" + spirvCapability.name + "> enables unknown extension <" + byExtension.extension + ">" );
+          }
+          else if ( std::holds_alternative<SPIRVCapabilityEnableByProperty>( enable ) )
+          {
+            auto const & byProperty = std::get<SPIRVCapabilityEnableByProperty>( enable );
+            checkForError( "vk.xml",
+                           std::ranges::all_of( byProperty.require,
                                                 [&vkxml]( auto const & r )
                                                 { return containsByName( vkxml.extensions.extensions, r ) || containsByName( vkxml.features, r ); } ),
-                           enable.xmlLine,
-                           "spirvcapability <" + spirvCapability.name + "> requires unknown feature or extension <" + concatenate( enable.require ) + ">" );
-            auto structIt = findByName( vkxml.structs, enable.property );
+                           byProperty.xmlLine,
+                           "spirvcapability <" + spirvCapability.name + "> requires unknown feature or extension <" + concatenate( byProperty.require ) + ">" );
+            auto structIt = findByName( vkxml.structs, byProperty.property );
             checkForError( "vk.xml",
                            structIt != vkxml.structs.end(),
-                           enable.xmlLine,
-                           "spirvcapability <" + spirvCapability.name + "> enables unknown property struct <" + enable.property + ">" );
-            auto memberIt = findByName( structIt->members, enable.member );
+                           byProperty.xmlLine,
+                           "spirvcapability <" + spirvCapability.name + "> enables unknown property struct <" + byProperty.property + ">" );
+            auto memberIt = findByName( structIt->members, byProperty.member );
             checkForError( "vk.xml",
                            memberIt != structIt->members.end(),
-                           enable.xmlLine,
-                           "spirvcapability <" + spirvCapability.name + "> enables unknown member <" + enable.member + "> in property struct <" +
-                             enable.property + ">" );
+                           byProperty.xmlLine,
+                           "spirvcapability <" + spirvCapability.name + "> enables unknown member <" + byProperty.member + "> in property struct <" +
+                             byProperty.property + ">" );
             checkForError( "vk.xml",
                            ( memberIt->type.name == "VkBool32" ) || containsByName( vkxml.bitmasks, memberIt->type.name ),
-                           enable.xmlLine,
-                           "spirvcapability <" + spirvCapability.name + "> enables member <" + enable.member + "> in property struct <" + enable.property +
-                             "> of unhandled type <" + memberIt->type.name + ">" );
+                           byProperty.xmlLine,
+                           "spirvcapability <" + spirvCapability.name + "> enables member <" + byProperty.member + "> in property struct <" +
+                             byProperty.property + "> of unhandled type <" + memberIt->type.name + ">" );
             if ( memberIt->type.name == "VkBool32" )
             {
               checkForError( "vk.xml",
-                             enable.value == "VK_TRUE",
-                             enable.xmlLine,
-                             "spirvcapability <" + spirvCapability.name + "> enables member <" + enable.member + "> in property struct <" + enable.property +
-                               "> with unexpected value <" + enable.value + ">" );
+                             byProperty.value == "VK_TRUE",
+                             byProperty.xmlLine,
+                             "spirvcapability <" + spirvCapability.name + "> enables member <" + byProperty.member + "> in property struct <" +
+                               byProperty.property + "> with unexpected value <" + byProperty.value + ">" );
             }
           }
-          if ( !enable.structure.empty() )
+          else if ( std::holds_alternative<SPIRVCapabilityEnableByStruct>( enable ) )
           {
+            auto const & byStruct = std::get<SPIRVCapabilityEnableByStruct>( enable );
             checkForError( "vk.xml",
-                           std::ranges::all_of( enable.require,
+                           std::ranges::all_of( byStruct.require,
                                                 [&vkxml]( auto const & r )
                                                 { return containsByName( vkxml.extensions.extensions, r ) || containsByName( vkxml.features, r ); } ),
-                           enable.xmlLine,
-                           "spirvcapability <" + spirvCapability.name + "> requires unknown feature or extension <" + concatenate( enable.require ) + ">" );
-            auto structIt = findByNameOrAlias( vkxml.structs, enable.structure );
+                           byStruct.xmlLine,
+                           "spirvcapability <" + spirvCapability.name + "> requires unknown feature or extension <" + concatenate( byStruct.require ) + ">" );
+            auto structIt = findByNameOrAlias( vkxml.structs, byStruct.structure );
             checkForError( "vk.xml",
                            structIt != vkxml.structs.end(),
-                           enable.xmlLine,
-                           "spirvcapability <" + spirvCapability.name + "> enables unknown struct <" + enable.structure + ">" );
-            auto memberIt = findByName( structIt->members, enable.feature );
+                           byStruct.xmlLine,
+                           "spirvcapability <" + spirvCapability.name + "> enables unknown struct <" + byStruct.structure + ">" );
+            auto memberIt = findByName( structIt->members, byStruct.feature );
             checkForError( "vk.xml",
                            memberIt != structIt->members.end(),
-                           enable.xmlLine,
-                           "spirvcapability <" + spirvCapability.name + "> enables struct <" + enable.structure + "> with unknown feature member <" +
-                             enable.feature + ">" );
+                           byStruct.xmlLine,
+                           "spirvcapability <" + spirvCapability.name + "> enables struct <" + byStruct.structure + "> with unknown feature member <" +
+                             byStruct.feature + ">" );
             checkForError( "vk.xml",
                            memberIt->type.name == "VkBool32",
-                           enable.xmlLine,
-                           "spirvcapability <" + spirvCapability.name + "> enables feature member <" + enable.feature + "> in struct <" + enable.structure +
+                           byStruct.xmlLine,
+                           "spirvcapability <" + spirvCapability.name + "> enables feature member <" + byStruct.feature + "> in struct <" + byStruct.structure +
                              "> of unexpected type <" + memberIt->type.name + ">" );
             checkForError(
-              "vk.xml", enable.alias.empty() || ( memberIt->featureLink == enable.alias ), enable.xmlLine, "unknown alias <" + enable.alias + "> " );
+              "vk.xml", byStruct.alias.empty() || ( memberIt->featureLink == byStruct.alias ), byStruct.xmlLine, "unknown alias <" + byStruct.alias + "> " );
           }
-          checkForError( "vk.xml",
-                         enable.version.empty() || containsByName( vkxml.features, enable.version ),
-                         enable.xmlLine,
-                         "spirvcapability <" + spirvCapability.name + "> enables unknown feature version <" + enable.version + ">" );
+          else
+          {
+            assert( std::holds_alternative<SPIRVCapabilityEnableByVersion>( enable ) );
+            auto const & byVersion = std::get<SPIRVCapabilityEnableByVersion>( enable );
+            checkForError( "vk.xml",
+                           containsByName( vkxml.features, byVersion.version ),
+                           byVersion.xmlLine,
+                           "spirvcapability <" + spirvCapability.name + "> enables unknown feature version <" + byVersion.version + ">" );
+          }
         }
       }
       vkxml.spirvCapabilities = std::move( spirvCapabilities );
@@ -3405,94 +3423,131 @@ SPIRVCapability parseSPIRVCapability( tinyxml2::XMLElement const * element )
   return spirvCapability;
 }
 
-SPIRVCapabilityEnable parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * element )
+SPIRVCapabilityEnableVariant parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * element )
 {
-  int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-
-  SPIRVCapabilityEnable enable{ .xmlLine = line };
   if ( attributes.contains( "extension" ) )
   {
-    checkAttributes( "vk.xml", line, attributes, { { "extension", {} } }, {} );
-
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "extension" )
-      {
-        checkNoList( "vk.xml", attribute.second, line );
-        enable.extension = attribute.second;
-      }
-    }
+    return parseSPIRVCapabilityEnableByExtension( element, attributes );
   }
   else if ( attributes.contains( "property" ) )
   {
-    checkAttributes( "vk.xml", line, attributes, { { "member", {} }, { "property", {} }, { "requires", {} }, { "value", {} } }, {} );
-
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "member" )
-      {
-        checkNoList( "vk.xml", attribute.second, line );
-        enable.member = attribute.second;
-      }
-      else if ( attribute.first == "property" )
-      {
-        checkNoList( "vk.xml", attribute.second, line );
-        enable.property = attribute.second;
-      }
-      else if ( attribute.first == "requires" )
-      {
-        enable.require = tokenize( attribute.second, "," );
-      }
-      else if ( attribute.first == "value" )
-      {
-        checkNoList( "vk.xml", attribute.second, line );
-        enable.value = attribute.second;
-      }
-    }
+    return parseSPIRVCapabilityEnableByProperty( element, attributes );
   }
   else if ( attributes.contains( "struct" ) )
   {
-    checkAttributes( "vk.xml", line, attributes, { { "feature", {} }, { "requires", {} }, { "struct", {} } }, { { "alias", {} } } );
-
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "alias" )
-      {
-        checkNoList( "vk.xml", attribute.second, line );
-        enable.alias = attribute.second;
-      }
-      else if ( attribute.first == "feature" )
-      {
-        checkNoList( "vk.xml", attribute.second, line );
-        enable.feature = attribute.second;
-      }
-      else if ( attribute.first == "requires" )
-      {
-        enable.require = tokenize( attribute.second, "," );
-      }
-      else if ( attribute.first == "struct" )
-      {
-        checkNoList( "vk.xml", attribute.second, line );
-        enable.structure = attribute.second;
-      }
-    }
+    return parseSPIRVCapabilityEnableByStruct( element, attributes );
   }
-  else if ( attributes.contains( "version" ) )
+  else
   {
-    checkAttributes( "vk.xml", line, attributes, { { "version", {} } }, {} );
+    assert( attributes.contains( "version" ) );
+    return parseSPIRVCapabilityEnableByVersion( element, attributes );
+  }
+}
 
-    for ( auto const & attribute : attributes )
+SPIRVCapabilityEnableByExtension parseSPIRVCapabilityEnableByExtension( tinyxml2::XMLElement const *               element,
+                                                                        std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, attributes, { { "extension", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  SPIRVCapabilityEnableByExtension enable{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "extension" )
     {
-      if ( attribute.first == "version" )
-      {
-        checkNoList( "vk.xml", attribute.second, line );
-        enable.version = attribute.second;
-      }
+      checkNoList( "vk.xml", attribute.second, line );
+      enable.extension = attribute.second;
     }
   }
 
+  return enable;
+}
+
+SPIRVCapabilityEnableByProperty parseSPIRVCapabilityEnableByProperty( tinyxml2::XMLElement const *               element,
+                                                                      std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, attributes, { { "member", {} }, { "property", {} }, { "requires", {} }, { "value", {} } }, {} );
   checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  SPIRVCapabilityEnableByProperty enable{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "member" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      enable.member = attribute.second;
+    }
+    else if ( attribute.first == "property" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      enable.property = attribute.second;
+    }
+    else if ( attribute.first == "requires" )
+    {
+      enable.require = tokenize( attribute.second, "," );
+    }
+    else if ( attribute.first == "value" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      enable.value = attribute.second;
+    }
+  }
+
+  return enable;
+}
+
+SPIRVCapabilityEnableByStruct parseSPIRVCapabilityEnableByStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, attributes, { { "feature", {} }, { "requires", {} }, { "struct", {} } }, { { "alias", {} } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  SPIRVCapabilityEnableByStruct enable{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "alias" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      enable.alias = attribute.second;
+    }
+    else if ( attribute.first == "feature" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      enable.feature = attribute.second;
+    }
+    else if ( attribute.first == "requires" )
+    {
+      enable.require = tokenize( attribute.second, "," );
+    }
+    else if ( attribute.first == "struct" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      enable.structure = attribute.second;
+    }
+  }
+
+  return enable;
+}
+
+SPIRVCapabilityEnableByVersion parseSPIRVCapabilityEnableByVersion( tinyxml2::XMLElement const *               element,
+                                                                    std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, attributes, { { "version", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  SPIRVCapabilityEnableByVersion enable{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "version" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      enable.version = attribute.second;
+    }
+  }
 
   return enable;
 }
@@ -3545,6 +3600,7 @@ SPIRVExtensionEnableVariant parseSPIRVExtensionEnable( tinyxml2::XMLElement cons
   }
   else
   {
+    assert( attributes.contains( "version" ) );
     return parseSPIRVExtensionEnableByVersion( element, attributes );
   }
 }

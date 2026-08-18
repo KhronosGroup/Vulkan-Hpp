@@ -755,18 +755,25 @@ struct Format
   int                      xmlLine          = {};
 };
 
-struct SPIRVExtensionEnable
+struct SPIRVExtensionEnableByExtension
 {
-  std::string version   = {};
   std::string extension = {};
   int         xmlLine   = {};
 };
 
+struct SPIRVExtensionEnableByVersion
+{
+  std::string version = {};
+  int         xmlLine = {};
+};
+
+using SPIRVExtensionEnableVariant = std::variant<SPIRVExtensionEnableByExtension, SPIRVExtensionEnableByVersion>;
+
 struct SPIRVExtension
 {
-  std::vector<SPIRVExtensionEnable> enables = {};
-  std::string                       name    = {};
-  int                               xmlLine = {};
+  std::vector<SPIRVExtensionEnableVariant> enables = {};
+  std::string                              name    = {};
+  int                                      xmlLine = {};
 };
 
 struct SPIRVExtensions

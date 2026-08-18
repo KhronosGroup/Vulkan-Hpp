@@ -62,34 +62,37 @@ Platforms                                                            parsePlatfo
 std::pair<std::string, Type>                                         parseProto( tinyxml2::XMLElement const * element );
 Vkxml                                                                parseRegistry( tinyxml2::XMLElement const * element, std::string const & api );
 Remove                                                               parseRemove( tinyxml2::XMLElement const * element );
-RequireType             parseRequireType( tinyxml2::XMLElement const * element );
-SPIRVCapabilities       parseSPIRVCapabilities( tinyxml2::XMLElement const * element );
-SPIRVCapability         parseSPIRVCapability( tinyxml2::XMLElement const * element );
-SPIRVCapabilityEnable   parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );
-SPIRVExtension          parseSPIRVExtension( tinyxml2::XMLElement const * element );
-SPIRVExtensionEnable    parseSPIRVExtensionEnable( tinyxml2::XMLElement const * element );
-SPIRVExtensions         parseSPIRVExtensions( tinyxml2::XMLElement const * element );
-StructMember            parseStructMember( tinyxml2::XMLElement const * element );
-SupersededName          parseSupersededName( tinyxml2::XMLElement const * element );
-Sync                    parseSync( tinyxml2::XMLElement const * element );
-SyncAccess              parseSyncAccess( tinyxml2::XMLElement const * element );
-SyncAccessSupport       parseSyncAccessSupport( tinyxml2::XMLElement const * element );
-SyncAccessEquivalent    parseSyncAccessEquivalent( tinyxml2::XMLElement const * element );
-SyncPipeline            parseSyncPipeline( tinyxml2::XMLElement const * element );
-SyncPipelineStage       parseSyncPipelineStage( tinyxml2::XMLElement const * element );
-SyncStage               parseSyncStage( tinyxml2::XMLElement const * element );
-SyncStageEquivalent     parseSyncStageEquivalent( tinyxml2::XMLElement const * element );
-SyncStageSupport        parseSyncStageSupport( tinyxml2::XMLElement const * element );
-Tag                     parseTag( tinyxml2::XMLElement const * element );
-Tags                    parseTags( tinyxml2::XMLElement const * element );
-std::string             parseText( tinyxml2::XMLElement const * element );
-Type                    parseType( tinyxml2::XMLElement const * element );
-TypeBaseType            parseTypeBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-BitmaskVariant          parseTypeBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-TypeDefine              parseTypeDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-EnumVariant             parseTypeEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-TypeFuncPointer         parseTypeFuncPointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-HandleVariant           parseTypeHandle( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+RequireType                                                          parseRequireType( tinyxml2::XMLElement const * element );
+SPIRVCapabilities                                                    parseSPIRVCapabilities( tinyxml2::XMLElement const * element );
+SPIRVCapability                                                      parseSPIRVCapability( tinyxml2::XMLElement const * element );
+SPIRVCapabilityEnable                                                parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );
+SPIRVExtension                                                       parseSPIRVExtension( tinyxml2::XMLElement const * element );
+SPIRVExtensionEnableVariant                                          parseSPIRVExtensionEnable( tinyxml2::XMLElement const * element );
+SPIRVExtensionEnableByExtension parseSPIRVExtensionEnableByExtension( tinyxml2::XMLElement const *               element,
+                                                                      std::map<std::string, std::string> const & attributes );
+SPIRVExtensionEnableByVersion parseSPIRVExtensionEnableByVersion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+SPIRVExtensions               parseSPIRVExtensions( tinyxml2::XMLElement const * element );
+StructMember                  parseStructMember( tinyxml2::XMLElement const * element );
+SupersededName                parseSupersededName( tinyxml2::XMLElement const * element );
+Sync                          parseSync( tinyxml2::XMLElement const * element );
+SyncAccess                    parseSyncAccess( tinyxml2::XMLElement const * element );
+SyncAccessSupport             parseSyncAccessSupport( tinyxml2::XMLElement const * element );
+SyncAccessEquivalent          parseSyncAccessEquivalent( tinyxml2::XMLElement const * element );
+SyncPipeline                  parseSyncPipeline( tinyxml2::XMLElement const * element );
+SyncPipelineStage             parseSyncPipelineStage( tinyxml2::XMLElement const * element );
+SyncStage                     parseSyncStage( tinyxml2::XMLElement const * element );
+SyncStageEquivalent           parseSyncStageEquivalent( tinyxml2::XMLElement const * element );
+SyncStageSupport              parseSyncStageSupport( tinyxml2::XMLElement const * element );
+Tag                           parseTag( tinyxml2::XMLElement const * element );
+Tags                          parseTags( tinyxml2::XMLElement const * element );
+std::string                   parseText( tinyxml2::XMLElement const * element );
+Type                          parseType( tinyxml2::XMLElement const * element );
+TypeBaseType                  parseTypeBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+BitmaskVariant                parseTypeBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+TypeDefine                    parseTypeDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+EnumVariant                   parseTypeEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+TypeFuncPointer               parseTypeFuncPointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+HandleVariant                 parseTypeHandle( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 StructVariant           parseTypeStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & api );
 TypeUnion               parseTypeUnion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 Types                   parseTypes( tinyxml2::XMLElement const * element, std::string const & api );
@@ -3112,19 +3115,22 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
       {
         for ( auto const & enable : spirvExtension.enables )
         {
-          if ( !enable.extension.empty() )
+          if ( std::holds_alternative<SPIRVExtensionEnableByExtension>( enable ) )
           {
+            auto const & byExtension = std::get<SPIRVExtensionEnableByExtension>( enable );
             checkForError( "vk.xml",
-                           containsByName( vkxml.extensions.extensions, enable.extension ),
-                           enable.xmlLine,
-                           "spirvextension <" + spirvExtension.name + "> enables unknown extension <" + enable.extension + ">" );
+                           containsByName( vkxml.extensions.extensions, byExtension.extension ),
+                           byExtension.xmlLine,
+                           "spirvextension <" + spirvExtension.name + "> enables unknown extension <" + byExtension.extension + ">" );
           }
           else
           {
+            assert( std::holds_alternative<SPIRVExtensionEnableByVersion>( enable ) );
+            auto const & byVersion = std::get<SPIRVExtensionEnableByVersion>( enable );
             checkForError( "vk.xml",
-                           containsByName( vkxml.features, enable.version ),
-                           enable.xmlLine,
-                           "spirvextension <" + spirvExtension.name + "> enables unknown version <" + enable.version + ">" );
+                           containsByName( vkxml.features, byVersion.version ),
+                           byVersion.xmlLine,
+                           "spirvextension <" + spirvExtension.name + "> enables unknown version <" + byVersion.version + ">" );
           }
         }
       }
@@ -3514,37 +3520,43 @@ SPIRVExtension parseSPIRVExtension( tinyxml2::XMLElement const * element )
     std::string value = child->Value();
     if ( value == "enable" )
     {
-      SPIRVExtensionEnable enable = parseSPIRVExtensionEnable( child );
-      if ( !enable.version.empty() )
+      SPIRVExtensionEnableVariant enableVariant = parseSPIRVExtensionEnable( child );
+      if ( std::holds_alternative<SPIRVExtensionEnableByVersion>( enableVariant ) )
       {
-        assert( !enable.version.empty() );
         checkForError( "vk.xml",
-                       std::ranges::none_of( spirvExtension.enables, []( auto const & enable ) { return !enable.version.empty(); } ),
-                       enable.xmlLine,
+                       std::ranges::none_of( spirvExtension.enables,
+                                             []( auto const & enable ) { return !std::holds_alternative<SPIRVExtensionEnableByVersion>( enable ); } ),
+                       std::visit( []( auto const & val ) { return val.xmlLine; }, enableVariant ),
                        "spirvextension <" + spirvExtension.name + "> enables multiple versions" );
       }
-      spirvExtension.enables.push_back( std::move( enable ) );
+      spirvExtension.enables.push_back( std::move( enableVariant ) );
     }
   }
 
   return spirvExtension;
 }
 
-SPIRVExtensionEnable parseSPIRVExtensionEnable( tinyxml2::XMLElement const * element )
+SPIRVExtensionEnableVariant parseSPIRVExtensionEnable( tinyxml2::XMLElement const * element )
 {
-  int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   if ( attributes.contains( "extension" ) )
   {
-    checkAttributes( "vk.xml", line, attributes, { { "extension", {} } }, {} );
+    return parseSPIRVExtensionEnableByExtension( element, attributes );
   }
   else
   {
-    checkAttributes( "vk.xml", line, attributes, { { "version", {} } }, {} );
+    return parseSPIRVExtensionEnableByVersion( element, attributes );
   }
+}
+
+SPIRVExtensionEnableByExtension parseSPIRVExtensionEnableByExtension( tinyxml2::XMLElement const *               element,
+                                                                      std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, attributes, { { "extension", {} } }, {} );
   checkElements( "vk.xml", line, getChildElements( element ), {} );
 
-  SPIRVExtensionEnable enable{ .xmlLine = line };
+  SPIRVExtensionEnableByExtension enable{ .xmlLine = line };
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "extension" )
@@ -3552,7 +3564,21 @@ SPIRVExtensionEnable parseSPIRVExtensionEnable( tinyxml2::XMLElement const * ele
       checkNoList( "vk.xml", attribute.second, line );
       enable.extension = attribute.second;
     }
-    else if ( attribute.first == "version" )
+  }
+
+  return enable;
+}
+
+SPIRVExtensionEnableByVersion parseSPIRVExtensionEnableByVersion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, attributes, { { "version", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  SPIRVExtensionEnableByVersion enable{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "version" )
     {
       checkNoList( "vk.xml", attribute.second, line );
       enable.version = attribute.second;

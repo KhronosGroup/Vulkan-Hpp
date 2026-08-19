@@ -687,15 +687,23 @@ struct VideoRequireCapabilities
   int         xmlLine   = {};
 };
 
-struct VideoFormat
+struct VideoFormatExtend
 {
-  std::string                             extend                   = {};
+  std::string           extend                = {};
+  VideoFormatProperties videoFormatProperties = {};
+  int                   xmlLine               = {};
+};
+
+struct VideoFormatRegular
+{
   std::string                             name                     = {};
   std::string                             usage                    = {};
-  std::optional<VideoFormatProperties>    videoFormatProperties    = {};
   std::optional<VideoRequireCapabilities> videoRequireCapabilities = {};
+  std::optional<VideoFormatProperties>    videoFormatProperties    = {};
   int                                     xmlLine                  = {};
 };
+
+using VideoFormatVariant = std::variant<VideoFormatExtend, VideoFormatRegular>;
 
 struct VideoProfile
 {
@@ -718,16 +726,26 @@ struct VideoProfiles
   int                             xmlLine             = {};
 };
 
-struct VideoCodec
+struct VideoCodecExtend
 {
-  std::string                    extend            = {};
-  std::string                    name              = {};
-  std::string                    value             = {};
-  std::vector<VideoCapabilities> videoCapabilities = {};
-  std::vector<VideoFormat>       videoFormats      = {};
-  std::optional<VideoProfiles>   videoProfiles     = {};
-  int                            xmlLine           = {};
+  std::string                     name              = {};
+  std::string                     extend            = {};
+  std::string                     value             = {};
+  std::vector<VideoCapabilities>  videoCapabilities = {};
+  std::vector<VideoFormatVariant> videoFormats      = {};
+  VideoProfiles                   videoProfiles     = {};
+  int                             xmlLine           = {};
 };
+
+struct VideoCodecRegular
+{
+  std::string                     name              = {};
+  std::vector<VideoCapabilities>  videoCapabilities = {};
+  std::vector<VideoFormatVariant> videoFormats      = {};
+  int                             xmlLine           = {};
+};
+
+using VideoCodecVariant = std::variant<VideoCodecExtend, VideoCodecRegular>;
 
 struct Plane
 {
@@ -832,28 +850,28 @@ struct SPIRVCapabilities
 
 struct Vkxml
 {
-  std::vector<TypeBaseType>    baseTypes         = {};
-  std::vector<TypeBitmask>     bitmasks          = {};
-  std::vector<Command>         commands          = {};
-  EnumsConstants               constants         = {};
-  Comment                      copyright         = {};
-  std::vector<TypeDefine>      defines           = {};
-  std::vector<TypeEnum>        enums             = {};
-  Extensions                   extensions        = {};
-  std::vector<TypeExternal>    externals         = {};
-  std::vector<Feature>         features          = {};
-  std::vector<Format>          formats           = {};
-  std::vector<TypeFuncPointer> funcPointers      = {};
-  std::vector<TypeHandle>      handles           = {};
-  std::vector<TypeInclude>     includes          = {};
-  Platforms                    platforms         = {};
-  SPIRVCapabilities            spirvCapabilities = {};
-  SPIRVExtensions              spirvExtensions   = {};
-  std::vector<TypeStruct>      structs           = {};
-  Sync                         sync              = {};
-  Tags                         tags              = {};
-  std::vector<TypeUnion>       unions            = {};
-  std::vector<VideoCodec>      videoCodecs       = {};
+  std::vector<TypeBaseType>      baseTypes         = {};
+  std::vector<TypeBitmask>       bitmasks          = {};
+  std::vector<Command>           commands          = {};
+  EnumsConstants                 constants         = {};
+  Comment                        copyright         = {};
+  std::vector<TypeDefine>        defines           = {};
+  std::vector<TypeEnum>          enums             = {};
+  Extensions                     extensions        = {};
+  std::vector<TypeExternal>      externals         = {};
+  std::vector<Feature>           features          = {};
+  std::vector<Format>            formats           = {};
+  std::vector<TypeFuncPointer>   funcPointers      = {};
+  std::vector<TypeHandle>        handles           = {};
+  std::vector<TypeInclude>       includes          = {};
+  Platforms                      platforms         = {};
+  SPIRVCapabilities              spirvCapabilities = {};
+  SPIRVExtensions                spirvExtensions   = {};
+  std::vector<TypeStruct>        structs           = {};
+  Sync                           sync              = {};
+  Tags                           tags              = {};
+  std::vector<TypeUnion>         unions            = {};
+  std::vector<VideoCodecVariant> videoCodecs       = {};
 
   std::set<std::string> types = {};
 };

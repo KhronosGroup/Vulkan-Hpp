@@ -11,7 +11,9 @@ CategoryDefine         parseCategoryDefine( tinyxml2::XMLElement const * element
 CategoryStruct         parseCategoryStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 Constant               parseConstant( tinyxml2::XMLElement const * element );
 Enum                   parseEnum( tinyxml2::XMLElement const * element );
-EnumValue              parseEnumValue( tinyxml2::XMLElement const * element );
+EnumValueVariant       parseEnumValue( tinyxml2::XMLElement const * element );
+EnumValueAlias         parseEnumValueAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+EnumValueRegular       parseEnumValueRegular( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 Extension              parseExtension( tinyxml2::XMLElement const * element );
 std::vector<Extension> parseExtensions( tinyxml2::XMLElement const * element );
 VideoXML               parseRegistry( tinyxml2::XMLElement const * element );
@@ -154,14 +156,15 @@ Enum parseEnum( tinyxml2::XMLElement const * element )
     std::string value = child->Value();
     if ( value == "enum" )
     {
-      EnumValue enumValue = parseEnumValue( child );
+      EnumValueVariant enumValue = parseEnumValue( child );
 
-      if ( enumValue.alias.empty() )
+      if ( std::holds_alternative<EnumValueRegular>( enumValue ) )
       {
+        auto const & regular = std::get<EnumValueRegular>( enumValue );
         checkForError( "video.xml",
-                       enumValue.name.starts_with( prefix ),
-                       enumValue.xmlLine,
-                       "encountered enum value <" + enumValue.name + "> that does not begin with expected prefix <" + prefix + ">" );
+                       regular.name.starts_with( prefix ),
+                       regular.xmlLine,
+                       "encountered enum value <" + regular.name + "> that does not begin with expected prefix <" + prefix + ">" );
       }
 
       enumStruct.values.push_back( std::move( enumValue ) );
@@ -171,53 +174,72 @@ Enum parseEnum( tinyxml2::XMLElement const * element )
   return enumStruct;
 }
 
-EnumValue parseEnumValue( tinyxml2::XMLElement const * element )
+EnumValueVariant parseEnumValue( tinyxml2::XMLElement const * element )
 {
-  int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkElements( "video.xml", line, getChildElements( element ), {} );
-
-  EnumValue value;
   if ( attributes.contains( "alias" ) )
   {
-    checkAttributes( "video.xml", line, attributes, { { "alias", {} }, { "deprecated", { "aliased" } }, { "name", {} } }, {} );
-
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "alias" )
-      {
-        checkNoList( "video.xml", attribute.second, line );
-        value.alias = attribute.second;
-      }
-      else if ( attribute.first == "name" )
-      {
-        checkNoList( "video.xml", attribute.second, line );
-        value.name = attribute.second;
-      }
-    }
+    return parseEnumValueAlias( element, attributes );
   }
   else
   {
-    checkAttributes( "video.xml", line, attributes, { { "name", {} }, { "value", {} } }, { { "comment", {} } } );
+    return parseEnumValueRegular( element, attributes );
+  }
+}
 
-    for ( auto const & attribute : attributes )
+EnumValueAlias parseEnumValueAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int line = element->GetLineNum();
+  checkAttributes( "video.xml", line, attributes, { { "alias", {} }, { "deprecated", { "aliased" } }, { "name", {} } }, {} );
+  checkElements( "video.xml", line, getChildElements( element ), {} );
+
+  EnumValueAlias value{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "alias" )
     {
-      if ( attribute.first == "comment" )
-      {
-        value.comment = attribute.second;
-      }
-      if ( attribute.first == "name" )
-      {
-        checkNoList( "video.xml", attribute.second, line );
-        value.name = attribute.second;
-      }
-      else if ( attribute.first == "value" )
-      {
-        checkNoList( "video.xml", attribute.second, line );
-        checkForError(
-          "video.xml", isNumber( attribute.second ) || isHexNumber( attribute.second ), line, "enum value uses non-number value <" + attribute.second + ">" );
-        value.value = attribute.second;
-      }
+      checkNoList( "video.xml", attribute.second, line );
+      value.alias = attribute.second;
+    }
+    else if ( attribute.first == "deprecated" )
+    {
+      checkNoList( "video.xml", attribute.second, line );
+      value.deprecated = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      checkNoList( "video.xml", attribute.second, line );
+      value.name = attribute.second;
+    }
+  }
+
+  return value;
+}
+
+EnumValueRegular parseEnumValueRegular( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int line = element->GetLineNum();
+  checkAttributes( "video.xml", line, attributes, { { "name", {} }, { "value", {} } }, { { "comment", {} } } );
+  checkElements( "video.xml", line, getChildElements( element ), {} );
+
+  EnumValueRegular value{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "comment" )
+    {
+      value.comment = attribute.second;
+    }
+    if ( attribute.first == "name" )
+    {
+      checkNoList( "video.xml", attribute.second, line );
+      value.name = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      checkNoList( "video.xml", attribute.second, line );
+      checkForError(
+        "video.xml", isNumber( attribute.second ) || isHexNumber( attribute.second ), line, "enum value uses non-number value <" + attribute.second + ">" );
+      value.value = attribute.second;
     }
   }
 

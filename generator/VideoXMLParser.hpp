@@ -8,6 +8,7 @@
 #include <map>
 #include <string>
 #include <tinyxml2.h>
+#include <variant>
 #include <vector>
 
 struct CategoryDefine
@@ -18,20 +19,29 @@ struct CategoryDefine
   int         xmlLine = {};
 };
 
-struct EnumValue
+struct EnumValueAlias
+{
+  std::string name       = {};
+  std::string alias      = {};
+  std::string deprecated = {};
+  int         xmlLine    = {};
+};
+
+struct EnumValueRegular
 {
   std::string name    = {};
   std::string value   = {};
   std::string comment = {};
-  std::string alias   = {};
   int         xmlLine = {};
 };
 
+using EnumValueVariant = std::variant<EnumValueAlias, EnumValueRegular>;
+
 struct Enum
 {
-  std::string            name    = {};
-  std::vector<EnumValue> values  = {};
-  int                    xmlLine = {};
+  std::string                   name    = {};
+  std::vector<EnumValueVariant> values  = {};
+  int                           xmlLine = {};
 };
 
 struct StructMember

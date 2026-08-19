@@ -47,21 +47,25 @@ VideoHppGenerator::VideoHppGenerator( VideoXML && videoXML ) : m_videoXML( std::
     checkForError( enumIt->second.values.empty(), e.xmlLine, "enum <" + e.name + "> already holds values" );
     for ( auto const & value : e.values )
     {
-      if ( value.alias.empty() )
+      if ( std::holds_alternative<EnumValueAlias>( value ) )
       {
+        auto const & alias   = std::get<EnumValueAlias>( value );
+        auto         valueIt = findByName( enumIt->second.values, alias.alias );
         checkForError(
-          !containsByName( enumIt->second.values, value.name ), value.xmlLine, "enum value <" + value.name + "> already part of enum <" + e.name + ">" );
-        enumIt->second.values.push_back( { {}, value.name, value.value, value.xmlLine } );
+          valueIt != enumIt->second.values.end(), alias.xmlLine, "enum value alias <" + alias.name + "> uses unknown alias <" + alias.alias + ">" );
+        checkForError( std::ranges::find_if( valueIt->aliases, [&name = alias.name]( auto const & alias ) { return alias.first == name; } ) ==
+                         valueIt->aliases.end(),
+                       alias.xmlLine,
+                       "enum value alias <" + alias.name + "> already listed for enum value <" + alias.alias + ">" );
+        valueIt->aliases.push_back( { alias.name, alias.xmlLine } );
       }
       else
       {
-        auto valueIt = findByName( enumIt->second.values, value.alias );
-        checkForError( valueIt != enumIt->second.values.end(), value.xmlLine, "enum value <" + value.name + "> uses unknown alias <" + value.alias + ">" );
-        checkForError( std::ranges::find_if( valueIt->aliases, [&name = value.name]( auto const & alias ) { return alias.first == name; } ) ==
-                         valueIt->aliases.end(),
-                       value.xmlLine,
-                       "enum alias <" + value.name + "> already listed for enum value <" + value.alias + ">" );
-        valueIt->aliases.push_back( { value.name, value.xmlLine } );
+        assert( std::holds_alternative<EnumValueRegular>( value ) );
+        auto const & regular = std::get<EnumValueRegular>( value );
+        checkForError(
+          !containsByName( enumIt->second.values, regular.name ), regular.xmlLine, "enum value <" + regular.name + "> already part of enum <" + e.name + ">" );
+        enumIt->second.values.push_back( { {}, regular.name, regular.value, regular.xmlLine } );
       }
     }
   }

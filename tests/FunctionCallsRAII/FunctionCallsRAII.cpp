@@ -691,6 +691,11 @@ int main()
     vk::DescriptorSetAllocateInfo        descriptorSetAllocateInfo;
     std::vector<vk::raii::DescriptorSet> descriptorSets = device.allocateDescriptorSets( descriptorSetAllocateInfo );
   }
+  {
+    vk::raii::Device              device = nullptr;
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo;
+    vk::raii::DescriptorSets      descriptorSets( device, descriptorSetAllocateInfo );
+  }
 
   {
     vk::raii::Device                    device = nullptr;
@@ -1227,6 +1232,11 @@ int main()
     vk::DescriptorUpdateTemplateCreateInfo descriptorUpdateTemplateCreateInfo;
     vk::raii::DescriptorUpdateTemplate     descriptorUpdateTemplate = device.createDescriptorUpdateTemplate( descriptorUpdateTemplateCreateInfo );
   }
+  {
+    vk::raii::Device                       device = nullptr;
+    vk::DescriptorUpdateTemplateCreateInfo descriptorUpdateTemplateCreateInfo;
+    vk::raii::DescriptorUpdateTemplate     descriptorUpdateTemplate( device, descriptorUpdateTemplateCreateInfo );
+  }
 
   {
     vk::raii::DescriptorSet            descriptorSet            = nullptr;
@@ -1247,6 +1257,18 @@ int main()
     vk::StructureChain<vk::DescriptorSetLayoutSupport, vk::DescriptorSetVariableDescriptorCountLayoutSupport> descriptorSetLayoutSupportChain =
       device.getDescriptorSetLayoutSupport<vk::DescriptorSetLayoutSupport, vk::DescriptorSetVariableDescriptorCountLayoutSupport>(
         descriptorSetLayoutCreateInfo );
+  }
+
+  // Promoted from VK_KHR_sampler_ycbcr_conversion
+  {
+    vk::raii::Device                     device = nullptr;
+    vk::SamplerYcbcrConversionCreateInfo samplerYcbcrConversionCreateInfo;
+    vk::raii::SamplerYcbcrConversion     samplerYcbcrConversion = device.createSamplerYcbcrConversion( samplerYcbcrConversionCreateInfo );
+  }
+  {
+    vk::raii::Device                     device = nullptr;
+    vk::SamplerYcbcrConversionCreateInfo samplerYcbcrConversionCreateInfo;
+    vk::raii::SamplerYcbcrConversion     samplerYcbcrConversion( device, samplerYcbcrConversionCreateInfo );
   }
 
   return 0;

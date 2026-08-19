@@ -2473,6 +2473,43 @@ int main()
         descriptorSetLayoutCreateInfo );
   }
 
+  // Promoted from VK_KHR_sampler_ycbcr_conversion
+  {
+    vk::Device                           device;
+    vk::SamplerYcbcrConversionCreateInfo samplerYcbcrConversionCreateInfo;
+    vk::AllocationCallbacks              allocationCallbacks;
+    vk::SamplerYcbcrConversion           samplerYcbcrConversion;
+    vk::Result result = device.createSamplerYcbcrConversion( &samplerYcbcrConversionCreateInfo, &allocationCallbacks, &samplerYcbcrConversion );
+  }
+  {
+    vk::Device                           device;
+    vk::SamplerYcbcrConversionCreateInfo samplerYcbcrConversionCreateInfo;
+    vk::SamplerYcbcrConversion           samplerYcbcrConversion = device.createSamplerYcbcrConversion( samplerYcbcrConversionCreateInfo );
+  }
+
+  {
+    vk::Device                 device;
+    vk::SamplerYcbcrConversion samplerYcbcrConversion;
+    vk::AllocationCallbacks    allocationCallbacks;
+    device.destroySamplerYcbcrConversion( samplerYcbcrConversion, &allocationCallbacks );
+  }
+  {
+    vk::Device                 device;
+    vk::SamplerYcbcrConversion samplerYcbcrConversion;
+    device.destroySamplerYcbcrConversion( samplerYcbcrConversion );
+  }
+  {
+    vk::Device                 device;
+    vk::SamplerYcbcrConversion samplerYcbcrConversion;
+    vk::AllocationCallbacks    allocationCallbacks;
+    device.destroy( samplerYcbcrConversion, &allocationCallbacks );
+  }
+  {
+    vk::Device                 device;
+    vk::SamplerYcbcrConversion samplerYcbcrConversion;
+    device.destroy( samplerYcbcrConversion );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

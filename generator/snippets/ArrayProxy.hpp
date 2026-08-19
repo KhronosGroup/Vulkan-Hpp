@@ -41,7 +41,12 @@
       , m_ptr( list.begin() )
     {}
 
+#if VULKAN_HPP_CPP_VERSION < 20
     template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+#else
+    template <typename B = T>
+    requires std::is_const<B>::value
+#endif
     ArrayProxy( std::initializer_list<typename std::remove_const<T>::type> const & list ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( list.size() ) )
       , m_ptr( list.begin() )
@@ -54,10 +59,17 @@
 
     // Any type with a .data() return type implicitly convertible to T*, and a .size() return type implicitly
     // convertible to size_t. The const version can capture temporaries, with lifetime ending at end of statement.
+#if VULKAN_HPP_CPP_VERSION < 20
     template <typename V,
-              typename std::enable_if<
-                std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
-                std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value>::type * = nullptr>
+              typename std::enable_if<std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
+                                      std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value>::type * = nullptr>
+#else
+    template <typename V>
+    requires requires( V v ) {
+               { v.data() } -> std::convertible_to<T *>;
+               { v.size() } -> std::convertible_to<std::size_t>;
+             }
+#endif
     ArrayProxy( V const & v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
       , m_ptr( v.data() )

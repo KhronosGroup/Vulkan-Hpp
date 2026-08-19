@@ -15877,50 +15877,50 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     // operators to compare VULKAN_HPP_NAMESPACE::raii-handles
 #  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    VULKAN_HPP_RAII_TEMPLATE_HANDLE
     auto operator<=>( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
     {
       return *a <=> *b;
     }
 #  else
-    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    VULKAN_HPP_RAII_TEMPLATE_HANDLE
     bool operator<( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
     {
       return *a < *b;
     }
 #  endif
 
-    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    VULKAN_HPP_RAII_TEMPLATE_HANDLE
     bool operator==( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
     {
       return *a == *b;
     }
 
-    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    VULKAN_HPP_RAII_TEMPLATE_HANDLE
     bool operator!=( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
     {
       return *a != *b;
     }
 
-    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    VULKAN_HPP_RAII_TEMPLATE_HANDLE
     bool operator==( T const & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {
       return !*v;
     }
 
-    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    VULKAN_HPP_RAII_TEMPLATE_HANDLE
     bool operator==( std::nullptr_t, T const & v ) VULKAN_HPP_NOEXCEPT
     {
       return !*v;
     }
 
-    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    VULKAN_HPP_RAII_TEMPLATE_HANDLE
     bool operator!=( T const & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {
       return *v;
     }
 
-    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    VULKAN_HPP_RAII_TEMPLATE_HANDLE
     bool operator!=( std::nullptr_t, T const & v ) VULKAN_HPP_NOEXCEPT
     {
       return *v;

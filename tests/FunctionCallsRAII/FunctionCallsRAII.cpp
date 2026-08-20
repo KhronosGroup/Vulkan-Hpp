@@ -1271,5 +1271,17 @@ int main()
     vk::raii::SamplerYcbcrConversion     samplerYcbcrConversion( device, samplerYcbcrConversionCreateInfo );
   }
 
+  //==========================================
+  // Vulkan base 1.2 API interface definitions
+  //==========================================
+
+  // Promoted from VK_EXT_host_query_reset
+  {
+    vk::raii::QueryPool queryPool  = nullptr;
+    uint32_t            firstQuery = 0;
+    uint32_t            queryCount = 1;
+    queryPool.reset( firstQuery, queryCount );
+  }
+
   return 0;
 }

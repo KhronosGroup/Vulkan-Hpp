@@ -3,5 +3,5 @@
 
 # Win32 exclusive vk::SurfaceCapabilitiesFullScreenExclusiveEXT is used
 if(WIN32)
-  vulkan_hpp__setup_sample_dynamic( NAME SurfaceCapabilities )
+  vulkan_hpp__setup_sample_variant( LINKAGE dynamic NAME SurfaceCapabilities )
 endif()

@@ -432,9 +432,8 @@ function( vulkan_hpp__setup_sample )
 	endif()
 endfunction()
 
-# common implementation behind the static/dynamic/raii sample setup functions below.
-# LINKAGE selects the utils_<LINKAGE> library to reuse (static or dynamic); RAII additionally
-# prefixes the target name with RAII_ and places it in the RAII_Samples folder.
+# sets up a sample executable, reusing the utils_<LINKAGE> library (static or dynamic).
+# RAII additionally prefixes the target name with RAII_ and places it in the RAII_Samples folder.
 function( vulkan_hpp__setup_sample_variant )
 	set( options RAII )
 	set( oneValueArgs NAME LINKAGE )
@@ -472,14 +471,6 @@ function( vulkan_hpp__setup_sample_variant )
 		HEADERS      ${TARGET_HEADERS}
 		SOURCES      ${TARGET_SOURCES}
 		LIBS         ${SAMPLE_LIBS} )
-endfunction()
-
-function( vulkan_hpp__setup_sample_static )
-	vulkan_hpp__setup_sample_variant( LINKAGE static ${ARGN} )
-endfunction()
-
-function( vulkan_hpp__setup_sample_dynamic )
-	vulkan_hpp__setup_sample_variant( LINKAGE dynamic ${ARGN} )
 endfunction()
 
 function( vulkan_hpp__setup_sample_raii )

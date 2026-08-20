@@ -15,19 +15,13 @@ public:
   using MaskType = typename std::underlying_type<BitType>::type;
 
   // constructors
-  VULKAN_HPP_CONSTEXPR Flags() VULKAN_HPP_NOEXCEPT
-    : m_mask( 0 )
-  {}
+  VULKAN_HPP_CONSTEXPR Flags() VULKAN_HPP_NOEXCEPT : m_mask( 0 ) {}
 
-  VULKAN_HPP_CONSTEXPR Flags( BitType bit ) VULKAN_HPP_NOEXCEPT
-    : m_mask( static_cast<MaskType>( bit ) )
-  {}
+  VULKAN_HPP_CONSTEXPR Flags( BitType bit ) VULKAN_HPP_NOEXCEPT : m_mask( static_cast<MaskType>( bit ) ) {}
 
   VULKAN_HPP_CONSTEXPR Flags( Flags<BitType> const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 
-  VULKAN_HPP_CONSTEXPR explicit Flags( MaskType flags ) VULKAN_HPP_NOEXCEPT
-    : m_mask( flags )
-  {}
+  VULKAN_HPP_CONSTEXPR explicit Flags( MaskType flags ) VULKAN_HPP_NOEXCEPT : m_mask( flags ) {}
 
   // relational operators
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
@@ -133,84 +127,83 @@ private:
 
 #if !defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
 // relational operators only needed for pre C++20
-template <typename BitType>
-VULKAN_HPP_CONSTEXPR bool operator<( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
+template <typename T>
+VULKAN_HPP_CONSTEXPR bool operator<( T bit, Flags<T> const & flags ) VULKAN_HPP_NOEXCEPT
 {
   return flags.operator>( bit );
 }
 
-template <typename BitType>
-VULKAN_HPP_CONSTEXPR bool operator<=( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
+template <typename T>
+VULKAN_HPP_CONSTEXPR bool operator<=( T bit, Flags<T> const & flags ) VULKAN_HPP_NOEXCEPT
 {
   return flags.operator>=( bit );
 }
 
-template <typename BitType>
-VULKAN_HPP_CONSTEXPR bool operator>( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
+template <typename T>
+VULKAN_HPP_CONSTEXPR bool operator>( T bit, Flags<T> const & flags ) VULKAN_HPP_NOEXCEPT
 {
   return flags.operator<( bit );
 }
 
-template <typename BitType>
-VULKAN_HPP_CONSTEXPR bool operator>=( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
+template <typename T>
+VULKAN_HPP_CONSTEXPR bool operator>=( T bit, Flags<T> const & flags ) VULKAN_HPP_NOEXCEPT
 {
   return flags.operator<=( bit );
 }
 
-template <typename BitType>
-VULKAN_HPP_CONSTEXPR bool operator==( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
+template <typename T>
+VULKAN_HPP_CONSTEXPR bool operator==( T bit, Flags<T> const & flags ) VULKAN_HPP_NOEXCEPT
 {
   return flags.operator==( bit );
 }
 
-template <typename BitType>
-VULKAN_HPP_CONSTEXPR bool operator!=( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
+template <typename T>
+VULKAN_HPP_CONSTEXPR bool operator!=( T bit, Flags<T> const & flags ) VULKAN_HPP_NOEXCEPT
 {
   return flags.operator!=( bit );
 }
 #endif
 
 // bitwise operators
-template <typename BitType>
-VULKAN_HPP_CONSTEXPR Flags<BitType> operator&( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
+template <typename T>
+VULKAN_HPP_CONSTEXPR Flags<T> operator&( T bit, Flags<T> const & flags ) VULKAN_HPP_NOEXCEPT
 {
   return flags.operator&( bit );
 }
 
-template <typename BitType>
-VULKAN_HPP_CONSTEXPR Flags<BitType> operator|( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
+template <typename T>
+VULKAN_HPP_CONSTEXPR Flags<T> operator|( T bit, Flags<T> const & flags ) VULKAN_HPP_NOEXCEPT
 {
   return flags.operator|( bit );
 }
 
-template <typename BitType>
-VULKAN_HPP_CONSTEXPR Flags<BitType> operator^( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
+template <typename T>
+VULKAN_HPP_CONSTEXPR Flags<T> operator^( T bit, Flags<T> const & flags ) VULKAN_HPP_NOEXCEPT
 {
   return flags.operator^( bit );
 }
 
-// bitwise operators on BitType
-template <typename BitType, typename std::enable_if<FlagTraits<BitType>::isBitmask, bool>::type = true>
-VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR Flags<BitType> operator&(BitType lhs, BitType rhs) VULKAN_HPP_NOEXCEPT
+// bitwise operators on BitType T
+VULKAN_HPP_TEMPLATE_BITMASK
+VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR Flags<T> operator&( T lhs, T rhs ) VULKAN_HPP_NOEXCEPT
 {
-  return Flags<BitType>( lhs ) & rhs;
+  return Flags<T>( lhs ) & rhs;
 }
 
-template <typename BitType, typename std::enable_if<FlagTraits<BitType>::isBitmask, bool>::type = true>
-VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR Flags<BitType> operator|(BitType lhs, BitType rhs) VULKAN_HPP_NOEXCEPT
+VULKAN_HPP_TEMPLATE_BITMASK
+VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR Flags<T> operator|( T lhs, T rhs ) VULKAN_HPP_NOEXCEPT
 {
-  return Flags<BitType>( lhs ) | rhs;
+  return Flags<T>( lhs ) | rhs;
 }
 
-template <typename BitType, typename std::enable_if<FlagTraits<BitType>::isBitmask, bool>::type = true>
-VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR Flags<BitType> operator^(BitType lhs, BitType rhs) VULKAN_HPP_NOEXCEPT
+VULKAN_HPP_TEMPLATE_BITMASK
+VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR Flags<T> operator^( T lhs, T rhs ) VULKAN_HPP_NOEXCEPT
 {
-  return Flags<BitType>( lhs ) ^ rhs;
+  return Flags<T>( lhs ) ^ rhs;
 }
 
-template <typename BitType, typename std::enable_if<FlagTraits<BitType>::isBitmask, bool>::type = true>
-VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR Flags<BitType> operator~( BitType bit ) VULKAN_HPP_NOEXCEPT
+VULKAN_HPP_TEMPLATE_BITMASK
+VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR Flags<T> operator~( T bit ) VULKAN_HPP_NOEXCEPT
 {
-  return ~( Flags<BitType>( bit ) );
+  return ~( Flags<T>( bit ) );
 }
-

@@ -260,30 +260,58 @@ function( vulkan_hpp__setup_vulkan_module )
 	target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
 endfunction()
 
+# shared local-vs-system Vulkan include directory setup
+function( vulkan_hpp__setup_vulkan_include_dirs )
+	set( options )
+	set( oneValueArgs NAME SCOPE )
+	set( multiValueArgs )
+	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+
+	if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
+		# Vulkan C++ headers
+		target_include_directories( ${TARGET_NAME} ${TARGET_SCOPE} "${CMAKE_CURRENT_FUNCTION_LIST_DIR}" )
+		# Vulkan C headers
+		target_include_directories( ${TARGET_NAME} ${TARGET_SCOPE} "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
+	else()
+		find_package( Vulkan REQUIRED )
+		target_include_directories( ${TARGET_NAME} ${TARGET_SCOPE} "${Vulkan_INCLUDE_DIRS}" )
+	endif()
+endfunction()
+
 function( vulkan_hpp__setup_vulkan_targets )
 	# Create Vulkan-Hpp interface target
 	add_library( VulkanHpp INTERFACE )
 	add_library( Vulkan::Hpp ALIAS VulkanHpp )
-	if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
-		# Vulkan C++ headers
-		target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}" )
-		# Vulkan C headers
-		target_include_directories( VulkanHpp INTERFACE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
-	else()
-		find_package( Vulkan REQUIRED )
-		target_include_directories( VulkanHpp INTERFACE "${Vulkan_INCLUDE_DIRS}" )
-	endif()
+	vulkan_hpp__setup_vulkan_include_dirs( NAME VulkanHpp SCOPE INTERFACE )
 	if( VULKAN_HPP_RUN_GENERATOR )
 		add_dependencies( VulkanHpp build_vulkan_hpp build_video_hpp )
 	endif()
 
 	# set up compile definitions
-	if( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_DISABLE_ENHANCED_MODE" )
-	endif()
-	if( VK_NO_PROTOTYPES )
-		target_compile_definitions(VulkanHpp INTERFACE "VK_NO_PROTOTYPES" )
-	endif()
+	# most options map 1:1 to an identically named compile definition
+	foreach( VULKAN_HPP_OPTION
+		VK_NO_PROTOTYPES
+		VULKAN_HPP_DISABLE_ENHANCED_MODE
+		VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC
+		VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS
+		VULKAN_HPP_HANDLES_MOVE_EXCHANGE
+		VULKAN_HPP_NO_CONSTRUCTORS
+		VULKAN_HPP_NO_DEFAULT_DISPATCHER
+		VULKAN_HPP_NO_EXCEPTIONS
+		VULKAN_HPP_NO_NODISCARD_WARNINGS
+		VULKAN_HPP_NO_SETTERS
+		VULKAN_HPP_NO_SMART_HANDLE
+		VULKAN_HPP_NO_SPACESHIP_OPERATOR
+		VULKAN_HPP_NO_TO_STRING
+		VULKAN_HPP_NO_WIN32_PROTOTYPES
+		VULKAN_HPP_RAII_NO_EXCEPTIONS
+		VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST
+		VULKAN_HPP_USE_REFLECT
+		VULKAN_HPP_USE_STD_EXPECTED )
+		if( ${VULKAN_HPP_OPTION} )
+			target_compile_definitions( VulkanHpp INTERFACE "${VULKAN_HPP_OPTION}" )
+		endif()
+	endforeach()
 	if( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
 		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_DISPATCH_LOADER_DYNAMIC" )
 		if( UNIX )
@@ -297,56 +325,9 @@ function( vulkan_hpp__setup_vulkan_targets )
 			message(WARNING "Could not link to system Vulkan libraries, consider using VULKAN_HPP_DISPATCH_LOADER_DYNAMIC")
 		endif()
 	endif()
-	if( VULKAN_HPP_USE_REFLECT )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_USE_REFLECT" )
-	endif()
-	if( VULKAN_HPP_USE_STD_EXPECTED )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_USE_STD_EXPECTED" )
-	endif()
+	# VULKAN_HPP_TYPESAFE_CONVERSION is inverted and carries an explicit value when disabled
 	if( NOT VULKAN_HPP_TYPESAFE_CONVERSION )
 		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_TYPESAFE_CONVERSION=0" )
-	endif()
-	if( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_HANDLES_MOVE_EXCHANGE" )
-	endif()
-	if( VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC" )
-	endif()
-	if( VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS" )
-	endif()
-	if( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST" )
-	endif()
-	if( VULKAN_HPP_NO_SETTERS )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_SETTERS" )
-	endif()
-	if( VULKAN_HPP_NO_TO_STRING )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_TO_STRING" )
-	endif()
-	if( VULKAN_HPP_NO_EXCEPTIONS )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_EXCEPTIONS" )
-	endif()
-	if( VULKAN_HPP_NO_CONSTRUCTORS )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_CONSTRUCTORS" )
-	endif()
-	if( VULKAN_HPP_NO_DEFAULT_DISPATCHER )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_DEFAULT_DISPATCHER" )
-	endif()
-	if( VULKAN_HPP_NO_SMART_HANDLE )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_SMART_HANDLE" )
-	endif()
-	if( VULKAN_HPP_RAII_NO_EXCEPTIONS )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_RAII_NO_EXCEPTIONS" )
-	endif()
-	if( VULKAN_HPP_NO_WIN32_PROTOTYPES )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_WIN32_PROTOTYPES" )
-	endif()
-	if( VULKAN_HPP_NO_NODISCARD_WARNINGS )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_NODISCARD_WARNINGS" )
-	endif()
-	if( VULKAN_HPP_NO_SPACESHIP_OPERATOR )
-		target_compile_definitions(VulkanHpp INTERFACE "VULKAN_HPP_NO_SPACESHIP_OPERATOR" )
 	endif()
 
 	# Build Vulkan-Hpp as a module
@@ -381,6 +362,18 @@ function( vulkan_hpp__setup_platform )
 	endif()
 endfunction()
 
+# common per-target setup shared by libraries and samples
+function( vulkan_hpp__setup_target_defaults )
+	set( options )
+	set( oneValueArgs NAME )
+	set( multiValueArgs )
+	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+
+	vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
+	vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
+	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON )
+endfunction()
+
 function( vulkan_hpp__setup_project )
 	set( options )
 	set( oneValueArgs NAME )
@@ -406,18 +399,8 @@ function( vulkan_hpp__setup_library )
 		else()
 			add_library( ${TARGET_NAME} ${TARGET_SOURCES} ${TARGET_HEADERS} )
 		endif()
-		vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
-		vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
-		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON )
-		if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
-			# Vulkan C++ headers
-			target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}" )
-			# Vulkan C headers
-			target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
-		else()
-			find_package( Vulkan REQUIRED )
-			target_include_directories( ${TARGET_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}" )
-		endif()
+		vulkan_hpp__setup_target_defaults( NAME ${TARGET_NAME} )
+		vulkan_hpp__setup_vulkan_include_dirs( NAME ${TARGET_NAME} SCOPE PUBLIC )
 	endif()
 	set_target_properties( ${TARGET_NAME} PROPERTIES FOLDER ${TARGET_FOLDER} )
 endfunction()
@@ -430,9 +413,7 @@ function( vulkan_hpp__setup_sample )
 
 	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
 	add_executable( ${TARGET_NAME} ${TARGET_HEADERS} ${TARGET_SOURCES} )
-	vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
-	vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
-	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON )
+	vulkan_hpp__setup_target_defaults( NAME ${TARGET_NAME} )
 
 	if( TARGET_FOLDER )
 		set_target_properties( ${TARGET_NAME} PROPERTIES FOLDER "${TARGET_FOLDER}" )
@@ -451,68 +432,58 @@ function( vulkan_hpp__setup_sample )
 	endif()
 endfunction()
 
-function( vulkan_hpp__setup_sample_static )
-	set( options )
-	set( oneValueArgs NAME )
-	set( multiValueArgs )
+# common implementation behind the static/dynamic/raii sample setup functions below.
+# LINKAGE selects the utils_<LINKAGE> library to reuse (static or dynamic); RAII additionally
+# prefixes the target name with RAII_ and places it in the RAII_Samples folder.
+function( vulkan_hpp__setup_sample_variant )
+	set( options RAII )
+	set( oneValueArgs NAME LINKAGE )
+	set( multiValueArgs HEADERS SOURCES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 	if( NOT TARGET_NAME )
-		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_sample_static" )
+		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_sample_variant" )
+	endif()
+	if( NOT TARGET_LINKAGE )
+		message( FATAL_ERROR "LINKAGE must be defined in vulkan_hpp__setup_sample_variant" )
+	endif()
+	if( NOT TARGET_SOURCES )
+		set( TARGET_SOURCES ${TARGET_NAME}.cpp )
 	endif()
 
-	find_package( Vulkan REQUIRED )
+	set( SAMPLE_LIBS utils_${TARGET_LINKAGE} )
+	if( TARGET_LINKAGE STREQUAL "static" )
+		find_package( Vulkan REQUIRED )
+		list( APPEND SAMPLE_LIBS ${Vulkan_LIBRARIES} )
+	endif()
+
+	if( TARGET_RAII )
+		set( SAMPLE_NAME RAII_${TARGET_NAME} )
+		set( SAMPLE_FOLDER RAII_Samples )
+	else()
+		set( SAMPLE_NAME ${TARGET_NAME} )
+		set( SAMPLE_FOLDER Samples )
+	endif()
 
 	vulkan_hpp__setup_sample(
-		NAME         ${TARGET_NAME}
-		FOLDER       Samples
-		PCH_REUSE    utils_static
-		SOURCES      ${TARGET_NAME}.cpp
-		LIBS         utils_static ${Vulkan_LIBRARIES} )
+		NAME         ${SAMPLE_NAME}
+		FOLDER       ${SAMPLE_FOLDER}
+		PCH_REUSE    utils_${TARGET_LINKAGE}
+		HEADERS      ${TARGET_HEADERS}
+		SOURCES      ${TARGET_SOURCES}
+		LIBS         ${SAMPLE_LIBS} )
+endfunction()
+
+function( vulkan_hpp__setup_sample_static )
+	vulkan_hpp__setup_sample_variant( LINKAGE static ${ARGN} )
 endfunction()
 
 function( vulkan_hpp__setup_sample_dynamic )
-	set( options )
-	set( oneValueArgs NAME )
-	set( multiValueArgs HEADERS SOURCES )
-	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-
-	if( NOT TARGET_NAME )
-		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_sample_dynamic" )
-	endif()
-	if( NOT TARGET_SOURCES )
-		set( TARGET_SOURCES ${TARGET_NAME}.cpp )
-	endif()
-
-	vulkan_hpp__setup_sample(
-		NAME         ${TARGET_NAME}
-		FOLDER       Samples
-		PCH_REUSE    utils_dynamic
-		HEADERS      ${TARGET_HEADERS}
-		SOURCES      ${TARGET_SOURCES}
-		LIBS         utils_dynamic )
+	vulkan_hpp__setup_sample_variant( LINKAGE dynamic ${ARGN} )
 endfunction()
 
 function( vulkan_hpp__setup_sample_raii )
-	set( options )
-	set( oneValueArgs NAME )
-	set( multiValueArgs HEADERS SOURCES )
-	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-
-	if( NOT TARGET_NAME )
-		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_sample_raii" )
-	endif()
-	if( NOT TARGET_SOURCES )
-		set( TARGET_SOURCES ${TARGET_NAME}.cpp )
-	endif()
-
-	vulkan_hpp__setup_sample(
-		NAME         RAII_${TARGET_NAME}
-		FOLDER       RAII_Samples
-		PCH_REUSE    utils_dynamic
-		HEADERS      ${TARGET_HEADERS}
-		SOURCES      ${TARGET_SOURCES}
-		LIBS         utils_dynamic )
+	vulkan_hpp__setup_sample_variant( LINKAGE dynamic RAII ${ARGN} )
 endfunction()
 
 # set up CTest or add_subdirectory test

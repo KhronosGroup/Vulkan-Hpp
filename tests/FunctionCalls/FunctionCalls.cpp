@@ -2510,6 +2510,19 @@ int main()
     device.destroy( samplerYcbcrConversion );
   }
 
+  //==========================================
+  // Vulkan base 1.2 API interface definitions
+  //==========================================
+
+  // Promoted from VK_EXT_host_query_reset
+  {
+    vk::Device    device;
+    vk::QueryPool queryPool;
+    uint32_t      firstQuery = 0;
+    uint32_t      queryCount = 1;
+    device.resetQueryPool( queryPool, firstQuery, queryCount );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

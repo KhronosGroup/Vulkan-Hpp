@@ -3,5 +3,5 @@
 
 find_package( Vulkan QUIET )
 if ( Vulkan_FOUND )
-	vulkan_hpp__setup_sample_static( NAME InstanceLayerExtensionProperties )
+	vulkan_hpp__setup_sample_variant( LINKAGE static NAME InstanceLayerExtensionProperties )
 endif()

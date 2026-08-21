@@ -13,16 +13,18 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include "../../samples/utils/utils.hpp"
 
 #include <numeric>
 #include <vulkan/vulkan_raii.hpp>
+#endif
 
 namespace vk
 {
   namespace raii
   {
-    namespace su
+    VULKAN_HPP_EXPORT namespace su
     {
       vk::raii::DeviceMemory allocateDeviceMemory( vk::raii::Device const &                   device,
                                                    vk::PhysicalDeviceMemoryProperties const & memoryProperties,

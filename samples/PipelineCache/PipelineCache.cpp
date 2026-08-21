@@ -13,15 +13,22 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <fstream>
 #include <iomanip>
 #include <thread>
+#endif
+
 
 // For timestamp code (getMilliseconds)
 #ifdef _WIN32
@@ -124,7 +131,7 @@ int main()
     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( descriptorPool, descriptorSetLayout );
     vk::DescriptorSet             descriptorSet = device.allocateDescriptorSets( descriptorSetAllocateInfo ).front();
 
-    vk::su::updateDescriptorSets( device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, textureData );
+    vk::su::updateDescriptorSets( device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::WholeSize, {} } }, textureData );
 
     /* VULKAN_KEY_START */
 
@@ -170,7 +177,7 @@ int main()
       //      0               4    a device ID equal to VkPhysicalDeviceProperties::DeviceId written
       //                           as a stream of bytes, with the least significant byte first
       //
-      //      4    VK_UUID_SIZE    a pipeline cache ID equal to VkPhysicalDeviceProperties::pipelineCacheUUID
+      //      4    vk::UuidSize    a pipeline cache ID equal to VkPhysicalDeviceProperties::pipelineCacheUUID
       //
       //
       // The code must be updated for latest Vulkan spec, which contains the following table:
@@ -185,20 +192,20 @@ int main()
       //                           as a stream of bytes, with the least significant byte first
       //     12               4    a device ID equal to VkPhysicalDeviceProperties::deviceID written
       //                           as a stream of bytes, with the least significant byte first
-      //     16    VK_UUID_SIZE    a pipeline cache ID equal to VkPhysicalDeviceProperties::pipelineCacheUUID
+      //     16    vk::UuidSize    a pipeline cache ID equal to VkPhysicalDeviceProperties::pipelineCacheUUID
 
       uint32_t headerLength                    = 0;
       uint32_t cacheHeaderVersion              = 0;
       uint32_t vendorID                        = 0;
       uint32_t deviceID                        = 0;
-      uint8_t  pipelineCacheUUID[VK_UUID_SIZE] = {};
+      uint8_t  pipelineCacheUUID[vk::UuidSize] = {};
 
       uint8_t * startCacheDataPtr = reinterpret_cast<uint8_t *>( startCacheData.data() );
       memcpy( &headerLength, startCacheDataPtr + 0, 4 );
       memcpy( &cacheHeaderVersion, startCacheDataPtr + 4, 4 );
       memcpy( &vendorID, startCacheDataPtr + 8, 4 );
       memcpy( &deviceID, startCacheDataPtr + 12, 4 );
-      memcpy( pipelineCacheUUID, startCacheDataPtr + 16, VK_UUID_SIZE );
+      memcpy( pipelineCacheUUID, startCacheDataPtr + 16, vk::UuidSize );
 
       // Check each field and report bad values before freeing existing cache
       bool badCache = false;
@@ -310,7 +317,7 @@ int main()
     vk::SubmitInfo         submitInfo( imageAcquiredSemaphore, waitDestinationStageMask, commandBuffer );
     graphicsQueue.submit( submitInfo, drawFence );
 
-    while ( vk::Result::eTimeout == device.waitForFences( drawFence, VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device.waitForFences( drawFence, vk::True, vk::su::FenceTimeout ) )
       ;
 
     vk::Result result = presentQueue.presentKHR( vk::PresentInfoKHR( {}, swapChainData.swapChain, currentBuffer.value ) );

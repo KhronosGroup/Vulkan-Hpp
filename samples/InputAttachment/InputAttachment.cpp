@@ -14,14 +14,21 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
 #include <thread>
+#endif
+
 
 static char const * AppName    = "InputAttachment";
 static char const * EngineName = "Vulkan.hpp";
@@ -168,7 +175,7 @@ int main()
     vk::AttachmentReference  colorReference( 0, vk::ImageLayout::eColorAttachmentOptimal );
     vk::AttachmentReference  inputReference( 1, vk::ImageLayout::eShaderReadOnlyOptimal );
     vk::SubpassDescription   subpassDescription( {}, vk::PipelineBindPoint::eGraphics, inputReference, colorReference );
-    vk::SubpassDependency    subpassDependency( VK_SUBPASS_EXTERNAL,
+    vk::SubpassDependency    subpassDependency( vk::SubpassExternal,
                                              0,
                                              vk::PipelineStageFlagBits::eTransfer,
                                              vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eFragmentShader,

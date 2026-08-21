@@ -4,12 +4,18 @@
 // VulkanHpp Samples : SurfaceCapabilities
 //                     Get surface capabilities.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iomanip>
 #include <sstream>
 #include <vector>
 #include <vulkan/vulkan_to_string.hpp>
+#endif
+
 
 static char const * AppName    = "SurfaceCapabilities";
 static char const * EngineName = "Vulkan.hpp";

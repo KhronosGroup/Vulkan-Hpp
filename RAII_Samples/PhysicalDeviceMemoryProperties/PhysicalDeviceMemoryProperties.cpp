@@ -4,11 +4,17 @@
 // VulkanHpp Samples : PhysicalDeviceMemoryProperties
 //                     Get memory properties per physical device.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <sstream>
 #include <vector>
 #include <vulkan/vulkan_to_string.hpp>
+#endif
+
 
 static char const * AppName    = "PhysicalDeviceMemoryProperties";
 static char const * EngineName = "Vulkan.hpp";

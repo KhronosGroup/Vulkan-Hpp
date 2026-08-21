@@ -1,9 +1,15 @@
 // SPDX-FileCopyrightText: 2018-2026 NVIDIA CORPORATION
 // SPDX-License-Identifier: Apache-2.0
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "06_InitDepthBuffer";
 static char const * EngineName = "Vulkan.hpp";

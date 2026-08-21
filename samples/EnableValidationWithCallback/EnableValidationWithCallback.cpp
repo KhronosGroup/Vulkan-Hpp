@@ -15,12 +15,18 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <vulkan/vulkan_to_string.hpp>
+#endif
+
 
 static char const * AppName    = "EnableValidationWithCallback";
 static char const * EngineName = "Vulkan.hpp";
@@ -129,7 +135,7 @@ int main()
 
     /* Enable debug callback extension */
     std::vector<char const *> instanceExtensionNames;
-    instanceExtensionNames.push_back( VK_EXT_DEBUG_UTILS_EXTENSION_NAME );
+    instanceExtensionNames.push_back( vk::EXTDebugUtilsExtensionName );
 
     vk::ApplicationInfo    applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
     vk::InstanceCreateInfo instanceCreateInfo( vk::InstanceCreateFlags(), &applicationInfo, instanceLayerNames, instanceExtensionNames );

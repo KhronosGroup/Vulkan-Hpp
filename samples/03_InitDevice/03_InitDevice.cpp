@@ -4,9 +4,15 @@
 // VulkanHpp Samples : 03_InitDevice
 //                     Create and destroy a device
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "03_InitDevice";
 static char const * EngineName = "Vulkan.hpp";

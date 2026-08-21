@@ -4,9 +4,15 @@
 // VulkanHpp Samples : CopyBlitImage
 //                     Perform an image blit operation
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <thread>
+#endif
+
 
 static char const * AppName    = "CopyBlitImage";
 static char const * EngineName = "Vulkan.hpp";
@@ -145,8 +151,8 @@ int main()
                                           vk::AccessFlagBits::eTransferWrite,
                                           vk::ImageLayout::eTransferDstOptimal,
                                           vk::ImageLayout::eTransferDstOptimal,
-                                          VK_QUEUE_FAMILY_IGNORED,
-                                          VK_QUEUE_FAMILY_IGNORED,
+                                          vk::QueueFamilyIgnored,
+                                          vk::QueueFamilyIgnored,
                                           blitDestinationImage,
                                           vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 ) );
     commandBuffer.pipelineBarrier(
@@ -161,8 +167,8 @@ int main()
                                               {},
                                               vk::ImageLayout::eTransferDstOptimal,
                                               vk::ImageLayout::ePresentSrcKHR,
-                                              VK_QUEUE_FAMILY_IGNORED,
-                                              VK_QUEUE_FAMILY_IGNORED,
+                                              vk::QueueFamilyIgnored,
+                                              vk::QueueFamilyIgnored,
                                               swapChainData.images[imageIndex],
                                               vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 ) );
     commandBuffer.pipelineBarrier(

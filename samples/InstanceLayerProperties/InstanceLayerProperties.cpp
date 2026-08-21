@@ -4,10 +4,16 @@
 // VulkanHpp Samples : InstanceLayerProperties
 //                     Get global layer properties to know what layers are available to enable at CreateInstance time.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include <iostream>
 #include <sstream>
 #include <vector>
 #include <vulkan/vulkan.hpp>
+#endif
 
 int main()
 {

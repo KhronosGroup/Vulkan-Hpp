@@ -27,7 +27,9 @@
 #  endif
 #endif
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <vulkan/vulkan.hpp>
+#endif
 
 namespace vk
 {

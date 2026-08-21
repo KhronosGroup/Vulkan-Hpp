@@ -14,10 +14,16 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../../samples/utils/geometries.hpp"
 #include "../utils/utils.hpp"
-
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "13_InitVertexBuffer";
 static char const * EngineName = "Vulkan.hpp";

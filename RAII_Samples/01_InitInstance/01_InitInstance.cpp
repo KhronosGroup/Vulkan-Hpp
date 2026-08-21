@@ -4,9 +4,15 @@
 // VulkanHpp Samples : 01_InitInstanceRAII
 //                     Create and destroy a vk::raii::Instance
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
+#endif
+
 
 static std::string AppName    = "01_InitInstanceRAII";
 static std::string EngineName = "Vulkan.hpp";

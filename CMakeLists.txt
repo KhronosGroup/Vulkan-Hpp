@@ -42,6 +42,7 @@ option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
 option( VULKAN_HPP_TESTS_CTEST "Build tests for ctest, enabling wider test coverage" OFF )
 option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
 cmake_dependent_option( VULKAN_HPP_BUILD_CXX_MODULE "Build and test the C++ named module." ON [[ 23 IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD ]] OFF)
+cmake_dependent_option( VULKAN_HPP_SAMPLES_BUILD_MODULES_ONLY "Build only the C++ module (MODULE_*) sample variants, skipping the plain ones" OFF "VULKAN_HPP_BUILD_CXX_MODULE" OFF )
 
 # options for vulkan hpp compile definitions (see https://github.com/KhronosGroup/Vulkan-Hpp/tree/main?tab=readme-ov-file#configuration-options for details)
 option( VULKAN_HPP_DISABLE_ENHANCED_MODE "Disable all enhanced functionality apart from scoped enums, bitmasks, default initialization and vk::StructureChain" OFF )
@@ -461,8 +462,7 @@ function( vulkan_hpp__setup_sample )
 	endif()
 endfunction()
 
-# sets up a sample executable, reusing the utils_<LINKAGE> library (static or dynamic).
-# RAII additionally prefixes the target name with RAII_ and places it in the RAII_Samples folder.
+# sets up a sample executable reusing utils_<LINKAGE>; RAII prefixes the name and switches to RAII_Samples
 function( vulkan_hpp__setup_sample_variant )
 	set( options RAII )
 	set( oneValueArgs NAME LINKAGE )
@@ -493,13 +493,31 @@ function( vulkan_hpp__setup_sample_variant )
 		set( SAMPLE_FOLDER Samples )
 	endif()
 
-	vulkan_hpp__setup_sample(
-		NAME         ${SAMPLE_NAME}
-		FOLDER       ${SAMPLE_FOLDER}
-		PCH_REUSE    utils_${TARGET_LINKAGE}
-		HEADERS      ${TARGET_HEADERS}
-		SOURCES      ${TARGET_SOURCES}
-		LIBS         ${SAMPLE_LIBS} )
+	if( NOT VULKAN_HPP_SAMPLES_BUILD_MODULES_ONLY )
+		vulkan_hpp__setup_sample(
+			NAME         ${SAMPLE_NAME}
+			FOLDER       ${SAMPLE_FOLDER}
+			PCH_REUSE    utils_${TARGET_LINKAGE}
+			HEADERS      ${TARGET_HEADERS}
+			SOURCES      ${TARGET_SOURCES}
+			LIBS         ${SAMPLE_LIBS} )
+	endif()
+
+	# additionally build the same sample against utils::module / RAII_utils::module (no PCH: modules replace it)
+	if( VULKAN_HPP_BUILD_CXX_MODULE )
+		if( TARGET_RAII )
+			set( SAMPLE_MODULE_LIBS RAII_utils::module )
+		else()
+			set( SAMPLE_MODULE_LIBS utils::module )
+		endif()
+
+		vulkan_hpp__setup_sample(
+			NAME         MODULE_${SAMPLE_NAME}
+			FOLDER       ${SAMPLE_FOLDER}
+			HEADERS      ${TARGET_HEADERS}
+			SOURCES      ${TARGET_SOURCES}
+			LIBS         ${SAMPLE_MODULE_LIBS} )
+	endif()
 endfunction()
 
 function( vulkan_hpp__setup_sample_raii )

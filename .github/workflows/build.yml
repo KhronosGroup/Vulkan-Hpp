@@ -157,6 +157,20 @@ jobs:
           cmake --build build --parallel --config $BUILD_TYPE --clean-first
         done
 
+    # Build (RAII) samples and their utils::module / RAII_utils::module C++ named module variants.
+    - name: Build (RAII) Samples with C++ modules
+      if: matrix.env.modules
+      run: |
+        for BUILD_TYPE in Debug Release; do
+          cmake -B build -G '${{matrix.env.gen}}' --fresh --preset samples             \
+            -D VULKAN_HPP_BUILD_CXX_MODULE=ON                                          \
+            ${{ env.VAR_CMAKE_FLAGS }}                                                 \
+            -D CMAKE_CXX_STANDARD=23                                                   \
+            -D CMAKE_BUILD_TYPE=$BUILD_TYPE                                            \
+            -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444
+          cmake --build build --parallel --config $BUILD_TYPE --clean-first
+        done
+
     # Run all unit tests with C++11 to maximum support C++ version.
     # Module runners ignore all versions below C++23
     - name: Build Tests with C++11 to C++${{matrix.env.cxx_max}}

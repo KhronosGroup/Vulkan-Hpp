@@ -15,13 +15,20 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "InitTexture";
 static char const * EngineName = "Vulkan.hpp";

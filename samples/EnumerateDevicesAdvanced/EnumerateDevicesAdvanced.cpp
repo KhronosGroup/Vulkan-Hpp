@@ -4,11 +4,17 @@
 // VulkanHpp Samples : EnumerateDevicesAdvanced
 //                     Enumerate physical devices
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iomanip>
 #include <iostream>
 #include <vulkan/vulkan_to_string.hpp>
+#endif
+
 
 static char const * AppName    = "EnumerateDevicesAdvanced";
 static char const * EngineName = "Vulkan.hpp";

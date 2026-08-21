@@ -4,10 +4,16 @@
 // VulkanHpp Samples : InstanceVersion
 //                     Get the version of instance-level functionality supported by the implementation.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
 #include <sstream>
+#endif
+
 
 std::string decodeAPIVersion( uint32_t apiVersion )
 {

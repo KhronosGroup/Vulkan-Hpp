@@ -4,9 +4,15 @@
 // VulkanHpp Samples : 04_InitCommandBuffer
 //                     Create command buffer
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "04_InitCommandBuffer";
 static char const * EngineName = "Vulkan.hpp";

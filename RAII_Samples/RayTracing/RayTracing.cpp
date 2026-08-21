@@ -4,6 +4,9 @@
 // VulkanHpp Samples : RayTracing
 //                     Simple sample how to ray trace using Vulkan
 
+// avoid Windows.h's max/min macros clobbering std::max/std::min
+#define NOMINMAX
+
 #if defined( _MSC_VER )
 #  pragma warning( disable : 4201 )  // disable warning C4201: nonstandard extension used: nameless struct/union; needed
                                      // to get glm/detail/type_vec?.hpp without warnings
@@ -17,27 +20,37 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+// all #include directives must precede any `import` below, so gather the unconditional ones here first
+// glfwCreateWindowSurface needs VK_VERSION_1_0 visible, and windows.h's APIENTRY must precede GLFW's own
+#include <vulkan/vulkan.h>
+#define GLFW_INCLUDE_NONE
 // clang-format off
-// we need to include vulkan.hpp before glfw3.h, so stop clang-format to reorder them
-#include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 // clang-format on
-#include <numeric>
-#include <random>
-#include <sstream>
-#include <vulkan/vulkan_to_string.hpp>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_FORCE_RADIANS
 #define GLM_ENABLE_EXPERIMENTAL
-#include "../utils/shaders.hpp"
-#include "../utils/utils.hpp"
 #include "CameraManipulator.hpp"
 #include "glslang/Public/ShaderLang.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import RAII_utils;
+import vulkan;
+#else
+#include <vulkan/vulkan.hpp>
+#include <numeric>
+#include <random>
+#include <sstream>
+#include <vulkan/vulkan_to_string.hpp>
+#include "../utils/shaders.hpp"
+#include "../utils/utils.hpp"
+#endif
 
 static char const * AppName    = "RayTracing";
 static char const * EngineName = "Vulkan.hpp";
@@ -708,7 +721,7 @@ int main()
     }
 
     std::vector<vk::ExtensionProperties> extensionProperties = physicalDevice.enumerateDeviceExtensionProperties();
-    assert( vk::su::contains( extensionProperties, VK_KHR_SWAPCHAIN_EXTENSION_NAME ) );
+    assert( vk::su::contains( extensionProperties, vk::KHRSwapchainExtensionName ) );
     assert( vk::su::contains( extensionProperties, VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME ) );
     if ( !vk::su::contains( extensionProperties, VK_NV_RAY_TRACING_EXTENSION_NAME ) )
     {
@@ -729,7 +742,7 @@ int main()
     auto             supportedFeatures = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>();
     vk::raii::Device device            = vk::raii::su::makeDevice( physicalDevice,
                                                         graphicsAndPresentQueueFamilyIndex.first,
-                                                                   { VK_KHR_SWAPCHAIN_EXTENSION_NAME, VK_NV_RAY_TRACING_EXTENSION_NAME },
+                                                                   { vk::KHRSwapchainExtensionName, VK_NV_RAY_TRACING_EXTENSION_NAME },
                                                         &supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features,
                                                         &supportedFeatures.get<vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>() );
 
@@ -890,8 +903,8 @@ int main()
     vk::raii::DescriptorSet descriptorSet = std::move( vk::raii::DescriptorSets( device, { *descriptorPool, *descriptorSetLayout } ).front() );
     vk::raii::su::updateDescriptorSets( device,
                                         descriptorSet,
-                                        { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} },
-                                          { vk::DescriptorType::eStorageBuffer, materialBufferData.buffer, VK_WHOLE_SIZE, {} } },
+                                        { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::WholeSize, {} },
+                                          { vk::DescriptorType::eStorageBuffer, materialBufferData.buffer, vk::WholeSize, {} } },
                                         textures );
 
     // RayTracing specific stuff
@@ -932,7 +945,7 @@ int main()
       [&]( vk::raii::CommandBuffer const & commandBuffer )
       {
         vk::BufferMemoryBarrier bufferMemoryBarrier(
-          {}, vk::AccessFlagBits::eShaderRead, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, *vertexBufferData.buffer, 0, VK_WHOLE_SIZE );
+          {}, vk::AccessFlagBits::eShaderRead, vk::QueueFamilyIgnored, vk::QueueFamilyIgnored, *vertexBufferData.buffer, 0, vk::WholeSize );
         commandBuffer.pipelineBarrier(
           vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eRayTracingShaderKHR, {}, nullptr, bufferMemoryBarrier, nullptr );
 
@@ -988,10 +1001,10 @@ int main()
     {
       vk::raii::su::updateDescriptorSets( device,
                                           rayTracingDescriptorSets[i],
-                                          { { bindings[2].descriptorType, uniformBufferData.buffer, VK_WHOLE_SIZE, {} },
-                                            { bindings[3].descriptorType, vertexBufferData.buffer, VK_WHOLE_SIZE, {} },
-                                            { bindings[4].descriptorType, indexBufferData.buffer, VK_WHOLE_SIZE, {} },
-                                            { bindings[5].descriptorType, materialBufferData.buffer, VK_WHOLE_SIZE, {} } },
+                                          { { bindings[2].descriptorType, uniformBufferData.buffer, vk::WholeSize, {} },
+                                            { bindings[3].descriptorType, vertexBufferData.buffer, vk::WholeSize, {} },
+                                            { bindings[4].descriptorType, indexBufferData.buffer, vk::WholeSize, {} },
+                                            { bindings[5].descriptorType, materialBufferData.buffer, vk::WholeSize, {} } },
                                           textures,
                                           2 );
     }
@@ -1146,7 +1159,7 @@ int main()
         swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, *perFrameData[frameIndex].presentCompleteSemaphore );
       assert( result == vk::Result::eSuccess );
 
-      while ( vk::Result::eTimeout == device.waitForFences( *perFrameData[frameIndex].fence, VK_TRUE, vk::su::FenceTimeout ) )
+      while ( vk::Result::eTimeout == device.waitForFences( *perFrameData[frameIndex].fence, vk::True, vk::su::FenceTimeout ) )
         ;
       device.resetFences( *perFrameData[frameIndex].fence );
 

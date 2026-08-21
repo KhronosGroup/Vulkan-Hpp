@@ -13,15 +13,18 @@
 
 #include "utils.hpp"
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <iomanip>
 #include <numeric>
 #include <vulkan/vulkan.hpp>
-#if defined( VULKAN_HPP_NO_TO_STRING )
-#  include <vulkan/vulkan_to_string.hpp>
+#  if defined( VULKAN_HPP_NO_TO_STRING )
+#    include <vulkan/vulkan_to_string.hpp>
+#  endif
+#  include <vulkan/vulkan_static_assertions.hpp>
 #endif
-#include <vulkan/vulkan_static_assertions.hpp>
 
-#if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+#if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 ) && !defined( VULKAN_HPP_USE_CXX_MODULE )
+// in module mode, module `vulkan` already provides this storage (see vulkan.hpp's VULKAN_HPP_CXX_MODULE branch)
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 
@@ -226,12 +229,12 @@ namespace vk
       }
 #if !defined( NDEBUG )
       if ( std::none_of(
-             extensions.begin(), extensions.end(), []( std::string const & extension ) { return extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME; } ) &&
+             extensions.begin(), extensions.end(), []( std::string const & extension ) { return extension == vk::EXTDebugUtilsExtensionName; } ) &&
            std::any_of( extensionProperties.begin(),
                         extensionProperties.end(),
-                        []( vk::ExtensionProperties const & ep ) { return ( strcmp( VK_EXT_DEBUG_UTILS_EXTENSION_NAME, ep.extensionName ) == 0 ); } ) )
+                        []( vk::ExtensionProperties const & ep ) { return ( strcmp( vk::EXTDebugUtilsExtensionName, ep.extensionName ) == 0 ); } ) )
       {
-        enabledExtensions.push_back( VK_EXT_DEBUG_UTILS_EXTENSION_NAME );
+        enabledExtensions.push_back( vk::EXTDebugUtilsExtensionName );
       }
 #endif
       return enabledExtensions;
@@ -475,29 +478,29 @@ namespace vk
 
     std::vector<std::string> getDeviceExtensions()
     {
-      return { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+      return { vk::KHRSwapchainExtensionName };
     }
 
     std::vector<std::string> getInstanceExtensions()
     {
       std::vector<std::string> extensions;
-      extensions.push_back( VK_KHR_SURFACE_EXTENSION_NAME );
+      extensions.push_back( vk::KHRSurfaceExtensionName );
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
-      extensions.push_back( VK_KHR_ANDROID_SURFACE_EXTENSION_NAME );
+      extensions.push_back( vk::KHRAndroidSurfaceExtensionName );
 #elif defined( VK_USE_PLATFORM_METAL_EXT )
-      extensions.push_back( VK_EXT_METAL_SURFACE_EXTENSION_NAME );
+      extensions.push_back( vk::EXTMetalSurfaceExtensionName );
 #elif defined( VK_USE_PLATFORM_VI_NN )
-      extensions.push_back( VK_NN_VI_SURFACE_EXTENSION_NAME );
+      extensions.push_back( vk::NNViSurfaceExtensionName );
 #elif defined( VK_USE_PLATFORM_WAYLAND_KHR )
-      extensions.push_back( VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME );
+      extensions.push_back( vk::KHRWaylandSurfaceExtensionName );
 #elif defined( VK_USE_PLATFORM_WIN32_KHR )
-      extensions.push_back( VK_KHR_WIN32_SURFACE_EXTENSION_NAME );
+      extensions.push_back( vk::KHRWin32SurfaceExtensionName );
 #elif defined( VK_USE_PLATFORM_XCB_KHR )
-      extensions.push_back( VK_KHR_XCB_SURFACE_EXTENSION_NAME );
+      extensions.push_back( vk::KHRXcbSurfaceExtensionName );
 #elif defined( VK_USE_PLATFORM_XLIB_KHR )
-      extensions.push_back( VK_KHR_XLIB_SURFACE_EXTENSION_NAME );
+      extensions.push_back( vk::KHRXlibSurfaceExtensionName );
 #elif defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )
-      extensions.push_back( VK_EXT_ACQUIRE_XLIB_DISPLAY_EXTENSION_NAME );
+      extensions.push_back( vk::EXTAcquireXlibDisplayExtensionName );
 #endif
       return extensions;
     }
@@ -641,8 +644,8 @@ namespace vk
                                                  destinationAccessMask,
                                                  oldImageLayout,
                                                  newImageLayout,
-                                                 VK_QUEUE_FAMILY_IGNORED,
-                                                 VK_QUEUE_FAMILY_IGNORED,
+                                                 vk::QueueFamilyIgnored,
+                                                 vk::QueueFamilyIgnored,
                                                  image,
                                                  imageSubresourceRange );
       return commandBuffer.pipelineBarrier( sourceStage, destinationStage, {}, nullptr, nullptr, imageMemoryBarrier );
@@ -652,7 +655,7 @@ namespace vk
     {
       vk::Fence fence = device.createFence( vk::FenceCreateInfo() );
       queue.submit( vk::SubmitInfo( 0, nullptr, nullptr, 1, &commandBuffer ), fence );
-      while ( vk::Result::eTimeout == device.waitForFences( fence, VK_TRUE, vk::su::FenceTimeout ) )
+      while ( vk::Result::eTimeout == device.waitForFences( fence, vk::True, vk::su::FenceTimeout ) )
         ;
       device.destroyFence( fence );
     }
@@ -783,9 +786,9 @@ namespace vk
     SurfaceData::SurfaceData( vk::Instance const & instance, std::string const & windowName, vk::Extent2D const & extent_ )
       : extent( extent_ ), window( vk::su::createWindow( windowName, extent ) )
     {
-      VkSurfaceKHR _surface;
-      VkResult     err = glfwCreateWindowSurface( instance, window.handle, nullptr, &_surface );
-      if ( err != VK_SUCCESS )
+      vk::SurfaceKHR::NativeType _surface;
+      auto                       result = glfwCreateWindowSurface( instance, window.handle, nullptr, &_surface );
+      if ( static_cast<vk::Result>( result ) != vk::Result::eSuccess )
         throw std::runtime_error( "Failed to create window!" );
       surface = vk::SurfaceKHR( _surface );
     }
@@ -975,9 +978,9 @@ namespace vk
                                                              vk::BorderColor::eFloatOpaqueBlack ) );
     }
 
-    UUID::UUID( uint8_t const data[VK_UUID_SIZE] )
+    UUID::UUID( uint8_t const data[vk::UuidSize] )
     {
-      memcpy( m_data, data, VK_UUID_SIZE * sizeof( uint8_t ) );
+      memcpy( m_data, data, vk::UuidSize * sizeof( uint8_t ) );
     }
 
     WindowData::WindowData( GLFWwindow * wnd, std::string const & name, vk::Extent2D const & extent ) : handle{ wnd }, name{ name }, extent{ extent } {}
@@ -1058,7 +1061,7 @@ namespace vk
 std::ostream & operator<<( std::ostream & os, vk::su::UUID const & uuid )
 {
   os << std::setfill( '0' ) << std::hex;
-  for ( uint32_t j = 0; j < VK_UUID_SIZE; ++j )
+  for ( uint32_t j = 0; j < vk::UuidSize; ++j )
   {
     os << std::setw( 2 ) << static_cast<uint32_t>( uuid.m_data[j] );
     if ( j == 3 || j == 5 || j == 7 || j == 9 )

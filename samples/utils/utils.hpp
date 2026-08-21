@@ -3,20 +3,24 @@
 
 #pragma once
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <vulkan/vulkan.hpp>
+#endif
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <iostream>
 #include <limits>
 #include <map>
 #include <memory>  // std::unique_ptr
+#endif
 
 namespace vk
 {
-  namespace su
+  VULKAN_HPP_EXPORT namespace su
   {
-    const uint64_t FenceTimeout = 100000000;
+    inline const uint64_t FenceTimeout = 100000000;
 
     template <typename Func>
     void oneTimeSubmit( vk::Device const & device, vk::CommandPool const & commandPool, vk::Queue const & queue, Func const & func )
@@ -331,9 +335,9 @@ namespace vk
     struct UUID
     {
     public:
-      UUID( uint8_t const data[VK_UUID_SIZE] );
+      UUID( uint8_t const data[vk::UuidSize] );
 
-      uint8_t m_data[VK_UUID_SIZE];
+      uint8_t m_data[vk::UuidSize];
     };
 
     template <typename TargetType, typename SourceType>
@@ -381,7 +385,7 @@ namespace vk
                                                  std::string const &              engineName,
                                                  std::vector<std::string> const & layers     = {},
                                                  std::vector<std::string> const & extensions = {},
-                                                 uint32_t                         apiVersion = VK_API_VERSION_1_0 );
+                                                 uint32_t                         apiVersion = vk::ApiVersion10 );
     vk::RenderPass               createRenderPass( vk::Device const &   device,
                                                    vk::Format           colorFormat,
                                                    vk::Format           depthFormat,
@@ -436,4 +440,4 @@ namespace vk
   }  // namespace su
 }  // namespace vk
 
-std::ostream & operator<<( std::ostream & os, vk::su::UUID const & uuid );
+VULKAN_HPP_EXPORT std::ostream & operator<<( std::ostream & os, vk::su::UUID const & uuid );

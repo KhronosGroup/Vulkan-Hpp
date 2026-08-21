@@ -6,15 +6,22 @@
 
 #define VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
 #include <thread>
 #include <vulkan/vulkan_shared.hpp>
+#endif
+
 
 static char const * AppName    = "SharedHandles";
 static char const * EngineName = "Vulkan.hpp";
@@ -208,7 +215,7 @@ public:
     vk::SubmitInfo submitInfo( ias, waitDestinationStageMask, comBuf );
     graphicsQueue->submit( submitInfo, drawFence.get() );
 
-    while ( vk::Result::eTimeout == device->waitForFences( drawFence.get(), VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device->waitForFences( drawFence.get(), vk::True, vk::su::FenceTimeout ) )
       ;
 
     auto       swap   = swapChain.get();
@@ -297,7 +304,7 @@ public:
     textureSampler     = vk::SharedSampler{ textureData.sampler, engine.device };
 
     vk::su::updateDescriptorSets(
-      device_handle, engine.descriptorSet.get(), { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, textureData );
+      device_handle, engine.descriptorSet.get(), { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::WholeSize, {} } }, textureData );
     engine.commandBuffer->end();
 
     vk::su::submitAndWait( device_handle, engine.graphicsQueue.get(), engine.commandBuffer.get() );

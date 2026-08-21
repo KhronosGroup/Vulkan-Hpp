@@ -4,14 +4,21 @@
 // VulkanHpp Samples : OcclusionQuery
 //                     Use occlusion query to determine if drawing renders any samples.
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../../samples/utils/geometries.hpp"
 #include "../../samples/utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
 #include <thread>
+#endif
+
 
 static char const * AppName    = "OcclusionQuery";
 static char const * EngineName = "Vulkan.hpp";
@@ -83,7 +90,7 @@ int main()
     vk::raii::DescriptorSet  descriptorSet  = std::move( vk::raii::DescriptorSets( device, { descriptorPool, *descriptorSetLayout } ).front() );
 
     vk::raii::su::updateDescriptorSets(
-      device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, nullptr } }, {} );
+      device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::WholeSize, nullptr } }, {} );
 
     vk::raii::PipelineCache pipelineCache( device, vk::PipelineCacheCreateInfo() );
     vk::raii::Pipeline      graphicsPipeline = vk::raii::su::makeGraphicsPipeline( device,
@@ -190,7 +197,7 @@ int main()
 
     queryResultMemory.unmapMemory();
 
-    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, vk::True, vk::su::FenceTimeout ) )
       ;
 
     vk::PresentInfoKHR presentInfoKHR( nullptr, *swapChainData.swapChain, imageIndex );

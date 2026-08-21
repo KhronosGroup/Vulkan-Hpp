@@ -4,10 +4,16 @@
 // VulkanHpp Samples : 13_InitVertexBuffer
 //                     Initialize vertex buffer
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/geometries.hpp"
 #include "../utils/utils.hpp"
-
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "13_InitVertexBuffer";
 static char const * EngineName = "Vulkan.hpp";

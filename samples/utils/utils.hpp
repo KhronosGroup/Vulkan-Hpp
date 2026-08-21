@@ -3,20 +3,24 @@
 
 #pragma once
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <vulkan/vulkan.hpp>
+#endif
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <iostream>
 #include <limits>
 #include <map>
 #include <memory>  // std::unique_ptr
+#endif
 
 namespace vk
 {
-  namespace su
+  VULKAN_HPP_EXPORT namespace su
   {
-    const uint64_t FenceTimeout = 100000000;
+    inline const uint64_t FenceTimeout = 100000000;
 
     template <typename Func>
     void oneTimeSubmit( vk::Device const & device, vk::CommandPool const & commandPool, vk::Queue const & queue, Func const & func )
@@ -436,4 +440,4 @@ namespace vk
   }  // namespace su
 }  // namespace vk
 
-std::ostream & operator<<( std::ostream & os, vk::su::UUID const & uuid );
+VULKAN_HPP_EXPORT std::ostream & operator<<( std::ostream & os, vk::su::UUID const & uuid );

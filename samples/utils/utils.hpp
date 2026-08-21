@@ -335,9 +335,9 @@ namespace vk
     struct UUID
     {
     public:
-      UUID( uint8_t const data[VK_UUID_SIZE] );
+      UUID( uint8_t const data[vk::UuidSize] );
 
-      uint8_t m_data[VK_UUID_SIZE];
+      uint8_t m_data[vk::UuidSize];
     };
 
     template <typename TargetType, typename SourceType>
@@ -385,7 +385,7 @@ namespace vk
                                                  std::string const &              engineName,
                                                  std::vector<std::string> const & layers     = {},
                                                  std::vector<std::string> const & extensions = {},
-                                                 uint32_t                         apiVersion = VK_API_VERSION_1_0 );
+                                                 uint32_t                         apiVersion = vk::ApiVersion10 );
     vk::RenderPass               createRenderPass( vk::Device const &   device,
                                                    vk::Format           colorFormat,
                                                    vk::Format           depthFormat,

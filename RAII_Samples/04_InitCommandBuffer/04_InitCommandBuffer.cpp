@@ -4,9 +4,15 @@
 // VulkanHpp Samples : 04_InitCommandBufferRAII
 //                     Create command buffer
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "04_InitCommandBufferRAII";
 static char const * EngineName = "Vulkan.hpp";

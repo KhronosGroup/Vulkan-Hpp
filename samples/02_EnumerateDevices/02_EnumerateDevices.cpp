@@ -15,9 +15,15 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
+#endif
+
 
 static std::string AppName    = "02_EnumerateDevices";
 static std::string EngineName = "Vulkan.hpp";

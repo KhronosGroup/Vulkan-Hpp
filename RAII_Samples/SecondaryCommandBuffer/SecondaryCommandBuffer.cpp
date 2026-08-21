@@ -11,14 +11,21 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../../samples/utils/geometries.hpp"
 #include "../../samples/utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
 #include <thread>
+#endif
+
 
 static char const * AppName    = "SecondaryCommandBuffer";
 static char const * EngineName = "Vulkan.hpp";
@@ -114,9 +121,9 @@ int main()
     assert( descriptorSets.size() == 2 );
 
     vk::raii::su::updateDescriptorSets(
-      device, descriptorSets[0], { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, greenTextureData );
+      device, descriptorSets[0], { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::WholeSize, {} } }, greenTextureData );
     vk::raii::su::updateDescriptorSets(
-      device, descriptorSets[1], { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, checkeredTextureData );
+      device, descriptorSets[1], { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::WholeSize, {} } }, checkeredTextureData );
 
     /* VULKAN_KEY_START */
 
@@ -178,8 +185,8 @@ int main()
                                                  {},
                                               vk::ImageLayout::eColorAttachmentOptimal,
                                               vk::ImageLayout::ePresentSrcKHR,
-                                              VK_QUEUE_FAMILY_IGNORED,
-                                              VK_QUEUE_FAMILY_IGNORED,
+                                              vk::QueueFamilyIgnored,
+                                              vk::QueueFamilyIgnored,
                                               swapChainData.images[imageIndex],
                                               imageSubresourceRange );
     commandBuffer.pipelineBarrier(
@@ -192,7 +199,7 @@ int main()
     vk::SubmitInfo         submitInfo( *imageAcquiredSemaphore, waitDestinationStageMask, *commandBuffer );
     graphicsQueue.submit( submitInfo, *drawFence );
 
-    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, vk::True, vk::su::FenceTimeout ) )
       ;
 
     result = presentQueue.presentKHR( vk::PresentInfoKHR( {}, *swapChainData.swapChain, imageIndex, {} ) );

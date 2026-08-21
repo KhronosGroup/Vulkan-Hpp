@@ -4,10 +4,16 @@
 // VulkanHpp Samples : CreateDebugReportMessenger
 //                     Set up a debug messenger
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include <iostream>
 #include <sstream>
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_to_string.hpp>
+#endif
 
 static char const * AppName    = "CreateDebugReportMessenger";
 static char const * EngineName = "Vulkan.hpp";
@@ -89,15 +95,15 @@ int main()
     std::vector<vk::ExtensionProperties> props = vk::enumerateInstanceExtensionProperties();
 
     auto propertyIterator = std::find_if(
-      props.begin(), props.end(), []( vk::ExtensionProperties const & ep ) { return strcmp( ep.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) == 0; } );
+      props.begin(), props.end(), []( vk::ExtensionProperties const & ep ) { return strcmp( ep.extensionName, vk::EXTDebugUtilsExtensionName ) == 0; } );
     if ( propertyIterator == props.end() )
     {
-      std::cout << "Something went very wrong, cannot find " << VK_EXT_DEBUG_UTILS_EXTENSION_NAME << " extension" << std::endl;
+      std::cout << "Something went very wrong, cannot find " << vk::EXTDebugUtilsExtensionName << " extension" << std::endl;
       exit( 1 );
     }
 
     vk::ApplicationInfo applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
-    const char *        extensionName = VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
+    const char *        extensionName = vk::EXTDebugUtilsExtensionName;
     vk::Instance        instance      = vk::createInstance( vk::InstanceCreateInfo( vk::InstanceCreateFlags(), &applicationInfo, {}, extensionName ) );
 
     pfnVkCreateDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance.getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );

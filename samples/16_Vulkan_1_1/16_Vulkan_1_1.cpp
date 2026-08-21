@@ -4,7 +4,13 @@
 // VulkanHpp Samples : 16_Vulkan_1_1
 //                     Determine if the current system can use Vulkan 1.1 API features
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
+#endif
 
 static char const * AppName    = "16_Vulkan_1_1";
 static char const * EngineName = "Vulkan.hpp";

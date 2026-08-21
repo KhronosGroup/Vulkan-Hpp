@@ -4,9 +4,15 @@
 // VulkanHpp Samples : PhysicalDeviceGroups
 //                     Get the PhysicalDeviceGroups.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <vector>
+#endif
+
 
 static char const * AppName    = "PhysicalDeviceGroups";
 static char const * EngineName = "Vulkan.hpp";

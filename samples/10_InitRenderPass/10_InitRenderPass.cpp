@@ -13,12 +13,17 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include "../utils/utils.hpp"
-
-#include <iostream>
-
 #define GLM_FORCE_RADIANS
 #include <glm/gtc/matrix_transform.hpp>
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
+#include "../utils/utils.hpp"
+#include <iostream>
+#endif
 
 static char const * AppName    = "10_InitRenderPass";
 static char const * EngineName = "Vulkan.hpp";

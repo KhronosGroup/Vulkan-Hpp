@@ -4,6 +4,9 @@
 // VulkanHpp Samples : RayTracing
 //                     Simple sample how to ray trace using Vulkan
 
+// avoid Windows.h's max/min macros clobbering std::max/std::min
+#define NOMINMAX
+
 #if defined( _MSC_VER )
 #  pragma warning( disable : 4201 )  // disable warning C4201: nonstandard extension used: nameless struct/union; needed
                                      // to get glm/detail/type_vec?.hpp without warnings
@@ -17,27 +20,37 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include <vulkan/vulkan.hpp>
-
+// all #include directives must precede any `import` below, so gather the unconditional ones here first
+// glfwCreateWindowSurface needs VK_VERSION_1_0 visible, and windows.h's APIENTRY must precede GLFW's own
+#include <vulkan/vulkan.h>
+#define GLFW_INCLUDE_NONE
 // clang-format off
 #include <GLFW/glfw3.h>
 // clang-format on
-#include <numeric>
-#include <random>
-#include <sstream>
-#include <vulkan/vulkan_to_string.hpp>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_FORCE_RADIANS
 #define GLM_ENABLE_EXPERIMENTAL
-#include "../utils/shaders.hpp"
-#include "../utils/utils.hpp"
 #include "CameraManipulator.hpp"
 #include "glslang/Public/ShaderLang.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
+#include <vulkan/vulkan.hpp>
+#include <numeric>
+#include <random>
+#include <sstream>
+#include <vulkan/vulkan_to_string.hpp>
+#include "../utils/shaders.hpp"
+#include "../utils/utils.hpp"
+#endif
 
 static char const * AppName    = "RayTracing";
 static char const * EngineName = "Vulkan.hpp";

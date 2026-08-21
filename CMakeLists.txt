@@ -369,6 +369,9 @@ function( vulkan_hpp__setup_vulkan_targets )
 				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm"
 				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan_video.cppm"
 			ALIAS Vulkan::HppModule )
+		# platform-conditional constants (e.g. KHRWin32SurfaceExtensionName) are baked into the module at
+		# build time, so the module needs the same VK_USE_PLATFORM_* macro as any other consuming target.
+		vulkan_hpp__setup_platform( NAME VulkanHppModule )
 	endif()
 endfunction()
 

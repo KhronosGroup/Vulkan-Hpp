@@ -225,14 +225,15 @@ if( VULKAN_HPP_RUN_GENERATOR )
 	add_custom_target( build_video_hpp ALL DEPENDS "${vulkan_video_hpp}" "${video_spec}" )
 endif()
 
-function( vulkan_hpp__setup_vulkan_module )
+# declares a target providing one or more C++ named modules (FILE_SET of *.cppm files); usable from subdirectories too
+function( vulkan_hpp__setup_cxx_module )
 	set( options )
 	set( oneValueArgs NAME FILE_SET_NAME )
-	set( multiValueArgs FILE_SET ALIAS )
+	set( multiValueArgs FILE_SET ALIAS LINK_LIBRARIES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 	if ( NOT TARGET_NAME )
-		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_module" )
+		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_cxx_module" )
 	endif()
 
 	add_library( ${TARGET_NAME} )
@@ -243,24 +244,52 @@ function( vulkan_hpp__setup_vulkan_module )
 	target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_23 )
 	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_MODULE_STD ON )
 
+	# Clang building `import std;` against MSVC's STL isn't warning-clean yet (https://github.com/microsoft/STL/issues/5975).
+	# These flags are inherited by that synthetic std module build, so silence just those two warnings
+	# here rather than disabling warnings-as-errors for the whole target.
+	if( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
+		if( CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC" )
+			target_compile_options( ${TARGET_NAME} PRIVATE /clang:-Wno-reserved-module-identifier /clang:-Wno-include-angled-in-module-purview )
+		else()
+			target_compile_options( ${TARGET_NAME} PRIVATE -Wno-reserved-module-identifier -Wno-include-angled-in-module-purview )
+		endif()
+	endif()
+
 	if ( NOT TARGET_FILE_SET )
-		message( FATAL_ERROR "FILE_SET must be defined in vulkan_hpp__setup_module" )
+		message( FATAL_ERROR "FILE_SET must be defined in vulkan_hpp__setup_cxx_module" )
 	endif()
 
 	list(LENGTH TARGET_FILE_SET TARGET_FILE_SET_LENGTH)
 	if ( TARGET_FILE_SET_LENGTH LESS 1 )
-		message(FATAL_ERROR "FILE_SET in vulkan_hpp__setup_module must at least one source file")
+		message(FATAL_ERROR "FILE_SET in vulkan_hpp__setup_cxx_module must at least one source file")
 	endif()
 
 	target_sources( ${TARGET_NAME} PUBLIC
 		FILE_SET ${TARGET_FILE_SET_NAME}
-		BASE_DIRS ${CMAKE_CURRENT_FUNCTION_LIST_DIR}
+		BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
 		TYPE CXX_MODULES
 		FILES ${TARGET_FILE_SET} )
-	target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
+	if( TARGET_LINK_LIBRARIES )
+		target_link_libraries( ${TARGET_NAME} PUBLIC ${TARGET_LINK_LIBRARIES} )
+	endif()
 endfunction()
 
-# shared local-vs-system Vulkan include directory setup
+function( vulkan_hpp__setup_vulkan_module )
+	vulkan_hpp__setup_cxx_module( ${ARGN} LINK_LIBRARIES Vulkan::Hpp )
+endfunction()
+
+# builds glm's C++ named module (glm/glm/glm.cppm), reusing the header-only glm::glm target for its dependencies.
+function( vulkan_hpp__setup_glm_module )
+	vulkan_hpp__setup_cxx_module(
+		NAME glm_module
+		ALIAS glm::module
+		FILE_SET_NAME glm_module_file
+		FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/glm/glm/glm.cppm"
+		LINK_LIBRARIES glm::glm )
+	# without these, glm.cppm only exports lookAt/perspective/radians/... as glm::gtc::x / glm::ext::x
+	target_compile_definitions( glm_module PRIVATE GLM_GTC_INLINE_NAMESPACE GLM_EXT_INLINE_NAMESPACE )
+endfunction()
+
 function( vulkan_hpp__setup_vulkan_include_dirs )
 	set( options )
 	set( oneValueArgs NAME SCOPE )
@@ -582,6 +611,12 @@ if( VULKAN_HPP_SAMPLES_BUILD )
 	find_package( glm QUIET )
 	if( NOT glm_FOUND )
 		add_subdirectory( glm )
+		if( VULKAN_HPP_BUILD_CXX_MODULE )
+			# build glm's C++ named module (glm.cppm), reused by utils::module below
+			vulkan_hpp__setup_glm_module()
+		endif()
+	elseif( VULKAN_HPP_BUILD_CXX_MODULE )
+		message( WARNING "Using system glm; glm::module (glm.cppm) is only available when building the bundled glm/ submodule." )
 	endif()
 
 	find_package( glfw3 QUIET )

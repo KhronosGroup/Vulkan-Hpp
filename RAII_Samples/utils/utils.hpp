@@ -154,8 +154,8 @@ namespace vk
                                                    destinationAccessMask,
                                                    oldImageLayout,
                                                    newImageLayout,
-                                                   VK_QUEUE_FAMILY_IGNORED,
-                                                   VK_QUEUE_FAMILY_IGNORED,
+                                                   vk::QueueFamilyIgnored,
+                                                   vk::QueueFamilyIgnored,
                                                    image,
                                                    imageSubresourceRange );
         return commandBuffer.pipelineBarrier( sourceStage, destinationStage, {}, nullptr, nullptr, imageMemoryBarrier );
@@ -304,9 +304,9 @@ namespace vk
         SurfaceData( vk::raii::Instance const & instance, std::string const & windowName, vk::Extent2D const & extent_ )
           : extent( extent_ ), window( vk::su::createWindow( windowName, extent ) )
         {
-          VkSurfaceKHR _surface;
-          VkResult     err = glfwCreateWindowSurface( *instance, window.handle, nullptr, &_surface );
-          if ( err != VK_SUCCESS )
+          vk::SurfaceKHR::NativeType _surface;
+          auto                       result = glfwCreateWindowSurface( *instance, window.handle, nullptr, &_surface );
+          if ( static_cast<vk::Result>( result ) != vk::Result::eSuccess )
             throw std::runtime_error( "Failed to create window!" );
           surface = vk::raii::SurfaceKHR( instance, _surface );
         }
@@ -719,7 +719,7 @@ namespace vk
                                        std::string const &              engineName,
                                        std::vector<std::string> const & layers     = {},
                                        std::vector<std::string> const & extensions = {},
-                                       uint32_t                         apiVersion = VK_API_VERSION_1_0 )
+                                       uint32_t                         apiVersion = vk::ApiVersion10 )
       {
         vk::ApplicationInfo       applicationInfo( appName.c_str(), 1, engineName.c_str(), 1, apiVersion );
         std::vector<char const *> enabledLayers = vk::su::gatherLayers( layers
@@ -804,7 +804,7 @@ namespace vk
       {
         vk::raii::Fence fence( device, vk::FenceCreateInfo() );
         queue.submit( vk::SubmitInfo( nullptr, nullptr, *commandBuffer ), fence );
-        while ( vk::Result::eTimeout == device.waitForFences( { fence }, VK_TRUE, vk::su::FenceTimeout ) )
+        while ( vk::Result::eTimeout == device.waitForFences( { fence }, vk::True, vk::su::FenceTimeout ) )
           ;
       }
 

@@ -13,15 +13,18 @@
 
 #include "utils.hpp"
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <iomanip>
 #include <numeric>
 #include <vulkan/vulkan.hpp>
-#if defined( VULKAN_HPP_NO_TO_STRING )
-#  include <vulkan/vulkan_to_string.hpp>
+#  if defined( VULKAN_HPP_NO_TO_STRING )
+#    include <vulkan/vulkan_to_string.hpp>
+#  endif
+#  include <vulkan/vulkan_static_assertions.hpp>
 #endif
-#include <vulkan/vulkan_static_assertions.hpp>
 
-#if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+#if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 ) && !defined( VULKAN_HPP_USE_CXX_MODULE )
+// in module mode, module `vulkan` already provides this storage (see vulkan.hpp's VULKAN_HPP_CXX_MODULE branch)
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #endif
 

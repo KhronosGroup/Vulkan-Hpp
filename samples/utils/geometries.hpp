@@ -3,20 +3,22 @@
 
 #pragma once
 
-struct VertexPC
+#include <vulkan/vulkan_hpp_macros.hpp>
+
+VULKAN_HPP_EXPORT struct VertexPC
 {
   float x, y, z, w;   // Position
   float r, g, b, a;   // Color
 };
 
-struct VertexPT
+VULKAN_HPP_EXPORT struct VertexPT
 {
   float x, y, z, w;   // Position data
   float u, v;         // texture u,v
 };
 
 
-static const VertexPC coloredCubeData[] =
+VULKAN_HPP_EXPORT inline const VertexPC coloredCubeData[] =
 {
   // red face
   { -1.0f, -1.0f,  1.0f, 1.0f,    1.0f, 0.0f, 0.0f, 1.0f },
@@ -62,7 +64,7 @@ static const VertexPC coloredCubeData[] =
   { -1.0f, -1.0f, -1.0f, 1.0f,    0.0f, 1.0f, 1.0f, 1.0f },
 };
 
-static const VertexPT texturedCubeData[] =
+VULKAN_HPP_EXPORT inline const VertexPT texturedCubeData[] =
 {
   // left face
   { -1.0f, -1.0f, -1.0f, 1.0f,    1.0f, 0.0f },

@@ -4,9 +4,15 @@
 // VulkanHpp Samples : 08_InitPipelineLayoutRAII
 //                     Initialize a descriptor and pipeline layout
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "08_InitPipelineLayout";
 static char const * EngineName = "Vulkan.hpp";

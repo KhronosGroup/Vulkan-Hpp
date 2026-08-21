@@ -4,10 +4,16 @@
 // VulkanHpp Samples : InstanceLayerExtensionProperties
 //                     Get list of global layers and their associated extensions, if any.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include <iostream>
 #include <sstream>
 #include <vector>
 #include <vulkan/vulkan.hpp>
+#endif
 
 struct PropertyData
 {

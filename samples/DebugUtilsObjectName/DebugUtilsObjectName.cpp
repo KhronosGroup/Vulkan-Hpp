@@ -4,7 +4,13 @@
 // VulkanHpp Samples : DebugUtilsObjectName
 //                     Demonstrate usage of DebugUtilsObjectName
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
+#endif
 
 static char const * AppName    = "DebugUtilsObjectName";
 static char const * EngineName = "Vulkan.hpp";

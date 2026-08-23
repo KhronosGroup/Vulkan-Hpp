@@ -17,6 +17,8 @@
 #include "glslang/Public/ShaderLang.h"
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+import glm;
 import RAII_utils;
 import std;
 import vulkan;

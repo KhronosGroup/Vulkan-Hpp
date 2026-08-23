@@ -5,6 +5,7 @@
 //                     Perform an image blit operation
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
 import std;
 import utils;
 import vulkan;
@@ -34,10 +35,11 @@ int main()
     if ( !( surfaceCapabilities.supportedUsageFlags & vk::ImageUsageFlagBits::eTransferDst ) )
     {
       std::cout << "Surface cannot be destination of blit - abort \n";
-      exit( -1 );
+      std::exit( -1 );
     }
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
+      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::CommandPool   commandPool = device.createCommandPool( { {}, graphicsAndPresentQueueFamilyIndex.first } );
@@ -65,10 +67,10 @@ int main()
     vk::Semaphore imageAcquiredSemaphore = device.createSemaphore( vk::SemaphoreCreateInfo() );
 
     // Get the index of the next available swapchain image:
-    vk::ResultValue<uint32_t> nextImage = device.acquireNextImageKHR( swapChainData.swapChain, vk::su::FenceTimeout, imageAcquiredSemaphore, nullptr );
+    vk::ResultValue<std::uint32_t> nextImage = device.acquireNextImageKHR( swapChainData.swapChain, vk::su::FenceTimeout, imageAcquiredSemaphore, nullptr );
     assert( nextImage.result == vk::Result::eSuccess );
     assert( nextImage.value < swapChainData.images.size() );
-    uint32_t imageIndex = nextImage.value;
+    std::uint32_t imageIndex = nextImage.value;
 
     commandBuffer.begin( vk::CommandBufferBeginInfo() );
     vk::su::setImageLayout(
@@ -88,7 +90,7 @@ int main()
 
     vk::PhysicalDeviceMemoryProperties memoryProperties   = physicalDevice.getMemoryProperties();
     vk::MemoryRequirements             memoryRequirements = device.getImageMemoryRequirements( blitSourceImage );
-    uint32_t memoryTypeIndex = vk::su::findMemoryType( memoryProperties, memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible );
+    std::uint32_t memoryTypeIndex = vk::su::findMemoryType( memoryProperties, memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible );
 
     vk::DeviceMemory deviceMemory = device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
     device.bindImageMemory( blitSourceImage, deviceMemory, 0 );
@@ -109,9 +111,9 @@ int main()
     unsigned char * pImageMemory = static_cast<unsigned char *>( device.mapMemory( deviceMemory, 0, memoryRequirements.size ) );
 
     // Checkerboard of 8x8 pixel squares
-    for ( uint32_t row = 0; row < surfaceData.extent.height; row++ )
+    for ( std::uint32_t row = 0; row < surfaceData.extent.height; row++ )
     {
-      for ( uint32_t col = 0; col < surfaceData.extent.width; col++ )
+      for ( std::uint32_t col = 0; col < surfaceData.extent.width; col++ )
       {
         unsigned char rgb = ( ( ( row & 0x8 ) == 0 ) ^ ( ( col & 0x8 ) == 0 ) ) * 255;
         pImageMemory[0]   = rgb;
@@ -213,17 +215,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

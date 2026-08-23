@@ -4,11 +4,18 @@
 // VulkanHpp Samples : SharedHandles
 //                     Draw a textured cube using shared handles for resource management and correct order of destruction
 
-#define VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
+#  define VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST
+#endif
 
 #include "glslang/Public/ShaderLang.h"
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+#include <vulkan/vulkan_core.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+import glm;
 import std;
 import utils;
 import vulkan;
@@ -79,8 +86,8 @@ public:
   void createDeviceAndSwapChain( const vk::su::WindowData & window )
   {
     VkSurfaceKHR surface;
-    VkResult     err = glfwCreateWindowSurface( instance.get(), window.handle, nullptr, &surface );
-    if ( err != VK_SUCCESS )
+    vk::Result   result = static_cast<vk::Result>( glfwCreateWindowSurface( instance.get(), window.handle, nullptr, &surface ) );
+    if ( result != vk::Result::eSuccess )
       throw std::runtime_error( "Failed to create window!" );
     vk::SharedSurfaceKHR sharedSurface{ static_cast<vk::SurfaceKHR>( surface ), instance };
 

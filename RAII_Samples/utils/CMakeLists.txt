@@ -19,7 +19,6 @@ if( VULKAN_HPP_BUILD_CXX_MODULE )
 		LINK_LIBRARIES utils::module )
 	# NOTE: no vulkan_hpp__setup_target_defaults here, see samples/utils/CMakeLists.txt for why.
 	vulkan_hpp__setup_platform( NAME RAII_utils_module )
-	target_compile_definitions( RAII_utils_module PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 )
 	set_target_properties( RAII_utils_module PROPERTIES FOLDER "RAII_Samples" )
 endif()
 

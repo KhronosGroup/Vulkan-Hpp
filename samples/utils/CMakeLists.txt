@@ -39,7 +39,6 @@ if( VULKAN_HPP_BUILD_CXX_MODULE )
 	# no vulkan_hpp__setup_target_defaults (warning level) here: those flags leak into CMake's synthetic
 	# rebuilds of transitively-imported modules (std, glm), whose headers aren't warning-clean (same as VulkanHppModule/glm_module)
 	vulkan_hpp__setup_platform( NAME utils_module )
-	target_compile_definitions( utils_module PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 )
 	set_target_properties( utils_module PROPERTIES FOLDER "Samples" )
 
 	if( VULKAN_HPP_RUN_GENERATOR )

@@ -5,6 +5,7 @@
 //                     Initialize a depth buffer
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
 import RAII_utils;
 import std;
 import vulkan;
@@ -30,7 +31,7 @@ int main()
 
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -66,9 +67,9 @@ int main()
     vk::PhysicalDeviceMemoryProperties memoryProperties   = physicalDevice.getMemoryProperties();
     vk::MemoryRequirements             memoryRequirements = depthImage.getMemoryRequirements();
 
-    uint32_t typeBits  = memoryRequirements.memoryTypeBits;
-    uint32_t typeIndex = uint32_t( ~0 );
-    for ( uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++ )
+    std::uint32_t typeBits  = memoryRequirements.memoryTypeBits;
+    std::uint32_t typeIndex = std::uint32_t( ~0 );
+    for ( std::uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++ )
     {
       if ( ( typeBits & 1 ) &&
            ( ( memoryProperties.memoryTypes[i].propertyFlags & vk::MemoryPropertyFlagBits::eDeviceLocal ) == vk::MemoryPropertyFlagBits::eDeviceLocal ) )
@@ -78,7 +79,7 @@ int main()
       }
       typeBits >>= 1;
     }
-    assert( typeIndex != uint32_t( ~0 ) );
+    assert( typeIndex != std::uint32_t( ~0 ) );
 
     vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, typeIndex );
     vk::raii::DeviceMemory depthMemory( device, memoryAllocateInfo );
@@ -96,17 +97,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

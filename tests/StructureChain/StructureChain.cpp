@@ -24,6 +24,7 @@
 #include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan_hpp_macros.hpp>
+import std;
 import vulkan;
 #else
 #  include <iostream>

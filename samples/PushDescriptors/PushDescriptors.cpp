@@ -7,6 +7,9 @@
 #include "glslang/Public/ShaderLang.h"
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+#include <vulkan/vulkan_hpp_macros.hpp>
+import glm;
 import std;
 import utils;
 import vulkan;
@@ -39,7 +42,7 @@ int main()
     auto                                 propertyIterator =
       std::find_if( extensionProperties.begin(),
                     extensionProperties.end(),
-                    []( vk::ExtensionProperties ep ) { return ( strcmp( ep.extensionName, VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME ) == 0 ); } );
+                    []( vk::ExtensionProperties ep ) { return ( std::strcmp( ep.extensionName, vk::KHRGetPhysicalDeviceProperties2ExtensionName ) == 0 ); } );
     if ( propertyIterator == extensionProperties.end() )
     {
       std::cout << "No GET_PHYSICAL_DEVICE_PROPERTIES_2 extension" << std::endl;
@@ -47,7 +50,7 @@ int main()
     }
 
     std::vector<std::string> instanceExtensions = vk::su::getInstanceExtensions();
-    instanceExtensions.push_back( VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME );
+    instanceExtensions.push_back( vk::KHRGetPhysicalDeviceProperties2ExtensionName );
 
     vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, instanceExtensions );
 #if !defined( NDEBUG )
@@ -60,7 +63,7 @@ int main()
     extensionProperties = physicalDevice.enumerateDeviceExtensionProperties();
     propertyIterator    = std::find_if( extensionProperties.begin(),
                                      extensionProperties.end(),
-                                     []( vk::ExtensionProperties ep ) { return ( strcmp( ep.extensionName, VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME ) == 0 ); } );
+                                     []( vk::ExtensionProperties ep ) { return ( std::strcmp( ep.extensionName, vk::KHRPushDescriptorExtensionName ) == 0 ); } );
     if ( propertyIterator == extensionProperties.end() )
     {
       std::cout << "No extension for push descriptors" << std::endl;
@@ -68,7 +71,7 @@ int main()
     }
 
     std::vector<std::string> deviceExtensions = vk::su::getDeviceExtensions();
-    deviceExtensions.push_back( VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME );
+    deviceExtensions.push_back( vk::KHRPushDescriptorExtensionName );
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 

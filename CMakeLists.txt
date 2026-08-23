@@ -41,8 +41,9 @@ option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
 option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
 option( VULKAN_HPP_TESTS_CTEST "Build tests for ctest, enabling wider test coverage" OFF )
 option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
-cmake_dependent_option( VULKAN_HPP_BUILD_CXX_MODULE "Build and test the C++ named module." ON [[ 23 IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD ]] OFF)
-cmake_dependent_option( VULKAN_HPP_SAMPLES_BUILD_MODULES_ONLY "Build only the C++ module (MODULE_*) sample variants, skipping the plain ones" OFF "VULKAN_HPP_BUILD_CXX_MODULE" OFF )
+
+cmake_dependent_option( VULKAN_HPP_BUILD_CXX_MODULE "Build and test the C++ named module." ON
+	[[ CMAKE_VERSION VERSION_GREATER_EQUAL 4.5 OR VULKAN_HPP_BUILD_CXX_MODULE ]] OFF )
 
 # options for vulkan hpp compile definitions (see https://github.com/KhronosGroup/Vulkan-Hpp/tree/main?tab=readme-ov-file#configuration-options for details)
 option( VULKAN_HPP_DISABLE_ENHANCED_MODE "Disable all enhanced functionality apart from scoped enums, bitmasks, default initialization and vk::StructureChain" OFF )
@@ -242,8 +243,8 @@ function( vulkan_hpp__setup_cxx_module )
 		add_library(${TARGET_ALIAS_NAME} ALIAS ${TARGET_NAME})
 	endforeach()
 
-	target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_23 )
-	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_MODULE_STD ON )
+	target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_20 )
+	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
 
 	# Clang building `import std;` against MSVC's STL isn't warning-clean yet (https://github.com/microsoft/STL/issues/5975).
 	# These flags are inherited by that synthetic std module build, so silence just those two warnings
@@ -267,7 +268,7 @@ function( vulkan_hpp__setup_cxx_module )
 
 	target_sources( ${TARGET_NAME} PUBLIC
 		FILE_SET ${TARGET_FILE_SET_NAME}
-		BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
+		BASE_DIRS ${CMAKE_CURRENT_FUNCTION_LIST_DIR}
 		TYPE CXX_MODULES
 		FILES ${TARGET_FILE_SET} )
 	if( TARGET_LINK_LIBRARIES )
@@ -446,7 +447,15 @@ function( vulkan_hpp__setup_sample )
 
 	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
 	add_executable( ${TARGET_NAME} ${TARGET_HEADERS} ${TARGET_SOURCES} )
-	vulkan_hpp__setup_target_defaults( NAME ${TARGET_NAME} )
+	if( VULKAN_HPP_BUILD_CXX_MODULE )
+		vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
+		target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_USE_CXX_MODULE )
+		set_target_properties( ${TARGET_NAME} PROPERTIES
+			CXX_STANDARD_REQUIRED ON
+			CXX_SCAN_FOR_MODULES ON )
+	else()
+		vulkan_hpp__setup_target_defaults( NAME ${TARGET_NAME} )
+	endif()
 
 	if( TARGET_FOLDER )
 		set_target_properties( ${TARGET_NAME} PROPERTIES FOLDER "${TARGET_FOLDER}" )
@@ -456,7 +465,7 @@ function( vulkan_hpp__setup_sample )
 		target_link_libraries( ${TARGET_NAME} PRIVATE "${TARGET_LIBS}" )
 	endif()
 
-	if( VULKAN_HPP_PRECOMPILE )
+	if( VULKAN_HPP_PRECOMPILE AND NOT VULKAN_HPP_BUILD_CXX_MODULE )
 		if( TARGET_PCH_REUSE )
 			target_precompile_headers( ${TARGET_NAME} REUSE_FROM "${TARGET_PCH_REUSE}" )
 		elseif( TARGET_PCH )
@@ -482,45 +491,38 @@ function( vulkan_hpp__setup_sample_variant )
 		set( TARGET_SOURCES ${TARGET_NAME}.cpp )
 	endif()
 
-	set( SAMPLE_LIBS utils_${TARGET_LINKAGE} )
-	if( TARGET_LINKAGE STREQUAL "static" )
-		find_package( Vulkan REQUIRED )
-		list( APPEND SAMPLE_LIBS ${Vulkan_LIBRARIES} )
-	endif()
-
 	if( TARGET_RAII )
-		set( SAMPLE_NAME RAII_${TARGET_NAME} )
+		set( SAMPLE_NAME   RAII_${TARGET_NAME} )
 		set( SAMPLE_FOLDER RAII_Samples )
 	else()
-		set( SAMPLE_NAME ${TARGET_NAME} )
+		set( SAMPLE_NAME   ${TARGET_NAME} )
 		set( SAMPLE_FOLDER Samples )
 	endif()
 
-	if( NOT VULKAN_HPP_SAMPLES_BUILD_MODULES_ONLY )
-		vulkan_hpp__setup_sample(
-			NAME         ${SAMPLE_NAME}
-			FOLDER       ${SAMPLE_FOLDER}
-			PCH_REUSE    utils_${TARGET_LINKAGE}
-			HEADERS      ${TARGET_HEADERS}
-			SOURCES      ${TARGET_SOURCES}
-			LIBS         ${SAMPLE_LIBS} )
-	endif()
-
-	# additionally build the same sample against utils::module / RAII_utils::module (no PCH: modules replace it)
 	if( VULKAN_HPP_BUILD_CXX_MODULE )
+		set( SAMPLE_TARGET_NAME MODULE_${SAMPLE_NAME} )
 		if( TARGET_RAII )
-			set( SAMPLE_MODULE_LIBS RAII_utils::module )
+			set( SAMPLE_LIBS RAII_utils::module )
 		else()
-			set( SAMPLE_MODULE_LIBS utils::module )
+			set( SAMPLE_LIBS utils::module )
 		endif()
-
-		vulkan_hpp__setup_sample(
-			NAME         MODULE_${SAMPLE_NAME}
-			FOLDER       ${SAMPLE_FOLDER}
-			HEADERS      ${TARGET_HEADERS}
-			SOURCES      ${TARGET_SOURCES}
-			LIBS         ${SAMPLE_MODULE_LIBS} )
+	else()
+		set( SAMPLE_TARGET_NAME ${SAMPLE_NAME} )
+		set( SAMPLE_LIBS utils_${TARGET_LINKAGE} )
+		set( SAMPLE_PCH_REUSE utils_${TARGET_LINKAGE} )
+		if( TARGET_LINKAGE STREQUAL "static" )
+			find_package( Vulkan REQUIRED )
+			list( APPEND SAMPLE_LIBS ${Vulkan_LIBRARIES} )
+		endif()
 	endif()
+
+	vulkan_hpp__setup_sample(
+		NAME      ${SAMPLE_TARGET_NAME}
+		FOLDER    ${SAMPLE_FOLDER}
+		PCH_REUSE ${SAMPLE_PCH_REUSE}
+		HEADERS   ${TARGET_HEADERS}
+		SOURCES   ${TARGET_SOURCES}
+		LIBS      ${SAMPLE_LIBS} )
 endfunction()
 
 function( vulkan_hpp__setup_sample_raii )
@@ -602,8 +604,7 @@ function( vulkan_hpp__setup_test_project )
 			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::HppModule )
 			target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_USE_CXX_MODULE )
 			set_target_properties( ${TARGET_NAME} PROPERTIES
-				CXX_SCAN_FOR_MODULES ON
-				CXX_MODULE_STD ON )
+				CXX_SCAN_FOR_MODULES ON )
 		else()
 			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::Hpp )
 		endif()

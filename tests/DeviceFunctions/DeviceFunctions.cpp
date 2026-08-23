@@ -17,6 +17,7 @@
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <cstdint>
 #  include <vulkan/vulkan_hpp_macros.hpp>  // VULKAN_HPP_DISPATCH_LOADER_DYNAMIC_TYPE
+import std;
 import vulkan;
 #else
 #  include <algorithm>

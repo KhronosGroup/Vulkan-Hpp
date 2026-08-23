@@ -5,6 +5,8 @@
 //                     Initialize vertex buffer
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+#include <cstring>
 import std;
 import utils;
 import vulkan;
@@ -31,7 +33,8 @@ int main()
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 64, 64 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
+      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::CommandPool   commandPool = device.createCommandPool( { {}, graphicsAndPresentQueueFamilyIndex.first } );
@@ -64,21 +67,22 @@ int main()
 
     // allocate device memory for that buffer
     vk::MemoryRequirements memoryRequirements = device.getBufferMemoryRequirements( vertexBuffer );
-    uint32_t               memoryTypeIndex    = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
+    std::uint32_t          memoryTypeIndex    = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
                                                        memoryRequirements.memoryTypeBits,
                                                        vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
     vk::DeviceMemory       deviceMemory       = device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
 
     // copy the vertex and color data into that device memory
-    uint8_t * pData = static_cast<uint8_t *>( device.mapMemory( deviceMemory, 0, memoryRequirements.size ) );
-    memcpy( pData, coloredCubeData, sizeof( coloredCubeData ) );
+    std::uint8_t * pData = static_cast<std::uint8_t *>( device.mapMemory( deviceMemory, 0, memoryRequirements.size ) );
+    std::memcpy( pData, coloredCubeData, sizeof( coloredCubeData ) );
     device.unmapMemory( deviceMemory );
 
     // and bind the device memory to the vertex buffer
     device.bindBufferMemory( vertexBuffer, deviceMemory, 0 );
 
     vk::Semaphore             imageAcquiredSemaphore = device.createSemaphore( vk::SemaphoreCreateInfo( vk::SemaphoreCreateFlags() ) );
-    vk::ResultValue<uint32_t> currentBuffer = device.acquireNextImageKHR( swapChainData.swapChain, vk::su::FenceTimeout, imageAcquiredSemaphore, nullptr );
+    vk::ResultValue<std::uint32_t> currentBuffer =
+      device.acquireNextImageKHR( swapChainData.swapChain, vk::su::FenceTimeout, imageAcquiredSemaphore, nullptr );
     assert( currentBuffer.result == vk::Result::eSuccess );
     assert( currentBuffer.value < framebuffers.size() );
 
@@ -123,17 +127,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

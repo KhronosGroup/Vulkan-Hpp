@@ -27,11 +27,11 @@
 // clang-format off
 #include <GLFW/glfw3.h>
 // clang-format on
+#undef MemoryBarrier
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_FORCE_RADIANS
 #define GLM_ENABLE_EXPERIMENTAL
-#include "CameraManipulator.hpp"
 #include "glslang/Public/ShaderLang.h"
 
 #include <glm/glm.hpp>
@@ -51,6 +51,8 @@ import vulkan;
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
 #endif
+
+#include "CameraManipulator.hpp"
 
 static char const * AppName    = "RayTracing";
 static char const * EngineName = "Vulkan.hpp";
@@ -607,11 +609,8 @@ static void keyCallback( GLFWwindow * window, int key, int /*scancode*/, int act
   }
 }
 
-static void mouseButtonCallback( GLFWwindow * window, VULKAN_HPP_MAYBE_UNUSED int button, VULKAN_HPP_MAYBE_UNUSED int action, VULKAN_HPP_MAYBE_UNUSED int mods )
+static void mouseButtonCallback( GLFWwindow * window, [[maybe_unused]] int button, [[maybe_unused]] int action, [[maybe_unused]] int mods )
 {
-  VULKAN_HPP_UNUSED( button );
-  VULKAN_HPP_UNUSED( action );
-  VULKAN_HPP_UNUSED( mods );
   double xpos, ypos;
   glfwGetCursorPos( window, &xpos, &ypos );
 
@@ -619,9 +618,8 @@ static void mouseButtonCallback( GLFWwindow * window, VULKAN_HPP_MAYBE_UNUSED in
   cameraManipulator.setMousePosition( glm::ivec2( static_cast<int>( xpos ), static_cast<int>( ypos ) ) );
 }
 
-static void scrollCallback( GLFWwindow * window, VULKAN_HPP_MAYBE_UNUSED double xoffset, double yoffset )
+static void scrollCallback( GLFWwindow * window, [[maybe_unused]] double xoffset, double yoffset )
 {
-  VULKAN_HPP_UNUSED( xoffset );
   vk::su::CameraManipulator & cameraManipulator = reinterpret_cast<AppInfo *>( glfwGetWindowUserPointer( window ) )->cameraManipulator;
   cameraManipulator.wheel( static_cast<int>( yoffset ) );
 }

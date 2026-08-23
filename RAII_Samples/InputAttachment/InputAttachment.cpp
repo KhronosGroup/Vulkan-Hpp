@@ -17,6 +17,7 @@
 #include "glslang/Public/ShaderLang.h"
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
 import RAII_utils;
 import std;
 import vulkan;
@@ -136,7 +137,7 @@ int main()
     commandBuffer.clearColorImage( inputImage,
                                    vk::ImageLayout::eTransferDstOptimal,
                                    { std::array<float, 4>( { { 1.0f, 1.0f, 0.0f, 0.0f } } ) },
-                                   { { vk::ImageAspectFlagBits::eColor, 0, VK_REMAINING_MIP_LEVELS, 0, VK_REMAINING_ARRAY_LAYERS } } );
+                                   { { vk::ImageAspectFlagBits::eColor, 0, vk::RemainingMipLevels, 0, vk::RemainingArrayLayers } } );
 
     // Transitioning the layout of the inputImage from TransferDstOptimal to ShaderReadOnlyOptimal is implicitly done by a subpassDependency in the
     // RenderPassCreateInfo below

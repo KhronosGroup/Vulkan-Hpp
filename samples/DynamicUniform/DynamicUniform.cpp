@@ -16,6 +16,8 @@
 #endif
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+import glm;
 import std;
 import utils;
 import vulkan;

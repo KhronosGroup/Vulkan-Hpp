@@ -5,6 +5,7 @@
 //                     Get the PhysicalDeviceGroups.
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
 import std;
 import utils;
 import vulkan;
@@ -21,7 +22,7 @@ int main()
 {
   try
   {
-    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, {}, vk::ApiVersion11 );
 #if !defined( NDEBUG )
     vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
@@ -62,7 +63,7 @@ int main()
 
         // create a Device
         float                     queuePriority = 0.0f;
-        vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
+        vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), static_cast<std::uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
         vk::StructureChain<vk::DeviceCreateInfo, vk::DeviceGroupDeviceCreateInfo> deviceCreateInfoChain(
           { {}, deviceQueueCreateInfo }, { groupProperties[i].physicalDeviceCount, groupProperties[i].physicalDevices } );
 
@@ -83,17 +84,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

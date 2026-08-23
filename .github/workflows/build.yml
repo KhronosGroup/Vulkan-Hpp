@@ -118,6 +118,36 @@ jobs:
       with:
         cmakeVersion: 4.1.2
         ninjaVersion: latest
+    - name: Setup Sample Modules (CMake nightly)
+      id: sample-modules-cmake
+      if: matrix.env.modules && contains(matrix.env.gen, 'Ninja')
+      env:
+        CMAKE_NIGHTLY_VERSION: 4.4.20260822-ga219e74
+      run: |
+        case "${{runner.os}}" in
+          Linux)
+            CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-linux-x86_64.tar.gz"
+            CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-linux-x86_64/bin"
+            ;;
+          macOS)
+            CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-macos-universal.tar.gz"
+            CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-macos-universal/CMake.app/Contents/bin"
+            ;;
+          Windows)
+            CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-windows-x86_64.zip"
+            CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-windows-x86_64/bin"
+            ;;
+        esac
+
+        mkdir -p "$RUNNER_TEMP/cmake-nightly"
+        curl --fail --location --retry 3 "https://cmake.org/files/dev/$CMAKE_ARCHIVE" --output "$RUNNER_TEMP/$CMAKE_ARCHIVE"
+        if [[ "$CMAKE_ARCHIVE" == *.zip ]]; then
+          7z x -y "$RUNNER_TEMP/$CMAKE_ARCHIVE" -o"$RUNNER_TEMP/cmake-nightly"
+        else
+          tar -xzf "$RUNNER_TEMP/$CMAKE_ARCHIVE" -C "$RUNNER_TEMP/cmake-nightly"
+        fi
+        echo "cmake=$CMAKE_BIN/cmake" >> "$GITHUB_OUTPUT"
+        "$CMAKE_BIN/cmake" --version
     - name: Setup Modules (Ubuntu)
       if: matrix.env.modules && contains(matrix.env.os, 'ubuntu')
       run: |
@@ -161,14 +191,15 @@ jobs:
     - name: Build (RAII) Samples with C++ modules
       if: matrix.env.modules
       run: |
+        CMAKE="${{steps.sample-modules-cmake.outputs.cmake}}"
         for BUILD_TYPE in Debug Release; do
-          cmake -B build -G '${{matrix.env.gen}}' --fresh --preset samples             \
+          "$CMAKE" -B build -G '${{matrix.env.gen}}' --fresh --preset samples          \
             -D VULKAN_HPP_BUILD_CXX_MODULE=ON                                          \
             ${{ env.VAR_CMAKE_FLAGS }}                                                 \
             -D CMAKE_CXX_STANDARD=23                                                   \
             -D CMAKE_BUILD_TYPE=$BUILD_TYPE                                            \
-            -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444
-          cmake --build build --parallel --config $BUILD_TYPE --clean-first
+            -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=25d6f6aa-be65-4692-b44e-87b23e96d4e1
+          "$CMAKE" --build build --parallel --config $BUILD_TYPE --clean-first
         done
 
     # Run all unit tests with C++11 to maximum support C++ version.

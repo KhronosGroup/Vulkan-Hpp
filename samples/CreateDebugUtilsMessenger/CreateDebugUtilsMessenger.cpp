@@ -5,6 +5,7 @@
 //                     Set up a debug messenger
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <vulkan/vulkan_core.h>
 import std;
 import utils;
 import vulkan;
@@ -37,9 +38,8 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT( VkInstance instance,
 VKAPI_ATTR vk::Bool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
                                                    vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
                                                    vk::DebugUtilsMessengerCallbackDataEXT const * pCallbackData,
-                                                   VULKAN_HPP_MAYBE_UNUSED void * pUserData )
+                                                   [[maybe_unused]] void * pUserData )
 {
-  VULKAN_HPP_UNUSED( pUserData );
   std::ostringstream message;
 
   message << vk::to_string( messageSeverity ) << ": " << vk::to_string( messageTypes ) << ":\n";
@@ -49,7 +49,7 @@ VKAPI_ATTR vk::Bool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverity
   if ( 0 < pCallbackData->queueLabelCount )
   {
     message << std::string( "\t" ) << "Queue Labels:\n";
-    for ( uint32_t i = 0; i < pCallbackData->queueLabelCount; i++ )
+    for ( std::uint32_t i = 0; i < pCallbackData->queueLabelCount; i++ )
     {
       message << std::string( "\t\t" ) << "labelName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
     }
@@ -57,7 +57,7 @@ VKAPI_ATTR vk::Bool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverity
   if ( 0 < pCallbackData->cmdBufLabelCount )
   {
     message << std::string( "\t" ) << "CommandBuffer Labels:\n";
-    for ( uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
+    for ( std::uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
     {
       message << std::string( "\t\t" ) << "labelName = <" << pCallbackData->pCmdBufLabels[i].pLabelName << ">\n";
     }
@@ -65,7 +65,7 @@ VKAPI_ATTR vk::Bool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverity
   if ( 0 < pCallbackData->objectCount )
   {
     message << std::string( "\t" ) << "Objects:\n";
-    for ( uint32_t i = 0; i < pCallbackData->objectCount; i++ )
+    for ( std::uint32_t i = 0; i < pCallbackData->objectCount; i++ )
     {
       message << std::string( "\t\t" ) << "Object " << i << "\n";
       message << std::string( "\t\t\t" ) << "objectType   = " << vk::to_string( pCallbackData->pObjects[i].objectType ) << "\n";
@@ -77,11 +77,7 @@ VKAPI_ATTR vk::Bool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverity
     }
   }
 
-#ifdef _WIN32
-  MessageBox( NULL, message.str().c_str(), "Alert", MB_OK );
-#else
   std::cout << message.str() << std::endl;
-#endif
 
   return false;
 }
@@ -95,14 +91,14 @@ int main()
     std::vector<vk::ExtensionProperties> props = vk::enumerateInstanceExtensionProperties();
 
     auto propertyIterator = std::find_if(
-      props.begin(), props.end(), []( vk::ExtensionProperties const & ep ) { return strcmp( ep.extensionName, vk::EXTDebugUtilsExtensionName ) == 0; } );
+      props.begin(), props.end(), []( vk::ExtensionProperties const & ep ) { return std::strcmp( ep.extensionName, vk::EXTDebugUtilsExtensionName ) == 0; } );
     if ( propertyIterator == props.end() )
     {
       std::cout << "Something went very wrong, cannot find " << vk::EXTDebugUtilsExtensionName << " extension" << std::endl;
-      exit( 1 );
+      std::exit( 1 );
     }
 
-    vk::ApplicationInfo applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+    vk::ApplicationInfo applicationInfo( AppName, 1, EngineName, 1, vk::ApiVersion11 );
     const char *        extensionName = vk::EXTDebugUtilsExtensionName;
     vk::Instance        instance      = vk::createInstance( vk::InstanceCreateInfo( vk::InstanceCreateFlags(), &applicationInfo, {}, extensionName ) );
 
@@ -110,14 +106,14 @@ int main()
     if ( !pfnVkCreateDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkCreateDebugUtilsMessengerEXT function." << std::endl;
-      exit( 1 );
+      std::exit( 1 );
     }
 
     pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>( instance.getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
     if ( !pfnVkDestroyDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkDestroyDebugUtilsMessengerEXT function." << std::endl;
-      exit( 1 );
+      std::exit( 1 );
     }
 
     vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
@@ -135,17 +131,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

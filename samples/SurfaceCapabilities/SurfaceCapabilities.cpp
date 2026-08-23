@@ -5,6 +5,7 @@
 //                     Get surface capabilities.
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <vulkan/vulkan_hpp_macros.hpp>
 import std;
 import utils;
 import vulkan;
@@ -52,13 +53,13 @@ int main()
     auto                                 propertyIterator =
       std::find_if( instanceExtensionProperties.begin(),
                     instanceExtensionProperties.end(),
-                    []( vk::ExtensionProperties const & ep ) { return strcmp( ep.extensionName, VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME ) == 0; } );
+                    []( vk::ExtensionProperties const & ep ) { return std::strcmp( ep.extensionName, vk::KHRGetSurfaceCapabilities2ExtensionName ) == 0; } );
     bool supportsGetSurfaceCapabilities2 = ( propertyIterator != instanceExtensionProperties.end() );
 
     std::vector<std::string> extensions = vk::su::getInstanceExtensions();
     if ( supportsGetSurfaceCapabilities2 )
     {
-      extensions.push_back( VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME );
+      extensions.push_back( vk::KHRGetSurfaceCapabilities2ExtensionName );
     }
 
     vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, extensions );
@@ -135,17 +136,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

@@ -5,6 +5,7 @@
 //                     Draw a cube
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <vulkan/vulkan_core.h>
 import RAII_utils;
 import std;
 import vulkan;
@@ -22,9 +23,8 @@ static char const * EngineName = "Vulkan.hpp";
 VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
                                                  vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
                                                  vk::DebugUtilsMessengerCallbackDataEXT const * pCallbackData,
-                                                 VULKAN_HPP_MAYBE_UNUSED void * pUserData )
+                                                 [[maybe_unused]] void * pUserData )
 {
-  VULKAN_HPP_UNUSED( pUserData );
   std::ostringstream message;
 
   message << vk::to_string( messageSeverity ) << ": " << vk::to_string( messageTypes ) << ":\n";
@@ -62,11 +62,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFl
     }
   }
 
-#ifdef _WIN32
-  MessageBox( NULL, message.str().c_str(), "Alert", MB_OK );
-#else
   std::cout << message.str() << std::endl;
-#endif
 
   return false;
 }
@@ -86,10 +82,10 @@ int main()
     if ( propsIterator == props.end() )
     {
       std::cout << "Something went very wrong, cannot find " << vk::EXTDebugUtilsExtensionName << " extension" << std::endl;
-      exit( 1 );
+      std::exit( 1 );
     }
 
-    vk::ApplicationInfo    applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+    vk::ApplicationInfo    applicationInfo( AppName, 1, EngineName, 1, vk::ApiVersion11 );
     const char *           extensionName = vk::EXTDebugUtilsExtensionName;
     vk::InstanceCreateInfo instanceCreateInfo( {}, &applicationInfo, {}, extensionName );
     vk::raii::Instance     instance( context, instanceCreateInfo );
@@ -106,17 +102,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

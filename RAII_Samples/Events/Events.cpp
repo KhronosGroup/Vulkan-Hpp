@@ -5,6 +5,7 @@
 //                     Use basic events
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
 import RAII_utils;
 import std;
 import vulkan;
@@ -28,7 +29,7 @@ int main()
 #endif
     vk::raii::PhysicalDevice physicalDevice = vk::raii::PhysicalDevices( instance ).front();
 
-    uint32_t         graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    std::uint32_t    graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
     vk::raii::Device device                   = vk::raii::su::makeDevice( physicalDevice, graphicsQueueFamilyIndex, vk::su::getDeviceExtensions() );
 
     vk::raii::CommandPool   commandPool   = vk::raii::CommandPool( device, { {}, graphicsQueueFamilyIndex } );
@@ -60,7 +61,7 @@ int main()
     if ( timeouts != 0 )
     {
       std::cout << "Unsuitable timeout value, exiting\n";
-      exit( -1 );
+      std::exit( -1 );
     }
 
     // Now create an event and wait for it on the GPU
@@ -83,7 +84,7 @@ int main()
     if ( result != vk::Result::eTimeout )
     {
       std::cout << "Didn't get expected timeout in vk::Device::waitForFences, exiting\n";
-      exit( -1 );
+      std::exit( -1 );
     }
 
     // Set the event from the CPU and wait for the fence.
@@ -119,7 +120,7 @@ int main()
       result = event.getStatus();
       polls++;
     } while ( result != vk::Result::eEventSet );
-    printf( "%d polls to find the event set\n", polls );
+    std::printf( "%d polls to find the event set\n", polls );
 
     do
     {
@@ -132,17 +133,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

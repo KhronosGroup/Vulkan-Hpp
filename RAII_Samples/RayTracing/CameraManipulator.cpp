@@ -14,11 +14,16 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include "CameraManipulator.hpp"
-
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import vulkan;
+#endif
+
+#include "CameraManipulator.hpp"
 
 namespace vk
 {

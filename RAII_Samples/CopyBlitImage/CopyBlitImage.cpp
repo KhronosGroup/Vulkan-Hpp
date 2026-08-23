@@ -5,6 +5,7 @@
 //                     Draw a cube
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
 import RAII_utils;
 import std;
 import vulkan;
@@ -34,10 +35,10 @@ int main()
     if ( !( surfaceCapabilities.supportedUsageFlags & vk::ImageUsageFlagBits::eTransferDst ) )
     {
       std::cout << "Surface cannot be destination of blit - abort \n";
-      exit( -1 );
+      std::exit( -1 );
     }
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -67,7 +68,7 @@ int main()
 
     // Get the index of the next available swapchain image:
     vk::Result result;
-    uint32_t   imageIndex;
+    std::uint32_t imageIndex;
     std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
@@ -93,7 +94,7 @@ int main()
 
     vk::PhysicalDeviceMemoryProperties memoryProperties   = physicalDevice.getMemoryProperties();
     vk::MemoryRequirements             memoryRequirements = blitSourceImage.getMemoryRequirements();
-    uint32_t memoryTypeIndex = vk::su::findMemoryType( memoryProperties, memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible );
+    std::uint32_t memoryTypeIndex = vk::su::findMemoryType( memoryProperties, memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible );
 
     vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
     deviceMemory = vk::raii::DeviceMemory( device, memoryAllocateInfo );
@@ -116,9 +117,9 @@ int main()
     unsigned char * pImageMemory = static_cast<unsigned char *>( deviceMemory.mapMemory( 0, memoryRequirements.size ) );
 
     // Checkerboard of 8x8 pixel squares
-    for ( uint32_t row = 0; row < surfaceData.extent.height; row++ )
+    for ( std::uint32_t row = 0; row < surfaceData.extent.height; row++ )
     {
-      for ( uint32_t col = 0; col < surfaceData.extent.width; col++ )
+      for ( std::uint32_t col = 0; col < surfaceData.extent.width; col++ )
       {
         unsigned char rgb = ( ( ( row & 0x8 ) == 0 ) ^ ( ( col & 0x8 ) == 0 ) ) * 255;
         pImageMemory[0]   = rgb;
@@ -206,17 +207,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

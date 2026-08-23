@@ -46,7 +46,7 @@ int main()
   try
   {
     vk::raii::Context  context;
-    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, {}, vk::ApiVersion11 );
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
@@ -67,7 +67,7 @@ int main()
       vk::PhysicalDeviceMemoryProperties const &          memoryProperties = memoryProperties2.get<vk::PhysicalDeviceMemoryProperties2>().memoryProperties;
       vk::PhysicalDeviceMemoryBudgetPropertiesEXT const & memoryBudgetProperties = memoryProperties2.get<vk::PhysicalDeviceMemoryBudgetPropertiesEXT>();
       std::cout << "memoryHeapCount: " << memoryProperties.memoryHeapCount << "\n";
-      for ( uint32_t j = 0; j < memoryProperties.memoryHeapCount; j++ )
+      for ( std::uint32_t j = 0; j < memoryProperties.memoryHeapCount; j++ )
       {
         std::cout << "  " << j << ": size = " << formatSize( memoryProperties.memoryHeaps[j].size )
                   << ", flags = " << vk::to_string( memoryProperties.memoryHeaps[j].flags ) << "\n";
@@ -78,7 +78,7 @@ int main()
         }
       }
       std::cout << "memoryTypeCount: " << memoryProperties.memoryTypeCount << "\n";
-      for ( uint32_t j = 0; j < memoryProperties.memoryTypeCount; j++ )
+      for ( std::uint32_t j = 0; j < memoryProperties.memoryTypeCount; j++ )
       {
         std::cout << "  " << j << ": heapIndex = " << memoryProperties.memoryTypes[j].heapIndex
                   << ", flags = " << vk::to_string( memoryProperties.memoryTypes[j].propertyFlags ) << "\n";
@@ -90,17 +90,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

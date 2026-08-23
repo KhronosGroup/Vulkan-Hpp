@@ -15,6 +15,8 @@
 #endif
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+#include <cstring>
 import RAII_utils;
 import std;
 import vulkan;
@@ -41,7 +43,7 @@ int main()
 
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 64, 64 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -77,15 +79,15 @@ int main()
 
     // allocate device memory for that buffer
     vk::MemoryRequirements memoryRequirements = vertexBuffer.getMemoryRequirements();
-    uint32_t               memoryTypeIndex    = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
+    std::uint32_t          memoryTypeIndex    = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
                                                        memoryRequirements.memoryTypeBits,
                                                        vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
     vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
     deviceMemory = vk::raii::DeviceMemory( device, memoryAllocateInfo );
 
     // copy the vertex and color data into that device memory
-    uint8_t * pData = static_cast<uint8_t *>( deviceMemory.mapMemory( 0, memoryRequirements.size ) );
-    memcpy( pData, coloredCubeData, sizeof( coloredCubeData ) );
+    std::uint8_t * pData = static_cast<std::uint8_t *>( deviceMemory.mapMemory( 0, memoryRequirements.size ) );
+    std::memcpy( pData, coloredCubeData, sizeof( coloredCubeData ) );
     deviceMemory.unmapMemory();
 
     // and bind the device memory to the vertex buffer
@@ -94,7 +96,7 @@ int main()
     vk::raii::Semaphore imageAcquiredSemaphore( device, vk::SemaphoreCreateInfo() );
 
     vk::Result result;
-    uint32_t   imageIndex;
+    std::uint32_t imageIndex;
     std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
@@ -119,17 +121,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

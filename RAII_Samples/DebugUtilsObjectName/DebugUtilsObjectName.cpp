@@ -5,6 +5,7 @@
 //                     Demonstrate usage of DebugUtilsObjectName
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
 import RAII_utils;
 import std;
 import vulkan;
@@ -18,7 +19,7 @@ static char const * EngineName = "Vulkan.hpp";
 #if defined( _MSC_VER ) && !defined( _WIN64 )
 #  define NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST( type, x ) static_cast<type>( x )
 #else
-#  define NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST( type, x ) reinterpret_cast<uint64_t>( static_cast<type>( x ) )
+#  define NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST( type, x ) reinterpret_cast<std::uint64_t>( static_cast<type>( x ) )
 #endif
 
 int main()
@@ -34,7 +35,7 @@ int main()
     vk::raii::PhysicalDevices physicalDevices( instance );
     assert( !physicalDevices.empty() );
 
-    uint32_t         graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevices[0].getQueueFamilyProperties() );
+    std::uint32_t    graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevices[0].getQueueFamilyProperties() );
     vk::raii::Device device                   = vk::raii::su::makeDevice( physicalDevices[0], graphicsQueueFamilyIndex );
 
     // create an image
@@ -49,17 +50,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

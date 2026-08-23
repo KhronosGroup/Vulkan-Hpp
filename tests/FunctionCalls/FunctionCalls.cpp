@@ -18,6 +18,7 @@
 
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <vulkan/vulkan.h>
+#  undef MemoryBarrier
 import std;
 import vulkan;
 #else

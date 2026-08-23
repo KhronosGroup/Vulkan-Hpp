@@ -43,13 +43,13 @@ namespace vk
         uint8_t * deviceData = static_cast<uint8_t *>( deviceMemory.mapMemory( 0, count * stride ) );
         if ( stride == sizeof( T ) )
         {
-          memcpy( deviceData, pData, count * sizeof( T ) );
+          std::memcpy( deviceData, pData, count * sizeof( T ) );
         }
         else
         {
           for ( size_t i = 0; i < count; i++ )
           {
-            memcpy( deviceData, &pData[i], sizeof( T ) );
+            std::memcpy( deviceData, &pData[i], sizeof( T ) );
             deviceData += stride;
           }
         }
@@ -188,7 +188,7 @@ namespace vk
           assert( sizeof( DataType ) <= m_size );
 
           void * dataPtr = deviceMemory.mapMemory( 0, sizeof( DataType ) );
-          memcpy( dataPtr, &data, sizeof( DataType ) );
+          std::memcpy( dataPtr, &data, sizeof( DataType ) );
           deviceMemory.unmapMemory();
         }
 

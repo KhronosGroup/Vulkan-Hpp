@@ -27,7 +27,7 @@ int main()
     vk::raii::Context context;
 
     // initialize the vk::ApplicationInfo structure
-    vk::ApplicationInfo applicationInfo( AppName.c_str(), 1, EngineName.c_str(), 1, VK_API_VERSION_1_1 );
+    vk::ApplicationInfo applicationInfo( AppName.c_str(), 1, EngineName.c_str(), 1, vk::ApiVersion11 );
 
     // initialize the vk::InstanceCreateInfo
     vk::InstanceCreateInfo instanceCreateInfo( {}, &applicationInfo );
@@ -38,17 +38,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
 
   /* VULKAN_HPP_KEY_END */

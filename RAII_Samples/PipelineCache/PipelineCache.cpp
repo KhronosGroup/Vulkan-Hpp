@@ -16,6 +16,8 @@
 #include "glslang/Public/ShaderLang.h"
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+import glm;
 import RAII_utils;
 import std;
 import vulkan;
@@ -24,41 +26,17 @@ import vulkan;
 #include "../../samples/utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
+#include <chrono>
 #include <fstream>
 #include <iomanip>
 #include <thread>
 #endif
 
-
-// For timestamp code (getMilliseconds)
-#ifdef _WIN32
-#  include <Windows.h>
-#else
-#  include <sys/time.h>
-#endif
-
-typedef unsigned long long timestamp_t;
+using timestamp_t = std::chrono::milliseconds::rep;
 
 timestamp_t getMilliseconds()
 {
-#ifdef _WIN32
-  LARGE_INTEGER frequency;
-  BOOL          useQPC = QueryPerformanceFrequency( &frequency );
-  if ( useQPC )
-  {
-    LARGE_INTEGER now;
-    QueryPerformanceCounter( &now );
-    return ( 1000LL * now.QuadPart ) / frequency.QuadPart;
-  }
-  else
-  {
-    return GetTickCount();
-  }
-#else
-  struct timeval now;
-  gettimeofday( &now, NULL );
-  return ( now.tv_usec / 1000 ) + (timestamp_t)now.tv_sec;
-#endif
+  return std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now().time_since_epoch() ).count();
 }
 
 static char const * AppName    = "PipelineCache";
@@ -203,11 +181,11 @@ int main()
       uint8_t  pipelineCacheUUID[vk::UuidSize] = {};
 
       uint8_t * startCacheDataPtr = reinterpret_cast<uint8_t *>( startCacheData.data() );
-      memcpy( &headerLength, startCacheDataPtr + 0, 4 );
-      memcpy( &cacheHeaderVersion, startCacheDataPtr + 4, 4 );
-      memcpy( &vendorID, startCacheDataPtr + 8, 4 );
-      memcpy( &deviceID, startCacheDataPtr + 12, 4 );
-      memcpy( pipelineCacheUUID, startCacheDataPtr + 16, vk::UuidSize );
+      std::memcpy( &headerLength, startCacheDataPtr + 0, 4 );
+      std::memcpy( &cacheHeaderVersion, startCacheDataPtr + 4, 4 );
+      std::memcpy( &vendorID, startCacheDataPtr + 8, 4 );
+      std::memcpy( &deviceID, startCacheDataPtr + 12, 4 );
+      std::memcpy( pipelineCacheUUID, startCacheDataPtr + 16, vk::UuidSize );
 
       // Check each field and report bad values before freeing existing cache
       bool badCache = false;
@@ -219,7 +197,7 @@ int main()
         std::cout << "    Cache contains: " << std::hex << std::setw( 8 ) << headerLength << "\n";
       }
 
-      if ( cacheHeaderVersion != VK_PIPELINE_CACHE_HEADER_VERSION_ONE )
+      if ( cacheHeaderVersion != static_cast<uint32_t>( vk::PipelineCacheHeaderVersion::eOne ) )
       {
         badCache = true;
         std::cout << "  Unsupported cache header version in " << cacheFileName << ".\n";

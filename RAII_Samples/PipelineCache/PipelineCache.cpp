@@ -124,7 +124,7 @@ int main()
     {
       // Determine cache size
       readCacheStream.seekg( 0, readCacheStream.end );
-      size_t startCacheSize = static_cast<size_t>( readCacheStream.tellg() );
+      std::size_t startCacheSize = static_cast<std::size_t>( readCacheStream.tellg() );
       readCacheStream.seekg( 0, readCacheStream.beg );
 
       // Allocate memory to hold the initial cache data

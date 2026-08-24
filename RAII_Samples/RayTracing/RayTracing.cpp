@@ -126,7 +126,7 @@ AccelerationStructureData createAccelerationStructureData( vk::raii::PhysicalDev
       vk::raii::su::BufferData( physicalDevice, device, instances.size() * sizeof( GeometryInstanceData ), vk::BufferUsageFlagBits::eRayTracingNV );
 
     std::vector<GeometryInstanceData> geometryInstanceData;
-    for ( size_t i = 0; i < instances.size(); i++ )
+    for ( std::size_t i = 0; i < instances.size(); i++ )
     {
       uint64_t accelerationStructureHandle = instances[i].first.getHandle<uint64_t>();
 
@@ -205,7 +205,7 @@ struct Material
   int       textureID = -1;
 };
 
-const size_t MaterialStride = ( ( sizeof( Material ) + 15 ) / 16 ) * 16;
+const std::size_t MaterialStride = ( ( sizeof( Material ) + 15 ) / 16 ) * 16;
 
 struct Vertex
 {
@@ -217,7 +217,7 @@ struct Vertex
   int       matID;
 };
 
-const size_t VertexStride = ( ( sizeof( Vertex ) + 15 ) / 16 ) * 16;
+const std::size_t VertexStride = ( ( sizeof( Vertex ) + 15 ) / 16 ) * 16;
 
 static const std::vector<Vertex> cubeData = {
   //        pos                               nrm                             texcoord              matID
@@ -638,9 +638,9 @@ uint32_t roundUp( uint32_t value, uint32_t alignment )
 int main()
 {
   // number of cubes in x-, y-, and z-direction
-  const size_t xMax = 10;
-  const size_t yMax = 10;
-  const size_t zMax = 10;
+  const std::size_t xMax = 10;
+  const std::size_t yMax = 10;
+  const std::size_t zMax = 10;
 
   AppInfo appInfo;
 
@@ -782,10 +782,10 @@ int main()
     bool samplerAnisotropy = !!supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features.samplerAnisotropy;
 
     // create some simple checkerboard textures, randomly sized and colored
-    const size_t                           textureCount = 10;
+    const std::size_t                           textureCount = 10;
     std::vector<vk::raii::su::TextureData> textures;
     textures.reserve( textureCount );
-    for ( size_t i = 0; i < textureCount; i++ )
+    for ( std::size_t i = 0; i < textureCount; i++ )
     {
       textures.emplace_back( physicalDevice,
                              device,
@@ -809,10 +809,10 @@ int main()
                                  } );
 
     // create some materials with a random diffuse color, referencing one of the above textures
-    const size_t materialCount = 10;
+    const std::size_t materialCount = 10;
     assert( materialCount == textureCount );
     std::vector<Material> materials( materialCount );
-    for ( size_t i = 0; i < materialCount; i++ )
+    for ( std::size_t i = 0; i < materialCount; i++ )
     {
       materials[i].diffuse   = randomVec3( 0.0f, 1.0f );
       materials[i].textureID = vk::su::checked_cast<uint32_t>( i );
@@ -823,11 +823,11 @@ int main()
     // create a a 3D-array of cubes, randomly jittered, using a random material
     std::vector<Vertex> vertices;
     vertices.reserve( xMax * yMax * zMax * cubeData.size() );
-    for ( size_t x = 0; x < xMax; x++ )
+    for ( std::size_t x = 0; x < xMax; x++ )
     {
-      for ( size_t y = 0; y < yMax; y++ )
+      for ( std::size_t y = 0; y < yMax; y++ )
       {
-        for ( size_t z = 0; z < zMax; z++ )
+        for ( std::size_t z = 0; z < zMax; z++ )
         {
           int       m      = random<int>( 0, materialCount - 1 );
           glm::vec3 jitter = randomVec3( 0.0f, 0.6f );
@@ -974,7 +974,7 @@ int main()
     vk::DescriptorSetLayoutCreateInfo    descriptorSetLayoutCreateInfo( {}, bindings );
     vk::raii::DescriptorSetLayout        rayTracingDescriptorSetLayout( device, descriptorSetLayoutCreateInfo );
     std::vector<vk::DescriptorSetLayout> layouts;
-    for ( size_t i = 0; i < swapChainData.images.size(); i++ )
+    for ( std::size_t i = 0; i < swapChainData.images.size(); i++ )
     {
       layouts.push_back( *rayTracingDescriptorSetLayout );
     }
@@ -984,7 +984,7 @@ int main()
     // Bind ray tracing specific descriptor sets into pNext of a vk::WriteDescriptorSet
     vk::WriteDescriptorSetAccelerationStructureNV writeDescriptorSetAcceleration( 1, &*topLevelAS.accelerationStructure );
     std::vector<vk::WriteDescriptorSet>           accelerationDescriptionSets;
-    for ( size_t i = 0; i < rayTracingDescriptorSets.size(); i++ )
+    for ( std::size_t i = 0; i < rayTracingDescriptorSets.size(); i++ )
     {
       accelerationDescriptionSets.emplace_back(
         *rayTracingDescriptorSets[i], 0, 0, 1, bindings[0].descriptorType, nullptr, nullptr, nullptr, &writeDescriptorSetAcceleration );
@@ -993,7 +993,7 @@ int main()
 
     // Bind all the other buffers and images, starting with dstBinding == 2 (dstBinding == 1 is used by the backBuffer
     // view)
-    for ( size_t i = 0; i < rayTracingDescriptorSets.size(); i++ )
+    for ( std::size_t i = 0; i < rayTracingDescriptorSets.size(); i++ )
     {
       vk::raii::su::updateDescriptorSets( device,
                                           rayTracingDescriptorSets[i],
@@ -1103,7 +1103,7 @@ int main()
     uniformBufferObject.modelIT = glm::inverseTranspose( uniformBufferObject.model );
 
     double accumulatedTime{ 0.0 };
-    size_t frameCount{ 0 };
+    std::size_t frameCount{ 0 };
     while ( !glfwWindowShouldClose( window ) )
     {
       double startTime = glfwGetTime();

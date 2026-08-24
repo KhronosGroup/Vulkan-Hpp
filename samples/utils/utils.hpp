@@ -35,7 +35,7 @@ namespace vk
     }
 
     template <class T>
-    void copyToDevice( vk::Device const & device, vk::DeviceMemory const & deviceMemory, T const * pData, size_t count, vk::DeviceSize stride = sizeof( T ) )
+    void copyToDevice( vk::Device const & device, vk::DeviceMemory const & deviceMemory, T const * pData, std::size_t count, vk::DeviceSize stride = sizeof( T ) )
     {
       assert( sizeof( T ) <= stride );
       uint8_t * deviceData = static_cast<uint8_t *>( device.mapMemory( deviceMemory, 0, count * stride ) );
@@ -45,7 +45,7 @@ namespace vk
       }
       else
       {
-        for ( size_t i = 0; i < count; i++ )
+        for ( std::size_t i = 0; i < count; i++ )
         {
           memcpy( deviceData, &pData[i], sizeof( T ) );
           deviceData += stride;
@@ -120,11 +120,11 @@ namespace vk
       }
 
       template <typename DataType>
-      void upload( vk::Device const & device, std::vector<DataType> const & data, size_t stride = 0 ) const
+      void upload( vk::Device const & device, std::vector<DataType> const & data, std::size_t stride = 0 ) const
       {
         assert( m_propertyFlags & vk::MemoryPropertyFlagBits::eHostVisible );
 
-        size_t elementSize = stride ? stride : sizeof( DataType );
+        std::size_t elementSize = stride ? stride : sizeof( DataType );
         assert( sizeof( DataType ) <= elementSize );
 
         copyToDevice( device, deviceMemory, data.data(), data.size(), elementSize );
@@ -136,15 +136,15 @@ namespace vk
                    vk::CommandPool const &       commandPool,
                    vk::Queue                     queue,
                    std::vector<DataType> const & data,
-                   size_t                        stride ) const
+                   std::size_t                        stride ) const
       {
         assert( m_usage & vk::BufferUsageFlagBits::eTransferDst );
         assert( m_propertyFlags & vk::MemoryPropertyFlagBits::eDeviceLocal );
 
-        size_t elementSize = stride ? stride : sizeof( DataType );
+        std::size_t elementSize = stride ? stride : sizeof( DataType );
         assert( sizeof( DataType ) <= elementSize );
 
-        size_t dataSize = data.size() * elementSize;
+        std::size_t dataSize = data.size() * elementSize;
         assert( dataSize <= m_size );
 
         vk::su::BufferData stagingBuffer( physicalDevice, device, dataSize, vk::BufferUsageFlagBits::eTransferSrc );
@@ -262,13 +262,13 @@ namespace vk
     class PixelsImageGenerator
     {
     public:
-      PixelsImageGenerator( vk::Extent2D const & extent, size_t channels, unsigned char const * pixels );
+      PixelsImageGenerator( vk::Extent2D const & extent, std::size_t channels, unsigned char const * pixels );
 
       void operator()( void * data, vk::Extent2D const & extent ) const;
 
     private:
       vk::Extent2D          m_extent;
-      size_t                m_channels;
+      std::size_t                m_channels;
       unsigned char const * m_pixels;
     };
 

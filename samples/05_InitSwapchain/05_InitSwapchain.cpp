@@ -46,14 +46,14 @@ int main()
 
     // determine a queueFamilyIndex that suports present
     // first check if the graphicsQueueFamiliyIndex is good enough
-    size_t presentQueueFamilyIndex = physicalDevice.getSurfaceSupportKHR( static_cast<std::uint32_t>( graphicsQueueFamilyIndex ), surface )
+    std::size_t presentQueueFamilyIndex = physicalDevice.getSurfaceSupportKHR( static_cast<std::uint32_t>( graphicsQueueFamilyIndex ), surface )
                                      ? graphicsQueueFamilyIndex
                                      : queueFamilyProperties.size();
     if ( presentQueueFamilyIndex == queueFamilyProperties.size() )
     {
       // the graphicsQueueFamilyIndex doesn't support present -> look for an other family index that supports both
       // graphics and present
-      for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
+      for ( std::size_t i = 0; i < queueFamilyProperties.size(); i++ )
       {
         if ( ( queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics ) &&
              physicalDevice.getSurfaceSupportKHR( static_cast<std::uint32_t>( i ), surface ) )
@@ -67,7 +67,7 @@ int main()
       {
         // there's nothing like a single family index that supports both graphics and present -> look for an other
         // family index that supports present
-        for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
+        for ( std::size_t i = 0; i < queueFamilyProperties.size(); i++ )
         {
           if ( physicalDevice.getSurfaceSupportKHR( static_cast<std::uint32_t>( i ), surface ) )
           {

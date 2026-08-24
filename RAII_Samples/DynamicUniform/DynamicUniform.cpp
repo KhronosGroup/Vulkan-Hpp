@@ -42,7 +42,7 @@ int main()
 
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -141,7 +141,7 @@ int main()
     // Get the index of the next available swapchain image:
     vk::raii::Semaphore imageAcquiredSemaphore( device, vk::SemaphoreCreateInfo() );
     vk::Result          result;
-    uint32_t            imageIndex;
+    std::uint32_t       imageIndex;
     std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
@@ -160,14 +160,14 @@ int main()
     commandBuffer.setScissor( 0, vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ) );
 
     /* The first draw should use the first matrix in the buffer */
-    uint32_t dynamicOffset = 0;
+    std::uint32_t dynamicOffset = 0;
     commandBuffer.bindDescriptorSets( vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, { descriptorSet }, dynamicOffset );
 
     commandBuffer.bindVertexBuffers( 0, { vertexBufferData.buffer }, { 0 } );
     commandBuffer.draw( 12 * 3, 1, 0, 0 );
 
     // the second draw should use the second matrix in the buffer;
-    dynamicOffset = (uint32_t)bufferSize;
+    dynamicOffset = (std::uint32_t)bufferSize;
     commandBuffer.bindDescriptorSets( vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, { descriptorSet }, dynamicOffset );
     commandBuffer.draw( 12 * 3, 1, 0, 0 );
 

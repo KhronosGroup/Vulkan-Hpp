@@ -12,6 +12,9 @@
 #  include <string.h>  // strnlen
 #  include <string>    // std::string
 #  include <utility>   // std::exchange
+#  if defined( __APPLE__ )
+#    include <cstdlib>  // std::getenv
+#  endif
 #  if 17 <= VULKAN_HPP_CPP_VERSION
 #    include <string_view>
 #  endif

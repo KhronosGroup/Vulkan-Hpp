@@ -40,7 +40,7 @@ int main()
 
     vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
-    uint32_t   graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    std::uint32_t   graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
     vk::Device device                   = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
@@ -60,12 +60,12 @@ int main()
       device.createBuffer( vk::BufferCreateInfo( vk::BufferCreateFlags(), sizeof( mvpc ), vk::BufferUsageFlagBits::eUniformBuffer ) );
 
     vk::MemoryRequirements memoryRequirements = device.getBufferMemoryRequirements( uniformDataBuffer );
-    uint32_t               typeIndex          = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
+    std::uint32_t               typeIndex          = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
                                                  memoryRequirements.memoryTypeBits,
                                                  vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
     vk::DeviceMemory       uniformDataMemory  = device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, typeIndex ) );
 
-    uint8_t * pData = static_cast<uint8_t *>( device.mapMemory( uniformDataMemory, 0, memoryRequirements.size ) );
+    std::uint8_t * pData = static_cast<std::uint8_t *>( device.mapMemory( uniformDataMemory, 0, memoryRequirements.size ) );
     std::memcpy( pData, &mvpc, sizeof( mvpc ) );
     device.unmapMemory( uniformDataMemory );
 
@@ -86,17 +86,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

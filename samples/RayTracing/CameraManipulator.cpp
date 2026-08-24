@@ -14,6 +14,8 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include <cassert>
+
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -360,7 +362,7 @@ namespace vk
       if ( d < trackballSize * 0.70710678118654752440 )
       {
         // inside sphere
-        z = sqrt( trackballSize * trackballSize - d * d );
+        z = std::sqrt( trackballSize * trackballSize - d * d );
       }
       else
       {
@@ -400,7 +402,7 @@ namespace vk
         t = -1.0f;
       }
 
-      float rad = 2.0f * asin( t );
+      float rad = 2.0f * std::asin( t );
 
       {
         glm::vec4 rot_axis = m_matrix * glm::vec4( axis, 0 );

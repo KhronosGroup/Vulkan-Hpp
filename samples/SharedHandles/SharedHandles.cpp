@@ -187,7 +187,7 @@ public:
                                            device };
 
     // Get the index of the next available swapchain image:
-    vk::ResultValue<uint32_t> currentBufferR = device->acquireNextImageKHR( swapChain.get(), vk::su::FenceTimeout, imageAcquiredSemaphore.get(), nullptr );
+    vk::ResultValue<std::uint32_t> currentBufferR = device->acquireNextImageKHR( swapChain.get(), vk::su::FenceTimeout, imageAcquiredSemaphore.get(), nullptr );
     assert( currentBufferR.result == vk::Result::eSuccess );
     assert( currentBufferR.value < framebuffers.size() );
     currentBuffer = currentBufferR.value;
@@ -249,7 +249,7 @@ public:
   std::vector<vk::SharedImageView> imageViews;
   std::vector<vk::SharedImage>     images;
 
-  uint32_t            currentBuffer = 0;
+  std::uint32_t            currentBuffer = 0;
   vk::SharedSemaphore imageAcquiredSemaphore;
 
   // memory still needs to be before the resources that use it in order to get a proper destruction sequence.
@@ -369,16 +369,16 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
 }

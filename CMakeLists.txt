@@ -247,13 +247,12 @@ function( vulkan_hpp__setup_cxx_module )
 	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
 
 	# Clang building `import std;` against MSVC's STL isn't warning-clean yet (https://github.com/microsoft/STL/issues/5975).
-	# These flags are inherited by that synthetic std module build, so silence just those two warnings
-	# here rather than disabling warnings-as-errors for the whole target.
+	# Propagate these flags to module consumers so their synthetic module builds use the same options.
 	if( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
 		if( CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC" )
-			target_compile_options( ${TARGET_NAME} PRIVATE /clang:-Wno-reserved-module-identifier /clang:-Wno-include-angled-in-module-purview )
+			target_compile_options( ${TARGET_NAME} PUBLIC /clang:-Wno-reserved-module-identifier /clang:-Wno-include-angled-in-module-purview )
 		else()
-			target_compile_options( ${TARGET_NAME} PRIVATE -Wno-reserved-module-identifier -Wno-include-angled-in-module-purview )
+			target_compile_options( ${TARGET_NAME} PUBLIC -Wno-reserved-module-identifier -Wno-include-angled-in-module-purview )
 		endif()
 	endif()
 

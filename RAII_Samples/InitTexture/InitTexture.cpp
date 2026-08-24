@@ -46,7 +46,7 @@ int main()
 
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 50, 50 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -82,7 +82,7 @@ int main()
     vk::raii::Image     image( device, imageCreateInfo );
 
     vk::MemoryRequirements memoryRequirements = image.getMemoryRequirements();
-    uint32_t               memoryTypeIndex    = vk::su::findMemoryType(
+    std::uint32_t          memoryTypeIndex    = vk::su::findMemoryType(
       physicalDevice.getMemoryProperties(),
       memoryRequirements.memoryTypeBits,
       needsStaging ? vk::MemoryPropertyFlags() : ( vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent ) );
@@ -124,9 +124,9 @@ int main()
 
     // Checkerboard of 16x16 pixel squares
     unsigned char * pImageMemory = static_cast<unsigned char *>( data );
-    for ( uint32_t row = 0; row < surfaceData.extent.height; row++ )
+    for ( std::uint32_t row = 0; row < surfaceData.extent.height; row++ )
     {
-      for ( uint32_t col = 0; col < surfaceData.extent.width; col++ )
+      for ( std::uint32_t col = 0; col < surfaceData.extent.width; col++ )
       {
         unsigned char rgb = ( ( ( row & 0x10 ) == 0 ) ^ ( ( col & 0x10 ) == 0 ) ) * 255;
         pImageMemory[0]   = rgb;

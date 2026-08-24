@@ -106,7 +106,7 @@ int main()
     /* VULKAN_KEY_START */
 
     std::cout << std::boolalpha;
-    for ( size_t i = 0; i < physicalDevices.size(); i++ )
+    for ( std::size_t i = 0; i < physicalDevices.size(); i++ )
     {
       std::cout << "PhysicalDevice " << i << "\n";
 
@@ -662,10 +662,10 @@ int main()
         std::cout << std::string( "\t\t" ) << "driverID            = " << vk::to_string( driverProperties.driverID ) << "\n";
         std::cout << std::string( "\t\t" ) << "driverName          = " << driverProperties.driverName << "\n";
         std::cout << std::string( "\t\t" ) << "driverInfo          = " << driverProperties.driverInfo << "\n";
-        std::cout << std::string( "\t\t" ) << "conformanceVersion  = " << static_cast<size_t>( driverProperties.conformanceVersion.major ) << "."
-                  << static_cast<size_t>( driverProperties.conformanceVersion.minor ) << "."
-                  << static_cast<size_t>( driverProperties.conformanceVersion.subminor ) << "."
-                  << static_cast<size_t>( driverProperties.conformanceVersion.patch ) << "\n";
+        std::cout << std::string( "\t\t" ) << "conformanceVersion  = " << static_cast<std::size_t>( driverProperties.conformanceVersion.major ) << "."
+                  << static_cast<std::size_t>( driverProperties.conformanceVersion.minor ) << "."
+                  << static_cast<std::size_t>( driverProperties.conformanceVersion.subminor ) << "."
+                  << static_cast<std::size_t>( driverProperties.conformanceVersion.patch ) << "\n";
         std::cout << "\n";
       }
 
@@ -1839,10 +1839,10 @@ int main()
         std::cout << std::string( "\t\t" ) << "driverName                                           = " << vulkan12Properties.driverName << "\n";
         std::cout << std::string( "\t\t" ) << "driverInfo                                           = " << vulkan12Properties.driverInfo << "\n";
         std::cout << std::string( "\t\t" )
-                  << "conformanceVersion                                   = " << static_cast<size_t>( vulkan12Properties.conformanceVersion.major ) << "."
-                  << static_cast<size_t>( vulkan12Properties.conformanceVersion.minor ) << "."
-                  << static_cast<size_t>( vulkan12Properties.conformanceVersion.subminor ) << "."
-                  << static_cast<size_t>( vulkan12Properties.conformanceVersion.patch ) << "\n";
+                  << "conformanceVersion                                   = " << static_cast<std::size_t>( vulkan12Properties.conformanceVersion.major ) << "."
+                  << static_cast<std::size_t>( vulkan12Properties.conformanceVersion.minor ) << "."
+                  << static_cast<std::size_t>( vulkan12Properties.conformanceVersion.subminor ) << "."
+                  << static_cast<std::size_t>( vulkan12Properties.conformanceVersion.patch ) << "\n";
         std::cout << std::string( "\t\t" )
                   << "denormBehaviorIndependence                           = " << vk::to_string( vulkan12Properties.denormBehaviorIndependence ) << "\n";
         std::cout << std::string( "\t\t" )

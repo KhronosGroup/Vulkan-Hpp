@@ -237,7 +237,7 @@ int main()
         if ( remove( cacheFileName.c_str() ) != 0 )
         {
           std::cerr << "Reading error";
-          exit( EXIT_FAILURE );
+          std::exit( EXIT_FAILURE );
         }
       }
     }
@@ -361,17 +361,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

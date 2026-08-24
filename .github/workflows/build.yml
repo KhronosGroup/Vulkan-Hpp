@@ -9,7 +9,7 @@ on:
     paths:
       - '**'
       - '!**.md'
-      
+
 jobs:
   build:
     name: ${{matrix.env.modules && '[modules] ' || ' '}}${{matrix.env.os}} ${{matrix.env.arch}}, ${{matrix.env.gen}}, ${{matrix.env.cxx && matrix.env.cxx || 'default'}}
@@ -118,7 +118,7 @@ jobs:
       with:
         cmakeVersion: 4.1.2
         ninjaVersion: latest
-    - name: Setup Sample Modules (CMake nightly)
+    - name: Setup CMake nightly for samples as modules
       id: sample-modules-cmake
       if: matrix.env.modules && contains(matrix.env.gen, 'Ninja')
       env:
@@ -132,6 +132,7 @@ jobs:
           macOS)
             CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-macos-universal.tar.gz"
             CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-macos-universal/CMake.app/Contents/bin"
+            CMAKE_FIX="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-macos-universal/CMake.app/Contents/share/cmake-4.4/Modules/Compiler/Clang-CXX-CXXImportStd.cmake"
             ;;
           Windows)
             CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-windows-x86_64.zip"
@@ -145,6 +146,9 @@ jobs:
           7z x -y "$RUNNER_TEMP/$CMAKE_ARCHIVE" -o"$RUNNER_TEMP/cmake-nightly"
         else
           tar -xzf "$RUNNER_TEMP/$CMAKE_ARCHIVE" -C "$RUNNER_TEMP/cmake-nightly"
+        fi
+        if [[ "${{runner.os}}" == macOS ]]; then
+          sed -i '' 's|\${_clang_modules_json_impl}.modules.json|/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json|g' "$CMAKE_FIX" # https://gitlab.kitware.com/cmake/cmake/-/issues/25965#note_1523575
         fi
         echo "cmake=$CMAKE_BIN/cmake" >> "$GITHUB_OUTPUT"
         "$CMAKE_BIN/cmake" --version
@@ -187,8 +191,8 @@ jobs:
           cmake --build build --parallel --config $BUILD_TYPE --clean-first
         done
 
-    # Build (RAII) samples and their utils::module / RAII_utils::module C++ named module variants.
-    - name: Build (RAII) Samples with C++ modules
+    # Build samples and dependencies as C++ named modules.
+    - name: Build Samples with C++${{matrix.env.cxx_max}} as named modules
       if: matrix.env.modules
       run: |
         CMAKE="${{steps.sample-modules-cmake.outputs.cmake}}"
@@ -196,9 +200,9 @@ jobs:
           "$CMAKE" -B build -G '${{matrix.env.gen}}' --fresh --preset samples          \
             -D VULKAN_HPP_BUILD_CXX_MODULE=ON                                          \
             ${{ env.VAR_CMAKE_FLAGS }}                                                 \
-            -D CMAKE_CXX_STANDARD=23                                                   \
+            -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}}                              \
             -D CMAKE_BUILD_TYPE=$BUILD_TYPE                                            \
-            -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=25d6f6aa-be65-4692-b44e-87b23e96d4e1
+            -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=25d6f6aa-be65-4692-b44e-87b23e96d4e1
           "$CMAKE" --build build --parallel --config $BUILD_TYPE --clean-first
         done
 

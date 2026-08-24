@@ -66,7 +66,7 @@ namespace vk
                                                        vk::DescriptorSetLayoutCreateFlags                                                  flags )
     {
       std::vector<vk::DescriptorSetLayoutBinding> bindings( bindingData.size() );
-      for ( size_t i = 0; i < bindingData.size(); i++ )
+      for ( std::size_t i = 0; i < bindingData.size(); i++ )
       {
         bindings[i] = vk::DescriptorSetLayoutBinding(
           checked_cast<uint32_t>( i ), std::get<0>( bindingData[i] ), std::get<1>( bindingData[i] ), std::get<2>( bindingData[i] ) );
@@ -556,7 +556,7 @@ namespace vk
         // request several formats, the first found will be used
         vk::Format        requestedFormats[]  = { vk::Format::eB8G8R8A8Unorm, vk::Format::eR8G8B8A8Unorm, vk::Format::eB8G8R8Unorm, vk::Format::eR8G8B8Unorm };
         vk::ColorSpaceKHR requestedColorSpace = vk::ColorSpaceKHR::eSrgbNonlinear;
-        for ( size_t i = 0; i < sizeof( requestedFormats ) / sizeof( requestedFormats[0] ); i++ )
+        for ( std::size_t i = 0; i < sizeof( requestedFormats ) / sizeof( requestedFormats[0] ); i++ )
         {
           vk::Format requestedFormat = requestedFormats[i];
           auto       it              = std::find_if( formats.begin(),
@@ -908,7 +908,7 @@ namespace vk
       }
     }
 
-    PixelsImageGenerator::PixelsImageGenerator( vk::Extent2D const & extent, size_t channels, unsigned char const * pixels )
+    PixelsImageGenerator::PixelsImageGenerator( vk::Extent2D const & extent, std::size_t channels, unsigned char const * pixels )
       : m_extent( extent ), m_channels( channels ), m_pixels( pixels )
     {
       assert( m_channels == 4 );

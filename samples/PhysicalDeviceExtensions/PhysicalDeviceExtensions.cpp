@@ -39,7 +39,7 @@ int main()
       // sort the extensions alphabetically
       std::sort( extensionProperties.begin(),
                  extensionProperties.end(),
-                 []( vk::ExtensionProperties const & a, vk::ExtensionProperties const & b ) { return strcmp( a.extensionName, b.extensionName ) < 0; } );
+                 []( vk::ExtensionProperties const & a, vk::ExtensionProperties const & b ) { return std::strcmp( a.extensionName, b.extensionName ) < 0; } );
       for ( auto const & ep : extensionProperties )
       {
         std::cout << "\t" << ep.extensionName << ":" << std::endl;

@@ -18,9 +18,9 @@ module;
 export module RAII_utils;
 
 import std;
+import vulkan;
 // re-export `utils`, so importers of RAII_utils automatically get vk::su:: as well as vk::raii::su::
 export import utils;
-export import vulkan;
 
 #include "utils.hpp"
 #include "shaders.hpp"

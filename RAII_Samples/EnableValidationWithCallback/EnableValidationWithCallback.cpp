@@ -103,7 +103,7 @@ bool checkLayers( std::vector<char const *> const & layers, std::vector<vk::Laye
                       {
                         return std::any_of( properties.begin(),
                                             properties.end(),
-                                            [&name]( vk::LayerProperties const & property ) { return strcmp( property.layerName, name ) == 0; } );
+                                            [&name]( vk::LayerProperties const & property ) { return std::strcmp( property.layerName, name ) == 0; } );
                       } );
 }
 

@@ -32,7 +32,7 @@ int main()
 
     vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
-    uint32_t   graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    std::uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
     vk::Device device                   = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */

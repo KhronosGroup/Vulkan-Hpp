@@ -32,7 +32,7 @@ int main()
 
     /* VULKAN_KEY_START */
 
-    for ( size_t i = 0; i < physicalDevices.size(); i++ )
+    for ( std::size_t i = 0; i < physicalDevices.size(); i++ )
     {
       std::vector<vk::ExtensionProperties> extensionProperties = physicalDevices[i].enumerateDeviceExtensionProperties();
       std::cout << "PhysicalDevice " << i << " : " << extensionProperties.size() << " extensions:\n";

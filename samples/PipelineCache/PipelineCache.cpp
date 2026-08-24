@@ -56,7 +56,7 @@ int main()
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::CommandPool   commandPool = device.createCommandPool( { {}, graphicsAndPresentQueueFamilyIndex.first } );
@@ -173,13 +173,13 @@ int main()
       //                           as a stream of bytes, with the least significant byte first
       //     16    vk::UuidSize    a pipeline cache ID equal to VkPhysicalDeviceProperties::pipelineCacheUUID
 
-      uint32_t headerLength                    = 0;
-      uint32_t cacheHeaderVersion              = 0;
-      uint32_t vendorID                        = 0;
-      uint32_t deviceID                        = 0;
-      uint8_t  pipelineCacheUUID[vk::UuidSize] = {};
+      std::uint32_t headerLength                    = 0;
+      std::uint32_t cacheHeaderVersion              = 0;
+      std::uint32_t vendorID                        = 0;
+      std::uint32_t deviceID                        = 0;
+      std::uint8_t  pipelineCacheUUID[vk::UuidSize] = {};
 
-      uint8_t * startCacheDataPtr = reinterpret_cast<uint8_t *>( startCacheData.data() );
+      std::uint8_t * startCacheDataPtr = reinterpret_cast<std::uint8_t *>( startCacheData.data() );
       std::memcpy( &headerLength, startCacheDataPtr + 0, 4 );
       std::memcpy( &cacheHeaderVersion, startCacheDataPtr + 4, 4 );
       std::memcpy( &vendorID, startCacheDataPtr + 8, 4 );
@@ -196,7 +196,7 @@ int main()
         std::cout << "    Cache contains: " << std::hex << std::setw( 8 ) << headerLength << "\n";
       }
 
-      if ( cacheHeaderVersion != static_cast<uint32_t>( vk::PipelineCacheHeaderVersion::eOne ) )
+      if ( cacheHeaderVersion != static_cast<std::uint32_t>( vk::PipelineCacheHeaderVersion::eOne ) )
       {
         badCache = true;
         std::cout << "  Unsupported cache header version in " << cacheFileName << ".\n";
@@ -267,7 +267,7 @@ int main()
     vk::Semaphore imageAcquiredSemaphore = device.createSemaphore( vk::SemaphoreCreateInfo( vk::SemaphoreCreateFlags() ) );
 
     // Get the index of the next available swapchain image:
-    vk::ResultValue<uint32_t> currentBuffer = device.acquireNextImageKHR( swapChainData.swapChain, UINT64_MAX, imageAcquiredSemaphore, nullptr );
+    vk::ResultValue<std::uint32_t> currentBuffer = device.acquireNextImageKHR( swapChainData.swapChain, std::numeric_limits<std::uint64_t>::max(), imageAcquiredSemaphore, nullptr );
     assert( currentBuffer.result == vk::Result::eSuccess );
     assert( currentBuffer.value < framebuffers.size() );
 
@@ -311,7 +311,7 @@ int main()
     // Store away the cache that we've populated.  This could conceivably happen
     // earlier, depends on when the pipeline cache stops being populated
     // internally.
-    std::vector<uint8_t> endCacheData = device.getPipelineCacheData( pipelineCache );
+    std::vector<std::uint8_t> endCacheData = device.getPipelineCacheData( pipelineCache );
 
     // Write the file to disk, overwriting whatever was there
     std::ofstream writeCacheStream( cacheFileName, std::ios_base::out | std::ios_base::binary );

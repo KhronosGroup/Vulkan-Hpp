@@ -33,12 +33,12 @@ int main()
     std::vector<vk::PhysicalDeviceGroupProperties> groupProperties = instance.enumeratePhysicalDeviceGroups();
 
     std::cout << std::boolalpha;
-    for ( size_t i = 0; i < groupProperties.size(); i++ )
+    for ( std::size_t i = 0; i < groupProperties.size(); i++ )
     {
       std::cout << "Group Properties " << i << " :\n";
       std::cout << "\t" << "physicalDeviceCount = " << groupProperties[i].physicalDeviceCount << "\n";
       std::cout << "\t" << "physicalDevices:\n";
-      for ( size_t j = 0; j < groupProperties[i].physicalDeviceCount; j++ )
+      for ( std::size_t j = 0; j < groupProperties[i].physicalDeviceCount; j++ )
       {
         vk::raii::PhysicalDevice physicalDevice( instance, groupProperties[i].physicalDevices[j] );
         std::cout << "\t\t" << j << " : " << physicalDevice.getProperties().deviceName << "\n";
@@ -57,7 +57,7 @@ int main()
         auto   propertyIterator         = std::find_if( queueFamilyProperties.begin(),
                                               queueFamilyProperties.end(),
                                               []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );
-        size_t graphicsQueueFamilyIndex = std::distance( queueFamilyProperties.begin(), propertyIterator );
+        std::size_t graphicsQueueFamilyIndex = std::distance( queueFamilyProperties.begin(), propertyIterator );
         assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
         // create a Device

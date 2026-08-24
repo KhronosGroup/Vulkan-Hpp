@@ -60,7 +60,7 @@ namespace vk
         Middle,
         Right
       };
-      enum class ModifierFlagBits : uint32_t
+      enum class ModifierFlagBits : std::uint32_t
       {
         Shift = 1,
         Ctrl  = 2,

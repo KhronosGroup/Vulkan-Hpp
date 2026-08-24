@@ -75,7 +75,7 @@ int main()
     /* VULKAN_KEY_START */
 
     std::cout << std::boolalpha;
-    for ( size_t i = 0; i < physicalDevices.size(); i++ )
+    for ( std::size_t i = 0; i < physicalDevices.size(); i++ )
     {
       // some properties are only valid, if a corresponding extension is available!
       std::vector<vk::ExtensionProperties> extensionProperties = physicalDevices[i].enumerateDeviceExtensionProperties();

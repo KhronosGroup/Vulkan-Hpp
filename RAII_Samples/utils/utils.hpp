@@ -37,7 +37,7 @@ namespace vk
       }
 
       template <typename T>
-      void copyToDevice( vk::raii::DeviceMemory const & deviceMemory, T const * pData, size_t count, vk::DeviceSize stride = sizeof( T ) )
+      void copyToDevice( vk::raii::DeviceMemory const & deviceMemory, T const * pData, std::size_t count, vk::DeviceSize stride = sizeof( T ) )
       {
         assert( sizeof( T ) <= stride );
         uint8_t * deviceData = static_cast<uint8_t *>( deviceMemory.mapMemory( 0, count * stride ) );
@@ -47,7 +47,7 @@ namespace vk
         }
         else
         {
-          for ( size_t i = 0; i < count; i++ )
+          for ( std::size_t i = 0; i < count; i++ )
           {
             std::memcpy( deviceData, &pData[i], sizeof( T ) );
             deviceData += stride;
@@ -193,11 +193,11 @@ namespace vk
         }
 
         template <typename DataType>
-        void upload( std::vector<DataType> const & data, size_t stride = 0 ) const
+        void upload( std::vector<DataType> const & data, std::size_t stride = 0 ) const
         {
           assert( m_propertyFlags & vk::MemoryPropertyFlagBits::eHostVisible );
 
-          size_t elementSize = stride ? stride : sizeof( DataType );
+          std::size_t elementSize = stride ? stride : sizeof( DataType );
           assert( sizeof( DataType ) <= elementSize );
 
           copyToDevice( deviceMemory, data.data(), data.size(), elementSize );
@@ -209,15 +209,15 @@ namespace vk
                      vk::raii::CommandPool const &    commandPool,
                      vk::raii::Queue const &          queue,
                      std::vector<DataType> const &    data,
-                     size_t                           stride ) const
+                     std::size_t                           stride ) const
         {
           assert( m_usage & vk::BufferUsageFlagBits::eTransferDst );
           assert( m_propertyFlags & vk::MemoryPropertyFlagBits::eDeviceLocal );
 
-          size_t elementSize = stride ? stride : sizeof( DataType );
+          std::size_t elementSize = stride ? stride : sizeof( DataType );
           assert( sizeof( DataType ) <= elementSize );
 
-          size_t dataSize = data.size() * elementSize;
+          std::size_t dataSize = data.size() * elementSize;
           assert( dataSize <= m_size );
 
           vk::raii::su::BufferData stagingBuffer( physicalDevice, device, dataSize, vk::BufferUsageFlagBits::eTransferSrc );
@@ -510,7 +510,7 @@ namespace vk
 
         // the graphicsQueueFamilyIndex doesn't support present -> look for an other family index that supports both
         // graphics and present
-        for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
+        for ( std::size_t i = 0; i < queueFamilyProperties.size(); i++ )
         {
           if ( ( queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics ) &&
                physicalDevice.getSurfaceSupportKHR( static_cast<uint32_t>( i ), surface ) )
@@ -521,7 +521,7 @@ namespace vk
 
         // there's nothing like a single family index that supports both graphics and present -> look for an other
         // family index that supports present
-        for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
+        for ( std::size_t i = 0; i < queueFamilyProperties.size(); i++ )
         {
           if ( physicalDevice.getSurfaceSupportKHR( static_cast<uint32_t>( i ), surface ) )
           {
@@ -561,7 +561,7 @@ namespace vk
                                                              vk::DescriptorSetLayoutCreateFlags                                                  flags = {} )
       {
         std::vector<vk::DescriptorSetLayoutBinding> bindings( bindingData.size() );
-        for ( size_t i = 0; i < bindingData.size(); i++ )
+        for ( std::size_t i = 0; i < bindingData.size(); i++ )
         {
           bindings[i] = vk::DescriptorSetLayoutBinding(
             vk::su::checked_cast<uint32_t>( i ), std::get<0>( bindingData[i] ), std::get<1>( bindingData[i] ), std::get<2>( bindingData[i] ) );

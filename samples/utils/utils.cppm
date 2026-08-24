@@ -26,8 +26,7 @@ export module utils;
 // vulkan_to_string.hpp (vk::to_string) is already transitively included by vulkan.hpp, and thus re-exported by `vulkan`.
 import glm;
 import std;
-// re-exported so `vk::` types stay visible to anyone who only does `import utils;`
-export import vulkan;
+import vulkan;
 
 #include "math.hpp"
 #include "utils.hpp"

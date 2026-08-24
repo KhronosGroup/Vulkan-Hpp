@@ -71,6 +71,9 @@ if( NOT DEFINED VK_NO_PROTOTYPES )
 	set ( VK_NO_PROTOTYPES ${VULKAN_HPP_DISPATCH_LOADER_DYNAMIC} )
 endif()
 
+# To fix fatal error C1041 in CI
+set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "Embedded")
+
 function( vulkan_hpp__setup_warning_level )
 	set( options )
 	set( oneValueArgs NAME )

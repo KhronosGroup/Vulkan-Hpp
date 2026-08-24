@@ -2523,6 +2523,43 @@ int main()
     device.resetQueryPool( queryPool, firstQuery, queryCount );
   }
 
+  // Promoted from VK_KHR_timeline_semaphore
+  {
+    vk::Device    device;
+    vk::Semaphore semaphore;
+    uint64_t      value  = {};
+    vk::Result    result = device.getSemaphoreCounterValue( semaphore, &value );
+  }
+  {
+    vk::Device    device;
+    vk::Semaphore semaphore;
+    uint64_t      value = device.getSemaphoreCounterValue( semaphore );
+  }
+
+  {
+    vk::Device            device;
+    vk::SemaphoreWaitInfo waitInfo;
+    uint64_t              timeout = {};
+    vk::Result            result  = device.waitSemaphores( &waitInfo, timeout );
+  }
+  {
+    vk::Device            device;
+    vk::SemaphoreWaitInfo waitInfo;
+    uint64_t              timeout = {};
+    vk::Result            result  = device.waitSemaphores( waitInfo, timeout );
+  }
+
+  {
+    vk::Device              device;
+    vk::SemaphoreSignalInfo signalInfo;
+    vk::Result              result = device.signalSemaphore( &signalInfo );
+  }
+  {
+    vk::Device              device;
+    vk::SemaphoreSignalInfo signalInfo;
+    device.signalSemaphore( signalInfo );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

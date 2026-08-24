@@ -66,7 +66,7 @@ int main()
     if ( physicalDeviceProperties.limits.maxTexelBufferElements < 4 )
     {
       std::cout << "maxTexelBufferElements too small\n";
-      exit( -1 );
+      std::exit( -1 );
     }
 
     vk::Format           texelFormat      = vk::Format::eR32Sfloat;
@@ -74,7 +74,7 @@ int main()
     if ( !( formatProperties.bufferFeatures & vk::FormatFeatureFlagBits::eUniformTexelBuffer ) )
     {
       std::cout << "R32_SFLOAT format unsupported for texel buffer\n";
-      exit( -1 );
+      std::exit( -1 );
     }
 
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
@@ -183,17 +183,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

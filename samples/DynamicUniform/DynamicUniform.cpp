@@ -88,7 +88,7 @@ int main()
     if ( limits.maxDescriptorSetUniformBuffersDynamic < 1 )
     {
       std::cout << "No dynamic uniform buffers supported\n";
-      exit( -1 );
+      std::exit( -1 );
     }
 
     /* Set up uniform buffer with 2 transform matrices in it */
@@ -227,17 +227,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

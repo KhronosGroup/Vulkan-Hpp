@@ -37,7 +37,7 @@ namespace vk
                                            vk::MemoryRequirements const &             memoryRequirements,
                                            vk::MemoryPropertyFlags                    memoryPropertyFlags )
     {
-      uint32_t memoryTypeIndex = findMemoryType( memoryProperties, memoryRequirements.memoryTypeBits, memoryPropertyFlags );
+      std::uint32_t memoryTypeIndex = findMemoryType( memoryProperties, memoryRequirements.memoryTypeBits, memoryPropertyFlags );
 
       return device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
     }
@@ -53,8 +53,8 @@ namespace vk
     vk::DescriptorPool createDescriptorPool( vk::Device const & device, std::vector<vk::DescriptorPoolSize> const & poolSizes )
     {
       assert( !poolSizes.empty() );
-      uint32_t maxSets =
-        std::accumulate( poolSizes.begin(), poolSizes.end(), 0, []( uint32_t sum, vk::DescriptorPoolSize const & dps ) { return sum + dps.descriptorCount; } );
+      std::uint32_t maxSets =
+        std::accumulate( poolSizes.begin(), poolSizes.end(), 0, []( std::uint32_t sum, vk::DescriptorPoolSize const & dps ) { return sum + dps.descriptorCount; } );
       assert( 0 < maxSets );
 
       vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, maxSets, poolSizes );
@@ -62,20 +62,20 @@ namespace vk
     }
 
     vk::DescriptorSetLayout createDescriptorSetLayout( vk::Device const &                                                                  device,
-                                                       std::vector<std::tuple<vk::DescriptorType, uint32_t, vk::ShaderStageFlags>> const & bindingData,
+                                                       std::vector<std::tuple<vk::DescriptorType, std::uint32_t, vk::ShaderStageFlags>> const & bindingData,
                                                        vk::DescriptorSetLayoutCreateFlags                                                  flags )
     {
       std::vector<vk::DescriptorSetLayoutBinding> bindings( bindingData.size() );
       for ( std::size_t i = 0; i < bindingData.size(); i++ )
       {
         bindings[i] = vk::DescriptorSetLayoutBinding(
-          checked_cast<uint32_t>( i ), std::get<0>( bindingData[i] ), std::get<1>( bindingData[i] ), std::get<2>( bindingData[i] ) );
+          checked_cast<std::uint32_t>( i ), std::get<0>( bindingData[i] ), std::get<1>( bindingData[i] ), std::get<2>( bindingData[i] ) );
       }
       return device.createDescriptorSetLayout( vk::DescriptorSetLayoutCreateInfo( flags, bindings ) );
     }
 
     vk::Device createDevice( vk::PhysicalDevice const &         physicalDevice,
-                             uint32_t                           queueFamilyIndex,
+                             std::uint32_t                           queueFamilyIndex,
                              std::vector<std::string> const &   extensions,
                              vk::PhysicalDeviceFeatures const * physicalDeviceFeatures,
                              void const *                       pNext )
@@ -125,8 +125,8 @@ namespace vk
                                          vk::PipelineCache const &                                           pipelineCache,
                                          std::pair<vk::ShaderModule, vk::SpecializationInfo const *> const & vertexShaderData,
                                          std::pair<vk::ShaderModule, vk::SpecializationInfo const *> const & fragmentShaderData,
-                                         uint32_t                                                            vertexStride,
-                                         std::vector<std::pair<vk::Format, uint32_t>> const &                vertexInputAttributeFormatOffset,
+                                         std::uint32_t                                                            vertexStride,
+                                         std::vector<std::pair<vk::Format, std::uint32_t>> const &                vertexInputAttributeFormatOffset,
                                          vk::FrontFace                                                       frontFace,
                                          bool                                                                depthBuffered,
                                          vk::PipelineLayout const &                                          pipelineLayout,
@@ -146,7 +146,7 @@ namespace vk
       if ( 0 < vertexStride )
       {
         vertexInputAttributeDescriptions.reserve( vertexInputAttributeFormatOffset.size() );
-        for ( uint32_t i = 0; i < vertexInputAttributeFormatOffset.size(); i++ )
+        for ( std::uint32_t i = 0; i < vertexInputAttributeFormatOffset.size(); i++ )
         {
           vertexInputAttributeDescriptions.emplace_back( i, 0, vertexInputAttributeFormatOffset[i].first, vertexInputAttributeFormatOffset[i].second );
         }
@@ -232,7 +232,7 @@ namespace vk
              extensions.begin(), extensions.end(), []( std::string const & extension ) { return extension == vk::EXTDebugUtilsExtensionName; } ) &&
            std::any_of( extensionProperties.begin(),
                         extensionProperties.end(),
-                        []( vk::ExtensionProperties const & ep ) { return ( strcmp( vk::EXTDebugUtilsExtensionName, ep.extensionName ) == 0 ); } ) )
+                        []( vk::ExtensionProperties const & ep ) { return ( std::strcmp( vk::EXTDebugUtilsExtensionName, ep.extensionName ) == 0 ); } ) )
       {
         enabledExtensions.push_back( vk::EXTDebugUtilsExtensionName );
       }
@@ -259,7 +259,7 @@ namespace vk
       if ( std::none_of( layers.begin(), layers.end(), []( std::string const & layer ) { return layer == "VK_LAYER_KHRONOS_validation"; } ) &&
            std::any_of( layerProperties.begin(),
                         layerProperties.end(),
-                        []( vk::LayerProperties const & lp ) { return ( strcmp( "VK_LAYER_KHRONOS_validation", lp.layerName ) == 0 ); } ) )
+                        []( vk::LayerProperties const & lp ) { return ( std::strcmp( "VK_LAYER_KHRONOS_validation", lp.layerName ) == 0 ); } ) )
       {
         enabledLayers.push_back( "VK_LAYER_KHRONOS_validation" );
       }
@@ -271,7 +271,7 @@ namespace vk
                                  std::string const &              engineName,
                                  std::vector<std::string> const & layers,
                                  std::vector<std::string> const & extensions,
-                                 uint32_t                         apiVersion )
+                                 std::uint32_t                         apiVersion )
     {
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
       VULKAN_HPP_DEFAULT_DISPATCHER.init();
@@ -346,7 +346,7 @@ namespace vk
     {
       VULKAN_HPP_UNUSED( pUserData );
 #if !defined( NDEBUG )
-      switch ( static_cast<uint32_t>( pCallbackData->messageIdNumber ) )
+      switch ( static_cast<std::uint32_t>( pCallbackData->messageIdNumber ) )
       {
         case 0:
           // Validation Warning: Override layer has override paths set to C:/VulkanSDK/<version>/Bin
@@ -368,7 +368,7 @@ namespace vk
       if ( 0 < pCallbackData->queueLabelCount )
       {
         std::cerr << std::string( "\t" ) << "Queue Labels:\n";
-        for ( uint32_t i = 0; i < pCallbackData->queueLabelCount; i++ )
+        for ( std::uint32_t i = 0; i < pCallbackData->queueLabelCount; i++ )
         {
           std::cerr << std::string( "\t\t" ) << "labelName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
         }
@@ -376,7 +376,7 @@ namespace vk
       if ( 0 < pCallbackData->cmdBufLabelCount )
       {
         std::cerr << std::string( "\t" ) << "CommandBuffer Labels:\n";
-        for ( uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
+        for ( std::uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
         {
           std::cerr << std::string( "\t\t" ) << "labelName = <" << pCallbackData->pCmdBufLabels[i].pLabelName << ">\n";
         }
@@ -384,7 +384,7 @@ namespace vk
       if ( 0 < pCallbackData->objectCount )
       {
         std::cerr << std::string( "\t" ) << "Objects:\n";
-        for ( uint32_t i = 0; i < pCallbackData->objectCount; i++ )
+        for ( std::uint32_t i = 0; i < pCallbackData->objectCount; i++ )
         {
           std::cerr << std::string( "\t\t" ) << "Object " << i << "\n";
           std::cerr << std::string( "\t\t\t" ) << "objectType   = " << vk::to_string( pCallbackData->pObjects[i].objectType ) << "\n";
@@ -398,7 +398,7 @@ namespace vk
       return vk::False;
     }
 
-    uint32_t findGraphicsQueueFamilyIndex( std::vector<vk::QueueFamilyProperties> const & queueFamilyProperties )
+    std::uint32_t findGraphicsQueueFamilyIndex( std::vector<vk::QueueFamilyProperties> const & queueFamilyProperties )
     {
       // get the first index into queueFamiliyProperties which supports graphics
       std::vector<vk::QueueFamilyProperties>::const_iterator graphicsQueueFamilyProperty =
@@ -406,25 +406,25 @@ namespace vk
                       queueFamilyProperties.end(),
                       []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );
       assert( graphicsQueueFamilyProperty != queueFamilyProperties.end() );
-      return static_cast<uint32_t>( std::distance( queueFamilyProperties.begin(), graphicsQueueFamilyProperty ) );
+      return static_cast<std::uint32_t>( std::distance( queueFamilyProperties.begin(), graphicsQueueFamilyProperty ) );
     }
 
-    std::pair<uint32_t, uint32_t> findGraphicsAndPresentQueueFamilyIndex( vk::PhysicalDevice physicalDevice, vk::SurfaceKHR const & surface )
+    std::pair<std::uint32_t, std::uint32_t> findGraphicsAndPresentQueueFamilyIndex( vk::PhysicalDevice physicalDevice, vk::SurfaceKHR const & surface )
     {
       std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-      assert( queueFamilyProperties.size() < ( std::numeric_limits<uint32_t>::max )() );
+      assert( queueFamilyProperties.size() < ( std::numeric_limits<std::uint32_t>::max )() );
 
       // look for a queueFamilyIndex that supports graphics and present
       auto combinedIt = std::find_if( queueFamilyProperties.begin(),
                                       queueFamilyProperties.end(),
                                       [&physicalDevice, &surface]( vk::QueueFamilyProperties const & qfp )
                                       {
-                                        static uint32_t index = 0;
+                                        static std::uint32_t index = 0;
                                         return ( qfp.queueFlags & vk::QueueFlagBits::eGraphics ) && physicalDevice.getSurfaceSupportKHR( index++, surface );
                                       } );
       if ( combinedIt != queueFamilyProperties.end() )
       {
-        uint32_t index = static_cast<uint32_t>( std::distance( queueFamilyProperties.begin(), combinedIt ) );
+        std::uint32_t index = static_cast<std::uint32_t>( std::distance( queueFamilyProperties.begin(), combinedIt ) );
         return { index, index };  // the first index that supports graphics and present
       }
       else
@@ -435,17 +435,17 @@ namespace vk
                                         []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );
         if ( graphicsIt != queueFamilyProperties.end() )
         {
-          uint32_t graphicsIndex = static_cast<uint32_t>( std::distance( queueFamilyProperties.begin(), graphicsIt ) );
+          std::uint32_t graphicsIndex = static_cast<std::uint32_t>( std::distance( queueFamilyProperties.begin(), graphicsIt ) );
           auto     presentIt     = std::find_if( queueFamilyProperties.begin(),
                                          queueFamilyProperties.end(),
                                          [&physicalDevice, &surface]( vk::QueueFamilyProperties const & )
                                          {
-                                           static uint32_t index = 0;
+                                           static std::uint32_t index = 0;
                                            return physicalDevice.getSurfaceSupportKHR( index++, surface );
                                          } );
           if ( presentIt != queueFamilyProperties.end() )
           {
-            uint32_t presentIndex = static_cast<uint32_t>( std::distance( queueFamilyProperties.begin(), presentIt ) );
+            std::uint32_t presentIndex = static_cast<std::uint32_t>( std::distance( queueFamilyProperties.begin(), presentIt ) );
             return { graphicsIndex, presentIndex };
           }
           else
@@ -460,10 +460,10 @@ namespace vk
       }
     }
 
-    uint32_t findMemoryType( vk::PhysicalDeviceMemoryProperties const & memoryProperties, uint32_t typeBits, vk::MemoryPropertyFlags requirementsMask )
+    std::uint32_t findMemoryType( vk::PhysicalDeviceMemoryProperties const & memoryProperties, std::uint32_t typeBits, vk::MemoryPropertyFlags requirementsMask )
     {
-      uint32_t typeIndex = uint32_t( ~0 );
-      for ( uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++ )
+      std::uint32_t typeIndex = std::uint32_t( ~0 );
+      for ( std::uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++ )
       {
         if ( ( typeBits & 1 ) && ( ( memoryProperties.memoryTypes[i].propertyFlags & requirementsMask ) == requirementsMask ) )
         {
@@ -472,7 +472,7 @@ namespace vk
         }
         typeBits >>= 1;
       }
-      assert( typeIndex != uint32_t( ~0 ) );
+      assert( typeIndex != std::uint32_t( ~0 ) );
       return typeIndex;
     }
 
@@ -664,14 +664,14 @@ namespace vk
                                vk::DescriptorSet const &                                                                                       descriptorSet,
                                std::vector<std::tuple<vk::DescriptorType, vk::Buffer const &, vk::DeviceSize, vk::BufferView const &>> const & bufferData,
                                vk::su::TextureData const &                                                                                     textureData,
-                               uint32_t                                                                                                        bindingOffset )
+                               std::uint32_t                                                                                                        bindingOffset )
     {
       std::vector<vk::DescriptorBufferInfo> bufferInfos;
       bufferInfos.reserve( bufferData.size() );
 
       std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
       writeDescriptorSets.reserve( bufferData.size() + 1 );
-      uint32_t dstBinding = bindingOffset;
+      std::uint32_t dstBinding = bindingOffset;
       for ( auto const & bd : bufferData )
       {
         bufferInfos.emplace_back( std::get<1>( bd ), 0, std::get<2>( bd ) );
@@ -688,14 +688,14 @@ namespace vk
                                vk::DescriptorSet const &                                                                                       descriptorSet,
                                std::vector<std::tuple<vk::DescriptorType, vk::Buffer const &, vk::DeviceSize, vk::BufferView const &>> const & bufferData,
                                std::vector<vk::su::TextureData> const &                                                                        textureData,
-                               uint32_t                                                                                                        bindingOffset )
+                               std::uint32_t                                                                                                        bindingOffset )
     {
       std::vector<vk::DescriptorBufferInfo> bufferInfos;
       bufferInfos.reserve( bufferData.size() );
 
       std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
       writeDescriptorSets.reserve( bufferData.size() + ( textureData.empty() ? 0 : 1 ) );
-      uint32_t dstBinding = bindingOffset;
+      std::uint32_t dstBinding = bindingOffset;
       for ( auto const & bd : bufferData )
       {
         bufferInfos.emplace_back( std::get<1>( bd ), 0, std::get<2>( bd ) );
@@ -713,7 +713,7 @@ namespace vk
         writeDescriptorSets.emplace_back( descriptorSet,
                                           dstBinding,
                                           0,
-                                          checked_cast<uint32_t>( imageInfos.size() ),
+                                          checked_cast<std::uint32_t>( imageInfos.size() ),
                                           vk::DescriptorType::eCombinedImageSampler,
                                           imageInfos.data(),
                                           nullptr,
@@ -799,15 +799,15 @@ namespace vk
                                   vk::Extent2D const &       extent,
                                   vk::ImageUsageFlags        usage,
                                   vk::SwapchainKHR const &   oldSwapChain,
-                                  uint32_t                   graphicsQueueFamilyIndex,
-                                  uint32_t                   presentQueueFamilyIndex )
+                                  std::uint32_t                   graphicsQueueFamilyIndex,
+                                  std::uint32_t                   presentQueueFamilyIndex )
     {
       vk::SurfaceFormatKHR surfaceFormat = vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( surface ) );
       colorFormat                        = surfaceFormat.format;
 
       vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
       vk::Extent2D               swapchainExtent;
-      if ( surfaceCapabilities.currentExtent.width == ( std::numeric_limits<uint32_t>::max )() )
+      if ( surfaceCapabilities.currentExtent.width == ( std::numeric_limits<std::uint32_t>::max )() )
       {
         // If the surface size is undefined, the size is set to the size of the images requested.
         swapchainExtent.width  = clamp( extent.width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width );
@@ -845,7 +845,7 @@ namespace vk
         oldSwapChain );
       if ( graphicsQueueFamilyIndex != presentQueueFamilyIndex )
       {
-        uint32_t queueFamilyIndices[2] = { graphicsQueueFamilyIndex, presentQueueFamilyIndex };
+        std::uint32_t queueFamilyIndices[2] = { graphicsQueueFamilyIndex, presentQueueFamilyIndex };
         // If the graphics and present queues are from different queue families, we either have to explicitly transfer
         // ownership of images between the queues, or we have to create the swapchain with imageSharingMode as
         // vk::SharingMode::eConcurrent
@@ -866,7 +866,7 @@ namespace vk
       }
     }
 
-    CheckerboardImageGenerator::CheckerboardImageGenerator( std::array<uint8_t, 3> const & rgb0, std::array<uint8_t, 3> const & rgb1 )
+    CheckerboardImageGenerator::CheckerboardImageGenerator( std::array<std::uint8_t, 3> const & rgb0, std::array<std::uint8_t, 3> const & rgb1 )
       : m_rgb0( rgb0 ), m_rgb1( rgb1 )
     {
     }
@@ -874,12 +874,12 @@ namespace vk
     void CheckerboardImageGenerator::operator()( void * data, vk::Extent2D & extent ) const
     {
       // Checkerboard of 16x16 pixel squares
-      uint8_t * pImageMemory = static_cast<uint8_t *>( data );
-      for ( uint32_t row = 0; row < extent.height; row++ )
+      std::uint8_t * pImageMemory = static_cast<std::uint8_t *>( data );
+      for ( std::uint32_t row = 0; row < extent.height; row++ )
       {
-        for ( uint32_t col = 0; col < extent.width; col++ )
+        for ( std::uint32_t col = 0; col < extent.width; col++ )
         {
-          std::array<uint8_t, 3> const & rgb = ( ( ( row & 0x10 ) == 0 ) ^ ( ( col & 0x10 ) == 0 ) ) ? m_rgb1 : m_rgb0;
+          std::array<std::uint8_t, 3> const & rgb = ( ( ( row & 0x10 ) == 0 ) ^ ( ( col & 0x10 ) == 0 ) ) ? m_rgb1 : m_rgb0;
           pImageMemory[0]                    = rgb[0];
           pImageMemory[1]                    = rgb[1];
           pImageMemory[2]                    = rgb[2];
@@ -895,9 +895,9 @@ namespace vk
     {
       // fill in with the monochrome color
       unsigned char * pImageMemory = static_cast<unsigned char *>( data );
-      for ( uint32_t row = 0; row < extent.height; row++ )
+      for ( std::uint32_t row = 0; row < extent.height; row++ )
       {
-        for ( uint32_t col = 0; col < extent.width; col++ )
+        for ( std::uint32_t col = 0; col < extent.width; col++ )
         {
           pImageMemory[0] = m_rgb[0];
           pImageMemory[1] = m_rgb[1];
@@ -917,7 +917,7 @@ namespace vk
     void PixelsImageGenerator::operator()( void * data, vk::Extent2D const & extent ) const
     {
       assert( extent == m_extent );
-      memcpy( data, m_pixels, extent.width * extent.height * m_channels );
+      std::memcpy( data, m_pixels, extent.width * extent.height * m_channels );
     }
 
     TextureData::TextureData( vk::PhysicalDevice const & physicalDevice,
@@ -978,9 +978,9 @@ namespace vk
                                                              vk::BorderColor::eFloatOpaqueBlack ) );
     }
 
-    UUID::UUID( uint8_t const data[vk::UuidSize] )
+    UUID::UUID( std::uint8_t const data[vk::UuidSize] )
     {
-      memcpy( m_data, data, vk::UuidSize * sizeof( uint8_t ) );
+      std::memcpy( m_data, data, vk::UuidSize * sizeof( std::uint8_t ) );
     }
 
     WindowData::WindowData( GLFWwindow * wnd, std::string const & name, vk::Extent2D const & extent ) : handle{ wnd }, name{ name }, extent{ extent } {}
@@ -1061,9 +1061,9 @@ namespace vk
 std::ostream & operator<<( std::ostream & os, vk::su::UUID const & uuid )
 {
   os << std::setfill( '0' ) << std::hex;
-  for ( uint32_t j = 0; j < vk::UuidSize; ++j )
+  for ( std::uint32_t j = 0; j < vk::UuidSize; ++j )
   {
-    os << std::setw( 2 ) << static_cast<uint32_t>( uuid.m_data[j] );
+    os << std::setw( 2 ) << static_cast<std::uint32_t>( uuid.m_data[j] );
     if ( j == 3 || j == 5 || j == 7 || j == 9 )
     {
       std::cout << '-';

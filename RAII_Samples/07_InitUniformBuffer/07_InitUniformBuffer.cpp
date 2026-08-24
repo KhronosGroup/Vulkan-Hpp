@@ -67,7 +67,7 @@ int main()
     vk::raii::DeviceMemory uniformDataMemory( device, memoryAllocateInfo );
 
     uint8_t * pData = static_cast<uint8_t *>( uniformDataMemory.mapMemory( 0, memoryRequirements.size ) );
-    memcpy( pData, &mvpc, sizeof( mvpc ) );
+    std::memcpy( pData, &mvpc, sizeof( mvpc ) );
     uniformDataMemory.unmapMemory();
 
     uniformDataBuffer.bindMemory( uniformDataMemory, 0 );

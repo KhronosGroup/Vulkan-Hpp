@@ -83,7 +83,7 @@ int main()
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::CommandPool   commandPool = device.createCommandPool( { {}, graphicsAndPresentQueueFamilyIndex.first } );
@@ -122,7 +122,7 @@ int main()
     vk::Image           inputImage = device.createImage( imageCreateInfo );
 
     vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements( inputImage );
-    uint32_t memoryTypeIndex     = vk::su::findMemoryType( physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlags() );
+    std::uint32_t memoryTypeIndex = vk::su::findMemoryType( physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlags() );
     vk::DeviceMemory inputMemory = device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
     device.bindImageMemory( inputImage, inputMemory, 0 );
 
@@ -221,10 +221,10 @@ int main()
 
     vk::Semaphore imageAcquiredSemaphore = device.createSemaphore( vk::SemaphoreCreateInfo() );
 
-    vk::ResultValue<uint32_t> nexImage =
-      device.acquireNextImage2KHR( vk::AcquireNextImageInfoKHR( swapChainData.swapChain, UINT64_MAX, imageAcquiredSemaphore, {}, 1 ) );
+    vk::ResultValue<std::uint32_t> nexImage =
+      device.acquireNextImage2KHR( vk::AcquireNextImageInfoKHR( swapChainData.swapChain, std::numeric_limits<std::uint64_t>::max(), imageAcquiredSemaphore, {}, 1 ) );
     assert( nexImage.result == vk::Result::eSuccess );
-    uint32_t currentBuffer = nexImage.value;
+    std::uint32_t currentBuffer = nexImage.value;
 
     vk::ClearValue clearValue;
     clearValue.color = vk::ClearColorValue( 0.2f, 0.2f, 0.2f, 0.2f );

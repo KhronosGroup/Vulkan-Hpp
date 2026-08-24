@@ -38,7 +38,7 @@ int main()
     auto   propertyIterator         = std::find_if( queueFamilyProperties.begin(),
                                           queueFamilyProperties.end(),
                                           []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );
-    size_t graphicsQueueFamilyIndex = std::distance( queueFamilyProperties.begin(), propertyIterator );
+    std::size_t graphicsQueueFamilyIndex = std::distance( queueFamilyProperties.begin(), propertyIterator );
     assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
     // create a Device

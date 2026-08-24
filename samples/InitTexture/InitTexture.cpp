@@ -46,7 +46,7 @@ int main()
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 50, 50 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::CommandPool   commandPool = device.createCommandPool( { {}, graphicsAndPresentQueueFamilyIndex.first } );
@@ -79,7 +79,7 @@ int main()
     vk::Image           image = device.createImage( imageCreateInfo );
 
     vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements( image );
-    uint32_t               memoryTypeIndex    = vk::su::findMemoryType(
+    std::uint32_t          memoryTypeIndex    = vk::su::findMemoryType(
       physicalDevice.getMemoryProperties(),
       memoryRequirements.memoryTypeBits,
       needsStaging ? vk::MemoryPropertyFlags() : ( vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent ) );
@@ -118,9 +118,9 @@ int main()
 
     // Checkerboard of 16x16 pixel squares
     unsigned char * pImageMemory = static_cast<unsigned char *>( data );
-    for ( uint32_t row = 0; row < surfaceData.extent.height; row++ )
+    for ( std::uint32_t row = 0; row < surfaceData.extent.height; row++ )
     {
-      for ( uint32_t col = 0; col < surfaceData.extent.width; col++ )
+      for ( std::uint32_t col = 0; col < surfaceData.extent.width; col++ )
       {
         unsigned char rgb = ( ( ( row & 0x10 ) == 0 ) ^ ( ( col & 0x10 ) == 0 ) ) * 255;
         pImageMemory[0]   = rgb;

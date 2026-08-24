@@ -36,7 +36,7 @@ int main()
     /* VULKAN_KEY_START */
 
     std::cout << std::boolalpha;
-    for ( size_t i = 0; i < physicalDevices.size(); i++ )
+    for ( std::size_t i = 0; i < physicalDevices.size(); i++ )
     {
       // some features are only valid, if a corresponding extension is available!
       std::vector<vk::ExtensionProperties> extensionProperties = physicalDevices[i].enumerateDeviceExtensionProperties();
@@ -45,7 +45,7 @@ int main()
 
       using Chain                 = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
       auto queueFamilyProperties2 = physicalDevices[i].getQueueFamilyProperties2<Chain>();
-      for ( size_t j = 0; j < queueFamilyProperties2.size(); j++ )
+      for ( std::size_t j = 0; j < queueFamilyProperties2.size(); j++ )
       {
         std::cout << std::string( "\t" ) << "QueueFamily " << j << " :" << std::endl;
         vk::QueueFamilyProperties const & properties = queueFamilyProperties2[j].get<vk::QueueFamilyProperties2>().queueFamilyProperties;

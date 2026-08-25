@@ -9,14 +9,14 @@ public:
 
   VULKAN_HPP_CONSTEXPR ArrayWrapper1D( std::array<T, N> const & data ) VULKAN_HPP_NOEXCEPT : std::array<T, N>( data ) {}
 
-  template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+  VULKAN_HPP_TEMPLATE_CHAR
   VULKAN_HPP_CONSTEXPR_14 ArrayWrapper1D( std::string const & data ) VULKAN_HPP_NOEXCEPT
   {
     copy( data.data(), data.length() );
   }
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
-  template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+  VULKAN_HPP_TEMPLATE_CHAR
   VULKAN_HPP_CONSTEXPR_14 ArrayWrapper1D( std::string_view data ) VULKAN_HPP_NOEXCEPT
   {
     copy( data.data(), data.length() );
@@ -46,14 +46,14 @@ public:
     return this->data();
   }
 
-  template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+  VULKAN_HPP_TEMPLATE_CHAR
   operator std::string() const
   {
     return std::string( this->data(), strnlen( this->data(), N ) );
   }
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
-  template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+  VULKAN_HPP_TEMPLATE_CHAR
   operator std::string_view() const
   {
     return std::string_view( this->data(), strnlen( this->data(), N ) );

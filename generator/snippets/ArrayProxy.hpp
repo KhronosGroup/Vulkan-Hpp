@@ -65,10 +65,8 @@
                                       std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value>::type * = nullptr>
 #else
     template <typename V>
-    requires requires( V v ) {
-               { v.data() } -> std::convertible_to<T *>;
-               { v.size() } -> std::convertible_to<std::size_t>;
-             }
+    requires std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
+             std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value
 #endif
     ArrayProxy( V const & v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )

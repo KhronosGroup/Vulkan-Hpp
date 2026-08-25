@@ -90,14 +90,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_CONSTEXPR ArrayWrapper1D( std::array<T, N> const & data ) VULKAN_HPP_NOEXCEPT : std::array<T, N>( data ) {}
 
-    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    VULKAN_HPP_TEMPLATE_CHAR
     VULKAN_HPP_CONSTEXPR_14 ArrayWrapper1D( std::string const & data ) VULKAN_HPP_NOEXCEPT
     {
       copy( data.data(), data.length() );
     }
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
-    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    VULKAN_HPP_TEMPLATE_CHAR
     VULKAN_HPP_CONSTEXPR_14 ArrayWrapper1D( std::string_view data ) VULKAN_HPP_NOEXCEPT
     {
       copy( data.data(), data.length() );
@@ -127,14 +127,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return this->data();
     }
 
-    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    VULKAN_HPP_TEMPLATE_CHAR
     operator std::string() const
     {
       return std::string( this->data(), strnlen( this->data(), N ) );
     }
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
-    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    VULKAN_HPP_TEMPLATE_CHAR
     operator std::string_view() const
     {
       return std::string_view( this->data(), strnlen( this->data(), N ) );
@@ -371,10 +371,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                       std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value>::type * = nullptr>
 #  else
     template <typename V>
-    requires requires( V v ) {
-               { v.data() } -> std::convertible_to<T *>;
-               { v.size() } -> std::convertible_to<std::size_t>;
-             }
+    requires std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
+               std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value
 #  endif
     ArrayProxy( V const & v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
@@ -440,8 +438,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-    template <typename B = T, typename std::enable_if<std::is_convertible<B, T>::value && std::is_lvalue_reference<B>::value, int>::type = 0>
-    ArrayProxyNoTemporaries( B && value ) VULKAN_HPP_NOEXCEPT
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename S, typename std::enable_if<std::is_convertible<S, T>::value && std::is_lvalue_reference<S>::value, int>::type = 0>
+#  else
+    template <typename S>
+    requires std::is_convertible<S, T>::value && std::is_lvalue_reference<S>::value
+#  endif
+    ArrayProxyNoTemporaries( S && value ) VULKAN_HPP_NOEXCEPT
       : m_count( 1 )
       , m_ptr( &value )
     {
@@ -464,11 +467,18 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     ArrayProxyNoTemporaries( T ( &&ptr )[C] ) = delete;
 
     // Any l-value reference with a .data() return type implicitly convertible to T*, and a .size() return type implicitly convertible to size_t.
+#  if VULKAN_HPP_CPP_VERSION < 20
     template <typename V,
               typename std::enable_if<!std::is_convertible<decltype( std::declval<V>().begin() ), T *>::value &&
                                         std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
                                         std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value && std::is_lvalue_reference<V>::value,
                                       int>::type = 0>
+#  else
+    template <typename V>
+    requires( !std::is_convertible<decltype( std::declval<V>().begin() ), T *>::value &&
+              std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
+              std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value && std::is_lvalue_reference<V>::value )
+#  endif
     ArrayProxyNoTemporaries( V && v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
       , m_ptr( v.data() )
@@ -476,10 +486,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     }
 
     // Any l-value reference with a .begin() return type implicitly convertible to T*, and a .size() return type implicitly convertible to size_t.
+#  if VULKAN_HPP_CPP_VERSION < 20
     template <typename V,
               typename std::enable_if<std::is_convertible<decltype( std::declval<V>().begin() ), T *>::value &&
                                         std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value && std::is_lvalue_reference<V>::value,
                                       int>::type = 0>
+#  else
+    template <typename V>
+    requires std::is_convertible<decltype( std::declval<V>().begin() ), T *>::value &&
+               std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value && std::is_lvalue_reference<V>::value
+#  endif
     ArrayProxyNoTemporaries( V && v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
       , m_ptr( v.begin() )

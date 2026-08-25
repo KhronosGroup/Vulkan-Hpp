@@ -10,16 +10,28 @@ struct StructExtends
   };
 };
 
+  template <typename Type, class...>
+struct IsFirstInStructureChain
+{
+  static bool const value = false;
+};
+
+template <typename Type, typename Head, typename... Tail>
+struct IsFirstInStructureChain<Type, Head, Tail...>
+{
+  static bool const value = std::is_same<Type, Head>::value;
+};
+
 template <typename Type, class...>
 struct IsPartOfStructureChain
 {
-  static bool const valid = false;
+  static bool const value = false;
 };
 
 template <typename Type, typename Head, typename... Tail>
 struct IsPartOfStructureChain<Type, Head, Tail...>
 {
-  static bool const valid = std::is_same<Type, Head>::value || IsPartOfStructureChain<Type, Tail...>::valid;
+  static bool const value = std::is_same<Type, Head>::value || IsPartOfStructureChain<Type, Tail...>::value;
 };
 
 template <size_t Index, typename T, typename... ChainElements>
@@ -177,28 +189,46 @@ public:
     return *this;
   }
 
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename ClassType,
+            size_t Which                                                                                                      = 0,
+            typename std::enable_if<IsFirstInStructureChain<ClassType, ChainElements...>::value && ( Which == 0 ), int>::type = 0>
+#else
   template <typename ClassType, size_t Which = 0>
-  VULKAN_HPP_NODISCARD
-    typename std::enable_if<std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value && ( Which == 0 ), bool>::type
-    isLinked() const VULKAN_HPP_NOEXCEPT
+  requires IsFirstInStructureChain<ClassType, ChainElements...>::value && ( Which == 0 )
+#endif
+  VULKAN_HPP_NODISCARD bool isLinked() const VULKAN_HPP_NOEXCEPT
   {
     return true;
   }
 
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename ClassType,
+            size_t Which                       = 0,
+            typename std::enable_if<( !IsFirstInStructureChain<ClassType, ChainElements...>::value || ( Which != 0 ) ) &&
+                                      IsPartOfStructureChain<ClassType, ChainElements...>::value,
+                                    int>::type = 0>
+#else
   template <typename ClassType, size_t Which = 0>
-  VULKAN_HPP_NODISCARD
-    typename std::enable_if<!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || ( Which != 0 ), bool>::type
-    isLinked() const VULKAN_HPP_NOEXCEPT
+  requires( !IsFirstInStructureChain<ClassType, ChainElements...>::value || ( Which != 0 ) ) && IsPartOfStructureChain<ClassType, ChainElements...>::value
+#endif
+  VULKAN_HPP_NODISCARD bool isLinked() const VULKAN_HPP_NOEXCEPT
   {
-    VULKAN_HPP_STATIC_ASSERT( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't unlink Structure that's not part of this StructureChain!" );
     return isLinked( reinterpret_cast<VkBaseInStructure const *>( &get<ClassType, Which>() ) );
   }
 
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename ClassType,
+            size_t Which                       = 0,
+            typename std::enable_if<( !IsFirstInStructureChain<ClassType, ChainElements...>::value || ( Which != 0 ) ) &&
+                                      IsPartOfStructureChain<ClassType, ChainElements...>::value,
+                                    int>::type = 0>
+#else
   template <typename ClassType, size_t Which = 0>
-  typename std::enable_if<!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || ( Which != 0 ), void>::type
-    relink() VULKAN_HPP_NOEXCEPT
+  requires( !IsFirstInStructureChain<ClassType, ChainElements...>::value || ( Which != 0 ) ) && IsPartOfStructureChain<ClassType, ChainElements...>::value
+#endif
+  void relink() VULKAN_HPP_NOEXCEPT
   {
-    VULKAN_HPP_STATIC_ASSERT( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't relink Structure that's not part of this StructureChain!" );
     auto pNext = reinterpret_cast<VkBaseInStructure *>( &get<ClassType, Which>() );
     VULKAN_HPP_ASSERT( !isLinked( pNext ) );
     auto & headElement = std::get<0>( static_cast<std::tuple<ChainElements...> &>( *this ) );
@@ -206,11 +236,18 @@ public:
     headElement.pNext  = pNext;
   }
 
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename ClassType,
+            size_t Which                       = 0,
+            typename std::enable_if<( !IsFirstInStructureChain<ClassType, ChainElements...>::value || ( Which != 0 ) ) &&
+                                      IsPartOfStructureChain<ClassType, ChainElements...>::value,
+                                    int>::type = 0>
+#else
   template <typename ClassType, size_t Which = 0>
-  typename std::enable_if<!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || ( Which != 0 ), void>::type
-    unlink() VULKAN_HPP_NOEXCEPT
+  requires( !IsFirstInStructureChain<ClassType, ChainElements...>::value || ( Which != 0 ) ) && IsPartOfStructureChain<ClassType, ChainElements...>::value
+#endif
+  void unlink() VULKAN_HPP_NOEXCEPT
   {
-    VULKAN_HPP_STATIC_ASSERT( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't unlink Structure that's not part of this StructureChain!" );
     unlink( reinterpret_cast<VkBaseOutStructure const *>( &get<ClassType, Which>() ) );
   }
 
@@ -253,16 +290,26 @@ private:
     return false;
   }
 
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <size_t Index, typename std::enable_if<Index != 0, int>::type = 0>
+#else
   template <size_t Index>
-  typename std::enable_if<Index != 0, void>::type link() VULKAN_HPP_NOEXCEPT
+  requires( Index != 0 )
+#endif
+  void link() VULKAN_HPP_NOEXCEPT
   {
     auto & x = std::get<Index - 1>( static_cast<std::tuple<ChainElements...> &>( *this ) );
     x.pNext  = &std::get<Index>( static_cast<std::tuple<ChainElements...> &>( *this ) );
     link<Index - 1>();
   }
 
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <size_t Index, typename std::enable_if<Index == 0, int>::type = 0>
+#else
   template <size_t Index>
-  typename std::enable_if<Index == 0, void>::type link() VULKAN_HPP_NOEXCEPT
+  requires( Index == 0 )
+#endif
+  void link() VULKAN_HPP_NOEXCEPT
   {
   }
 

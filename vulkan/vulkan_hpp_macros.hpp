@@ -339,24 +339,6 @@ VULKAN_HPP_COMPILE_WARNING( "This is a non-conforming implementation of C++ name
 #endif
 #define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT VULKAN_HPP_DEFAULT_ASSIGNMENT( VULKAN_HPP_DEFAULT_DISPATCHER )
 
-#if VULKAN_HPP_CPP_VERSION < 20
-#  define VULKAN_HPP_TEMPLATE_BITMASK     template <typename T, typename std::enable_if<FlagTraits<T>::isBitmask, bool>::type = true>
-#  define VULKAN_HPP_TEMPLATE_CHAR        template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
-#  define VULKAN_HPP_TEMPLATE_INTEGRAL    template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
-#  define VULKAN_HPP_RAII_TEMPLATE_HANDLE template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
-#else
-#  define VULKAN_HPP_TEMPLATE_BITMASK \
-    template <typename T>             \
-    requires FlagTraits<T>::isBitmask
-#  define VULKAN_HPP_TEMPLATE_CHAR \
-    template <typename B = T>      \
-    requires std::is_same<B, char>::value
-#  define VULKAN_HPP_TEMPLATE_INTEGRAL template <std::integral T>
-#  define VULKAN_HPP_RAII_TEMPLATE_HANDLE \
-    template <typename T>                 \
-    requires isVulkanRAIIHandleType<T>::value
-#endif
-
 #if !defined( VULKAN_HPP_EXPECTED ) && ( 23 <= VULKAN_HPP_CPP_VERSION ) && defined( __cpp_lib_expected ) && defined( VULKAN_HPP_USE_STD_EXPECTED )
 #  if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
 #    include <expected>

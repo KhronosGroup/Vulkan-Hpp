@@ -3343,6 +3343,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
     };
 
+#  if 20 <= VULKAN_HPP_CPP_VERSION
+    template <typename T>
+    concept VulkanRAIIHandleType = isVulkanRAIIHandleType<T>::value;
+#  endif
+
     class Context
     {
     public:
@@ -15876,51 +15881,78 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     };
 
     // operators to compare VULKAN_HPP_NAMESPACE::raii-handles
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#  else
+    template <VulkanRAIIHandleType T>
+#  endif
 #  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    VULKAN_HPP_RAII_TEMPLATE_HANDLE
     auto operator<=>( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
     {
       return *a <=> *b;
     }
 #  else
-    VULKAN_HPP_RAII_TEMPLATE_HANDLE
     bool operator<( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
     {
       return *a < *b;
     }
 #  endif
 
-    VULKAN_HPP_RAII_TEMPLATE_HANDLE
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#  else
+    template <VulkanRAIIHandleType T>
+#  endif
     bool operator==( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
     {
       return *a == *b;
     }
 
-    VULKAN_HPP_RAII_TEMPLATE_HANDLE
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#  else
+    template <VulkanRAIIHandleType T>
+#  endif
     bool operator!=( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
     {
       return *a != *b;
     }
 
-    VULKAN_HPP_RAII_TEMPLATE_HANDLE
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#  else
+    template <VulkanRAIIHandleType T>
+#  endif
     bool operator==( T const & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {
       return !*v;
     }
 
-    VULKAN_HPP_RAII_TEMPLATE_HANDLE
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#  else
+    template <VulkanRAIIHandleType T>
+#  endif
     bool operator==( std::nullptr_t, T const & v ) VULKAN_HPP_NOEXCEPT
     {
       return !*v;
     }
 
-    VULKAN_HPP_RAII_TEMPLATE_HANDLE
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#  else
+    template <VulkanRAIIHandleType T>
+#  endif
     bool operator!=( T const & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {
       return *v;
     }
 
-    VULKAN_HPP_RAII_TEMPLATE_HANDLE
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#  else
+    template <VulkanRAIIHandleType T>
+#  endif
     bool operator!=( std::nullptr_t, T const & v ) VULKAN_HPP_NOEXCEPT
     {
       return *v;

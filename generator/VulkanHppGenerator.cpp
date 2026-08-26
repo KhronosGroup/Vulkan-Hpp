@@ -2102,11 +2102,17 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
         cmd.insert(
           pos,
           R"(  // wrapper function for command vkSetDebugUtilsObjectNameEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
-  template <typename HandleType, typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type>
+#  if VULKAN_HPP_CPP_VERSION < 20
+  template <typename HandleType,
+            typename Dispatch,
+            typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ) && isVulkanHandleType<HandleType>::value, bool>::type>
+#  else
+  template <VulkanHandleType HandleType, typename Dispatch>
+  requires( IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ) )
+#  endif
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
                                           Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d ) const
   {
-    VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
     // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
     VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo;
     nameInfo.objectType   = handle.objectType;
@@ -2124,7 +2130,14 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
       {
         cmd.insert( pos, R"(    // wrapper function for command vkSetDebugUtilsObjectNameEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
-    template <typename HandleType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type = true>
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename HandleType,
+              typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ) && isVulkanHandleType<HandleType>::value, bool>::type = true>
+#  else
+    template <VulkanHandleType HandleType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    requires( IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ) )
+#  endif
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
       setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 )" );
@@ -4928,7 +4941,11 @@ std::string VulkanHppGenerator::generateConstexprString( std::pair<std::string, 
 
 std::string VulkanHppGenerator::generateConstexprDefines() const
 {
-  auto const constexprFunctionTemplate = std::string{ R"(  VULKAN_HPP_TEMPLATE_INTEGRAL
+  auto const constexprFunctionTemplate = std::string{ R"(#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+#else
+  template <std::integral T>
+#endif
   VULKAN_HPP_CONSTEXPR uint32_t ${constName}( ${arguments} )
   {
     return ${implementation};
@@ -7530,6 +7547,11 @@ std::string VulkanHppGenerator::generateHandles() const
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
   };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <typename T>
+  concept VulkanHandleType = isVulkanHandleType<T>::value;
+#endif
 )";
 
   std::set<std::string> listedHandles;
@@ -9799,54 +9821,86 @@ ${forwardDeclarations}
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
   };
 
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <typename T>
+  concept VulkanRAIIHandleType = isVulkanRAIIHandleType<T>::value;
+#endif
+
 ${raiiHandles}
 
   // operators to compare VULKAN_HPP_NAMESPACE::raii-handles
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#else
+  template <VulkanRAIIHandleType T>
+#endif
 #if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
-  VULKAN_HPP_RAII_TEMPLATE_HANDLE
   auto operator<=>( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
   {
     return *a <=> *b;
   }
 #else
-  VULKAN_HPP_RAII_TEMPLATE_HANDLE
   bool operator<(T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
   {
     return *a < *b;
   }
 #endif
 
-  VULKAN_HPP_RAII_TEMPLATE_HANDLE
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#else
+  template <VulkanRAIIHandleType T>
+#endif
   bool operator==( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
   {
     return *a == *b;
   }
 
-  VULKAN_HPP_RAII_TEMPLATE_HANDLE
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#else
+  template <VulkanRAIIHandleType T>
+#endif
   bool operator!=(T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
   {
     return *a != *b;
   }
 
-  VULKAN_HPP_RAII_TEMPLATE_HANDLE
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#else
+  template <VulkanRAIIHandleType T>
+#endif
   bool operator==( T const & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT
   {
     return !*v;
   }
 
-  VULKAN_HPP_RAII_TEMPLATE_HANDLE
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#else
+  template <VulkanRAIIHandleType T>
+#endif
   bool operator==( std::nullptr_t, T const & v ) VULKAN_HPP_NOEXCEPT
   {
     return !*v;
   }
 
-  VULKAN_HPP_RAII_TEMPLATE_HANDLE
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#else
+  template <VulkanRAIIHandleType T>
+#endif
   bool operator!=( T const & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT
   {
     return *v;
   }
 
-  VULKAN_HPP_RAII_TEMPLATE_HANDLE
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename std::enable_if<isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+#else
+  template <VulkanRAIIHandleType T>
+#endif
   bool operator!=( std::nullptr_t, T const & v ) VULKAN_HPP_NOEXCEPT
   {
     return *v;

@@ -3201,6 +3201,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
   };
 
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <typename T>
+  concept VulkanHandleType = isVulkanHandleType<T>::value;
+#endif
+
   // wrapper class for handle VkSurfaceKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkSurfaceKHR.html
   class SurfaceKHR
   {
@@ -15627,9 +15632,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       setDebugUtilsObjectNameEXT( DebugUtilsObjectNameInfoEXT const & nameInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     // wrapper function for command vkSetDebugUtilsObjectNameEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
+#  if VULKAN_HPP_CPP_VERSION < 20
     template <typename HandleType,
-              typename Dispatch                                                                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type = true>
+              typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ) && isVulkanHandleType<HandleType>::value, bool>::type = true>
+#  else
+    template <VulkanHandleType HandleType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    requires( IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ) )
+#  endif
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
       setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
@@ -23908,69 +23918,113 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   // operators to compare VULKAN_HPP_NAMESPACE::-handles
+#if VULKAN_HPP_CPP_VERSION < 20
   template <typename T, typename std::enable_if<isVulkanHandleType<T>::value, int>::type = 0>
+#else
+  template <VulkanHandleType T>
+#endif
   bool operator==( T const & lhs, T const & rhs )
   {
     return static_cast<typename T::NativeType>( lhs ) == static_cast<typename T::NativeType>( rhs );
   }
 
+#if VULKAN_HPP_CPP_VERSION < 20
   template <typename T, typename std::enable_if<isVulkanHandleType<T>::value, int>::type = 0>
+#else
+  template <VulkanHandleType T>
+#endif
   bool operator!=( T const & lhs, T const & rhs )
   {
     return static_cast<typename T::NativeType>( lhs ) != static_cast<typename T::NativeType>( rhs );
   }
 
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+#  if VULKAN_HPP_CPP_VERSION < 20
   template <typename T, typename std::enable_if<isVulkanHandleType<T>::value, int>::type = 0>
+#  else
+  template <VulkanHandleType T>
+#  endif
   auto operator<=>( T const & lhs, T const & rhs )
   {
     return static_cast<typename T::NativeType>( lhs ) <=> static_cast<typename T::NativeType>( rhs );
   }
 #else
+#  if VULKAN_HPP_CPP_VERSION < 20
   template <typename T, typename std::enable_if<isVulkanHandleType<T>::value, int>::type = 0>
+#  else
+  template <VulkanHandleType T>
+#  endif
   bool operator<( T const & lhs, T const & rhs )
   {
     return static_cast<typename T::NativeType>( lhs ) < static_cast<typename T::NativeType>( rhs );
   }
 
+#  if VULKAN_HPP_CPP_VERSION < 20
   template <typename T, typename std::enable_if<isVulkanHandleType<T>::value, int>::type = 0>
+#  else
+  template <VulkanHandleType T>
+#  endif
   bool operator<=( T const & lhs, T const & rhs )
   {
     return static_cast<typename T::NativeType>( lhs ) <= static_cast<typename T::NativeType>( rhs );
   }
 
+#  if VULKAN_HPP_CPP_VERSION < 20
   template <typename T, typename std::enable_if<isVulkanHandleType<T>::value, int>::type = 0>
+#  else
+  template <VulkanHandleType T>
+#  endif
   bool operator>( T const & lhs, T const & rhs )
   {
     return static_cast<typename T::NativeType>( lhs ) > static_cast<typename T::NativeType>( rhs );
   }
 
+#  if VULKAN_HPP_CPP_VERSION < 20
   template <typename T, typename std::enable_if<isVulkanHandleType<T>::value, int>::type = 0>
+#  else
+  template <VulkanHandleType T>
+#  endif
   bool operator>=( T const & lhs, T const & rhs )
   {
     return static_cast<typename T::NativeType>( lhs ) >= static_cast<typename T::NativeType>( rhs );
   }
 #endif
 
+#if VULKAN_HPP_CPP_VERSION < 20
   template <typename T, typename std::enable_if<isVulkanHandleType<T>::value, int>::type = 0>
+#else
+  template <VulkanHandleType T>
+#endif
   bool operator==( T const & v, std::nullptr_t )
   {
     return !v;
   }
 
+#if VULKAN_HPP_CPP_VERSION < 20
   template <typename T, typename std::enable_if<isVulkanHandleType<T>::value, int>::type = 0>
+#else
+  template <VulkanHandleType T>
+#endif
   bool operator==( std::nullptr_t, T const & v )
   {
     return !v;
   }
 
+#if VULKAN_HPP_CPP_VERSION < 20
   template <typename T, typename std::enable_if<isVulkanHandleType<T>::value, int>::type = 0>
+#else
+  template <VulkanHandleType T>
+#endif
   bool operator!=( T const & v, std::nullptr_t )
   {
     return !!v;
   }
 
+#if VULKAN_HPP_CPP_VERSION < 20
   template <typename T, typename std::enable_if<isVulkanHandleType<T>::value, int>::type = 0>
+#else
+  template <VulkanHandleType T>
+#endif
   bool operator!=( std::nullptr_t, T const & v )
   {
     return !!v;

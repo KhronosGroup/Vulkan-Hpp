@@ -92,12 +92,10 @@ int main()
     //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties> x;
     //vk::StructureChain<vk::PhysicalDeviceIDProperties,
     //                   vk::PhysicalDeviceMaintenance3Properties,
-    //                   vk::PhysicalDevicePushDescriptorPropertiesKHR>
-    //  x;
+    //                   vk::PhysicalDevicePushDescriptorPropertiesKHR> x;
     //vk::StructureChain<vk::PhysicalDeviceIDProperties,
     //                   vk::PhysicalDevicePushDescriptorPropertiesKHR,
-    //                   vk::PhysicalDeviceMaintenance3Properties>
-    //                                                                                                                  x;
+    //                   vk::PhysicalDeviceMaintenance3Properties> x;
     //vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceIDProperties> x;
     //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceProperties2>                                 x;
     // clang-format on

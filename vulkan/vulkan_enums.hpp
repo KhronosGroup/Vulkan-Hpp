@@ -22,6 +22,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = false;
   };
 
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <typename T>
+  concept Bitmask = FlagTraits<T>::isBitmask;
+#endif
+
   template <typename BitType>
   class Flags
   {
@@ -198,26 +203,42 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     return flags.operator^( bit );
   }
 
-  // bitwise operators on BitType T
-  VULKAN_HPP_TEMPLATE_BITMASK
+// bitwise operators on BitType T
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename std::enable_if<FlagTraits<T>::isBitmask, bool>::type = true>
+#else
+  template <Bitmask T>
+#endif
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR Flags<T> operator&( T lhs, T rhs ) VULKAN_HPP_NOEXCEPT
   {
     return Flags<T>( lhs ) & rhs;
   }
 
-  VULKAN_HPP_TEMPLATE_BITMASK
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename std::enable_if<FlagTraits<T>::isBitmask, bool>::type = true>
+#else
+  template <Bitmask T>
+#endif
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR Flags<T> operator|( T lhs, T rhs ) VULKAN_HPP_NOEXCEPT
   {
     return Flags<T>( lhs ) | rhs;
   }
 
-  VULKAN_HPP_TEMPLATE_BITMASK
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename std::enable_if<FlagTraits<T>::isBitmask, bool>::type = true>
+#else
+  template <Bitmask T>
+#endif
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR Flags<T> operator^( T lhs, T rhs ) VULKAN_HPP_NOEXCEPT
   {
     return Flags<T>( lhs ) ^ rhs;
   }
 
-  VULKAN_HPP_TEMPLATE_BITMASK
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename std::enable_if<FlagTraits<T>::isBitmask, bool>::type = true>
+#else
+  template <Bitmask T>
+#endif
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR Flags<T> operator~( T bit ) VULKAN_HPP_NOEXCEPT
   {
     return ~( Flags<T>( bit ) );

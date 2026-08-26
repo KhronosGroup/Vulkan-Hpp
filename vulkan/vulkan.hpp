@@ -90,14 +90,24 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_CONSTEXPR ArrayWrapper1D( std::array<T, N> const & data ) VULKAN_HPP_NOEXCEPT : std::array<T, N>( data ) {}
 
-    VULKAN_HPP_TEMPLATE_CHAR
+#if VULKAN_HPP_CPP_VERSION < 20
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+#else
+    template <typename B = T>
+    requires std::is_same<B, char>::value
+#endif
     VULKAN_HPP_CONSTEXPR_14 ArrayWrapper1D( std::string const & data ) VULKAN_HPP_NOEXCEPT
     {
       copy( data.data(), data.length() );
     }
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
-    VULKAN_HPP_TEMPLATE_CHAR
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+#  else
+    template <typename B = T>
+    requires std::is_same<B, char>::value
+#  endif
     VULKAN_HPP_CONSTEXPR_14 ArrayWrapper1D( std::string_view data ) VULKAN_HPP_NOEXCEPT
     {
       copy( data.data(), data.length() );
@@ -127,14 +137,24 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return this->data();
     }
 
-    VULKAN_HPP_TEMPLATE_CHAR
+#if VULKAN_HPP_CPP_VERSION < 20
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+#else
+    template <typename B = T>
+    requires std::is_same<B, char>::value
+#endif
     operator std::string() const
     {
       return std::string( this->data(), strnlen( this->data(), N ) );
     }
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
-    VULKAN_HPP_TEMPLATE_CHAR
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+#  else
+    template <typename B = T>
+    requires std::is_same<B, char>::value
+#  endif
     operator std::string_view() const
     {
       return std::string_view( this->data(), strnlen( this->data(), N ) );
@@ -638,15 +658,27 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   template <typename Type, class...>
+  struct IsFirstInStructureChain
+  {
+    static bool const value = false;
+  };
+
+  template <typename Type, typename Head, typename... Tail>
+  struct IsFirstInStructureChain<Type, Head, Tail...>
+  {
+    static bool const value = std::is_same<Type, Head>::value;
+  };
+
+  template <typename Type, class...>
   struct IsPartOfStructureChain
   {
-    static bool const valid = false;
+    static bool const value = false;
   };
 
   template <typename Type, typename Head, typename... Tail>
   struct IsPartOfStructureChain<Type, Head, Tail...>
   {
-    static bool const valid = std::is_same<Type, Head>::value || IsPartOfStructureChain<Type, Tail...>::valid;
+    static bool const value = std::is_same<Type, Head>::value || IsPartOfStructureChain<Type, Tail...>::value;
   };
 
   template <size_t Index, typename T, typename... ChainElements>
@@ -804,28 +836,46 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename ClassType,
+              size_t Which                                                                                                      = 0,
+              typename std::enable_if<IsFirstInStructureChain<ClassType, ChainElements...>::value && ( Which == 0 ), int>::type = 0>
+#  else
     template <typename ClassType, size_t Which = 0>
-    VULKAN_HPP_NODISCARD
-      typename std::enable_if<std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value && ( Which == 0 ), bool>::type
-      isLinked() const VULKAN_HPP_NOEXCEPT
+    requires IsFirstInStructureChain<ClassType, ChainElements...>::value && ( Which == 0 )
+#  endif
+    VULKAN_HPP_NODISCARD bool isLinked() const VULKAN_HPP_NOEXCEPT
     {
       return true;
     }
 
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename ClassType,
+              size_t Which                       = 0,
+              typename std::enable_if<( !IsFirstInStructureChain<ClassType, ChainElements...>::value || ( Which != 0 ) ) &&
+                                        IsPartOfStructureChain<ClassType, ChainElements...>::value,
+                                      int>::type = 0>
+#  else
     template <typename ClassType, size_t Which = 0>
-    VULKAN_HPP_NODISCARD
-      typename std::enable_if<!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || ( Which != 0 ), bool>::type
-      isLinked() const VULKAN_HPP_NOEXCEPT
+    requires( !IsFirstInStructureChain<ClassType, ChainElements...>::value || ( Which != 0 ) ) && IsPartOfStructureChain<ClassType, ChainElements...>::value
+#  endif
+    VULKAN_HPP_NODISCARD bool isLinked() const VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_STATIC_ASSERT( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't unlink Structure that's not part of this StructureChain!" );
       return isLinked( reinterpret_cast<VkBaseInStructure const *>( &get<ClassType, Which>() ) );
     }
 
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename ClassType,
+              size_t Which                       = 0,
+              typename std::enable_if<( !IsFirstInStructureChain<ClassType, ChainElements...>::value || ( Which != 0 ) ) &&
+                                        IsPartOfStructureChain<ClassType, ChainElements...>::value,
+                                      int>::type = 0>
+#  else
     template <typename ClassType, size_t Which = 0>
-    typename std::enable_if<!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || ( Which != 0 ), void>::type
-      relink() VULKAN_HPP_NOEXCEPT
+    requires( !IsFirstInStructureChain<ClassType, ChainElements...>::value || ( Which != 0 ) ) && IsPartOfStructureChain<ClassType, ChainElements...>::value
+#  endif
+    void relink() VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_STATIC_ASSERT( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't relink Structure that's not part of this StructureChain!" );
       auto pNext = reinterpret_cast<VkBaseInStructure *>( &get<ClassType, Which>() );
       VULKAN_HPP_ASSERT( !isLinked( pNext ) );
       auto & headElement = std::get<0>( static_cast<std::tuple<ChainElements...> &>( *this ) );
@@ -833,11 +883,18 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       headElement.pNext  = pNext;
     }
 
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename ClassType,
+              size_t Which                       = 0,
+              typename std::enable_if<( !IsFirstInStructureChain<ClassType, ChainElements...>::value || ( Which != 0 ) ) &&
+                                        IsPartOfStructureChain<ClassType, ChainElements...>::value,
+                                      int>::type = 0>
+#  else
     template <typename ClassType, size_t Which = 0>
-    typename std::enable_if<!std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || ( Which != 0 ), void>::type
-      unlink() VULKAN_HPP_NOEXCEPT
+    requires( !IsFirstInStructureChain<ClassType, ChainElements...>::value || ( Which != 0 ) ) && IsPartOfStructureChain<ClassType, ChainElements...>::value
+#  endif
+    void unlink() VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_STATIC_ASSERT( IsPartOfStructureChain<ClassType, ChainElements...>::valid, "Can't unlink Structure that's not part of this StructureChain!" );
       unlink( reinterpret_cast<VkBaseOutStructure const *>( &get<ClassType, Which>() ) );
     }
 
@@ -880,16 +937,26 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return false;
     }
 
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <size_t Index, typename std::enable_if<Index != 0, int>::type = 0>
+#  else
     template <size_t Index>
-    typename std::enable_if<Index != 0, void>::type link() VULKAN_HPP_NOEXCEPT
+    requires( Index != 0 )
+#  endif
+    void link() VULKAN_HPP_NOEXCEPT
     {
       auto & x = std::get<Index - 1>( static_cast<std::tuple<ChainElements...> &>( *this ) );
       x.pNext  = &std::get<Index>( static_cast<std::tuple<ChainElements...> &>( *this ) );
       link<Index - 1>();
     }
 
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <size_t Index, typename std::enable_if<Index == 0, int>::type = 0>
+#  else
     template <size_t Index>
-    typename std::enable_if<Index == 0, void>::type link() VULKAN_HPP_NOEXCEPT
+    requires( Index == 0 )
+#  endif
+    void link() VULKAN_HPP_NOEXCEPT
     {
     }
 
@@ -9367,47 +9434,83 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=========================
   //=== CONSTEXPR CALLEEs ===
   //=========================
-  VULKAN_HPP_TEMPLATE_INTEGRAL
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+#else
+  template <std::integral T>
+#endif
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionMajor( T const version )
   {
     return ( ( (uint32_t)( version ) >> 22u ) & 0x7Fu );
   }
-  VULKAN_HPP_TEMPLATE_INTEGRAL
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+#else
+  template <std::integral T>
+#endif
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionMinor( T const version )
   {
     return ( ( (uint32_t)( version ) >> 12u ) & 0x3FFu );
   }
-  VULKAN_HPP_TEMPLATE_INTEGRAL
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+#else
+  template <std::integral T>
+#endif
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionPatch( T const version )
   {
     return ( (uint32_t)( version ) & 0xFFFu );
   }
-  VULKAN_HPP_TEMPLATE_INTEGRAL
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+#else
+  template <std::integral T>
+#endif
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionVariant( T const version )
   {
     return ( (uint32_t)( version ) >> 29u );
   }
-  VULKAN_HPP_TEMPLATE_INTEGRAL
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+#else
+  template <std::integral T>
+#endif
   VULKAN_HPP_CONSTEXPR uint32_t makeApiVersion( T const variant, T const major, T const minor, T const patch )
   {
     return ( ( ( (uint32_t)( variant ) ) << 29u ) | ( ( (uint32_t)( major ) ) << 22u ) | ( ( (uint32_t)( minor ) ) << 12u ) | ( (uint32_t)( patch ) ) );
   }
-  VULKAN_HPP_TEMPLATE_INTEGRAL
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+#else
+  template <std::integral T>
+#endif
   VULKAN_HPP_CONSTEXPR uint32_t makeVersion( T const major, T const minor, T const patch )
   {
     return ( ( ( (uint32_t)( major ) ) << 22u ) | ( ( (uint32_t)( minor ) ) << 12u ) | ( (uint32_t)( patch ) ) );
   }
-  VULKAN_HPP_TEMPLATE_INTEGRAL
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+#else
+  template <std::integral T>
+#endif
   VULKAN_HPP_CONSTEXPR uint32_t versionMajor( T const version )
   {
     return ( (uint32_t)( version ) >> 22u );
   }
-  VULKAN_HPP_TEMPLATE_INTEGRAL
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+#else
+  template <std::integral T>
+#endif
   VULKAN_HPP_CONSTEXPR uint32_t versionMinor( T const version )
   {
     return ( ( (uint32_t)( version ) >> 12u ) & 0x3FFu );
   }
-  VULKAN_HPP_TEMPLATE_INTEGRAL
+#if VULKAN_HPP_CPP_VERSION < 20
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+#else
+  template <std::integral T>
+#endif
   VULKAN_HPP_CONSTEXPR uint32_t versionPatch( T const version )
   {
     return ( (uint32_t)( version ) & 0xFFFu );

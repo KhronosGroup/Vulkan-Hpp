@@ -16151,11 +16151,17 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     return detail::createResultValueType( result );
   }
   // wrapper function for command vkSetDebugUtilsObjectNameEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectNameEXT.html
-  template <typename HandleType, typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type>
-  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setDebugUtilsObjectNameEXT(
-    HandleType const & handle, std::string const & name, Dispatch const & d ) const
+#  if VULKAN_HPP_CPP_VERSION < 20
+  template <typename HandleType,
+            typename Dispatch,
+            typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ) && isVulkanHandleType<HandleType>::value, bool>::type>
+#  else
+  template <VulkanHandleType HandleType, typename Dispatch>
+  requires( IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ) )
+#  endif
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
+    typename ResultValueType<void>::type  Device::setDebugUtilsObjectNameEXT( HandleType const & handle, std::string const & name, Dispatch const & d ) const
   {
-    VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
     // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
     VULKAN_HPP_NAMESPACE::DebugUtilsObjectNameInfoEXT nameInfo;
     nameInfo.objectType = handle.objectType;

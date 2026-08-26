@@ -2206,11 +2206,18 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
         cmd.insert(
           pos,
           R"(  // wrapper function for command vkSetDebugUtilsObjectTagEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
-  template <typename HandleType, typename TagType, typename Dispatch, typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type>
+#  if VULKAN_HPP_CPP_VERSION < 20
+  template <typename HandleType,
+            typename TagType,
+            typename Dispatch,
+            typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectTagEXT ) && isVulkanHandleType<HandleType>::value, bool>::type>
+#  else
+  template <VulkanHandleType HandleType, typename TagType, typename Dispatch>
+  requires( IS_DISPATCHED( vkSetDebugUtilsObjectTagEXT ) )
+#  endif
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
     Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag, Dispatch const & d ) const
   {
-    VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
     // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
     VULKAN_HPP_NAMESPACE::DebugUtilsObjectTagInfoEXT tagInfo;
     tagInfo.objectType   = handle.objectType;
@@ -2230,7 +2237,15 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
       {
         cmd.insert( pos, R"(    // wrapper function for command vkSetDebugUtilsObjectTagEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
-    template <typename HandleType, typename TagType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectNameEXT ), bool>::type = true>
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename HandleType,
+              typename TagType,
+              typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkSetDebugUtilsObjectTagEXT ) && isVulkanHandleType<HandleType>::value, bool>::type = true>
+#  else
+    template <VulkanHandleType HandleType, typename TagType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    requires( IS_DISPATCHED( vkSetDebugUtilsObjectTagEXT ) )
+#  endif
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type setDebugUtilsObjectTagEXT(
       HandleType const & handle, uint64_t name, TagType const & tag, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 )" );
@@ -2485,12 +2500,13 @@ std::set<std::string> VulkanHppGenerator::gatherResultCodes() const
   return resultCodes;
 }
 
-std::pair<std::string, std::string> VulkanHppGenerator::generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
-                                                                                    std::vector<std::string> const &          returnDataTypes,
-                                                                                    std::map<size_t, VectorParamData> const & vectorParams,
-                                                                                    std::vector<size_t> const &               chainedReturnParams,
-                                                                                    CommandFlavourFlags                       flavourFlags,
-                                                                                    bool                                      definition ) const
+std::tuple<std::string, std::string, std::string, std::string>
+  VulkanHppGenerator::generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
+                                                  std::vector<std::string> const &          returnDataTypes,
+                                                  std::map<size_t, VectorParamData> const & vectorParams,
+                                                  std::vector<size_t> const &               chainedReturnParams,
+                                                  CommandFlavourFlags                       flavourFlags,
+                                                  bool                                      definition ) const
 {
   assert( returnParams.size() == returnDataTypes.size() );
   assert( chainedReturnParams.size() <= 1 );
@@ -2500,14 +2516,14 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateAllocatorTemplat
   bool const unique   = flavourFlags & CommandFlavourFlagBits::unique;
 
   // gather the allocator templates first, to filter out multiple identical allocator templates
-  std::vector<std::string> allocatorTemplatesVec;
+  std::vector<std::string> allocatorTemplatesVec, allocatorTemplatesVec20;
   if ( !singular )
   {
     for ( size_t i = 0; i < returnParams.size(); i++ )
     {
       if ( vectorParams.contains( returnParams[i] ) )
       {
-        std::string allocatorTemplate;
+        std::string allocatorTemplate, allocatorTemplate20;
         if ( chained && !chainedReturnParams.empty() && ( chainedReturnParams[0] == returnParams[i] ) )
         {
           allocatorTemplate = "typename StructureChainAllocator";
@@ -2515,18 +2531,22 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateAllocatorTemplat
           {
             allocatorTemplate += " = std::allocator<StructureChain>";
           }
+          allocatorTemplate20 = "IsAllocator<StructureChain> " + allocatorTemplate.substr( 9 );
         }
         else
         {
-          allocatorTemplate = "typename " + startUpperCase( returnDataTypes[i] ) + "Allocator";
+          std::string dataType = unique ? ( "UniqueHandle<" + returnDataTypes[i] + ", Dispatch>" ) : returnDataTypes[i];
+          allocatorTemplate    = "typename " + startUpperCase( returnDataTypes[i] ) + "Allocator";
           if ( !definition )
           {
-            allocatorTemplate += " = std::allocator<" + ( unique ? ( "UniqueHandle<" + returnDataTypes[i] + ", Dispatch>" ) : returnDataTypes[i] ) + ">";
+            allocatorTemplate += " = std::allocator<" + dataType + ">";
           }
+          allocatorTemplate20 = "IsAllocator<" + dataType + "> " + allocatorTemplate.substr( 9 );
         }
         if ( std::ranges::find( allocatorTemplatesVec, allocatorTemplate ) == allocatorTemplatesVec.end() )
         {
           allocatorTemplatesVec.push_back( allocatorTemplate );
+          allocatorTemplatesVec20.push_back( allocatorTemplate20 );
         }
       }
     }
@@ -2538,14 +2558,21 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateAllocatorTemplat
   {
     allocatorTemplates += allocatorTemplate + ", ";
   }
+  std::string allocatorTemplates20;
+  for ( auto const & allocatorTemplate20 : allocatorTemplatesVec20 )
+  {
+    allocatorTemplates20 += allocatorTemplate20 + ", ";
+  }
 
-  std::string uniqueHandleAllocatorTemplates;
+  std::string uniqueHandleAllocatorTemplates, uniqueHandleAllocatorTemplates20;
   if ( unique && !allocatorTemplates.empty() )
   {
     uniqueHandleAllocatorTemplates = ", " + stripPostfix( allocatorTemplates, ", " );
     allocatorTemplates.clear();
+    uniqueHandleAllocatorTemplates20 = ", " + stripPostfix( allocatorTemplates20, ", " );
+    allocatorTemplates20.clear();
   }
-  return { allocatorTemplates, uniqueHandleAllocatorTemplates };
+  return { allocatorTemplates, allocatorTemplates20, uniqueHandleAllocatorTemplates, uniqueHandleAllocatorTemplates20 };
 }
 
 std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamData> const &            params,
@@ -4565,7 +4592,7 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
   std::string              returnDataType = generateReturnDataType( vectorParams, returnParams, enumerating, dataTypes, flavourFlags, false );
 
   std::string argumentTemplates = generateArgumentTemplates( commandData.params, returnParams, vectorParams, templatedParams, chainedReturnParams, false );
-  auto [allocatorTemplates, uniqueHandleAllocatorTemplates] =
+  auto [allocatorTemplates, allocatorTemplates20, uniqueHandleAllocatorTemplates, uniqueHandleAllocatorTemplates20] =
     generateAllocatorTemplates( returnParams, dataTypes, vectorParams, chainedReturnParams, flavourFlags, definition );
   std::string typenameCheck       = generateTypenameCheck( returnParams, vectorParams, chainedReturnParams, definition, dataTypes, flavourFlags );
   std::string nodiscard           = generateNoDiscard( !returnParams.empty(), 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
@@ -4622,7 +4649,12 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
 
     std::string const functionTemplate =
       R"(  // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
+#  if VULKAN_HPP_CPP_VERSION < 20
   template <${argumentTemplates}${allocatorTemplates}typename Dispatch${uniqueHandleAllocatorTemplates}${typenameCheck}, typename std::enable_if<IS_DISPATCHED( ${vkCommandName} ), bool>::type>
+#  else
+  template <${argumentTemplates}${allocatorTemplates20}typename Dispatch${uniqueHandleAllocatorTemplates20}>
+  requires( IS_DISPATCHED( ${vkCommandName} ) )
+#  endif
   ${nodiscard}VULKAN_HPP_INLINE ${decoratedReturnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const}${noexcept}
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -4640,6 +4672,7 @@ ${vectorSizeCheck}
 
     return replaceWithMap( functionTemplate,
                            { { "allocatorTemplates", allocatorTemplates },
+                             { "allocatorTemplates20", allocatorTemplates20 },
                              { "argumentList", argumentList },
                              { "argumentTemplates", argumentTemplates },
                              { "callSequence", callSequence },
@@ -4658,6 +4691,7 @@ ${vectorSizeCheck}
                              { "returnStatement", returnStatement },
                              { "typenameCheck", typenameCheck },
                              { "uniqueHandleAllocatorTemplates", uniqueHandleAllocatorTemplates },
+                             { "uniqueHandleAllocatorTemplates20", uniqueHandleAllocatorTemplates20 },
                              { "vectorSizeCheck", vectorSizeCheckString },
                              { "vkCommandName", name } } );
   }
@@ -4665,11 +4699,17 @@ ${vectorSizeCheck}
   {
     std::string const functionTemplate =
       R"(    // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
+#  if VULKAN_HPP_CPP_VERSION < 20
     template <${argumentTemplates}${allocatorTemplates}typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${uniqueHandleAllocatorTemplates}${typenameCheck}, typename std::enable_if<IS_DISPATCHED( ${vkCommandName} ), bool>::type = true>
+#  else
+    template <${argumentTemplates}${allocatorTemplates20}typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${uniqueHandleAllocatorTemplates20}>
+    requires( IS_DISPATCHED( ${vkCommandName} ) )
+#  endif
     ${nodiscard}${decoratedReturnType} ${commandName}( ${argumentList} )${const}${noexcept};)";
 
     return replaceWithMap( functionTemplate,
                            { { "allocatorTemplates", allocatorTemplates },
+                             { "allocatorTemplates20", allocatorTemplates20 },
                              { "argumentList", argumentList },
                              { "argumentTemplates", argumentTemplates },
                              { "commandName", commandName },
@@ -4679,6 +4719,7 @@ ${vectorSizeCheck}
                              { "noexcept", noexceptString },
                              { "typenameCheck", typenameCheck },
                              { "uniqueHandleAllocatorTemplates", uniqueHandleAllocatorTemplates },
+                             { "uniqueHandleAllocatorTemplates20", uniqueHandleAllocatorTemplates20 },
                              { "vkCommandName", name } } );
   }
 }

@@ -1283,5 +1283,24 @@ int main()
     queryPool.reset( firstQuery, queryCount );
   }
 
+  // Promoted from VK_KHR_timeline_semaphore
+  {
+    vk::raii::Semaphore semaphore = nullptr;
+    uint64_t            value     = semaphore.getCounterValue();
+  }
+
+  {
+    vk::raii::Device      device = nullptr;
+    vk::SemaphoreWaitInfo waitInfo;
+    uint64_t              timeout = {};
+    vk::Result            result  = device.waitSemaphores( waitInfo, timeout );
+  }
+
+  {
+    vk::raii::Device        device = nullptr;
+    vk::SemaphoreSignalInfo signalInfo;
+    device.signalSemaphore( signalInfo );
+  }
+
   return 0;
 }

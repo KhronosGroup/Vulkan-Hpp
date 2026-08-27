@@ -1302,5 +1302,24 @@ int main()
     device.signalSemaphore( signalInfo );
   }
 
+  // Promoted from VK_KHR_buffer_device_address
+  {
+    vk::raii::Device            device = nullptr;
+    vk::BufferDeviceAddressInfo addressInfo;
+    vk::DeviceAddress           address = device.getBufferAddress( addressInfo );
+  }
+
+  {
+    vk::raii::Device            device = nullptr;
+    vk::BufferDeviceAddressInfo addressInfo;
+    uint64_t                    address = device.getBufferOpaqueCaptureAddress( addressInfo );
+  }
+
+  {
+    vk::raii::Device                         device = nullptr;
+    vk::DeviceMemoryOpaqueCaptureAddressInfo addressInfo;
+    uint64_t                                 address = device.getMemoryOpaqueCaptureAddress( addressInfo );
+  }
+
   return 0;
 }

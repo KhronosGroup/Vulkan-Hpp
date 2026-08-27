@@ -433,20 +433,27 @@ inline std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContai
   return childElements;
 }
 
-inline bool isHexNumber( std::string const & name ) noexcept
+inline bool isFloatNumber(std::string const& number)
 {
-  return name.starts_with( "0x" ) && ( name.find_first_not_of( "0123456789ABCDEF", 2 ) == std::string::npos );
+  auto pointIndex = number.find_first_not_of( "0123456789", number[0] == '-' ? 1 : 0 );
+  return ( pointIndex == std::string::npos ) ||
+         ( ( number[pointIndex] == '.' ) && number.find_first_not_of( "0123456789", pointIndex + 1 ) == std::string::npos );
 }
 
-inline bool isNumber( std::string const & name ) noexcept
+inline bool isHexNumber( std::string const & number ) noexcept
 {
-  return name.find_first_not_of( "0123456789" ) == std::string::npos;
+  return number.starts_with( "0x" ) && ( number.find_first_not_of( "0123456789ABCDEF", 2 ) == std::string::npos );
 }
 
-inline bool isSignedNumber( std::string const & name ) noexcept
+inline bool isNumber( std::string const & number ) noexcept
 {
-  assert( !name.empty() );
-  return name.find_first_not_of( "0123456789", name[0] == '-' ? 1 : 0 ) == std::string::npos;
+  return number.find_first_not_of( "0123456789" ) == std::string::npos;
+}
+
+inline bool isSignedNumber( std::string const & number ) noexcept
+{
+  assert( !number.empty() );
+  return number.find_first_not_of( "0123456789", number[0] == '-' ? 1 : 0 ) == std::string::npos;
 }
 
 inline CategoryEnum parseCategoryEnum( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )

@@ -454,23 +454,23 @@ struct MultiFeatureElement
 
 struct PropertyElement
 {
-  std::string name      = {};
-  std::string structure = {};
-  std::string value     = {};
-  int         xmlLine   = {};
+  std::string              name      = {};
+  std::string              structure = {};
+  std::vector<std::string> value     = {};
+  int                      xmlLine   = {};
 };
 
 struct ExtensionRequire
 {
-  std::string                              api      = {};
-  std::vector<NameElement>                 commands = {};
-  std::string                              comment  = {};
-  std::string                              depends  = {};
-  std::vector<ExtensionRequireEnumVariant> enums    = {};
-  std::vector<MultiFeatureElement>         features = {};
+  std::string                              api        = {};
+  std::vector<NameElement>                 commands   = {};
+  std::string                              comment    = {};
+  std::string                              depends    = {};
+  std::vector<ExtensionRequireEnumVariant> enums      = {};
+  std::vector<MultiFeatureElement>         features   = {};
   std::vector<PropertyElement>             properties = {};
-  std::vector<NameElement>                 types    = {};
-  int                                      xmlLine  = {};
+  std::vector<NameElement>                 types      = {};
+  int                                      xmlLine    = {};
 };
 
 struct Extension

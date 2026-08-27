@@ -221,7 +221,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
                            {
                              checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Struct, {}, alias.second } } ).second,
                                             alias.second,
-                                            "alias <" + alias.first + "> of struc <" + structure.name + "> already specified" );
+                                            "alias <" + alias.first + "> of struct <" + structure.name + "> already specified" );
                            } );
 
     auto [structIt, inserted] = m_structs.insert( { structure.name, {} } );
@@ -340,11 +340,19 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   {
     checkForError(
       m_types.insert( { u.name, TypeData{ TypeCategory::Struct, {}, u.xmlLine } } ).second, u.xmlLine, "union <" + u.name + "> already specified" );
+    std::ranges::for_each( u.aliases,
+                           [&]( auto const & alias )
+                           {
+                             checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Struct, {}, alias.second } } ).second,
+                                            alias.second,
+                                            "alias <" + alias.first + "> of union <" + u.name + "> already specified" );
+                           } );
 
     // we hold unions in the same map as structs, but mark them as union, to be able to check for correct usage of selectors
     auto [structIt, inserted] = m_structs.insert( { u.name, {} } );
     assert( inserted );
     structIt->second.isUnion      = true;
+    structIt->second.aliases      = u.aliases;
     structIt->second.returnedOnly = ( u.returnedOnly == "true" );
     for ( auto const & member : u.members )
     {
@@ -1417,11 +1425,15 @@ void VulkanHppGenerator::checkStructCorrectness() const
     {
       checkForError( !sTypeValues.contains( enumValue.name ), enumValue.xmlLine, "Reserved VkStructureType enum value <" + enumValue.name + "> is used" );
     }
-    else
+    else if ( enumValue.supported )
     {
-      checkForError( !enumValue.supported || ( sTypeValues.erase( enumValue.name ) == 1 ),
-                     enumValue.xmlLine,
-                     "VkStructureType enum value <" + enumValue.name + "> never used" );
+      auto valueIt = sTypeValues.find( enumValue.name );
+      for ( auto aliasIt = enumValue.aliases.begin(); valueIt == sTypeValues.end() && aliasIt != enumValue.aliases.end(); ++aliasIt )
+      {
+        valueIt = sTypeValues.find( aliasIt->name );
+      }
+      checkForError( valueIt != sTypeValues.end(), enumValue.xmlLine, "VkStructureType enum value <" + enumValue.name + "> never used" );
+      sTypeValues.erase( valueIt );
     }
   }
   assert( sTypeValues.empty() );
@@ -12290,11 +12302,24 @@ ${members}
     using Type = ${unionName};
   };
 #endif
+
+${aliases}
 ${leave})";
 
-  return replaceWithMap(
-    unionTemplate,
-    { { "constructors", constructors }, { "enter", enter }, { "leave", leave }, { "members", members }, { "setters", setters }, { "unionName", unionName } } );
+  std::string aliases;
+  for ( auto const & alias : structure.second.aliases )
+  {
+    aliases += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + unionName + ";\n";
+  }
+
+  return replaceWithMap( unionTemplate,
+                         { { "aliases", aliases },
+                           { "constructors", constructors },
+                           { "enter", enter },
+                           { "leave", leave },
+                           { "members", members },
+                           { "setters", setters },
+                           { "unionName", unionName } } );
 }
 
 std::string VulkanHppGenerator::generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const

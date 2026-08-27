@@ -452,6 +452,14 @@ struct MultiFeatureElement
   int                      xmlLine   = {};
 };
 
+struct PropertyElement
+{
+  std::string name      = {};
+  std::string structure = {};
+  std::string value     = {};
+  int         xmlLine   = {};
+};
+
 struct ExtensionRequire
 {
   std::string                              api      = {};
@@ -460,6 +468,7 @@ struct ExtensionRequire
   std::string                              depends  = {};
   std::vector<ExtensionRequireEnumVariant> enums    = {};
   std::vector<MultiFeatureElement>         features = {};
+  std::vector<PropertyElement>             properties = {};
   std::vector<NameElement>                 types    = {};
   int                                      xmlLine  = {};
 };
@@ -551,6 +560,7 @@ struct Require
   std::vector<ExtendEnumConstant> enumConstants = {};
   std::vector<ExtendEnumRegular>  enumRegulars  = {};
   std::vector<FeatureElement>     features      = {};
+  std::vector<PropertyElement>    properties    = {};
   std::vector<RequireType>        types         = {};
   int                             xmlLine       = {};
 };

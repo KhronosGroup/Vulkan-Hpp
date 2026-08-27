@@ -49,6 +49,7 @@ ExtensionRequireEnumConstant parseExtensionRequireEnumConstant( tinyxml2::XMLEle
 Extensions                   parseExtensions( tinyxml2::XMLElement const * element );
 Feature                      parseFeature( tinyxml2::XMLElement const * element );
 FeatureElement               parseFeatureElement( tinyxml2::XMLElement const * element );
+PropertyElement              parsePropertyElement( tinyxml2::XMLElement const * element );
 Require                      parseFeatureRequire( tinyxml2::XMLElement const * element );
 RequireEnumVariant           parseFeatureRequireEnum( tinyxml2::XMLElement const * element );
 ExtendEnumAlias              parseFeatureRequireEnumAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
@@ -1262,6 +1263,7 @@ ExtensionRequire parseExtensionRequire( tinyxml2::XMLElement const * element )
                    { "comment", MultipleAllowed::Yes },
                    { "enum", MultipleAllowed::Yes },
                    { "feature", MultipleAllowed::Yes },
+                   { "property", MultipleAllowed::Yes },
                    { "type", MultipleAllowed::Yes } } );
 
   ExtensionRequire require{ .xmlLine = line };
@@ -1322,6 +1324,10 @@ ExtensionRequire parseExtensionRequire( tinyxml2::XMLElement const * element )
                        "require feature <" + name + "> with struct <" + requireFeature.structure + "> already listed for this require block" );
       }
       require.features.push_back( std::move( requireFeature ) );
+    }
+    else if ( value == "property" )
+    {
+      require.properties.push_back( parsePropertyElement( child ) );
     }
     else if ( value == "type" )
     {
@@ -1880,6 +1886,36 @@ FeatureElement parseFeatureElement( tinyxml2::XMLElement const * element )
   return feature;
 }
 
+PropertyElement parsePropertyElement( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "struct", {} }, { "value", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  PropertyElement property{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      property.name = attribute.second;
+    }
+    else if ( attribute.first == "struct" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      property.structure = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      property.value = attribute.second;
+    }
+  }
+
+  return property;
+}
+
 Require parseFeatureRequire( tinyxml2::XMLElement const * element )
 {
   int const                          line       = element->GetLineNum();
@@ -1894,6 +1930,7 @@ Require parseFeatureRequire( tinyxml2::XMLElement const * element )
                    { "comment", MultipleAllowed::Yes },
                    { "enum", MultipleAllowed::Yes },
                    { "feature", MultipleAllowed::Yes },
+                   { "property", MultipleAllowed::Yes },
                    { "type", MultipleAllowed::Yes } } );
 
   Require require{ .xmlLine = line };
@@ -1963,6 +2000,10 @@ Require parseFeatureRequire( tinyxml2::XMLElement const * element )
                      requireFeature.xmlLine,
                      "require feature <" + requireFeature.name + "> with struct <" + requireFeature.structure + "> already listed for this require block" );
       require.features.push_back( std::move( requireFeature ) );
+    }
+    else if ( value == "property" )
+    {
+      require.properties.push_back( parsePropertyElement( child ) );
     }
     else if ( value == "type" )
     {

@@ -193,14 +193,17 @@ struct UnionMember
 
 struct TypeUnion
 {
-  std::string              name         = {};
-  std::vector<UnionMember> members      = {};
-  std::string              returnedOnly = {};
-  int                      xmlLine      = {};
+  std::string                name         = {};
+  std::map<std::string, int> aliases      = {};
+  std::vector<UnionMember>   members      = {};
+  std::string                returnedOnly = {};
+  int                        xmlLine      = {};
 };
 
+using UnionVariant = std::variant<TypeUnion, Alias>;
+
 using TypeVariant =
-  std::variant<TypeBaseType, BitmaskVariant, TypeDefine, EnumVariant, TypeFuncPointer, HandleVariant, TypeInclude, StructVariant, TypeUnion, TypeExternal>;
+  std::variant<TypeBaseType, BitmaskVariant, TypeDefine, EnumVariant, TypeFuncPointer, HandleVariant, TypeInclude, StructVariant, UnionVariant, TypeExternal>;
 
 struct Param
 {

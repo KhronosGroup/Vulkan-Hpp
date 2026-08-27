@@ -107,7 +107,7 @@ EnumVariant                   parseTypeEnum( tinyxml2::XMLElement const * elemen
 TypeFuncPointer               parseTypeFuncPointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 HandleVariant                 parseTypeHandle( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 StructVariant     parseTypeStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & api );
-TypeUnion         parseTypeUnion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+UnionVariant      parseTypeUnion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 Types             parseTypes( tinyxml2::XMLElement const * element, std::string const & api );
 TypeVariant       parseTypesType( tinyxml2::XMLElement const * element, std::string const & api );
 UnionMember       parseUnionMember( tinyxml2::XMLElement const * element );
@@ -1627,36 +1627,6 @@ Extensions parseExtensions( tinyxml2::XMLElement const * element )
                      std::ranges::none_of( extensions.extensions, [&extension]( auto const & e ) { return e.number == extension.number; } ),
                      extension.xmlLine,
                      "extension <" + extension.name + "> has the same number <" + extension.number + "> as another extension" );
-      for ( auto const & deprecate : extension.deprecates )
-      {
-        for ( auto const & deprecateCommand : deprecate.commands )
-        {
-          checkForError( "vk.xml",
-                         std::ranges::none_of( extensions.extensions,
-                                               [&deprecateCommand]( auto const & e )
-                                               {
-                                                 return std::ranges::any_of( e.deprecates,
-                                                                             [&deprecateCommand]( auto const & deprecate )
-                                                                             { return containsByName( deprecate.commands, deprecateCommand.name ); } );
-                                               } ),
-                         deprecateCommand.xmlLine,
-                         "extension <" + extension.name + "> deprecates command <" + deprecateCommand.name +
-                           "> which is already deprecated by another extension" );
-        }
-        for ( auto const & deprecateType : deprecate.types )
-        {
-          checkForError( "vk.xml",
-                         std::ranges::none_of( extensions.extensions,
-                                               [&deprecateType]( auto const & e )
-                                               {
-                                                 return std::ranges::any_of( e.deprecates,
-                                                                             [&deprecateType]( auto const & deprecate )
-                                                                             { return containsByName( deprecate.types, deprecateType.name ); } );
-                                               } ),
-                         deprecateType.xmlLine,
-                         "extension <" + extension.name + "> deprecates type <" + deprecateType.name + "> which is already deprecated by another extension" );
-        }
-      }
       extensions.extensions.push_back( std::move( extension ) );
     }
   }
@@ -4639,41 +4609,48 @@ StructVariant parseTypeStruct( tinyxml2::XMLElement const * element, std::map<st
   }
 }
 
-TypeUnion parseTypeUnion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+UnionVariant parseTypeUnion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
 {
-  int const line = element->GetLineNum();
-  checkAttributes( "vk.xml", line, attributes, { { "category", { "union" } }, { "name", {} } }, { { "comment", {} }, { "returnedonly", { "true" } } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( "vk.xml", line, children, { { "member", MultipleAllowed::Yes } }, { { "comment", MultipleAllowed::Yes } } );
-
-  TypeUnion typeUnion{ .xmlLine = line };
-  for ( auto const & attribute : attributes )
+  if ( attributes.contains( "alias" ) )
   {
-    if ( attribute.first == "name" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      typeUnion.name = attribute.second;
-    }
-    else if ( attribute.first == "returnedonly" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      typeUnion.returnedOnly = attribute.second;
-    }
+    return parseAlias( element, attributes, "union" );
   }
-
-  for ( auto child : children )
+  else
   {
-    std::string value = child->Value();
-    if ( value == "member" )
-    {
-      UnionMember member = parseUnionMember( child );
-      checkForError(
-        "vk.xml", !containsByName( typeUnion.members, member.name ), line, "member <" + member.name + "> already listed for union <" + typeUnion.name + ">" );
-      typeUnion.members.push_back( std::move( member ) );
-    }
-  }
+    int const line = element->GetLineNum();
+    checkAttributes( "vk.xml", line, attributes, { { "category", { "union" } }, { "name", {} } }, { { "comment", {} }, { "returnedonly", { "true" } } } );
+    std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+    checkElements( "vk.xml", line, children, { { "member", MultipleAllowed::Yes } }, { { "comment", MultipleAllowed::Yes } } );
 
-  return typeUnion;
+    TypeUnion typeUnion{ .xmlLine = line };
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "name" )
+      {
+        checkNoList( "vk.xml", attribute.second, line );
+        typeUnion.name = attribute.second;
+      }
+      else if ( attribute.first == "returnedonly" )
+      {
+        checkNoList( "vk.xml", attribute.second, line );
+        typeUnion.returnedOnly = attribute.second;
+      }
+    }
+
+    for ( auto child : children )
+    {
+      std::string value = child->Value();
+      if ( value == "member" )
+      {
+        UnionMember member = parseUnionMember( child );
+        checkForError(
+          "vk.xml", !containsByName( typeUnion.members, member.name ), line, "member <" + member.name + "> already listed for union <" + typeUnion.name + ">" );
+        typeUnion.members.push_back( std::move( member ) );
+      }
+    }
+
+    return typeUnion;
+  }
 }
 
 Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api )
@@ -4839,13 +4816,32 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
           types.structs.push_back( std::move( structure ) );
         }
       }
-      else if ( std::holds_alternative<TypeUnion>( type ) )
+      else if ( std::holds_alternative<UnionVariant>( type ) )
       {
-        auto const & typeUnion = std::get<TypeUnion>( type );
+        auto const & unionVariant = std::get<UnionVariant>( type );
 
-        checkForError( "vk.xml", types.types.insert( typeUnion.name ).second, typeUnion.xmlLine, "union <" + typeUnion.name + "> already specified as a type" );
-        checkForError( "vk.xml", !containsByName( types.unions, typeUnion.name ), typeUnion.xmlLine, "union <" + typeUnion.name + "> already specified" );
-        types.unions.push_back( std::move( typeUnion ) );
+        if ( std::holds_alternative<Alias>( unionVariant ) )
+        {
+          auto const & alias = std::get<Alias>( unionVariant );
+
+          checkForError( "vk.xml", types.types.insert( alias.name ).second, alias.xmlLine, "union alias <" + alias.name + "> already specified as a type" );
+          auto unionIt = findByName( types.unions, alias.alias );
+          checkForError(
+            "vk.xml", unionIt != types.unions.end(), alias.xmlLine, "union alias <" + alias.name + "> aliases an unknown union <" + alias.alias + ">" );
+          checkForError( "vk.xml",
+                         unionIt->aliases.insert( { alias.name, alias.xmlLine } ).second,
+                         alias.xmlLine,
+                         "union alias <" + alias.name + "> already listed as an alias for union <" + alias.alias + ">" );
+        }
+        else
+        {
+          auto const & typeUnion = std::get<TypeUnion>( unionVariant );
+
+          checkForError(
+            "vk.xml", types.types.insert( typeUnion.name ).second, typeUnion.xmlLine, "union <" + typeUnion.name + "> already specified as a type" );
+          checkForError( "vk.xml", !containsByName( types.unions, typeUnion.name ), typeUnion.xmlLine, "union <" + typeUnion.name + "> already specified" );
+          types.unions.push_back( std::move( typeUnion ) );
+        }
       }
       else
       {
@@ -4954,7 +4950,7 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
     for ( auto const & structExtend : structure.structExtends )
     {
       checkForError( "vk.xml",
-                     containsByName( types.structs, structExtend ),
+                     containsByNameOrAlias( types.structs, structExtend ),
                      structure.xmlLine,
                      "struct <" + structure.name + "> extends unknown struct <" + structExtend + ">" );
     }

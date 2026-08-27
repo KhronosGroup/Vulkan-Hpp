@@ -56571,6 +56571,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     using Type = DeviceOrHostAddressConstAMDX;
   };
 #  endif
+
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   // wrapper struct for struct VkDevicePipelineBinaryInternalCacheControlKHR, see

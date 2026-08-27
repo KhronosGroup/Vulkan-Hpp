@@ -1832,6 +1832,12 @@ Feature parseFeature( tinyxml2::XMLElement const * element )
     else if ( value == "require" )
     {
       Require require = parseFeatureRequire( child );
+      checkForError(
+        "vk.xml",
+        require.depends.empty() ||
+          std::ranges::none_of( feature.require, [&require]( auto const & previousRequire ) { return previousRequire.depends == require.depends; } ),
+        require.xmlLine,
+        "feature <" + feature.name + "> lists a require section with already encountered depends = <" + concatenate( require.depends ) + ">" );
       for ( auto const & requireCommand : require.commands )
       {
         checkForError( "vk.xml",
@@ -1863,21 +1869,6 @@ Feature parseFeature( tinyxml2::XMLElement const * element )
           std::ranges::none_of( feature.require, [&enumRegular]( auto const & require ) { return containsByName( require.enumRegulars, enumRegular.name ); } ),
           enumRegular.xmlLine,
           "enum <" + enumRegular.name + "> already listed as required for feature <" + feature.name + ">" );
-      }
-      for ( auto const & requireFeature : require.features )
-      {
-        checkForError( "vk.xml",
-                       std::ranges::none_of( feature.require,
-                                             [&requireFeature]( auto const & require )
-                                             {
-                                               return std::ranges::any_of(
-                                                 require.features,
-                                                 [&requireFeature]( FeatureElement const & feature )
-                                                 { return ( feature.name == requireFeature.name ) && ( feature.structure == requireFeature.structure ); } );
-                                             } ),
-                       require.xmlLine,
-                       "feature <" + requireFeature.name + "> with struct <" + requireFeature.structure + "> already listed as required for feature <" +
-                         feature.name + ">" );
       }
       for ( auto const & requireType : require.types )
       {

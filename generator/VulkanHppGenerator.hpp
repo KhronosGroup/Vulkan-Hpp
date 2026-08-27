@@ -498,25 +498,25 @@ private:
                               std::function<void( std::pair<std::string, HandleData> const & )> const & handleAction ) const;
   void forEachRequiredStruct( std::vector<RequireData> const &                                          requireData,
                               std::function<void( std::pair<std::string, StructData> const & )> const & structAction ) const;
-  std::set<std::string>               gatherResultCodes() const;
-  std::pair<std::string, std::string> generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
-                                                                  std::vector<std::string> const &          returnDataTypes,
-                                                                  std::map<size_t, VectorParamData> const & vectorParams,
-                                                                  std::vector<size_t> const &               chainedReturnParams,
-                                                                  CommandFlavourFlags                       flavourFlags,
-                                                                  bool                                      definition ) const;
-  std::string                         generateArgumentListEnhanced( std::vector<ParamData> const &            params,
-                                                                    std::vector<size_t> const &               returnParams,
-                                                                    std::map<size_t, VectorParamData> const & vectorParams,
-                                                                    std::set<size_t> const &                  skippedParams,
-                                                                    std::set<size_t> const &                  singularParams,
-                                                                    std::set<size_t> const &                  templatedParams,
-                                                                    std::vector<size_t> const &               chainedReturnParams,
-                                                                    bool                                      raii,
-                                                                    bool                                      definition,
-                                                                    CommandFlavourFlags                       flavourFlags,
-                                                                    bool                                      withDispatcher ) const;
-  std::string                         generateArgumentListStandard(
+  std::set<std::string>                                          gatherResultCodes() const;
+  std::tuple<std::string, std::string, std::string, std::string> generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
+                                                                                             std::vector<std::string> const &          returnDataTypes,
+                                                                                             std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                             std::vector<size_t> const &               chainedReturnParams,
+                                                                                             CommandFlavourFlags                       flavourFlags,
+                                                                                             bool                                      definition ) const;
+  std::string                                                    generateArgumentListEnhanced( std::vector<ParamData> const &            params,
+                                                                                               std::vector<size_t> const &               returnParams,
+                                                                                               std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                               std::set<size_t> const &                  skippedParams,
+                                                                                               std::set<size_t> const &                  singularParams,
+                                                                                               std::set<size_t> const &                  templatedParams,
+                                                                                               std::vector<size_t> const &               chainedReturnParams,
+                                                                                               bool                                      raii,
+                                                                                               bool                                      definition,
+                                                                                               CommandFlavourFlags                       flavourFlags,
+                                                                                               bool                                      withDispatcher ) const;
+  std::string                                                    generateArgumentListStandard(
     std::vector<ParamData> const & params, std::set<size_t> const & skippedParams, bool definition, bool raii, bool withDispatcher ) const;
   std::string generateArgumentTemplates( std::vector<ParamData> const &            params,
                                          std::vector<size_t> const &               returnParams,

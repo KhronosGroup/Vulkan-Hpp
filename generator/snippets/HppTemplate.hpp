@@ -89,7 +89,15 @@ ${throwResultException}
 ${ResultValue}
 ${resultChecks}
 ${constexprDefines}
-} // namespace VULKAN_HPP_NAMESPACE
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <typename Allocator, typename T>
+  concept IsAllocator = requires( Allocator allocator, std::size_t n ) {
+                          { *allocator.allocate( n ) } -> std::same_as<typename Allocator::value_type &>;
+                          { allocator.deallocate( allocator.allocate( n ), n ) };
+                        } && std::copy_constructible<Allocator> && std::equality_comparable<Allocator> && std::same_as<typename Allocator ::value_type, T>;
+#endif
+ } // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off
 #include <vulkan/${api}_handles.hpp>

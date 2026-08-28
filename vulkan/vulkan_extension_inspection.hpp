@@ -552,7 +552,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                             "VK_ARM_data_graph_neural_accelerator_statistics",
                                                             "VK_EXT_primitive_restart_index",
                                                             "VK_EXT_image_tiling_control",
-                                                            "VK_NV_cooperative_matrix_decode_vector" };
+                                                            "VK_NV_cooperative_matrix_decode_vector",
+                                                            "VK_NV_private_data_base_handle" };
     return deviceExtensions;
   }
 
@@ -2450,6 +2451,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         { { "VK_VERSION_1_0",
             { {
               "VK_EXT_image_compression_control",
+              "VK_KHR_swapchain",
             } } } } },
       { "VK_QCOM_image_processing",
         { { "VK_VERSION_1_0",
@@ -3314,7 +3316,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         { { "VK_VERSION_1_0",
             { {
               "VK_NV_cooperative_matrix2",
-            } } } } }
+            } } } } },
+      { "VK_NV_private_data_base_handle",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_EXT_private_data",
+            } } },
+          { "VK_VERSION_1_3", { {} } } } }
     };
     auto depIt = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
@@ -4304,7 +4312,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_shader_ocp_microscaling_types" ) || ( extension == "VK_VALVE_shader_mixed_float_dot_product" ) ||
            ( extension == "VK_SEC_throttle_hint" ) || ( extension == "VK_ARM_data_graph_neural_accelerator_statistics" ) ||
            ( extension == "VK_EXT_primitive_restart_index" ) || ( extension == "VK_EXT_image_tiling_control" ) ||
-           ( extension == "VK_NV_cooperative_matrix_decode_vector" );
+           ( extension == "VK_NV_cooperative_matrix_decode_vector" ) || ( extension == "VK_NV_private_data_base_handle" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

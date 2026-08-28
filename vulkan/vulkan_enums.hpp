@@ -1892,7 +1892,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     ePhysicalDevicePrimitiveRestartIndexFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT,
     ePhysicalDeviceImageTilingControlFeaturesEXT                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_TILING_CONTROL_FEATURES_EXT,
     eImageTilingControlCreateInfoEXT                               = VK_STRUCTURE_TYPE_IMAGE_TILING_CONTROL_CREATE_INFO_EXT,
-    ePhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV
+    ePhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV,
+    ePhysicalDevicePrivateDataBaseHandleFeaturesNV                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_BASE_HANDLE_FEATURES_NV
   };
 
   // wrapper class for enum VkObjectType, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkObjectType.html
@@ -5099,8 +5100,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       ToolPurposeFlagBits::eModifyingFeatures | ToolPurposeFlagBits::eDebugReportingEXT | ToolPurposeFlagBits::eDebugMarkersEXT;
   };
 
+  // wrapper class for enum VkPrivateDataSlotCreateFlagBits, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPrivateDataSlotCreateFlagBits.html
   enum class PrivateDataSlotCreateFlagBits : VkPrivateDataSlotCreateFlags
   {
+    eBaseObjectHandleNV = VK_PRIVATE_DATA_SLOT_CREATE_BASE_OBJECT_HANDLE_BIT_NV
   };
 
   using PrivateDataSlotCreateFlagBitsEXT = PrivateDataSlotCreateFlagBits;
@@ -5112,8 +5115,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   template <>
   struct FlagTraits<PrivateDataSlotCreateFlagBits>
   {
+    using WrappedType                                                         = VkPrivateDataSlotCreateFlagBits;
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                       isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR PrivateDataSlotCreateFlags allFlags  = {};
+    static VULKAN_HPP_CONST_OR_CONSTEXPR PrivateDataSlotCreateFlags allFlags  = PrivateDataSlotCreateFlagBits::eBaseObjectHandleNV;
   };
 
   // wrapper class for enum VkPipelineStageFlagBits2, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkPipelineStageFlagBits2.html

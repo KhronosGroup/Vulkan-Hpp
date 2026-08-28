@@ -10588,4 +10588,14 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV>::value,
                           "PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV is not nothrow_move_constructible!" );
 
+//=== VK_NV_private_data_base_handle ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDevicePrivateDataBaseHandleFeaturesNV ) ==
+                            sizeof( VkPhysicalDevicePrivateDataBaseHandleFeaturesNV ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDevicePrivateDataBaseHandleFeaturesNV>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDevicePrivateDataBaseHandleFeaturesNV>::value,
+                          "PhysicalDevicePrivateDataBaseHandleFeaturesNV is not nothrow_move_constructible!" );
+
 #endif

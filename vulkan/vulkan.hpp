@@ -39,7 +39,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 360, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 361, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -11545,12 +11545,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto NVCooperativeMatrixDecodeVectorSpecVersion   = VK_NV_COOPERATIVE_MATRIX_DECODE_VECTOR_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVCooperativeMatrixDecodeVectorExtensionName = VK_NV_COOPERATIVE_MATRIX_DECODE_VECTOR_EXTENSION_NAME;
 
+  //=== VK_NV_private_data_base_handle ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVPrivateDataBaseHandleSpecVersion   = VK_NV_PRIVATE_DATA_BASE_HANDLE_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVPrivateDataBaseHandleExtensionName = VK_NV_PRIVATE_DATA_BASE_HANDLE_EXTENSION_NAME;
+
 #if 20 <= VULKAN_HPP_CPP_VERSION
   template <typename Allocator, typename T>
   concept IsAllocator = requires( Allocator allocator, std::size_t n ) {
                           { *allocator.allocate( n ) } -> std::same_as<typename Allocator::value_type &>;
                           { allocator.deallocate( allocator.allocate( n ), n ) };
-                        } && std::copy_constructible<Allocator> && std::equality_comparable<Allocator> && std::same_as<typename Allocator ::value_type, T>;
+                        } && std::copy_constructible<Allocator> && std::equality_comparable<Allocator> && std::same_as<typename Allocator::value_type, T>;
 #endif
 }  // namespace VULKAN_HPP_NAMESPACE
 
@@ -23182,6 +23186,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_private_data_base_handle ===
+  template <>
+  struct StructExtends<PhysicalDevicePrivateDataBaseHandleFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDevicePrivateDataBaseHandleFeaturesNV, DeviceCreateInfo>
   {
     enum
     {

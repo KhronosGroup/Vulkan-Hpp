@@ -137913,6 +137913,130 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     using Type = PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT;
   };
 
+  // wrapper struct for struct VkPhysicalDevicePrivateDataBaseHandleFeaturesNV, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDevicePrivateDataBaseHandleFeaturesNV.html
+  struct PhysicalDevicePrivateDataBaseHandleFeaturesNV
+  {
+    using NativeType = VkPhysicalDevicePrivateDataBaseHandleFeaturesNV;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePhysicalDevicePrivateDataBaseHandleFeaturesNV;
+
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDevicePrivateDataBaseHandleFeaturesNV( Bool32 privateDataBaseHandle_ = {}, void * pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , privateDataBaseHandle{ privateDataBaseHandle_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR
+      PhysicalDevicePrivateDataBaseHandleFeaturesNV( PhysicalDevicePrivateDataBaseHandleFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDevicePrivateDataBaseHandleFeaturesNV( VkPhysicalDevicePrivateDataBaseHandleFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDevicePrivateDataBaseHandleFeaturesNV( *reinterpret_cast<PhysicalDevicePrivateDataBaseHandleFeaturesNV const *>( &rhs ) )
+    {
+    }
+
+    PhysicalDevicePrivateDataBaseHandleFeaturesNV & operator=( PhysicalDevicePrivateDataBaseHandleFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    PhysicalDevicePrivateDataBaseHandleFeaturesNV & operator=( VkPhysicalDevicePrivateDataBaseHandleFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<PhysicalDevicePrivateDataBaseHandleFeaturesNV const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDevicePrivateDataBaseHandleFeaturesNV & setPNext( void * pNext_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDevicePrivateDataBaseHandleFeaturesNV && setPNext( void * pNext_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDevicePrivateDataBaseHandleFeaturesNV & setPrivateDataBaseHandle( Bool32 privateDataBaseHandle_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      privateDataBaseHandle = privateDataBaseHandle_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDevicePrivateDataBaseHandleFeaturesNV && setPrivateDataBaseHandle( Bool32 privateDataBaseHandle_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      privateDataBaseHandle = privateDataBaseHandle_;
+      return std::move( *this );
+    }
+#endif /*VULKAN_HPP_NO_SETTERS*/
+
+    operator VkPhysicalDevicePrivateDataBaseHandleFeaturesNV const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDevicePrivateDataBaseHandleFeaturesNV const *>( this );
+    }
+
+    operator VkPhysicalDevicePrivateDataBaseHandleFeaturesNV &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDevicePrivateDataBaseHandleFeaturesNV *>( this );
+    }
+
+    operator VkPhysicalDevicePrivateDataBaseHandleFeaturesNV const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDevicePrivateDataBaseHandleFeaturesNV const *>( this );
+    }
+
+    operator VkPhysicalDevicePrivateDataBaseHandleFeaturesNV *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDevicePrivateDataBaseHandleFeaturesNV *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &, void * const &, Bool32 const &> reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, privateDataBaseHandle );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDevicePrivateDataBaseHandleFeaturesNV const & ) const = default;
+#else
+    bool operator==( PhysicalDevicePrivateDataBaseHandleFeaturesNV const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( privateDataBaseHandle == rhs.privateDataBaseHandle );
+#  endif
+    }
+
+    bool operator!=( PhysicalDevicePrivateDataBaseHandleFeaturesNV const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    StructureType sType                 = StructureType::ePhysicalDevicePrivateDataBaseHandleFeaturesNV;
+    void *        pNext                 = {};
+    Bool32        privateDataBaseHandle = {};
+  };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkPhysicalDevicePrivateDataBaseHandleFeaturesNV>
+  {
+    using Type = PhysicalDevicePrivateDataBaseHandleFeaturesNV;
+  };
+#endif
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDevicePrivateDataBaseHandleFeaturesNV>
+  {
+    using Type = PhysicalDevicePrivateDataBaseHandleFeaturesNV;
+  };
+
   // wrapper struct for struct VkPhysicalDevicePrivateDataFeatures, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDevicePrivateDataFeatures.html
   struct PhysicalDevicePrivateDataFeatures

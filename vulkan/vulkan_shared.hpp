@@ -240,13 +240,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   protected:
     template <typename T = HandleType>
-    static typename std::enable_if<!HasDestructor<T>::value, void>::type internalDestroy( HeaderType const & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
+    static
+    typename std::enable_if<!HasDestructor<T>::value, void>::type internalDestroy( HeaderType const & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
     {
       control.deleter.destroy( handle );
     }
 
     template <typename T = HandleType>
-    static typename std::enable_if<HasDestructor<T>::value, void>::type internalDestroy( HeaderType const & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
+    static
+    typename std::enable_if<HasDestructor<T>::value, void>::type internalDestroy( HeaderType const & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
     {
       control.deleter.destroy( control.parent.get(), handle );
     }
@@ -1095,7 +1097,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     }
 
   protected:
-    static void internalDestroy( ImageHeader const & control, Image handle ) VULKAN_HPP_NOEXCEPT
+    static
+    void internalDestroy( ImageHeader const & control, Image handle ) VULKAN_HPP_NOEXCEPT
     {
       if ( control.swapchainOwned == SwapchainOwns::no )
       {
@@ -1161,7 +1164,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     }
 
   protected:
-    static void internalDestroy( DestructorType const &, HandleType ) VULKAN_HPP_NOEXCEPT {}
+    static
+    void internalDestroy( DestructorType const &, HandleType ) VULKAN_HPP_NOEXCEPT
+    {
+    }
   };
 
   //=== VK_VERSION_1_0 ===

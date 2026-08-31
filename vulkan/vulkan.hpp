@@ -8343,7 +8343,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif /*VK_ONLY_EXPORTED_PROTOTYPES*/
     };
 
-    inline DispatchLoaderStatic & getDispatchLoaderStatic()
+    inline
+    DispatchLoaderStatic & getDispatchLoaderStatic()
     {
       static DispatchLoaderStatic dls;
       return dls;
@@ -8651,12 +8652,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   class ErrorCategoryImpl : public std::error_category
   {
   public:
-    virtual char const * name() const VULKAN_HPP_NOEXCEPT override
+    virtual
+    char const * name() const VULKAN_HPP_NOEXCEPT override
     {
       return VULKAN_HPP_NAMESPACE_STRING "::Result";
     }
 
-    virtual std::string message( int ev ) const override
+    virtual
+    std::string message( int ev ) const override
     {
 #  if defined( VULKAN_HPP_NO_TO_STRING )
       return std::to_string( ev );
@@ -8673,7 +8676,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     Error( Error const & ) VULKAN_HPP_NOEXCEPT = default;
     virtual ~Error() VULKAN_HPP_NOEXCEPT       = default;
 
-    virtual char const * what() const VULKAN_HPP_NOEXCEPT = 0;
+    virtual
+    char const * what() const VULKAN_HPP_NOEXCEPT = 0;
   };
 
   class LogicError
@@ -8685,7 +8689,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     explicit LogicError( char const * what ) : Error(), std::logic_error( what ) {}
 
-    virtual char const * what() const VULKAN_HPP_NOEXCEPT
+    virtual
+    char const * what() const VULKAN_HPP_NOEXCEPT
     {
       return std::logic_error::what();
     }
@@ -8708,7 +8713,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     SystemError( int ev, std::error_category const & ecat, char const * what ) : Error(), std::system_error( ev, ecat, what ) {}
 
-    virtual char const * what() const VULKAN_HPP_NOEXCEPT
+    virtual
+    char const * what() const VULKAN_HPP_NOEXCEPT
     {
       return std::system_error::what();
     }
@@ -9051,7 +9057,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   namespace detail
   {
-    [[noreturn]] VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )
+    [[noreturn]]
+    VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )
     {
       switch ( result )
       {

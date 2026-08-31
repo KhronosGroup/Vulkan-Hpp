@@ -565,19 +565,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     {
       eBt709       = STD_VIDEO_AV1_COLOR_PRIMARIES_BT_709,
       eUnspecified = STD_VIDEO_AV1_COLOR_PRIMARIES_UNSPECIFIED,
-      eBtUnspecified VULKAN_HPP_DEPRECATED_17( "eBtUnspecified is deprecated, eUnspecified should be used instead." ) =
-        STD_VIDEO_AV1_COLOR_PRIMARIES_BT_UNSPECIFIED,
-      eBt470M      = STD_VIDEO_AV1_COLOR_PRIMARIES_BT_470_M,
-      eBt470BG     = STD_VIDEO_AV1_COLOR_PRIMARIES_BT_470_B_G,
-      eBt601       = STD_VIDEO_AV1_COLOR_PRIMARIES_BT_601,
-      eSmpte240    = STD_VIDEO_AV1_COLOR_PRIMARIES_SMPTE_240,
-      eGenericFilm = STD_VIDEO_AV1_COLOR_PRIMARIES_GENERIC_FILM,
-      eBt2020      = STD_VIDEO_AV1_COLOR_PRIMARIES_BT_2020,
-      eXyz         = STD_VIDEO_AV1_COLOR_PRIMARIES_XYZ,
-      eSmpte431    = STD_VIDEO_AV1_COLOR_PRIMARIES_SMPTE_431,
-      eSmpte432    = STD_VIDEO_AV1_COLOR_PRIMARIES_SMPTE_432,
-      eEbu3213     = STD_VIDEO_AV1_COLOR_PRIMARIES_EBU_3213,
-      eInvalid     = STD_VIDEO_AV1_COLOR_PRIMARIES_INVALID
+      eBtUnspecified
+        VULKAN_HPP_DEPRECATED_17( "eBtUnspecified is deprecated, eUnspecified should be used instead." ) = STD_VIDEO_AV1_COLOR_PRIMARIES_BT_UNSPECIFIED,
+      eBt470M                                                                                            = STD_VIDEO_AV1_COLOR_PRIMARIES_BT_470_M,
+      eBt470BG                                                                                           = STD_VIDEO_AV1_COLOR_PRIMARIES_BT_470_B_G,
+      eBt601                                                                                             = STD_VIDEO_AV1_COLOR_PRIMARIES_BT_601,
+      eSmpte240                                                                                          = STD_VIDEO_AV1_COLOR_PRIMARIES_SMPTE_240,
+      eGenericFilm                                                                                       = STD_VIDEO_AV1_COLOR_PRIMARIES_GENERIC_FILM,
+      eBt2020                                                                                            = STD_VIDEO_AV1_COLOR_PRIMARIES_BT_2020,
+      eXyz                                                                                               = STD_VIDEO_AV1_COLOR_PRIMARIES_XYZ,
+      eSmpte431                                                                                          = STD_VIDEO_AV1_COLOR_PRIMARIES_SMPTE_431,
+      eSmpte432                                                                                          = STD_VIDEO_AV1_COLOR_PRIMARIES_SMPTE_432,
+      eEbu3213                                                                                           = STD_VIDEO_AV1_COLOR_PRIMARIES_EBU_3213,
+      eInvalid                                                                                           = STD_VIDEO_AV1_COLOR_PRIMARIES_INVALID
     };
 
     enum class AV1TransferCharacteristics

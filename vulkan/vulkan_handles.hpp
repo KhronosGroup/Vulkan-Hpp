@@ -2490,6 +2490,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_cooperative_matrix_decode_vector ===
   struct PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV;
 
+  //=== VK_NV_private_data_base_handle ===
+  struct PhysicalDevicePrivateDataBaseHandleFeaturesNV;
+
   //===================================
   //=== HANDLE forward declarations ===
   //===================================

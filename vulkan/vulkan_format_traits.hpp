@@ -7776,107 +7776,107 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( format )
     {
-      case Format::eBc1RgbUnormBlock:
-      case Format::eBc1RgbSrgbBlock:
-      case Format::eBc1RgbaUnormBlock:
-      case Format::eBc1RgbaSrgbBlock:
-      case Format::eBc2UnormBlock:
-      case Format::eBc2SrgbBlock:
-      case Format::eBc3UnormBlock:
-      case Format::eBc3SrgbBlock:
-      case Format::eBc4UnormBlock:
-      case Format::eBc4SnormBlock:
-      case Format::eBc5UnormBlock:
-      case Format::eBc5SnormBlock:
-      case Format::eBc6HUfloatBlock:
-      case Format::eBc6HSfloatBlock:
-      case Format::eBc7UnormBlock:
-      case Format::eBc7SrgbBlock:
-      case Format::eEtc2R8G8B8UnormBlock:
-      case Format::eEtc2R8G8B8SrgbBlock:
-      case Format::eEtc2R8G8B8A1UnormBlock:
-      case Format::eEtc2R8G8B8A1SrgbBlock:
-      case Format::eEtc2R8G8B8A8UnormBlock:
-      case Format::eEtc2R8G8B8A8SrgbBlock:
-      case Format::eAstc4x4UnormBlock:
-      case Format::eAstc4x4SrgbBlock:
-      case Format::eAstc5x4UnormBlock:
-      case Format::eAstc5x4SrgbBlock:
-      case Format::eAstc5x5UnormBlock:
-      case Format::eAstc5x5SrgbBlock:
-      case Format::eAstc6x5UnormBlock:
-      case Format::eAstc6x5SrgbBlock:
-      case Format::eAstc6x6UnormBlock:
-      case Format::eAstc6x6SrgbBlock:
-      case Format::eAstc8x5UnormBlock:
-      case Format::eAstc8x5SrgbBlock:
-      case Format::eAstc8x6UnormBlock:
-      case Format::eAstc8x6SrgbBlock:
-      case Format::eAstc8x8UnormBlock:
-      case Format::eAstc8x8SrgbBlock:
-      case Format::eAstc10x5UnormBlock:
-      case Format::eAstc10x5SrgbBlock:
-      case Format::eAstc10x6UnormBlock:
-      case Format::eAstc10x6SrgbBlock:
-      case Format::eAstc10x8UnormBlock:
-      case Format::eAstc10x8SrgbBlock:
-      case Format::eAstc10x10UnormBlock:
-      case Format::eAstc10x10SrgbBlock:
-      case Format::eAstc12x10UnormBlock:
-      case Format::eAstc12x10SrgbBlock:
-      case Format::eAstc12x12UnormBlock:
-      case Format::eAstc12x12SrgbBlock:
-      case Format::eAstc4x4SfloatBlock:
-      case Format::eAstc5x4SfloatBlock:
-      case Format::eAstc5x5SfloatBlock:
-      case Format::eAstc6x5SfloatBlock:
-      case Format::eAstc6x6SfloatBlock:
-      case Format::eAstc8x5SfloatBlock:
-      case Format::eAstc8x6SfloatBlock:
-      case Format::eAstc8x8SfloatBlock:
-      case Format::eAstc10x5SfloatBlock:
-      case Format::eAstc10x6SfloatBlock:
-      case Format::eAstc10x8SfloatBlock:
-      case Format::eAstc10x10SfloatBlock:
-      case Format::eAstc12x10SfloatBlock:
-      case Format::eAstc12x12SfloatBlock:
+      case Format::eBc1RgbUnormBlock       :
+      case Format::eBc1RgbSrgbBlock        :
+      case Format::eBc1RgbaUnormBlock      :
+      case Format::eBc1RgbaSrgbBlock       :
+      case Format::eBc2UnormBlock          :
+      case Format::eBc2SrgbBlock           :
+      case Format::eBc3UnormBlock          :
+      case Format::eBc3SrgbBlock           :
+      case Format::eBc4UnormBlock          :
+      case Format::eBc4SnormBlock          :
+      case Format::eBc5UnormBlock          :
+      case Format::eBc5SnormBlock          :
+      case Format::eBc6HUfloatBlock        :
+      case Format::eBc6HSfloatBlock        :
+      case Format::eBc7UnormBlock          :
+      case Format::eBc7SrgbBlock           :
+      case Format::eEtc2R8G8B8UnormBlock   :
+      case Format::eEtc2R8G8B8SrgbBlock    :
+      case Format::eEtc2R8G8B8A1UnormBlock :
+      case Format::eEtc2R8G8B8A1SrgbBlock  :
+      case Format::eEtc2R8G8B8A8UnormBlock :
+      case Format::eEtc2R8G8B8A8SrgbBlock  :
+      case Format::eAstc4x4UnormBlock      :
+      case Format::eAstc4x4SrgbBlock       :
+      case Format::eAstc5x4UnormBlock      :
+      case Format::eAstc5x4SrgbBlock       :
+      case Format::eAstc5x5UnormBlock      :
+      case Format::eAstc5x5SrgbBlock       :
+      case Format::eAstc6x5UnormBlock      :
+      case Format::eAstc6x5SrgbBlock       :
+      case Format::eAstc6x6UnormBlock      :
+      case Format::eAstc6x6SrgbBlock       :
+      case Format::eAstc8x5UnormBlock      :
+      case Format::eAstc8x5SrgbBlock       :
+      case Format::eAstc8x6UnormBlock      :
+      case Format::eAstc8x6SrgbBlock       :
+      case Format::eAstc8x8UnormBlock      :
+      case Format::eAstc8x8SrgbBlock       :
+      case Format::eAstc10x5UnormBlock     :
+      case Format::eAstc10x5SrgbBlock      :
+      case Format::eAstc10x6UnormBlock     :
+      case Format::eAstc10x6SrgbBlock      :
+      case Format::eAstc10x8UnormBlock     :
+      case Format::eAstc10x8SrgbBlock      :
+      case Format::eAstc10x10UnormBlock    :
+      case Format::eAstc10x10SrgbBlock     :
+      case Format::eAstc12x10UnormBlock    :
+      case Format::eAstc12x10SrgbBlock     :
+      case Format::eAstc12x12UnormBlock    :
+      case Format::eAstc12x12SrgbBlock     :
+      case Format::eAstc4x4SfloatBlock     :
+      case Format::eAstc5x4SfloatBlock     :
+      case Format::eAstc5x5SfloatBlock     :
+      case Format::eAstc6x5SfloatBlock     :
+      case Format::eAstc6x6SfloatBlock     :
+      case Format::eAstc8x5SfloatBlock     :
+      case Format::eAstc8x6SfloatBlock     :
+      case Format::eAstc8x8SfloatBlock     :
+      case Format::eAstc10x5SfloatBlock    :
+      case Format::eAstc10x6SfloatBlock    :
+      case Format::eAstc10x8SfloatBlock    :
+      case Format::eAstc10x10SfloatBlock   :
+      case Format::eAstc12x10SfloatBlock   :
+      case Format::eAstc12x12SfloatBlock   :
       case Format::ePvrtc12BppUnormBlockIMG:
       case Format::ePvrtc14BppUnormBlockIMG:
       case Format::ePvrtc22BppUnormBlockIMG:
       case Format::ePvrtc24BppUnormBlockIMG:
-      case Format::ePvrtc12BppSrgbBlockIMG:
-      case Format::ePvrtc14BppSrgbBlockIMG:
-      case Format::ePvrtc22BppSrgbBlockIMG:
-      case Format::ePvrtc24BppSrgbBlockIMG:
-      case Format::eAstc3x3x3UnormBlockEXT:
-      case Format::eAstc3x3x3SrgbBlockEXT:
+      case Format::ePvrtc12BppSrgbBlockIMG :
+      case Format::ePvrtc14BppSrgbBlockIMG :
+      case Format::ePvrtc22BppSrgbBlockIMG :
+      case Format::ePvrtc24BppSrgbBlockIMG :
+      case Format::eAstc3x3x3UnormBlockEXT :
+      case Format::eAstc3x3x3SrgbBlockEXT  :
       case Format::eAstc3x3x3SfloatBlockEXT:
-      case Format::eAstc4x3x3UnormBlockEXT:
-      case Format::eAstc4x3x3SrgbBlockEXT:
+      case Format::eAstc4x3x3UnormBlockEXT :
+      case Format::eAstc4x3x3SrgbBlockEXT  :
       case Format::eAstc4x3x3SfloatBlockEXT:
-      case Format::eAstc4x4x3UnormBlockEXT:
-      case Format::eAstc4x4x3SrgbBlockEXT:
+      case Format::eAstc4x4x3UnormBlockEXT :
+      case Format::eAstc4x4x3SrgbBlockEXT  :
       case Format::eAstc4x4x3SfloatBlockEXT:
-      case Format::eAstc4x4x4UnormBlockEXT:
-      case Format::eAstc4x4x4SrgbBlockEXT:
+      case Format::eAstc4x4x4UnormBlockEXT :
+      case Format::eAstc4x4x4SrgbBlockEXT  :
       case Format::eAstc4x4x4SfloatBlockEXT:
-      case Format::eAstc5x4x4UnormBlockEXT:
-      case Format::eAstc5x4x4SrgbBlockEXT:
+      case Format::eAstc5x4x4UnormBlockEXT :
+      case Format::eAstc5x4x4SrgbBlockEXT  :
       case Format::eAstc5x4x4SfloatBlockEXT:
-      case Format::eAstc5x5x4UnormBlockEXT:
-      case Format::eAstc5x5x4SrgbBlockEXT:
+      case Format::eAstc5x5x4UnormBlockEXT :
+      case Format::eAstc5x5x4SrgbBlockEXT  :
       case Format::eAstc5x5x4SfloatBlockEXT:
-      case Format::eAstc5x5x5UnormBlockEXT:
-      case Format::eAstc5x5x5SrgbBlockEXT:
+      case Format::eAstc5x5x5UnormBlockEXT :
+      case Format::eAstc5x5x5SrgbBlockEXT  :
       case Format::eAstc5x5x5SfloatBlockEXT:
-      case Format::eAstc6x5x5UnormBlockEXT:
-      case Format::eAstc6x5x5SrgbBlockEXT:
+      case Format::eAstc6x5x5UnormBlockEXT :
+      case Format::eAstc6x5x5SrgbBlockEXT  :
       case Format::eAstc6x5x5SfloatBlockEXT:
-      case Format::eAstc6x6x5UnormBlockEXT:
-      case Format::eAstc6x6x5SrgbBlockEXT:
+      case Format::eAstc6x6x5UnormBlockEXT :
+      case Format::eAstc6x6x5SrgbBlockEXT  :
       case Format::eAstc6x6x5SfloatBlockEXT:
-      case Format::eAstc6x6x6UnormBlockEXT:
-      case Format::eAstc6x6x6SrgbBlockEXT:
+      case Format::eAstc6x6x6UnormBlockEXT :
+      case Format::eAstc6x6x6SrgbBlockEXT  :
       case Format::eAstc6x6x6SfloatBlockEXT: return true;
       default                              : return false;
     }
@@ -8624,158 +8624,158 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( format )
     {
-      case Format::eR4G4B4A4UnormPack16:
-      case Format::eB4G4R4A4UnormPack16:
-      case Format::eR5G5B5A1UnormPack16:
-      case Format::eB5G5R5A1UnormPack16:
-      case Format::eA1R5G5B5UnormPack16:
-      case Format::eR8G8B8A8Unorm:
-      case Format::eR8G8B8A8Snorm:
-      case Format::eR8G8B8A8Uscaled:
-      case Format::eR8G8B8A8Sscaled:
-      case Format::eR8G8B8A8Uint:
-      case Format::eR8G8B8A8Sint:
-      case Format::eR8G8B8A8Srgb:
-      case Format::eB8G8R8A8Unorm:
-      case Format::eB8G8R8A8Snorm:
-      case Format::eB8G8R8A8Uscaled:
-      case Format::eB8G8R8A8Sscaled:
-      case Format::eB8G8R8A8Uint:
-      case Format::eB8G8R8A8Sint:
-      case Format::eB8G8R8A8Srgb:
-      case Format::eA8B8G8R8UnormPack32:
-      case Format::eA8B8G8R8SnormPack32:
-      case Format::eA8B8G8R8UscaledPack32:
-      case Format::eA8B8G8R8SscaledPack32:
-      case Format::eA8B8G8R8UintPack32:
-      case Format::eA8B8G8R8SintPack32:
-      case Format::eA8B8G8R8SrgbPack32:
-      case Format::eA2R10G10B10UnormPack32:
-      case Format::eA2R10G10B10SnormPack32:
-      case Format::eA2R10G10B10UscaledPack32:
-      case Format::eA2R10G10B10SscaledPack32:
-      case Format::eA2R10G10B10UintPack32:
-      case Format::eA2R10G10B10SintPack32:
-      case Format::eA2B10G10R10UnormPack32:
-      case Format::eA2B10G10R10SnormPack32:
-      case Format::eA2B10G10R10UscaledPack32:
-      case Format::eA2B10G10R10SscaledPack32:
-      case Format::eA2B10G10R10UintPack32:
-      case Format::eA2B10G10R10SintPack32:
-      case Format::eR16G16B16A16Unorm:
-      case Format::eR16G16B16A16Snorm:
-      case Format::eR16G16B16A16Uscaled:
-      case Format::eR16G16B16A16Sscaled:
-      case Format::eR16G16B16A16Uint:
-      case Format::eR16G16B16A16Sint:
-      case Format::eR16G16B16A16Sfloat:
-      case Format::eR32G32B32A32Uint:
-      case Format::eR32G32B32A32Sint:
-      case Format::eR32G32B32A32Sfloat:
-      case Format::eR64G64B64A64Uint:
-      case Format::eR64G64B64A64Sint:
-      case Format::eR64G64B64A64Sfloat:
-      case Format::eBc1RgbaUnormBlock:
-      case Format::eBc1RgbaSrgbBlock:
-      case Format::eBc2UnormBlock:
-      case Format::eBc2SrgbBlock:
-      case Format::eBc3UnormBlock:
-      case Format::eBc3SrgbBlock:
-      case Format::eBc7UnormBlock:
-      case Format::eBc7SrgbBlock:
-      case Format::eEtc2R8G8B8A1UnormBlock:
-      case Format::eEtc2R8G8B8A1SrgbBlock:
-      case Format::eEtc2R8G8B8A8UnormBlock:
-      case Format::eEtc2R8G8B8A8SrgbBlock:
-      case Format::eAstc4x4UnormBlock:
-      case Format::eAstc4x4SrgbBlock:
-      case Format::eAstc5x4UnormBlock:
-      case Format::eAstc5x4SrgbBlock:
-      case Format::eAstc5x5UnormBlock:
-      case Format::eAstc5x5SrgbBlock:
-      case Format::eAstc6x5UnormBlock:
-      case Format::eAstc6x5SrgbBlock:
-      case Format::eAstc6x6UnormBlock:
-      case Format::eAstc6x6SrgbBlock:
-      case Format::eAstc8x5UnormBlock:
-      case Format::eAstc8x5SrgbBlock:
-      case Format::eAstc8x6UnormBlock:
-      case Format::eAstc8x6SrgbBlock:
-      case Format::eAstc8x8UnormBlock:
-      case Format::eAstc8x8SrgbBlock:
-      case Format::eAstc10x5UnormBlock:
-      case Format::eAstc10x5SrgbBlock:
-      case Format::eAstc10x6UnormBlock:
-      case Format::eAstc10x6SrgbBlock:
-      case Format::eAstc10x8UnormBlock:
-      case Format::eAstc10x8SrgbBlock:
-      case Format::eAstc10x10UnormBlock:
-      case Format::eAstc10x10SrgbBlock:
-      case Format::eAstc12x10UnormBlock:
-      case Format::eAstc12x10SrgbBlock:
-      case Format::eAstc12x12UnormBlock:
-      case Format::eAstc12x12SrgbBlock:
-      case Format::eR10X6G10X6B10X6A10X6Unorm4Pack16:
-      case Format::eR12X4G12X4B12X4A12X4Unorm4Pack16:
-      case Format::eA4R4G4B4UnormPack16:
-      case Format::eA4B4G4R4UnormPack16:
-      case Format::eAstc4x4SfloatBlock:
-      case Format::eAstc5x4SfloatBlock:
-      case Format::eAstc5x5SfloatBlock:
-      case Format::eAstc6x5SfloatBlock:
-      case Format::eAstc6x6SfloatBlock:
-      case Format::eAstc8x5SfloatBlock:
-      case Format::eAstc8x6SfloatBlock:
-      case Format::eAstc8x8SfloatBlock:
-      case Format::eAstc10x5SfloatBlock:
-      case Format::eAstc10x6SfloatBlock:
-      case Format::eAstc10x8SfloatBlock:
-      case Format::eAstc10x10SfloatBlock:
-      case Format::eAstc12x10SfloatBlock:
-      case Format::eAstc12x12SfloatBlock:
-      case Format::eA1B5G5R5UnormPack16:
-      case Format::eA8Unorm:
-      case Format::ePvrtc12BppUnormBlockIMG:
-      case Format::ePvrtc14BppUnormBlockIMG:
-      case Format::ePvrtc22BppUnormBlockIMG:
-      case Format::ePvrtc24BppUnormBlockIMG:
-      case Format::ePvrtc12BppSrgbBlockIMG:
-      case Format::ePvrtc14BppSrgbBlockIMG:
-      case Format::ePvrtc22BppSrgbBlockIMG:
-      case Format::ePvrtc24BppSrgbBlockIMG:
-      case Format::eAstc3x3x3UnormBlockEXT:
-      case Format::eAstc3x3x3SrgbBlockEXT:
-      case Format::eAstc3x3x3SfloatBlockEXT:
-      case Format::eAstc4x3x3UnormBlockEXT:
-      case Format::eAstc4x3x3SrgbBlockEXT:
-      case Format::eAstc4x3x3SfloatBlockEXT:
-      case Format::eAstc4x4x3UnormBlockEXT:
-      case Format::eAstc4x4x3SrgbBlockEXT:
-      case Format::eAstc4x4x3SfloatBlockEXT:
-      case Format::eAstc4x4x4UnormBlockEXT:
-      case Format::eAstc4x4x4SrgbBlockEXT:
-      case Format::eAstc4x4x4SfloatBlockEXT:
-      case Format::eAstc5x4x4UnormBlockEXT:
-      case Format::eAstc5x4x4SrgbBlockEXT:
-      case Format::eAstc5x4x4SfloatBlockEXT:
-      case Format::eAstc5x5x4UnormBlockEXT:
-      case Format::eAstc5x5x4SrgbBlockEXT:
-      case Format::eAstc5x5x4SfloatBlockEXT:
-      case Format::eAstc5x5x5UnormBlockEXT:
-      case Format::eAstc5x5x5SrgbBlockEXT:
-      case Format::eAstc5x5x5SfloatBlockEXT:
-      case Format::eAstc6x5x5UnormBlockEXT:
-      case Format::eAstc6x5x5SrgbBlockEXT:
-      case Format::eAstc6x5x5SfloatBlockEXT:
-      case Format::eAstc6x6x5UnormBlockEXT:
-      case Format::eAstc6x6x5SrgbBlockEXT:
-      case Format::eAstc6x6x5SfloatBlockEXT:
-      case Format::eAstc6x6x6UnormBlockEXT:
-      case Format::eAstc6x6x6SrgbBlockEXT:
-      case Format::eAstc6x6x6SfloatBlockEXT:
-      case Format::eR10X6G10X6B10X6A10X6Uint4Pack16ARM:
-      case Format::eR12X4G12X4B12X4A12X4Uint4Pack16ARM:
-      case Format::eR14X2G14X2B14X2A14X2Uint4Pack16ARM:
+      case Format::eR4G4B4A4UnormPack16                :
+      case Format::eB4G4R4A4UnormPack16                :
+      case Format::eR5G5B5A1UnormPack16                :
+      case Format::eB5G5R5A1UnormPack16                :
+      case Format::eA1R5G5B5UnormPack16                :
+      case Format::eR8G8B8A8Unorm                      :
+      case Format::eR8G8B8A8Snorm                      :
+      case Format::eR8G8B8A8Uscaled                    :
+      case Format::eR8G8B8A8Sscaled                    :
+      case Format::eR8G8B8A8Uint                       :
+      case Format::eR8G8B8A8Sint                       :
+      case Format::eR8G8B8A8Srgb                       :
+      case Format::eB8G8R8A8Unorm                      :
+      case Format::eB8G8R8A8Snorm                      :
+      case Format::eB8G8R8A8Uscaled                    :
+      case Format::eB8G8R8A8Sscaled                    :
+      case Format::eB8G8R8A8Uint                       :
+      case Format::eB8G8R8A8Sint                       :
+      case Format::eB8G8R8A8Srgb                       :
+      case Format::eA8B8G8R8UnormPack32                :
+      case Format::eA8B8G8R8SnormPack32                :
+      case Format::eA8B8G8R8UscaledPack32              :
+      case Format::eA8B8G8R8SscaledPack32              :
+      case Format::eA8B8G8R8UintPack32                 :
+      case Format::eA8B8G8R8SintPack32                 :
+      case Format::eA8B8G8R8SrgbPack32                 :
+      case Format::eA2R10G10B10UnormPack32             :
+      case Format::eA2R10G10B10SnormPack32             :
+      case Format::eA2R10G10B10UscaledPack32           :
+      case Format::eA2R10G10B10SscaledPack32           :
+      case Format::eA2R10G10B10UintPack32              :
+      case Format::eA2R10G10B10SintPack32              :
+      case Format::eA2B10G10R10UnormPack32             :
+      case Format::eA2B10G10R10SnormPack32             :
+      case Format::eA2B10G10R10UscaledPack32           :
+      case Format::eA2B10G10R10SscaledPack32           :
+      case Format::eA2B10G10R10UintPack32              :
+      case Format::eA2B10G10R10SintPack32              :
+      case Format::eR16G16B16A16Unorm                  :
+      case Format::eR16G16B16A16Snorm                  :
+      case Format::eR16G16B16A16Uscaled                :
+      case Format::eR16G16B16A16Sscaled                :
+      case Format::eR16G16B16A16Uint                   :
+      case Format::eR16G16B16A16Sint                   :
+      case Format::eR16G16B16A16Sfloat                 :
+      case Format::eR32G32B32A32Uint                   :
+      case Format::eR32G32B32A32Sint                   :
+      case Format::eR32G32B32A32Sfloat                 :
+      case Format::eR64G64B64A64Uint                   :
+      case Format::eR64G64B64A64Sint                   :
+      case Format::eR64G64B64A64Sfloat                 :
+      case Format::eBc1RgbaUnormBlock                  :
+      case Format::eBc1RgbaSrgbBlock                   :
+      case Format::eBc2UnormBlock                      :
+      case Format::eBc2SrgbBlock                       :
+      case Format::eBc3UnormBlock                      :
+      case Format::eBc3SrgbBlock                       :
+      case Format::eBc7UnormBlock                      :
+      case Format::eBc7SrgbBlock                       :
+      case Format::eEtc2R8G8B8A1UnormBlock             :
+      case Format::eEtc2R8G8B8A1SrgbBlock              :
+      case Format::eEtc2R8G8B8A8UnormBlock             :
+      case Format::eEtc2R8G8B8A8SrgbBlock              :
+      case Format::eAstc4x4UnormBlock                  :
+      case Format::eAstc4x4SrgbBlock                   :
+      case Format::eAstc5x4UnormBlock                  :
+      case Format::eAstc5x4SrgbBlock                   :
+      case Format::eAstc5x5UnormBlock                  :
+      case Format::eAstc5x5SrgbBlock                   :
+      case Format::eAstc6x5UnormBlock                  :
+      case Format::eAstc6x5SrgbBlock                   :
+      case Format::eAstc6x6UnormBlock                  :
+      case Format::eAstc6x6SrgbBlock                   :
+      case Format::eAstc8x5UnormBlock                  :
+      case Format::eAstc8x5SrgbBlock                   :
+      case Format::eAstc8x6UnormBlock                  :
+      case Format::eAstc8x6SrgbBlock                   :
+      case Format::eAstc8x8UnormBlock                  :
+      case Format::eAstc8x8SrgbBlock                   :
+      case Format::eAstc10x5UnormBlock                 :
+      case Format::eAstc10x5SrgbBlock                  :
+      case Format::eAstc10x6UnormBlock                 :
+      case Format::eAstc10x6SrgbBlock                  :
+      case Format::eAstc10x8UnormBlock                 :
+      case Format::eAstc10x8SrgbBlock                  :
+      case Format::eAstc10x10UnormBlock                :
+      case Format::eAstc10x10SrgbBlock                 :
+      case Format::eAstc12x10UnormBlock                :
+      case Format::eAstc12x10SrgbBlock                 :
+      case Format::eAstc12x12UnormBlock                :
+      case Format::eAstc12x12SrgbBlock                 :
+      case Format::eR10X6G10X6B10X6A10X6Unorm4Pack16   :
+      case Format::eR12X4G12X4B12X4A12X4Unorm4Pack16   :
+      case Format::eA4R4G4B4UnormPack16                :
+      case Format::eA4B4G4R4UnormPack16                :
+      case Format::eAstc4x4SfloatBlock                 :
+      case Format::eAstc5x4SfloatBlock                 :
+      case Format::eAstc5x5SfloatBlock                 :
+      case Format::eAstc6x5SfloatBlock                 :
+      case Format::eAstc6x6SfloatBlock                 :
+      case Format::eAstc8x5SfloatBlock                 :
+      case Format::eAstc8x6SfloatBlock                 :
+      case Format::eAstc8x8SfloatBlock                 :
+      case Format::eAstc10x5SfloatBlock                :
+      case Format::eAstc10x6SfloatBlock                :
+      case Format::eAstc10x8SfloatBlock                :
+      case Format::eAstc10x10SfloatBlock               :
+      case Format::eAstc12x10SfloatBlock               :
+      case Format::eAstc12x12SfloatBlock               :
+      case Format::eA1B5G5R5UnormPack16                :
+      case Format::eA8Unorm                            :
+      case Format::ePvrtc12BppUnormBlockIMG            :
+      case Format::ePvrtc14BppUnormBlockIMG            :
+      case Format::ePvrtc22BppUnormBlockIMG            :
+      case Format::ePvrtc24BppUnormBlockIMG            :
+      case Format::ePvrtc12BppSrgbBlockIMG             :
+      case Format::ePvrtc14BppSrgbBlockIMG             :
+      case Format::ePvrtc22BppSrgbBlockIMG             :
+      case Format::ePvrtc24BppSrgbBlockIMG             :
+      case Format::eAstc3x3x3UnormBlockEXT             :
+      case Format::eAstc3x3x3SrgbBlockEXT              :
+      case Format::eAstc3x3x3SfloatBlockEXT            :
+      case Format::eAstc4x3x3UnormBlockEXT             :
+      case Format::eAstc4x3x3SrgbBlockEXT              :
+      case Format::eAstc4x3x3SfloatBlockEXT            :
+      case Format::eAstc4x4x3UnormBlockEXT             :
+      case Format::eAstc4x4x3SrgbBlockEXT              :
+      case Format::eAstc4x4x3SfloatBlockEXT            :
+      case Format::eAstc4x4x4UnormBlockEXT             :
+      case Format::eAstc4x4x4SrgbBlockEXT              :
+      case Format::eAstc4x4x4SfloatBlockEXT            :
+      case Format::eAstc5x4x4UnormBlockEXT             :
+      case Format::eAstc5x4x4SrgbBlockEXT              :
+      case Format::eAstc5x4x4SfloatBlockEXT            :
+      case Format::eAstc5x5x4UnormBlockEXT             :
+      case Format::eAstc5x5x4SrgbBlockEXT              :
+      case Format::eAstc5x5x4SfloatBlockEXT            :
+      case Format::eAstc5x5x5UnormBlockEXT             :
+      case Format::eAstc5x5x5SrgbBlockEXT              :
+      case Format::eAstc5x5x5SfloatBlockEXT            :
+      case Format::eAstc6x5x5UnormBlockEXT             :
+      case Format::eAstc6x5x5SrgbBlockEXT              :
+      case Format::eAstc6x5x5SfloatBlockEXT            :
+      case Format::eAstc6x6x5UnormBlockEXT             :
+      case Format::eAstc6x6x5SrgbBlockEXT              :
+      case Format::eAstc6x6x5SfloatBlockEXT            :
+      case Format::eAstc6x6x6UnormBlockEXT             :
+      case Format::eAstc6x6x6SrgbBlockEXT              :
+      case Format::eAstc6x6x6SfloatBlockEXT            :
+      case Format::eR10X6G10X6B10X6A10X6Uint4Pack16ARM :
+      case Format::eR12X4G12X4B12X4A12X4Uint4Pack16ARM :
+      case Format::eR14X2G14X2B14X2A14X2Uint4Pack16ARM :
       case Format::eR14X2G14X2B14X2A14X2Unorm4Pack16ARM: return true;
       default                                          : return false;
     }
@@ -8786,227 +8786,227 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( format )
     {
-      case Format::eR4G4B4A4UnormPack16:
-      case Format::eB4G4R4A4UnormPack16:
-      case Format::eR5G6B5UnormPack16:
-      case Format::eB5G6R5UnormPack16:
-      case Format::eR5G5B5A1UnormPack16:
-      case Format::eB5G5R5A1UnormPack16:
-      case Format::eA1R5G5B5UnormPack16:
-      case Format::eR8G8B8Unorm:
-      case Format::eR8G8B8Snorm:
-      case Format::eR8G8B8Uscaled:
-      case Format::eR8G8B8Sscaled:
-      case Format::eR8G8B8Uint:
-      case Format::eR8G8B8Sint:
-      case Format::eR8G8B8Srgb:
-      case Format::eB8G8R8Unorm:
-      case Format::eB8G8R8Snorm:
-      case Format::eB8G8R8Uscaled:
-      case Format::eB8G8R8Sscaled:
-      case Format::eB8G8R8Uint:
-      case Format::eB8G8R8Sint:
-      case Format::eB8G8R8Srgb:
-      case Format::eR8G8B8A8Unorm:
-      case Format::eR8G8B8A8Snorm:
-      case Format::eR8G8B8A8Uscaled:
-      case Format::eR8G8B8A8Sscaled:
-      case Format::eR8G8B8A8Uint:
-      case Format::eR8G8B8A8Sint:
-      case Format::eR8G8B8A8Srgb:
-      case Format::eB8G8R8A8Unorm:
-      case Format::eB8G8R8A8Snorm:
-      case Format::eB8G8R8A8Uscaled:
-      case Format::eB8G8R8A8Sscaled:
-      case Format::eB8G8R8A8Uint:
-      case Format::eB8G8R8A8Sint:
-      case Format::eB8G8R8A8Srgb:
-      case Format::eA8B8G8R8UnormPack32:
-      case Format::eA8B8G8R8SnormPack32:
-      case Format::eA8B8G8R8UscaledPack32:
-      case Format::eA8B8G8R8SscaledPack32:
-      case Format::eA8B8G8R8UintPack32:
-      case Format::eA8B8G8R8SintPack32:
-      case Format::eA8B8G8R8SrgbPack32:
-      case Format::eA2R10G10B10UnormPack32:
-      case Format::eA2R10G10B10SnormPack32:
-      case Format::eA2R10G10B10UscaledPack32:
-      case Format::eA2R10G10B10SscaledPack32:
-      case Format::eA2R10G10B10UintPack32:
-      case Format::eA2R10G10B10SintPack32:
-      case Format::eA2B10G10R10UnormPack32:
-      case Format::eA2B10G10R10SnormPack32:
-      case Format::eA2B10G10R10UscaledPack32:
-      case Format::eA2B10G10R10SscaledPack32:
-      case Format::eA2B10G10R10UintPack32:
-      case Format::eA2B10G10R10SintPack32:
-      case Format::eR16G16B16Unorm:
-      case Format::eR16G16B16Snorm:
-      case Format::eR16G16B16Uscaled:
-      case Format::eR16G16B16Sscaled:
-      case Format::eR16G16B16Uint:
-      case Format::eR16G16B16Sint:
-      case Format::eR16G16B16Sfloat:
-      case Format::eR16G16B16A16Unorm:
-      case Format::eR16G16B16A16Snorm:
-      case Format::eR16G16B16A16Uscaled:
-      case Format::eR16G16B16A16Sscaled:
-      case Format::eR16G16B16A16Uint:
-      case Format::eR16G16B16A16Sint:
-      case Format::eR16G16B16A16Sfloat:
-      case Format::eR32G32B32Uint:
-      case Format::eR32G32B32Sint:
-      case Format::eR32G32B32Sfloat:
-      case Format::eR32G32B32A32Uint:
-      case Format::eR32G32B32A32Sint:
-      case Format::eR32G32B32A32Sfloat:
-      case Format::eR64G64B64Uint:
-      case Format::eR64G64B64Sint:
-      case Format::eR64G64B64Sfloat:
-      case Format::eR64G64B64A64Uint:
-      case Format::eR64G64B64A64Sint:
-      case Format::eR64G64B64A64Sfloat:
-      case Format::eB10G11R11UfloatPack32:
-      case Format::eE5B9G9R9UfloatPack32:
-      case Format::eBc1RgbUnormBlock:
-      case Format::eBc1RgbSrgbBlock:
-      case Format::eBc1RgbaUnormBlock:
-      case Format::eBc1RgbaSrgbBlock:
-      case Format::eBc2UnormBlock:
-      case Format::eBc2SrgbBlock:
-      case Format::eBc3UnormBlock:
-      case Format::eBc3SrgbBlock:
-      case Format::eBc6HUfloatBlock:
-      case Format::eBc6HSfloatBlock:
-      case Format::eBc7UnormBlock:
-      case Format::eBc7SrgbBlock:
-      case Format::eEtc2R8G8B8UnormBlock:
-      case Format::eEtc2R8G8B8SrgbBlock:
-      case Format::eEtc2R8G8B8A1UnormBlock:
-      case Format::eEtc2R8G8B8A1SrgbBlock:
-      case Format::eEtc2R8G8B8A8UnormBlock:
-      case Format::eEtc2R8G8B8A8SrgbBlock:
-      case Format::eAstc4x4UnormBlock:
-      case Format::eAstc4x4SrgbBlock:
-      case Format::eAstc5x4UnormBlock:
-      case Format::eAstc5x4SrgbBlock:
-      case Format::eAstc5x5UnormBlock:
-      case Format::eAstc5x5SrgbBlock:
-      case Format::eAstc6x5UnormBlock:
-      case Format::eAstc6x5SrgbBlock:
-      case Format::eAstc6x6UnormBlock:
-      case Format::eAstc6x6SrgbBlock:
-      case Format::eAstc8x5UnormBlock:
-      case Format::eAstc8x5SrgbBlock:
-      case Format::eAstc8x6UnormBlock:
-      case Format::eAstc8x6SrgbBlock:
-      case Format::eAstc8x8UnormBlock:
-      case Format::eAstc8x8SrgbBlock:
-      case Format::eAstc10x5UnormBlock:
-      case Format::eAstc10x5SrgbBlock:
-      case Format::eAstc10x6UnormBlock:
-      case Format::eAstc10x6SrgbBlock:
-      case Format::eAstc10x8UnormBlock:
-      case Format::eAstc10x8SrgbBlock:
-      case Format::eAstc10x10UnormBlock:
-      case Format::eAstc10x10SrgbBlock:
-      case Format::eAstc12x10UnormBlock:
-      case Format::eAstc12x10SrgbBlock:
-      case Format::eAstc12x12UnormBlock:
-      case Format::eAstc12x12SrgbBlock:
-      case Format::eG8B8G8R8422Unorm:
-      case Format::eB8G8R8G8422Unorm:
-      case Format::eG8B8R83Plane420Unorm:
-      case Format::eG8B8R82Plane420Unorm:
-      case Format::eG8B8R83Plane422Unorm:
-      case Format::eG8B8R82Plane422Unorm:
-      case Format::eG8B8R83Plane444Unorm:
-      case Format::eR10X6G10X6B10X6A10X6Unorm4Pack16:
-      case Format::eG10X6B10X6G10X6R10X6422Unorm4Pack16:
-      case Format::eB10X6G10X6R10X6G10X6422Unorm4Pack16:
-      case Format::eG10X6B10X6R10X63Plane420Unorm3Pack16:
-      case Format::eG10X6B10X6R10X62Plane420Unorm3Pack16:
-      case Format::eG10X6B10X6R10X63Plane422Unorm3Pack16:
-      case Format::eG10X6B10X6R10X62Plane422Unorm3Pack16:
-      case Format::eG10X6B10X6R10X63Plane444Unorm3Pack16:
-      case Format::eR12X4G12X4B12X4A12X4Unorm4Pack16:
-      case Format::eG12X4B12X4G12X4R12X4422Unorm4Pack16:
-      case Format::eB12X4G12X4R12X4G12X4422Unorm4Pack16:
-      case Format::eG12X4B12X4R12X43Plane420Unorm3Pack16:
-      case Format::eG12X4B12X4R12X42Plane420Unorm3Pack16:
-      case Format::eG12X4B12X4R12X43Plane422Unorm3Pack16:
-      case Format::eG12X4B12X4R12X42Plane422Unorm3Pack16:
-      case Format::eG12X4B12X4R12X43Plane444Unorm3Pack16:
-      case Format::eG16B16G16R16422Unorm:
-      case Format::eB16G16R16G16422Unorm:
-      case Format::eG16B16R163Plane420Unorm:
-      case Format::eG16B16R162Plane420Unorm:
-      case Format::eG16B16R163Plane422Unorm:
-      case Format::eG16B16R162Plane422Unorm:
-      case Format::eG16B16R163Plane444Unorm:
-      case Format::eG8B8R82Plane444Unorm:
-      case Format::eG10X6B10X6R10X62Plane444Unorm3Pack16:
-      case Format::eG12X4B12X4R12X42Plane444Unorm3Pack16:
-      case Format::eG16B16R162Plane444Unorm:
-      case Format::eA4R4G4B4UnormPack16:
-      case Format::eA4B4G4R4UnormPack16:
-      case Format::eAstc4x4SfloatBlock:
-      case Format::eAstc5x4SfloatBlock:
-      case Format::eAstc5x5SfloatBlock:
-      case Format::eAstc6x5SfloatBlock:
-      case Format::eAstc6x6SfloatBlock:
-      case Format::eAstc8x5SfloatBlock:
-      case Format::eAstc8x6SfloatBlock:
-      case Format::eAstc8x8SfloatBlock:
-      case Format::eAstc10x5SfloatBlock:
-      case Format::eAstc10x6SfloatBlock:
-      case Format::eAstc10x8SfloatBlock:
-      case Format::eAstc10x10SfloatBlock:
-      case Format::eAstc12x10SfloatBlock:
-      case Format::eAstc12x12SfloatBlock:
-      case Format::eA1B5G5R5UnormPack16:
-      case Format::ePvrtc12BppUnormBlockIMG:
-      case Format::ePvrtc14BppUnormBlockIMG:
-      case Format::ePvrtc22BppUnormBlockIMG:
-      case Format::ePvrtc24BppUnormBlockIMG:
-      case Format::ePvrtc12BppSrgbBlockIMG:
-      case Format::ePvrtc14BppSrgbBlockIMG:
-      case Format::ePvrtc22BppSrgbBlockIMG:
-      case Format::ePvrtc24BppSrgbBlockIMG:
-      case Format::eAstc3x3x3UnormBlockEXT:
-      case Format::eAstc3x3x3SrgbBlockEXT:
-      case Format::eAstc3x3x3SfloatBlockEXT:
-      case Format::eAstc4x3x3UnormBlockEXT:
-      case Format::eAstc4x3x3SrgbBlockEXT:
-      case Format::eAstc4x3x3SfloatBlockEXT:
-      case Format::eAstc4x4x3UnormBlockEXT:
-      case Format::eAstc4x4x3SrgbBlockEXT:
-      case Format::eAstc4x4x3SfloatBlockEXT:
-      case Format::eAstc4x4x4UnormBlockEXT:
-      case Format::eAstc4x4x4SrgbBlockEXT:
-      case Format::eAstc4x4x4SfloatBlockEXT:
-      case Format::eAstc5x4x4UnormBlockEXT:
-      case Format::eAstc5x4x4SrgbBlockEXT:
-      case Format::eAstc5x4x4SfloatBlockEXT:
-      case Format::eAstc5x5x4UnormBlockEXT:
-      case Format::eAstc5x5x4SrgbBlockEXT:
-      case Format::eAstc5x5x4SfloatBlockEXT:
-      case Format::eAstc5x5x5UnormBlockEXT:
-      case Format::eAstc5x5x5SrgbBlockEXT:
-      case Format::eAstc5x5x5SfloatBlockEXT:
-      case Format::eAstc6x5x5UnormBlockEXT:
-      case Format::eAstc6x5x5SrgbBlockEXT:
-      case Format::eAstc6x5x5SfloatBlockEXT:
-      case Format::eAstc6x6x5UnormBlockEXT:
-      case Format::eAstc6x6x5SrgbBlockEXT:
-      case Format::eAstc6x6x5SfloatBlockEXT:
-      case Format::eAstc6x6x6UnormBlockEXT:
-      case Format::eAstc6x6x6SrgbBlockEXT:
-      case Format::eAstc6x6x6SfloatBlockEXT:
-      case Format::eR10X6G10X6B10X6A10X6Uint4Pack16ARM:
-      case Format::eR12X4G12X4B12X4A12X4Uint4Pack16ARM:
-      case Format::eR14X2G14X2B14X2A14X2Uint4Pack16ARM:
-      case Format::eR14X2G14X2B14X2A14X2Unorm4Pack16ARM:
+      case Format::eR4G4B4A4UnormPack16                    :
+      case Format::eB4G4R4A4UnormPack16                    :
+      case Format::eR5G6B5UnormPack16                      :
+      case Format::eB5G6R5UnormPack16                      :
+      case Format::eR5G5B5A1UnormPack16                    :
+      case Format::eB5G5R5A1UnormPack16                    :
+      case Format::eA1R5G5B5UnormPack16                    :
+      case Format::eR8G8B8Unorm                            :
+      case Format::eR8G8B8Snorm                            :
+      case Format::eR8G8B8Uscaled                          :
+      case Format::eR8G8B8Sscaled                          :
+      case Format::eR8G8B8Uint                             :
+      case Format::eR8G8B8Sint                             :
+      case Format::eR8G8B8Srgb                             :
+      case Format::eB8G8R8Unorm                            :
+      case Format::eB8G8R8Snorm                            :
+      case Format::eB8G8R8Uscaled                          :
+      case Format::eB8G8R8Sscaled                          :
+      case Format::eB8G8R8Uint                             :
+      case Format::eB8G8R8Sint                             :
+      case Format::eB8G8R8Srgb                             :
+      case Format::eR8G8B8A8Unorm                          :
+      case Format::eR8G8B8A8Snorm                          :
+      case Format::eR8G8B8A8Uscaled                        :
+      case Format::eR8G8B8A8Sscaled                        :
+      case Format::eR8G8B8A8Uint                           :
+      case Format::eR8G8B8A8Sint                           :
+      case Format::eR8G8B8A8Srgb                           :
+      case Format::eB8G8R8A8Unorm                          :
+      case Format::eB8G8R8A8Snorm                          :
+      case Format::eB8G8R8A8Uscaled                        :
+      case Format::eB8G8R8A8Sscaled                        :
+      case Format::eB8G8R8A8Uint                           :
+      case Format::eB8G8R8A8Sint                           :
+      case Format::eB8G8R8A8Srgb                           :
+      case Format::eA8B8G8R8UnormPack32                    :
+      case Format::eA8B8G8R8SnormPack32                    :
+      case Format::eA8B8G8R8UscaledPack32                  :
+      case Format::eA8B8G8R8SscaledPack32                  :
+      case Format::eA8B8G8R8UintPack32                     :
+      case Format::eA8B8G8R8SintPack32                     :
+      case Format::eA8B8G8R8SrgbPack32                     :
+      case Format::eA2R10G10B10UnormPack32                 :
+      case Format::eA2R10G10B10SnormPack32                 :
+      case Format::eA2R10G10B10UscaledPack32               :
+      case Format::eA2R10G10B10SscaledPack32               :
+      case Format::eA2R10G10B10UintPack32                  :
+      case Format::eA2R10G10B10SintPack32                  :
+      case Format::eA2B10G10R10UnormPack32                 :
+      case Format::eA2B10G10R10SnormPack32                 :
+      case Format::eA2B10G10R10UscaledPack32               :
+      case Format::eA2B10G10R10SscaledPack32               :
+      case Format::eA2B10G10R10UintPack32                  :
+      case Format::eA2B10G10R10SintPack32                  :
+      case Format::eR16G16B16Unorm                         :
+      case Format::eR16G16B16Snorm                         :
+      case Format::eR16G16B16Uscaled                       :
+      case Format::eR16G16B16Sscaled                       :
+      case Format::eR16G16B16Uint                          :
+      case Format::eR16G16B16Sint                          :
+      case Format::eR16G16B16Sfloat                        :
+      case Format::eR16G16B16A16Unorm                      :
+      case Format::eR16G16B16A16Snorm                      :
+      case Format::eR16G16B16A16Uscaled                    :
+      case Format::eR16G16B16A16Sscaled                    :
+      case Format::eR16G16B16A16Uint                       :
+      case Format::eR16G16B16A16Sint                       :
+      case Format::eR16G16B16A16Sfloat                     :
+      case Format::eR32G32B32Uint                          :
+      case Format::eR32G32B32Sint                          :
+      case Format::eR32G32B32Sfloat                        :
+      case Format::eR32G32B32A32Uint                       :
+      case Format::eR32G32B32A32Sint                       :
+      case Format::eR32G32B32A32Sfloat                     :
+      case Format::eR64G64B64Uint                          :
+      case Format::eR64G64B64Sint                          :
+      case Format::eR64G64B64Sfloat                        :
+      case Format::eR64G64B64A64Uint                       :
+      case Format::eR64G64B64A64Sint                       :
+      case Format::eR64G64B64A64Sfloat                     :
+      case Format::eB10G11R11UfloatPack32                  :
+      case Format::eE5B9G9R9UfloatPack32                   :
+      case Format::eBc1RgbUnormBlock                       :
+      case Format::eBc1RgbSrgbBlock                        :
+      case Format::eBc1RgbaUnormBlock                      :
+      case Format::eBc1RgbaSrgbBlock                       :
+      case Format::eBc2UnormBlock                          :
+      case Format::eBc2SrgbBlock                           :
+      case Format::eBc3UnormBlock                          :
+      case Format::eBc3SrgbBlock                           :
+      case Format::eBc6HUfloatBlock                        :
+      case Format::eBc6HSfloatBlock                        :
+      case Format::eBc7UnormBlock                          :
+      case Format::eBc7SrgbBlock                           :
+      case Format::eEtc2R8G8B8UnormBlock                   :
+      case Format::eEtc2R8G8B8SrgbBlock                    :
+      case Format::eEtc2R8G8B8A1UnormBlock                 :
+      case Format::eEtc2R8G8B8A1SrgbBlock                  :
+      case Format::eEtc2R8G8B8A8UnormBlock                 :
+      case Format::eEtc2R8G8B8A8SrgbBlock                  :
+      case Format::eAstc4x4UnormBlock                      :
+      case Format::eAstc4x4SrgbBlock                       :
+      case Format::eAstc5x4UnormBlock                      :
+      case Format::eAstc5x4SrgbBlock                       :
+      case Format::eAstc5x5UnormBlock                      :
+      case Format::eAstc5x5SrgbBlock                       :
+      case Format::eAstc6x5UnormBlock                      :
+      case Format::eAstc6x5SrgbBlock                       :
+      case Format::eAstc6x6UnormBlock                      :
+      case Format::eAstc6x6SrgbBlock                       :
+      case Format::eAstc8x5UnormBlock                      :
+      case Format::eAstc8x5SrgbBlock                       :
+      case Format::eAstc8x6UnormBlock                      :
+      case Format::eAstc8x6SrgbBlock                       :
+      case Format::eAstc8x8UnormBlock                      :
+      case Format::eAstc8x8SrgbBlock                       :
+      case Format::eAstc10x5UnormBlock                     :
+      case Format::eAstc10x5SrgbBlock                      :
+      case Format::eAstc10x6UnormBlock                     :
+      case Format::eAstc10x6SrgbBlock                      :
+      case Format::eAstc10x8UnormBlock                     :
+      case Format::eAstc10x8SrgbBlock                      :
+      case Format::eAstc10x10UnormBlock                    :
+      case Format::eAstc10x10SrgbBlock                     :
+      case Format::eAstc12x10UnormBlock                    :
+      case Format::eAstc12x10SrgbBlock                     :
+      case Format::eAstc12x12UnormBlock                    :
+      case Format::eAstc12x12SrgbBlock                     :
+      case Format::eG8B8G8R8422Unorm                       :
+      case Format::eB8G8R8G8422Unorm                       :
+      case Format::eG8B8R83Plane420Unorm                   :
+      case Format::eG8B8R82Plane420Unorm                   :
+      case Format::eG8B8R83Plane422Unorm                   :
+      case Format::eG8B8R82Plane422Unorm                   :
+      case Format::eG8B8R83Plane444Unorm                   :
+      case Format::eR10X6G10X6B10X6A10X6Unorm4Pack16       :
+      case Format::eG10X6B10X6G10X6R10X6422Unorm4Pack16    :
+      case Format::eB10X6G10X6R10X6G10X6422Unorm4Pack16    :
+      case Format::eG10X6B10X6R10X63Plane420Unorm3Pack16   :
+      case Format::eG10X6B10X6R10X62Plane420Unorm3Pack16   :
+      case Format::eG10X6B10X6R10X63Plane422Unorm3Pack16   :
+      case Format::eG10X6B10X6R10X62Plane422Unorm3Pack16   :
+      case Format::eG10X6B10X6R10X63Plane444Unorm3Pack16   :
+      case Format::eR12X4G12X4B12X4A12X4Unorm4Pack16       :
+      case Format::eG12X4B12X4G12X4R12X4422Unorm4Pack16    :
+      case Format::eB12X4G12X4R12X4G12X4422Unorm4Pack16    :
+      case Format::eG12X4B12X4R12X43Plane420Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X42Plane420Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X43Plane422Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X42Plane422Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X43Plane444Unorm3Pack16   :
+      case Format::eG16B16G16R16422Unorm                   :
+      case Format::eB16G16R16G16422Unorm                   :
+      case Format::eG16B16R163Plane420Unorm                :
+      case Format::eG16B16R162Plane420Unorm                :
+      case Format::eG16B16R163Plane422Unorm                :
+      case Format::eG16B16R162Plane422Unorm                :
+      case Format::eG16B16R163Plane444Unorm                :
+      case Format::eG8B8R82Plane444Unorm                   :
+      case Format::eG10X6B10X6R10X62Plane444Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X42Plane444Unorm3Pack16   :
+      case Format::eG16B16R162Plane444Unorm                :
+      case Format::eA4R4G4B4UnormPack16                    :
+      case Format::eA4B4G4R4UnormPack16                    :
+      case Format::eAstc4x4SfloatBlock                     :
+      case Format::eAstc5x4SfloatBlock                     :
+      case Format::eAstc5x5SfloatBlock                     :
+      case Format::eAstc6x5SfloatBlock                     :
+      case Format::eAstc6x6SfloatBlock                     :
+      case Format::eAstc8x5SfloatBlock                     :
+      case Format::eAstc8x6SfloatBlock                     :
+      case Format::eAstc8x8SfloatBlock                     :
+      case Format::eAstc10x5SfloatBlock                    :
+      case Format::eAstc10x6SfloatBlock                    :
+      case Format::eAstc10x8SfloatBlock                    :
+      case Format::eAstc10x10SfloatBlock                   :
+      case Format::eAstc12x10SfloatBlock                   :
+      case Format::eAstc12x12SfloatBlock                   :
+      case Format::eA1B5G5R5UnormPack16                    :
+      case Format::ePvrtc12BppUnormBlockIMG                :
+      case Format::ePvrtc14BppUnormBlockIMG                :
+      case Format::ePvrtc22BppUnormBlockIMG                :
+      case Format::ePvrtc24BppUnormBlockIMG                :
+      case Format::ePvrtc12BppSrgbBlockIMG                 :
+      case Format::ePvrtc14BppSrgbBlockIMG                 :
+      case Format::ePvrtc22BppSrgbBlockIMG                 :
+      case Format::ePvrtc24BppSrgbBlockIMG                 :
+      case Format::eAstc3x3x3UnormBlockEXT                 :
+      case Format::eAstc3x3x3SrgbBlockEXT                  :
+      case Format::eAstc3x3x3SfloatBlockEXT                :
+      case Format::eAstc4x3x3UnormBlockEXT                 :
+      case Format::eAstc4x3x3SrgbBlockEXT                  :
+      case Format::eAstc4x3x3SfloatBlockEXT                :
+      case Format::eAstc4x4x3UnormBlockEXT                 :
+      case Format::eAstc4x4x3SrgbBlockEXT                  :
+      case Format::eAstc4x4x3SfloatBlockEXT                :
+      case Format::eAstc4x4x4UnormBlockEXT                 :
+      case Format::eAstc4x4x4SrgbBlockEXT                  :
+      case Format::eAstc4x4x4SfloatBlockEXT                :
+      case Format::eAstc5x4x4UnormBlockEXT                 :
+      case Format::eAstc5x4x4SrgbBlockEXT                  :
+      case Format::eAstc5x4x4SfloatBlockEXT                :
+      case Format::eAstc5x5x4UnormBlockEXT                 :
+      case Format::eAstc5x5x4SrgbBlockEXT                  :
+      case Format::eAstc5x5x4SfloatBlockEXT                :
+      case Format::eAstc5x5x5UnormBlockEXT                 :
+      case Format::eAstc5x5x5SrgbBlockEXT                  :
+      case Format::eAstc5x5x5SfloatBlockEXT                :
+      case Format::eAstc6x5x5UnormBlockEXT                 :
+      case Format::eAstc6x5x5SrgbBlockEXT                  :
+      case Format::eAstc6x5x5SfloatBlockEXT                :
+      case Format::eAstc6x6x5UnormBlockEXT                 :
+      case Format::eAstc6x6x5SrgbBlockEXT                  :
+      case Format::eAstc6x6x5SfloatBlockEXT                :
+      case Format::eAstc6x6x6UnormBlockEXT                 :
+      case Format::eAstc6x6x6SrgbBlockEXT                  :
+      case Format::eAstc6x6x6SfloatBlockEXT                :
+      case Format::eR10X6G10X6B10X6A10X6Uint4Pack16ARM     :
+      case Format::eR12X4G12X4B12X4A12X4Uint4Pack16ARM     :
+      case Format::eR14X2G14X2B14X2A14X2Uint4Pack16ARM     :
+      case Format::eR14X2G14X2B14X2A14X2Unorm4Pack16ARM    :
       case Format::eG14X2B14X2R14X22Plane420Unorm3Pack16ARM:
       case Format::eG14X2B14X2R14X22Plane422Unorm3Pack16ARM: return true;
       default                                              : return false;
@@ -9018,11 +9018,11 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( format )
     {
-      case Format::eD16Unorm:
+      case Format::eD16Unorm        :
       case Format::eX8D24UnormPack32:
-      case Format::eD32Sfloat:
-      case Format::eD16UnormS8Uint:
-      case Format::eD24UnormS8Uint:
+      case Format::eD32Sfloat       :
+      case Format::eD16UnormS8Uint  :
+      case Format::eD24UnormS8Uint  :
       case Format::eD32SfloatS8Uint : return true;
       default                       : return false;
     }
@@ -9033,259 +9033,259 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( format )
     {
-      case Format::eR4G4UnormPack8:
-      case Format::eR4G4B4A4UnormPack16:
-      case Format::eB4G4R4A4UnormPack16:
-      case Format::eR5G6B5UnormPack16:
-      case Format::eB5G6R5UnormPack16:
-      case Format::eR5G5B5A1UnormPack16:
-      case Format::eB5G5R5A1UnormPack16:
-      case Format::eA1R5G5B5UnormPack16:
-      case Format::eR8G8Unorm:
-      case Format::eR8G8Snorm:
-      case Format::eR8G8Uscaled:
-      case Format::eR8G8Sscaled:
-      case Format::eR8G8Uint:
-      case Format::eR8G8Sint:
-      case Format::eR8G8Srgb:
-      case Format::eR8G8B8Unorm:
-      case Format::eR8G8B8Snorm:
-      case Format::eR8G8B8Uscaled:
-      case Format::eR8G8B8Sscaled:
-      case Format::eR8G8B8Uint:
-      case Format::eR8G8B8Sint:
-      case Format::eR8G8B8Srgb:
-      case Format::eB8G8R8Unorm:
-      case Format::eB8G8R8Snorm:
-      case Format::eB8G8R8Uscaled:
-      case Format::eB8G8R8Sscaled:
-      case Format::eB8G8R8Uint:
-      case Format::eB8G8R8Sint:
-      case Format::eB8G8R8Srgb:
-      case Format::eR8G8B8A8Unorm:
-      case Format::eR8G8B8A8Snorm:
-      case Format::eR8G8B8A8Uscaled:
-      case Format::eR8G8B8A8Sscaled:
-      case Format::eR8G8B8A8Uint:
-      case Format::eR8G8B8A8Sint:
-      case Format::eR8G8B8A8Srgb:
-      case Format::eB8G8R8A8Unorm:
-      case Format::eB8G8R8A8Snorm:
-      case Format::eB8G8R8A8Uscaled:
-      case Format::eB8G8R8A8Sscaled:
-      case Format::eB8G8R8A8Uint:
-      case Format::eB8G8R8A8Sint:
-      case Format::eB8G8R8A8Srgb:
-      case Format::eA8B8G8R8UnormPack32:
-      case Format::eA8B8G8R8SnormPack32:
-      case Format::eA8B8G8R8UscaledPack32:
-      case Format::eA8B8G8R8SscaledPack32:
-      case Format::eA8B8G8R8UintPack32:
-      case Format::eA8B8G8R8SintPack32:
-      case Format::eA8B8G8R8SrgbPack32:
-      case Format::eA2R10G10B10UnormPack32:
-      case Format::eA2R10G10B10SnormPack32:
-      case Format::eA2R10G10B10UscaledPack32:
-      case Format::eA2R10G10B10SscaledPack32:
-      case Format::eA2R10G10B10UintPack32:
-      case Format::eA2R10G10B10SintPack32:
-      case Format::eA2B10G10R10UnormPack32:
-      case Format::eA2B10G10R10SnormPack32:
-      case Format::eA2B10G10R10UscaledPack32:
-      case Format::eA2B10G10R10SscaledPack32:
-      case Format::eA2B10G10R10UintPack32:
-      case Format::eA2B10G10R10SintPack32:
-      case Format::eR16G16Unorm:
-      case Format::eR16G16Snorm:
-      case Format::eR16G16Uscaled:
-      case Format::eR16G16Sscaled:
-      case Format::eR16G16Uint:
-      case Format::eR16G16Sint:
-      case Format::eR16G16Sfloat:
-      case Format::eR16G16B16Unorm:
-      case Format::eR16G16B16Snorm:
-      case Format::eR16G16B16Uscaled:
-      case Format::eR16G16B16Sscaled:
-      case Format::eR16G16B16Uint:
-      case Format::eR16G16B16Sint:
-      case Format::eR16G16B16Sfloat:
-      case Format::eR16G16B16A16Unorm:
-      case Format::eR16G16B16A16Snorm:
-      case Format::eR16G16B16A16Uscaled:
-      case Format::eR16G16B16A16Sscaled:
-      case Format::eR16G16B16A16Uint:
-      case Format::eR16G16B16A16Sint:
-      case Format::eR16G16B16A16Sfloat:
-      case Format::eR32G32Uint:
-      case Format::eR32G32Sint:
-      case Format::eR32G32Sfloat:
-      case Format::eR32G32B32Uint:
-      case Format::eR32G32B32Sint:
-      case Format::eR32G32B32Sfloat:
-      case Format::eR32G32B32A32Uint:
-      case Format::eR32G32B32A32Sint:
-      case Format::eR32G32B32A32Sfloat:
-      case Format::eR64G64Uint:
-      case Format::eR64G64Sint:
-      case Format::eR64G64Sfloat:
-      case Format::eR64G64B64Uint:
-      case Format::eR64G64B64Sint:
-      case Format::eR64G64B64Sfloat:
-      case Format::eR64G64B64A64Uint:
-      case Format::eR64G64B64A64Sint:
-      case Format::eR64G64B64A64Sfloat:
-      case Format::eB10G11R11UfloatPack32:
-      case Format::eE5B9G9R9UfloatPack32:
-      case Format::eBc1RgbUnormBlock:
-      case Format::eBc1RgbSrgbBlock:
-      case Format::eBc1RgbaUnormBlock:
-      case Format::eBc1RgbaSrgbBlock:
-      case Format::eBc2UnormBlock:
-      case Format::eBc2SrgbBlock:
-      case Format::eBc3UnormBlock:
-      case Format::eBc3SrgbBlock:
-      case Format::eBc5UnormBlock:
-      case Format::eBc5SnormBlock:
-      case Format::eBc6HUfloatBlock:
-      case Format::eBc6HSfloatBlock:
-      case Format::eBc7UnormBlock:
-      case Format::eBc7SrgbBlock:
-      case Format::eEtc2R8G8B8UnormBlock:
-      case Format::eEtc2R8G8B8SrgbBlock:
-      case Format::eEtc2R8G8B8A1UnormBlock:
-      case Format::eEtc2R8G8B8A1SrgbBlock:
-      case Format::eEtc2R8G8B8A8UnormBlock:
-      case Format::eEtc2R8G8B8A8SrgbBlock:
-      case Format::eEacR11G11UnormBlock:
-      case Format::eEacR11G11SnormBlock:
-      case Format::eAstc4x4UnormBlock:
-      case Format::eAstc4x4SrgbBlock:
-      case Format::eAstc5x4UnormBlock:
-      case Format::eAstc5x4SrgbBlock:
-      case Format::eAstc5x5UnormBlock:
-      case Format::eAstc5x5SrgbBlock:
-      case Format::eAstc6x5UnormBlock:
-      case Format::eAstc6x5SrgbBlock:
-      case Format::eAstc6x6UnormBlock:
-      case Format::eAstc6x6SrgbBlock:
-      case Format::eAstc8x5UnormBlock:
-      case Format::eAstc8x5SrgbBlock:
-      case Format::eAstc8x6UnormBlock:
-      case Format::eAstc8x6SrgbBlock:
-      case Format::eAstc8x8UnormBlock:
-      case Format::eAstc8x8SrgbBlock:
-      case Format::eAstc10x5UnormBlock:
-      case Format::eAstc10x5SrgbBlock:
-      case Format::eAstc10x6UnormBlock:
-      case Format::eAstc10x6SrgbBlock:
-      case Format::eAstc10x8UnormBlock:
-      case Format::eAstc10x8SrgbBlock:
-      case Format::eAstc10x10UnormBlock:
-      case Format::eAstc10x10SrgbBlock:
-      case Format::eAstc12x10UnormBlock:
-      case Format::eAstc12x10SrgbBlock:
-      case Format::eAstc12x12UnormBlock:
-      case Format::eAstc12x12SrgbBlock:
-      case Format::eG8B8G8R8422Unorm:
-      case Format::eB8G8R8G8422Unorm:
-      case Format::eG8B8R83Plane420Unorm:
-      case Format::eG8B8R82Plane420Unorm:
-      case Format::eG8B8R83Plane422Unorm:
-      case Format::eG8B8R82Plane422Unorm:
-      case Format::eG8B8R83Plane444Unorm:
-      case Format::eR10X6G10X6Unorm2Pack16:
-      case Format::eR10X6G10X6B10X6A10X6Unorm4Pack16:
-      case Format::eG10X6B10X6G10X6R10X6422Unorm4Pack16:
-      case Format::eB10X6G10X6R10X6G10X6422Unorm4Pack16:
-      case Format::eG10X6B10X6R10X63Plane420Unorm3Pack16:
-      case Format::eG10X6B10X6R10X62Plane420Unorm3Pack16:
-      case Format::eG10X6B10X6R10X63Plane422Unorm3Pack16:
-      case Format::eG10X6B10X6R10X62Plane422Unorm3Pack16:
-      case Format::eG10X6B10X6R10X63Plane444Unorm3Pack16:
-      case Format::eR12X4G12X4Unorm2Pack16:
-      case Format::eR12X4G12X4B12X4A12X4Unorm4Pack16:
-      case Format::eG12X4B12X4G12X4R12X4422Unorm4Pack16:
-      case Format::eB12X4G12X4R12X4G12X4422Unorm4Pack16:
-      case Format::eG12X4B12X4R12X43Plane420Unorm3Pack16:
-      case Format::eG12X4B12X4R12X42Plane420Unorm3Pack16:
-      case Format::eG12X4B12X4R12X43Plane422Unorm3Pack16:
-      case Format::eG12X4B12X4R12X42Plane422Unorm3Pack16:
-      case Format::eG12X4B12X4R12X43Plane444Unorm3Pack16:
-      case Format::eG16B16G16R16422Unorm:
-      case Format::eB16G16R16G16422Unorm:
-      case Format::eG16B16R163Plane420Unorm:
-      case Format::eG16B16R162Plane420Unorm:
-      case Format::eG16B16R163Plane422Unorm:
-      case Format::eG16B16R162Plane422Unorm:
-      case Format::eG16B16R163Plane444Unorm:
-      case Format::eG8B8R82Plane444Unorm:
-      case Format::eG10X6B10X6R10X62Plane444Unorm3Pack16:
-      case Format::eG12X4B12X4R12X42Plane444Unorm3Pack16:
-      case Format::eG16B16R162Plane444Unorm:
-      case Format::eA4R4G4B4UnormPack16:
-      case Format::eA4B4G4R4UnormPack16:
-      case Format::eAstc4x4SfloatBlock:
-      case Format::eAstc5x4SfloatBlock:
-      case Format::eAstc5x5SfloatBlock:
-      case Format::eAstc6x5SfloatBlock:
-      case Format::eAstc6x6SfloatBlock:
-      case Format::eAstc8x5SfloatBlock:
-      case Format::eAstc8x6SfloatBlock:
-      case Format::eAstc8x8SfloatBlock:
-      case Format::eAstc10x5SfloatBlock:
-      case Format::eAstc10x6SfloatBlock:
-      case Format::eAstc10x8SfloatBlock:
-      case Format::eAstc10x10SfloatBlock:
-      case Format::eAstc12x10SfloatBlock:
-      case Format::eAstc12x12SfloatBlock:
-      case Format::eA1B5G5R5UnormPack16:
-      case Format::ePvrtc12BppUnormBlockIMG:
-      case Format::ePvrtc14BppUnormBlockIMG:
-      case Format::ePvrtc22BppUnormBlockIMG:
-      case Format::ePvrtc24BppUnormBlockIMG:
-      case Format::ePvrtc12BppSrgbBlockIMG:
-      case Format::ePvrtc14BppSrgbBlockIMG:
-      case Format::ePvrtc22BppSrgbBlockIMG:
-      case Format::ePvrtc24BppSrgbBlockIMG:
-      case Format::eAstc3x3x3UnormBlockEXT:
-      case Format::eAstc3x3x3SrgbBlockEXT:
-      case Format::eAstc3x3x3SfloatBlockEXT:
-      case Format::eAstc4x3x3UnormBlockEXT:
-      case Format::eAstc4x3x3SrgbBlockEXT:
-      case Format::eAstc4x3x3SfloatBlockEXT:
-      case Format::eAstc4x4x3UnormBlockEXT:
-      case Format::eAstc4x4x3SrgbBlockEXT:
-      case Format::eAstc4x4x3SfloatBlockEXT:
-      case Format::eAstc4x4x4UnormBlockEXT:
-      case Format::eAstc4x4x4SrgbBlockEXT:
-      case Format::eAstc4x4x4SfloatBlockEXT:
-      case Format::eAstc5x4x4UnormBlockEXT:
-      case Format::eAstc5x4x4SrgbBlockEXT:
-      case Format::eAstc5x4x4SfloatBlockEXT:
-      case Format::eAstc5x5x4UnormBlockEXT:
-      case Format::eAstc5x5x4SrgbBlockEXT:
-      case Format::eAstc5x5x4SfloatBlockEXT:
-      case Format::eAstc5x5x5UnormBlockEXT:
-      case Format::eAstc5x5x5SrgbBlockEXT:
-      case Format::eAstc5x5x5SfloatBlockEXT:
-      case Format::eAstc6x5x5UnormBlockEXT:
-      case Format::eAstc6x5x5SrgbBlockEXT:
-      case Format::eAstc6x5x5SfloatBlockEXT:
-      case Format::eAstc6x6x5UnormBlockEXT:
-      case Format::eAstc6x6x5SrgbBlockEXT:
-      case Format::eAstc6x6x5SfloatBlockEXT:
-      case Format::eAstc6x6x6UnormBlockEXT:
-      case Format::eAstc6x6x6SrgbBlockEXT:
-      case Format::eAstc6x6x6SfloatBlockEXT:
-      case Format::eR16G16Sfixed5NV:
-      case Format::eR10X6G10X6Uint2Pack16ARM:
-      case Format::eR10X6G10X6B10X6A10X6Uint4Pack16ARM:
-      case Format::eR12X4G12X4Uint2Pack16ARM:
-      case Format::eR12X4G12X4B12X4A12X4Uint4Pack16ARM:
-      case Format::eR14X2G14X2Uint2Pack16ARM:
-      case Format::eR14X2G14X2B14X2A14X2Uint4Pack16ARM:
-      case Format::eR14X2G14X2Unorm2Pack16ARM:
-      case Format::eR14X2G14X2B14X2A14X2Unorm4Pack16ARM:
+      case Format::eR4G4UnormPack8                         :
+      case Format::eR4G4B4A4UnormPack16                    :
+      case Format::eB4G4R4A4UnormPack16                    :
+      case Format::eR5G6B5UnormPack16                      :
+      case Format::eB5G6R5UnormPack16                      :
+      case Format::eR5G5B5A1UnormPack16                    :
+      case Format::eB5G5R5A1UnormPack16                    :
+      case Format::eA1R5G5B5UnormPack16                    :
+      case Format::eR8G8Unorm                              :
+      case Format::eR8G8Snorm                              :
+      case Format::eR8G8Uscaled                            :
+      case Format::eR8G8Sscaled                            :
+      case Format::eR8G8Uint                               :
+      case Format::eR8G8Sint                               :
+      case Format::eR8G8Srgb                               :
+      case Format::eR8G8B8Unorm                            :
+      case Format::eR8G8B8Snorm                            :
+      case Format::eR8G8B8Uscaled                          :
+      case Format::eR8G8B8Sscaled                          :
+      case Format::eR8G8B8Uint                             :
+      case Format::eR8G8B8Sint                             :
+      case Format::eR8G8B8Srgb                             :
+      case Format::eB8G8R8Unorm                            :
+      case Format::eB8G8R8Snorm                            :
+      case Format::eB8G8R8Uscaled                          :
+      case Format::eB8G8R8Sscaled                          :
+      case Format::eB8G8R8Uint                             :
+      case Format::eB8G8R8Sint                             :
+      case Format::eB8G8R8Srgb                             :
+      case Format::eR8G8B8A8Unorm                          :
+      case Format::eR8G8B8A8Snorm                          :
+      case Format::eR8G8B8A8Uscaled                        :
+      case Format::eR8G8B8A8Sscaled                        :
+      case Format::eR8G8B8A8Uint                           :
+      case Format::eR8G8B8A8Sint                           :
+      case Format::eR8G8B8A8Srgb                           :
+      case Format::eB8G8R8A8Unorm                          :
+      case Format::eB8G8R8A8Snorm                          :
+      case Format::eB8G8R8A8Uscaled                        :
+      case Format::eB8G8R8A8Sscaled                        :
+      case Format::eB8G8R8A8Uint                           :
+      case Format::eB8G8R8A8Sint                           :
+      case Format::eB8G8R8A8Srgb                           :
+      case Format::eA8B8G8R8UnormPack32                    :
+      case Format::eA8B8G8R8SnormPack32                    :
+      case Format::eA8B8G8R8UscaledPack32                  :
+      case Format::eA8B8G8R8SscaledPack32                  :
+      case Format::eA8B8G8R8UintPack32                     :
+      case Format::eA8B8G8R8SintPack32                     :
+      case Format::eA8B8G8R8SrgbPack32                     :
+      case Format::eA2R10G10B10UnormPack32                 :
+      case Format::eA2R10G10B10SnormPack32                 :
+      case Format::eA2R10G10B10UscaledPack32               :
+      case Format::eA2R10G10B10SscaledPack32               :
+      case Format::eA2R10G10B10UintPack32                  :
+      case Format::eA2R10G10B10SintPack32                  :
+      case Format::eA2B10G10R10UnormPack32                 :
+      case Format::eA2B10G10R10SnormPack32                 :
+      case Format::eA2B10G10R10UscaledPack32               :
+      case Format::eA2B10G10R10SscaledPack32               :
+      case Format::eA2B10G10R10UintPack32                  :
+      case Format::eA2B10G10R10SintPack32                  :
+      case Format::eR16G16Unorm                            :
+      case Format::eR16G16Snorm                            :
+      case Format::eR16G16Uscaled                          :
+      case Format::eR16G16Sscaled                          :
+      case Format::eR16G16Uint                             :
+      case Format::eR16G16Sint                             :
+      case Format::eR16G16Sfloat                           :
+      case Format::eR16G16B16Unorm                         :
+      case Format::eR16G16B16Snorm                         :
+      case Format::eR16G16B16Uscaled                       :
+      case Format::eR16G16B16Sscaled                       :
+      case Format::eR16G16B16Uint                          :
+      case Format::eR16G16B16Sint                          :
+      case Format::eR16G16B16Sfloat                        :
+      case Format::eR16G16B16A16Unorm                      :
+      case Format::eR16G16B16A16Snorm                      :
+      case Format::eR16G16B16A16Uscaled                    :
+      case Format::eR16G16B16A16Sscaled                    :
+      case Format::eR16G16B16A16Uint                       :
+      case Format::eR16G16B16A16Sint                       :
+      case Format::eR16G16B16A16Sfloat                     :
+      case Format::eR32G32Uint                             :
+      case Format::eR32G32Sint                             :
+      case Format::eR32G32Sfloat                           :
+      case Format::eR32G32B32Uint                          :
+      case Format::eR32G32B32Sint                          :
+      case Format::eR32G32B32Sfloat                        :
+      case Format::eR32G32B32A32Uint                       :
+      case Format::eR32G32B32A32Sint                       :
+      case Format::eR32G32B32A32Sfloat                     :
+      case Format::eR64G64Uint                             :
+      case Format::eR64G64Sint                             :
+      case Format::eR64G64Sfloat                           :
+      case Format::eR64G64B64Uint                          :
+      case Format::eR64G64B64Sint                          :
+      case Format::eR64G64B64Sfloat                        :
+      case Format::eR64G64B64A64Uint                       :
+      case Format::eR64G64B64A64Sint                       :
+      case Format::eR64G64B64A64Sfloat                     :
+      case Format::eB10G11R11UfloatPack32                  :
+      case Format::eE5B9G9R9UfloatPack32                   :
+      case Format::eBc1RgbUnormBlock                       :
+      case Format::eBc1RgbSrgbBlock                        :
+      case Format::eBc1RgbaUnormBlock                      :
+      case Format::eBc1RgbaSrgbBlock                       :
+      case Format::eBc2UnormBlock                          :
+      case Format::eBc2SrgbBlock                           :
+      case Format::eBc3UnormBlock                          :
+      case Format::eBc3SrgbBlock                           :
+      case Format::eBc5UnormBlock                          :
+      case Format::eBc5SnormBlock                          :
+      case Format::eBc6HUfloatBlock                        :
+      case Format::eBc6HSfloatBlock                        :
+      case Format::eBc7UnormBlock                          :
+      case Format::eBc7SrgbBlock                           :
+      case Format::eEtc2R8G8B8UnormBlock                   :
+      case Format::eEtc2R8G8B8SrgbBlock                    :
+      case Format::eEtc2R8G8B8A1UnormBlock                 :
+      case Format::eEtc2R8G8B8A1SrgbBlock                  :
+      case Format::eEtc2R8G8B8A8UnormBlock                 :
+      case Format::eEtc2R8G8B8A8SrgbBlock                  :
+      case Format::eEacR11G11UnormBlock                    :
+      case Format::eEacR11G11SnormBlock                    :
+      case Format::eAstc4x4UnormBlock                      :
+      case Format::eAstc4x4SrgbBlock                       :
+      case Format::eAstc5x4UnormBlock                      :
+      case Format::eAstc5x4SrgbBlock                       :
+      case Format::eAstc5x5UnormBlock                      :
+      case Format::eAstc5x5SrgbBlock                       :
+      case Format::eAstc6x5UnormBlock                      :
+      case Format::eAstc6x5SrgbBlock                       :
+      case Format::eAstc6x6UnormBlock                      :
+      case Format::eAstc6x6SrgbBlock                       :
+      case Format::eAstc8x5UnormBlock                      :
+      case Format::eAstc8x5SrgbBlock                       :
+      case Format::eAstc8x6UnormBlock                      :
+      case Format::eAstc8x6SrgbBlock                       :
+      case Format::eAstc8x8UnormBlock                      :
+      case Format::eAstc8x8SrgbBlock                       :
+      case Format::eAstc10x5UnormBlock                     :
+      case Format::eAstc10x5SrgbBlock                      :
+      case Format::eAstc10x6UnormBlock                     :
+      case Format::eAstc10x6SrgbBlock                      :
+      case Format::eAstc10x8UnormBlock                     :
+      case Format::eAstc10x8SrgbBlock                      :
+      case Format::eAstc10x10UnormBlock                    :
+      case Format::eAstc10x10SrgbBlock                     :
+      case Format::eAstc12x10UnormBlock                    :
+      case Format::eAstc12x10SrgbBlock                     :
+      case Format::eAstc12x12UnormBlock                    :
+      case Format::eAstc12x12SrgbBlock                     :
+      case Format::eG8B8G8R8422Unorm                       :
+      case Format::eB8G8R8G8422Unorm                       :
+      case Format::eG8B8R83Plane420Unorm                   :
+      case Format::eG8B8R82Plane420Unorm                   :
+      case Format::eG8B8R83Plane422Unorm                   :
+      case Format::eG8B8R82Plane422Unorm                   :
+      case Format::eG8B8R83Plane444Unorm                   :
+      case Format::eR10X6G10X6Unorm2Pack16                 :
+      case Format::eR10X6G10X6B10X6A10X6Unorm4Pack16       :
+      case Format::eG10X6B10X6G10X6R10X6422Unorm4Pack16    :
+      case Format::eB10X6G10X6R10X6G10X6422Unorm4Pack16    :
+      case Format::eG10X6B10X6R10X63Plane420Unorm3Pack16   :
+      case Format::eG10X6B10X6R10X62Plane420Unorm3Pack16   :
+      case Format::eG10X6B10X6R10X63Plane422Unorm3Pack16   :
+      case Format::eG10X6B10X6R10X62Plane422Unorm3Pack16   :
+      case Format::eG10X6B10X6R10X63Plane444Unorm3Pack16   :
+      case Format::eR12X4G12X4Unorm2Pack16                 :
+      case Format::eR12X4G12X4B12X4A12X4Unorm4Pack16       :
+      case Format::eG12X4B12X4G12X4R12X4422Unorm4Pack16    :
+      case Format::eB12X4G12X4R12X4G12X4422Unorm4Pack16    :
+      case Format::eG12X4B12X4R12X43Plane420Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X42Plane420Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X43Plane422Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X42Plane422Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X43Plane444Unorm3Pack16   :
+      case Format::eG16B16G16R16422Unorm                   :
+      case Format::eB16G16R16G16422Unorm                   :
+      case Format::eG16B16R163Plane420Unorm                :
+      case Format::eG16B16R162Plane420Unorm                :
+      case Format::eG16B16R163Plane422Unorm                :
+      case Format::eG16B16R162Plane422Unorm                :
+      case Format::eG16B16R163Plane444Unorm                :
+      case Format::eG8B8R82Plane444Unorm                   :
+      case Format::eG10X6B10X6R10X62Plane444Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X42Plane444Unorm3Pack16   :
+      case Format::eG16B16R162Plane444Unorm                :
+      case Format::eA4R4G4B4UnormPack16                    :
+      case Format::eA4B4G4R4UnormPack16                    :
+      case Format::eAstc4x4SfloatBlock                     :
+      case Format::eAstc5x4SfloatBlock                     :
+      case Format::eAstc5x5SfloatBlock                     :
+      case Format::eAstc6x5SfloatBlock                     :
+      case Format::eAstc6x6SfloatBlock                     :
+      case Format::eAstc8x5SfloatBlock                     :
+      case Format::eAstc8x6SfloatBlock                     :
+      case Format::eAstc8x8SfloatBlock                     :
+      case Format::eAstc10x5SfloatBlock                    :
+      case Format::eAstc10x6SfloatBlock                    :
+      case Format::eAstc10x8SfloatBlock                    :
+      case Format::eAstc10x10SfloatBlock                   :
+      case Format::eAstc12x10SfloatBlock                   :
+      case Format::eAstc12x12SfloatBlock                   :
+      case Format::eA1B5G5R5UnormPack16                    :
+      case Format::ePvrtc12BppUnormBlockIMG                :
+      case Format::ePvrtc14BppUnormBlockIMG                :
+      case Format::ePvrtc22BppUnormBlockIMG                :
+      case Format::ePvrtc24BppUnormBlockIMG                :
+      case Format::ePvrtc12BppSrgbBlockIMG                 :
+      case Format::ePvrtc14BppSrgbBlockIMG                 :
+      case Format::ePvrtc22BppSrgbBlockIMG                 :
+      case Format::ePvrtc24BppSrgbBlockIMG                 :
+      case Format::eAstc3x3x3UnormBlockEXT                 :
+      case Format::eAstc3x3x3SrgbBlockEXT                  :
+      case Format::eAstc3x3x3SfloatBlockEXT                :
+      case Format::eAstc4x3x3UnormBlockEXT                 :
+      case Format::eAstc4x3x3SrgbBlockEXT                  :
+      case Format::eAstc4x3x3SfloatBlockEXT                :
+      case Format::eAstc4x4x3UnormBlockEXT                 :
+      case Format::eAstc4x4x3SrgbBlockEXT                  :
+      case Format::eAstc4x4x3SfloatBlockEXT                :
+      case Format::eAstc4x4x4UnormBlockEXT                 :
+      case Format::eAstc4x4x4SrgbBlockEXT                  :
+      case Format::eAstc4x4x4SfloatBlockEXT                :
+      case Format::eAstc5x4x4UnormBlockEXT                 :
+      case Format::eAstc5x4x4SrgbBlockEXT                  :
+      case Format::eAstc5x4x4SfloatBlockEXT                :
+      case Format::eAstc5x5x4UnormBlockEXT                 :
+      case Format::eAstc5x5x4SrgbBlockEXT                  :
+      case Format::eAstc5x5x4SfloatBlockEXT                :
+      case Format::eAstc5x5x5UnormBlockEXT                 :
+      case Format::eAstc5x5x5SrgbBlockEXT                  :
+      case Format::eAstc5x5x5SfloatBlockEXT                :
+      case Format::eAstc6x5x5UnormBlockEXT                 :
+      case Format::eAstc6x5x5SrgbBlockEXT                  :
+      case Format::eAstc6x5x5SfloatBlockEXT                :
+      case Format::eAstc6x6x5UnormBlockEXT                 :
+      case Format::eAstc6x6x5SrgbBlockEXT                  :
+      case Format::eAstc6x6x5SfloatBlockEXT                :
+      case Format::eAstc6x6x6UnormBlockEXT                 :
+      case Format::eAstc6x6x6SrgbBlockEXT                  :
+      case Format::eAstc6x6x6SfloatBlockEXT                :
+      case Format::eR16G16Sfixed5NV                        :
+      case Format::eR10X6G10X6Uint2Pack16ARM               :
+      case Format::eR10X6G10X6B10X6A10X6Uint4Pack16ARM     :
+      case Format::eR12X4G12X4Uint2Pack16ARM               :
+      case Format::eR12X4G12X4B12X4A12X4Uint4Pack16ARM     :
+      case Format::eR14X2G14X2Uint2Pack16ARM               :
+      case Format::eR14X2G14X2B14X2A14X2Uint4Pack16ARM     :
+      case Format::eR14X2G14X2Unorm2Pack16ARM              :
+      case Format::eR14X2G14X2B14X2A14X2Unorm4Pack16ARM    :
       case Format::eG14X2B14X2R14X22Plane420Unorm3Pack16ARM:
       case Format::eG14X2B14X2R14X22Plane422Unorm3Pack16ARM: return true;
       default                                              : return false;
@@ -9297,293 +9297,293 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( format )
     {
-      case Format::eR4G4UnormPack8:
-      case Format::eR4G4B4A4UnormPack16:
-      case Format::eB4G4R4A4UnormPack16:
-      case Format::eR5G6B5UnormPack16:
-      case Format::eB5G6R5UnormPack16:
-      case Format::eR5G5B5A1UnormPack16:
-      case Format::eB5G5R5A1UnormPack16:
-      case Format::eA1R5G5B5UnormPack16:
-      case Format::eR8Unorm:
-      case Format::eR8Snorm:
-      case Format::eR8Uscaled:
-      case Format::eR8Sscaled:
-      case Format::eR8Uint:
-      case Format::eR8Sint:
-      case Format::eR8Srgb:
-      case Format::eR8G8Unorm:
-      case Format::eR8G8Snorm:
-      case Format::eR8G8Uscaled:
-      case Format::eR8G8Sscaled:
-      case Format::eR8G8Uint:
-      case Format::eR8G8Sint:
-      case Format::eR8G8Srgb:
-      case Format::eR8G8B8Unorm:
-      case Format::eR8G8B8Snorm:
-      case Format::eR8G8B8Uscaled:
-      case Format::eR8G8B8Sscaled:
-      case Format::eR8G8B8Uint:
-      case Format::eR8G8B8Sint:
-      case Format::eR8G8B8Srgb:
-      case Format::eB8G8R8Unorm:
-      case Format::eB8G8R8Snorm:
-      case Format::eB8G8R8Uscaled:
-      case Format::eB8G8R8Sscaled:
-      case Format::eB8G8R8Uint:
-      case Format::eB8G8R8Sint:
-      case Format::eB8G8R8Srgb:
-      case Format::eR8G8B8A8Unorm:
-      case Format::eR8G8B8A8Snorm:
-      case Format::eR8G8B8A8Uscaled:
-      case Format::eR8G8B8A8Sscaled:
-      case Format::eR8G8B8A8Uint:
-      case Format::eR8G8B8A8Sint:
-      case Format::eR8G8B8A8Srgb:
-      case Format::eB8G8R8A8Unorm:
-      case Format::eB8G8R8A8Snorm:
-      case Format::eB8G8R8A8Uscaled:
-      case Format::eB8G8R8A8Sscaled:
-      case Format::eB8G8R8A8Uint:
-      case Format::eB8G8R8A8Sint:
-      case Format::eB8G8R8A8Srgb:
-      case Format::eA8B8G8R8UnormPack32:
-      case Format::eA8B8G8R8SnormPack32:
-      case Format::eA8B8G8R8UscaledPack32:
-      case Format::eA8B8G8R8SscaledPack32:
-      case Format::eA8B8G8R8UintPack32:
-      case Format::eA8B8G8R8SintPack32:
-      case Format::eA8B8G8R8SrgbPack32:
-      case Format::eA2R10G10B10UnormPack32:
-      case Format::eA2R10G10B10SnormPack32:
-      case Format::eA2R10G10B10UscaledPack32:
-      case Format::eA2R10G10B10SscaledPack32:
-      case Format::eA2R10G10B10UintPack32:
-      case Format::eA2R10G10B10SintPack32:
-      case Format::eA2B10G10R10UnormPack32:
-      case Format::eA2B10G10R10SnormPack32:
-      case Format::eA2B10G10R10UscaledPack32:
-      case Format::eA2B10G10R10SscaledPack32:
-      case Format::eA2B10G10R10UintPack32:
-      case Format::eA2B10G10R10SintPack32:
-      case Format::eR16Unorm:
-      case Format::eR16Snorm:
-      case Format::eR16Uscaled:
-      case Format::eR16Sscaled:
-      case Format::eR16Uint:
-      case Format::eR16Sint:
-      case Format::eR16Sfloat:
-      case Format::eR16G16Unorm:
-      case Format::eR16G16Snorm:
-      case Format::eR16G16Uscaled:
-      case Format::eR16G16Sscaled:
-      case Format::eR16G16Uint:
-      case Format::eR16G16Sint:
-      case Format::eR16G16Sfloat:
-      case Format::eR16G16B16Unorm:
-      case Format::eR16G16B16Snorm:
-      case Format::eR16G16B16Uscaled:
-      case Format::eR16G16B16Sscaled:
-      case Format::eR16G16B16Uint:
-      case Format::eR16G16B16Sint:
-      case Format::eR16G16B16Sfloat:
-      case Format::eR16G16B16A16Unorm:
-      case Format::eR16G16B16A16Snorm:
-      case Format::eR16G16B16A16Uscaled:
-      case Format::eR16G16B16A16Sscaled:
-      case Format::eR16G16B16A16Uint:
-      case Format::eR16G16B16A16Sint:
-      case Format::eR16G16B16A16Sfloat:
-      case Format::eR32Uint:
-      case Format::eR32Sint:
-      case Format::eR32Sfloat:
-      case Format::eR32G32Uint:
-      case Format::eR32G32Sint:
-      case Format::eR32G32Sfloat:
-      case Format::eR32G32B32Uint:
-      case Format::eR32G32B32Sint:
-      case Format::eR32G32B32Sfloat:
-      case Format::eR32G32B32A32Uint:
-      case Format::eR32G32B32A32Sint:
-      case Format::eR32G32B32A32Sfloat:
-      case Format::eR64Uint:
-      case Format::eR64Sint:
-      case Format::eR64Sfloat:
-      case Format::eR64G64Uint:
-      case Format::eR64G64Sint:
-      case Format::eR64G64Sfloat:
-      case Format::eR64G64B64Uint:
-      case Format::eR64G64B64Sint:
-      case Format::eR64G64B64Sfloat:
-      case Format::eR64G64B64A64Uint:
-      case Format::eR64G64B64A64Sint:
-      case Format::eR64G64B64A64Sfloat:
-      case Format::eB10G11R11UfloatPack32:
-      case Format::eE5B9G9R9UfloatPack32:
-      case Format::eBc1RgbUnormBlock:
-      case Format::eBc1RgbSrgbBlock:
-      case Format::eBc1RgbaUnormBlock:
-      case Format::eBc1RgbaSrgbBlock:
-      case Format::eBc2UnormBlock:
-      case Format::eBc2SrgbBlock:
-      case Format::eBc3UnormBlock:
-      case Format::eBc3SrgbBlock:
-      case Format::eBc4UnormBlock:
-      case Format::eBc4SnormBlock:
-      case Format::eBc5UnormBlock:
-      case Format::eBc5SnormBlock:
-      case Format::eBc6HUfloatBlock:
-      case Format::eBc6HSfloatBlock:
-      case Format::eBc7UnormBlock:
-      case Format::eBc7SrgbBlock:
-      case Format::eEtc2R8G8B8UnormBlock:
-      case Format::eEtc2R8G8B8SrgbBlock:
-      case Format::eEtc2R8G8B8A1UnormBlock:
-      case Format::eEtc2R8G8B8A1SrgbBlock:
-      case Format::eEtc2R8G8B8A8UnormBlock:
-      case Format::eEtc2R8G8B8A8SrgbBlock:
-      case Format::eEacR11UnormBlock:
-      case Format::eEacR11SnormBlock:
-      case Format::eEacR11G11UnormBlock:
-      case Format::eEacR11G11SnormBlock:
-      case Format::eAstc4x4UnormBlock:
-      case Format::eAstc4x4SrgbBlock:
-      case Format::eAstc5x4UnormBlock:
-      case Format::eAstc5x4SrgbBlock:
-      case Format::eAstc5x5UnormBlock:
-      case Format::eAstc5x5SrgbBlock:
-      case Format::eAstc6x5UnormBlock:
-      case Format::eAstc6x5SrgbBlock:
-      case Format::eAstc6x6UnormBlock:
-      case Format::eAstc6x6SrgbBlock:
-      case Format::eAstc8x5UnormBlock:
-      case Format::eAstc8x5SrgbBlock:
-      case Format::eAstc8x6UnormBlock:
-      case Format::eAstc8x6SrgbBlock:
-      case Format::eAstc8x8UnormBlock:
-      case Format::eAstc8x8SrgbBlock:
-      case Format::eAstc10x5UnormBlock:
-      case Format::eAstc10x5SrgbBlock:
-      case Format::eAstc10x6UnormBlock:
-      case Format::eAstc10x6SrgbBlock:
-      case Format::eAstc10x8UnormBlock:
-      case Format::eAstc10x8SrgbBlock:
-      case Format::eAstc10x10UnormBlock:
-      case Format::eAstc10x10SrgbBlock:
-      case Format::eAstc12x10UnormBlock:
-      case Format::eAstc12x10SrgbBlock:
-      case Format::eAstc12x12UnormBlock:
-      case Format::eAstc12x12SrgbBlock:
-      case Format::eG8B8G8R8422Unorm:
-      case Format::eB8G8R8G8422Unorm:
-      case Format::eG8B8R83Plane420Unorm:
-      case Format::eG8B8R82Plane420Unorm:
-      case Format::eG8B8R83Plane422Unorm:
-      case Format::eG8B8R82Plane422Unorm:
-      case Format::eG8B8R83Plane444Unorm:
-      case Format::eR10X6UnormPack16:
-      case Format::eR10X6G10X6Unorm2Pack16:
-      case Format::eR10X6G10X6B10X6A10X6Unorm4Pack16:
-      case Format::eG10X6B10X6G10X6R10X6422Unorm4Pack16:
-      case Format::eB10X6G10X6R10X6G10X6422Unorm4Pack16:
-      case Format::eG10X6B10X6R10X63Plane420Unorm3Pack16:
-      case Format::eG10X6B10X6R10X62Plane420Unorm3Pack16:
-      case Format::eG10X6B10X6R10X63Plane422Unorm3Pack16:
-      case Format::eG10X6B10X6R10X62Plane422Unorm3Pack16:
-      case Format::eG10X6B10X6R10X63Plane444Unorm3Pack16:
-      case Format::eR12X4UnormPack16:
-      case Format::eR12X4G12X4Unorm2Pack16:
-      case Format::eR12X4G12X4B12X4A12X4Unorm4Pack16:
-      case Format::eG12X4B12X4G12X4R12X4422Unorm4Pack16:
-      case Format::eB12X4G12X4R12X4G12X4422Unorm4Pack16:
-      case Format::eG12X4B12X4R12X43Plane420Unorm3Pack16:
-      case Format::eG12X4B12X4R12X42Plane420Unorm3Pack16:
-      case Format::eG12X4B12X4R12X43Plane422Unorm3Pack16:
-      case Format::eG12X4B12X4R12X42Plane422Unorm3Pack16:
-      case Format::eG12X4B12X4R12X43Plane444Unorm3Pack16:
-      case Format::eG16B16G16R16422Unorm:
-      case Format::eB16G16R16G16422Unorm:
-      case Format::eG16B16R163Plane420Unorm:
-      case Format::eG16B16R162Plane420Unorm:
-      case Format::eG16B16R163Plane422Unorm:
-      case Format::eG16B16R162Plane422Unorm:
-      case Format::eG16B16R163Plane444Unorm:
-      case Format::eG8B8R82Plane444Unorm:
-      case Format::eG10X6B10X6R10X62Plane444Unorm3Pack16:
-      case Format::eG12X4B12X4R12X42Plane444Unorm3Pack16:
-      case Format::eG16B16R162Plane444Unorm:
-      case Format::eA4R4G4B4UnormPack16:
-      case Format::eA4B4G4R4UnormPack16:
-      case Format::eAstc4x4SfloatBlock:
-      case Format::eAstc5x4SfloatBlock:
-      case Format::eAstc5x5SfloatBlock:
-      case Format::eAstc6x5SfloatBlock:
-      case Format::eAstc6x6SfloatBlock:
-      case Format::eAstc8x5SfloatBlock:
-      case Format::eAstc8x6SfloatBlock:
-      case Format::eAstc8x8SfloatBlock:
-      case Format::eAstc10x5SfloatBlock:
-      case Format::eAstc10x6SfloatBlock:
-      case Format::eAstc10x8SfloatBlock:
-      case Format::eAstc10x10SfloatBlock:
-      case Format::eAstc12x10SfloatBlock:
-      case Format::eAstc12x12SfloatBlock:
-      case Format::eA1B5G5R5UnormPack16:
-      case Format::ePvrtc12BppUnormBlockIMG:
-      case Format::ePvrtc14BppUnormBlockIMG:
-      case Format::ePvrtc22BppUnormBlockIMG:
-      case Format::ePvrtc24BppUnormBlockIMG:
-      case Format::ePvrtc12BppSrgbBlockIMG:
-      case Format::ePvrtc14BppSrgbBlockIMG:
-      case Format::ePvrtc22BppSrgbBlockIMG:
-      case Format::ePvrtc24BppSrgbBlockIMG:
-      case Format::eAstc3x3x3UnormBlockEXT:
-      case Format::eAstc3x3x3SrgbBlockEXT:
-      case Format::eAstc3x3x3SfloatBlockEXT:
-      case Format::eAstc4x3x3UnormBlockEXT:
-      case Format::eAstc4x3x3SrgbBlockEXT:
-      case Format::eAstc4x3x3SfloatBlockEXT:
-      case Format::eAstc4x4x3UnormBlockEXT:
-      case Format::eAstc4x4x3SrgbBlockEXT:
-      case Format::eAstc4x4x3SfloatBlockEXT:
-      case Format::eAstc4x4x4UnormBlockEXT:
-      case Format::eAstc4x4x4SrgbBlockEXT:
-      case Format::eAstc4x4x4SfloatBlockEXT:
-      case Format::eAstc5x4x4UnormBlockEXT:
-      case Format::eAstc5x4x4SrgbBlockEXT:
-      case Format::eAstc5x4x4SfloatBlockEXT:
-      case Format::eAstc5x5x4UnormBlockEXT:
-      case Format::eAstc5x5x4SrgbBlockEXT:
-      case Format::eAstc5x5x4SfloatBlockEXT:
-      case Format::eAstc5x5x5UnormBlockEXT:
-      case Format::eAstc5x5x5SrgbBlockEXT:
-      case Format::eAstc5x5x5SfloatBlockEXT:
-      case Format::eAstc6x5x5UnormBlockEXT:
-      case Format::eAstc6x5x5SrgbBlockEXT:
-      case Format::eAstc6x5x5SfloatBlockEXT:
-      case Format::eAstc6x6x5UnormBlockEXT:
-      case Format::eAstc6x6x5SrgbBlockEXT:
-      case Format::eAstc6x6x5SfloatBlockEXT:
-      case Format::eAstc6x6x6UnormBlockEXT:
-      case Format::eAstc6x6x6SrgbBlockEXT:
-      case Format::eAstc6x6x6SfloatBlockEXT:
-      case Format::eR8BoolARM:
-      case Format::eR16SfloatFpencodingBfloat16ARM:
-      case Format::eR8SfloatFpencodingFloat8E4M3ARM:
-      case Format::eR8SfloatFpencodingFloat8E5M2ARM:
-      case Format::eR16G16Sfixed5NV:
-      case Format::eR10X6UintPack16ARM:
-      case Format::eR10X6G10X6Uint2Pack16ARM:
-      case Format::eR10X6G10X6B10X6A10X6Uint4Pack16ARM:
-      case Format::eR12X4UintPack16ARM:
-      case Format::eR12X4G12X4Uint2Pack16ARM:
-      case Format::eR12X4G12X4B12X4A12X4Uint4Pack16ARM:
-      case Format::eR14X2UintPack16ARM:
-      case Format::eR14X2G14X2Uint2Pack16ARM:
-      case Format::eR14X2G14X2B14X2A14X2Uint4Pack16ARM:
-      case Format::eR14X2UnormPack16ARM:
-      case Format::eR14X2G14X2Unorm2Pack16ARM:
-      case Format::eR14X2G14X2B14X2A14X2Unorm4Pack16ARM:
+      case Format::eR4G4UnormPack8                         :
+      case Format::eR4G4B4A4UnormPack16                    :
+      case Format::eB4G4R4A4UnormPack16                    :
+      case Format::eR5G6B5UnormPack16                      :
+      case Format::eB5G6R5UnormPack16                      :
+      case Format::eR5G5B5A1UnormPack16                    :
+      case Format::eB5G5R5A1UnormPack16                    :
+      case Format::eA1R5G5B5UnormPack16                    :
+      case Format::eR8Unorm                                :
+      case Format::eR8Snorm                                :
+      case Format::eR8Uscaled                              :
+      case Format::eR8Sscaled                              :
+      case Format::eR8Uint                                 :
+      case Format::eR8Sint                                 :
+      case Format::eR8Srgb                                 :
+      case Format::eR8G8Unorm                              :
+      case Format::eR8G8Snorm                              :
+      case Format::eR8G8Uscaled                            :
+      case Format::eR8G8Sscaled                            :
+      case Format::eR8G8Uint                               :
+      case Format::eR8G8Sint                               :
+      case Format::eR8G8Srgb                               :
+      case Format::eR8G8B8Unorm                            :
+      case Format::eR8G8B8Snorm                            :
+      case Format::eR8G8B8Uscaled                          :
+      case Format::eR8G8B8Sscaled                          :
+      case Format::eR8G8B8Uint                             :
+      case Format::eR8G8B8Sint                             :
+      case Format::eR8G8B8Srgb                             :
+      case Format::eB8G8R8Unorm                            :
+      case Format::eB8G8R8Snorm                            :
+      case Format::eB8G8R8Uscaled                          :
+      case Format::eB8G8R8Sscaled                          :
+      case Format::eB8G8R8Uint                             :
+      case Format::eB8G8R8Sint                             :
+      case Format::eB8G8R8Srgb                             :
+      case Format::eR8G8B8A8Unorm                          :
+      case Format::eR8G8B8A8Snorm                          :
+      case Format::eR8G8B8A8Uscaled                        :
+      case Format::eR8G8B8A8Sscaled                        :
+      case Format::eR8G8B8A8Uint                           :
+      case Format::eR8G8B8A8Sint                           :
+      case Format::eR8G8B8A8Srgb                           :
+      case Format::eB8G8R8A8Unorm                          :
+      case Format::eB8G8R8A8Snorm                          :
+      case Format::eB8G8R8A8Uscaled                        :
+      case Format::eB8G8R8A8Sscaled                        :
+      case Format::eB8G8R8A8Uint                           :
+      case Format::eB8G8R8A8Sint                           :
+      case Format::eB8G8R8A8Srgb                           :
+      case Format::eA8B8G8R8UnormPack32                    :
+      case Format::eA8B8G8R8SnormPack32                    :
+      case Format::eA8B8G8R8UscaledPack32                  :
+      case Format::eA8B8G8R8SscaledPack32                  :
+      case Format::eA8B8G8R8UintPack32                     :
+      case Format::eA8B8G8R8SintPack32                     :
+      case Format::eA8B8G8R8SrgbPack32                     :
+      case Format::eA2R10G10B10UnormPack32                 :
+      case Format::eA2R10G10B10SnormPack32                 :
+      case Format::eA2R10G10B10UscaledPack32               :
+      case Format::eA2R10G10B10SscaledPack32               :
+      case Format::eA2R10G10B10UintPack32                  :
+      case Format::eA2R10G10B10SintPack32                  :
+      case Format::eA2B10G10R10UnormPack32                 :
+      case Format::eA2B10G10R10SnormPack32                 :
+      case Format::eA2B10G10R10UscaledPack32               :
+      case Format::eA2B10G10R10SscaledPack32               :
+      case Format::eA2B10G10R10UintPack32                  :
+      case Format::eA2B10G10R10SintPack32                  :
+      case Format::eR16Unorm                               :
+      case Format::eR16Snorm                               :
+      case Format::eR16Uscaled                             :
+      case Format::eR16Sscaled                             :
+      case Format::eR16Uint                                :
+      case Format::eR16Sint                                :
+      case Format::eR16Sfloat                              :
+      case Format::eR16G16Unorm                            :
+      case Format::eR16G16Snorm                            :
+      case Format::eR16G16Uscaled                          :
+      case Format::eR16G16Sscaled                          :
+      case Format::eR16G16Uint                             :
+      case Format::eR16G16Sint                             :
+      case Format::eR16G16Sfloat                           :
+      case Format::eR16G16B16Unorm                         :
+      case Format::eR16G16B16Snorm                         :
+      case Format::eR16G16B16Uscaled                       :
+      case Format::eR16G16B16Sscaled                       :
+      case Format::eR16G16B16Uint                          :
+      case Format::eR16G16B16Sint                          :
+      case Format::eR16G16B16Sfloat                        :
+      case Format::eR16G16B16A16Unorm                      :
+      case Format::eR16G16B16A16Snorm                      :
+      case Format::eR16G16B16A16Uscaled                    :
+      case Format::eR16G16B16A16Sscaled                    :
+      case Format::eR16G16B16A16Uint                       :
+      case Format::eR16G16B16A16Sint                       :
+      case Format::eR16G16B16A16Sfloat                     :
+      case Format::eR32Uint                                :
+      case Format::eR32Sint                                :
+      case Format::eR32Sfloat                              :
+      case Format::eR32G32Uint                             :
+      case Format::eR32G32Sint                             :
+      case Format::eR32G32Sfloat                           :
+      case Format::eR32G32B32Uint                          :
+      case Format::eR32G32B32Sint                          :
+      case Format::eR32G32B32Sfloat                        :
+      case Format::eR32G32B32A32Uint                       :
+      case Format::eR32G32B32A32Sint                       :
+      case Format::eR32G32B32A32Sfloat                     :
+      case Format::eR64Uint                                :
+      case Format::eR64Sint                                :
+      case Format::eR64Sfloat                              :
+      case Format::eR64G64Uint                             :
+      case Format::eR64G64Sint                             :
+      case Format::eR64G64Sfloat                           :
+      case Format::eR64G64B64Uint                          :
+      case Format::eR64G64B64Sint                          :
+      case Format::eR64G64B64Sfloat                        :
+      case Format::eR64G64B64A64Uint                       :
+      case Format::eR64G64B64A64Sint                       :
+      case Format::eR64G64B64A64Sfloat                     :
+      case Format::eB10G11R11UfloatPack32                  :
+      case Format::eE5B9G9R9UfloatPack32                   :
+      case Format::eBc1RgbUnormBlock                       :
+      case Format::eBc1RgbSrgbBlock                        :
+      case Format::eBc1RgbaUnormBlock                      :
+      case Format::eBc1RgbaSrgbBlock                       :
+      case Format::eBc2UnormBlock                          :
+      case Format::eBc2SrgbBlock                           :
+      case Format::eBc3UnormBlock                          :
+      case Format::eBc3SrgbBlock                           :
+      case Format::eBc4UnormBlock                          :
+      case Format::eBc4SnormBlock                          :
+      case Format::eBc5UnormBlock                          :
+      case Format::eBc5SnormBlock                          :
+      case Format::eBc6HUfloatBlock                        :
+      case Format::eBc6HSfloatBlock                        :
+      case Format::eBc7UnormBlock                          :
+      case Format::eBc7SrgbBlock                           :
+      case Format::eEtc2R8G8B8UnormBlock                   :
+      case Format::eEtc2R8G8B8SrgbBlock                    :
+      case Format::eEtc2R8G8B8A1UnormBlock                 :
+      case Format::eEtc2R8G8B8A1SrgbBlock                  :
+      case Format::eEtc2R8G8B8A8UnormBlock                 :
+      case Format::eEtc2R8G8B8A8SrgbBlock                  :
+      case Format::eEacR11UnormBlock                       :
+      case Format::eEacR11SnormBlock                       :
+      case Format::eEacR11G11UnormBlock                    :
+      case Format::eEacR11G11SnormBlock                    :
+      case Format::eAstc4x4UnormBlock                      :
+      case Format::eAstc4x4SrgbBlock                       :
+      case Format::eAstc5x4UnormBlock                      :
+      case Format::eAstc5x4SrgbBlock                       :
+      case Format::eAstc5x5UnormBlock                      :
+      case Format::eAstc5x5SrgbBlock                       :
+      case Format::eAstc6x5UnormBlock                      :
+      case Format::eAstc6x5SrgbBlock                       :
+      case Format::eAstc6x6UnormBlock                      :
+      case Format::eAstc6x6SrgbBlock                       :
+      case Format::eAstc8x5UnormBlock                      :
+      case Format::eAstc8x5SrgbBlock                       :
+      case Format::eAstc8x6UnormBlock                      :
+      case Format::eAstc8x6SrgbBlock                       :
+      case Format::eAstc8x8UnormBlock                      :
+      case Format::eAstc8x8SrgbBlock                       :
+      case Format::eAstc10x5UnormBlock                     :
+      case Format::eAstc10x5SrgbBlock                      :
+      case Format::eAstc10x6UnormBlock                     :
+      case Format::eAstc10x6SrgbBlock                      :
+      case Format::eAstc10x8UnormBlock                     :
+      case Format::eAstc10x8SrgbBlock                      :
+      case Format::eAstc10x10UnormBlock                    :
+      case Format::eAstc10x10SrgbBlock                     :
+      case Format::eAstc12x10UnormBlock                    :
+      case Format::eAstc12x10SrgbBlock                     :
+      case Format::eAstc12x12UnormBlock                    :
+      case Format::eAstc12x12SrgbBlock                     :
+      case Format::eG8B8G8R8422Unorm                       :
+      case Format::eB8G8R8G8422Unorm                       :
+      case Format::eG8B8R83Plane420Unorm                   :
+      case Format::eG8B8R82Plane420Unorm                   :
+      case Format::eG8B8R83Plane422Unorm                   :
+      case Format::eG8B8R82Plane422Unorm                   :
+      case Format::eG8B8R83Plane444Unorm                   :
+      case Format::eR10X6UnormPack16                       :
+      case Format::eR10X6G10X6Unorm2Pack16                 :
+      case Format::eR10X6G10X6B10X6A10X6Unorm4Pack16       :
+      case Format::eG10X6B10X6G10X6R10X6422Unorm4Pack16    :
+      case Format::eB10X6G10X6R10X6G10X6422Unorm4Pack16    :
+      case Format::eG10X6B10X6R10X63Plane420Unorm3Pack16   :
+      case Format::eG10X6B10X6R10X62Plane420Unorm3Pack16   :
+      case Format::eG10X6B10X6R10X63Plane422Unorm3Pack16   :
+      case Format::eG10X6B10X6R10X62Plane422Unorm3Pack16   :
+      case Format::eG10X6B10X6R10X63Plane444Unorm3Pack16   :
+      case Format::eR12X4UnormPack16                       :
+      case Format::eR12X4G12X4Unorm2Pack16                 :
+      case Format::eR12X4G12X4B12X4A12X4Unorm4Pack16       :
+      case Format::eG12X4B12X4G12X4R12X4422Unorm4Pack16    :
+      case Format::eB12X4G12X4R12X4G12X4422Unorm4Pack16    :
+      case Format::eG12X4B12X4R12X43Plane420Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X42Plane420Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X43Plane422Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X42Plane422Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X43Plane444Unorm3Pack16   :
+      case Format::eG16B16G16R16422Unorm                   :
+      case Format::eB16G16R16G16422Unorm                   :
+      case Format::eG16B16R163Plane420Unorm                :
+      case Format::eG16B16R162Plane420Unorm                :
+      case Format::eG16B16R163Plane422Unorm                :
+      case Format::eG16B16R162Plane422Unorm                :
+      case Format::eG16B16R163Plane444Unorm                :
+      case Format::eG8B8R82Plane444Unorm                   :
+      case Format::eG10X6B10X6R10X62Plane444Unorm3Pack16   :
+      case Format::eG12X4B12X4R12X42Plane444Unorm3Pack16   :
+      case Format::eG16B16R162Plane444Unorm                :
+      case Format::eA4R4G4B4UnormPack16                    :
+      case Format::eA4B4G4R4UnormPack16                    :
+      case Format::eAstc4x4SfloatBlock                     :
+      case Format::eAstc5x4SfloatBlock                     :
+      case Format::eAstc5x5SfloatBlock                     :
+      case Format::eAstc6x5SfloatBlock                     :
+      case Format::eAstc6x6SfloatBlock                     :
+      case Format::eAstc8x5SfloatBlock                     :
+      case Format::eAstc8x6SfloatBlock                     :
+      case Format::eAstc8x8SfloatBlock                     :
+      case Format::eAstc10x5SfloatBlock                    :
+      case Format::eAstc10x6SfloatBlock                    :
+      case Format::eAstc10x8SfloatBlock                    :
+      case Format::eAstc10x10SfloatBlock                   :
+      case Format::eAstc12x10SfloatBlock                   :
+      case Format::eAstc12x12SfloatBlock                   :
+      case Format::eA1B5G5R5UnormPack16                    :
+      case Format::ePvrtc12BppUnormBlockIMG                :
+      case Format::ePvrtc14BppUnormBlockIMG                :
+      case Format::ePvrtc22BppUnormBlockIMG                :
+      case Format::ePvrtc24BppUnormBlockIMG                :
+      case Format::ePvrtc12BppSrgbBlockIMG                 :
+      case Format::ePvrtc14BppSrgbBlockIMG                 :
+      case Format::ePvrtc22BppSrgbBlockIMG                 :
+      case Format::ePvrtc24BppSrgbBlockIMG                 :
+      case Format::eAstc3x3x3UnormBlockEXT                 :
+      case Format::eAstc3x3x3SrgbBlockEXT                  :
+      case Format::eAstc3x3x3SfloatBlockEXT                :
+      case Format::eAstc4x3x3UnormBlockEXT                 :
+      case Format::eAstc4x3x3SrgbBlockEXT                  :
+      case Format::eAstc4x3x3SfloatBlockEXT                :
+      case Format::eAstc4x4x3UnormBlockEXT                 :
+      case Format::eAstc4x4x3SrgbBlockEXT                  :
+      case Format::eAstc4x4x3SfloatBlockEXT                :
+      case Format::eAstc4x4x4UnormBlockEXT                 :
+      case Format::eAstc4x4x4SrgbBlockEXT                  :
+      case Format::eAstc4x4x4SfloatBlockEXT                :
+      case Format::eAstc5x4x4UnormBlockEXT                 :
+      case Format::eAstc5x4x4SrgbBlockEXT                  :
+      case Format::eAstc5x4x4SfloatBlockEXT                :
+      case Format::eAstc5x5x4UnormBlockEXT                 :
+      case Format::eAstc5x5x4SrgbBlockEXT                  :
+      case Format::eAstc5x5x4SfloatBlockEXT                :
+      case Format::eAstc5x5x5UnormBlockEXT                 :
+      case Format::eAstc5x5x5SrgbBlockEXT                  :
+      case Format::eAstc5x5x5SfloatBlockEXT                :
+      case Format::eAstc6x5x5UnormBlockEXT                 :
+      case Format::eAstc6x5x5SrgbBlockEXT                  :
+      case Format::eAstc6x5x5SfloatBlockEXT                :
+      case Format::eAstc6x6x5UnormBlockEXT                 :
+      case Format::eAstc6x6x5SrgbBlockEXT                  :
+      case Format::eAstc6x6x5SfloatBlockEXT                :
+      case Format::eAstc6x6x6UnormBlockEXT                 :
+      case Format::eAstc6x6x6SrgbBlockEXT                  :
+      case Format::eAstc6x6x6SfloatBlockEXT                :
+      case Format::eR8BoolARM                              :
+      case Format::eR16SfloatFpencodingBfloat16ARM         :
+      case Format::eR8SfloatFpencodingFloat8E4M3ARM        :
+      case Format::eR8SfloatFpencodingFloat8E5M2ARM        :
+      case Format::eR16G16Sfixed5NV                        :
+      case Format::eR10X6UintPack16ARM                     :
+      case Format::eR10X6G10X6Uint2Pack16ARM               :
+      case Format::eR10X6G10X6B10X6A10X6Uint4Pack16ARM     :
+      case Format::eR12X4UintPack16ARM                     :
+      case Format::eR12X4G12X4Uint2Pack16ARM               :
+      case Format::eR12X4G12X4B12X4A12X4Uint4Pack16ARM     :
+      case Format::eR14X2UintPack16ARM                     :
+      case Format::eR14X2G14X2Uint2Pack16ARM               :
+      case Format::eR14X2G14X2B14X2A14X2Uint4Pack16ARM     :
+      case Format::eR14X2UnormPack16ARM                    :
+      case Format::eR14X2G14X2Unorm2Pack16ARM              :
+      case Format::eR14X2G14X2B14X2A14X2Unorm4Pack16ARM    :
       case Format::eG14X2B14X2R14X22Plane420Unorm3Pack16ARM:
       case Format::eG14X2B14X2R14X22Plane422Unorm3Pack16ARM: return true;
       default                                              : return false;
@@ -9595,9 +9595,9 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( format )
     {
-      case Format::eS8Uint:
-      case Format::eD16UnormS8Uint:
-      case Format::eD24UnormS8Uint:
+      case Format::eS8Uint         :
+      case Format::eD16UnormS8Uint :
+      case Format::eD24UnormS8Uint :
       case Format::eD32SfloatS8Uint: return true;
       default                      : return false;
     }

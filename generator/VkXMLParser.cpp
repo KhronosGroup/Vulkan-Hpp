@@ -9,6 +9,7 @@
 #include <vector>
 
 void checkExtensionOrStructAndMember( std::string const & depends, int xmlLine, std::string const & prefix, std::vector<TypeStruct> const & structs );
+void checkProperties( std::vector<PropertyElement> const & properties, Vkxml const & vkxml, std::string const & requireType, std::string const & requireName );
 bool containsByName( std::vector<ExtensionRequireEnumVariant> const & values, std::string const & name );
 bool containsByName( std::vector<VideoFormatVariant> const & values, std::string const & name );
 template <typename... T>
@@ -49,7 +50,6 @@ ExtensionRequireEnumConstant parseExtensionRequireEnumConstant( tinyxml2::XMLEle
 Extensions                   parseExtensions( tinyxml2::XMLElement const * element );
 Feature                      parseFeature( tinyxml2::XMLElement const * element );
 FeatureElement               parseFeatureElement( tinyxml2::XMLElement const * element );
-PropertyElement              parsePropertyElement( tinyxml2::XMLElement const * element );
 Require                      parseFeatureRequire( tinyxml2::XMLElement const * element );
 RequireEnumVariant           parseFeatureRequireEnum( tinyxml2::XMLElement const * element );
 ExtendEnumAlias              parseFeatureRequireEnumAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
@@ -66,6 +66,7 @@ Param                                                                parseParam(
 Plane                                                                parsePlane( tinyxml2::XMLElement const * element );
 Platform                                                             parsePlatform( tinyxml2::XMLElement const * element );
 Platforms                                                            parsePlatforms( tinyxml2::XMLElement const * element );
+PropertyElement                                                      parsePropertyElement( tinyxml2::XMLElement const * element );
 std::pair<std::string, Type>                                         parseProto( tinyxml2::XMLElement const * element );
 Vkxml                                                                parseRegistry( tinyxml2::XMLElement const * element, std::string const & api );
 Remove                                                               parseRemove( tinyxml2::XMLElement const * element );
@@ -143,6 +144,66 @@ void checkExtensionOrStructAndMember( std::string const & depends, int xmlLine, 
 void checkNumber( std::string const & number, int line, std::string const & message )
 {
   checkForError( "vk.xml", std::ranges::all_of( number, []( char c ) { return std::isdigit( c ); } ), line, message + " <" + number + ">" );
+}
+
+void checkProperties( std::vector<PropertyElement> const & properties, Vkxml const & vkxml, std::string const & requireType, std::string const & requireName )
+{
+  for ( auto const & property : properties )
+  {
+    auto structIt = findByNameOrAlias( vkxml.structs, property.structure );
+    checkForError( "vk.xml",
+                   structIt != vkxml.structs.end(),
+                   property.xmlLine,
+                   requireType + " <" + requireName + "> requires property <" + property.name + "> for an unknown structure <" + property.structure + ">" );
+    checkForError( "vk.xml",
+                   structIt->returnedOnly == "true",
+                   property.xmlLine,
+                   requireType + " <" + requireName + "> requires property <" + property.name + "> for the structure <" + property.structure +
+                     "> that is not marked as <returned_only>" );
+    auto memberIt = findByName( structIt->members, property.name );
+    checkForError( "vk.xml",
+                   memberIt != structIt->members.end(),
+                   property.xmlLine,
+                   requireType + " <" + requireName + "> requires an unknown member <" + property.name + "> in structure <" + property.structure + ">" );
+    auto bitmaskIt = findByName( vkxml.bitmasks, memberIt->type.name );
+    if ( bitmaskIt != vkxml.bitmasks.end() )
+    {
+      checkForError( "vk.xml",
+                     memberIt->arraySizes.empty(),
+                     property.xmlLine,
+                     requireType + " <" + requireName + "> requires a property <" + property.name + "> in structure <" + property.structure +
+                       "> with an unexpected number of values <" + concatenate( property.value ) + ">" );
+      auto flagBitsIt = findByName( vkxml.enums, bitmaskIt->require );
+      assert( flagBitsIt != vkxml.enums.end() );
+      std::vector<std::string> values = tokenize( property.value[0], "|" );
+      checkForError( "vk.xml",
+                     std::ranges::all_of( values, [&flagBitsIt]( auto const & v ) { return containsByName( flagBitsIt->values, v ); } ),
+                     property.xmlLine,
+                     requireType + " <" + requireName + "> requires a property <" + property.name + "> in structure <" + property.structure +
+                       "> with unexpected value <" + property.value[0] + ">" );
+    }
+    else
+    {
+      checkForError( "vk.xml",
+                     ( memberIt->arraySizes.size() <= 1 ) &&
+                       ( memberIt->arraySizes.empty() ? ( property.value.size() == 1 ) : ( property.value.size() == std::stoul( memberIt->arraySizes[0] ) ) ),
+                     property.xmlLine,
+                     requireType + " <" + requireName + "> requires a property <" + property.name + "> in structure <" + property.structure +
+                       "> with an unexpected number of values <" + concatenate( property.value ) + ">" );
+      checkForError(
+        "vk.xml",
+        ( ( memberIt->type.name == "float" ) && std::ranges::all_of( property.value, []( auto const & v ) { return isFloatNumber( v ); } ) ) ||
+          ( ( memberIt->type.name == "int32_t" ) && std::ranges::all_of( property.value, []( auto const & v ) { return isSignedNumber( v ); } ) ) ||
+          ( ( ( memberIt->type.name == "size_t" ) || ( memberIt->type.name == "uint32_t" ) || ( memberIt->type.name == "uint64_t" ) ||
+              ( memberIt->type.name == "VkDeviceSize" ) ) &&
+            std::ranges::all_of( property.value, []( auto const & v ) { return isNumber( v ); } ) ) ||
+          ( ( memberIt->type.name == "VkBool32" ) &&
+            std::ranges::all_of( property.value, []( auto const & v ) { return ( v == "VK_FALSE" ) || ( v == "VK_TRUE" ); } ) ),
+        property.xmlLine,
+        requireType + " <" + requireName + "> requires a property <" + property.name + "> in structure <" + property.structure + "> with unexpected value <" +
+          concatenate( property.value ) + ">" );
+    }
+  }
 }
 
 bool containsByName( std::vector<ExtensionRequireEnumVariant> const & values, std::string const & name )
@@ -1886,36 +1947,6 @@ FeatureElement parseFeatureElement( tinyxml2::XMLElement const * element )
   return feature;
 }
 
-PropertyElement parsePropertyElement( tinyxml2::XMLElement const * element )
-{
-  int const                          line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "struct", {} }, { "value", {} } }, {} );
-  checkElements( "vk.xml", line, getChildElements( element ), {} );
-
-  PropertyElement property{ .xmlLine = line };
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      property.name = attribute.second;
-    }
-    else if ( attribute.first == "struct" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      property.structure = attribute.second;
-    }
-    else if ( attribute.first == "value" )
-    {
-      checkNoList( "vk.xml", attribute.second, line );
-      property.value = attribute.second;
-    }
-  }
-
-  return property;
-}
-
 Require parseFeatureRequire( tinyxml2::XMLElement const * element )
 {
   int const                          line       = element->GetLineNum();
@@ -2614,6 +2645,35 @@ Platforms parsePlatforms( tinyxml2::XMLElement const * element )
   return platforms;
 }
 
+PropertyElement parsePropertyElement( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "struct", {} }, { "value", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  PropertyElement property{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      property.name = attribute.second;
+    }
+    else if ( attribute.first == "struct" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      property.structure = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      property.value = tokenize( attribute.second, "," );
+    }
+  }
+
+  return property;
+}
+
 std::pair<std::string, Type> parseProto( tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
@@ -2954,6 +3014,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
                                "> that is not a VkBool32 member of the required feature struct <" + feature.structure + ">" );
             }
           }
+          checkProperties( require.properties, vkxml, "extension", extension.name );
         }
 
         if ( std::ranges::none_of( extension.supported, []( std::string const & s ) { return s == "disabled"; } ) )
@@ -3040,7 +3101,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
         }
         for ( auto const & requireFeature : require.features )
         {
-          auto structIt = findByName( vkxml.structs, requireFeature.structure );
+          auto structIt = findByNameOrAlias( vkxml.structs, requireFeature.structure );
           checkForError( "vk.xml",
                          structIt != vkxml.structs.end(),
                          requireFeature.xmlLine,
@@ -3050,6 +3111,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
                          requireFeature.xmlLine,
                          "feature <" + feature.name + "> requires unknown member <" + requireFeature.name + "> in struct <" + requireFeature.structure + ">" );
         }
+        checkProperties( require.properties, vkxml, "feature", feature.name );
         for ( auto const & type : require.types )
         {
           checkForError( "vk.xml",

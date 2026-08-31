@@ -462,15 +462,15 @@ struct PropertyElement
 
 struct ExtensionRequire
 {
-  std::string                              api      = {};
-  std::vector<NameElement>                 commands = {};
-  std::string                              comment  = {};
-  std::string                              depends  = {};
-  std::vector<ExtensionRequireEnumVariant> enums    = {};
-  std::vector<MultiFeatureElement>         features = {};
+  std::string                              api        = {};
+  std::vector<NameElement>                 commands   = {};
+  std::string                              comment    = {};
+  std::string                              depends    = {};
+  std::vector<ExtensionRequireEnumVariant> enums      = {};
+  std::vector<MultiFeatureElement>         features   = {};
   std::vector<PropertyElement>             properties = {};
-  std::vector<NameElement>                 types    = {};
-  int                                      xmlLine  = {};
+  std::vector<NameElement>                 types      = {};
+  int                                      xmlLine    = {};
 };
 
 struct Extension
@@ -677,6 +677,7 @@ struct Types
   std::vector<TypeUnion>       unions       = {};
 
   std::vector<Alias>    structAliases = {};
+  std::vector<Alias>    unionAliases  = {};
   std::set<std::string> types         = {};
 };
 

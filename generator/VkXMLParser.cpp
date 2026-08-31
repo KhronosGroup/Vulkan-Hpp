@@ -4919,13 +4919,8 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
           auto const & alias = std::get<Alias>( unionVariant );
 
           checkForError( "vk.xml", types.types.insert( alias.name ).second, alias.xmlLine, "union alias <" + alias.name + "> already specified as a type" );
-          auto unionIt = findByName( types.unions, alias.alias );
-          checkForError(
-            "vk.xml", unionIt != types.unions.end(), alias.xmlLine, "union alias <" + alias.name + "> aliases an unknown union <" + alias.alias + ">" );
-          checkForError( "vk.xml",
-                         unionIt->aliases.insert( { alias.name, alias.xmlLine } ).second,
-                         alias.xmlLine,
-                         "union alias <" + alias.name + "> already listed as an alias for union <" + alias.alias + ">" );
+          checkForError( "vk.xml", !containsByName( types.unionAliases, alias.name ), alias.xmlLine, "union alias <" + alias.name + "> already encountered" );
+          types.unionAliases.push_back( std::move( alias ) );
         }
         else
         {
@@ -4969,6 +4964,21 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
                    "struct alias <" + structAlias.name + "> is already listed as an alias for struct <" + structAlias.alias + ">" );
   }
   types.structAliases.clear();
+
+  // unions might alias a union that's specified later than the alias !
+  for ( auto unionAlias : types.unionAliases )
+  {
+    auto unionIt = findByName( types.unions, unionAlias.alias );
+    checkForError( "vk.xml",
+                   unionIt != types.unions.end(),
+                   unionAlias.xmlLine,
+                   "union <" + unionAlias.name + "> is an alias of an unknown union <" + unionAlias.alias + ">." );
+    checkForError( "vk.xml",
+                   unionIt->aliases.insert( { unionAlias.name, unionAlias.xmlLine } ).second,
+                   unionAlias.xmlLine,
+                   "union alias <" + unionAlias.name + "> is already listed as an alias for union <" + unionAlias.alias + ">" );
+  }
+  types.unionAliases.clear();
 
   for ( auto const & define : types.defines )
   {

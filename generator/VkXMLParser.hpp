@@ -677,6 +677,7 @@ struct Types
   std::vector<TypeUnion>       unions       = {};
 
   std::vector<Alias>    structAliases = {};
+  std::vector<Alias>    unionAliases  = {};
   std::set<std::string> types         = {};
 };
 

@@ -3922,8 +3922,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetPhysicalDeviceImageFormatProperties2, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceImageFormatProperties2.html
       template <typename X, typename Y, typename... Z>
-      VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-        getImageFormatProperties2( PhysicalDeviceImageFormatInfo2 const & imageFormatInfo ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<StructureChain<X, Y, Z...>>::type getImageFormatProperties2( PhysicalDeviceImageFormatInfo2 const & imageFormatInfo ) const;
 
       // wrapper function for command vkGetPhysicalDeviceQueueFamilyProperties2, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyProperties2.html
@@ -4123,8 +4123,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetPhysicalDeviceImageFormatProperties2KHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceImageFormatProperties2KHR.html
       template <typename X, typename Y, typename... Z>
-      VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-        getImageFormatProperties2KHR( PhysicalDeviceImageFormatInfo2 const & imageFormatInfo ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<StructureChain<X, Y, Z...>>::type getImageFormatProperties2KHR( PhysicalDeviceImageFormatInfo2 const & imageFormatInfo ) const;
 
       // wrapper function for command vkGetPhysicalDeviceQueueFamilyProperties2KHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceQueueFamilyProperties2KHR.html
@@ -4214,8 +4214,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetPhysicalDeviceSurfaceCapabilities2KHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceSurfaceCapabilities2KHR.html
       template <typename X, typename Y, typename... Z>
-      VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-        getSurfaceCapabilities2KHR( PhysicalDeviceSurfaceInfo2KHR const & surfaceInfo ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<StructureChain<X, Y, Z...>>::type getSurfaceCapabilities2KHR( PhysicalDeviceSurfaceInfo2KHR const & surfaceInfo ) const;
 
       // wrapper function for command vkGetPhysicalDeviceSurfaceFormats2KHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceSurfaceFormats2KHR.html
@@ -4225,8 +4225,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetPhysicalDeviceSurfaceFormats2KHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceSurfaceFormats2KHR.html
       template <typename StructureChain>
-      VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<StructureChain>>::type
-        getSurfaceFormats2KHR( PhysicalDeviceSurfaceInfo2KHR const & surfaceInfo ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<std::vector<StructureChain>>::type getSurfaceFormats2KHR( PhysicalDeviceSurfaceInfo2KHR const & surfaceInfo ) const;
 
       //=== VK_KHR_get_display_properties2 ===
 
@@ -5109,8 +5109,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetAndroidHardwareBufferPropertiesANDROID, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAndroidHardwareBufferPropertiesANDROID.html
       template <typename X, typename Y, typename... Z>
-      VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-        getAndroidHardwareBufferPropertiesANDROID( struct AHardwareBuffer const & buffer ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<StructureChain<X, Y, Z...>>::type getAndroidHardwareBufferPropertiesANDROID( struct AHardwareBuffer const & buffer ) const;
 
       // wrapper function for command vkGetMemoryAndroidHardwareBufferANDROID, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetMemoryAndroidHardwareBufferANDROID.html
@@ -5620,26 +5620,26 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetBufferOpaqueCaptureDescriptorDataEXT, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetBufferOpaqueCaptureDescriptorDataEXT.html
       template <typename DataType>
-      VULKAN_HPP_NODISCARD typename ResultValueType<DataType>::type
-        getBufferOpaqueCaptureDescriptorDataEXT( BufferCaptureDescriptorDataInfoEXT const & info ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<DataType>::type getBufferOpaqueCaptureDescriptorDataEXT( BufferCaptureDescriptorDataInfoEXT const & info ) const;
 
       // wrapper function for command vkGetImageOpaqueCaptureDescriptorDataEXT, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageOpaqueCaptureDescriptorDataEXT.html
       template <typename DataType>
-      VULKAN_HPP_NODISCARD typename ResultValueType<DataType>::type
-        getImageOpaqueCaptureDescriptorDataEXT( ImageCaptureDescriptorDataInfoEXT const & info ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<DataType>::type getImageOpaqueCaptureDescriptorDataEXT( ImageCaptureDescriptorDataInfoEXT const & info ) const;
 
       // wrapper function for command vkGetImageViewOpaqueCaptureDescriptorDataEXT, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageViewOpaqueCaptureDescriptorDataEXT.html
       template <typename DataType>
-      VULKAN_HPP_NODISCARD typename ResultValueType<DataType>::type
-        getImageViewOpaqueCaptureDescriptorDataEXT( ImageViewCaptureDescriptorDataInfoEXT const & info ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<DataType>::type getImageViewOpaqueCaptureDescriptorDataEXT( ImageViewCaptureDescriptorDataInfoEXT const & info ) const;
 
       // wrapper function for command vkGetSamplerOpaqueCaptureDescriptorDataEXT, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSamplerOpaqueCaptureDescriptorDataEXT.html
       template <typename DataType>
-      VULKAN_HPP_NODISCARD typename ResultValueType<DataType>::type
-        getSamplerOpaqueCaptureDescriptorDataEXT( SamplerCaptureDescriptorDataInfoEXT const & info ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<DataType>::type getSamplerOpaqueCaptureDescriptorDataEXT( SamplerCaptureDescriptorDataInfoEXT const & info ) const;
 
       // wrapper function for command vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT.html
@@ -5820,8 +5820,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetNativeBufferPropertiesOHOS, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
       template <typename X, typename Y, typename... Z>
-      VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-        getNativeBufferPropertiesOHOS( struct OH_NativeBuffer const & buffer ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<StructureChain<X, Y, Z...>>::type getNativeBufferPropertiesOHOS( struct OH_NativeBuffer const & buffer ) const;
 
       // wrapper function for command vkGetMemoryNativeBufferOHOS, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetMemoryNativeBufferOHOS.html
@@ -5866,14 +5866,14 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetTensorOpaqueCaptureDescriptorDataARM, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDescriptorDataARM.html
       template <typename DataType>
-      VULKAN_HPP_NODISCARD typename ResultValueType<DataType>::type
-        getTensorOpaqueCaptureDescriptorDataARM( TensorCaptureDescriptorDataInfoARM const & info ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<DataType>::type getTensorOpaqueCaptureDescriptorDataARM( TensorCaptureDescriptorDataInfoARM const & info ) const;
 
       // wrapper function for command vkGetTensorViewOpaqueCaptureDescriptorDataARM, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorViewOpaqueCaptureDescriptorDataARM.html
       template <typename DataType>
-      VULKAN_HPP_NODISCARD typename ResultValueType<DataType>::type
-        getTensorViewOpaqueCaptureDescriptorDataARM( TensorViewCaptureDescriptorDataInfoARM const & info ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<DataType>::type getTensorViewOpaqueCaptureDescriptorDataARM( TensorViewCaptureDescriptorDataInfoARM const & info ) const;
 
       //=== VK_EXT_shader_module_identifier ===
 
@@ -6027,8 +6027,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetScreenBufferPropertiesQNX, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetScreenBufferPropertiesQNX.html
       template <typename X, typename Y, typename... Z>
-      VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-        getScreenBufferPropertiesQNX( struct _screen_buffer const & buffer ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<StructureChain<X, Y, Z...>>::type getScreenBufferPropertiesQNX( struct _screen_buffer const & buffer ) const;
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
       //=== VK_KHR_calibrated_timestamps ===
@@ -6108,8 +6108,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetMemoryMetalHandlePropertiesEXT, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetMemoryMetalHandlePropertiesEXT.html
       template <typename HandleType>
-      VULKAN_HPP_NODISCARD typename ResultValueType<MemoryMetalHandlePropertiesEXT>::type
-        getMemoryMetalHandlePropertiesEXT( ExternalMemoryHandleTypeFlagBits handleType, HandleType const & handle ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<MemoryMetalHandlePropertiesEXT>::type getMemoryMetalHandlePropertiesEXT( ExternalMemoryHandleTypeFlagBits handleType,
+                                                                                                          HandleType const &               handle ) const;
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
 
       //=== VK_ARM_shader_instrumentation ===
@@ -12847,8 +12848,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkGetRayTracingCaptureReplayShaderGroupHandlesKHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingCaptureReplayShaderGroupHandlesKHR.html
       template <typename DataType>
-      VULKAN_HPP_NODISCARD typename ResultValueType<DataType>::type getRayTracingCaptureReplayShaderGroupHandleKHR( uint32_t firstGroup,
-                                                                                                                    uint32_t groupCount ) const;
+      VULKAN_HPP_NODISCARD
+        typename ResultValueType<DataType>::type getRayTracingCaptureReplayShaderGroupHandleKHR( uint32_t firstGroup, uint32_t groupCount ) const;
 
       // wrapper function for command vkGetRayTracingShaderGroupStackSizeKHR, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingShaderGroupStackSizeKHR.html
@@ -20130,8 +20131,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetPhysicalDeviceVideoCapabilitiesKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceVideoCapabilitiesKHR.html
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<StructureChain<X, Y, Z...>>::type
-                         PhysicalDevice::getVideoCapabilitiesKHR( VideoProfileInfoKHR const & videoProfile ) const
+    VULKAN_HPP_NODISCARD                                         VULKAN_HPP_INLINE
+      typename ResultValueType<StructureChain<X, Y, Z...>>::type PhysicalDevice::getVideoCapabilitiesKHR( VideoProfileInfoKHR const & videoProfile ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceVideoCapabilitiesKHR &&
                          "Function <vkGetPhysicalDeviceVideoCapabilitiesKHR> requires <VK_KHR_video_queue>" );
@@ -22293,8 +22294,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkSetDebugUtilsObjectTagEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetDebugUtilsObjectTagEXT.html
     template <typename HandleType, typename TagType>
-    VULKAN_HPP_INLINE typename ResultValueType<void>::type
-      Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag ) const
+    VULKAN_HPP_INLINE
+      typename ResultValueType<void>::type Device::setDebugUtilsObjectTagEXT( HandleType const & handle, uint64_t name, TagType const & tag ) const
     {
       VULKAN_HPP_STATIC_ASSERT( VULKAN_HPP_NAMESPACE::isVulkanHandleType<HandleType>::value, "HandleType must be a Vulkan handle type" );
       // It might be, that neither constructors, nor setters, nor designated initializers are available... need to explicitly set member by member
@@ -23499,8 +23500,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetRayTracingShaderGroupHandlesKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingShaderGroupHandlesKHR.html
     template <typename DataType>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<DataType>::type Pipeline::getRayTracingShaderGroupHandleKHR( uint32_t firstGroup,
-                                                                                                                                 uint32_t groupCount ) const
+    VULKAN_HPP_NODISCARD                       VULKAN_HPP_INLINE
+      typename ResultValueType<DataType>::type Pipeline::getRayTracingShaderGroupHandleKHR( uint32_t firstGroup, uint32_t groupCount ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetRayTracingShaderGroupHandlesKHR &&
                          "Function <vkGetRayTracingShaderGroupHandlesKHR> requires <VK_KHR_ray_tracing_pipeline> or <VK_NV_ray_tracing>" );
@@ -23555,8 +23556,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetRayTracingCaptureReplayShaderGroupHandlesKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingCaptureReplayShaderGroupHandlesKHR.html
     template <typename DataType>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<DataType>::type
-                         Pipeline::getRayTracingCaptureReplayShaderGroupHandleKHR( uint32_t firstGroup, uint32_t groupCount ) const
+    VULKAN_HPP_NODISCARD                       VULKAN_HPP_INLINE
+      typename ResultValueType<DataType>::type Pipeline::getRayTracingCaptureReplayShaderGroupHandleKHR( uint32_t firstGroup, uint32_t groupCount ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetRayTracingCaptureReplayShaderGroupHandlesKHR &&
                          "Function <vkGetRayTracingCaptureReplayShaderGroupHandlesKHR> requires <VK_KHR_ray_tracing_pipeline>" );
@@ -24029,8 +24030,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetRayTracingShaderGroupHandlesNV, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetRayTracingShaderGroupHandlesNV.html
     template <typename DataType>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<DataType>::type Pipeline::getRayTracingShaderGroupHandleNV( uint32_t firstGroup,
-                                                                                                                                uint32_t groupCount ) const
+    VULKAN_HPP_NODISCARD                       VULKAN_HPP_INLINE
+      typename ResultValueType<DataType>::type Pipeline::getRayTracingShaderGroupHandleNV( uint32_t firstGroup, uint32_t groupCount ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetRayTracingShaderGroupHandlesNV &&
                          "Function <vkGetRayTracingShaderGroupHandlesNV> requires <VK_KHR_ray_tracing_pipeline> or <VK_NV_ray_tracing>" );
@@ -26247,8 +26248,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetBufferOpaqueCaptureDescriptorDataEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetBufferOpaqueCaptureDescriptorDataEXT.html
     template <typename DataType>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<DataType>::type
-                         Device::getBufferOpaqueCaptureDescriptorDataEXT( BufferCaptureDescriptorDataInfoEXT const & info ) const
+    VULKAN_HPP_NODISCARD                       VULKAN_HPP_INLINE
+      typename ResultValueType<DataType>::type Device::getBufferOpaqueCaptureDescriptorDataEXT( BufferCaptureDescriptorDataInfoEXT const & info ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetBufferOpaqueCaptureDescriptorDataEXT &&
                          "Function <vkGetBufferOpaqueCaptureDescriptorDataEXT> requires <VK_EXT_descriptor_buffer>" );
@@ -26264,8 +26265,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetImageOpaqueCaptureDescriptorDataEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageOpaqueCaptureDescriptorDataEXT.html
     template <typename DataType>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<DataType>::type
-                         Device::getImageOpaqueCaptureDescriptorDataEXT( ImageCaptureDescriptorDataInfoEXT const & info ) const
+    VULKAN_HPP_NODISCARD                       VULKAN_HPP_INLINE
+      typename ResultValueType<DataType>::type Device::getImageOpaqueCaptureDescriptorDataEXT( ImageCaptureDescriptorDataInfoEXT const & info ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetImageOpaqueCaptureDescriptorDataEXT &&
                          "Function <vkGetImageOpaqueCaptureDescriptorDataEXT> requires <VK_EXT_descriptor_buffer>" );
@@ -26281,8 +26282,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetImageViewOpaqueCaptureDescriptorDataEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetImageViewOpaqueCaptureDescriptorDataEXT.html
     template <typename DataType>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<DataType>::type
-                         Device::getImageViewOpaqueCaptureDescriptorDataEXT( ImageViewCaptureDescriptorDataInfoEXT const & info ) const
+    VULKAN_HPP_NODISCARD                       VULKAN_HPP_INLINE
+      typename ResultValueType<DataType>::type Device::getImageViewOpaqueCaptureDescriptorDataEXT( ImageViewCaptureDescriptorDataInfoEXT const & info ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetImageViewOpaqueCaptureDescriptorDataEXT &&
                          "Function <vkGetImageViewOpaqueCaptureDescriptorDataEXT> requires <VK_EXT_descriptor_buffer>" );
@@ -26298,8 +26299,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetSamplerOpaqueCaptureDescriptorDataEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetSamplerOpaqueCaptureDescriptorDataEXT.html
     template <typename DataType>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<DataType>::type
-                         Device::getSamplerOpaqueCaptureDescriptorDataEXT( SamplerCaptureDescriptorDataInfoEXT const & info ) const
+    VULKAN_HPP_NODISCARD                       VULKAN_HPP_INLINE
+      typename ResultValueType<DataType>::type Device::getSamplerOpaqueCaptureDescriptorDataEXT( SamplerCaptureDescriptorDataInfoEXT const & info ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetSamplerOpaqueCaptureDescriptorDataEXT &&
                          "Function <vkGetSamplerOpaqueCaptureDescriptorDataEXT> requires <VK_EXT_descriptor_buffer>" );
@@ -27726,8 +27727,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetNativeBufferPropertiesOHOS, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetNativeBufferPropertiesOHOS.html
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<StructureChain<X, Y, Z...>>::type
-                         Device::getNativeBufferPropertiesOHOS( struct OH_NativeBuffer const & buffer ) const
+    VULKAN_HPP_NODISCARD                                         VULKAN_HPP_INLINE
+      typename ResultValueType<StructureChain<X, Y, Z...>>::type Device::getNativeBufferPropertiesOHOS( struct OH_NativeBuffer const & buffer ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetNativeBufferPropertiesOHOS && "Function <vkGetNativeBufferPropertiesOHOS> requires <VK_OHOS_external_memory>" );
 
@@ -28241,8 +28242,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetTensorOpaqueCaptureDescriptorDataARM, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorOpaqueCaptureDescriptorDataARM.html
     template <typename DataType>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<DataType>::type
-                         Device::getTensorOpaqueCaptureDescriptorDataARM( TensorCaptureDescriptorDataInfoARM const & info ) const
+    VULKAN_HPP_NODISCARD                       VULKAN_HPP_INLINE
+      typename ResultValueType<DataType>::type Device::getTensorOpaqueCaptureDescriptorDataARM( TensorCaptureDescriptorDataInfoARM const & info ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetTensorOpaqueCaptureDescriptorDataARM &&
                          "Function <vkGetTensorOpaqueCaptureDescriptorDataARM> requires <VK_ARM_tensors>" );
@@ -28258,8 +28259,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetTensorViewOpaqueCaptureDescriptorDataARM, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetTensorViewOpaqueCaptureDescriptorDataARM.html
     template <typename DataType>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<DataType>::type
-                         Device::getTensorViewOpaqueCaptureDescriptorDataARM( TensorViewCaptureDescriptorDataInfoARM const & info ) const
+    VULKAN_HPP_NODISCARD                       VULKAN_HPP_INLINE
+      typename ResultValueType<DataType>::type Device::getTensorViewOpaqueCaptureDescriptorDataARM( TensorViewCaptureDescriptorDataInfoARM const & info ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetTensorViewOpaqueCaptureDescriptorDataARM &&
                          "Function <vkGetTensorViewOpaqueCaptureDescriptorDataARM> requires <VK_ARM_tensors>" );
@@ -29302,8 +29303,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetScreenBufferPropertiesQNX, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetScreenBufferPropertiesQNX.html
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<StructureChain<X, Y, Z...>>::type
-                         Device::getScreenBufferPropertiesQNX( struct _screen_buffer const & buffer ) const
+    VULKAN_HPP_NODISCARD                                         VULKAN_HPP_INLINE
+      typename ResultValueType<StructureChain<X, Y, Z...>>::type Device::getScreenBufferPropertiesQNX( struct _screen_buffer const & buffer ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetScreenBufferPropertiesQNX &&
                          "Function <vkGetScreenBufferPropertiesQNX> requires <VK_QNX_external_memory_screen_buffer>" );
@@ -29878,8 +29879,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     // wrapper function for command vkGetMemoryMetalHandlePropertiesEXT, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetMemoryMetalHandlePropertiesEXT.html
     template <typename HandleType>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<MemoryMetalHandlePropertiesEXT>::type
-                         Device::getMemoryMetalHandlePropertiesEXT( ExternalMemoryHandleTypeFlagBits handleType, HandleType const & handle ) const
+    VULKAN_HPP_NODISCARD                                             VULKAN_HPP_INLINE
+      typename ResultValueType<MemoryMetalHandlePropertiesEXT>::type Device::getMemoryMetalHandlePropertiesEXT( ExternalMemoryHandleTypeFlagBits handleType,
+                                                                                                                HandleType const &               handle ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetMemoryMetalHandlePropertiesEXT &&
                          "Function <vkGetMemoryMetalHandlePropertiesEXT> requires <VK_EXT_external_memory_metal>" );

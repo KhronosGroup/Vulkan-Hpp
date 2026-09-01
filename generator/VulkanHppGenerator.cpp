@@ -27,7 +27,6 @@ namespace
   std::string                             generateNoDiscard( bool returnsSomething, bool multiSuccessCodes, bool multiErrorCodes );
   std::string                             generateStandardArray( std::string const & type, std::vector<std::string> const & sizes );
   bool                                    isUpperCase( std::string const & name );
-  VulkanHppGenerator::MacroData           parseMacro( std::vector<std::string> const & completeMacro );
   std::string                             startLowerCase( std::string const & input );
   std::string                             startUpperCase( std::string const & input );
 }  // namespace
@@ -130,10 +129,6 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     checkForError( m_types.insert( { define.name, TypeData{ TypeCategory::Define, {}, define.xmlLine } } ).second,
                    define.xmlLine,
                    "type <" + define.name + "> already specified" );
-
-    // for defines, we compile some more data than is read from the vk.xml, so we insert the defines from the vk.xml into our own map
-    auto const & [possibleCallee, params, possibleDefinition] = parseMacro( define.macro );
-    m_defines[define.name]                                    = { {}, define.xmlLine, possibleCallee, params, possibleDefinition };
   }
   for ( auto const & xmlEnum : m_vkxml.enums )
   {
@@ -622,9 +617,9 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     m_formats.insert( { format.name, std::move( formatData ) } );
   }
 
-  auto versionIt = m_defines.find( "VK_HEADER_VERSION" );
-  assert( versionIt != m_defines.end() );
-  m_version = versionIt->second.possibleDefinition;
+  auto versionIt = findByName( m_vkxml.defines, "VK_HEADER_VERSION" );
+  assert( versionIt != m_vkxml.defines.end() );
+  m_version = versionIt->possibleDefinition;
 
   // insert the default "handle" without class (for createInstance, and such)
   m_handles.insert( { "", {} } );
@@ -656,7 +651,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     addMissingFlagBits( extension.requireData, extension.name );
   }
 
-  m_definesPartition = partitionDefines( m_defines );
+  m_definesPartition = partitionDefines( m_vkxml.defines );
 }
 
 void VulkanHppGenerator::distributeSecondLevelCommands()
@@ -839,7 +834,7 @@ void VulkanHppGenerator::generateMacrosFile() const
                             "MacrosHppTemplate.hpp",
                             { { "copyrightMessage", m_copyrightMessage },
                               { "vulkan_hpp", m_api + ".hpp" },
-                              { "vulkan_64_bit_ptr_defines", m_defines.at( "VK_USE_64_BIT_PTR_DEFINES" ).possibleDefinition } } );
+                              { "vulkan_64_bit_ptr_defines", findByName( m_vkxml.defines, "VK_USE_64_BIT_PTR_DEFINES" )->possibleDefinition } } );
 }
 
 void VulkanHppGenerator::generateRAIIHppFile() const
@@ -1221,7 +1216,8 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
   }
 }
 
-inline void VulkanHppGenerator::checkForError( bool condition, int line, std::string const & message ) const
+inline
+void VulkanHppGenerator::checkForError( bool condition, int line, std::string const & message ) const
 {
   ::checkForError( "VulkanHppGenerator", condition, line, message );
 }
@@ -13362,40 +13358,40 @@ std::pair<bool, std::map<size_t, std::vector<size_t>>> VulkanHppGenerator::needs
            countToVectorMap };
 }
 
-VulkanHppGenerator::DefinesPartition VulkanHppGenerator::partitionDefines( std::map<std::string, DefineData> const & defines )
+VulkanHppGenerator::DefinesPartition VulkanHppGenerator::partitionDefines( std::vector<TypeDefine> const & defines ) const
 {
   DefinesPartition partition{};
   for ( auto const & define : defines )
   {
     // VK_DEFINE_HANDLE is macro magic that cannot be constexpr-ed
     // Also filter out the VKSC_ macros, as although they are in the spec, they are not defined in any header.
-    if ( define.first.starts_with( "VK_" ) && ( define.first != "VK_DEFINE_HANDLE" ) )
+    if ( define.name.starts_with( "VK_" ) && ( define.name != "VK_DEFINE_HANDLE" ) )
     {
-      if ( define.second.possibleCallee.empty() )
+      if ( define.possibleCallee.empty() )
       {
-        if ( define.second.possibleDefinition.empty() )
+        if ( define.possibleDefinition.empty() )
         {
 #if !defined( NDEBUG )
           const std::set<std::string> ignoredDefines{ "VK_DEFINE_NON_DISPATCHABLE_HANDLE", "VK_NULL_HANDLE" };
 #endif
-          assert( ignoredDefines.contains( define.first ) );
+          assert( ignoredDefines.contains( define.name ) );
         }
         else
         {
-          if ( define.second.params.empty() )
+          if ( define.params.empty() )
           {
-            partition.values.insert( define );
+            partition.values.insert( { define.name, define } );
           }
           else
           {
-            partition.callees.insert( define );
+            partition.callees.insert( { define.name, define } );
           }
         }
       }
       else
       {
-        assert( !define.second.params.empty() && define.second.possibleDefinition.empty() );
-        partition.callers.insert( define );
+        assert( !define.params.empty() && define.possibleDefinition.empty() );
+        partition.callers.insert( { define.name, define } );
       }
     }
   }
@@ -13724,62 +13720,6 @@ namespace
   bool isUpperCase( std::string const & name )
   {
     return std::ranges::all_of( name, []( auto const & c ) noexcept { return c == toupper( c ); } );
-  }
-
-  // function to take three or four-vector of strings containing a macro definition, and return
-  // a tuple with possibly the called macro, the macro parameters, and possibly the definition
-  VulkanHppGenerator::MacroData parseMacro( std::vector<std::string> const & completeMacro )
-  {
-    // #define macro definition
-    // #define macro( params ) definition
-    // #define macro1 macro2( params )
-    auto const paramsRegex  = std::regex{ R"((\(.*?\)))" };
-    auto const commentRegex = std::regex{ R"(\s*//.*)" };
-
-    // special case for VK_USE_64_BIT_PTR_DEFINES
-    if ( completeMacro.size() == 1 && completeMacro.front().find( "#ifndef VK_USE_64_BIT_PTR_DEFINES" ) != std::string::npos )
-    {
-      return { {}, {}, completeMacro[0] };
-    }
-
-    // macro with parameters and implementation
-    if ( completeMacro.size() == 3 )
-    {
-      auto const & paramsAndDefinitionAndTrailingComment = completeMacro[2];
-
-      if ( paramsAndDefinitionAndTrailingComment.find( '(' ) == std::string::npos )
-      {
-        // no opening parenthesis found => no parameters
-        return { {}, {}, std::regex_replace( paramsAndDefinitionAndTrailingComment, commentRegex, "" ) };
-      }
-
-      // match the first set of parentheses only
-      auto paramsMatch = std::smatch{};
-      std::regex_search( paramsAndDefinitionAndTrailingComment, paramsMatch, paramsRegex );
-
-      // remove the leading and trailing parentheses and tokenise the remaining string
-      auto params = tokenize( stripPrefix( stripPostfix( paramsMatch[1].str(), ")" ), "(" ), "," );
-
-      // replace the parameters with empty string, leaving behind the implementation and (possibly) a trailing comment
-      auto implementation = std::regex_replace( paramsAndDefinitionAndTrailingComment, paramsRegex, "", std::regex_constants::format_first_only );
-      implementation      = implementation.substr( 0, implementation.find( "//" ) );
-      std::erase( implementation, '\\' );
-      implementation = trim( implementation );
-
-      return { {}, params, implementation };
-    }
-    if ( completeMacro.size() == 4 )
-    {
-      auto const & calledMacro            = toCamelCase( stripPrefix( completeMacro[2], "VK_" ) );
-      auto const & argsAndTrailingComment = completeMacro[3];
-
-      auto argsMatch = std::smatch{};
-      std::regex_search( argsAndTrailingComment, argsMatch, paramsRegex );
-      auto args = tokenize( stripPrefix( stripPostfix( argsMatch[1].str(), ")" ), "(" ), "," );
-
-      return { calledMacro, args, {} };
-    }
-    return {};
   }
 
   std::string startLowerCase( std::string const & input )

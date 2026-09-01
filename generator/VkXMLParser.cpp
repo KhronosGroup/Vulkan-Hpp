@@ -4423,6 +4423,62 @@ BitmaskVariant parseTypeBitmask( tinyxml2::XMLElement const * element, std::map<
   }
 }
 
+  // function to take three or four-vector of strings containing a macro definition, and return
+// a tuple with possibly the called macro, the macro parameters, and possibly the definition
+std::tuple<std::string, std::vector<std::string>, std::string> parseMacro( std::vector<std::string> const & completeMacro )
+{
+  // #define macro definition
+  // #define macro( params ) definition
+  // #define macro1 macro2( params )
+  auto const paramsRegex  = std::regex{ R"((\(.*?\)))" };
+  auto const commentRegex = std::regex{ R"(\s*//.*)" };
+
+  // special case for VK_USE_64_BIT_PTR_DEFINES
+  if ( completeMacro.size() == 1 && completeMacro.front().find( "#ifndef VK_USE_64_BIT_PTR_DEFINES" ) != std::string::npos )
+  {
+    return { {}, {}, completeMacro[0] };
+  }
+
+  // macro with parameters and implementation
+  if ( completeMacro.size() == 3 )
+  {
+    auto const & paramsAndDefinitionAndTrailingComment = completeMacro[2];
+
+    if ( paramsAndDefinitionAndTrailingComment.find( '(' ) == std::string::npos )
+    {
+      // no opening parenthesis found => no parameters
+      return { {}, {}, std::regex_replace( paramsAndDefinitionAndTrailingComment, commentRegex, "" ) };
+    }
+
+    // match the first set of parentheses only
+    auto paramsMatch = std::smatch{};
+    std::regex_search( paramsAndDefinitionAndTrailingComment, paramsMatch, paramsRegex );
+
+    // remove the leading and trailing parentheses and tokenise the remaining string
+    auto params = tokenize( stripPrefix( stripPostfix( paramsMatch[1].str(), ")" ), "(" ), "," );
+
+    // replace the parameters with empty string, leaving behind the implementation and (possibly) a trailing comment
+    auto implementation = std::regex_replace( paramsAndDefinitionAndTrailingComment, paramsRegex, "", std::regex_constants::format_first_only );
+    implementation      = implementation.substr( 0, implementation.find( "//" ) );
+    std::erase( implementation, '\\' );
+    implementation = trim( implementation );
+
+    return { {}, params, implementation };
+  }
+  if ( completeMacro.size() == 4 )
+  {
+    auto const & calledMacro            = toCamelCase( stripPrefix( completeMacro[2], "VK_" ) );
+    auto const & argsAndTrailingComment = completeMacro[3];
+
+    auto argsMatch = std::smatch{};
+    std::regex_search( argsAndTrailingComment, argsMatch, paramsRegex );
+    auto args = tokenize( stripPrefix( stripPostfix( argsMatch[1].str(), ")" ), "(" ), "," );
+
+    return { calledMacro, args, {} };
+  }
+  return {};
+}
+
 TypeDefine parseTypeDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
 {
   int const line = element->GetLineNum();
@@ -4480,7 +4536,7 @@ TypeDefine parseTypeDefine( tinyxml2::XMLElement const * element, std::map<std::
 
   MacroVisitor definesVisitor{};
   element->Accept( &definesVisitor );
-  define.macro = definesVisitor.macro;
+  std::tie( define.possibleCallee, define.params, define.possibleDefinition ) = parseMacro( definesVisitor.macro );
 
   return define;
 }
@@ -4964,6 +5020,14 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
                    "struct alias <" + structAlias.name + "> is already listed as an alias for struct <" + structAlias.alias + ">" );
   }
   types.structAliases.clear();
+
+  for ( auto const & define : types.defines )
+  {
+    checkForError( "vk.xml",
+                   define.require.empty() || containsByName( types.defines, define.require ),
+                   define.xmlLine,
+                   "define <" + define.name + "> requires unknown define <" + define.require + ">" );
+  }
 
   // unions might alias a union that's specified later than the alias !
   for ( auto unionAlias : types.unionAliases )

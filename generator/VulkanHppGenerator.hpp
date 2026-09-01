@@ -25,30 +25,39 @@ public:
 
   constexpr Flags( BitType bit ) noexcept : m_mask( static_cast<MaskType>( bit ) ) {}
 
-  constexpr explicit Flags( MaskType flags ) noexcept : m_mask( flags ) {}
+  constexpr
+  explicit Flags( MaskType flags ) noexcept
+    : m_mask( flags )
+  {
+  }
 
-  constexpr Flags<BitType> & operator|=( Flags<BitType> const & rhs ) noexcept
+  constexpr
+  Flags<BitType> & operator|=( Flags<BitType> const & rhs ) noexcept
   {
     m_mask |= rhs.m_mask;
     return *this;
   }
 
-  constexpr bool operator!() const noexcept
+  constexpr
+  bool operator!() const noexcept
   {
     return !m_mask;
   }
 
-  constexpr bool operator&( BitType const & rhs ) const noexcept
+  constexpr
+  bool operator&( BitType const & rhs ) const noexcept
   {
     return m_mask & static_cast<MaskType>( rhs );
   }
 
-  constexpr Flags<BitType> operator&( Flags<BitType> const & rhs ) const noexcept
+  constexpr
+  Flags<BitType> operator&( Flags<BitType> const & rhs ) const noexcept
   {
     return Flags<BitType>( m_mask & rhs.m_mask );
   }
 
-  constexpr Flags<BitType> operator|( Flags<BitType> const & rhs ) const noexcept
+  constexpr
+  Flags<BitType> operator|( Flags<BitType> const & rhs ) const noexcept
   {
     return Flags<BitType>( m_mask | rhs.m_mask );
   }
@@ -69,7 +78,8 @@ enum class CommandFlavourFlagBits : uint8_t
 };
 using CommandFlavourFlags = Flags<CommandFlavourFlagBits>;
 
-constexpr CommandFlavourFlags operator|( CommandFlavourFlagBits const & lhs, CommandFlavourFlagBits const & rhs ) noexcept
+constexpr
+CommandFlavourFlags operator|( CommandFlavourFlagBits const & lhs, CommandFlavourFlagBits const & rhs ) noexcept
 {
   return CommandFlavourFlags( lhs ) | CommandFlavourFlags( rhs );
 }
@@ -101,13 +111,6 @@ public:
   void generateStructsHppFile() const;
   void generateToStringHppFile() const;
   void prepareRAIIHandles();
-
-  struct MacroData
-  {
-    std::string              calleeMacro = {};
-    std::vector<std::string> params      = {};
-    std::string              definition  = {};
-  };
 
 private:
   struct NameLine
@@ -202,20 +205,11 @@ private:
     int                        xmlLine      = {};
   };
 
-  struct DefineData
-  {
-    std::string              require            = {};
-    int                      xmlLine            = {};
-    std::string              possibleCallee     = {};
-    std::vector<std::string> params             = {};
-    std::string              possibleDefinition = {};
-  };
-
   struct DefinesPartition
   {
-    std::map<std::string, DefineData> callees = {};
-    std::map<std::string, DefineData> callers = {};
-    std::map<std::string, DefineData> values  = {};
+    std::map<std::string, TypeDefine> callees = {};
+    std::map<std::string, TypeDefine> callers = {};
+    std::map<std::string, TypeDefine> values  = {};
   };
 
   struct EnumConstantData
@@ -1070,7 +1064,7 @@ private:
                                                                                std::vector<size_t> const &               returnParams,
                                                                                std::set<size_t> const &                  singularParams,
                                                                                std::set<size_t> const &                  skippedParams ) const;
-  DefinesPartition                                       partitionDefines( std::map<std::string, DefineData> const & defines );
+  DefinesPartition                                       partitionDefines( std::vector<TypeDefine> const & defines ) const;
   void                                                   registerDeleter( std::string const & commandName, CommandData const & commandData );
   void                                                   rescheduleRAIIHandle( std::string &                              str,
                                                                                std::pair<std::string, HandleData> const & handle,
@@ -1093,7 +1087,6 @@ private:
   std::set<std::string>              m_commandQueues;
   std::map<std::string, CommandData> m_commands;
   std::string                        m_copyrightMessage;
-  std::map<std::string, DefineData>  m_defines;
   DefinesPartition                   m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
   std::map<std::string, EnumData>    m_enums;
   std::vector<ExtensionData>         m_extensions;

@@ -28,6 +28,17 @@ struct Platforms
   int                   xmlLine   = {};
 };
 
+struct TypeDefine
+{
+  std::string              name               = {};
+  std::vector<std::string> api                = {};
+  std::string              possibleCallee     = {};
+  std::vector<std::string> params             = {};
+  std::string              possibleDefinition = {};
+  std::string              require            = {};
+  int                      xmlLine            = {};
+};
+
 struct Tag
 {
   std::string name    = {};
@@ -70,15 +81,6 @@ struct TypeBitmask
 };
 
 using BitmaskVariant = std::variant<TypeBitmask, Alias>;
-
-struct TypeDefine
-{
-  std::string              name    = {};
-  std::vector<std::string> api     = {};
-  std::vector<std::string> macro   = {};
-  std::string              require = {};
-  int                      xmlLine = {};
-};
 
 struct EnumValueAlias
 {

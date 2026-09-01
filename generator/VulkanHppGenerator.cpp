@@ -4944,7 +4944,12 @@ std::string VulkanHppGenerator::generateCommandStandard(
 
     std::string const functionTemplate =
       R"(  // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
+#  if VULKAN_HPP_CPP_VERSION < 20
   template <typename Dispatch, typename std::enable_if<IS_DISPATCHED( ${vkCommandName} ), bool>::type>
+#  else
+  template <typename Dispatch>
+  requires( IS_DISPATCHED( ${vkCommandName} ) )
+#  endif
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const} VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -4966,7 +4971,12 @@ std::string VulkanHppGenerator::generateCommandStandard(
   {
     std::string const functionTemplate =
       R"(    // wrapper function for command ${vkCommandName}, see https://registry.khronos.org/vulkan/specs/latest/man/html/${vkCommandName}.html
+#  if VULKAN_HPP_CPP_VERSION < 20
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( ${vkCommandName} ), bool>::type = true>
+#  else
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    requires( IS_DISPATCHED( ${vkCommandName} ) )
+#  endif
     ${nodiscard}${returnType} ${commandName}( ${argumentList} VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )${const} VULKAN_HPP_NOEXCEPT;)";
 
     return replaceWithMap( functionTemplate,

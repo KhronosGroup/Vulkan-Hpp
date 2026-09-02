@@ -12208,23 +12208,37 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructData
   auto [enter, leave]   = generateProtection( getProtectFromType( structure.first ) );
   std::string unionName = stripPrefix( structure.first, "Vk" );
 
-  bool           firstMember = true;
-  std::set<Type> listedTypes;  // create just one constructor per different type !
-  std::string    constructors;
+  bool                  firstMember = true;
+  std::set<std::string> listedTypes;  // create just one constructor per different type !
+  std::string           constructors;
   for ( auto memberIt = structure.second.members.begin(); memberIt != structure.second.members.end(); ++memberIt )
   {
-    if ( listedTypes.insert( memberIt->type ).second )
+    std::string typeName = memberIt->type.name;
+
+    if ( memberIt->type.name == "VkBool32" )
     {
-      // VkBool32 is aliased to uint32_t. Don't create a VkBool32 constructor if the union also contains a
-      // uint32_t constructor.
-      if ( memberIt->type.name == "VkBool32" )
+      // VkBool32 is aliased to uint32_t, so use uint32_t as the type name for the constructor to avoid creating a VkBool32 constructor if the union also
+      // contains a uint32_t constructor.
+      typeName = "uint32_t";
+    }
+    else
+    {
+      // if the type is a struct, check if it is an alias and use the struct name instead of the alias for the constructor
+      auto typeIt = m_types.find( memberIt->type.name );
+      if ( typeIt->second.category == TypeCategory::Struct )
       {
-        if ( findByType( structure.second.members, "uint32_t" ) != structure.second.members.end() )
+        auto structIt = findByNameOrAlias( m_structs, memberIt->type.name );
+        assert( structIt != m_structs.end() );
+        if ( structIt->first != memberIt->type.name )
         {
-          continue;
+          assert( structIt->second.aliases.contains( memberIt->type.name ) );
+          typeName = structIt->first;
         }
       }
+    }
 
+    if ( listedTypes.insert( typeName ).second )
+    {
       bool const multipleType = std::any_of(
         std::next( memberIt ), structure.second.members.end(), [memberIt]( MemberData const & member ) noexcept { return member.type == memberIt->type; } );
       std::string memberType = ( memberIt->arraySizes.empty() )

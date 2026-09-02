@@ -2594,6 +2594,33 @@ int main()
     uint64_t                                 address = device.getMemoryOpaqueCaptureAddress( addressInfo );
   }
 
+  //==============================================
+  // Vulkan graphics 1.2 API interface definitions
+  //==============================================
+
+  // Promoted from VK_KHR_draw_indirect_count
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::Buffer        buffer;
+    vk::DeviceSize    offset = 0;
+    vk::Buffer        countBuffer;
+    vk::DeviceSize    countBufferOffset = 0;
+    uint32_t          maxDrawCount      = 1;
+    uint32_t          stride            = 0;
+    commandBuffer.drawIndirectCount( buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::Buffer        buffer;
+    vk::DeviceSize    offset = 0;
+    vk::Buffer        countBuffer;
+    vk::DeviceSize    countBufferOffset = 0;
+    uint32_t          maxDrawCount      = 1;
+    uint32_t          stride            = 0;
+    commandBuffer.drawIndexedIndirectCount( buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

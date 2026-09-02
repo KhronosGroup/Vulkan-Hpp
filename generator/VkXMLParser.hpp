@@ -39,6 +39,33 @@ struct TypeDefine
   int                      xmlLine            = {};
 };
 
+struct TypeBaseType
+{
+  std::string name    = {};
+  Type        type    = {};
+  int         xmlLine = {};
+};
+
+struct TypeBitmask
+{
+  std::string                name      = {};
+  std::string                type      = {};
+  std::vector<std::string>   api       = {};
+  std::string                require   = {};
+  std::map<std::string, int> aliases   = {};
+  int                        xmlLine   = {};
+};
+
+struct Alias
+{
+  std::string name       = {};
+  std::string alias      = {};
+  std::string deprecated = {};
+  int         xmlLine    = {};
+};
+
+using BitmaskVariant = std::variant<TypeBitmask, Alias>;
+
 struct Tag
 {
   std::string name    = {};
@@ -53,34 +80,6 @@ struct Tags
   std::vector<Tag> tags    = {};
   int              xmlLine = {};
 };
-
-struct Alias
-{
-  std::string name       = {};
-  std::string alias      = {};
-  std::string deprecated = {};
-  int         xmlLine    = {};
-};
-
-struct TypeBaseType
-{
-  std::string name    = {};
-  Type        type    = {};
-  int         xmlLine = {};
-};
-
-struct TypeBitmask
-{
-  std::string                name      = {};
-  std::map<std::string, int> aliases   = {};
-  std::vector<std::string>   api       = {};
-  std::string                bitValues = {};
-  std::string                require   = {};
-  Type                       type      = {};
-  int                        xmlLine   = {};
-};
-
-using BitmaskVariant = std::variant<TypeBitmask, Alias>;
 
 struct EnumValueAlias
 {

@@ -401,7 +401,6 @@ private:
 
 private:
   void        addCommandToHandle( std::pair<std::string, CommandData> const & commandData );
-  void        addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredBy );
   std::string addTitleAndProtection( std::string const & title, std::string const & strIf, std::string const & strElse = {} ) const;
   void        appendCppModuleCommands( std::vector<RequireData> const & requireData,
                                        std::set<std::string> &          listedCommands,

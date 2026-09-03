@@ -637,18 +637,15 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   handleRemovals();
 
   // add the commands to the respective handles
-  // some "FlagBits" enums are not specified, but needed for our "Flags" handling -> add them here
   for ( auto & feature : m_features )
   {
     forEachRequiredCommand( feature.requireData,
                             [this]( NameLine const & command, auto const & commandData ) { addCommandToHandle( { command.name, commandData.second } ); } );
-    addMissingFlagBits( feature.requireData, feature.name );
   }
   for ( auto & extension : m_extensions )
   {
     forEachRequiredCommand( extension.requireData,
                             [this]( NameLine const & command, auto const & commandData ) { addCommandToHandle( { command.name, commandData.second } ); } );
-    addMissingFlagBits( extension.requireData, extension.name );
   }
 
   m_definesPartition = partitionDefines( m_vkxml.defines );
@@ -912,54 +909,6 @@ void VulkanHppGenerator::addCommandToHandle( std::pair<std::string, CommandData>
   }
 }
 
-void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredBy )
-{
-  for ( auto & require : requireData )
-  {
-    std::vector<NameLine> newTypes;
-    for ( auto const & type : require.types )
-    {
-      auto bitmaskIt = findByName( m_vkxml.bitmasks, type.name );
-      if ( bitmaskIt != m_vkxml.bitmasks.end() )
-      {
-        if ( bitmaskIt->require.empty() )
-        {
-          // generate the flagBits enum name out of the bitmask name: VkFooFlagsXXX -> VkFooFlagBitsXXX
-          size_t const pos = bitmaskIt->name.find( "Flags" );
-          assert( pos != std::string::npos );
-          std::string flagBits = bitmaskIt->name.substr( 0, pos + 4 ) + "Bit" + bitmaskIt->name.substr( pos + 4 );
-          assert( flagBits.find( "Flags" ) == std::string::npos );
-
-          bitmaskIt->require = flagBits;
-
-          // some flagsBits are specified but never listed as required for any flags!
-          // so, even if this bitmask has no enum listed as required, it might still already exist in the enums list
-          auto enumIt = m_enums.find( flagBits );
-          if ( enumIt == m_enums.end() )
-          {
-            m_enums.insert( { flagBits, EnumData{ .isBitmask = true, .xmlLine = 0 } } );
-
-            assert( !m_types.contains( flagBits ) );
-            m_types.insert( { flagBits, TypeData{ TypeCategory::Bitmask, { requiredBy }, 0 } } );
-          }
-          else
-          {
-            assert( m_types.contains( flagBits ) );
-            enumIt->second.isBitmask = true;
-          }
-        }
-        if ( std::ranges::none_of( require.types, [bitmaskIt]( auto const & requireType ) { return requireType.name == bitmaskIt->require; } ) )
-        {
-          // this bitmask requires a flags type that is not listed in here, so add it
-          newTypes.push_back( { bitmaskIt->require, bitmaskIt->xmlLine } );
-        }
-      }
-    }
-    // add all the newly created flagBits types to the require list as if they had been part of the vk.xml!
-    require.types.insert( require.types.end(), newTypes.begin(), newTypes.end() );
-  }
-}
-
 std::string VulkanHppGenerator::addTitleAndProtection( std::string const & title, std::string const & strIf, std::string const & strElse ) const
 {
   std::string str;
@@ -1004,18 +953,15 @@ void VulkanHppGenerator::checkBitmaskCorrectness() const
     checkForError( !typeIt->second.requiredBy.empty(), bitmask.xmlLine, "bitmask <" + bitmask.name + "> not required in any feature or extension" );
 
     // check that the requirement is an enum
-    if ( !bitmask.require.empty() )
-    {
-      auto requireTypeIt = m_types.find( bitmask.require );
-      checkForError( requireTypeIt != m_types.end(), bitmask.xmlLine, "bitmask <" + bitmask.name + "> requires unknown type <" + bitmask.require + ">" );
-      checkForError( requireTypeIt->second.category == TypeCategory::Enum,
-                     bitmask.xmlLine,
-                     "bitmask <" + bitmask.name + "> requires non-enum type <" + bitmask.require + ">" );
-      assert( m_enums.contains( bitmask.require ) );
-      checkForError( !requireTypeIt->second.requiredBy.empty(),
-                     bitmask.xmlLine,
-                     "bitmask <" + bitmask.name + "> requires <" + bitmask.require + "> which is not required by any feature or extension!" );
-    }
+    auto requireTypeIt = m_types.find( bitmask.require );
+    checkForError( requireTypeIt != m_types.end(), bitmask.xmlLine, "bitmask <" + bitmask.name + "> requires unknown type <" + bitmask.require + ">" );
+    checkForError( requireTypeIt->second.category == TypeCategory::Enum,
+                   bitmask.xmlLine,
+                   "bitmask <" + bitmask.name + "> requires non-enum type <" + bitmask.require + ">" );
+    assert( m_enums.contains( bitmask.require ) );
+    checkForError( !requireTypeIt->second.requiredBy.empty(),
+                   bitmask.xmlLine,
+                   "bitmask <" + bitmask.name + "> requires <" + bitmask.require + "> which is not required by any feature or extension!" );
   }
 }
 
@@ -1113,15 +1059,14 @@ void VulkanHppGenerator::checkEnumCorrectness() const
     {
       if ( std::ranges::any_of( e.second.values, []( auto const & v ) { return v.supported; } ) )
       {
-        // check that any enum of a bitmask with supported values is listed as "require" or "bitvalues" for a bitmask
-        auto bitmaskIt =
-          std::ranges::find_if( m_vkxml.bitmasks, [&e]( auto const & bitmask ) { return ( bitmask.bitValues == e.first ) || ( bitmask.require == e.first ); } );
+        // check that any enum of a bitmask with supported values is listed as "require" for a bitmask
+        auto bitmaskIt = std::ranges::find_if( m_vkxml.bitmasks, [&e]( auto const & bitmask ) { return bitmask.require == e.first; } );
         checkForError( bitmaskIt != m_vkxml.bitmasks.end(),
                        e.second.xmlLine,
                        "enum <" + e.first + "> is not listed as an requires or bitvalues for any bitmask in the types section" );
 
         // check that bitwidth of the enum and type of the corresponding bitmask are equal
-        checkForError( ( e.second.bitwidth != "64" ) || ( bitmaskIt->type.name == "VkFlags64" ),
+        checkForError( ( e.second.bitwidth != "64" ) || ( bitmaskIt->type == "VkFlags64" ),
                        e.second.xmlLine,
                        "enum <" + e.first + "> is marked with bitwidth <64> but corresponding bitmask <" + bitmaskIt->name + "> is not of type <VkFlags64>" );
       }

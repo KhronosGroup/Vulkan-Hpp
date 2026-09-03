@@ -2842,7 +2842,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
     else if ( value == "extensions" )
     {
       vkxml.extensions = parseExtensions( child );
-      for ( auto const & extension : vkxml.extensions.extensions )
+      for ( auto & extension : vkxml.extensions.extensions )
       {
         checkForError( "vk.xml",
                        extension.platform.empty() || containsByName( vkxml.platforms.platforms, extension.platform ),
@@ -2913,7 +2913,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
                            remove.feature.structure + " >" );
         }
 
-        for ( auto const & require : extension.require )
+        for ( auto & require : extension.require )
         {
           for ( auto const & command : require.commands )
           {
@@ -3015,6 +3015,22 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
             }
           }
           checkProperties( require.properties, vkxml, "extension", extension.name );
+          std::vector<NameElement> additionalTypes;
+          for ( auto const & type : require.types )
+          {
+            // we have invented some types required by bitmasks, so if a feature requires a type that is a bitmask, we also need to require the type that the
+            // bitmask requires
+            auto bitmaskIt = findByName( vkxml.bitmasks, type.name );
+            if ( ( bitmaskIt != vkxml.bitmasks.end() ) && !containsByName( require.types, bitmaskIt->require ) )
+            {
+              assert( vkxml.types.contains( bitmaskIt->require ) );
+              additionalTypes.push_back( { .name = bitmaskIt->require, .xmlLine = -1 } );
+            }
+          }
+          for ( auto & type : additionalTypes )
+          {
+            require.types.push_back( std::move( type ) );
+          }
         }
 
         if ( std::ranges::none_of( extension.supported, []( std::string const & s ) { return s == "disabled"; } ) )
@@ -3060,7 +3076,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
           checkForError( "vk.xml", enumIt != vkxml.enums.end(), e.xmlLine, "feature <" + feature.name + "> removes unknown enum <" + e.name + ">" );
         }
       }
-      for ( auto const & require : feature.require )
+      for ( auto & require : feature.require )
       {
         for ( auto const & enumRegular : require.enumRegulars )
         {
@@ -3112,12 +3128,26 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
                          "feature <" + feature.name + "> requires unknown member <" + requireFeature.name + "> in struct <" + requireFeature.structure + ">" );
         }
         checkProperties( require.properties, vkxml, "feature", feature.name );
+        std::vector<RequireType> additionalTypes;
         for ( auto const & type : require.types )
         {
           checkForError( "vk.xml",
                          vkxml.types.contains( type.name ),
                          type.xmlLine,
                          "feature <" + feature.name + "> has a require depending on unknown type <" + type.name + ">" );
+
+          // we have invented some types required by bitmasks, so if a feature requires a type that is a bitmask, we also need to require the type that the
+          // bitmask requires
+          auto bitmaskIt = findByName( vkxml.bitmasks, type.name );
+          if ( ( bitmaskIt != vkxml.bitmasks.end() ) && !containsByName( require.types, bitmaskIt->require ) )
+          {
+            assert( vkxml.types.contains( bitmaskIt->require ) );
+            additionalTypes.push_back( { .name = bitmaskIt->require, .xmlLine = -1 } );
+          }
+        }
+        for ( auto & type : additionalTypes )
+        {
+          require.types.push_back( std::move( type ) );
         }
       }
       vkxml.features.push_back( std::move( feature ) );
@@ -4384,13 +4414,34 @@ BitmaskVariant parseTypeBitmask( tinyxml2::XMLElement const * element, std::map<
   else
   {
     int const line = element->GetLineNum();
-    checkAttributes( "vk.xml",
-                     line,
-                     attributes,
-                     { { "category", { "bitmask" } } },
-                     { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "bitvalues", {} }, { "requires", {} } } );
 
     TypeBitmask bitmask{ .api = { "vulkan" }, .xmlLine = line };  // default is vulkan, if api attribute is not specified
+
+    // parse name and type first, to have them available for error checking of the attributes
+    Type type;
+    std::tie( bitmask.name, type ) = parseNameAndType( element );
+    checkForError( "vk.xml",
+                   type.prefix.empty() && type.postfix.empty(),
+                   line,
+                   "bitmask <" + bitmask.name + "> has unexpected prefix or postfix in type <" + type.name + ">" );
+    bitmask.type = type.name;
+    checkForError( "vk.xml", bitmask.name.find( "Flags" ) != std::string::npos, line, "bitmask <" + bitmask.name + "> does not contain \"Flags\" in its name" );
+
+    if ( bitmask.type == "VkFlags" )
+    {
+      checkAttributes(
+        "vk.xml", line, attributes, { { "category", { "bitmask" } } }, { { "api", { "vulkan", "vulkanbase", "vulkansc" } }, { "requires", {} } } );
+    }
+    else
+    {
+      checkForError( "vk.xml",
+                     bitmask.type == "VkFlags64",
+                     line,
+                     "bitmask <" + bitmask.name + "> is not of type <VkFlags> or <VkFlags64>, but of type <" + bitmask.type + ">" );
+      checkAttributes(
+        "vk.xml", line, attributes, { { "category", { "bitmask" } }, { "bitvalues", {} } }, { { "api", { "vulkan", "vulkanbase", "vulkansc" } } } );
+    }
+
     for ( auto const & attribute : attributes )
     {
       if ( attribute.first == "api" )
@@ -4400,7 +4451,7 @@ BitmaskVariant parseTypeBitmask( tinyxml2::XMLElement const * element, std::map<
       else if ( attribute.first == "bitvalues" )
       {
         checkNoList( "vk.xml", attribute.second, line );
-        bitmask.bitValues = attribute.second;
+        bitmask.require = attribute.second;
       }
       else if ( attribute.first == "requires" )
       {
@@ -4409,21 +4460,11 @@ BitmaskVariant parseTypeBitmask( tinyxml2::XMLElement const * element, std::map<
       }
     }
 
-    checkForError( "vk.xml", bitmask.bitValues.empty() || bitmask.require.empty(), line, "attributes <bitvalues> and <requires> are both specified" );
-
-    std::tie( bitmask.name, bitmask.type ) = parseNameAndType( element );
-
-    checkForWarning(
-      "vk.xml", ( bitmask.type.name == "VkFlags" ) || ( bitmask.type.name == "VkFlags64" ), line, "unexpected bitmask type <" + bitmask.type.name + ">" );
-    checkForError( "vk.xml", bitmask.type.postfix != "*", line, "unexpected pointer type <" + bitmask.type.name + ">" );
-    checkForError(
-      "vk.xml", ( bitmask.type.name != "VkFlags64" ) || !bitmask.bitValues.empty(), line, "bitmask of type <VkFlags64> needs attribute bitvalues to be set" );
-
     return bitmask;
   }
 }
 
-  // function to take three or four-vector of strings containing a macro definition, and return
+// function to take three or four-vector of strings containing a macro definition, and return
 // a tuple with possibly the called macro, the macro parameters, and possibly the definition
 std::tuple<std::string, std::vector<std::string>, std::string> parseMacro( std::vector<std::string> const & completeMacro )
 {
@@ -5003,6 +5044,41 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
           "vk.xml", !containsByName( types.externals, external.name ), external.xmlLine, "external type <" + external.name + "> already specified" );
         types.externals.push_back( std::move( external ) );
       }
+    }
+  }
+
+  for ( auto & bitmask : types.bitmasks )
+  {
+    if ( bitmask.require.empty() )
+    {
+      // there are so many bitmasks in vk.xml, that do not specify the required enum that we don't even warn about it.
+      // we just invent that enum here, based on the bitmask name. This is a workaround for vk.xml inconsistencies.
+      size_t const pos = bitmask.name.find( "Flags" );
+      assert( pos != std::string::npos );
+      std::string flagBits = bitmask.name.substr( 0, pos + 4 ) + "Bit" + bitmask.name.substr( pos + 4 );
+      assert( flagBits.find( "Flags" ) == std::string::npos );
+      bitmask.require = flagBits;
+
+      // some flagBits are specified but never listed as required for any flags!
+      // so, even if this bitmask has no enum listed as required, it might still already exist in the enums list
+      auto enumIt = findByName( types.enums, flagBits );
+      if ( enumIt == types.enums.end() )
+      {
+        checkForError( "vk.xml", types.types.insert( flagBits ).second, -1, "invented enum <" + flagBits + "> already specified as a type" );
+        checkForError( "vk.xml", !containsByName( types.enums, flagBits ), -1, "invented enum <" + flagBits + "> already specified" );
+        types.enums.push_back( { .name = flagBits, .category = "bitmask", .xmlLine = 0 } );
+      }
+      else
+      {
+        enumIt->category = "bitmask";
+      }
+    }
+    else
+    {
+      checkForError( "vk.xml",
+                     containsByName( types.enums, bitmask.require ),
+                     bitmask.xmlLine,
+                     "bitmask <" + bitmask.name + "> requires unknown enum <" + bitmask.require + ">" );
     }
   }
 

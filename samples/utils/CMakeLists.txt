@@ -10,26 +10,28 @@ target_link_libraries( utils_deps INTERFACE
 	glslang::glslang-default-resource-limits
 	glslang::SPIRV )
 
-foreach( LINKAGE static dynamic )
-	vulkan_hpp__setup_library(
-		NAME utils_${LINKAGE}
-		HEADERS math.hpp shaders.hpp utils.hpp
-		SOURCES math.cpp shaders.cpp utils.cpp
-		FOLDER "Samples" )
+if( NOT VULKAN_HPP_BUILD_CXX_MODULE )
+	foreach( LINKAGE static dynamic )
+		vulkan_hpp__setup_library(
+			NAME utils_${LINKAGE}
+			HEADERS math.hpp shaders.hpp utils.hpp
+			SOURCES math.cpp shaders.cpp utils.cpp
+			FOLDER "Samples" )
 
-	if( VULKAN_HPP_RUN_GENERATOR )
-		add_dependencies( utils_${LINKAGE} build_vulkan_hpp )
-	endif()
+		if( VULKAN_HPP_RUN_GENERATOR )
+			add_dependencies( utils_${LINKAGE} build_vulkan_hpp )
+		endif()
 
-	target_link_libraries( utils_${LINKAGE} PUBLIC utils_deps )
-	target_precompile_headers( utils_${LINKAGE} PRIVATE "pch.hpp" )
-endforeach()
+		target_link_libraries( utils_${LINKAGE} PUBLIC utils_deps )
+		if( VULKAN_HPP_PRECOMPILE )
+			target_precompile_headers( utils_${LINKAGE} PRIVATE "pch.hpp" )
+		endif()
+	endforeach()
 
-target_compile_definitions( utils_static  PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
-target_compile_definitions( utils_dynamic PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 )
-
-# utils, as a C++ named module (no PCH: the module interface uses `import std;` instead)
-if( VULKAN_HPP_BUILD_CXX_MODULE )
+	target_compile_definitions( utils_static  PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
+	target_compile_definitions( utils_dynamic PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 )
+else()
+	# utils, as a C++ named module (no PCH: the module interface uses `import std;` instead)
 	vulkan_hpp__setup_cxx_module(
 		NAME utils_module
 		ALIAS utils::module

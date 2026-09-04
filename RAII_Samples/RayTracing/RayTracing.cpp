@@ -39,7 +39,8 @@
 #include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#if defined(VULKAN_HPP_USE_CXX_MODULE)
+#include <cstdlib>
 import std;
 import RAII_utils;
 import vulkan;
@@ -373,7 +374,7 @@ layout(binding=2, set = 0) uniform UniformBufferObject
 
 layout(location = 0) rayPayloadNV vec3 hitValue;
 
-void main() 
+void main()
 {
   const vec2 pixelCenter = vec2(gl_LaunchIDNV.xy) + vec2(0.5);
   const vec2 inUV = pixelCenter/vec2(gl_LaunchSizeNV.xy);
@@ -497,7 +498,7 @@ void main()
 
   Material mat = unpackMaterial(v1.matIndex);
 
-  vec3 c = dot_product * mat.diffuse; 
+  vec3 c = dot_product * mat.diffuse;
   if (0 <= mat.textureID)
   {
     vec2 texCoord = v0.texCoord * barycentrics.x + v1.texCoord * barycentrics.y + v2.texCoord * barycentrics.z;

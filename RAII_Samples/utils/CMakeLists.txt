@@ -1,16 +1,16 @@
 # SPDX-FileCopyrightText: 2019-2026 NVIDIA CORPORATION
 # SPDX-License-Identifier: Apache-2.0
 
-vulkan_hpp__setup_library(
-	NAME RAII_utils
-	HEADERS shaders.hpp utils.hpp
-	FOLDER "RAII_Samples" )
+if( NOT VULKAN_HPP_BUILD_CXX_MODULE )
+	vulkan_hpp__setup_library(
+		NAME RAII_utils
+		HEADERS shaders.hpp utils.hpp
+		FOLDER "RAII_Samples" )
 
-target_link_libraries( RAII_utils INTERFACE utils )
-target_compile_definitions( RAII_utils INTERFACE VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 )
-
-# RAII_utils, as a C++ named module (re-exports utils::module, no PCH needed)
-if( VULKAN_HPP_BUILD_CXX_MODULE )
+	target_link_libraries( RAII_utils INTERFACE utils )
+	target_compile_definitions( RAII_utils INTERFACE VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 )
+else()
+	# RAII_utils, as a C++ named module (re-exports utils::module, no PCH needed)
 	vulkan_hpp__setup_cxx_module(
 		NAME RAII_utils_module
 		ALIAS RAII_utils::module

@@ -17,6 +17,7 @@
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <cassert>
+#include <cstdlib>
 import glm;
 import std;
 import utils;

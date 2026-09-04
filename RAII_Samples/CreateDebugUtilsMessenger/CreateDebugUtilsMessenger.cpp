@@ -4,11 +4,18 @@
 // VulkanHpp Samples : CreateDebugReportMessenger
 //                     Draw a cube
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <vulkan/vulkan_core.h>
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
 #include <sstream>
 #include <vulkan/vulkan_to_string.hpp>
+#endif
+
 
 static char const * AppName    = "CreateDebugReportMessenger";
 static char const * EngineName = "Vulkan.hpp";
@@ -16,9 +23,8 @@ static char const * EngineName = "Vulkan.hpp";
 VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
                                                  vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
                                                  vk::DebugUtilsMessengerCallbackDataEXT const * pCallbackData,
-                                                 VULKAN_HPP_MAYBE_UNUSED void * pUserData )
+                                                 [[maybe_unused]] void * pUserData )
 {
-  VULKAN_HPP_UNUSED( pUserData );
   std::ostringstream message;
 
   message << vk::to_string( messageSeverity ) << ": " << vk::to_string( messageTypes ) << ":\n";
@@ -28,7 +34,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFl
   if ( 0 < pCallbackData->queueLabelCount )
   {
     message << std::string( "\t" ) << "Queue Labels:\n";
-    for ( uint32_t i = 0; i < pCallbackData->queueLabelCount; i++ )
+    for ( std::uint32_t i = 0; i < pCallbackData->queueLabelCount; i++ )
     {
       message << std::string( "\t\t" ) << "labelName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
     }
@@ -36,7 +42,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFl
   if ( 0 < pCallbackData->cmdBufLabelCount )
   {
     message << std::string( "\t" ) << "CommandBuffer Labels:\n";
-    for ( uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
+    for ( std::uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
     {
       message << std::string( "\t\t" ) << "labelName = <" << pCallbackData->pCmdBufLabels[i].pLabelName << ">\n";
     }
@@ -44,7 +50,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFl
   if ( 0 < pCallbackData->objectCount )
   {
     message << std::string( "\t" ) << "Objects:\n";
-    for ( uint32_t i = 0; i < pCallbackData->objectCount; i++ )
+    for ( std::uint32_t i = 0; i < pCallbackData->objectCount; i++ )
     {
       message << std::string( "\t\t" ) << "Object " << i << "\n";
       message << std::string( "\t\t\t" ) << "objectType   = " << vk::to_string( pCallbackData->pObjects[i].objectType ) << "\n";
@@ -56,11 +62,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFl
     }
   }
 
-#ifdef _WIN32
-  MessageBox( NULL, message.str().c_str(), "Alert", MB_OK );
-#else
   std::cout << message.str() << std::endl;
-#endif
 
   return false;
 }
@@ -76,15 +78,15 @@ int main()
     std::vector<vk::ExtensionProperties> props = context.enumerateInstanceExtensionProperties();
 
     auto propsIterator = std::find_if(
-      props.begin(), props.end(), []( vk::ExtensionProperties const & ep ) { return strcmp( ep.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) == 0; } );
+      props.begin(), props.end(), []( vk::ExtensionProperties const & ep ) { return std::strcmp( ep.extensionName, vk::EXTDebugUtilsExtensionName ) == 0; } );
     if ( propsIterator == props.end() )
     {
-      std::cout << "Something went very wrong, cannot find " << VK_EXT_DEBUG_UTILS_EXTENSION_NAME << " extension" << std::endl;
-      exit( 1 );
+      std::cout << "Something went very wrong, cannot find " << vk::EXTDebugUtilsExtensionName << " extension" << std::endl;
+      std::exit( 1 );
     }
 
-    vk::ApplicationInfo    applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
-    const char *           extensionName = VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
+    vk::ApplicationInfo    applicationInfo( AppName, 1, EngineName, 1, vk::ApiVersion11 );
+    const char *           extensionName = vk::EXTDebugUtilsExtensionName;
     vk::InstanceCreateInfo instanceCreateInfo( {}, &applicationInfo, {}, extensionName );
     vk::raii::Instance     instance( context, instanceCreateInfo );
 
@@ -100,17 +102,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

@@ -4,14 +4,23 @@
 // VulkanHpp Samples : OcclusionQuery
 //                     Use occlusion query to determine if drawing renders any samples.
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+import glm;
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
 #include <thread>
+#endif
+
 
 static char const * AppName    = "OcclusionQuery";
 static char const * EngineName = "Vulkan.hpp";
@@ -29,7 +38,7 @@ int main()
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::CommandPool   commandPool = device.createCommandPool( { {}, graphicsAndPresentQueueFamilyIndex.first } );
@@ -76,7 +85,7 @@ int main()
     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( descriptorPool, descriptorSetLayout );
     vk::DescriptorSet             descriptorSet = device.allocateDescriptorSets( descriptorSetAllocateInfo ).front();
 
-    vk::su::updateDescriptorSets( device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, {} );
+    vk::su::updateDescriptorSets( device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::WholeSize, {} } }, {} );
 
     vk::PipelineCache pipelineCache    = device.createPipelineCache( vk::PipelineCacheCreateInfo() );
     vk::Pipeline      graphicsPipeline = vk::su::createGraphicsPipeline( device,
@@ -95,16 +104,16 @@ int main()
     vk::Semaphore imageAcquiredSemaphore = device.createSemaphore( vk::SemaphoreCreateInfo( vk::SemaphoreCreateFlags() ) );
 
     // Get the index of the next available swapchain image:
-    vk::ResultValue<uint32_t> currentBuffer = device.acquireNextImageKHR( swapChainData.swapChain, UINT64_MAX, imageAcquiredSemaphore, nullptr );
+    vk::ResultValue<std::uint32_t> currentBuffer = device.acquireNextImageKHR( swapChainData.swapChain, std::numeric_limits<std::uint64_t>::max(), imageAcquiredSemaphore, nullptr );
     assert( currentBuffer.result == vk::Result::eSuccess );
     assert( currentBuffer.value < framebuffers.size() );
 
     /* Allocate a uniform buffer that will take query results. */
     vk::Buffer queryResultBuffer = device.createBuffer( vk::BufferCreateInfo(
-      vk::BufferCreateFlags(), 4 * sizeof( uint64_t ), vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst ) );
+      vk::BufferCreateFlags(), 4 * sizeof( std::uint64_t ), vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst ) );
 
     vk::MemoryRequirements memoryRequirements = device.getBufferMemoryRequirements( queryResultBuffer );
-    uint32_t               memoryTypeIndex    = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
+    std::uint32_t               memoryTypeIndex    = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
                                                        memoryRequirements.memoryTypeBits,
                                                        vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
     vk::DeviceMemory       queryResultMemory  = device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
@@ -141,7 +150,7 @@ int main()
     commandBuffer.endQuery( queryPool, 1 );
 
     commandBuffer.copyQueryPoolResults(
-      queryPool, 0, 2, queryResultBuffer, 0, sizeof( uint64_t ), vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait );
+      queryPool, 0, 2, queryResultBuffer, 0, sizeof( std::uint64_t ), vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait );
     commandBuffer.end();
 
     vk::Fence drawFence = device.createFence( vk::FenceCreateInfo() );
@@ -152,8 +161,8 @@ int main()
 
     graphicsQueue.waitIdle();
 
-    vk::ResultValue<std::vector<uint64_t>> rv = device.getQueryPoolResults<uint64_t>(
-      queryPool, 0, 2, 2 * sizeof( uint64_t ), sizeof( uint64_t ), vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait );
+    vk::ResultValue<std::vector<std::uint64_t>> rv = device.getQueryPoolResults<std::uint64_t>(
+      queryPool, 0, 2, 2 * sizeof( std::uint64_t ), sizeof( std::uint64_t ), vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait );
     switch ( rv.result )
     {
       case vk::Result::eSuccess: break;
@@ -166,7 +175,7 @@ int main()
     std::cout << "samples_passed[1] = " << rv.value[1] << "\n";
 
     /* Read back query result from buffer */
-    uint64_t * samplesPassedPtr = static_cast<uint64_t *>( device.mapMemory( queryResultMemory, 0, memoryRequirements.size, vk::MemoryMapFlags() ) );
+    std::uint64_t * samplesPassedPtr = static_cast<std::uint64_t *>( device.mapMemory( queryResultMemory, 0, memoryRequirements.size, vk::MemoryMapFlags() ) );
 
     std::cout << "vkCmdCopyQueryPoolResults data\n";
     std::cout << "samples_passed[0] = " << samplesPassedPtr[0] << "\n";
@@ -174,7 +183,7 @@ int main()
 
     device.unmapMemory( queryResultMemory );
 
-    while ( vk::Result::eTimeout == device.waitForFences( drawFence, VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device.waitForFences( drawFence, vk::True, vk::su::FenceTimeout ) )
       ;
 
     vk::Result result = presentQueue.presentKHR( vk::PresentInfoKHR( {}, swapChainData.swapChain, currentBuffer.value ) );
@@ -223,17 +232,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

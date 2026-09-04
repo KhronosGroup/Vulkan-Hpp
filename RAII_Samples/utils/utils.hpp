@@ -13,41 +13,43 @@
 // unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include "../../samples/utils/utils.hpp"
 
 #include <numeric>
 #include <vulkan/vulkan_raii.hpp>
+#endif
 
 namespace vk
 {
   namespace raii
   {
-    namespace su
+    VULKAN_HPP_EXPORT namespace su
     {
       vk::raii::DeviceMemory allocateDeviceMemory( vk::raii::Device const &                   device,
                                                    vk::PhysicalDeviceMemoryProperties const & memoryProperties,
                                                    vk::MemoryRequirements const &             memoryRequirements,
                                                    vk::MemoryPropertyFlags                    memoryPropertyFlags )
       {
-        uint32_t               memoryTypeIndex = vk::su::findMemoryType( memoryProperties, memoryRequirements.memoryTypeBits, memoryPropertyFlags );
+        std::uint32_t               memoryTypeIndex = vk::su::findMemoryType( memoryProperties, memoryRequirements.memoryTypeBits, memoryPropertyFlags );
         vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
         return vk::raii::DeviceMemory( device, memoryAllocateInfo );
       }
 
       template <typename T>
-      void copyToDevice( vk::raii::DeviceMemory const & deviceMemory, T const * pData, size_t count, vk::DeviceSize stride = sizeof( T ) )
+      void copyToDevice( vk::raii::DeviceMemory const & deviceMemory, T const * pData, std::size_t count, vk::DeviceSize stride = sizeof( T ) )
       {
         assert( sizeof( T ) <= stride );
-        uint8_t * deviceData = static_cast<uint8_t *>( deviceMemory.mapMemory( 0, count * stride ) );
+        std::uint8_t * deviceData = static_cast<std::uint8_t *>( deviceMemory.mapMemory( 0, count * stride ) );
         if ( stride == sizeof( T ) )
         {
-          memcpy( deviceData, pData, count * sizeof( T ) );
+          std::memcpy( deviceData, pData, count * sizeof( T ) );
         }
         else
         {
-          for ( size_t i = 0; i < count; i++ )
+          for ( std::size_t i = 0; i < count; i++ )
           {
-            memcpy( deviceData, &pData[i], sizeof( T ) );
+            std::memcpy( deviceData, &pData[i], sizeof( T ) );
             deviceData += stride;
           }
         }
@@ -152,8 +154,8 @@ namespace vk
                                                    destinationAccessMask,
                                                    oldImageLayout,
                                                    newImageLayout,
-                                                   VK_QUEUE_FAMILY_IGNORED,
-                                                   VK_QUEUE_FAMILY_IGNORED,
+                                                   vk::QueueFamilyIgnored,
+                                                   vk::QueueFamilyIgnored,
                                                    image,
                                                    imageSubresourceRange );
         return commandBuffer.pipelineBarrier( sourceStage, destinationStage, {}, nullptr, nullptr, imageMemoryBarrier );
@@ -186,16 +188,16 @@ namespace vk
           assert( sizeof( DataType ) <= m_size );
 
           void * dataPtr = deviceMemory.mapMemory( 0, sizeof( DataType ) );
-          memcpy( dataPtr, &data, sizeof( DataType ) );
+          std::memcpy( dataPtr, &data, sizeof( DataType ) );
           deviceMemory.unmapMemory();
         }
 
         template <typename DataType>
-        void upload( std::vector<DataType> const & data, size_t stride = 0 ) const
+        void upload( std::vector<DataType> const & data, std::size_t stride = 0 ) const
         {
           assert( m_propertyFlags & vk::MemoryPropertyFlagBits::eHostVisible );
 
-          size_t elementSize = stride ? stride : sizeof( DataType );
+          std::size_t elementSize = stride ? stride : sizeof( DataType );
           assert( sizeof( DataType ) <= elementSize );
 
           copyToDevice( deviceMemory, data.data(), data.size(), elementSize );
@@ -207,15 +209,15 @@ namespace vk
                      vk::raii::CommandPool const &    commandPool,
                      vk::raii::Queue const &          queue,
                      std::vector<DataType> const &    data,
-                     size_t                           stride ) const
+                     std::size_t                           stride ) const
         {
           assert( m_usage & vk::BufferUsageFlagBits::eTransferDst );
           assert( m_propertyFlags & vk::MemoryPropertyFlagBits::eDeviceLocal );
 
-          size_t elementSize = stride ? stride : sizeof( DataType );
+          std::size_t elementSize = stride ? stride : sizeof( DataType );
           assert( sizeof( DataType ) <= elementSize );
 
-          size_t dataSize = data.size() * elementSize;
+          std::size_t dataSize = data.size() * elementSize;
           assert( dataSize <= m_size );
 
           vk::raii::su::BufferData stagingBuffer( physicalDevice, device, dataSize, vk::BufferUsageFlagBits::eTransferSrc );
@@ -302,9 +304,9 @@ namespace vk
         SurfaceData( vk::raii::Instance const & instance, std::string const & windowName, vk::Extent2D const & extent_ )
           : extent( extent_ ), window( vk::su::createWindow( windowName, extent ) )
         {
-          VkSurfaceKHR _surface;
-          VkResult     err = glfwCreateWindowSurface( *instance, window.handle, nullptr, &_surface );
-          if ( err != VK_SUCCESS )
+          vk::SurfaceKHR::NativeType _surface;
+          auto                       result = glfwCreateWindowSurface( *instance, window.handle, nullptr, &_surface );
+          if ( static_cast<vk::Result>( result ) != vk::Result::eSuccess )
             throw std::runtime_error( "Failed to create window!" );
           surface = vk::raii::SurfaceKHR( instance, _surface );
         }
@@ -322,15 +324,15 @@ namespace vk
                        vk::Extent2D const &             extent,
                        vk::ImageUsageFlags              usage,
                        vk::raii::SwapchainKHR const *   pOldSwapchain,
-                       uint32_t                         graphicsQueueFamilyIndex,
-                       uint32_t                         presentQueueFamilyIndex )
+                       std::uint32_t                         graphicsQueueFamilyIndex,
+                       std::uint32_t                         presentQueueFamilyIndex )
         {
           vk::SurfaceFormatKHR surfaceFormat = vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( surface ) );
           colorFormat                        = surfaceFormat.format;
 
           vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
           vk::Extent2D               swapchainExtent;
-          if ( surfaceCapabilities.currentExtent.width == ( std::numeric_limits<uint32_t>::max )() )
+          if ( surfaceCapabilities.currentExtent.width == ( std::numeric_limits<std::uint32_t>::max )() )
           {
             // If the surface size is undefined, the size is set to the size of the images requested.
             swapchainExtent.width  = vk::su::clamp( extent.width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width );
@@ -367,7 +369,7 @@ namespace vk
                                                           pOldSwapchain ? **pOldSwapchain : nullptr );
           if ( graphicsQueueFamilyIndex != presentQueueFamilyIndex )
           {
-            uint32_t queueFamilyIndices[2] = { graphicsQueueFamilyIndex, presentQueueFamilyIndex };
+            std::uint32_t queueFamilyIndices[2] = { graphicsQueueFamilyIndex, presentQueueFamilyIndex };
             // If the graphics and present queues are from different queue families, we either have to explicitly
             // transfer ownership of images between the queues, or we have to create the swapchain with imageSharingMode
             // as vk::SharingMode::eConcurrent
@@ -493,13 +495,13 @@ namespace vk
         vk::raii::Sampler sampler;
       };
 
-      std::pair<uint32_t, uint32_t> findGraphicsAndPresentQueueFamilyIndex( vk::raii::PhysicalDevice const & physicalDevice,
+      std::pair<std::uint32_t, std::uint32_t> findGraphicsAndPresentQueueFamilyIndex( vk::raii::PhysicalDevice const & physicalDevice,
                                                                             vk::raii::SurfaceKHR const &     surface )
       {
         std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-        assert( queueFamilyProperties.size() < ( std::numeric_limits<uint32_t>::max )() );
+        assert( queueFamilyProperties.size() < ( std::numeric_limits<std::uint32_t>::max )() );
 
-        uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( queueFamilyProperties );
+        std::uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( queueFamilyProperties );
         if ( physicalDevice.getSurfaceSupportKHR( graphicsQueueFamilyIndex, surface ) )
         {
           return std::make_pair( graphicsQueueFamilyIndex,
@@ -508,22 +510,22 @@ namespace vk
 
         // the graphicsQueueFamilyIndex doesn't support present -> look for an other family index that supports both
         // graphics and present
-        for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
+        for ( std::size_t i = 0; i < queueFamilyProperties.size(); i++ )
         {
           if ( ( queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics ) &&
-               physicalDevice.getSurfaceSupportKHR( static_cast<uint32_t>( i ), surface ) )
+               physicalDevice.getSurfaceSupportKHR( static_cast<std::uint32_t>( i ), surface ) )
           {
-            return std::make_pair( static_cast<uint32_t>( i ), static_cast<uint32_t>( i ) );
+            return std::make_pair( static_cast<std::uint32_t>( i ), static_cast<std::uint32_t>( i ) );
           }
         }
 
         // there's nothing like a single family index that supports both graphics and present -> look for an other
         // family index that supports present
-        for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
+        for ( std::size_t i = 0; i < queueFamilyProperties.size(); i++ )
         {
-          if ( physicalDevice.getSurfaceSupportKHR( static_cast<uint32_t>( i ), surface ) )
+          if ( physicalDevice.getSurfaceSupportKHR( static_cast<std::uint32_t>( i ), surface ) )
           {
-            return std::make_pair( graphicsQueueFamilyIndex, static_cast<uint32_t>( i ) );
+            return std::make_pair( graphicsQueueFamilyIndex, static_cast<std::uint32_t>( i ) );
           }
         }
 
@@ -546,8 +548,8 @@ namespace vk
       vk::raii::DescriptorPool makeDescriptorPool( vk::raii::Device const & device, std::vector<vk::DescriptorPoolSize> const & poolSizes )
       {
         assert( !poolSizes.empty() );
-        uint32_t maxSets = std::accumulate(
-          poolSizes.begin(), poolSizes.end(), 0, []( uint32_t sum, vk::DescriptorPoolSize const & dps ) { return sum + dps.descriptorCount; } );
+        std::uint32_t maxSets = std::accumulate(
+          poolSizes.begin(), poolSizes.end(), 0, []( std::uint32_t sum, vk::DescriptorPoolSize const & dps ) { return sum + dps.descriptorCount; } );
         assert( 0 < maxSets );
 
         vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, maxSets, poolSizes );
@@ -555,21 +557,21 @@ namespace vk
       }
 
       vk::raii::DescriptorSetLayout makeDescriptorSetLayout( vk::raii::Device const &                                                            device,
-                                                             std::vector<std::tuple<vk::DescriptorType, uint32_t, vk::ShaderStageFlags>> const & bindingData,
+                                                             std::vector<std::tuple<vk::DescriptorType, std::uint32_t, vk::ShaderStageFlags>> const & bindingData,
                                                              vk::DescriptorSetLayoutCreateFlags                                                  flags = {} )
       {
         std::vector<vk::DescriptorSetLayoutBinding> bindings( bindingData.size() );
-        for ( size_t i = 0; i < bindingData.size(); i++ )
+        for ( std::size_t i = 0; i < bindingData.size(); i++ )
         {
           bindings[i] = vk::DescriptorSetLayoutBinding(
-            vk::su::checked_cast<uint32_t>( i ), std::get<0>( bindingData[i] ), std::get<1>( bindingData[i] ), std::get<2>( bindingData[i] ) );
+            vk::su::checked_cast<std::uint32_t>( i ), std::get<0>( bindingData[i] ), std::get<1>( bindingData[i] ), std::get<2>( bindingData[i] ) );
         }
         vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo( flags, bindings );
         return vk::raii::DescriptorSetLayout( device, descriptorSetLayoutCreateInfo );
       }
 
       vk::raii::Device makeDevice( vk::raii::PhysicalDevice const &   physicalDevice,
-                                   uint32_t                           queueFamilyIndex,
+                                   std::uint32_t                           queueFamilyIndex,
                                    std::vector<std::string> const &   extensions             = {},
                                    vk::PhysicalDeviceFeatures const * physicalDeviceFeatures = nullptr,
                                    void const *                       pNext                  = nullptr )
@@ -615,8 +617,8 @@ namespace vk
                                                vk::SpecializationInfo const *                       vertexShaderSpecializationInfo,
                                                vk::raii::ShaderModule const &                       fragmentShaderModule,
                                                vk::SpecializationInfo const *                       fragmentShaderSpecializationInfo,
-                                               uint32_t                                             vertexStride,
-                                               std::vector<std::pair<vk::Format, uint32_t>> const & vertexInputAttributeFormatOffset,
+                                               std::uint32_t                                             vertexStride,
+                                               std::vector<std::pair<vk::Format, std::uint32_t>> const & vertexInputAttributeFormatOffset,
                                                vk::FrontFace                                        frontFace,
                                                bool                                                 depthBuffered,
                                                vk::raii::PipelineLayout const &                     pipelineLayout,
@@ -634,7 +636,7 @@ namespace vk
         if ( 0 < vertexStride )
         {
           vertexInputAttributeDescriptions.reserve( vertexInputAttributeFormatOffset.size() );
-          for ( uint32_t i = 0; i < vertexInputAttributeFormatOffset.size(); i++ )
+          for ( std::uint32_t i = 0; i < vertexInputAttributeFormatOffset.size(); i++ )
           {
             vertexInputAttributeDescriptions.emplace_back( i, 0, vertexInputAttributeFormatOffset[i].first, vertexInputAttributeFormatOffset[i].second );
           }
@@ -717,7 +719,7 @@ namespace vk
                                        std::string const &              engineName,
                                        std::vector<std::string> const & layers     = {},
                                        std::vector<std::string> const & extensions = {},
-                                       uint32_t                         apiVersion = VK_API_VERSION_1_0 )
+                                       std::uint32_t                         apiVersion = vk::ApiVersion10 )
       {
         vk::ApplicationInfo       applicationInfo( appName.c_str(), 1, engineName.c_str(), 1, apiVersion );
         std::vector<char const *> enabledLayers = vk::su::gatherLayers( layers
@@ -802,7 +804,7 @@ namespace vk
       {
         vk::raii::Fence fence( device, vk::FenceCreateInfo() );
         queue.submit( vk::SubmitInfo( nullptr, nullptr, *commandBuffer ), fence );
-        while ( vk::Result::eTimeout == device.waitForFences( { fence }, VK_TRUE, vk::su::FenceTimeout ) )
+        while ( vk::Result::eTimeout == device.waitForFences( { fence }, vk::True, vk::su::FenceTimeout ) )
           ;
       }
 
@@ -811,14 +813,14 @@ namespace vk
         vk::raii::DescriptorSet const &                                                                                             descriptorSet,
         std::vector<std::tuple<vk::DescriptorType, vk::raii::Buffer const &, vk::DeviceSize, vk::raii::BufferView const *>> const & bufferData,
         vk::raii::su::TextureData const &                                                                                           textureData,
-        uint32_t                                                                                                                    bindingOffset = 0 )
+        std::uint32_t                                                                                                                    bindingOffset = 0 )
       {
         std::vector<vk::DescriptorBufferInfo> bufferInfos;
         bufferInfos.reserve( bufferData.size() );
 
         std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
         writeDescriptorSets.reserve( bufferData.size() + 1 );
-        uint32_t dstBinding = bindingOffset;
+        std::uint32_t dstBinding = bindingOffset;
         for ( auto const & bd : bufferData )
         {
           bufferInfos.emplace_back( std::get<1>( bd ), 0, std::get<2>( bd ) );
@@ -842,14 +844,14 @@ namespace vk
         vk::raii::DescriptorSet const &                                                                                             descriptorSet,
         std::vector<std::tuple<vk::DescriptorType, vk::raii::Buffer const &, vk::DeviceSize, vk::raii::BufferView const *>> const & bufferData,
         std::vector<vk::raii::su::TextureData> const &                                                                              textureData,
-        uint32_t                                                                                                                    bindingOffset = 0 )
+        std::uint32_t                                                                                                                    bindingOffset = 0 )
       {
         std::vector<vk::DescriptorBufferInfo> bufferInfos;
         bufferInfos.reserve( bufferData.size() );
 
         std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
         writeDescriptorSets.reserve( bufferData.size() + ( textureData.empty() ? 0 : 1 ) );
-        uint32_t dstBinding = bindingOffset;
+        std::uint32_t dstBinding = bindingOffset;
         for ( auto const & bd : bufferData )
         {
           bufferInfos.emplace_back( std::get<1>( bd ), 0, std::get<2>( bd ) );
@@ -873,7 +875,7 @@ namespace vk
           writeDescriptorSets.emplace_back( descriptorSet,
                                             dstBinding,
                                             0,
-                                            vk::su::checked_cast<uint32_t>( imageInfos.size() ),
+                                            vk::su::checked_cast<std::uint32_t>( imageInfos.size() ),
                                             vk::DescriptorType::eCombinedImageSampler,
                                             imageInfos.data(),
                                             nullptr,

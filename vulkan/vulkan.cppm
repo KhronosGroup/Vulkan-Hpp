@@ -26,7 +26,7 @@ export module vulkan;
 
 import std;
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 361, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 362, "Wrong VK_HEADER_VERSION!" );
 
 #if defined( __clang__ )
 #  pragma clang diagnostic push

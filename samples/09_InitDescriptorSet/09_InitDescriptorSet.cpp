@@ -14,15 +14,16 @@
 #endif
 
 #define GLM_FORCE_RADIANS
-#include <glm/gtc/matrix_transform.hpp>
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+import glm;
 import std;
 import utils;
 import vulkan;
 #else
 #include "../utils/math.hpp"
 #include "../utils/utils.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #endif
 

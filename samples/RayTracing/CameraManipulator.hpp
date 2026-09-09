@@ -15,7 +15,9 @@
 #  endif
 #endif
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <glm/glm.hpp>
+#endif
 
 #if defined( _MSC_VER )
 #  pragma warning( pop )

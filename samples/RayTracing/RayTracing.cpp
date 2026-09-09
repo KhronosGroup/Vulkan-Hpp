@@ -35,16 +35,16 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glslang/Public/ShaderLang.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_inverse.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #if defined(VULKAN_HPP_USE_CXX_MODULE)
 #include <cstdlib>
+import glm;
 import std;
 import utils;
 import vulkan;
 #else
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <vulkan/vulkan.hpp>
 #include <numeric>
 #include <random>

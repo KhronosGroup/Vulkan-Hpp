@@ -15,14 +15,18 @@
 #endif
 
 #include <cassert>
+#include <cmath>
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include <glm/glm.hpp>
-#include <glm/gtx/rotate_vector.hpp>
 
 #if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <glm/gtx/rotate_vector.hpp>
 import std;
+import glm;
 import vulkan;
+#else
+#include <glm/glm.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #endif
 
 #include "CameraManipulator.hpp"

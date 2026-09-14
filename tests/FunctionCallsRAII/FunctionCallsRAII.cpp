@@ -1348,5 +1348,38 @@ int main()
     commandBuffer.drawIndexedIndirectCount( *buffer, offset, *countBuffer, countBufferOffset, maxDrawCount, stride );
   }
 
+  // Promoted from VK_KHR_create_renderpass2
+  {
+    vk::raii::Device          device = nullptr;
+    vk::RenderPassCreateInfo2 renderPassCreateInfo2;
+    vk::raii::RenderPass      renderPass = device.createRenderPass2( renderPassCreateInfo2 );
+  }
+  {
+    vk::raii::Device          device = nullptr;
+    vk::RenderPassCreateInfo2 renderPassCreateInfo2;
+    vk::raii::RenderPass      renderPass( device, renderPassCreateInfo2 );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::RenderPassBeginInfo renderPassBeginInfo;
+    vk::SubpassBeginInfo    subpassBeginInfo;
+    commandBuffer.beginRenderPass2( renderPassBeginInfo, subpassBeginInfo );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::RenderPassBeginInfo renderPassBeginInfo;
+    vk::SubpassBeginInfo    subpassBeginInfo;
+    vk::SubpassEndInfo      subpassEndInfo;
+    commandBuffer.nextSubpass2( subpassBeginInfo, subpassEndInfo );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::SubpassEndInfo      subpassEndInfo;
+    commandBuffer.endRenderPass2( subpassEndInfo );
+  }
+
   return 0;
 }

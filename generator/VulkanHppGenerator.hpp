@@ -743,12 +743,11 @@ private:
                                       std::set<size_t> const &                  templatedParams,
                                       bool                                      singular ) const;
   std::string generateDebugReportObjectType( std::string const & objectType ) const;
-  std::string generateDecoratedReturnType( CommandData const &                       commandData,
-                                           std::vector<size_t> const &               returnParams,
-                                           std::map<size_t, VectorParamData> const & vectorParams,
-                                           bool                                      enumerating,
-                                           CommandFlavourFlags                       flavourFlags,
-                                           std::string const &                       returnType ) const;
+  std::string generateDecoratedReturnType( CommandData const &         commandData,
+                                           std::vector<size_t> const & returnParams,
+                                           bool                        enumerating,
+                                           CommandFlavourFlags         flavourFlags,
+                                           std::string const &         returnType ) const;
   std::string generateDeprecatedConstructors( std::string const & name ) const;
   std::string generateDeprecatedStructSetters( std::string const & name ) const;
   std::string generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
@@ -956,7 +955,8 @@ private:
                                        CommandFlavourFlags flavourFlags,
                                        bool                enumerating,
                                        bool                raii ) const;
-  std::string generateReturnType( std::vector<size_t> const &               returnParams,
+  std::string generateReturnType( std::vector<ParamData> const &            params,
+                                  std::vector<size_t> const &               returnParams,
                                   std::map<size_t, VectorParamData> const & vectorParams,
                                   CommandFlavourFlags                       flavourFlags,
                                   bool                                      raii,

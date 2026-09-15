@@ -4356,55 +4356,51 @@ std::string VulkanHppGenerator::generateCommand3ReturnsValueEnum( std::string co
 {
   assert( returnParams.size() == 3 );
 
-  std::string const & returnType2 = commandData.params[returnParams[2]].type.name;
-  if ( auto structIt0 = findByNameOrAlias( m_structs, commandData.params[returnParams[0]].type.name ); structIt0 != m_structs.end() )
+  if ( auto structIt0 = findByNameOrAlias( m_structs, commandData.params[returnParams[0]].type.name );
+       ( structIt0 != m_structs.end() ) && !structureHoldsHandle( structIt0->second ) && !structureHoldsVector( structIt0->second ) )
   {
-    // the first return param is a struct
-    if ( !structureHoldsHandle( structIt0->second ) )
+    // the first return param is a struct without handles or vectors
+    if ( structIt0->second.extendedBy.empty() )
     {
-      // the first return param is a struct without handles
-      if ( !structureHoldsVector( structIt0->second ) )
+      // the first return param is a non-extendable struct without handles or vectors
+      if ( auto structIt2 = findByNameOrAlias( m_structs, commandData.params[returnParams[2]].type.name );
+           ( commandData.params[returnParams[2]].type.name == "void" ) ||
+           ( structIt2 != m_structs.end() && !structureHoldsHandle( structIt2->second ) && !structureHoldsVector( structIt2->second ) ) )
       {
-        // the first return param is a struct without handles or vectors
-        if ( structIt0->second.extendedBy.empty() )
-        {
-          // the first return param is a non-extendable struct without handles or vectors
-          if ( returnType2 == "void" )
-          {
-            return generateCommandSetInclusive( name,
-                                                commandData,
-                                                initialSkipCount,
-                                                definition,
-                                                returnParams,
-                                                vectorParams,
-                                                false,
-                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
-                                                raii,
-                                                false,
-                                                { CommandFlavourFlagBits::enhanced } );
-          }
-        }
-        else
-        {
-          // the first return param is an extendable struct without handles or vectors
-          if ( returnType2 == "void" )
-          {
-            return generateCommandSetInclusive( name,
-                                                commandData,
-                                                initialSkipCount,
-                                                definition,
-                                                returnParams,
-                                                vectorParams,
-                                                false,
-                                                { CommandFlavourFlagBits::enhanced,
-                                                  CommandFlavourFlagBits::withAllocator,
-                                                  CommandFlavourFlagBits::chained,
-                                                  CommandFlavourFlagBits::chained | CommandFlavourFlagBits::withAllocator },
-                                                raii,
-                                                false,
-                                                { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
-          }
-        }
+        // the enumerated return param is either void or a non-extendable struct without handles or vectors
+        return generateCommandSetInclusive( name,
+                                            commandData,
+                                            initialSkipCount,
+                                            definition,
+                                            returnParams,
+                                            vectorParams,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator },
+                                            raii,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced } );
+      }
+    }
+    else
+    {
+      // the first return param is an extendable struct without handles or vectors
+      if ( commandData.params[returnParams[2]].type.name == "void" )
+      {
+        // the enumerated return type is void!
+        return generateCommandSetInclusive( name,
+                                            commandData,
+                                            initialSkipCount,
+                                            definition,
+                                            returnParams,
+                                            vectorParams,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced,
+                                              CommandFlavourFlagBits::withAllocator,
+                                              CommandFlavourFlagBits::chained,
+                                              CommandFlavourFlagBits::chained | CommandFlavourFlagBits::withAllocator },
+                                            raii,
+                                            false,
+                                            { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
       }
     }
   }

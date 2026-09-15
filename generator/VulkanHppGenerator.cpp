@@ -8307,7 +8307,7 @@ std::string VulkanHppGenerator::generateRAIIFactoryReturnStatements( CommandData
       assert( returnType.find( "std::vector" ) == std::string::npos );
       assert( returnType.substr( 10 ).starts_with( stripPrefix( vkType, "Vk" ) ) );
 
-      std::string const & returnTemplate = R"(        ${returnType} data_RAII{ std::piecewise_construct, std::forward_as_tuple( nullptr ) {} };
+      std::string const & returnTemplate = R"(        ${returnType} data_RAII{ std::piecewise_construct, std::forward_as_tuple( nullptr ), {} };
         if ( result_ == Result::eSuccess )
         {
           data_RAII.first = ${handleType}( *this, ${handleConstructorArguments}${successCodePassToElement} );

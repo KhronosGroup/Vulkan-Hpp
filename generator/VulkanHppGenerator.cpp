@@ -5612,7 +5612,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
     {
       std::string const dataPreparationTemplate =
         R"(std::pair<std::vector<UniqueHandle<${handleType}, Dispatch>, ${handleType}Allocator>, std::vector<${enumType}>> uniqueData_;
-    uniqueData_.first.reserve( ${vectorSize} );
+    uniqueData_.first.reserve( ${vectorName}.size() );
     detail::ObjectDestroy<${handleType}, Dispatch> deleter( *this, allocator, d );
     for ( auto const & ${elementName} : data_.first )
     {
@@ -5624,7 +5624,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
                              { { "elementName", stripPluralS( startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) ) ) },
                                { "enumType", dataTypes[1] },
                                { "handleType", dataTypes[0] },
-                               { "vectorSize", commandData.params[vectorParams.begin()->second.lenParam].name } } );
+                               { "vectorName", startLowerCase( stripPrefix( commandData.params[vectorParams.begin()->first].name, "p" ) ) } } );
     }
   }
 
@@ -8307,7 +8307,7 @@ std::string VulkanHppGenerator::generateRAIIFactoryReturnStatements( CommandData
       assert( returnType.find( "std::vector" ) == std::string::npos );
       assert( returnType.substr( 10 ).starts_with( stripPrefix( vkType, "Vk" ) ) );
 
-      std::string const & returnTemplate = R"(        ${returnType} data_RAII{ nullptr, {} };
+      std::string const & returnTemplate = R"(        ${returnType} data_RAII{ std::piecewise_construct, std::forward_as_tuple( nullptr ) {} };
         if ( result_ == Result::eSuccess )
         {
           data_RAII.first = ${handleType}( *this, ${handleConstructorArguments}${successCodePassToElement} );
@@ -9629,7 +9629,7 @@ ${enter}    ${handleType}( ${constructorArguments} )
       std::pair<${handleType}, Result> data_ = ${parentName}.${createCall}( ${createArguments} );
       if ( data_.second != Result::eSuccess )
       {
-        throwResultException( data_.second, VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::${createCall}" );
+        VULKAN_HPP_NAMESPACE::detail::throwResultException( data_.second, VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::${createCall}" );
       }
       *this = std::move( data_.first );
     }
@@ -9657,7 +9657,7 @@ ${enter}    ${handleType}s( ${constructorArguments} )
       {
         if ( result_ != Result::eSuccess )
         {
-          throwResultException( result_, VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::${createCall}" );
+          VULKAN_HPP_NAMESPACE::detail::throwResultException( result_, VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::${createCall}" );
         }
       }
       *this = std::move( data_.first );

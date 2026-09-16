@@ -3393,6 +3393,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
       }
     }
   }
+
   for ( auto const & structure : vkxml.structs )
   {
     for ( auto const & member : structure.members )
@@ -4939,6 +4940,20 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
           types.enums.push_back( std::move( enumData ) );
         }
       }
+      else if ( std::holds_alternative<TypeExternal>( type ) )
+      {
+        auto const & external = std::get<TypeExternal>( type );
+
+        checkForError(
+          "vk.xml", types.types.insert( external.name ).second, external.xmlLine, "external type <" + external.name + "> already specified as a type" );
+        checkForError(
+          "vk.xml", !containsByName( types.externals, external.name ), external.xmlLine, "external type <" + external.name + "> already specified" );
+        checkForError( "vk.xml",
+                       containsByName( types.includes, external.require ),
+                       external.xmlLine,
+                       "external type <" + external.name + "> requires unknown <" + external.require + ">" );
+        types.externals.push_back( std::move( external ) );
+      }
       else if ( std::holds_alternative<TypeFuncPointer>( type ) )
       {
         auto const & funcPointer = std::get<TypeFuncPointer>( type );
@@ -4973,6 +4988,10 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
 
           checkForError( "vk.xml", types.types.insert( handle.name ).second, handle.xmlLine, "handle <" + handle.name + "> already specified as a type" );
           checkForError( "vk.xml", !containsByName( types.handles, handle.name ), handle.xmlLine, "handle <" + handle.name + "> already specified" );
+          checkForError( "vk.xml",
+                         std::ranges::find( types.handles, handle.objTypeEnum, &TypeHandle::objTypeEnum ) == types.handles.end(),
+                         handle.xmlLine,
+                         "handle <" + handle.name + "> uses already specified objtypeenum <" + handle.objTypeEnum + ">" );
           types.handles.push_back( std::move( handle ) );
         }
       }
@@ -5007,8 +5026,9 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
           types.structs.push_back( std::move( structure ) );
         }
       }
-      else if ( std::holds_alternative<UnionVariant>( type ) )
+      else
       {
+        assert( std::holds_alternative<UnionVariant>( type ) );
         auto const & unionVariant = std::get<UnionVariant>( type );
 
         if ( std::holds_alternative<Alias>( unionVariant ) )
@@ -5029,22 +5049,15 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
           types.unions.push_back( std::move( typeUnion ) );
         }
       }
-      else
-      {
-        assert( std::holds_alternative<TypeExternal>( type ) );
-        auto const & external = std::get<TypeExternal>( type );
-
-        checkForError(
-          "vk.xml", types.types.insert( external.name ).second, external.xmlLine, "external type <" + external.name + "> already specified as a type" );
-        checkForError( "vk.xml",
-                       containsByName( types.includes, external.require ),
-                       external.xmlLine,
-                       "external type <" + external.name + "> requires unknown <" + external.require + ">" );
-        checkForError(
-          "vk.xml", !containsByName( types.externals, external.name ), external.xmlLine, "external type <" + external.name + "> already specified" );
-        types.externals.push_back( std::move( external ) );
-      }
     }
+  }
+
+  for ( auto const & baseType : types.baseTypes )
+  {
+    checkForError( "vk.xml",
+                   baseType.type.name.empty() || containsByName( types.externals, baseType.type.name ),
+                   baseType.xmlLine,
+                   "basetype <" + baseType.name + "> is typed on an unknown type <" + baseType.type.name + ">" );
   }
 
   for ( auto & bitmask : types.bitmasks )
@@ -5065,7 +5078,6 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
       if ( enumIt == types.enums.end() )
       {
         checkForError( "vk.xml", types.types.insert( flagBits ).second, -1, "invented enum <" + flagBits + "> already specified as a type" );
-        checkForError( "vk.xml", !containsByName( types.enums, flagBits ), -1, "invented enum <" + flagBits + "> already specified" );
         types.enums.push_back( { .name = flagBits, .category = "bitmask", .xmlLine = 0 } );
       }
       else
@@ -5080,6 +5092,14 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
                      bitmask.xmlLine,
                      "bitmask <" + bitmask.name + "> requires unknown enum <" + bitmask.require + ">" );
     }
+  }
+
+  for ( auto const & define : types.defines )
+  {
+    checkForError( "vk.xml",
+                   define.require.empty() || containsByName( types.defines, define.require ),
+                   define.xmlLine,
+                   "define <" + define.name + "> requires unknown define <" + define.require + ">" );
   }
 
   // structs might alias a struct that's specified later than the alias !
@@ -5097,14 +5117,6 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
   }
   types.structAliases.clear();
 
-  for ( auto const & define : types.defines )
-  {
-    checkForError( "vk.xml",
-                   define.require.empty() || containsByName( types.defines, define.require ),
-                   define.xmlLine,
-                   "define <" + define.name + "> requires unknown define <" + define.require + ">" );
-  }
-
   // unions might alias a union that's specified later than the alias !
   for ( auto unionAlias : types.unionAliases )
   {
@@ -5120,16 +5132,6 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
   }
   types.unionAliases.clear();
 
-  for ( auto const & define : types.defines )
-  {
-    if ( !define.require.empty() )
-    {
-      checkForError( "vk.xml",
-                     containsByName( types.defines, define.require ),
-                     define.xmlLine,
-                     "define <" + define.name + "> requires unknown define <" + define.require + ">" );
-    }
-  }
   for ( auto const & funcPointer : types.funcPointers )
   {
     if ( !funcPointer.require.empty() )
@@ -5140,6 +5142,7 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
                      "funcpointer <" + funcPointer.name + "> requires unknown type <" + funcPointer.require + ">" );
     }
   }
+
   for ( auto const & handle : types.handles )
   {
     checkForError( "vk.xml",
@@ -5147,6 +5150,7 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
                    handle.xmlLine,
                    "handle <" + handle.name + "> specifies unknown parent handle <" + handle.parent + ">" );
   }
+
   for ( auto const & structure : types.structs )
   {
     for ( auto const & member : structure.members )

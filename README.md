@@ -84,6 +84,10 @@ Requests for updates and issues with these packages should be directed to their 
 
 We try to keep the API for all flavours of Vulkan-Hpp constant or backwards compatible. However, we may introduce unavoidable breaking changes, usually to fix bugs. Following is a list of those changes, arranged by version.
 
+### v1.4.357
+
+For device level initialization of the Vulkan-Hpp dispatcher, usually called via `VULKAN_HPP_DEFAULT_DISPATCHER.init( instance, vkGetInstanceProcAddr, device, vkGetDeviceProcAddr )`, the fourth argument, `vkGetDeviceProcAddr`, has changed from optional to required.
+
 ### v1.4.351
 
 In order to improve argument safety, the interface of functions taking a C-array of values has changed to take a `std::array`, instead.

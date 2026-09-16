@@ -341,14 +341,11 @@ private:
 
   struct HandleData
   {
-    std::map<std::string, int> aliases             = {};
     std::set<std::string>      childrenHandles     = {};
     std::set<std::string>      commands            = {};
     std::string                deleteCommand       = {};
     std::string                deletePool          = {};
     std::string                destructorType      = {};
-    std::string                objTypeEnum         = {};
-    std::string                parent              = {};
     std::set<std::string>      secondLevelCommands = {};
     bool                       isDispatchable      = {};
     int                        xmlLine             = {};
@@ -418,7 +415,6 @@ private:
   void        checkForError( bool condition, int line, std::string const & message ) const;
   void        checkForWarning( bool condition, int line, std::string const & message ) const;
   void        checkFuncPointerCorrectness() const;
-  void        checkHandleCorrectness() const;
   void        checkRequireCorrectness() const;
   void        checkRequireCorrectness( std::vector<RequireData> const & requireData, std::string const & section, std::string const & name ) const;
   void        checkRequireDependenciesCorrectness( RequireData const & require, std::string const & section, std::string const & name ) const;

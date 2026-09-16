@@ -191,12 +191,9 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
                                             "alias <" + alias.first + "> of handle <" + handle.name + "> already specified" );
                            } );
 
-    // for handles, we compile some more data than is read from the vk.xml, so we insert the handles from the vk.xml into our own map
+    // for handles, we compile some more data than is read from the vk.xml
     auto [handleIt, inserted] = m_handles.insert( { handle.name, {} } );
     assert( inserted );
-    handleIt->second.aliases        = handle.aliases;
-    handleIt->second.objTypeEnum    = handle.objTypeEnum;
-    handleIt->second.parent         = handle.parent;
     handleIt->second.isDispatchable = ( handle.type.name == "VK_DEFINE_HANDLE" );
     handleIt->second.xmlLine        = handle.xmlLine;
   }
@@ -1031,7 +1028,6 @@ void VulkanHppGenerator::checkCorrectness() const
   checkEnumCorrectness();
   checkExtensionCorrectness();
   checkFuncPointerCorrectness();
-  checkHandleCorrectness();
   checkRequireCorrectness();
   checkStructCorrectness();
 }
@@ -1085,6 +1081,18 @@ void VulkanHppGenerator::checkEnumCorrectness() const
                      enumValueIt->xmlLine,
                      "missing format specification for <" + enumValueIt->name + ">" );
     }
+  }
+
+  // check that all specified objectType values are used with a handle type
+  auto objectTypeIt = m_enums.find( "VkObjectType" );
+  assert( objectTypeIt != m_enums.end() );
+  for ( auto const & objectTypeValue : objectTypeIt->second.values )
+  {
+    checkForError(
+      ( objectTypeValue.name == "VK_OBJECT_TYPE_UNKNOWN" ) ||
+        std::ranges::any_of( m_vkxml.handles, [&objectTypeValue]( TypeHandle const & handle ) { return handle.objTypeEnum == objectTypeValue.name; } ),
+      objectTypeValue.xmlLine,
+      "VkObjectType value <" + objectTypeValue.name + "> not specified as \"objtypeenum\" for any handle" );
   }
 }
 
@@ -1186,43 +1194,6 @@ void VulkanHppGenerator::checkFuncPointerCorrectness() const
   }
 }
 
-void VulkanHppGenerator::checkHandleCorrectness() const
-{
-  // prepare handle checks by getting the VkObjectType enum
-  auto objectTypeIt = m_enums.find( "VkObjectType" );
-  assert( objectTypeIt != m_enums.end() );
-
-  // handle checks
-  assert( m_handles.begin()->first.empty() );
-  for ( auto handleIt = std::next( m_handles.begin() ); handleIt != m_handles.end(); ++handleIt )
-  {
-    assert( !handleIt->first.empty() );
-
-    // check the existence of the parent
-    checkForError( m_handles.contains( handleIt->second.parent ),
-                   handleIt->second.xmlLine,
-                   "handle <" + handleIt->first + "> with unknown parent <" + handleIt->second.parent + ">" );
-
-    // check existence of objTypeEnum used with this handle type
-    checkForError(
-      !handleIt->second.objTypeEnum.empty(), handleIt->second.xmlLine, "handle <" + handleIt->first + "> missing required \"objtypeenum\" attribute" );
-    checkForError( !isTypeUsed( handleIt->first ) || containsByNameOrAlias( objectTypeIt->second.values, handleIt->second.objTypeEnum ),
-                   handleIt->second.xmlLine,
-                   "handle <" + handleIt->first + "> specifies unknown \"objtypeenum\" <" + handleIt->second.objTypeEnum + ">" );
-  }
-
-  // check that all specified objectType values are used with a handle type
-  for ( auto const & objectTypeValue : objectTypeIt->second.values )
-  {
-    checkForError( ( objectTypeValue.name == "VK_OBJECT_TYPE_UNKNOWN" ) ||
-                     std::ranges::any_of( m_handles,
-                                          [&objectTypeValue]( std::pair<std::string, HandleData> const & hd )
-                                          { return hd.second.objTypeEnum == objectTypeValue.name; } ),
-                   objectTypeValue.xmlLine,
-                   "VkObjectType value <" + objectTypeValue.name + "> not specified as \"objtypeenum\" for any handle" );
-  }
-}
-
 void VulkanHppGenerator::checkRequireCorrectness() const
 {
   // checks by features and extensions
@@ -1310,7 +1281,7 @@ void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & requi
                        "required funcpointer <" + type.name + "> is not listed as a funcpointer" );
         break;
       case TypeCategory::Handle:
-        checkForError( findByNameOrAlias( m_handles, type.name ) != m_handles.end(),
+        checkForError( findByNameOrAlias( m_vkxml.handles, type.name ) != m_vkxml.handles.end(),
                        typeIt->second.xmlLine,
                        "required handle type <" + type.name + "> is not listed as a handle" );
         break;
@@ -7324,7 +7295,9 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
     // list all the commands that are mapped to members of this class
     std::string commands = generateHandleCommandDeclarations( handleData.second.commands );
 
-    std::string debugReportObjectType = generateDebugReportObjectType( handleData.second.objTypeEnum );
+    auto vkHandleIt = findByName( m_vkxml.handles, handleData.first );
+    assert( vkHandleIt != m_vkxml.handles.end() );
+    std::string debugReportObjectType = generateDebugReportObjectType( vkHandleIt->objTypeEnum );
 
     // create CPPType template specialization
     std::string className = stripPrefix( handleData.first, "Vk" );
@@ -7343,13 +7316,13 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
 
     auto [enter, leave] = generateProtection( getProtectFromType( handleData.first ) );
 
-    assert( !handleData.second.objTypeEnum.empty() );
+    assert( !vkHandleIt->objTypeEnum.empty() );
     auto enumIt = m_enums.find( "VkObjectType" );
     assert( enumIt != m_enums.end() );
-    assert( containsByNameOrAlias( enumIt->second.values, handleData.second.objTypeEnum ) );
+    assert( containsByNameOrAlias( enumIt->second.values, vkHandleIt->objTypeEnum ) );
 
     std::string usingAlias;
-    for ( auto const & alias : handleData.second.aliases )
+    for ( auto const & alias : vkHandleIt->aliases )
     {
       usingAlias += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + stripPrefix( handleData.first, "Vk" ) + ";\n";
     }
@@ -7457,7 +7430,7 @@ ${usingAlias}${leave})";
                              { "enter", enter },
                              { "leave", leave },
                              { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) },
-                             { "objTypeEnum", generateEnumValueName( enumIt->first, handleData.second.objTypeEnum, false ) },
+                             { "objTypeEnum", generateEnumValueName( enumIt->first, vkHandleIt->objTypeEnum, false ) },
                              { "usingAlias", usingAlias },
                              { "typesafeExplicitKeyword", typesafeExplicitKeyword },
                              { "typesafeConversionConditional", typesafeConversionConditional },
@@ -8010,10 +7983,12 @@ ${objectTypeCases}
                            {
                              if ( listedTypes.insert( handleData.first ).second )
                              {
+                               auto vkHandleIt = findByName( m_vkxml.handles, handleData.first );
+                               assert( vkHandleIt != m_vkxml.handles.end() );
                                objectTypeCases +=
                                  replaceWithMap( objectTypeCaseTemplate,
-                                                 { { "debugReportObjectType", generateDebugReportObjectType( handleData.second.objTypeEnum ) },
-                                                   { "objectType", generateEnumValueName( "VkObjectType", handleData.second.objTypeEnum, false ) } } );
+                                                 { { "debugReportObjectType", generateDebugReportObjectType( vkHandleIt->objTypeEnum ) },
+                                                   { "objectType", generateEnumValueName( "VkObjectType", vkHandleIt->objTypeEnum, false ) } } );
                              }
                            } );
     return addTitleAndProtection( title, objectTypeCases );
@@ -8290,7 +8265,9 @@ std::string VulkanHppGenerator::generateRAIIFactoryReturnStatements( CommandData
                                                                      std::string const & returnVariable,
                                                                      bool                singular ) const
 {
-  auto handleIt = findByNameOrAlias( m_handles, vkType );
+  auto vkHandleIt = findByName( m_vkxml.handles, vkType );
+  assert( vkHandleIt != m_vkxml.handles.end() );
+  auto handleIt = m_handles.find( vkHandleIt->name );
   assert( handleIt != m_handles.end() );
 
   std::string successCodePassToElement =
@@ -8422,15 +8399,16 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
 
     std::string declarations = generateRAIIHandleCommandDeclarations( handle, specialFunctions );
 
-    assert( !handle.second.objTypeEnum.empty() );
+    auto vkHandleIt = findByName( m_vkxml.handles, handle.first );
+    assert( vkHandleIt != m_vkxml.handles.end() );
     auto enumIt = m_enums.find( "VkObjectType" );
     assert( enumIt != m_enums.end() );
-    assert( containsByNameOrAlias( enumIt->second.values, handle.second.objTypeEnum ) );
-    std::string objTypeEnum = generateEnumValueName( enumIt->first, handle.second.objTypeEnum, false );
+    assert( containsByNameOrAlias( enumIt->second.values, vkHandleIt->objTypeEnum ) );
+    std::string objTypeEnum = generateEnumValueName( enumIt->first, vkHandleIt->objTypeEnum, false );
 
     enumIt = m_enums.find( "VkDebugReportObjectTypeEXT" );
     assert( enumIt != m_enums.end() );
-    std::string valueName = handle.second.objTypeEnum;
+    std::string valueName = vkHandleIt->objTypeEnum;
     valueName             = valueName.replace( 3, 0, "DEBUG_REPORT_" ) + "_EXT";
     std::string debugReportObjectType =
       containsByNameOrAlias( enumIt->second.values, valueName ) ? generateEnumValueName( enumIt->first, valueName, false ) : "eUnknown";
@@ -8915,13 +8893,15 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
       {
         returnTypes.push_back( commandData.params[returnParam].type.name );
       }
+      auto vkHandleIt = findByName( m_vkxml.handles, returnTypes.back() );
+      assert( vkHandleIt != m_vkxml.handles.end() );
       if ( handleIt == m_handles.end() )
       {
-        handleIt = findByNameOrAlias( m_handles, returnTypes.back() );
+        handleIt = m_handles.find( vkHandleIt->name );
       }
       else
       {
-        assert( findByNameOrAlias( m_handles, returnTypes.back() ) == m_handles.end() );
+        assert( m_handles.find( vkHandleIt->name ) == m_handles.end() );
       }
       returnTypes.back() = stripPrefix( returnTypes.back(), "Vk" );
       if ( ( vectorParamsIt != vectorParams.end() ) && !singular )
@@ -9562,7 +9542,9 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorByCall( std::pair<s
   {
     ++skipCount;
   }
-  if ( handle.second.parent == constructorIt->second.params[skipCount].type.name )
+  auto vkHandleIt = findByName( m_vkxml.handles, handle.first );
+  assert( vkHandleIt != m_vkxml.handles.end() );
+  if ( vkHandleIt->parent == constructorIt->second.params[skipCount].type.name )
   {
     ++skipCount;
   }
@@ -10056,11 +10038,11 @@ std::string VulkanHppGenerator::generateRAIIHandleForwardDeclarations( std::vect
   {
     for ( auto const & type : require.types )
     {
-      auto handleIt = findByNameOrAlias( m_handles, type.name );
-      if ( handleIt != m_handles.end() )
+      auto vkHandleIt = findByNameOrAlias( m_vkxml.handles, type.name );
+      if ( vkHandleIt != m_vkxml.handles.end() )
       {
-        str += ( handleIt->first == type.name ) ? ( "  class " + stripPrefix( handleIt->first, "Vk" ) + ";\n" )
-                                                : ( "  using " + stripPrefix( type.name, "Vk" ) + " = " + stripPrefix( handleIt->first, "Vk" ) + ";\n" );
+        str += ( vkHandleIt->name == type.name ) ? ( "  class " + stripPrefix( vkHandleIt->name, "Vk" ) + ";\n" )
+                                                 : ( "  using " + stripPrefix( type.name, "Vk" ) + " = " + stripPrefix( vkHandleIt->name, "Vk" ) + ";\n" );
       }
     }
   }
@@ -12601,9 +12583,12 @@ ${leave})";
 
 std::string VulkanHppGenerator::generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const
 {
+  auto vkHandleIt = findByName( m_vkxml.handles, handleData.first );
+  assert( vkHandleIt != m_vkxml.handles.end() );
+
   std::string type = stripPrefix( handleData.first, "Vk" );
   std::string aliasHandle;
-  for ( auto const & alias : handleData.second.aliases )
+  for ( auto const & alias : vkHandleIt->aliases )
   {
     static std::string const aliasHandleTemplate = R"(  using Unique${aliasType} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;)";
 
@@ -12693,9 +12678,12 @@ std::string VulkanHppGenerator::generateSharedHandle( std::pair<std::string, Han
 {
   if ( !handleData.second.deleteCommand.empty() )
   {
+    auto vkHandleIt = findByName( m_vkxml.handles, handleData.first );
+    assert( vkHandleIt != m_vkxml.handles.end() );
+
     std::string type = stripPrefix( handleData.first, "Vk" );
     std::string aliasHandle;
-    for ( auto const & alias : handleData.second.aliases )
+    for ( auto const & alias : vkHandleIt->aliases )
     {
       static std::string const aliasHandleTemplate = R"(  using Shared${aliasType} = SharedHandle<${type}>;)";
 
@@ -12728,9 +12716,12 @@ std::string VulkanHppGenerator::generateSharedHandleNoDestroy( std::pair<std::st
 {
   if ( handleData.second.deleteCommand.empty() )
   {
+    auto vkHandleIt = findByName( m_vkxml.handles, handleData.first );
+    assert( vkHandleIt != m_vkxml.handles.end() );
+
     std::string type = stripPrefix( handleData.first, "Vk" );
     std::string aliasHandle;
-    for ( auto const & alias : handleData.second.aliases )
+    for ( auto const & alias : vkHandleIt->aliases )
     {
       static std::string const aliasHandleTemplate = R"(  using Shared${aliasType} = SharedHandle<${type}>;)";
 
@@ -12753,7 +12744,7 @@ using Shared${type} = SharedHandle<${type}>;
 ${aliasHandle})";
 
     return replaceWithMap( sharedHandleTemplate,
-                           { { "aliasHandle", aliasHandle }, { "parent", "Shared" + stripPrefix( handleData.second.parent, "Vk" ) }, { "type", type } } );
+                           { { "aliasHandle", aliasHandle }, { "parent", "Shared" + stripPrefix( vkHandleIt->parent, "Vk" ) }, { "type", type } } );
   }
   return "";
 }
@@ -13263,15 +13254,15 @@ bool VulkanHppGenerator::hasParentHandle( std::string const & handle, std::strin
   std::string candidate = handle;
   while ( !candidate.empty() )
   {
-    auto const & handleIt = m_handles.find( candidate );
-    assert( handleIt != m_handles.end() );
-    if ( handleIt->second.parent == parent )
+    auto vkHandleIt = findByName( m_vkxml.handles, candidate );
+    assert( vkHandleIt != m_vkxml.handles.end() );
+    if ( vkHandleIt->parent == parent )
     {
       return true;
     }
     else
     {
-      candidate = handleIt->second.parent;
+      candidate = vkHandleIt->parent;
     }
   }
   return false;
@@ -13316,7 +13307,7 @@ bool VulkanHppGenerator::isFeature( std::string const & name ) const
 
 bool VulkanHppGenerator::isHandleType( std::string const & type ) const
 {
-  return type.starts_with( "Vk" ) && ( findByNameOrAlias( m_handles, type ) != m_handles.end() );
+  return type.starts_with( "Vk" ) && ( findByNameOrAlias( m_vkxml.handles, type ) != m_vkxml.handles.end() );
 }
 
 bool VulkanHppGenerator::isHandleTypeByStructure( std::string const & type ) const
@@ -13684,10 +13675,13 @@ void VulkanHppGenerator::rescheduleRAIIHandle( std::string &                    
                                                std::set<std::string> &                    listedHandles,
                                                std::set<std::string> const &              specialFunctions ) const
 {
+  auto vkHandleIt = findByName( m_vkxml.handles, handle.first );
+  assert( vkHandleIt != m_vkxml.handles.end() );
+
   listedHandles.insert( handle.first );
-  if ( !handle.second.parent.empty() && !listedHandles.contains( handle.second.parent ) )
+  if ( !vkHandleIt->parent.empty() && !listedHandles.contains( vkHandleIt->parent ) )
   {
-    auto parentIt = m_handles.find( handle.second.parent );
+    auto parentIt = m_handles.find( vkHandleIt->parent );
     assert( parentIt != m_handles.end() );
     str += generateRAIIHandle( *parentIt, listedHandles, specialFunctions );
   }
@@ -13723,15 +13717,18 @@ std::vector<std::string> VulkanHppGenerator::selectCommandsByHandle( std::vector
 
 bool VulkanHppGenerator::skipLeadingGrandParent( std::pair<std::string, HandleData> const & handle ) const
 {
+  auto vkHandleIt = findByName( m_vkxml.handles, handle.first );
+  assert( vkHandleIt != m_vkxml.handles.end() );
+
   bool skip = false;
   assert( !handle.second.constructorIts.empty() );
   auto constructorIt = handle.second.constructorIts.begin();
   if ( ( 1 < ( *constructorIt )->second.params.size() ) && isHandleType( ( *constructorIt )->second.params[0].type.name ) &&
-       ( ( *constructorIt )->second.params[1].type.name == handle.second.parent ) )
+       ( ( *constructorIt )->second.params[1].type.name == vkHandleIt->parent ) )
   {
-    auto parentIt = m_handles.find( handle.second.parent );
-    assert( parentIt != m_handles.end() );
-    skip = ( ( *constructorIt )->second.params[0].type.name == parentIt->second.parent );
+    auto vkParentIt = findByName( m_vkxml.handles, vkHandleIt->parent );
+    assert( vkParentIt != m_vkxml.handles.end() );
+    skip = ( ( *constructorIt )->second.params[0].type.name == vkParentIt->parent );
 #if !defined( NDEBUG )
     for ( auto it = std::next( constructorIt ); it != handle.second.constructorIts.end(); ++it )
     {

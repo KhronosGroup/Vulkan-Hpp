@@ -66,6 +66,18 @@ struct Alias
 
 using BitmaskVariant = std::variant<TypeBitmask, Alias>;
 
+struct TypeHandle
+{
+  std::string                name        = {};
+  std::map<std::string, int> aliases     = {};
+  std::string                objTypeEnum = {};
+  std::string                parent      = {};
+  Type                       type        = {};
+  int                        xmlLine     = {};
+};
+
+using HandleVariant = std::variant<TypeHandle, Alias>;
+
 struct Tag
 {
   std::string name    = {};
@@ -128,18 +140,6 @@ struct TypeFuncPointer
   Type                          returnType = {};
   int                           xmlLine    = {};
 };
-
-struct TypeHandle
-{
-  std::string                name        = {};
-  std::map<std::string, int> aliases     = {};
-  std::string                objTypeEnum = {};
-  std::string                parent      = {};
-  Type                       type        = {};
-  int                        xmlLine     = {};
-};
-
-using HandleVariant = std::variant<TypeHandle, Alias>;
 
 struct StructMember
 {

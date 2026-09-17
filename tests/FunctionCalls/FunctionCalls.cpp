@@ -2621,6 +2621,62 @@ int main()
     commandBuffer.drawIndexedIndirectCount( buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride );
   }
 
+  // Promoted from VK_KHR_create_renderpass2
+  {
+    vk::Device                device;
+    vk::RenderPassCreateInfo2 renderPassCreateInfo2;
+    vk::AllocationCallbacks   allocationCallbacks;
+    vk::RenderPass            renderPass;
+    vk::Result                result = device.createRenderPass2( &renderPassCreateInfo2, &allocationCallbacks, &renderPass );
+  }
+  {
+    vk::Device                device;
+    vk::RenderPassCreateInfo2 renderPassCreateInfo2;
+    vk::RenderPass            renderPass = device.createRenderPass2( renderPassCreateInfo2 );
+  }
+  {
+    vk::Device                device;
+    vk::RenderPassCreateInfo2 renderPassCreateInfo2;
+    vk::UniqueRenderPass      renderPass = device.createRenderPass2Unique( renderPassCreateInfo2 );
+  }
+
+  {
+    vk::CommandBuffer       commandBuffer;
+    vk::RenderPassBeginInfo renderPassBeginInfo;
+    vk::SubpassBeginInfo    subpassBeginInfo;
+    commandBuffer.beginRenderPass2( &renderPassBeginInfo, &subpassBeginInfo );
+  }
+  {
+    vk::CommandBuffer       commandBuffer;
+    vk::RenderPassBeginInfo renderPassBeginInfo;
+    vk::SubpassBeginInfo    subpassBeginInfo;
+    commandBuffer.beginRenderPass2( renderPassBeginInfo, subpassBeginInfo );
+  }
+
+  {
+    vk::CommandBuffer    commandBuffer;
+    vk::SubpassBeginInfo subpassBeginInfo;
+    vk::SubpassEndInfo   subpassEndInfo;
+    commandBuffer.nextSubpass2( &subpassBeginInfo, &subpassEndInfo );
+  }
+  {
+    vk::CommandBuffer    commandBuffer;
+    vk::SubpassBeginInfo subpassBeginInfo;
+    vk::SubpassEndInfo   subpassEndInfo;
+    commandBuffer.nextSubpass2( subpassBeginInfo, subpassEndInfo );
+  }
+
+  {
+    vk::CommandBuffer  commandBuffer;
+    vk::SubpassEndInfo subpassEndInfo;
+    commandBuffer.endRenderPass2( &subpassEndInfo );
+  }
+  {
+    vk::CommandBuffer  commandBuffer;
+    vk::SubpassEndInfo subpassEndInfo;
+    commandBuffer.endRenderPass2( subpassEndInfo );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

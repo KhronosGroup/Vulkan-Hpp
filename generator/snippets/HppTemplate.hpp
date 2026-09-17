@@ -89,6 +89,9 @@ ${throwResultException}
 ${ResultValue}
 ${resultChecks}
 ${constexprDefines}
+${structForwardDeclarations}
+${handleForwardDeclarations}
+${funcPointers}
 
 #if 20 <= VULKAN_HPP_CPP_VERSION
   template <typename Allocator, typename T>

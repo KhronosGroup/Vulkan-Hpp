@@ -11,9 +11,6 @@ ${copyrightMessage}
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
-  ${structForwardDeclarations}
-  ${handleForwardDeclarations}
-  ${funcPointerReturns}
   ${uniqueHandles}
   ${handles}
 

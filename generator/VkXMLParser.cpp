@@ -10,6 +10,10 @@
 
 void checkExtensionOrStructAndMember( std::string const & depends, int xmlLine, std::string const & prefix, std::vector<TypeStruct> const & structs );
 void checkProperties( std::vector<PropertyElement> const & properties, Vkxml const & vkxml, std::string const & requireType, std::string const & requireName );
+void checkRequiredTypesSorted( std::vector<TypeStruct> const &  structs,
+                               std::vector<TypeUnion> const &   unions,
+                               std::vector<RequireType> const & type,
+                               std::set<std::string> &          listedStructs );
 bool containsByName( std::vector<ExtensionRequireEnumVariant> const & values, std::string const & name );
 bool containsByName( std::vector<VideoFormatVariant> const & values, std::string const & name );
 template <typename... T>
@@ -56,7 +60,7 @@ ExtensionRequireEnumConstant parseExtensionRequireEnumConstant( tinyxml2::XMLEle
 Extensions                   parseExtensions( tinyxml2::XMLElement const * element );
 Feature                      parseFeature( tinyxml2::XMLElement const * element );
 FeatureElement               parseFeatureElement( tinyxml2::XMLElement const * element );
-Require                      parseFeatureRequire( tinyxml2::XMLElement const * element );
+FeatureRequire               parseFeatureRequire( tinyxml2::XMLElement const * element );
 RequireEnumVariant           parseFeatureRequireEnum( tinyxml2::XMLElement const * element );
 ExtendEnumAlias              parseFeatureRequireEnumAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 ExtendEnumRegular            parseFeatureRequireEnumRegular( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
@@ -133,6 +137,13 @@ VideoProfile                   parseVideoProfile( tinyxml2::XMLElement const * e
 VideoProfileMember             parseVideoProfileMember( tinyxml2::XMLElement const * element );
 VideoProfiles                  parseVideoProfiles( tinyxml2::XMLElement const * element );
 VideoRequireCapabilities       parseVideoRequireCapabilities( tinyxml2::XMLElement const * element );
+std::vector<RequireType>
+     sortStructs( std::vector<TypeStruct> const & structs, std::vector<TypeUnion> const & unions, std::vector<RequireType> const & typesIn );
+void sortStructs( std::vector<TypeStruct> const &          structs,
+                  std::vector<TypeUnion> const &           unions,
+                  std::vector<RequireType> const &         typesIn,
+                  std::vector<RequireType>::const_iterator typeIt,
+                  std::vector<RequireType> &               typesOut );
 
 void checkExtensionOrStructAndMember( std::string const & depends, int xmlLine, std::string const & prefix, std::vector<TypeStruct> const & structs )
 {
@@ -209,6 +220,51 @@ void checkProperties( std::vector<PropertyElement> const & properties, Vkxml con
         property.xmlLine,
         requireType + " <" + requireName + "> requires a property <" + property.name + "> in structure <" + property.structure + "> with unexpected value <" +
           concatenate( property.value ) + ">" );
+    }
+  }
+}
+
+void checkRequiredTypesSorted( std::vector<TypeStruct> const &  structs,
+                               std::vector<TypeUnion> const &   unions,
+                               std::vector<RequireType> const & types,
+                               std::set<std::string> &          listedStructs )
+{
+  for ( auto typeIt = types.begin(); typeIt != types.end(); ++typeIt )
+  {
+    auto structIt = findByNameOrAlias( structs, typeIt->name );
+    if ( structIt != structs.end() )
+    {
+      for ( auto const & member : structIt->members )
+      {
+        if ( member.type.isValue() && ( containsByNameOrAlias( structs, member.type.name ) || containsByNameOrAlias( unions, member.type.name ) ) )
+        {
+          checkForError( "vk.xml",
+                         listedStructs.contains( member.type.name ),
+                         member.xmlLine,
+                         "struct <" + structIt->name + "> has member <" + member.name + "> of type <" + member.type.name +
+                           "> which is not yet listed as required" );
+        }
+      }
+      listedStructs.insert( typeIt->name );
+    }
+    else
+    {
+      auto unionIt = findByNameOrAlias( unions, typeIt->name );
+      if ( unionIt != unions.end() )
+      {
+        for ( auto const & member : unionIt->members )
+        {
+          if ( member.type.isValue() && ( containsByNameOrAlias( structs, member.type.name ) || containsByNameOrAlias( unions, member.type.name ) ) )
+          {
+            checkForError( "vk.xml",
+                           listedStructs.contains( member.type.name ),
+                           member.xmlLine,
+                           "union <" + unionIt->name + "> has member <" + member.name + "> of type <" + member.type.name +
+                             "> which is not yet listed as required" );
+          }
+        }
+        listedStructs.insert( typeIt->name );
+      }
     }
   }
 }
@@ -1576,7 +1632,7 @@ ExtensionRequire parseExtensionRequire( tinyxml2::XMLElement const * element )
     }
     else if ( value == "type" )
     {
-      NameElement requireType = parseNameElement( child );
+      RequireType requireType = parseRequireType( child );
       checkForError( "vk.xml",
                      !containsByName( require.types, requireType.name ),
                      requireType.xmlLine,
@@ -2052,7 +2108,7 @@ Feature parseFeature( tinyxml2::XMLElement const * element )
     }
     else if ( value == "require" )
     {
-      Require require = parseFeatureRequire( child );
+      FeatureRequire require = parseFeatureRequire( child );
       checkForError(
         "vk.xml",
         require.depends.empty() ||
@@ -2131,7 +2187,7 @@ FeatureElement parseFeatureElement( tinyxml2::XMLElement const * element )
   return feature;
 }
 
-Require parseFeatureRequire( tinyxml2::XMLElement const * element )
+FeatureRequire parseFeatureRequire( tinyxml2::XMLElement const * element )
 {
   int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -2148,7 +2204,7 @@ Require parseFeatureRequire( tinyxml2::XMLElement const * element )
                    { "property", MultipleAllowed::Yes },
                    { "type", MultipleAllowed::Yes } } );
 
-  Require require{ .xmlLine = line };
+  FeatureRequire require{ .xmlLine = line };
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "comment" )
@@ -3251,7 +3307,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
             }
           }
           checkProperties( require.properties, vkxml, "extension", extension.name );
-          std::vector<NameElement> additionalTypes;
+          std::vector<RequireType> additionalTypes;
           for ( auto const & type : require.types )
           {
             // we have invented some types required by bitmasks, so if a feature requires a type that is a bitmask, we also need to require the type that the
@@ -3617,8 +3673,18 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
     }
   }
 
+  // sort the structure types a little
+  for ( auto & extension : vkxml.extensions.extensions )
+  {
+    for ( auto & require : extension.require )
+    {
+      require.types = sortStructs( vkxml.structs, vkxml.unions, require.types );
+    }
+  }
+
   checkForError( "VkXMLParser", !vkxml.copyright.text.empty(), line, "Copyright message is missing" );
 
+  std::set<std::string> listedStructs;
   for ( auto const & feature : vkxml.features )
   {
     for ( auto const & require : feature.require )
@@ -3627,6 +3693,14 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
       {
         checkExtensionOrStructAndMember( depend, require.xmlLine, "feature <" + feature.name + "> has a require-member depending on", vkxml.structs );
       }
+      checkRequiredTypesSorted( vkxml.structs, vkxml.unions, require.types, listedStructs );
+    }
+  }
+  for ( auto const & extension : vkxml.extensions.extensions )
+  {
+    for ( auto const & require : extension.require )
+    {
+      checkRequiredTypesSorted( vkxml.structs, vkxml.unions, require.types, listedStructs );
     }
   }
 
@@ -4119,7 +4193,10 @@ StructMember parseStructMember( tinyxml2::XMLElement const * element )
   {
     if ( attribute.first == "altlen" )
     {
+      static std::set<std::string> const allowedAltLenValues = { "codeSize / 4", "(rasterizationSamples + 31) / 32", "2*VK_UUID_SIZE" };
       checkNoList( "vk.xml", attribute.second, line );
+      checkForError(
+        "vk.xml", allowedAltLenValues.contains( attribute.second ), line, "member attribute <altLen> holds unknown value <" + attribute.second + ">" );
       member.altLen = attribute.second;
     }
     else if ( attribute.first == "api" )
@@ -4225,14 +4302,21 @@ StructMember parseStructMember( tinyxml2::XMLElement const * element )
 
   checkForError( "vk.xml", member.altLen.empty() || !member.len.empty(), line, "member <" + member.name + "> has attribute <altLen>, but no attribute <len>" );
   checkForError( "vk.xml",
+                 member.altLen.empty() || ( ( member.len.size() == 1 ) && member.len[0].starts_with( "latexmath:" ) ),
+                 member.xmlLine,
+                 "struct member <" + member.name + "> has attribute <altLen> but attribute <len> does not start with \"latexmath:\"" );
+  checkForError( "vk.xml",
+                 ( ( member.len.size() != 1 ) || !member.len[0].starts_with( "latexmath:" ) ) || !member.altLen.empty(),
+                 member.xmlLine,
+                 "struct member <" + member.name + "> has attribute <len> starting with \"latexmath:\" but no attribute <altLen>" );
+  checkForError( "vk.xml",
                  member.len.empty() || !member.arraySizes.empty() || member.type.isPointer(),
                  line,
                  "member <" + member.name + "> has attribute <len> but is not a pointer" );
   checkForError( "vk.xml",
                  member.flagsExtend.empty() == member.flagsExtendMember.empty(),
                  line,
-                 "member <" + member.name + "> has just one of the two attribute \"flagsextend\" and \"flagsextendmember\"" );
-  // CHECK: values after extensions
+                 "member <" + member.name + "> has only one of the two attribute \"flagsextend\" and \"flagsextendmember\"" );
 
   return member;
 }
@@ -4979,6 +5063,10 @@ StructVariant parseTypeStruct( tinyxml2::XMLElement const * element, std::map<st
         checkNoList( "vk.xml", attribute.second, line );
         typeStruct.allowDuplicate = attribute.second;
       }
+      else if ( attribute.first == "comment" )
+      {
+        typeStruct.comment = attribute.second;
+      }
       else if ( attribute.first == "name" )
       {
         checkNoList( "vk.xml", attribute.second, line );
@@ -5007,51 +5095,55 @@ StructVariant parseTypeStruct( tinyxml2::XMLElement const * element, std::map<st
       {
         StructMember member = parseStructMember( child );
 
-        // `VkDeviceCreateInfo::ppEnabledLayerNames` needs to be special-cased with old attributes to maintain API compatibility
-        // See https://github.com/KhronosGroup/Vulkan-Hpp/issues/2531
-        if ( ( typeStruct.name == "VkDeviceCreateInfo" ) && ( member.name == "ppEnabledLayerNames" ) )
-        {
-          member.len = { "enabledLayerCount", "null-terminated" };
-        }
-
         if ( member.api.empty() || std::ranges::any_of( member.api, [&api]( auto const & a ) { return a == api; } ) )
         {
-          if ( !member.selector.empty() )
-          {
-            checkForError( "vk.xml",
-                           containsByName( typeStruct.members, member.selector ),
-                           line,
-                           "struct member <" + member.name + "> references unknown struct member <" + member.selector + "> in its selector attribute" );
-          }
-
+          checkForError( "vk.xml",
+                         member.selector.empty() || containsByName( typeStruct.members, member.selector ),
+                         line,
+                         "struct member <" + member.name + "> references unknown struct member <" + member.selector + "> in its selector attribute" );
           checkForError( "vk.xml",
                          !containsByName( typeStruct.members, member.name ),
                          line,
                          "member <" + member.name + "> already listed for struct <" + typeStruct.name + ">" );
-
           typeStruct.members.push_back( std::move( member ) );
         }
       }
     }
 
-    auto memberIt = std::ranges::find_if( typeStruct.members, []( auto const & member ) { return !member.altLen.empty(); } );
+    auto memberIt = findByName( typeStruct.members, "sType" );
     if ( memberIt != typeStruct.members.end() )
     {
       checkForError( "vk.xml",
-                     ( memberIt->len.size() == 1 ) && memberIt->len[0].starts_with( "latexmath:" ),
+                     !memberIt->values.empty() || ( typeStruct.name == "VkBaseOutStructure" ) || ( typeStruct.name == "VkBaseInStructure" ),
                      memberIt->xmlLine,
-                     "struct member <" + memberIt->name + "> has attribute <altLen> but attribute <len> does not start with \"latexmath:\"" );
+                     "member <" + memberIt->name + "> of struct <" + typeStruct.name + "> requires attribute \"values\"" );
     }
-    memberIt =
-      std::ranges::find_if( typeStruct.members, []( auto const & member ) { return ( member.len.size() == 1 ) && member.len[0].starts_with( "latexmath:" ); } );
-    if ( memberIt != typeStruct.members.end() )
+    for ( auto const & member : typeStruct.members )
     {
-      checkForError( "vk.xml",
-                     !memberIt->altLen.empty(),
-                     memberIt->xmlLine,
-                     "struct member <" + memberIt->name + "> has attribute <len> starting with \"latexmath:\" but no attribute <altLen>" );
+      if ( member.altLen == "codeSize / 4" )
+      {
+        checkForError( "vk.xml",
+                       containsByName( typeStruct.members, "codeSize" ),
+                       member.xmlLine,
+                       "member <" + member.name + "> specifies \"altlen\" = <" + member.altLen + "> but struct <" + typeStruct.name +
+                         "> does not contain a member named \"codeSize\"" );
+      }
+      else if ( member.altLen == "(rasterizationSamples + 31) / 32" )
+      {
+        checkForError( "vk.xml",
+                       containsByName( typeStruct.members, "rasterizationSamples" ),
+                       member.xmlLine,
+                       "member <" + member.name + "> specifies \"altlen\" = <" + member.altLen + "> but struct <" + typeStruct.name +
+                         "> does not contain a member named <" + member.altLen + ">" );
+      }
+      for ( auto const & len : member.len )
+      {
+        checkForError( "vk.xml",
+                       ( len == "null-terminated" ) || ( len == "1" ) || len.starts_with( "latexmath:" ) || containsByName( typeStruct.members, len ),
+                       member.xmlLine,
+                       "member <" + member.name + "> specifies unknown \"len\" = <" + len + ">" );
+      }
     }
-
     checkForError( "vk.xml",
                    ( typeStruct.requiredLimitType != "true" ) ||
                      std::ranges::all_of( typeStruct.members,
@@ -5225,6 +5317,10 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
           "vk.xml", types.types.insert( funcPointer.name ).second, funcPointer.xmlLine, "funcpointer <" + funcPointer.name + "> already specified as a type" );
         checkForError(
           "vk.xml", !containsByName( types.funcPointers, funcPointer.name ), funcPointer.xmlLine, "funcpointer <" + funcPointer.name + "> already specified" );
+        checkForError( "vk.xml",
+                       types.types.contains( funcPointer.returnType.name ),
+                       funcPointer.xmlLine,
+                       "funcpointer <" + funcPointer.name + "> returns an unknown type <" + funcPointer.returnType.name + ">" );
         types.funcPointers.push_back( std::move( funcPointer ) );
       }
       else if ( std::holds_alternative<HandleVariant>( type ) )
@@ -5286,6 +5382,19 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
           checkForError(
             "vk.xml", types.types.insert( structure.name ).second, structure.xmlLine, "struct <" + structure.name + "> already specified as a type" );
           checkForError( "vk.xml", !containsByName( types.structs, structure.name ), structure.xmlLine, "struct <" + structure.name + "> already specified" );
+          for ( auto const & member : structure.members )
+          {
+            if ( !member.selector.empty() )
+            {
+              auto selectorMemberIt = findByName( structure.members, member.selector );
+              assert( selectorMemberIt != structure.members.end() );
+              checkForError( "vk.xml",
+                             containsByName( types.enums, selectorMemberIt->type.name ),
+                             member.xmlLine,
+                             "struct member <" + member.name + "> in struct <" + structure.name + "> uses selector <" + member.selector + "> of type <" +
+                               selectorMemberIt->type.name + "> that is not an enum" );
+            }
+          }
           types.structs.push_back( std::move( structure ) );
         }
       }
@@ -5365,6 +5474,29 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
                    "define <" + define.name + "> requires unknown define <" + define.require + ">" );
   }
 
+  for ( auto const & funcPointer : types.funcPointers )
+  {
+    checkForError( "vk.xml",
+                   funcPointer.require.empty() || containsByName( types.handles, funcPointer.require ) || containsByName( types.structs, funcPointer.require ),
+                   funcPointer.xmlLine,
+                   "funcpointer <" + funcPointer.name + "> requires unknown type <" + funcPointer.require + ">" );
+    for ( auto const & param : funcPointer.params )
+    {
+      checkForError( "vk.xml",
+                     types.types.contains( param.type.name ),
+                     param.xmlLine,
+                     "funcpointer <" + funcPointer.name + "> has a param <" + param.name + "> with unknown type <" + param.type.name + ">" );
+    }
+  }
+
+  for ( auto const & handle : types.handles )
+  {
+    checkForError( "vk.xml",
+                   handle.parent.empty() || containsByName( types.handles, handle.parent ),
+                   handle.xmlLine,
+                   "handle <" + handle.name + "> specifies unknown parent handle <" + handle.parent + ">" );
+  }
+
   // structs might alias a struct that's specified later than the alias !
   for ( auto structAlias : types.structAliases )
   {
@@ -5395,25 +5527,6 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
   }
   types.unionAliases.clear();
 
-  for ( auto const & funcPointer : types.funcPointers )
-  {
-    if ( !funcPointer.require.empty() )
-    {
-      checkForError( "vk.xml",
-                     containsByName( types.handles, funcPointer.require ) || containsByName( types.structs, funcPointer.require ),
-                     funcPointer.xmlLine,
-                     "funcpointer <" + funcPointer.name + "> requires unknown type <" + funcPointer.require + ">" );
-    }
-  }
-
-  for ( auto const & handle : types.handles )
-  {
-    checkForError( "vk.xml",
-                   handle.parent.empty() || containsByName( types.handles, handle.parent ),
-                   handle.xmlLine,
-                   "handle <" + handle.name + "> specifies unknown parent handle <" + handle.parent + ">" );
-  }
-
   for ( auto const & structure : types.structs )
   {
     for ( auto const & member : structure.members )
@@ -5440,18 +5553,10 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
                        "struct member <" + member.name + "> in struct <" + structure.name + "> specifies unknown member <" + member.flagsExtendMember +
                          "> in struct <" + extendIt->name + "> as \"flagsextendmember\"" );
       }
-      if ( !member.selector.empty() )
-      {
-        checkForError( "vk.xml",
-                       !containsByName( types.enums, member.selector ),
-                       member.xmlLine,
-                       "struct member <" + member.name + "> in struct <" + structure.name + "> references unknown selector enum <" + member.selector + ">" );
-        checkForError( "vk.xml",
-                       containsByName( types.unions, member.type.name ),
-                       member.xmlLine,
-                       "struct member <" + member.name + "> in struct <" + structure.name + "> has selector <" + member.selector + "> but its type <" +
-                         member.type.name + "> is not a union" );
-      }
+      checkForError( "vk.xml",
+                     member.selector.empty() || containsByName( types.unions, member.type.name ),
+                     member.xmlLine,
+                     "struct member <" + member.name + "> in struct <" + structure.name + "> references unknown selector union <" + member.type.name + ">" );
       checkForError( "vk.xml",
                      types.types.contains( member.type.name ),
                      member.xmlLine,
@@ -5992,6 +6097,63 @@ VideoRequireCapabilities parseVideoRequireCapabilities( tinyxml2::XMLElement con
   }
 
   return videoRequireCapabilities;
+}
+
+std::vector<RequireType> sortStructs( std::vector<TypeStruct> const & structs, std::vector<TypeUnion> const & unions, std::vector<RequireType> const & typesIn )
+{
+  std::vector<RequireType> typesOut;
+  for ( auto typeIt = typesIn.begin(); typeIt != typesIn.end(); ++typeIt )
+  {
+    sortStructs( structs, unions, typesIn, typeIt, typesOut );
+  }
+  return typesOut;
+}
+
+void sortStructs( std::vector<TypeStruct> const &          structs,
+                  std::vector<TypeUnion> const &           unions,
+                  std::vector<RequireType> const &         typesIn,
+                  std::vector<RequireType>::const_iterator typeIt,
+                  std::vector<RequireType> &               typesOut )
+{
+  if ( !containsByName( typesOut, typeIt->name ) )
+  {
+    auto structIt = findByNameOrAlias( structs, typeIt->name );
+    if ( structIt != structs.end() )
+    {
+      for ( auto const & member : structIt->members )
+      {
+        if ( !containsByName( typesOut, member.type.name ) &&
+             ( containsByNameOrAlias( structs, member.type.name ) || containsByNameOrAlias( unions, member.type.name ) ) )
+        {
+          auto memberTypeIt = findByName( typesIn, member.type.name );
+          if ( memberTypeIt != typesIn.end() )
+          {
+            sortStructs( structs, unions, typesIn, memberTypeIt, typesOut );
+          }
+        }
+      }
+    }
+    else
+    {
+      auto unionIt = findByNameOrAlias( unions, typeIt->name );
+      if ( unionIt != unions.end() )
+      {
+        for ( auto const & member : unionIt->members )
+        {
+          if ( !containsByName( typesOut, member.type.name ) &&
+               ( containsByNameOrAlias( structs, member.type.name ) || containsByNameOrAlias( unions, member.type.name ) ) )
+          {
+            auto memberTypeIt = findByName( typesIn, member.type.name );
+            if ( memberTypeIt != typesIn.end() )
+            {
+              sortStructs( structs, unions, typesIn, memberTypeIt, typesOut );
+            }
+          }
+        }
+      }
+    }
+    typesOut.push_back( *typeIt );
+  }
 }
 
 // public interface

@@ -4,7 +4,14 @@
 // VulkanHpp Samples : 16_Vulkan_1_1
 //                     Determine if the current system can use Vulkan 1.1 API features
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <vulkan/vulkan_hpp_macros.hpp>
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
+#endif
 
 static char const * AppName    = "16_Vulkan_1_1";
 static char const * EngineName = "Vulkan.hpp";
@@ -16,14 +23,14 @@ int main()
     /* VULKAN_KEY_START */
 
     // Keep track of the major/minor version we can actually use
-    uint16_t    usingMajorVersion  = 1;
-    uint16_t    usingMinorVersion  = 0;
+    std::uint16_t usingMajorVersion = 1;
+    std::uint16_t usingMinorVersion = 0;
     std::string usingVersionString = "";
 
     // Set the desired version we want
-    uint16_t    desiredMajorVersion  = 1;
-    uint16_t    desiredMinorVersion  = 1;
-    uint32_t    desiredVersion       = VK_MAKE_VERSION( desiredMajorVersion, desiredMinorVersion, 0 );
+    std::uint16_t desiredMajorVersion = 1;
+    std::uint16_t desiredMinorVersion = 1;
+    std::uint32_t desiredVersion      = vk::makeApiVersion( std::uint16_t{ 0 }, desiredMajorVersion, desiredMinorVersion, std::uint16_t{ 0 } );
     std::string desiredVersionString = "";
     desiredVersionString += std::to_string( desiredMajorVersion );
     desiredVersionString += ".";
@@ -35,11 +42,11 @@ int main()
 #endif
 
     // Determine what API version is available
-    uint32_t apiVersion = vk::enumerateInstanceVersion();
+    std::uint32_t apiVersion = vk::enumerateInstanceVersion();
 
     // Translate the version into major/minor for easier comparison
-    uint32_t loader_major_version = VK_VERSION_MAJOR( apiVersion );
-    uint32_t loader_minor_version = VK_VERSION_MINOR( apiVersion );
+    std::uint32_t loader_major_version = vk::apiVersionMajor( apiVersion );
+    std::uint32_t loader_minor_version = vk::apiVersionMinor( apiVersion );
     std::cout << "Loader/Runtime support detected for Vulkan " << loader_major_version << "." << loader_minor_version << "\n";
 
     // Check current version against what we want to run
@@ -94,17 +101,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

@@ -8,14 +8,23 @@
 #  pragma warning( disable : 4127 )  // conditional expression is constant
 #endif
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+import glm;
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../../samples/utils/geometries.hpp"
 #include "../../samples/utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
 #include <thread>
+#endif
+
 
 static char const * AppName    = "DynamicUniform";
 static char const * EngineName = "Vulkan.hpp";
@@ -33,7 +42,7 @@ int main()
 
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -74,7 +83,7 @@ int main()
     if ( limits.maxDescriptorSetUniformBuffersDynamic < 1 )
     {
       std::cout << "No dynamic uniform buffers supported\n";
-      exit( -1 );
+      std::exit( -1 );
     }
 
     /* Set up uniform buffer with 2 transform matrices in it */
@@ -132,7 +141,7 @@ int main()
     // Get the index of the next available swapchain image:
     vk::raii::Semaphore imageAcquiredSemaphore( device, vk::SemaphoreCreateInfo() );
     vk::Result          result;
-    uint32_t            imageIndex;
+    std::uint32_t       imageIndex;
     std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
@@ -151,14 +160,14 @@ int main()
     commandBuffer.setScissor( 0, vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ) );
 
     /* The first draw should use the first matrix in the buffer */
-    uint32_t dynamicOffset = 0;
+    std::uint32_t dynamicOffset = 0;
     commandBuffer.bindDescriptorSets( vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, { descriptorSet }, dynamicOffset );
 
     commandBuffer.bindVertexBuffers( 0, { vertexBufferData.buffer }, { 0 } );
     commandBuffer.draw( 12 * 3, 1, 0, 0 );
 
     // the second draw should use the second matrix in the buffer;
-    dynamicOffset = (uint32_t)bufferSize;
+    dynamicOffset = (std::uint32_t)bufferSize;
     commandBuffer.bindDescriptorSets( vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, { descriptorSet }, dynamicOffset );
     commandBuffer.draw( 12 * 3, 1, 0, 0 );
 
@@ -171,7 +180,7 @@ int main()
     vk::SubmitInfo         submitInfo( *imageAcquiredSemaphore, waitDestinationStageMask, *commandBuffer );
     graphicsQueue.submit( submitInfo, *drawFence );
 
-    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, vk::True, vk::su::FenceTimeout ) )
       ;
 
     vk::PresentInfoKHR presentInfoKHR( nullptr, *swapChainData.swapChain, imageIndex );
@@ -189,17 +198,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

@@ -9,7 +9,7 @@ on:
     paths:
       - '**'
       - '!**.md'
-      
+
 jobs:
   build:
     name: ${{matrix.env.modules && '[modules] ' || ' '}}${{matrix.env.os}} ${{matrix.env.arch}}, ${{matrix.env.gen}}, ${{matrix.env.cxx && matrix.env.cxx || 'default'}}
@@ -118,6 +118,40 @@ jobs:
       with:
         cmakeVersion: 4.1.2
         ninjaVersion: latest
+    - name: Setup CMake nightly for samples as modules
+      id: sample-modules-cmake
+      if: matrix.env.modules && contains(matrix.env.gen, 'Ninja')
+      env:
+        CMAKE_NIGHTLY_VERSION: 4.4.20260822-ga219e74
+      run: |
+        case "${{runner.os}}" in
+          Linux)
+            CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-linux-x86_64.tar.gz"
+            CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-linux-x86_64/bin"
+            ;;
+          macOS)
+            CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-macos-universal.tar.gz"
+            CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-macos-universal/CMake.app/Contents/bin"
+            CMAKE_FIX="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-macos-universal/CMake.app/Contents/share/cmake-4.4/Modules/Compiler/Clang-CXX-CXXImportStd.cmake"
+            ;;
+          Windows)
+            CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-windows-x86_64.zip"
+            CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-windows-x86_64/bin"
+            ;;
+        esac
+
+        mkdir -p "$RUNNER_TEMP/cmake-nightly"
+        curl --fail --location --retry 3 "https://cmake.org/files/dev/$CMAKE_ARCHIVE" --output "$RUNNER_TEMP/$CMAKE_ARCHIVE"
+        if [[ "$CMAKE_ARCHIVE" == *.zip ]]; then
+          7z x -y "$RUNNER_TEMP/$CMAKE_ARCHIVE" -o"$RUNNER_TEMP/cmake-nightly"
+        else
+          tar -xzf "$RUNNER_TEMP/$CMAKE_ARCHIVE" -C "$RUNNER_TEMP/cmake-nightly"
+        fi
+        if [[ "${{runner.os}}" == macOS ]]; then
+          sed -i '' 's|\${_clang_modules_json_impl}.modules.json|/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json|g' "$CMAKE_FIX" # https://gitlab.kitware.com/cmake/cmake/-/issues/25965#note_1523575
+        fi
+        echo "cmake=$CMAKE_BIN/cmake" >> "$GITHUB_OUTPUT"
+        "$CMAKE_BIN/cmake" --version
     - name: Setup Modules (Ubuntu)
       if: matrix.env.modules && contains(matrix.env.os, 'ubuntu')
       run: |
@@ -155,6 +189,21 @@ jobs:
             -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}}                  \
             -D CMAKE_BUILD_TYPE=$BUILD_TYPE
           cmake --build build --parallel --config $BUILD_TYPE --clean-first
+        done
+
+    # Build samples and dependencies as C++ named modules.
+    - name: Build Samples with C++${{matrix.env.cxx_max}} as named modules
+      if: matrix.env.modules
+      run: |
+        CMAKE="${{steps.sample-modules-cmake.outputs.cmake}}"
+        for BUILD_TYPE in Debug Release; do
+          "$CMAKE" -B build -G '${{matrix.env.gen}}' --fresh --preset samples          \
+            -D VULKAN_HPP_BUILD_CXX_MODULE=ON                                          \
+            ${{ env.VAR_CMAKE_FLAGS }}                                                 \
+            -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}}                              \
+            -D CMAKE_BUILD_TYPE=$BUILD_TYPE                                            \
+            -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=25d6f6aa-be65-4692-b44e-87b23e96d4e1
+          "$CMAKE" --build build --parallel --config $BUILD_TYPE --clean-first
         done
 
     # Run all unit tests with C++11 to maximum support C++ version.

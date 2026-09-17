@@ -3,20 +3,25 @@
 
 #pragma once
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
 #include <vulkan/vulkan.hpp>
+#endif
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <iostream>
 #include <limits>
 #include <map>
 #include <memory>  // std::unique_ptr
+#endif
 
 namespace vk
 {
-  namespace su
+  VULKAN_HPP_EXPORT namespace su
   {
-    const uint64_t FenceTimeout = 100000000;
+    inline const std::uint64_t FenceTimeout = 100000000;
 
     template <typename Func>
     void oneTimeSubmit( vk::Device const & device, vk::CommandPool const & commandPool, vk::Queue const & queue, Func const & func )
@@ -31,19 +36,19 @@ namespace vk
     }
 
     template <class T>
-    void copyToDevice( vk::Device const & device, vk::DeviceMemory const & deviceMemory, T const * pData, size_t count, vk::DeviceSize stride = sizeof( T ) )
+    void copyToDevice( vk::Device const & device, vk::DeviceMemory const & deviceMemory, T const * pData, std::size_t count, vk::DeviceSize stride = sizeof( T ) )
     {
       assert( sizeof( T ) <= stride );
-      uint8_t * deviceData = static_cast<uint8_t *>( device.mapMemory( deviceMemory, 0, count * stride ) );
+      std::uint8_t * deviceData = static_cast<std::uint8_t *>( device.mapMemory( deviceMemory, 0, count * stride ) );
       if ( stride == sizeof( T ) )
       {
-        memcpy( deviceData, pData, count * sizeof( T ) );
+        std::memcpy( deviceData, pData, count * sizeof( T ) );
       }
       else
       {
-        for ( size_t i = 0; i < count; i++ )
+        for ( std::size_t i = 0; i < count; i++ )
         {
-          memcpy( deviceData, &pData[i], sizeof( T ) );
+          std::memcpy( deviceData, &pData[i], sizeof( T ) );
           deviceData += stride;
         }
       }
@@ -62,9 +67,9 @@ namespace vk
       return v < lo ? lo : hi < v ? hi : v;
     }
 
-    VULKAN_HPP_INLINE uint32_t clampSurfaceImageCount( const uint32_t desiredImageCount, const uint32_t minImageCount, const uint32_t maxImageCount )
+    VULKAN_HPP_INLINE std::uint32_t clampSurfaceImageCount( const std::uint32_t desiredImageCount, const std::uint32_t minImageCount, const std::uint32_t maxImageCount )
     {
-      uint32_t imageCount = ( std::max )( desiredImageCount, minImageCount );
+      std::uint32_t imageCount = ( std::max )( desiredImageCount, minImageCount );
       // Some drivers report maxImageCount as 0, so only clamp to max if it is valid.
       if ( maxImageCount > 0 )
       {
@@ -111,16 +116,16 @@ namespace vk
         assert( sizeof( DataType ) <= m_size );
 
         void * dataPtr = device.mapMemory( deviceMemory, 0, sizeof( DataType ) );
-        memcpy( dataPtr, &data, sizeof( DataType ) );
+        std::memcpy( dataPtr, &data, sizeof( DataType ) );
         device.unmapMemory( deviceMemory );
       }
 
       template <typename DataType>
-      void upload( vk::Device const & device, std::vector<DataType> const & data, size_t stride = 0 ) const
+      void upload( vk::Device const & device, std::vector<DataType> const & data, std::size_t stride = 0 ) const
       {
         assert( m_propertyFlags & vk::MemoryPropertyFlagBits::eHostVisible );
 
-        size_t elementSize = stride ? stride : sizeof( DataType );
+        std::size_t elementSize = stride ? stride : sizeof( DataType );
         assert( sizeof( DataType ) <= elementSize );
 
         copyToDevice( device, deviceMemory, data.data(), data.size(), elementSize );
@@ -132,15 +137,15 @@ namespace vk
                    vk::CommandPool const &       commandPool,
                    vk::Queue                     queue,
                    std::vector<DataType> const & data,
-                   size_t                        stride ) const
+                   std::size_t                        stride ) const
       {
         assert( m_usage & vk::BufferUsageFlagBits::eTransferDst );
         assert( m_propertyFlags & vk::MemoryPropertyFlagBits::eDeviceLocal );
 
-        size_t elementSize = stride ? stride : sizeof( DataType );
+        std::size_t elementSize = stride ? stride : sizeof( DataType );
         assert( sizeof( DataType ) <= elementSize );
 
-        size_t dataSize = data.size() * elementSize;
+        std::size_t dataSize = data.size() * elementSize;
         assert( dataSize <= m_size );
 
         vk::su::BufferData stagingBuffer( physicalDevice, device, dataSize, vk::BufferUsageFlagBits::eTransferSrc );
@@ -212,8 +217,8 @@ namespace vk
                      vk::Extent2D const &       extent,
                      vk::ImageUsageFlags        usage,
                      vk::SwapchainKHR const &   oldSwapChain,
-                     uint32_t                   graphicsFamilyIndex,
-                     uint32_t                   presentFamilyIndex );
+                     std::uint32_t                   graphicsFamilyIndex,
+                     std::uint32_t                   presentFamilyIndex );
 
       void clear( vk::Device const & device )
       {
@@ -235,13 +240,13 @@ namespace vk
     class CheckerboardImageGenerator
     {
     public:
-      CheckerboardImageGenerator( std::array<uint8_t, 3> const & rgb0 = { { 0, 0, 0 } }, std::array<uint8_t, 3> const & rgb1 = { { 255, 255, 255 } } );
+      CheckerboardImageGenerator( std::array<std::uint8_t, 3> const & rgb0 = { { 0, 0, 0 } }, std::array<std::uint8_t, 3> const & rgb1 = { { 255, 255, 255 } } );
 
       void operator()( void * data, vk::Extent2D & extent ) const;
 
     private:
-      std::array<uint8_t, 3> const & m_rgb0;
-      std::array<uint8_t, 3> const & m_rgb1;
+      std::array<std::uint8_t, 3> const & m_rgb0;
+      std::array<std::uint8_t, 3> const & m_rgb1;
     };
 
     class MonochromeImageGenerator
@@ -258,13 +263,13 @@ namespace vk
     class PixelsImageGenerator
     {
     public:
-      PixelsImageGenerator( vk::Extent2D const & extent, size_t channels, unsigned char const * pixels );
+      PixelsImageGenerator( vk::Extent2D const & extent, std::size_t channels, unsigned char const * pixels );
 
       void operator()( void * data, vk::Extent2D const & extent ) const;
 
     private:
       vk::Extent2D          m_extent;
-      size_t                m_channels;
+      std::size_t                m_channels;
       unsigned char const * m_pixels;
     };
 
@@ -331,9 +336,9 @@ namespace vk
     struct UUID
     {
     public:
-      UUID( uint8_t const data[VK_UUID_SIZE] );
+      UUID( std::uint8_t const data[vk::UuidSize] );
 
-      uint8_t m_data[VK_UUID_SIZE];
+      std::uint8_t m_data[vk::UuidSize];
     };
 
     template <typename TargetType, typename SourceType>
@@ -355,10 +360,10 @@ namespace vk
     bool                         contains( std::vector<vk::ExtensionProperties> const & extensionProperties, std::string const & extensionName );
     vk::DescriptorPool           createDescriptorPool( vk::Device const & device, std::vector<vk::DescriptorPoolSize> const & poolSizes );
     vk::DescriptorSetLayout      createDescriptorSetLayout( vk::Device const &                                                                  device,
-                                                            std::vector<std::tuple<vk::DescriptorType, uint32_t, vk::ShaderStageFlags>> const & bindingData,
+                                                            std::vector<std::tuple<vk::DescriptorType, std::uint32_t, vk::ShaderStageFlags>> const & bindingData,
                                                             vk::DescriptorSetLayoutCreateFlags                                                  flags = {} );
     vk::Device                   createDevice( vk::PhysicalDevice const &         physicalDevice,
-                                               uint32_t                           queueFamilyIndex,
+                                               std::uint32_t                           queueFamilyIndex,
                                                std::vector<std::string> const &   extensions             = {},
                                                vk::PhysicalDeviceFeatures const * physicalDeviceFeatures = nullptr,
                                                void const *                       pNext                  = nullptr );
@@ -371,8 +376,8 @@ namespace vk
                                                          vk::PipelineCache const &                                           pipelineCache,
                                                          std::pair<vk::ShaderModule, vk::SpecializationInfo const *> const & vertexShaderData,
                                                          std::pair<vk::ShaderModule, vk::SpecializationInfo const *> const & fragmentShaderData,
-                                                         uint32_t                                                            vertexStride,
-                                                         std::vector<std::pair<vk::Format, uint32_t>> const &                vertexInputAttributeFormatOffset,
+                                                         std::uint32_t                                                            vertexStride,
+                                                         std::vector<std::pair<vk::Format, std::uint32_t>> const &                vertexInputAttributeFormatOffset,
                                                          vk::FrontFace                                                       frontFace,
                                                          bool                                                                depthBuffered,
                                                          vk::PipelineLayout const &                                          pipelineLayout,
@@ -381,7 +386,7 @@ namespace vk
                                                  std::string const &              engineName,
                                                  std::vector<std::string> const & layers     = {},
                                                  std::vector<std::string> const & extensions = {},
-                                                 uint32_t                         apiVersion = VK_API_VERSION_1_0 );
+                                                 std::uint32_t                         apiVersion = vk::ApiVersion10 );
     vk::RenderPass               createRenderPass( vk::Device const &   device,
                                                    vk::Format           colorFormat,
                                                    vk::Format           depthFormat,
@@ -391,9 +396,9 @@ namespace vk
                                                                   vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
                                                                   vk::DebugUtilsMessengerCallbackDataEXT const * pCallbackData,
                                                                   VULKAN_HPP_MAYBE_UNUSED void * pUserData );
-    uint32_t                         findGraphicsQueueFamilyIndex( std::vector<vk::QueueFamilyProperties> const & queueFamilyProperties );
-    std::pair<uint32_t, uint32_t>    findGraphicsAndPresentQueueFamilyIndex( vk::PhysicalDevice physicalDevice, vk::SurfaceKHR const & surface );
-    uint32_t findMemoryType( vk::PhysicalDeviceMemoryProperties const & memoryProperties, uint32_t typeBits, vk::MemoryPropertyFlags requirementsMask );
+    std::uint32_t                         findGraphicsQueueFamilyIndex( std::vector<vk::QueueFamilyProperties> const & queueFamilyProperties );
+    std::pair<std::uint32_t, std::uint32_t>    findGraphicsAndPresentQueueFamilyIndex( vk::PhysicalDevice physicalDevice, vk::SurfaceKHR const & surface );
+    std::uint32_t findMemoryType( vk::PhysicalDeviceMemoryProperties const & memoryProperties, std::uint32_t typeBits, vk::MemoryPropertyFlags requirementsMask );
     std::vector<char const *> gatherExtensions( std::vector<std::string> const & extensions
 #if !defined( NDEBUG )
                                                 ,
@@ -426,14 +431,14 @@ namespace vk
                                                vk::DescriptorSet const &                                                                                       descriptorSet,
                                                std::vector<std::tuple<vk::DescriptorType, vk::Buffer const &, vk::DeviceSize, vk::BufferView const &>> const & bufferData,
                                                vk::su::TextureData const &                                                                                     textureData,
-                                               uint32_t bindingOffset = 0 );
+                                               std::uint32_t bindingOffset = 0 );
     void                 updateDescriptorSets( vk::Device const &                                                                                              device,
                                                vk::DescriptorSet const &                                                                                       descriptorSet,
                                                std::vector<std::tuple<vk::DescriptorType, vk::Buffer const &, vk::DeviceSize, vk::BufferView const &>> const & bufferData,
                                                std::vector<vk::su::TextureData> const &                                                                        textureData,
-                                               uint32_t bindingOffset = 0 );
+                                               std::uint32_t bindingOffset = 0 );
 
   }  // namespace su
 }  // namespace vk
 
-std::ostream & operator<<( std::ostream & os, vk::su::UUID const & uuid );
+VULKAN_HPP_EXPORT std::ostream & operator<<( std::ostream & os, vk::su::UUID const & uuid );

@@ -13,14 +13,23 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+import glm;
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../../samples/utils/geometries.hpp"
 #include "../../samples/utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
 #include <thread>
+#endif
+
 
 static char const * AppName    = "PushConstants";
 static char const * EngineName = "Vulkan.hpp";
@@ -79,7 +88,7 @@ int main()
 
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -171,7 +180,7 @@ int main()
 
     vk::raii::Semaphore imageAcquiredSemaphore( device, vk::SemaphoreCreateInfo() );
     vk::Result          result;
-    uint32_t            imageIndex;
+    std::uint32_t       imageIndex;
     std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
@@ -200,7 +209,7 @@ int main()
     vk::SubmitInfo         submitInfo( *imageAcquiredSemaphore, waitDestinationStageMask, *commandBuffer );
     graphicsQueue.submit( submitInfo, *drawFence );
 
-    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, vk::True, vk::su::FenceTimeout ) )
       ;
 
     vk::PresentInfoKHR presentInfoKHR( nullptr, *swapChainData.swapChain, imageIndex );
@@ -216,17 +225,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

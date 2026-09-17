@@ -41,7 +41,9 @@ option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
 option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
 option( VULKAN_HPP_TESTS_CTEST "Build tests for ctest, enabling wider test coverage" OFF )
 option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
-cmake_dependent_option( VULKAN_HPP_BUILD_CXX_MODULE "Build and test the C++ named module." ON [[ 23 IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD ]] OFF)
+
+cmake_dependent_option( VULKAN_HPP_BUILD_CXX_MODULE "Build and test the C++ named module." ON
+	[[ CMAKE_VERSION VERSION_GREATER_EQUAL 4.5 OR VULKAN_HPP_BUILD_CXX_MODULE ]] OFF )
 
 # options for vulkan hpp compile definitions (see https://github.com/KhronosGroup/Vulkan-Hpp/tree/main?tab=readme-ov-file#configuration-options for details)
 option( VULKAN_HPP_DISABLE_ENHANCED_MODE "Disable all enhanced functionality apart from scoped enums, bitmasks, default initialization and vk::StructureChain" OFF )
@@ -68,6 +70,9 @@ option( VULKAN_HPP_USE_STD_EXPECTED "Use std::expected for functions returning V
 if( NOT DEFINED VK_NO_PROTOTYPES )
 	set ( VK_NO_PROTOTYPES ${VULKAN_HPP_DISPATCH_LOADER_DYNAMIC} )
 endif()
+
+# To fix fatal error C1041 in CI
+set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "Embedded")
 
 function( vulkan_hpp__setup_warning_level )
 	set( options )
@@ -228,14 +233,15 @@ if( VULKAN_HPP_RUN_GENERATOR )
 	add_custom_target( build_video_hpp ALL DEPENDS "${vulkan_video_hpp}" "${video_spec}" )
 endif()
 
-function( vulkan_hpp__setup_vulkan_module )
+# declares a target providing one or more C++ named modules (FILE_SET of *.cppm files); usable from subdirectories too
+function( vulkan_hpp__setup_cxx_module )
 	set( options )
 	set( oneValueArgs NAME FILE_SET_NAME )
-	set( multiValueArgs FILE_SET ALIAS )
+	set( multiValueArgs FILE_SET ALIAS LINK_LIBRARIES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 	if ( NOT TARGET_NAME )
-		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_module" )
+		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_cxx_module" )
 	endif()
 
 	add_library( ${TARGET_NAME} )
@@ -243,16 +249,26 @@ function( vulkan_hpp__setup_vulkan_module )
 		add_library(${TARGET_ALIAS_NAME} ALIAS ${TARGET_NAME})
 	endforeach()
 
-	target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_23 )
-	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_MODULE_STD ON )
+	target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_20 )
+	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
+
+	# Clang building `import std;` against MSVC's STL isn't warning-clean yet (https://github.com/microsoft/STL/issues/5975).
+	# Propagate these flags to module consumers so their synthetic module builds use the same options.
+	if( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
+		if( CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC" )
+			target_compile_options( ${TARGET_NAME} PUBLIC /clang:-Wno-reserved-module-identifier /clang:-Wno-include-angled-in-module-purview )
+		else()
+			target_compile_options( ${TARGET_NAME} PUBLIC -Wno-reserved-module-identifier -Wno-include-angled-in-module-purview )
+		endif()
+	endif()
 
 	if ( NOT TARGET_FILE_SET )
-		message( FATAL_ERROR "FILE_SET must be defined in vulkan_hpp__setup_module" )
+		message( FATAL_ERROR "FILE_SET must be defined in vulkan_hpp__setup_cxx_module" )
 	endif()
 
 	list(LENGTH TARGET_FILE_SET TARGET_FILE_SET_LENGTH)
 	if ( TARGET_FILE_SET_LENGTH LESS 1 )
-		message(FATAL_ERROR "FILE_SET in vulkan_hpp__setup_module must at least one source file")
+		message(FATAL_ERROR "FILE_SET in vulkan_hpp__setup_cxx_module must at least one source file")
 	endif()
 
 	target_sources( ${TARGET_NAME} PUBLIC
@@ -260,10 +276,27 @@ function( vulkan_hpp__setup_vulkan_module )
 		BASE_DIRS ${CMAKE_CURRENT_FUNCTION_LIST_DIR}
 		TYPE CXX_MODULES
 		FILES ${TARGET_FILE_SET} )
-	target_link_libraries( ${TARGET_NAME} PUBLIC Vulkan::Hpp )
+	if( TARGET_LINK_LIBRARIES )
+		target_link_libraries( ${TARGET_NAME} PUBLIC ${TARGET_LINK_LIBRARIES} )
+	endif()
 endfunction()
 
-# shared local-vs-system Vulkan include directory setup
+function( vulkan_hpp__setup_vulkan_module )
+	vulkan_hpp__setup_cxx_module( ${ARGN} LINK_LIBRARIES Vulkan::Hpp )
+endfunction()
+
+# builds glm's C++ named module (glm/glm/glm.cppm), reusing the header-only glm::glm target for its dependencies.
+function( vulkan_hpp__setup_glm_module )
+	vulkan_hpp__setup_cxx_module(
+		NAME glm_module
+		ALIAS glm::module
+		FILE_SET_NAME glm_module_file
+		FILE_SET "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/glm/glm/glm.cppm"
+		LINK_LIBRARIES glm::glm )
+	# without these, glm.cppm only exports lookAt/perspective/radians/... as glm::gtc::x / glm::ext::x
+	target_compile_definitions( glm_module PRIVATE GLM_GTC_INLINE_NAMESPACE GLM_EXT_INLINE_NAMESPACE )
+endfunction()
+
 function( vulkan_hpp__setup_vulkan_include_dirs )
 	set( options )
 	set( oneValueArgs NAME SCOPE )
@@ -342,6 +375,9 @@ function( vulkan_hpp__setup_vulkan_targets )
 				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan.cppm"
 				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/vulkan/vulkan_video.cppm"
 			ALIAS Vulkan::HppModule )
+		# platform-conditional constants (e.g. KHRWin32SurfaceExtensionName) are baked into the module at
+		# build time, so the module needs the same VK_USE_PLATFORM_* macro as any other consuming target.
+		vulkan_hpp__setup_platform( NAME VulkanHppModule )
 	endif()
 endfunction()
 
@@ -416,7 +452,15 @@ function( vulkan_hpp__setup_sample )
 
 	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
 	add_executable( ${TARGET_NAME} ${TARGET_HEADERS} ${TARGET_SOURCES} )
-	vulkan_hpp__setup_target_defaults( NAME ${TARGET_NAME} )
+	if( VULKAN_HPP_BUILD_CXX_MODULE )
+		vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
+		target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_USE_CXX_MODULE )
+		set_target_properties( ${TARGET_NAME} PROPERTIES
+			CXX_STANDARD_REQUIRED ON
+			CXX_SCAN_FOR_MODULES ON )
+	else()
+		vulkan_hpp__setup_target_defaults( NAME ${TARGET_NAME} )
+	endif()
 
 	if( TARGET_FOLDER )
 		set_target_properties( ${TARGET_NAME} PROPERTIES FOLDER "${TARGET_FOLDER}" )
@@ -426,7 +470,7 @@ function( vulkan_hpp__setup_sample )
 		target_link_libraries( ${TARGET_NAME} PRIVATE "${TARGET_LIBS}" )
 	endif()
 
-	if( VULKAN_HPP_PRECOMPILE )
+	if( VULKAN_HPP_PRECOMPILE AND NOT VULKAN_HPP_BUILD_CXX_MODULE )
 		if( TARGET_PCH_REUSE )
 			target_precompile_headers( ${TARGET_NAME} REUSE_FROM "${TARGET_PCH_REUSE}" )
 		elseif( TARGET_PCH )
@@ -435,8 +479,7 @@ function( vulkan_hpp__setup_sample )
 	endif()
 endfunction()
 
-# sets up a sample executable, reusing the utils_<LINKAGE> library (static or dynamic).
-# RAII additionally prefixes the target name with RAII_ and places it in the RAII_Samples folder.
+# sets up a sample executable reusing utils_<LINKAGE>; RAII prefixes the name and switches to RAII_Samples
 function( vulkan_hpp__setup_sample_variant )
 	set( options RAII )
 	set( oneValueArgs NAME LINKAGE )
@@ -453,27 +496,38 @@ function( vulkan_hpp__setup_sample_variant )
 		set( TARGET_SOURCES ${TARGET_NAME}.cpp )
 	endif()
 
-	set( SAMPLE_LIBS utils_${TARGET_LINKAGE} )
-	if( TARGET_LINKAGE STREQUAL "static" )
-		find_package( Vulkan REQUIRED )
-		list( APPEND SAMPLE_LIBS ${Vulkan_LIBRARIES} )
-	endif()
-
 	if( TARGET_RAII )
-		set( SAMPLE_NAME RAII_${TARGET_NAME} )
+		set( SAMPLE_NAME   RAII_${TARGET_NAME} )
 		set( SAMPLE_FOLDER RAII_Samples )
 	else()
-		set( SAMPLE_NAME ${TARGET_NAME} )
+		set( SAMPLE_NAME   ${TARGET_NAME} )
 		set( SAMPLE_FOLDER Samples )
 	endif()
 
+	if( VULKAN_HPP_BUILD_CXX_MODULE )
+		set( SAMPLE_TARGET_NAME MODULE_${SAMPLE_NAME} )
+		if( TARGET_RAII )
+			set( SAMPLE_LIBS RAII_utils::module )
+		else()
+			set( SAMPLE_LIBS utils::module )
+		endif()
+	else()
+		set( SAMPLE_TARGET_NAME ${SAMPLE_NAME} )
+		set( SAMPLE_LIBS utils_${TARGET_LINKAGE} )
+		set( SAMPLE_PCH_REUSE utils_${TARGET_LINKAGE} )
+		if( TARGET_LINKAGE STREQUAL "static" )
+			find_package( Vulkan REQUIRED )
+			list( APPEND SAMPLE_LIBS ${Vulkan_LIBRARIES} )
+		endif()
+	endif()
+
 	vulkan_hpp__setup_sample(
-		NAME         ${SAMPLE_NAME}
-		FOLDER       ${SAMPLE_FOLDER}
-		PCH_REUSE    utils_${TARGET_LINKAGE}
-		HEADERS      ${TARGET_HEADERS}
-		SOURCES      ${TARGET_SOURCES}
-		LIBS         ${SAMPLE_LIBS} )
+		NAME      ${SAMPLE_TARGET_NAME}
+		FOLDER    ${SAMPLE_FOLDER}
+		PCH_REUSE ${SAMPLE_PCH_REUSE}
+		HEADERS   ${TARGET_HEADERS}
+		SOURCES   ${TARGET_SOURCES}
+		LIBS      ${SAMPLE_LIBS} )
 endfunction()
 
 function( vulkan_hpp__setup_sample_raii )
@@ -555,8 +609,7 @@ function( vulkan_hpp__setup_test_project )
 			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::HppModule )
 			target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_USE_CXX_MODULE )
 			set_target_properties( ${TARGET_NAME} PROPERTIES
-				CXX_SCAN_FOR_MODULES ON
-				CXX_MODULE_STD ON )
+				CXX_SCAN_FOR_MODULES ON )
 		else()
 			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::Hpp )
 		endif()
@@ -585,6 +638,12 @@ if( VULKAN_HPP_SAMPLES_BUILD )
 	find_package( glm QUIET )
 	if( NOT glm_FOUND )
 		add_subdirectory( glm )
+		if( VULKAN_HPP_BUILD_CXX_MODULE )
+			# build glm's C++ named module (glm.cppm), reused by utils::module below
+			vulkan_hpp__setup_glm_module()
+		endif()
+	elseif( VULKAN_HPP_BUILD_CXX_MODULE )
+		message( WARNING "Using system glm; glm::module (glm.cppm) is only available when building the bundled glm/ submodule." )
 	endif()
 
 	find_package( glfw3 QUIET )

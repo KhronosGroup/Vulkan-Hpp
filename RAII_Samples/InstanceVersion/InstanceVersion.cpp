@@ -4,15 +4,21 @@
 // VulkanHpp Samples : InstanceVersion
 //                     Get the version of instance-level functionality supported by the implementation.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
 #include <sstream>
+#endif
 
-std::string decodeAPIVersion( uint32_t apiVersion )
+
+std::string decodeAPIVersion( std::uint32_t apiVersion )
 {
-  return std::to_string( VK_VERSION_MAJOR( apiVersion ) ) + "." + std::to_string( VK_VERSION_MINOR( apiVersion ) ) + "." +
-         std::to_string( VK_VERSION_PATCH( apiVersion ) );
+    return std::to_string( vk::apiVersionMajor( apiVersion ) ) + "." + std::to_string( vk::apiVersionMinor( apiVersion ) ) + "." +
+      std::to_string( vk::apiVersionPatch( apiVersion ) );
 }
 
 int main()
@@ -23,7 +29,7 @@ int main()
 
     /* VULKAN_KEY_START */
 
-    uint32_t apiVersion = context.enumerateInstanceVersion();
+    std::uint32_t apiVersion = context.enumerateInstanceVersion();
     std::cout << "APIVersion = " << decodeAPIVersion( apiVersion ) << std::endl;
 
     /* VULKAN_KEY_END */
@@ -31,17 +37,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

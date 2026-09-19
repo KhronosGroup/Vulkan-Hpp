@@ -39,7 +39,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 362, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 363, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -11559,6 +11559,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_private_data_base_handle ===
   VULKAN_HPP_CONSTEXPR_INLINE auto NVPrivateDataBaseHandleSpecVersion   = VK_NV_PRIVATE_DATA_BASE_HANDLE_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVPrivateDataBaseHandleExtensionName = VK_NV_PRIVATE_DATA_BASE_HANDLE_EXTENSION_NAME;
+
+  //=== VK_INTEL_device_info ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto INTELDeviceInfoSpecVersion   = VK_INTEL_DEVICE_INFO_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto INTELDeviceInfoExtensionName = VK_INTEL_DEVICE_INFO_EXTENSION_NAME;
 
   //=== VK_VALVE_buffer_device_address_allocation_alignment ===
   VULKAN_HPP_CONSTEXPR_INLINE auto VALVEBufferDeviceAddressAllocationAlignmentSpecVersion = VK_VALVE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_SPEC_VERSION;
@@ -23221,6 +23225,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDevicePrivateDataBaseHandleFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_INTEL_device_info ===
+  template <>
+  struct StructExtends<PhysicalDeviceInfoPropertiesINTEL, PhysicalDeviceProperties2>
   {
     enum
     {

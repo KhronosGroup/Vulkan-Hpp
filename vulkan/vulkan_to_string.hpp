@@ -6211,6 +6211,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case StructureType::eImageTilingControlCreateInfoEXT                      : return "ImageTilingControlCreateInfoEXT";
       case StructureType::ePhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV: return "PhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV";
       case StructureType::ePhysicalDevicePrivateDataBaseHandleFeaturesNV        : return "PhysicalDevicePrivateDataBaseHandleFeaturesNV";
+      case StructureType::ePhysicalDeviceInfoPropertiesINTEL                    : return "PhysicalDeviceInfoPropertiesINTEL";
       case StructureType::ePhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE:
         return "PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE";
       case StructureType::ePhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE:

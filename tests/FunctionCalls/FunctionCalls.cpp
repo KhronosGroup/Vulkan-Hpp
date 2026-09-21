@@ -2677,6 +2677,31 @@ int main()
     commandBuffer.endRenderPass2( subpassEndInfo );
   }
 
+  //==========================================
+  // Vulkan base 1.3 API interface definitions
+  //==========================================
+
+  // Promoted from VK_EXT_tooling_info
+  {
+    vk::PhysicalDevice physicalDevice;
+    uint32_t           toolCount = 0;
+    vk::Result         result    = physicalDevice.getToolProperties( &toolCount, nullptr );
+    if ( result == vk::Result::eSuccess )
+    {
+      std::vector<vk::PhysicalDeviceToolProperties> toolProperties( toolCount );
+      result = physicalDevice.getToolProperties( &toolCount, toolProperties.data() );
+    }
+  }
+  {
+    vk::PhysicalDevice                            physicalDevice;
+    std::vector<vk::PhysicalDeviceToolProperties> toolProperties = physicalDevice.getToolProperties();
+  }
+  {
+    vk::PhysicalDevice                               physicalDevice;
+    std::allocator<vk::PhysicalDeviceToolProperties> allocator;
+    std::vector<vk::PhysicalDeviceToolProperties>    toolProperties = physicalDevice.getToolProperties( allocator );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

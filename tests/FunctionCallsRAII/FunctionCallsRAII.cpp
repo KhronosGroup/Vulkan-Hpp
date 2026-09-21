@@ -1381,5 +1381,15 @@ int main()
     commandBuffer.endRenderPass2( subpassEndInfo );
   }
 
+  //==========================================
+  // Vulkan base 1.3 API interface definitions
+  //==========================================
+
+  // Promoted from VK_EXT_tooling_info
+  {
+    vk::raii::PhysicalDevice                      physicalDevice = nullptr;
+    std::vector<vk::PhysicalDeviceToolProperties> toolProperties = physicalDevice.getToolProperties();
+  }
+
   return 0;
 }

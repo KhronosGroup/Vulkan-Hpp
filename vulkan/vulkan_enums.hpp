@@ -1895,6 +1895,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eImageTilingControlCreateInfoEXT                               = VK_STRUCTURE_TYPE_IMAGE_TILING_CONTROL_CREATE_INFO_EXT,
     ePhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV,
     ePhysicalDevicePrivateDataBaseHandleFeaturesNV                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_BASE_HANDLE_FEATURES_NV,
+    ePhysicalDeviceInfoPropertiesINTEL                             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INFO_PROPERTIES_INTEL,
     ePhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_FEATURES_VALVE,
     ePhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE =

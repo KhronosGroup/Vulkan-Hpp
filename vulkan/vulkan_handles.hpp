@@ -2494,6 +2494,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_private_data_base_handle ===
   struct PhysicalDevicePrivateDataBaseHandleFeaturesNV;
 
+  //=== VK_INTEL_device_info ===
+  struct PhysicalDeviceInfoPropertiesINTEL;
+
   //=== VK_VALVE_buffer_device_address_allocation_alignment ===
   struct PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE;
   struct PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE;

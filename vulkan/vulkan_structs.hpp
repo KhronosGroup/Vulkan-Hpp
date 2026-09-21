@@ -125048,6 +125048,111 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   using PhysicalDeviceIndexTypeUint8FeaturesEXT = PhysicalDeviceIndexTypeUint8Features;
   using PhysicalDeviceIndexTypeUint8FeaturesKHR = PhysicalDeviceIndexTypeUint8Features;
 
+  // wrapper struct for struct VkPhysicalDeviceInfoPropertiesINTEL, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDeviceInfoPropertiesINTEL.html
+  struct PhysicalDeviceInfoPropertiesINTEL
+  {
+    using NativeType = VkPhysicalDeviceInfoPropertiesINTEL;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePhysicalDeviceInfoPropertiesINTEL;
+
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceInfoPropertiesINTEL( uint32_t deviceIpVersionArch_     = {},
+                                                            uint32_t deviceIpVersionRelease_  = {},
+                                                            uint32_t deviceIpVersionRevision_ = {},
+                                                            void *   pNext_                   = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , deviceIpVersionArch{ deviceIpVersionArch_ }
+      , deviceIpVersionRelease{ deviceIpVersionRelease_ }
+      , deviceIpVersionRevision{ deviceIpVersionRevision_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceInfoPropertiesINTEL( PhysicalDeviceInfoPropertiesINTEL const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceInfoPropertiesINTEL( VkPhysicalDeviceInfoPropertiesINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceInfoPropertiesINTEL( *reinterpret_cast<PhysicalDeviceInfoPropertiesINTEL const *>( &rhs ) )
+    {
+    }
+
+    PhysicalDeviceInfoPropertiesINTEL & operator=( PhysicalDeviceInfoPropertiesINTEL const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    PhysicalDeviceInfoPropertiesINTEL & operator=( VkPhysicalDeviceInfoPropertiesINTEL const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<PhysicalDeviceInfoPropertiesINTEL const *>( &rhs );
+      return *this;
+    }
+
+    operator VkPhysicalDeviceInfoPropertiesINTEL const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceInfoPropertiesINTEL const *>( this );
+    }
+
+    operator VkPhysicalDeviceInfoPropertiesINTEL &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceInfoPropertiesINTEL *>( this );
+    }
+
+    operator VkPhysicalDeviceInfoPropertiesINTEL const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceInfoPropertiesINTEL const *>( this );
+    }
+
+    operator VkPhysicalDeviceInfoPropertiesINTEL *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceInfoPropertiesINTEL *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &, void * const &, uint32_t const &, uint32_t const &, uint32_t const &> reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, deviceIpVersionArch, deviceIpVersionRelease, deviceIpVersionRevision );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceInfoPropertiesINTEL const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceInfoPropertiesINTEL const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( deviceIpVersionArch == rhs.deviceIpVersionArch ) &&
+             ( deviceIpVersionRelease == rhs.deviceIpVersionRelease ) && ( deviceIpVersionRevision == rhs.deviceIpVersionRevision );
+#  endif
+    }
+
+    bool operator!=( PhysicalDeviceInfoPropertiesINTEL const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    StructureType sType                   = StructureType::ePhysicalDeviceInfoPropertiesINTEL;
+    void *        pNext                   = {};
+    uint32_t      deviceIpVersionArch     = {};
+    uint32_t      deviceIpVersionRelease  = {};
+    uint32_t      deviceIpVersionRevision = {};
+  };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkPhysicalDeviceInfoPropertiesINTEL>
+  {
+    using Type = PhysicalDeviceInfoPropertiesINTEL;
+  };
+#endif
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceInfoPropertiesINTEL>
+  {
+    using Type = PhysicalDeviceInfoPropertiesINTEL;
+  };
+
   // wrapper struct for struct VkPhysicalDeviceInheritedViewportScissorFeaturesNV, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDeviceInheritedViewportScissorFeaturesNV.html
   struct PhysicalDeviceInheritedViewportScissorFeaturesNV
@@ -162756,6 +162861,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     {
     }
 
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PipelineBinaryKeyKHR( VULKAN_HPP_NAMESPACE::ArrayProxy<uint8_t> const & key_, void * pNext_ = nullptr )
+      : pNext( pNext_ ), keySize( (std::min)( static_cast<uint32_t>( key_.size() ), VK_MAX_PIPELINE_BINARY_KEY_SIZE_KHR ) )
+    {
+      VULKAN_HPP_ASSERT( key_.size() < VK_MAX_PIPELINE_BINARY_KEY_SIZE_KHR );
+      memcpy( key, key_.data(), keySize * sizeof( uint8_t ) );
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
     PipelineBinaryKeyKHR & operator=( PipelineBinaryKeyKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
 
@@ -162801,7 +162915,17 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       key = key_;
       return std::move( *this );
     }
-#endif /*VULKAN_HPP_NO_SETTERS*/
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PipelineBinaryKeyKHR & setKey( VULKAN_HPP_NAMESPACE::ArrayProxy<uint8_t> const & key_ ) VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( key_.size() <= VK_MAX_PIPELINE_BINARY_KEY_SIZE_KHR );
+      keySize = (std::min)( static_cast<uint32_t>( key_.size() ), VK_MAX_PIPELINE_BINARY_KEY_SIZE_KHR );
+      memcpy( key, key_.data(), keySize );
+      return *this;
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_SETTERS*/
 
     operator VkPipelineBinaryKeyKHR const &() const VULKAN_HPP_NOEXCEPT
     {
@@ -162832,22 +162956,33 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PipelineBinaryKeyKHR const & ) const = default;
-#else
+    std::strong_ordering operator<=>( PipelineBinaryKeyKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( auto cmp = sType <=> rhs.sType; cmp != 0 )
+        return cmp;
+      if ( auto cmp = pNext <=> rhs.pNext; cmp != 0 )
+        return cmp;
+      if ( auto cmp = keySize <=> rhs.keySize; cmp != 0 )
+        return cmp;
+      for ( size_t i = 0; i < keySize; ++i )
+      {
+        if ( auto cmp = key[i] <=> rhs.key[i]; cmp != 0 )
+          return cmp;
+      }
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
     bool operator==( PipelineBinaryKeyKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
-      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( keySize == rhs.keySize ) && ( key == rhs.key );
-#  endif
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( keySize == rhs.keySize ) && ( memcmp( key, rhs.key, keySize * sizeof( uint8_t ) ) == 0 );
     }
 
     bool operator!=( PipelineBinaryKeyKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
 
   public:
     StructureType                                                sType   = StructureType::ePipelineBinaryKeyKHR;

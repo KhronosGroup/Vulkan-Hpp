@@ -12791,6 +12791,21 @@ VULKAN_HPP_EXPORT namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceInfoPropertiesINTEL>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceInfoPropertiesINTEL const & physicalDeviceInfoPropertiesINTEL ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceInfoPropertiesINTEL.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceInfoPropertiesINTEL.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceInfoPropertiesINTEL.deviceIpVersionArch );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceInfoPropertiesINTEL.deviceIpVersionRelease );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceInfoPropertiesINTEL.deviceIpVersionRevision );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceInheritedViewportScissorFeaturesNV>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceInheritedViewportScissorFeaturesNV const & physicalDeviceInheritedViewportScissorFeaturesNV )

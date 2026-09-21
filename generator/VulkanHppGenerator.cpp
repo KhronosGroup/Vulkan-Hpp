@@ -8874,7 +8874,6 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
   std::string      commandName    = generateCommandName( name, commandData.params, initialSkipCount, flavourFlags );
 
   auto                     handleIt = m_handles.end();
-  std::string              handleType;
   std::vector<std::string> returnTypes;
   std::string              noexceptString = enumerating ? "" : "VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS";
   for ( auto returnParam : returnParams )
@@ -8893,15 +8892,10 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
       {
         returnTypes.push_back( commandData.params[returnParam].type.name );
       }
-      auto vkHandleIt = findByName( m_vkxml.handles, returnTypes.back() );
-      assert( vkHandleIt != m_vkxml.handles.end() );
-      if ( handleIt == m_handles.end() )
+      if ( isHandleType( returnTypes.back() ) )
       {
-        handleIt = m_handles.find( vkHandleIt->name );
-      }
-      else
-      {
-        assert( m_handles.find( vkHandleIt->name ) == m_handles.end() );
+        assert( handleIt == m_handles.end() );
+        handleIt = m_handles.find( returnTypes.back() );
       }
       returnTypes.back() = stripPrefix( returnTypes.back(), "Vk" );
       if ( ( vectorParamsIt != vectorParams.end() ) && !singular )

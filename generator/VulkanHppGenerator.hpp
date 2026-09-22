@@ -341,14 +341,14 @@ private:
 
   struct HandleData
   {
-    std::set<std::string>      childrenHandles     = {};
-    std::set<std::string>      commands            = {};
-    std::string                deleteCommand       = {};
-    std::string                deletePool          = {};
-    std::string                destructorType      = {};
-    std::set<std::string>      secondLevelCommands = {};
-    bool                       isDispatchable      = {};
-    int                        xmlLine             = {};
+    std::set<std::string> childrenHandles     = {};
+    std::set<std::string> commands            = {};
+    std::string           deleteCommand       = {};
+    std::string           deletePool          = {};
+    std::string           destructorType      = {};
+    std::set<std::string> secondLevelCommands = {};
+    bool                  isDispatchable      = {};
+    int                   xmlLine             = {};
 
     // RAII data
     std::map<std::string, CommandData>::const_iterator              destructorIt   = {};
@@ -654,6 +654,12 @@ private:
                                                 bool                                      raii,
                                                 std::vector<size_t> const &               returnParams,
                                                 std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::string generateCommand3ReturnsValueValueValue( std::string const &         name,
+                                                      CommandData const &         commandData,
+                                                      size_t                      initialSkipCount,
+                                                      bool                        definition,
+                                                      bool                        raii,
+                                                      std::vector<size_t> const & returnParams ) const;
   std::string generateCommandDefinitions() const;
   std::string
     generateCommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;

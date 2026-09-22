@@ -1647,7 +1647,12 @@ std::vector<size_t> VulkanHppGenerator::determineReturnParams( std::vector<Param
 
 bool VulkanHppGenerator::isConstructorCandidate( std::pair<std::string, VulkanHppGenerator::CommandData> const & command, std::string const & handleType ) const
 {
+  std::set<std::string> const candidatePrefixes{ "vkAcquire", "vkAllocate", "vkCreate", "vkEnumerate", "vkRegister" };
+  std::set<std::string> const otherCandidates{ "vkGetDeviceQueue",   "vkGetDeviceQueue2",          "vkGetDisplayPlaneSupportedDisplaysKHR",
+                                               "vkGetDrmDisplayEXT", "vkGetRandROutputDisplayEXT", "vkGetWinrtDisplayNV" };
   return isSupported( command.second.requiredBy ) &&
+         ( std::ranges::any_of( candidatePrefixes, [&command]( std::string const & prefix ) { return command.first.starts_with( prefix ); } ) ||
+           otherCandidates.contains( command.first ) ) &&
          std::ranges::any_of( command.second.params, [this, &handleType]( ParamData const & pd ) { return isConstructorCandidate( pd, handleType ); } );
 }
 
@@ -3658,7 +3663,8 @@ std::string VulkanHppGenerator::generateCommand1ReturnsStruct( std::string const
                                                                std::map<size_t, VectorParamData> const &         vectorParams,
                                                                std::map<std::string, StructData>::const_iterator structIt ) const
 {
-  if ( !structureHoldsHandle( structIt->second ) )
+  // If the name contains "Get", is is supposed to be not a creation function, but just gets something. Even if that something is a handle!
+  if ( !structureHoldsHandle( structIt->second ) || ( name.find( "Get" ) != name.npos ) )
   {
     // the returnType is a struct does not hold a handle
     if ( structureHoldsVector( structIt->second ) )
@@ -3689,9 +3695,9 @@ std::string VulkanHppGenerator::generateCommand1ReturnsStruct( std::string const
       {
         // the returnType is an extendable struct (without a handle or a vector)
         std::string const & returnType = commandData.params[returnParam].type.name;
-        if ( !structureChainHoldsHandle( returnType ) )
+        if ( !structureChainHoldsHandle( returnType ) || ( name.find( "Get" ) != name.npos ) )
         {
-          // there's no handle in the structure chain of the returnType struct
+          // there's no handle in the structure chain of the returnType struct or any handle is just returned, not created
           std::string command;
           if ( raii && structureChainHoldsVector( returnType ) )
           {
@@ -4036,6 +4042,20 @@ std::string VulkanHppGenerator::generateCommand2ReturnsValueValue( std::string c
       return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, returnParams, vectorParams, false, {}, raii, false, {} );
     }
   }
+  else if ( isHandleType( returnType0 ) && ( name.find( "Get" ) != std::string::npos ) )
+  {
+    // the first return parameter is a handle, but it's just a getter -> the handle is not generated
+    if ( auto structIt = findByNameOrAlias( m_structs, returnType1 ); structIt != m_structs.end() )
+    {
+      // the second return parameter is a structure
+      std::vector<CommandFlavourFlags> flags = { CommandFlavourFlagBits::enhanced };
+      if ( !structIt->second.extendedBy.empty() )
+      {
+        flags.push_back( CommandFlavourFlagBits::chained );
+      }
+      return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, returnParams, vectorParams, false, flags, raii, false, flags );
+    }
+  }
   else if ( auto structIt = findByNameOrAlias( m_structs, returnType0 ); structIt != m_structs.end() )
   {
     // the first return param is a single struct
@@ -4207,6 +4227,10 @@ std::string VulkanHppGenerator::generateCommand3Returns( std::string const &    
     {
       return generateCommand3ReturnsValueEnum( name, commandData, initialSkipCount, definition, raii, returnParams, vectorParams );
     }
+    else
+    {
+      return generateCommand3ReturnsValueValueValue( name, commandData, initialSkipCount, definition, raii, returnParams );
+    }
   }
   return "";
 }
@@ -4373,6 +4397,31 @@ std::string VulkanHppGenerator::generateCommand3ReturnsValueEnum( std::string co
                                             false,
                                             { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
       }
+    }
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateCommand3ReturnsValueValueValue( std::string const &         name,
+                                                                        CommandData const &         commandData,
+                                                                        size_t                      initialSkipCount,
+                                                                        bool                        definition,
+                                                                        bool                        raii,
+                                                                        std::vector<size_t> const & returnParams ) const
+{
+  assert( returnParams.size() == 3 );
+
+  if ( isHandleType( commandData.params[returnParams[0]].type.name ) && isHandleType( commandData.params[returnParams[1]].type.name ) &&
+       isStructureType( commandData.params[returnParams[2]].type.name ) && ( name.find( "Get" ) != std::string::npos ) )
+  {
+    // this functions "gets" you some data, some of them might be handles, but they're not created, just got
+    auto structIt = m_structs.find( commandData.params[returnParams[2]].type.name );
+    assert( structIt != m_structs.end() );
+    if ( structureHoldsVector( structIt->second ) )
+    {
+      // the returned struct specifies a vector of data
+      // can't generate an enhanced version for such a complex command! Just use the standard version
+      return generateCommandSetInclusive( name, commandData, initialSkipCount, definition, returnParams, {}, false, {}, raii, true, {} );
     }
   }
   return "";
@@ -5235,19 +5284,26 @@ std::string VulkanHppGenerator::generateDataDeclarations2Returns( CommandData co
   {
     case 0:
       assert( !singular );
-      assert( !chained || ( isStructureChainAnchor( commandData.params[returnParams[0]].type.name ) &&
-                            containsByName( m_vkxml.externals, commandData.params[returnParams[1]].type.name ) ) );
+      assert( !chained ||
+              ( isStructureChainAnchor( commandData.params[returnParams[0]].type.name ) &&
+                containsByName( m_vkxml.externals, commandData.params[returnParams[1]].type.name ) ) ||
+              ( isHandleType( commandData.params[returnParams[0]].type.name ) && isStructureChainAnchor( commandData.params[returnParams[1]].type.name ) ) );
       {
-        std::string const dataDeclarationTemplate        = R"(    std::pair<${firstDataType},${secondDataType}> data_;
+        std::string const dataDeclarationTemplate         = R"(    std::pair<${firstDataType},${secondDataType}> data_;
     ${firstDataType} & ${firstDataVariable} = data_.first;
     ${secondDataType} & ${secondDataVariable} = data_.second;)";
-        std::string const dataDeclarationTemplateChained = R"(    std::pair<StructureChain<X, Y, Z...>,${secondDataType}> data_;
+        std::string const dataDeclarationTemplateChained0 = R"(    std::pair<StructureChain<X, Y, Z...>,${secondDataType}> data_;
     ${firstDataType} & ${firstDataVariable} = data_.first.get();
     ${secondDataType} & ${secondDataVariable} = data_.second;)";
+        std::string const dataDeclarationTemplateChained1 = R"(    std::pair<${firstDataType}, StructureChain<X, Y, Z...>> data_;
+    ${firstDataType} & ${firstDataVariable} = data_.first;
+    ${secondDataType} & ${secondDataVariable} = data_.second.get();)";
 
         std::string firstDataVariable  = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
         std::string secondDataVariable = startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) );
-        return replaceWithMap( chained ? dataDeclarationTemplateChained : dataDeclarationTemplate,
+        return replaceWithMap( chained ? ( isStructureChainAnchor( commandData.params[returnParams[0]].type.name ) ? dataDeclarationTemplateChained0
+                                                                                                                   : dataDeclarationTemplateChained1 )
+                                       : dataDeclarationTemplate,
                                { { "firstDataType", dataTypes[0] },
                                  { "firstDataVariable", firstDataVariable },
                                  { "secondDataType", dataTypes[1] },
@@ -7495,10 +7551,13 @@ std::string VulkanHppGenerator::generateHandleDependencies( std::pair<std::strin
     assert( commandIt != m_commands.end() );
     for ( auto const & parameter : commandIt->second.params )
     {
-      auto handleIt = m_handles.find( parameter.type.name );
-      if ( ( handleIt != m_handles.end() ) && ( parameter.type.name != handleData.first ) && !listedHandles.contains( parameter.type.name ) )
+      if ( parameter.type.isValue() && ( parameter.type.name != handleData.first ) )
       {
-        str += generateHandle( *handleIt, listedHandles );
+        auto handleIt = m_handles.find( parameter.type.name );
+        if ( ( handleIt != m_handles.end() ) && !listedHandles.contains( parameter.type.name ) )
+        {
+          str += generateHandle( *handleIt, listedHandles );
+        }
       }
     }
   }
@@ -10621,10 +10680,14 @@ std::string VulkanHppGenerator::generateReturnType( std::vector<ParamData> const
           assert( vectorIt->second.lenParam == returnParams[0] );
           returnType = std::string( "std::vector<StructureChain" ) + ( raii ? "" : ", StructureChainAllocator" ) + ">";
         }
+        else if ( isStructureChainAnchor( "Vk" + dataTypes[0] ) && containsByName( m_vkxml.externals, dataTypes[1] ) )
+        {
+          returnType = "std::pair<StructureChain<X, Y, Z...>, " + dataTypes[1] + ">";
+        }
         else
         {
-          assert( isStructureChainAnchor( "Vk" + dataTypes[0] ) && containsByName( m_vkxml.externals, dataTypes[1] ) );
-          returnType = "std::pair<StructureChain<X, Y, Z...>, " + dataTypes[1] + ">";
+          assert( isHandleType( "Vk" + stripPrefix( dataTypes[0], "VULKAN_HPP_NAMESPACE::" ) ) && isStructureChainAnchor( "Vk" + dataTypes[1] ) );
+          returnType = "std::pair<" + dataTypes[0] + ", StructureChain<X, Y, Z...>>";
         }
       }
       else if ( vectorParams.contains( returnParams[0] ) )

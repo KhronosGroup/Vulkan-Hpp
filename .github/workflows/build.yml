@@ -193,7 +193,7 @@ jobs:
         done
 
     # Build samples and dependencies as C++ named modules.
-    - name: Build Samples with C++${{matrix.env.cxx_max}} as named modules
+    - name: Build Samples as C++ named modules
       if: matrix.env.modules
       run: |
         CMAKE="${{steps.sample-modules-cmake.outputs.cmake}}"
@@ -211,6 +211,10 @@ jobs:
     # Module runners ignore all versions below C++23
     - name: Build Tests with C++11 to C++${{matrix.env.cxx_max}}
       run: |
+        CMAKE=cmake
+        if ${{matrix.env.modules && true || false}}; then
+          CMAKE="${{steps.sample-modules-cmake.outputs.cmake}}"
+        fi
         for CXX_STANDARD in 11 14 17 20 23; do
           for BUILD_TYPE in Debug Release; do
 
@@ -228,13 +232,13 @@ jobs:
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
             echo "================================================================================="
 
-            cmake -B build -G '${{matrix.env.gen}}' --fresh --preset tests            \
+            "$CMAKE" -B build -G '${{matrix.env.gen}}' --fresh --preset tests        \
               -D VULKAN_HPP_BUILD_CXX_MODULE=${{matrix.env.modules && 'ON' || 'OFF'}} \
               ${{ env.VAR_CMAKE_FLAGS }}                                              \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD                                     \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE                                         \
-              ${{matrix.env.modules && '-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444' || ''}}
-            cmake --build build --parallel --config $BUILD_TYPE --clean-first
+              ${{matrix.env.modules && '-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=25d6f6aa-be65-4692-b44e-87b23e96d4e1' || ''}}
+            "$CMAKE" --build build --parallel --config $BUILD_TYPE --clean-first
             ctest -j --output-on-failure --test-dir build -C $BUILD_TYPE
           done
         done

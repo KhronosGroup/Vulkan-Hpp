@@ -197,14 +197,19 @@ jobs:
       if: matrix.env.modules
       run: |
         CMAKE="${{steps.sample-modules-cmake.outputs.cmake}}"
-        for BUILD_TYPE in Debug Release; do
-          "$CMAKE" -B build -G '${{matrix.env.gen}}' --fresh --preset samples          \
-            -D VULKAN_HPP_BUILD_CXX_MODULE=ON                                          \
-            ${{ env.VAR_CMAKE_FLAGS }}                                                 \
-            -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}}                              \
-            -D CMAKE_BUILD_TYPE=$BUILD_TYPE                                            \
-            -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=25d6f6aa-be65-4692-b44e-87b23e96d4e1
-          "$CMAKE" --build build --parallel --config $BUILD_TYPE --clean-first
+        for CXX_STANDARD in 20 23; do
+          if [ $CXX_STANDARD -gt ${{matrix.env.cxx_max}} ]; then
+            continue
+          fi
+          for BUILD_TYPE in Debug Release; do
+            "$CMAKE" -B build -G '${{matrix.env.gen}}' --fresh --preset samples        \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=ON                                        \
+              ${{ env.VAR_CMAKE_FLAGS }}                                               \
+              -D CMAKE_CXX_STANDARD=$CXX_STANDARD                                      \
+              -D CMAKE_BUILD_TYPE=$BUILD_TYPE                                          \
+              -D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=25d6f6aa-be65-4692-b44e-87b23e96d4e1
+            "$CMAKE" --build build --parallel --config $BUILD_TYPE --clean-first
+          done
         done
 
     # Run all unit tests with C++11 to maximum support C++ version.
@@ -223,8 +228,8 @@ jobs:
               continue
             fi
 
-            # runners for modules only need to test C++23 and up, so ignore the rest
-            if [ $CXX_STANDARD -lt 23 ] && ${{matrix.env.modules && true || false}}; then
+            # runners for modules only need to test C++20 and up, so ignore the rest
+            if [ $CXX_STANDARD -lt 20 ] && ${{matrix.env.modules && true || false}}; then
               continue
             fi
 

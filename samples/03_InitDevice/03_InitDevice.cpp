@@ -4,9 +4,16 @@
 // VulkanHpp Samples : 03_InitDevice
 //                     Create and destroy a device
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "03_InitDevice";
 static char const * EngineName = "Vulkan.hpp";
@@ -31,12 +38,12 @@ int main()
     auto   propertyIterator         = std::find_if( queueFamilyProperties.begin(),
                                           queueFamilyProperties.end(),
                                           []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );
-    size_t graphicsQueueFamilyIndex = std::distance( queueFamilyProperties.begin(), propertyIterator );
+    std::size_t graphicsQueueFamilyIndex = std::distance( queueFamilyProperties.begin(), propertyIterator );
     assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
     // create a Device
     float                     queuePriority = 0.0f;
-    vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
+    vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), static_cast<std::uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
     vk::Device                device = physicalDevice.createDevice( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
 
     // destroy the device
@@ -51,17 +58,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

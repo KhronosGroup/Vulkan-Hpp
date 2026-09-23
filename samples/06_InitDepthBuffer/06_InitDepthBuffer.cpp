@@ -1,9 +1,16 @@
 // SPDX-FileCopyrightText: 2018-2026 NVIDIA CORPORATION
 // SPDX-License-Identifier: Apache-2.0
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "06_InitDepthBuffer";
 static char const * EngineName = "Vulkan.hpp";
@@ -21,7 +28,8 @@ int main()
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
+      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     /* VULKAN_HPP_KEY_START */
@@ -55,9 +63,9 @@ int main()
 
     vk::PhysicalDeviceMemoryProperties memoryProperties   = physicalDevice.getMemoryProperties();
     vk::MemoryRequirements             memoryRequirements = device.getImageMemoryRequirements( depthImage );
-    uint32_t                           typeBits           = memoryRequirements.memoryTypeBits;
-    uint32_t                           typeIndex          = uint32_t( ~0 );
-    for ( uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++ )
+    std::uint32_t                      typeBits           = memoryRequirements.memoryTypeBits;
+    std::uint32_t                      typeIndex          = std::uint32_t( ~0 );
+    for ( std::uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++ )
     {
       if ( ( typeBits & 1 ) &&
            ( ( memoryProperties.memoryTypes[i].propertyFlags & vk::MemoryPropertyFlagBits::eDeviceLocal ) == vk::MemoryPropertyFlagBits::eDeviceLocal ) )
@@ -67,7 +75,7 @@ int main()
       }
       typeBits >>= 1;
     }
-    assert( typeIndex != uint32_t( ~0 ) );
+    assert( typeIndex != std::uint32_t( ~0 ) );
     vk::DeviceMemory depthMemory = device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, typeIndex ) );
 
     device.bindImageMemory( depthImage, depthMemory, 0 );
@@ -92,17 +100,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

@@ -39,7 +39,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 363, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 364, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -11612,6 +11612,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct StructExtends<ComputePipelineCreateInfo, PipelineCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
   struct StructExtends<PipelineLayoutCreateInfo, BindDescriptorSetsInfo>
   {
     enum
@@ -11667,6 +11676,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PipelineLayoutCreateInfo, IndirectCommandsLayoutCreateInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<GraphicsPipelineCreateInfo, PipelineCreateInfoKHR>
   {
     enum
     {
@@ -14840,6 +14858,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct StructExtends<ExecutionGraphPipelineCreateInfoAMDX, PipelineCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
   struct StructExtends<PipelineShaderStageNodeCreateInfoAMDX, PipelineShaderStageCreateInfo>
   {
     enum
@@ -15127,6 +15154,15 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   //=== VK_KHR_ray_tracing_pipeline ===
+  template <>
+  struct StructExtends<RayTracingPipelineCreateInfoKHR, PipelineCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   template <>
   struct StructExtends<PhysicalDeviceRayTracingPipelineFeaturesKHR, PhysicalDeviceFeatures2>
   {
@@ -21689,7 +21725,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<MemoryBarrierAccessFlags3KHR, MemoryRangeBarriersInfoKHR>
+  struct StructExtends<MemoryBarrierAccessFlags3KHR, MemoryBarrier2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<MemoryBarrierAccessFlags3KHR, MemoryRangeBarrierKHR>
   {
     enum
     {

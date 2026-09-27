@@ -84,6 +84,34 @@ jobs:
       if: contains(matrix.env.os, 'macos')
       run: brew update && brew install -y molten-vk
 
+    - name: Setup CMake nightly
+      env:
+        CMAKE_NIGHTLY_VERSION: 4.4.20260926-gea464ac
+      run: |
+        case "${{runner.os}}" in
+          Linux)
+            CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-linux-x86_64.tar.gz"
+            CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-linux-x86_64/bin"
+            ;;
+          macOS)
+            CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-macos-universal.tar.gz"
+            CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-macos-universal/CMake.app/Contents/bin"
+            ;;
+          Windows)
+            CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-windows-x86_64.zip"
+            CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-windows-x86_64/bin"
+            ;;
+        esac
+
+        mkdir -p "$RUNNER_TEMP/cmake-nightly"
+        curl --fail --location --retry 3 "https://cmake.org/files/dev/$CMAKE_ARCHIVE" --output "$RUNNER_TEMP/$CMAKE_ARCHIVE"
+        if [[ "$CMAKE_ARCHIVE" == *.zip ]]; then
+          7z x -y "$RUNNER_TEMP/$CMAKE_ARCHIVE" -o"$RUNNER_TEMP/cmake-nightly"
+        else
+          tar -xzf "$RUNNER_TEMP/$CMAKE_ARCHIVE" -C "$RUNNER_TEMP/cmake-nightly"
+        fi
+        echo "$CMAKE_BIN" >> "$GITHUB_PATH"
+        "$CMAKE_BIN/cmake" --version
 
     - name: Verify Linux x86 target
       if: contains(matrix.env.os, 'ubuntu') && contains(matrix.env.arch, 'x86')
@@ -111,10 +139,6 @@ jobs:
         file /tmp/check-linux-x86/build/check-linux-x86-c
         file /tmp/check-linux-x86/build/check-linux-x86-cxx
 
-    # Additional setups for module testing
-    - name: Setup Modules (CMake, Ninja)
-      if: matrix.env.modules && contains(matrix.env.gen, 'Ninja')
-      uses: lukka/get-cmake@latest
     - name: Setup Modules (Ubuntu)
       if: matrix.env.modules && contains(matrix.env.os, 'ubuntu')
       run: |
@@ -156,7 +180,7 @@ jobs:
         done
 
     # Run all unit tests with C++11 to maximum support C++ version.
-    # Module runners ignore all versions below C++23
+    # Module runners ignore all versions below C++20.
     - name: Build Tests with C++11 to C++${{matrix.env.cxx_max}}
       env:
         LLVM_PREFIX: ${{ steps.get_llvm_prefix.outputs.prefix }}
@@ -169,8 +193,8 @@ jobs:
               continue
             fi
 
-            # runners for modules only need to test C++23 and up, so ignore the rest
-            if [ $CXX_STANDARD -lt 23 ] && ${{matrix.env.modules && true || false}}; then
+            # Module runners only support C++20 and newer.
+            if [ $CXX_STANDARD -lt 20 ] && ${{matrix.env.modules && true || false}}; then
               continue
             fi
 
@@ -178,13 +202,12 @@ jobs:
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
             echo "================================================================================="
 
-            cmake -B build -G '${{matrix.env.gen}}' --fresh --preset tests            \
+            cmake -B build -G '${{matrix.env.gen}}' --fresh --preset tests             \
               -D VULKAN_HPP_BUILD_CXX_MODULE=${{matrix.env.modules && 'ON' || 'OFF'}} \
               ${{ env.VAR_CMAKE_FLAGS }}                                              \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD                                     \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE                                         \
-              ${{ matrix.env.modules && contains(matrix.env.os, 'macos') && '-D CMAKE_C_COMPILER="$LLVM_PREFIX/bin/clang" -D CMAKE_CXX_COMPILER="$LLVM_PREFIX/bin/clang++" -D CMAKE_CXX_STDLIB_MODULES_JSON="$LLVM_PREFIX/lib/c++/libc++.modules.json"' || '' }} \
-              ${{matrix.env.modules && '-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=f35a9ac6-8463-4d38-8eec-5d6008153e7d' || ''}}
+              ${{ matrix.env.modules && contains(matrix.env.os, 'macos') && '-D CMAKE_C_COMPILER="$LLVM_PREFIX/bin/clang" -D CMAKE_CXX_COMPILER="$LLVM_PREFIX/bin/clang++" -D CMAKE_CXX_STDLIB_MODULES_JSON="$LLVM_PREFIX/lib/c++/libc++.modules.json"' || '' }}
             cmake --build build --parallel --config $BUILD_TYPE --clean-first
             ctest -j --output-on-failure --test-dir build -C $BUILD_TYPE
           done

@@ -820,45 +820,15 @@ The named module has been tested with the following toolchains:
 > The [CI setup](../.github/workflows/) is a useful reference for setting up CMake projects with the Vulkan-Hpp named module.
 
 CMake is recommended to set up the Vulkan-Hpp named module, as it provides a convenient platform-agnostic way to configure your project.
-Version **3.30** or later is required, which uses the standard library module feature.
+Version **4.5** or later is required, which provides the standard library module feature without an experimental gate.
 Refer to the [CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html) on the topic.
 
 CMake provides the [FindVulkan module](https://cmake.org/cmake/help/latest/module/FindVulkan.html), which may be used to source the Vulkan SDK and Vulkan headers on your system.
 
-<details>
-<summary>For CMake versions earlier than 4.4.0</summary>
-
-If you have CMake versions between 3.30 and 4.4, where the [`CXX_MODULE_STD`](https://cmake.org/cmake/help/v4.4/prop_tgt/CXX_MODULE_STD.html) variable is still experimental, then make sure to provide the following UUID to enable CMake's experimental support for the C++ standard library module.
-To find the precise value for your specific version, check out the correct release tag and look for `CMAKE_EXPERIMENTAL_CXX_IMPORT_STD` in [Help/dev/experimental.rst](https://gitlab.kitware.com/cmake/cmake/-/blob/master/Help/dev/experimental.rst).
-
-```bash
-# example UUID for CMake 4.4
-cmake -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=f35a9ac6-8463-4d38-8eec-5d6008153e7d ...
-```
-
-This UUID variable may also be set before the `project()` call, or in a [CMake preset file](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#configure-preset) in the `cacheVariables` key for a configure preset.
-
-</details>
-
 A complete example `CMakeLists.txt` file for a project using the Vulkan-Hpp named module is provided below.
 
 ```cmake
-cmake_minimum_required( VERSION 3.30...4.4 )
-
-# either set the experimental gate here or via CLI
-if( NOT CMAKE_EXPERIMENTAL_CXX_IMPORT_STD )
-    if( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 4.4 )
-        set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD f35a9ac6-8463-4d38-8eec-5d6008153e7d)
-    elseif( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 4.3 )
-        set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 451f2fe2-a8a2-47c3-bc32-94786d8fc91b)
-    elseif( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 4.2 )
-        set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD d0edc3af-4c50-42ea-a356-e2862fe7a444)
-    elseif( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 4.0 )
-        set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 1942b4fa-b2c5-4546-9385-83f254070067)
-	elseif( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.30 )
-        set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
-    endif()
-endif()
+cmake_minimum_required( VERSION 4.5 )
 project( vulkan_hpp_modules_example LANGUAGES CXX )
 
 # Although modules were first made available in Vulkan-Headers v1.3.256,

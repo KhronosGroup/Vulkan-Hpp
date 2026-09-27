@@ -180,6 +180,28 @@ jobs:
           cmake --build build --parallel --config $BUILD_TYPE --clean-first
         done
 
+    # Build samples and their utils::module / RAII_utils::module C++ named module variants.
+    - name: Build Samples with C++ modules
+      if: matrix.env.modules
+      env:
+        LLVM_PREFIX: ${{ steps.get_llvm_prefix.outputs.prefix }}
+      run: |
+        for CXX_STANDARD in 20 23; do
+          if [ $CXX_STANDARD -gt ${{matrix.env.cxx_max}} ]; then
+            continue
+          fi
+
+          for BUILD_TYPE in Debug Release; do
+            cmake -B build -G '${{matrix.env.gen}}' --fresh --preset samples           \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=ON                                        \
+              ${{ env.VAR_CMAKE_FLAGS }}                                               \
+              -D CMAKE_CXX_STANDARD=$CXX_STANDARD                                      \
+              -D CMAKE_BUILD_TYPE=$BUILD_TYPE                                           \
+              ${{ matrix.env.modules && contains(matrix.env.os, 'macos') && '-D CMAKE_C_COMPILER="$LLVM_PREFIX/bin/clang" -D CMAKE_CXX_COMPILER="$LLVM_PREFIX/bin/clang++" -D CMAKE_CXX_STDLIB_MODULES_JSON="$LLVM_PREFIX/lib/c++/libc++.modules.json"' || '' }}
+            cmake --build build --parallel --config $BUILD_TYPE --clean-first
+          done
+        done
+
     # Run all unit tests with C++11 to maximum support C++ version.
     # Module runners ignore all versions below C++20.
     - name: Build Tests with C++11 to C++${{matrix.env.cxx_max}}

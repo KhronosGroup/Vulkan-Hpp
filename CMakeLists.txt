@@ -504,7 +504,6 @@ function( vulkan_hpp__setup_test )
 					"${CMAKE_CURRENT_BINARY_DIR}/tests/${TARGET_NAME}"
 				--build-generator ${CMAKE_GENERATOR}
 				--build-options
-					-D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=${CMAKE_EXPERIMENTAL_CXX_IMPORT_STD} # experimental cmake flag
 					-D TARGET_NAME=${TARGET_NAME}
 					-D TARGET_TEST=${TARGET_TEST}
 					# forward vulkan options

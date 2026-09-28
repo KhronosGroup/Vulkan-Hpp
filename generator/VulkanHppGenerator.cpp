@@ -579,6 +579,31 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     }
   }
 
+  auto dynamicStateIt = m_enums.find( "VkDynamicState" );
+  assert( dynamicStateIt != m_enums.end() );
+  for ( auto const & dynamicState : m_vkxml.dynamicStates )
+  {
+    for ( auto const & dynamicStateCmd : dynamicState.commands )
+    {
+      checkForError( containsByName( dynamicStateIt->second.values, dynamicStateCmd.pipeline ),
+                     dynamicStateCmd.xmlLine,
+                     "Dynamic state <" + dynamicState.name + "> uses command <" + dynamicStateCmd.name + "> with unknown pipeline <" +
+                       dynamicStateCmd.pipeline + ">" );
+    }
+  }
+  for ( auto const & dynamicStateValue : dynamicStateIt->second.values )
+  {
+    checkForError( std::ranges::any_of( m_vkxml.dynamicStates,
+                                        [&dynamicStateValue]( auto const & dynamicState )
+                                        {
+                                          return std::ranges::any_of( dynamicState.commands,
+                                                                      [&dynamicStateValue]( auto const & command )
+                                                                      { return command.pipeline == dynamicStateValue.name; } );
+                                        } ),
+                   dynamicStateValue.xmlLine,
+                   "Enum <VkDynamicState> has value <" + dynamicStateValue.name + "> that is not used in the dynamicstates list" );
+  }
+
   for ( auto const & format : m_vkxml.formats )
   {
     auto formatIt = m_enums.find( "VkFormat" );

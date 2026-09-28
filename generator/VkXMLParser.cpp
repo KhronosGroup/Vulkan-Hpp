@@ -30,14 +30,20 @@ std::vector<Command> parseCommands( tinyxml2::XMLElement const * element );
 Component            parseComponent( tinyxml2::XMLElement const * element );
 ConstantValue        parseConstantValue( tinyxml2::XMLElement const * element );
 Deprecate            parseDeprecate( tinyxml2::XMLElement const * element );
-EnumsVariant         parseEnums( tinyxml2::XMLElement const * element );
-EnumsBitmask         parseEnumsBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-EnumsConstants       parseEnumsConstants( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-EnumsEnum            parseEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-EnumUnused           parseEnumUnused( tinyxml2::XMLElement const * element );
-EnumValueVariant     parseEnumValue( tinyxml2::XMLElement const * element );
-ExtensionRemove      parseExtensionRemove( tinyxml2::XMLElement const * element );
-ExtensionRequire     parseExtensionRequire( tinyxml2::XMLElement const * element );
+DynamicState         parseDynamicState( tinyxml2::XMLElement const * element );
+DynamicStateCmd      parseDynamicStateCmd( tinyxml2::XMLElement const * element );
+DynamicStateEnableVariant   parseDynamicStateEnable( tinyxml2::XMLElement const * element );
+DynamicStateEnableExtension parseDynamicStateEnableExtension( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+DynamicStateEnableStruct    parseDynamicStateEnableStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+std::vector<DynamicState>   parseDynamicStates( tinyxml2::XMLElement const * element );
+EnumsVariant                parseEnums( tinyxml2::XMLElement const * element );
+EnumsBitmask                parseEnumsBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+EnumsConstants              parseEnumsConstants( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+EnumsEnum                   parseEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+EnumUnused                  parseEnumUnused( tinyxml2::XMLElement const * element );
+EnumValueVariant            parseEnumValue( tinyxml2::XMLElement const * element );
+ExtensionRemove             parseExtensionRemove( tinyxml2::XMLElement const * element );
+ExtensionRequire            parseExtensionRequire( tinyxml2::XMLElement const * element );
 ExtensionRequireEnumVariant parseExtensionRequireEnum( tinyxml2::XMLElement const * element );
 ExtensionRequireEnumAlias   parseExtensionRequireEnumAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 ExtensionRequireEnumExtendByBitPos parseExtensionRequireEnumExtentByBitPos( tinyxml2::XMLElement const *               element,
@@ -87,6 +93,7 @@ SPIRVExtensionEnableByExtension parseSPIRVExtensionEnableByExtension( tinyxml2::
                                                                       std::map<std::string, std::string> const & attributes );
 SPIRVExtensionEnableByVersion parseSPIRVExtensionEnableByVersion( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 SPIRVExtensions               parseSPIRVExtensions( tinyxml2::XMLElement const * element );
+StateCondition                parseStateCondition( tinyxml2::XMLElement const * element );
 StructMember                  parseStructMember( tinyxml2::XMLElement const * element );
 SupersededName                parseSupersededName( tinyxml2::XMLElement const * element );
 Sync                          parseSync( tinyxml2::XMLElement const * element );
@@ -749,6 +756,183 @@ Deprecate parseDeprecate( tinyxml2::XMLElement const * element )
   }
 
   return deprecate;
+}
+
+DynamicState parseDynamicState( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes(
+    "vk.xml",
+    line,
+    attributes,
+    { { "name", {} }, { "shaderstage", {} } },
+    { { "pipelinesubstate", { "Fragment Output", "Fragment Shader", "Pre-Rasterization Shader", "Vertex Input" } }, { "requiresrasterization", { "true" } } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml",
+                 line,
+                 children,
+                 { { "dynamicstatecmd", MultipleAllowed::Yes } },
+                 { { "enable", MultipleAllowed::Yes }, { "statecondition", MultipleAllowed::No } } );
+
+  DynamicState dynamicState{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      dynamicState.name = attribute.second;
+    }
+    else if ( attribute.first == "pipelinesubstate" )
+    {
+      dynamicState.pipelineSubstates = tokenize( attribute.second, "," );
+    }
+    else if ( attribute.first == "requiresrasterization" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      dynamicState.requiresRasterization = attribute.second;
+    }
+    else if ( attribute.first == "shaderstage" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      dynamicState.shaderStage = attribute.second;
+    }
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "dynamicstatecmd" )
+    {
+      dynamicState.commands.push_back( parseDynamicStateCmd( child ) );
+    }
+    else if ( value == "enable" )
+    {
+      dynamicState.enables.push_back( parseDynamicStateEnable( child ) );
+    }
+    else if ( value == "statecondition" )
+    {
+      dynamicState.stateCondition = parseStateCondition( child );
+    }
+  }
+
+  return dynamicState;
+}
+
+DynamicStateCmd parseDynamicStateCmd( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, { { "name", {} }, { "pipeline", {} } }, { { "pipelineonly", { "true" } } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {}, {} );
+
+  DynamicStateCmd dynamicStateCmd{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      dynamicStateCmd.name = attribute.second;
+    }
+    else if ( attribute.first == "pipeline" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      dynamicStateCmd.pipeline = attribute.second;
+    }
+    else if ( attribute.first == "pipelineonly" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      dynamicStateCmd.pipelineOnly = attribute.second;
+    }
+  }
+
+  return dynamicStateCmd;
+}
+
+DynamicStateEnableVariant parseDynamicStateEnable( tinyxml2::XMLElement const * element )
+{
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  if ( attributes.contains( "extension" ) )
+  {
+    return parseDynamicStateEnableExtension( element, attributes );
+  }
+  else
+  {
+    return parseDynamicStateEnableStruct( element, attributes );
+  }
+}
+
+DynamicStateEnableExtension parseDynamicStateEnableExtension( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, attributes, { { "extension", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {}, {} );
+
+  DynamicStateEnableExtension enable{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "extension" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      enable.extension = attribute.second;
+    }
+  }
+
+  return enable;
+}
+
+DynamicStateEnableStruct parseDynamicStateEnableStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, attributes, { { "feature", {} }, { "requires", {} }, { "struct", {} } }, {} );
+  checkElements( "vk.xml", line, getChildElements( element ), {}, {} );
+
+  DynamicStateEnableStruct enable{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "feature" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      enable.feature = attribute.second;
+    }
+    else if ( attribute.first == "requires" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      enable.require = attribute.second;
+    }
+    else if ( attribute.first == "struct" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      enable.structure = attribute.second;
+    }
+  }
+
+  return enable;
+}
+
+std::vector<DynamicState> parseDynamicStates( tinyxml2::XMLElement const * element )
+{
+  int const line = element->GetLineNum();
+  checkAttributes( "vk.xml", line, getAttributes( element ), {}, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( "vk.xml", line, children, { { "dynamicstate", MultipleAllowed::Yes } }, {} );
+
+  std::vector<DynamicState> dynamicStates;
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "dynamicstate" )
+    {
+      auto dynamicState = parseDynamicState( child );
+      checkForError( "vk.xml",
+                     dynamicState.stateCondition.state.empty() || containsByName( dynamicStates, dynamicState.stateCondition.state ),
+                     dynamicState.stateCondition.xmlLine,
+                     "dynamicstate <" + dynamicState.name + "> lists unknown statecondition state <" + dynamicState.stateCondition.state + ">" );
+      dynamicStates.push_back( std::move( dynamicState ) );
+    }
+  }
+
+  return dynamicStates;
 }
 
 EnumsVariant parseEnums( tinyxml2::XMLElement const * element )
@@ -2698,6 +2882,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
                  children,
                  { { "commands", MultipleAllowed::No },
                    { "comment", MultipleAllowed::Yes },
+                   { "dynamicstates", MultipleAllowed::No },
                    { "enums", MultipleAllowed::Yes },
                    { "extensions", MultipleAllowed::No },
                    { "feature", MultipleAllowed::Yes },
@@ -2769,6 +2954,57 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
           "vk.xml", vkxml.copyright.text.empty(), line, "Copyright message has already been encountered on line " + std::to_string( vkxml.copyright.xmlLine ) );
         vkxml.copyright = std::move( comment );
       }
+    }
+    else if ( value == "dynamicstates" )
+    {
+      std::vector<DynamicState> dynamicStates = parseDynamicStates( child );
+
+      auto shaderStageFlagBitsIt = findByName( vkxml.enums, "VkShaderStageFlagBits" );
+      assert( shaderStageFlagBitsIt != vkxml.enums.end() );
+      for ( auto const & dynamicState : dynamicStates )
+      {
+        for ( auto const & enable : dynamicState.enables )
+        {
+          if ( std::holds_alternative<DynamicStateEnableExtension>( enable ) )
+          {
+            auto const & enableExtension = std::get<DynamicStateEnableExtension>( enable );
+            checkForError( "vk.xml",
+                           containsByName( vkxml.extensions.extensions, enableExtension.extension ),
+                           enableExtension.xmlLine,
+                           "dynamicstate <" + dynamicState.name + "> enables unknown extension <" + enableExtension.extension + ">" );
+          }
+          else if ( std::holds_alternative<DynamicStateEnableStruct>( enable ) )
+          {
+            auto const & enableStruct = std::get<DynamicStateEnableStruct>( enable );
+            auto         structIt     = findByNameOrAlias( vkxml.structs, enableStruct.structure );
+            checkForError( "vk.xml",
+                           structIt != vkxml.structs.end(),
+                           enableStruct.xmlLine,
+                           "dynamicstate <" + dynamicState.name + "> enables unknown struct <" + enableStruct.structure + ">" );
+            checkForError( "vk.xml",
+                           containsByName( structIt->members, enableStruct.feature ),
+                           enableStruct.xmlLine,
+                           "dynamicstate <" + dynamicState.name + "> enables unknown feature <" + enableStruct.feature + "> in struct <" +
+                             enableStruct.structure + ">" );
+            checkForError( "vk.xml",
+                           containsByName( vkxml.features, enableStruct.require ) || containsByName( vkxml.extensions.extensions, enableStruct.require ),
+                           enableStruct.xmlLine,
+                           "dynamicstate <" + dynamicState.name + "> requires unknown feature <" + enableStruct.require + ">" );
+          }
+        }
+        checkForError( "vk.xml",
+                       containsByName( shaderStageFlagBitsIt->values, dynamicState.shaderStage ),
+                       dynamicState.xmlLine,
+                       "dynamicstate <" + dynamicState.name + "> uses unknown shaderstage <" + dynamicState.shaderStage );
+        for ( auto const & dynamicStateCmd : dynamicState.commands )
+        {
+          checkForError( "vk.xml",
+                         containsByName( vkxml.commands, dynamicStateCmd.name ),
+                         dynamicStateCmd.xmlLine,
+                         "dynamicstate <" + dynamicState.name + "> uses unknown command <" + dynamicStateCmd.name + ">" );
+        }
+      }
+      vkxml.dynamicStates = std::move( dynamicStates );
     }
     else if ( value == "enums" )
     {
@@ -3820,6 +4056,33 @@ SPIRVExtensions parseSPIRVExtensions( tinyxml2::XMLElement const * element )
   }
 
   return spirvExtensions;
+}
+
+StateCondition parseStateCondition( tinyxml2::XMLElement const * element )
+{
+  int const                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( "vk.xml", line, attributes, {}, { { "special", {} }, { "state", {} } } );
+  checkElements( "vk.xml", line, getChildElements( element ), {} );
+
+  StateCondition stateCondition{ .xmlLine = line };
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "special" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      stateCondition.special = attribute.second;
+    }
+    else if ( attribute.first == "state" )
+    {
+      checkNoList( "vk.xml", attribute.second, line );
+      stateCondition.state = attribute.second;
+    }
+  }
+
+  checkForError( "vk.xml", !( stateCondition.special.empty() && stateCondition.state.empty() ), line, "statecondition does not specify any special or state" );
+
+  return stateCondition;
 }
 
 StructMember parseStructMember( tinyxml2::XMLElement const * element )

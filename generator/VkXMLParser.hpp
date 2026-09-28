@@ -48,12 +48,12 @@ struct TypeBaseType
 
 struct TypeBitmask
 {
-  std::string                name      = {};
-  std::string                type      = {};
-  std::vector<std::string>   api       = {};
-  std::string                require   = {};
-  std::map<std::string, int> aliases   = {};
-  int                        xmlLine   = {};
+  std::string                name    = {};
+  std::string                type    = {};
+  std::vector<std::string>   api     = {};
+  std::string                require = {};
+  std::map<std::string, int> aliases = {};
+  int                        xmlLine = {};
 };
 
 struct Alias
@@ -788,6 +788,49 @@ struct Format
   int                      xmlLine          = {};
 };
 
+struct DynamicStateCmd
+{
+  std::string name         = {};
+  std::string pipeline     = {};
+  std::string pipelineOnly = {};
+  int         xmlLine      = {};
+};
+
+struct DynamicStateEnableExtension
+{
+  std::string extension = {};
+  int         xmlLine   = {};
+};
+
+struct DynamicStateEnableStruct
+{
+  std::string feature   = {};
+  std::string require   = {};
+  std::string structure = {};
+  int         xmlLine   = {};
+};
+
+using DynamicStateEnableVariant = std::variant<DynamicStateEnableExtension, DynamicStateEnableStruct>;
+
+struct StateCondition
+{
+  std::string special = {};
+  std::string state   = {};
+  int         xmlLine = {};
+};
+
+struct DynamicState
+{
+  std::string                            name                  = {};
+  std::vector<DynamicStateCmd>           commands              = {};
+  std::vector<DynamicStateEnableVariant> enables               = {};
+  std::vector<std::string>               pipelineSubstates     = {};
+  std::string                            requiresRasterization = {};
+  std::string                            shaderStage           = {};
+  StateCondition                         stateCondition        = {};
+  int                                    xmlLine               = {};
+};
+
 struct SPIRVExtensionEnableByExtension
 {
   std::string extension = {};
@@ -871,6 +914,7 @@ struct Vkxml
   EnumsConstants                 constants         = {};
   Comment                        copyright         = {};
   std::vector<TypeDefine>        defines           = {};
+  std::vector<DynamicState>      dynamicStates     = {};
   std::vector<TypeEnum>          enums             = {};
   Extensions                     extensions        = {};
   std::vector<TypeExternal>      externals         = {};

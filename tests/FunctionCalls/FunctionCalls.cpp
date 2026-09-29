@@ -2702,6 +2702,73 @@ int main()
     std::vector<vk::PhysicalDeviceToolProperties>    toolProperties = physicalDevice.getToolProperties( allocator );
   }
 
+  // Promoted from VK_EXT_private_data
+  {
+    vk::Device                    device;
+    vk::PrivateDataSlotCreateInfo privateDataSlotCreateInfo;
+    vk::AllocationCallbacks       allocationCallbacks;
+    vk::PrivateDataSlot           privateDataSlot;
+    vk::Result                    result = device.createPrivateDataSlot( &privateDataSlotCreateInfo, &allocationCallbacks, &privateDataSlot );
+  }
+  {
+    vk::Device                    device;
+    vk::PrivateDataSlotCreateInfo privateDataSlotCreateInfo;
+    vk::PrivateDataSlot           privateDataSlot = device.createPrivateDataSlot( privateDataSlotCreateInfo );
+  }
+  {
+    vk::Device                    device;
+    vk::PrivateDataSlotCreateInfo privateDataSlotCreateInfo;
+    vk::UniquePrivateDataSlot     privateDataSlot = device.createPrivateDataSlotUnique( privateDataSlotCreateInfo );
+  }
+
+  {
+    vk::Device              device;
+    vk::PrivateDataSlot     privateDataSlot;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroyPrivateDataSlot( privateDataSlot, &allocationCallbacks );
+  }
+  {
+    vk::Device          device;
+    vk::PrivateDataSlot privateDataSlot;
+    device.destroyPrivateDataSlot( privateDataSlot );
+  }
+  {
+    vk::Device              device;
+    vk::PrivateDataSlot     privateDataSlot;
+    vk::AllocationCallbacks allocationCallbacks;
+    device.destroy( privateDataSlot, &allocationCallbacks );
+  }
+  {
+    vk::Device          device;
+    vk::PrivateDataSlot privateDataSlot;
+    device.destroy( privateDataSlot );
+  }
+
+  {
+    vk::Device          device;
+    vk::ObjectType      objectType   = {};
+    uint64_t            objectHandle = {};
+    vk::PrivateDataSlot privateDataSlot;
+    uint64_t            data = {};
+    device.setPrivateData( objectType, objectHandle, privateDataSlot, data );
+  }
+
+  {
+    vk::Device          device;
+    vk::ObjectType      objectType   = {};
+    uint64_t            objectHandle = {};
+    vk::PrivateDataSlot privateDataSlot;
+    uint64_t            data = {};
+    device.getPrivateData( objectType, objectHandle, privateDataSlot, &data );
+  }
+  {
+    vk::Device          device;
+    vk::ObjectType      objectType   = {};
+    uint64_t            objectHandle = {};
+    vk::PrivateDataSlot privateDataSlot;
+    uint64_t            data = device.getPrivateData( objectType, objectHandle, privateDataSlot );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

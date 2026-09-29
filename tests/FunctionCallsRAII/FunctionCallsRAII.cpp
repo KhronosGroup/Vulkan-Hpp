@@ -1391,5 +1391,29 @@ int main()
     std::vector<vk::PhysicalDeviceToolProperties> toolProperties = physicalDevice.getToolProperties();
   }
 
+  // Promoted from VK_EXT_private_data
+  {
+    vk::raii::Device              device = nullptr;
+    vk::PrivateDataSlotCreateInfo privateDataSlotCreateInfo;
+    vk::raii::PrivateDataSlot     privateDataSlot = device.createPrivateDataSlot( privateDataSlotCreateInfo );
+  }
+
+  {
+    vk::raii::Device          device          = nullptr;
+    vk::ObjectType            objectType      = {};
+    uint64_t                  objectHandle    = {};
+    vk::raii::PrivateDataSlot privateDataSlot = nullptr;
+    uint64_t                  data            = {};
+    device.setPrivateData( objectType, objectHandle, *privateDataSlot, data );
+  }
+
+  {
+    vk::raii::Device          device          = nullptr;
+    vk::ObjectType            objectType      = {};
+    uint64_t                  objectHandle    = {};
+    vk::raii::PrivateDataSlot privateDataSlot = nullptr;
+    uint64_t                  data            = device.getPrivateData( objectType, objectHandle, *privateDataSlot );
+  }
+
   return 0;
 }

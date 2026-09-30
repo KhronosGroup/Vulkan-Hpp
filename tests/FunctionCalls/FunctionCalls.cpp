@@ -2769,6 +2769,39 @@ int main()
     uint64_t            data = device.getPrivateData( objectType, objectHandle, privateDataSlot );
   }
 
+  // Promoted from VK_KHR_synchronization2
+  {
+    vk::CommandBuffer  commandBuffer;
+    vk::DependencyInfo dependencyInfo;
+    commandBuffer.pipelineBarrier2( &dependencyInfo );
+  }
+  {
+    vk::CommandBuffer  commandBuffer;
+    vk::DependencyInfo dependencyInfo;
+    commandBuffer.pipelineBarrier2( dependencyInfo );
+  }
+
+  {
+    vk::CommandBuffer       commandBuffer;
+    vk::PipelineStageFlags2 stage = {};
+    vk::QueryPool           queryPool;
+    uint32_t                query = 0;
+    commandBuffer.writeTimestamp2( stage, queryPool, query );
+  }
+
+  {
+    vk::Queue                    queue;
+    std::vector<vk::SubmitInfo2> submitInfos;
+    vk::Fence                    fence;
+    vk::Result                   result = queue.submit2( static_cast<uint32_t>( submitInfos.size() ), submitInfos.data(), fence );
+  }
+  {
+    vk::Queue                    queue;
+    std::vector<vk::SubmitInfo2> submitInfos;
+    vk::Fence                    fence;
+    queue.submit2( submitInfos, fence );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

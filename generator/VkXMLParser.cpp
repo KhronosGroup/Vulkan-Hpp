@@ -2999,7 +2999,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
         for ( auto const & dynamicStateCmd : dynamicState.commands )
         {
           checkForError( "vk.xml",
-                         containsByName( vkxml.commands, dynamicStateCmd.name ),
+                         containsByNameOrAlias( vkxml.commands, dynamicStateCmd.name ),
                          dynamicStateCmd.xmlLine,
                          "dynamicstate <" + dynamicState.name + "> uses unknown command <" + dynamicStateCmd.name + ">" );
         }

@@ -330,8 +330,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   }
   for ( auto const & u : m_vkxml.unions )
   {
-    checkForError(
-      m_types.insert( { u.name, TypeData{ TypeCategory::Struct, {}, u.xmlLine } } ).second, u.xmlLine, "union <" + u.name + "> already specified" );
+    checkForError( m_types.insert( { u.name, TypeData{ TypeCategory::Union, {}, u.xmlLine } } ).second, u.xmlLine, "union <" + u.name + "> already specified" );
     std::ranges::for_each( u.aliases,
                            [&]( auto const & alias )
                            {
@@ -791,12 +790,7 @@ void VulkanHppGenerator::generateHandlesHppFile() const
 {
   generateFileFromTemplate( m_api + "_handles.hpp",
                             "HandlesHppTemplate.hpp",
-                            { { "copyrightMessage", m_copyrightMessage },
-                              { "funcPointerReturns", generateFuncPointerReturns() },
-                              { "handles", generateHandles() },
-                              { "handleForwardDeclarations", generateHandleForwardDeclarations() },
-                              { "structForwardDeclarations", generateStructForwardDeclarations() },
-                              { "uniqueHandles", generateUniqueHandles() } } );
+                            { { "copyrightMessage", m_copyrightMessage }, { "handles", generateHandles() }, { "uniqueHandles", generateUniqueHandles() } } );
 }
 
 void VulkanHppGenerator::generateHashHppFile() const
@@ -829,6 +823,8 @@ void VulkanHppGenerator::generateHppFile() const
       { "DynamicLoader", readSnippet( "DynamicLoader.hpp" ) },
       { "Exceptions", readSnippet( "Exceptions.hpp" ) },
       { "Exchange", readSnippet( "Exchange.hpp" ) },
+      { "funcPointers", generateFuncPointers() },
+      { "handleForwardDeclarations", generateHandleForwardDeclarations() },
       { "headerVersion", m_version },
       { "includes", replaceWithMap( readSnippet( "includes.hpp" ), { { "vulkan_h", ( m_api == "vulkansc" ) ? "vulkan_sc_core.h" : ( m_api + ".h" ) } } ) },
       { "IsDispatchedList", generateIsDispatchedList() },
@@ -840,6 +836,7 @@ void VulkanHppGenerator::generateHppFile() const
       { "resultChecks", readSnippet( "resultChecks.hpp" ) },
       { "resultExceptions", generateResultExceptions() },
       { "structExtendsStructs", generateStructExtendsStructs() },
+      { "structForwardDeclarations", generateStructForwardDeclarations() },
       { "ResultValue", readSnippet( "ResultValue.hpp" ) },
       { "StridedArrayProxy", readSnippet( "StridedArrayProxy.hpp" ) },
       { "StructureChain", readSnippet( "StructureChain.hpp" ) },
@@ -1306,9 +1303,8 @@ void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & requi
                        "required funcpointer <" + type.name + "> is not listed as a funcpointer" );
         break;
       case TypeCategory::Handle:
-        checkForError( findByNameOrAlias( m_vkxml.handles, type.name ) != m_vkxml.handles.end(),
-                       typeIt->second.xmlLine,
-                       "required handle type <" + type.name + "> is not listed as a handle" );
+        checkForError(
+          containsByNameOrAlias( m_vkxml.handles, type.name ), typeIt->second.xmlLine, "required handle type <" + type.name + "> is not listed as a handle" );
         break;
       case TypeCategory::Include:
         checkForError(
@@ -1316,9 +1312,8 @@ void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & requi
         break;
       case TypeCategory::Struct:
       case TypeCategory::Union:
-        checkForError( findByNameOrAlias( m_structs, type.name ) != m_structs.end(),
-                       typeIt->second.xmlLine,
-                       "required struct type <" + type.name + "> is not listed as a struct" );
+        checkForError(
+          containsByNameOrAlias( m_structs, type.name ), typeIt->second.xmlLine, "required struct type <" + type.name + "> is not listed as a struct" );
         break;
       case TypeCategory::Unknown: break;
       default                   : assert( false ); break;
@@ -1337,14 +1332,6 @@ void VulkanHppGenerator::checkStructCorrectness() const
     assert( typeIt != m_types.end() );
     checkForError(
       !typeIt->second.requiredBy.empty(), structure.second.xmlLine, "structure <" + structure.first + "> not required by any feature or extension" );
-
-    // check for existence of all structs that are extended by this struct
-    for ( auto const & extend : structure.second.structExtends )
-    {
-      checkForError( findByNameOrAlias( m_structs, extend ) != m_structs.end(),
-                     structure.second.xmlLine,
-                     "struct <" + structure.first + "> extends unknown <" + extend + ">" );
-    }
 
     // checks on the members of a struct
     checkStructMemberCorrectness( structure.first, structure.second.members, sTypeValues );
@@ -7286,28 +7273,8 @@ std::string VulkanHppGenerator::generateFormatTraitsList( EnumData const & enumD
   return list;
 }
 
-std::string VulkanHppGenerator::generateFuncPointer( TypeFuncPointer const & funcPointer, std::set<std::string> & listedStructs ) const
+std::string VulkanHppGenerator::generateFuncPointer( TypeFuncPointer const & funcPointer ) const
 {
-  std::string str;
-  for ( auto const & param : funcPointer.params )
-  {
-    auto typeIt = m_types.find( param.type.name );
-    assert( typeIt != m_types.end() );
-    if ( ( typeIt->second.category == TypeCategory::Struct ) || ( typeIt->second.category == TypeCategory::Union ) )
-    {
-      auto structIt = findByNameOrAlias( m_structs, param.type.name );
-      assert( structIt != m_structs.end() );
-      if ( !listedStructs.contains( param.type.name ) )
-      {
-        str += generateStruct( *structIt, listedStructs );
-      }
-    }
-    else
-    {
-      assert( typeIt->second.category != TypeCategory::FuncPointer );
-    }
-  }
-
   auto const [enter, leave] = generateProtection( getProtectFromType( funcPointer.name ) );
 
   std::string funcPointerParams;
@@ -7327,36 +7294,48 @@ std::string VulkanHppGenerator::generateFuncPointer( TypeFuncPointer const & fun
   typedef ${returnType} (VKAPI_PTR *PFN_${funcPointerName})( ${funcPointerParams} );
 )";
 
-  str += "\n" + enter +
+  return "\n" + enter +
          replaceWithMap( funcPointerTemplate,
                          { { "funcPointerParams", funcPointerParams },
                            { "funcPointerName", stripPrefix( funcPointer.name, "PFN_vk" ) },
                            { "returnType", funcPointer.returnType.compose( "Vk" ) } } ) +
          leave;
-
-  listedStructs.insert( funcPointer.name );
-  return str;
 }
 
-std::string VulkanHppGenerator::generateFuncPointerReturns() const
+std::string VulkanHppGenerator::generateFuncPointers() const
 {
-  std::string           str;
-  std::set<std::string> listedFuncPointers;
-  for ( auto const & handle : m_handles )
+  auto funcPointerGenerator = [this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    for ( auto const & command : handle.second.commands )
+    std::string str;
+    for ( auto const & require : requireData )
     {
-      auto commandIt = findByNameOrAlias( m_commands, command );
-      assert( commandIt != m_commands.end() );
-      auto funcPointerIt = findByName( m_vkxml.funcPointers, commandIt->second.returnType.name );
-      if ( ( funcPointerIt != m_vkxml.funcPointers.end() ) && !listedFuncPointers.contains( commandIt->second.returnType.name ) )
+      for ( auto const & type : require.types )
       {
-        assert( funcPointerIt->params.empty() );
-        str += generateFuncPointer( *funcPointerIt, listedFuncPointers );
+        if ( auto funcPointerIt = findByName( m_vkxml.funcPointers, type.name ); funcPointerIt != m_vkxml.funcPointers.end() )
+        {
+          str += generateFuncPointer( *funcPointerIt );
+        }
       }
     }
+    return addTitleAndProtection( title, str );
+  };
+
+  std::string funcPointers = R"(
+  //=====================
+  //=== FUNC_POINTERS ===
+  //=====================
+
+)";
+
+  for ( auto const & feature : m_features )
+  {
+    funcPointers += funcPointerGenerator( feature.requireData, feature.name );
   }
-  return str;
+  for ( auto const & extension : m_extensions )
+  {
+    funcPointers += funcPointerGenerator( extension.requireData, extension.name );
+  }
+  return funcPointers;
 }
 
 std::string VulkanHppGenerator::generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy, bool raii ) const
@@ -11028,30 +11007,6 @@ std::string VulkanHppGenerator::generateStruct( std::pair<std::string, StructDat
   assert( !listedStructs.contains( structure.first ) );
 
   std::string str;
-  for ( auto const & member : structure.second.members )
-  {
-    auto typeIt = m_types.find( member.type.name );
-    assert( typeIt != m_types.end() );
-    if ( ( typeIt->second.category == TypeCategory::Struct ) || ( typeIt->second.category == TypeCategory::Union ) )
-    {
-      auto structIt = findByNameOrAlias( m_structs, member.type.name );
-      assert( structIt != m_structs.end() );
-      if ( ( structure.first != member.type.name ) && !listedStructs.contains( structIt->first ) )
-      {
-        str += generateStruct( *structIt, listedStructs );
-      }
-    }
-    else if ( typeIt->second.category == TypeCategory::FuncPointer )
-    {
-      auto funcPtrIt = findByName( m_vkxml.funcPointers, member.type.name );
-      assert( funcPtrIt != m_vkxml.funcPointers.end() );
-      if ( !listedStructs.contains( member.type.name ) )
-      {
-        str += generateFuncPointer( *funcPtrIt, listedStructs );
-      }
-    }
-  }
-
   if ( !structure.second.subStruct.empty() )
   {
     auto structureIt = m_structs.find( structure.second.subStruct );
@@ -11586,8 +11541,8 @@ std::string VulkanHppGenerator::generateStructHashStructure( std::pair<std::stri
   std::string str;
   for ( auto const & member : structure.second.members )
   {
-    auto structIt = findByNameOrAlias( m_structs, member.type.name );
-    if ( ( structIt != m_structs.end() ) && ( structure.first != member.type.name ) && !listedStructs.contains( structIt->first ) )
+    if ( auto structIt = findByNameOrAlias( m_structs, member.type.name );
+         ( structIt != m_structs.end() ) && ( structure.first != member.type.name ) && !listedStructs.contains( structIt->first ) )
     {
       str += generateStructHashStructure( *structIt, listedStructs );
     }
@@ -11721,16 +11676,50 @@ std::string VulkanHppGenerator::generateStructs() const
 ${structs}
 )";
 
-  // Note reordering structs or handles by features and extensions is not possible!
   std::set<std::string> listedStructs;
   std::string           structs;
-  for ( auto const & structure : m_structs )
+  for ( auto const & feature : m_features )
   {
-    if ( !listedStructs.contains( structure.first ) && isTypeUsed( structure.first ) )
+    std::string byFeatureStructs;
+    for ( auto const & require : feature.requireData )
     {
-      structs += generateStruct( structure, listedStructs );
+      for ( auto const & type : require.types )
+      {
+        std::string name;
+        if ( auto vkStructIt = findByName( m_vkxml.structs, type.name ); vkStructIt != m_vkxml.structs.end() )
+        {
+          name = vkStructIt->name;
+        }
+        else if ( auto vkUnionIt = findByName( m_vkxml.unions, type.name ); vkUnionIt != m_vkxml.unions.end() )
+        {
+          name = vkUnionIt->name;
+        }
+        if ( !name.empty() && !listedStructs.contains( name ) && isTypeUsed( name ) )
+        {
+          assert( m_structs.contains( name ) );
+          byFeatureStructs += generateStruct( *m_structs.find( name ), listedStructs );
+        }
+      }
     }
+    structs += addTitleAndProtection( feature.name, byFeatureStructs );
   }
+  for ( auto const & extension : m_extensions )
+  {
+    std::string byExtensionStructs;
+    for ( auto const & require : extension.requireData )
+    {
+      for ( auto const & type : require.types )
+      {
+        auto structIt = findByNameOrAlias( m_structs, type.name );
+        if ( ( structIt != m_structs.end() ) && !listedStructs.contains( structIt->first ) && isTypeUsed( structIt->first ) )
+        {
+          byExtensionStructs += generateStruct( *structIt, listedStructs );
+        }
+      }
+    }
+    structs += addTitleAndProtection( extension.name, byExtensionStructs );
+  }
+
   return replaceWithMap( structsTemplate, { { "structs", structs } } );
 }
 
@@ -13496,10 +13485,11 @@ bool VulkanHppGenerator::isStructureChainAnchor( std::string const & type ) cons
 {
   if ( type.starts_with( "Vk" ) )
   {
-    auto it = findByNameOrAlias( m_structs, type );
-    if ( it != m_structs.end() )
+    auto vkStructIt = findByNameOrAlias( m_vkxml.structs, type );
+    if ( vkStructIt != m_vkxml.structs.end() )
     {
-      return !it->second.extendedBy.empty();
+      assert( m_structs.contains( vkStructIt->name ) );
+      return !m_structs.find( vkStructIt->name )->second.extendedBy.empty();
     }
   }
   return false;
@@ -13507,7 +13497,7 @@ bool VulkanHppGenerator::isStructureChainAnchor( std::string const & type ) cons
 
 bool VulkanHppGenerator::isStructureType( std::string const & type ) const
 {
-  return type.starts_with( "Vk" ) && ( findByNameOrAlias( m_structs, type ) != m_structs.end() );
+  return type.starts_with( "Vk" ) && ( findByNameOrAlias( m_vkxml.structs, type ) != m_vkxml.structs.end() );
 }
 
 bool VulkanHppGenerator::isSupported( std::set<std::string> const & requiredBy ) const
@@ -13576,15 +13566,18 @@ bool VulkanHppGenerator::isVectorByStructure( std::string const & type ) const
 
 void VulkanHppGenerator::markExtendedStructs()
 {
-  for ( auto const & s : m_structs )
+  for ( auto const & vkStruct : m_vkxml.structs )
   {
-    for ( auto const & extends : s.second.structExtends )
+    for ( auto const & extends : vkStruct.structExtends )
     {
-      auto structIt = findByNameOrAlias( m_structs, extends );
-      checkForError( structIt != m_structs.end(), s.second.xmlLine, "struct <" + s.first + "> extends unknown struct <" + extends + ">" );
-      checkForError( structIt->second.extendedBy.insert( s.first ).second,
-                     structIt->second.xmlLine,
-                     "struct <" + structIt->first + "> already extended by <" + extends + ">" );
+      auto vkStructIt = findByNameOrAlias( m_vkxml.structs, extends );
+      checkForError( vkStructIt != m_vkxml.structs.end(), vkStruct.xmlLine, "struct <" + vkStruct.name + "> extends unknown struct <" + extends + ">" );
+
+      auto structIt = m_structs.find( vkStructIt->name );
+      assert( structIt != m_structs.end() );
+      checkForError( structIt->second.extendedBy.insert( vkStruct.name ).second,
+                     vkStruct.xmlLine,
+                     "struct <" + vkStructIt->name + "> already extended by <" + extends + ">" );
     }
   }
 }
@@ -13861,7 +13854,9 @@ std::string VulkanHppGenerator::stripPluralS( std::string const & name ) const
 
 bool VulkanHppGenerator::structureChainHoldsHandle( std::string const & name ) const
 {
-  auto structIt = findByNameOrAlias( m_structs, name );
+  auto vkStructIt = findByNameOrAlias( m_vkxml.structs, name );
+  assert( vkStructIt != m_vkxml.structs.end() );
+  auto structIt = m_structs.find( vkStructIt->name );
   assert( ( structIt != m_structs.end() ) && !structIt->second.extendedBy.empty() );
   auto extendedByIt = std::ranges::find_if( structIt->second.extendedBy,
                                             [this]( auto const & s )
@@ -13875,7 +13870,9 @@ bool VulkanHppGenerator::structureChainHoldsHandle( std::string const & name ) c
 
 bool VulkanHppGenerator::structureChainHoldsVector( std::string const & name ) const
 {
-  auto structIt = findByNameOrAlias( m_structs, name );
+  auto vkStructIt = findByNameOrAlias( m_vkxml.structs, name );
+  assert( vkStructIt != m_vkxml.structs.end() );
+  auto structIt = m_structs.find( vkStructIt->name );
   assert( ( structIt != m_structs.end() ) && !structIt->second.extendedBy.empty() );
   auto extendedByIt = std::ranges::find_if( structIt->second.extendedBy,
                                             [this]( auto const & s )

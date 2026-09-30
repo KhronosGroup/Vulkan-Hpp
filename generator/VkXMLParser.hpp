@@ -69,10 +69,10 @@ using BitmaskVariant = std::variant<TypeBitmask, Alias>;
 struct TypeHandle
 {
   std::string                name        = {};
-  std::map<std::string, int> aliases     = {};
   std::string                objTypeEnum = {};
   std::string                parent      = {};
   Type                       type        = {};
+  std::map<std::string, int> aliases     = {};
   int                        xmlLine     = {};
 };
 
@@ -116,9 +116,9 @@ struct EnumValue
 struct TypeEnum
 {
   std::string                name     = {};
-  std::map<std::string, int> aliases  = {};
   std::string                bitwidth = {};
   std::string                category = {};
+  std::map<std::string, int> aliases  = {};
   std::vector<EnumValue>     values   = {};
   int                        xmlLine  = {};
 };
@@ -143,6 +143,7 @@ struct TypeFuncPointer
 
 struct StructMember
 {
+  std::string              name              = {};
   std::string              altLen            = {};
   std::vector<std::string> api               = {};
   std::vector<std::string> arraySizes        = {};
@@ -155,7 +156,6 @@ struct StructMember
   std::string              flagsExtendMember = {};
   std::vector<std::string> len               = {};
   std::vector<std::string> limitType         = {};
-  std::string              name              = {};
   std::string              alias             = {};
   std::string              noAutoValidity    = {};
   std::string              objectType        = {};
@@ -169,12 +169,13 @@ struct StructMember
 struct TypeStruct
 {
   std::string                name              = {};
-  std::map<std::string, int> aliases           = {};
   std::string                allowDuplicate    = {};
+  std::string                comment           = {};
   std::string                requiredLimitType = {};
   std::string                returnedOnly      = {};
-  std::vector<StructMember>  members           = {};
   std::vector<std::string>   structExtends     = {};
+  std::map<std::string, int> aliases           = {};
+  std::vector<StructMember>  members           = {};
   int                        xmlLine           = {};
 };
 
@@ -461,6 +462,13 @@ struct PropertyElement
   int                      xmlLine   = {};
 };
 
+struct RequireType
+{
+  std::string comment = {};
+  std::string name    = {};
+  int         xmlLine = {};
+};
+
 struct ExtensionRequire
 {
   std::string                              api        = {};
@@ -470,7 +478,7 @@ struct ExtensionRequire
   std::vector<ExtensionRequireEnumVariant> enums      = {};
   std::vector<MultiFeatureElement>         features   = {};
   std::vector<PropertyElement>             properties = {};
-  std::vector<NameElement>                 types      = {};
+  std::vector<RequireType>                 types      = {};
   int                                      xmlLine    = {};
 };
 
@@ -534,13 +542,6 @@ struct ExtendEnumRegular
 
 using RequireEnumVariant = std::variant<ExtendEnumAlias, ExtendEnumConstant, ExtendEnumRegular>;
 
-struct RequireType
-{
-  std::string comment = {};
-  std::string name    = {};
-  int         xmlLine = {};
-};
-
 struct Remove
 {
   std::string                 comment    = {};
@@ -552,7 +553,7 @@ struct Remove
   int                         xmlLine    = {};
 };
 
-struct Require
+struct FeatureRequire
 {
   std::vector<NameElement>        commands      = {};
   std::string                     comment       = {};
@@ -568,16 +569,16 @@ struct Require
 
 struct Feature
 {
-  std::vector<std::string> api        = {};
-  std::string              apiType    = {};
-  std::string              comment    = {};
-  std::vector<std::string> depends    = {};
-  std::vector<Deprecate>   deprecates = {};
-  std::string              name       = {};
-  std::string              number     = {};
-  std::vector<Remove>      removes    = {};
-  std::vector<Require>     require    = {};
-  int                      xmlLine    = {};
+  std::vector<std::string>    api        = {};
+  std::string                 apiType    = {};
+  std::string                 comment    = {};
+  std::vector<std::string>    depends    = {};
+  std::vector<Deprecate>      deprecates = {};
+  std::string                 name       = {};
+  std::string                 number     = {};
+  std::vector<Remove>         removes    = {};
+  std::vector<FeatureRequire> require    = {};
+  int                         xmlLine    = {};
 };
 
 struct MacroVisitor final : tinyxml2::XMLVisitor

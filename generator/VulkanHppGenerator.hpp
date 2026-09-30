@@ -358,18 +358,18 @@ private:
   struct MemberData
   {
     std::string                                 defaultValue   = {};
-    Type                                        type           = {};
-    std::string                                 name           = {};
     std::vector<std::string>                    arraySizes     = {};
     std::string                                 bitCount       = {};
     std::string                                 deprecated     = {};
     std::vector<std::string>                    lenExpressions = {};
     std::vector<std::string>                    limitType      = {};
     std::vector<std::pair<std::string, size_t>> lenMembers     = {};
+    std::string                                 name           = {};
     bool                                        noAutoValidity = {};
     std::vector<bool>                           optional       = {};
     std::vector<std::string>                    selection      = {};
     std::string                                 selector       = {};
+    Type                                        type           = {};
     std::string                                 value          = {};
     int                                         xmlLine        = {};
   };
@@ -799,8 +799,8 @@ private:
                                             std::string const &                                         subCaseName,
                                             std::function<std::string( T const & subCaseData )>         generator,
                                             std::string const &                                         defaultReturn ) const;
-  std::string generateFuncPointer( TypeFuncPointer const & funcPointer, std::set<std::string> & listedStructs ) const;
-  std::string generateFuncPointerReturns() const;
+  std::string generateFuncPointer( TypeFuncPointer const & funcPointer ) const;
+  std::string generateFuncPointers() const;
   std::string generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy, bool raii ) const;
   std::string generateHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   std::string generateHandleCommandDeclarations( std::set<std::string> const & commands ) const;

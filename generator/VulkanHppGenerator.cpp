@@ -438,7 +438,6 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
             checkForError( typeIt->second.category == TypeCategory::Enum,
                            requireEnumAlias.xmlLine,
                            "enum alias <" + requireEnumAlias.name + "> extends non-enum type <" + requireEnumAlias.extends + ">" );
-            typeIt->second.requiredBy.insert( extensionData.name );
             auto enumIt = findByNameOrAlias( m_enums, requireEnumAlias.extends );
             assert( enumIt != m_enums.end() );
             std::string protect = requireEnumAlias.protect.empty() ? getProtectFromPlatform( extensionData.platform ) : requireEnumAlias.protect;
@@ -466,8 +465,6 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
             auto constIt = findByName( m_vkxml.constants.values, alias.alias );
             if ( constIt != m_vkxml.constants.values.end() )
             {
-              typeIt = m_types.find( alias.name );
-              typeIt->second.requiredBy.insert( extensionData.name );
               m_vkxml.constants.values.push_back( { .name = alias.name, .type = constIt->type, .value = constIt->value, .xmlLine = alias.xmlLine } );
               requireData.constants.push_back( { alias.name, alias.xmlLine } );
             }
@@ -482,7 +479,6 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
           auto                typeIt        = m_types.find( extends );
           checkForError( typeIt != m_types.end(), xmlLine, "enum value <" + name + "> extends unknown type <" + extends + ">" );
           checkForError( typeIt->second.category == TypeCategory::Enum, xmlLine, "enum value <" + name + "> extends non-enum type <" + extends + ">" );
-          typeIt->second.requiredBy.insert( extensionData.name );
           auto enumIt = findByNameOrAlias( m_enums, extends );
           assert( enumIt != m_enums.end() );
 
@@ -534,7 +530,6 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
             auto const & nameElement = std::get<NameElement>( constantVariant );
             auto         typeIt      = m_types.find( nameElement.name );
             checkForError( typeIt != m_types.end(), nameElement.xmlLine, "unknown required enum <" + nameElement.name + ">" );
-            typeIt->second.requiredBy.insert( extensionData.name );
             requireData.constants.push_back( { nameElement.name, nameElement.xmlLine } );
           }
         }
@@ -549,7 +544,6 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
         checkForError( typeIt != m_types.end(), type.xmlLine, "required type <" + type.name + "> is not listed as a type" );
 
         requireData.types.push_back( { .name = type.name, .xmlLine = type.xmlLine } );
-        typeIt->second.requiredBy.insert( extensionData.name );
       }
 
       if ( !requireData.commands.empty() || !requireData.types.empty() || !requireData.enumConstants.empty() )
@@ -2263,7 +2257,6 @@ VulkanHppGenerator::FeatureData VulkanHppGenerator::featureToFeatureData( Featur
 
       auto typeIt = m_types.find( requireType.name );
       assert( typeIt != m_types.end() );
-      typeIt->second.requiredBy.insert( feature.name );
       if ( !supported && typeIt->second.category == TypeCategory::Struct )
       {
         auto structIt = findByNameOrAlias( m_structs, requireType.name );
@@ -11946,20 +11939,25 @@ std::string VulkanHppGenerator::generateStructExtendsStructs( std::vector<Requir
                              // append all allowed structure chains
                              for ( auto extendName : structData.second.structExtends )
                              {
-                               auto extendsIt                  = findByNameOrAlias( m_structs, extendName );
-                               auto const [subEnter, subLeave] = generateProtection( getProtectFromType( extendsIt->first ) );
-
-                               if ( enter != subEnter )
+                               auto typeIt                     = m_types.find( extendName );
+                               assert( typeIt != m_types.end() );
+                               if ( isSupported( typeIt->second.requiredBy ) )
                                {
-                                 str += subEnter;
-                               }
+                                 auto extendsIt                  = findByNameOrAlias( m_structs, extendName );
+                                 auto const [subEnter, subLeave] = generateProtection( getProtectFromType( extendsIt->first ) );
 
-                               str += "  template <> struct StructExtends<" + stripPrefix( structData.first, "Vk" ) + ", " + stripPrefix( extendName, "Vk" ) +
-                                      ">{ enum { value = true }; };\n";
+                                 if ( enter != subEnter )
+                                 {
+                                   str += subEnter;
+                                 }
 
-                               if ( leave != subLeave )
-                               {
-                                 str += subLeave;
+                                 str += "  template <> struct StructExtends<" + stripPrefix( structData.first, "Vk" ) + ", " + stripPrefix( extendName, "Vk" ) +
+                                        ">{ enum { value = true }; };\n";
+
+                                 if ( leave != subLeave )
+                                 {
+                                   str += subLeave;
+                                 }
                                }
                              }
                            }

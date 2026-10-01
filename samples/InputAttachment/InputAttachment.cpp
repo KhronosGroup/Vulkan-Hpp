@@ -14,14 +14,22 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
 #include <thread>
+#endif
+
 
 static char const * AppName    = "InputAttachment";
 static char const * EngineName = "Vulkan.hpp";
@@ -70,12 +78,12 @@ int main()
     if ( !( formatProperties.optimalTilingFeatures & vk::FormatFeatureFlagBits::eColorAttachment ) )
     {
       std::cout << "vk::Format::eR8G8B8A8Unorm format unsupported for input attachment\n";
-      exit( -1 );
+      std::exit( -1 );
     }
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::CommandPool   commandPool = device.createCommandPool( { {}, graphicsAndPresentQueueFamilyIndex.first } );
@@ -114,7 +122,7 @@ int main()
     vk::Image           inputImage = device.createImage( imageCreateInfo );
 
     vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements( inputImage );
-    uint32_t memoryTypeIndex     = vk::su::findMemoryType( physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlags() );
+    std::uint32_t memoryTypeIndex = vk::su::findMemoryType( physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlags() );
     vk::DeviceMemory inputMemory = device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
     device.bindImageMemory( inputImage, inputMemory, 0 );
 
@@ -125,7 +133,7 @@ int main()
     commandBuffer.clearColorImage( inputImage,
                                    vk::ImageLayout::eTransferDstOptimal,
                                    vk::ClearColorValue( 1.0f, 1.0f, 0.0f, 0.0f ),
-                                   vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, VK_REMAINING_MIP_LEVELS, 0, VK_REMAINING_ARRAY_LAYERS ) );
+                                   vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, vk::RemainingMipLevels, 0, vk::RemainingArrayLayers ) );
 
     // Transitioning the layout of the inputImage from TransferDstOptimal to ShaderReadOnlyOptimal is implicitly done by a subpassDependency in the
     // RenderPassCreateInfo below
@@ -168,7 +176,7 @@ int main()
     vk::AttachmentReference  colorReference( 0, vk::ImageLayout::eColorAttachmentOptimal );
     vk::AttachmentReference  inputReference( 1, vk::ImageLayout::eShaderReadOnlyOptimal );
     vk::SubpassDescription   subpassDescription( {}, vk::PipelineBindPoint::eGraphics, inputReference, colorReference );
-    vk::SubpassDependency    subpassDependency( VK_SUBPASS_EXTERNAL,
+    vk::SubpassDependency    subpassDependency( vk::SubpassExternal,
                                              0,
                                              vk::PipelineStageFlagBits::eTransfer,
                                              vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eFragmentShader,
@@ -213,10 +221,10 @@ int main()
 
     vk::Semaphore imageAcquiredSemaphore = device.createSemaphore( vk::SemaphoreCreateInfo() );
 
-    vk::ResultValue<uint32_t> nexImage =
-      device.acquireNextImage2KHR( vk::AcquireNextImageInfoKHR( swapChainData.swapChain, UINT64_MAX, imageAcquiredSemaphore, {}, 1 ) );
+    vk::ResultValue<std::uint32_t> nexImage =
+      device.acquireNextImage2KHR( vk::AcquireNextImageInfoKHR( swapChainData.swapChain, std::numeric_limits<std::uint64_t>::max(), imageAcquiredSemaphore, {}, 1 ) );
     assert( nexImage.result == vk::Result::eSuccess );
-    uint32_t currentBuffer = nexImage.value;
+    std::uint32_t currentBuffer = nexImage.value;
 
     vk::ClearValue clearValue;
     clearValue.color = vk::ClearColorValue( 0.2f, 0.2f, 0.2f, 0.2f );
@@ -277,17 +285,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

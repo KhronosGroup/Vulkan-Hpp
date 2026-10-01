@@ -4,14 +4,23 @@
 // VulkanHpp Samples : OcclusionQuery
 //                     Use occlusion query to determine if drawing renders any samples.
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+import glm;
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../../samples/utils/geometries.hpp"
 #include "../../samples/utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
 #include <thread>
+#endif
+
 
 static char const * AppName    = "OcclusionQuery";
 static char const * EngineName = "Vulkan.hpp";
@@ -31,12 +40,12 @@ int main()
     if ( !( formatProperties.optimalTilingFeatures & vk::FormatFeatureFlagBits::eColorAttachment ) )
     {
       std::cout << "vk::Format::eR8G8B8A8Unorm format unsupported for input attachment\n";
-      exit( -1 );
+      std::exit( -1 );
     }
 
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -83,7 +92,7 @@ int main()
     vk::raii::DescriptorSet  descriptorSet  = std::move( vk::raii::DescriptorSets( device, { descriptorPool, *descriptorSetLayout } ).front() );
 
     vk::raii::su::updateDescriptorSets(
-      device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, nullptr } }, {} );
+      device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::WholeSize, nullptr } }, {} );
 
     vk::raii::PipelineCache pipelineCache( device, vk::PipelineCacheCreateInfo() );
     vk::raii::Pipeline      graphicsPipeline = vk::raii::su::makeGraphicsPipeline( device,
@@ -105,7 +114,7 @@ int main()
 
     // Get the index of the next available swapchain image:
     vk::Result result;
-    uint32_t   imageIndex;
+    std::uint32_t   imageIndex;
     std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
@@ -114,11 +123,11 @@ int main()
     vk::raii::DeviceMemory queryResultMemory( nullptr );
 
     /* Allocate a uniform buffer that will take query results. */
-    vk::BufferCreateInfo bufferCreateInfo( {}, 4 * sizeof( uint64_t ), vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst );
+    vk::BufferCreateInfo bufferCreateInfo( {}, 4 * sizeof( std::uint64_t ), vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst );
     vk::raii::Buffer     queryResultBuffer( device, bufferCreateInfo );
 
     vk::MemoryRequirements memoryRequirements = queryResultBuffer.getMemoryRequirements();
-    uint32_t               memoryTypeIndex    = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
+    std::uint32_t          memoryTypeIndex    = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
                                                        memoryRequirements.memoryTypeBits,
                                                        vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
     vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
@@ -156,7 +165,7 @@ int main()
     commandBuffer.endQuery( queryPool, 1 );
 
     commandBuffer.copyQueryPoolResults(
-      queryPool, 0, 2, queryResultBuffer, 0, sizeof( uint64_t ), vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait );
+      queryPool, 0, 2, queryResultBuffer, 0, sizeof( std::uint64_t ), vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait );
     commandBuffer.end();
 
     vk::raii::Fence drawFence( device, vk::FenceCreateInfo() );
@@ -167,9 +176,9 @@ int main()
 
     graphicsQueue.waitIdle();
 
-    std::vector<uint64_t> poolResults;
+    std::vector<std::uint64_t> poolResults;
     std::tie( result, poolResults ) =
-      queryPool.getResults<uint64_t>( 0, 2, 2 * sizeof( uint64_t ), sizeof( uint64_t ), vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait );
+      queryPool.getResults<std::uint64_t>( 0, 2, 2 * sizeof( std::uint64_t ), sizeof( std::uint64_t ), vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait );
     switch ( result )
     {
       case vk::Result::eSuccess: break;
@@ -182,7 +191,7 @@ int main()
     std::cout << "samples_passed[1] = " << poolResults[1] << "\n";
 
     /* Read back query result from buffer */
-    uint64_t * samplesPassedPtr = static_cast<uint64_t *>( queryResultMemory.mapMemory( 0, memoryRequirements.size, vk::MemoryMapFlags() ) );
+    std::uint64_t * samplesPassedPtr = static_cast<std::uint64_t *>( queryResultMemory.mapMemory( 0, memoryRequirements.size, vk::MemoryMapFlags() ) );
 
     std::cout << "vkCmdCopyQueryPoolResults data\n";
     std::cout << "samples_passed[0] = " << samplesPassedPtr[0] << "\n";
@@ -190,7 +199,7 @@ int main()
 
     queryResultMemory.unmapMemory();
 
-    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, vk::True, vk::su::FenceTimeout ) )
       ;
 
     vk::PresentInfoKHR presentInfoKHR( nullptr, *swapChainData.swapChain, imageIndex );
@@ -208,17 +217,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

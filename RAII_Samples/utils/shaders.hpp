@@ -3,14 +3,16 @@
 
 #pragma once
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include "../../samples/utils/shaders.hpp"
 #include "utils.hpp"
+#endif
 
 namespace vk
 {
   namespace raii
   {
-    namespace su
+    VULKAN_HPP_EXPORT namespace su
     {
       template <typename Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
       vk::raii::ShaderModule makeShaderModule( vk::raii::Device const & device, vk::ShaderStageFlagBits shaderStage, std::string const & shaderText )

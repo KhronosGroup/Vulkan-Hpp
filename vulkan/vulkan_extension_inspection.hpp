@@ -547,6 +547,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                             "VK_EXT_cooperative_matrix_maintenance1",
                                                             "VK_EXT_shader_subgroup_partitioned",
                                                             "VK_KHR_extended_flags",
+                                                            "VK_ARM_cooperative_matrix_layouts",
                                                             "VK_EXT_shader_ocp_microscaling_types",
                                                             "VK_VALVE_shader_mixed_float_dot_product",
                                                             "VK_SEC_throttle_hint",
@@ -4335,12 +4336,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_shader_uniform_buffer_unsized_array" ) || ( extension == "VK_NV_compute_occupancy_priority" ) ||
            ( extension == "VK_KHR_pipeline_library_group_handles" ) || ( extension == "VK_KHR_maintenance11" ) ||
            ( extension == "VK_EXT_cooperative_matrix_maintenance1" ) || ( extension == "VK_EXT_shader_subgroup_partitioned" ) ||
-           ( extension == "VK_KHR_extended_flags" ) || ( extension == "VK_EXT_shader_ocp_microscaling_types" ) ||
-           ( extension == "VK_VALVE_shader_mixed_float_dot_product" ) || ( extension == "VK_SEC_throttle_hint" ) ||
-           ( extension == "VK_ARM_data_graph_neural_accelerator_statistics" ) || ( extension == "VK_EXT_primitive_restart_index" ) ||
-           ( extension == "VK_EXT_image_tiling_control" ) || ( extension == "VK_NV_cooperative_matrix_decode_vector" ) ||
-           ( extension == "VK_NV_private_data_base_handle" ) || ( extension == "VK_INTEL_device_info" ) ||
-           ( extension == "VK_VALVE_buffer_device_address_allocation_alignment" );
+           ( extension == "VK_KHR_extended_flags" ) || ( extension == "VK_ARM_cooperative_matrix_layouts" ) ||
+           ( extension == "VK_EXT_shader_ocp_microscaling_types" ) || ( extension == "VK_VALVE_shader_mixed_float_dot_product" ) ||
+           ( extension == "VK_SEC_throttle_hint" ) || ( extension == "VK_ARM_data_graph_neural_accelerator_statistics" ) ||
+           ( extension == "VK_EXT_primitive_restart_index" ) || ( extension == "VK_EXT_image_tiling_control" ) ||
+           ( extension == "VK_NV_cooperative_matrix_decode_vector" ) || ( extension == "VK_NV_private_data_base_handle" ) ||
+           ( extension == "VK_INTEL_device_info" ) || ( extension == "VK_VALVE_buffer_device_address_allocation_alignment" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

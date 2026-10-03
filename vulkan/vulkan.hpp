@@ -39,7 +39,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 364, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 365, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -11528,6 +11528,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRExtendedFlagsSpecVersion   = VK_KHR_EXTENDED_FLAGS_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRExtendedFlagsExtensionName = VK_KHR_EXTENDED_FLAGS_EXTENSION_NAME;
 
+  //=== VK_ARM_cooperative_matrix_layouts ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto ARMCooperativeMatrixLayoutsSpecVersion   = VK_ARM_COOPERATIVE_MATRIX_LAYOUTS_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto ARMCooperativeMatrixLayoutsExtensionName = VK_ARM_COOPERATIVE_MATRIX_LAYOUTS_EXTENSION_NAME;
+
   //=== VK_EXT_shader_ocp_microscaling_types ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderOcpMicroscalingTypesSpecVersion   = VK_EXT_SHADER_OCP_MICROSCALING_TYPES_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderOcpMicroscalingTypesExtensionName = VK_EXT_SHADER_OCP_MICROSCALING_TYPES_EXTENSION_NAME;
@@ -14022,6 +14026,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceExtendedFlagsFeaturesKHR;
   struct ImageStencilUsage2CreateInfoKHR;
   struct SharedPresentSurfaceCapabilities2KHR;
+
+  //=== VK_ARM_cooperative_matrix_layouts ===
+  struct PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM;
 
   //=== VK_EXT_shader_ocp_microscaling_types ===
   struct PhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT;
@@ -25745,6 +25752,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<SharedPresentSurfaceCapabilities2KHR, SurfaceCapabilities2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_ARM_cooperative_matrix_layouts ===
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM, DeviceCreateInfo>
   {
     enum
     {

@@ -196025,23 +196025,35 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PhysicalDeviceLayeredApiPropertiesKHR const & ) const = default;
-#else
+    std::strong_ordering operator<=>( PhysicalDeviceLayeredApiPropertiesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( auto cmp = sType <=> rhs.sType; cmp != 0 )
+        return cmp;
+      if ( auto cmp = pNext <=> rhs.pNext; cmp != 0 )
+        return cmp;
+      if ( auto cmp = vendorID <=> rhs.vendorID; cmp != 0 )
+        return cmp;
+      if ( auto cmp = deviceID <=> rhs.deviceID; cmp != 0 )
+        return cmp;
+      if ( auto cmp = layeredAPI <=> rhs.layeredAPI; cmp != 0 )
+        return cmp;
+      if ( auto cmp = strcmp( deviceName, rhs.deviceName ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
     bool operator==( PhysicalDeviceLayeredApiPropertiesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
       return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( vendorID == rhs.vendorID ) && ( deviceID == rhs.deviceID ) &&
-             ( layeredAPI == rhs.layeredAPI ) && ( deviceName == rhs.deviceName );
-#  endif
+             ( layeredAPI == rhs.layeredAPI ) && ( strcmp( deviceName, rhs.deviceName ) == 0 );
     }
 
     bool operator!=( PhysicalDeviceLayeredApiPropertiesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
 
   public:
     StructureType                                          sType      = StructureType::ePhysicalDeviceLayeredApiPropertiesKHR;
@@ -219037,6 +219049,136 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::eSharedPresentSurfaceCapabilities2KHR>
   {
     using Type = SharedPresentSurfaceCapabilities2KHR;
+  };
+
+  //=== VK_ARM_cooperative_matrix_layouts ===
+
+  // wrapper struct for struct VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM.html
+  struct PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM
+  {
+    using NativeType = VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePhysicalDeviceCooperativeMatrixLayoutsFeaturesARM;
+
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM( Bool32 cooperativeMatrixArmLayouts_ = {},
+                                                                            void * pNext_                       = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , cooperativeMatrixArmLayouts{ cooperativeMatrixArmLayouts_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR
+      PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM( PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM( VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM( *reinterpret_cast<PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const *>( &rhs ) )
+    {
+    }
+
+    PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM &
+      operator=( PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM & operator=( VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM & setPNext( void * pNext_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM && setPNext( void * pNext_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM & setCooperativeMatrixArmLayouts( Bool32 cooperativeMatrixArmLayouts_ ) &
+      VULKAN_HPP_NOEXCEPT
+    {
+      cooperativeMatrixArmLayouts = cooperativeMatrixArmLayouts_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM && setCooperativeMatrixArmLayouts( Bool32 cooperativeMatrixArmLayouts_ ) &&
+      VULKAN_HPP_NOEXCEPT
+    {
+      cooperativeMatrixArmLayouts = cooperativeMatrixArmLayouts_;
+      return std::move( *this );
+    }
+#endif /*VULKAN_HPP_NO_SETTERS*/
+
+    operator VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const *>( this );
+    }
+
+    operator VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM *>( this );
+    }
+
+    operator VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const *>( this );
+    }
+
+    operator VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &, void * const &, Bool32 const &> reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, cooperativeMatrixArmLayouts );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( cooperativeMatrixArmLayouts == rhs.cooperativeMatrixArmLayouts );
+#  endif
+    }
+
+    bool operator!=( PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    StructureType sType                       = StructureType::ePhysicalDeviceCooperativeMatrixLayoutsFeaturesARM;
+    void *        pNext                       = {};
+    Bool32        cooperativeMatrixArmLayouts = {};
+  };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkPhysicalDeviceCooperativeMatrixLayoutsFeaturesARM>
+  {
+    using Type = PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM;
+  };
+#endif
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceCooperativeMatrixLayoutsFeaturesARM>
+  {
+    using Type = PhysicalDeviceCooperativeMatrixLayoutsFeaturesARM;
   };
 
   //=== VK_EXT_shader_ocp_microscaling_types ===

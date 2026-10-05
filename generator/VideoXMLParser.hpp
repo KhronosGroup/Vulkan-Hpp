@@ -49,7 +49,7 @@ struct StructMember
   Type                     type       = {};
   std::string              name       = {};
   std::vector<std::string> arraySizes = {};
-  std::string              bitCount   = {};
+  int                      bitCount   = {};
   std::string              len        = {};
   std::string              optional   = {};
   int                      xmlLine    = {};

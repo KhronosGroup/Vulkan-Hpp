@@ -144,10 +144,11 @@ struct TypeFuncPointer
 struct StructMember
 {
   std::string              name              = {};
+  std::string              alias             = {};
   std::string              altLen            = {};
   std::vector<std::string> api               = {};
   std::vector<std::string> arraySizes        = {};
-  std::string              bitCount          = {};
+  int                      bitCount          = {};
   std::string              comment           = {};
   std::string              deprecated        = {};
   std::string              externSync        = {};
@@ -156,10 +157,9 @@ struct StructMember
   std::string              flagsExtendMember = {};
   std::vector<std::string> len               = {};
   std::vector<std::string> limitType         = {};
-  std::string              alias             = {};
-  std::string              noAutoValidity    = {};
-  std::string              objectType        = {};
-  std::vector<std::string> optional          = {};
+  bool                     noAutoValidity    = {};
+  bool                     objectType        = {};
+  std::vector<bool>        optional          = {};
   std::string              selector          = {};
   Type                     type              = {};
   std::string              values            = {};

@@ -443,7 +443,7 @@ std::string VideoHppGenerator::generateStructMembers( CategoryStruct const & cat
   {
     members += "    ";
     std::string type;
-    if ( !member.bitCount.empty() && member.type.name.starts_with( "StdVideo" ) )
+    if ( member.bitCount && member.type.name.starts_with( "StdVideo" ) )
     {
       assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encounterd a different case
       type = member.type.name;
@@ -460,11 +460,11 @@ std::string VideoHppGenerator::generateStructMembers( CategoryStruct const & cat
     members += type + " " + member.name;
 
     // as we don't have any meaningful default initialization values, everything can be initialized by just '{}' !
-    assert( member.arraySizes.empty() || member.bitCount.empty() );
-    if ( !member.bitCount.empty() )
+    assert( member.arraySizes.empty() || !member.bitCount );
+    if ( member.bitCount )
     {
-      members += " : " + member.bitCount;  // except for bitfield members, where no default member initialization
-                                           // is supported (up to C++20)
+      members += " : " + std::to_string( member.bitCount );  // except for bitfield members, where no default member initialization
+                                                             // is supported (up to C++20)
     }
     else
     {

@@ -355,38 +355,20 @@ private:
     std::vector<std::map<std::string, CommandData>::const_iterator> constructorIts = {};
   };
 
-  struct MemberData
-  {
-    std::string                                 defaultValue   = {};
-    std::vector<std::string>                    arraySizes     = {};
-    std::string                                 bitCount       = {};
-    std::string                                 deprecated     = {};
-    std::vector<std::string>                    lenExpressions = {};
-    std::vector<std::string>                    limitType      = {};
-    std::vector<std::pair<std::string, size_t>> lenMembers     = {};
-    std::string                                 name           = {};
-    bool                                        noAutoValidity = {};
-    std::vector<bool>                           optional       = {};
-    std::vector<std::string>                    selection      = {};
-    std::string                                 selector       = {};
-    Type                                        type           = {};
-    std::string                                 value          = {};
-    int                                         xmlLine        = {};
-  };
-
   struct StructData
   {
-    std::map<std::string, int> aliases             = {};
-    bool                       allowDuplicate      = {};
-    std::set<std::string>      extendedBy          = {};
-    bool                       isUnion             = {};
-    bool                       requiredLimitType   = {};
-    bool                       returnedOnly        = {};
-    bool                       mutualExclusiveLens = {};
-    std::vector<MemberData>    members             = {};
-    std::vector<std::string>   structExtends       = {};
-    std::string                subStruct           = {};
-    int                        xmlLine             = {};
+    std::map<std::string, int>                      aliases             = {};
+    bool                                            allowDuplicate      = {};
+    std::set<std::string>                           extendedBy          = {};
+    bool                                            isUnion             = {};
+    bool                                            requiredLimitType   = {};
+    bool                                            returnedOnly        = {};
+    bool                                            mutualExclusiveLens = {};
+    std::vector<StructMember>                       members             = {};
+    std::map<std::string, std::vector<std::string>> selections          = {};
+    std::vector<std::string>                        structExtends       = {};
+    std::string                                     subStruct           = {};
+    int                                             xmlLine             = {};
   };
 
   struct VectorParamData
@@ -421,8 +403,8 @@ private:
   void        checkRequireTypesCorrectness( RequireData const & require ) const;
   void        checkStructCorrectness() const;
   void        checkStructMemberArraySizesAreValid( std::vector<std::string> const & arraySizes, int line ) const;
-  void checkStructMemberCorrectness( std::string const & structureName, std::vector<MemberData> const & members, std::set<std::string> & sTypeValues ) const;
-  void checkStructMemberSelectorConnection( std::string const & selector, std::vector<MemberData> const & members, std::string const & memberType ) const;
+  void checkStructMemberCorrectness( std::string const & structureName, std::vector<StructMember> const & members, std::set<std::string> & sTypeValues ) const;
+  void checkStructMemberSelectorConnection( std::string const & selector, std::vector<StructMember> const & members, std::string const & memberType ) const;
   void checkStructMemberTypeIsKnown( std::string const & memberType, int line ) const;
   void checkStructMemberTypeIsRequired( std::string const & memberType, int line, std::string const & structureName ) const;
   void checkStructMemberValueIsValid( std::string const &     memberValue,
@@ -433,9 +415,9 @@ private:
                                       std::string const &     structureName,
                                       std::set<std::string> & sTypeValues ) const;
   bool containsArray( std::string const & type ) const;
-  bool containsDeprecated( std::vector<MemberData> const & members ) const;
+  bool containsDeprecated( std::vector<StructMember> const & members ) const;
   bool containsFuncPointer( std::string const & type ) const;
-  bool containsFloatingPoints( std::vector<MemberData> const & members ) const;
+  bool containsFloatingPoints( std::vector<StructMember> const & members ) const;
   bool containsUnion( std::string const & type ) const;
   bool describesVector( StructData const & structure, std::string const & type = "" ) const;
   std::vector<size_t>      determineChainedReturnParams( std::vector<ParamData> const & params, std::vector<size_t> const & returnParams ) const;
@@ -451,30 +433,29 @@ private:
   std::vector<std::map<std::string, CommandData>::const_iterator>
     determineRAIIHandleConstructors( std::string const & handleType, std::map<std::string, CommandData>::const_iterator destructorIt ) const;
   std::map<std::string, CommandData>::const_iterator determineRAIIHandleDestructor( std::string const & handleType ) const;
-  std::set<size_t>                        determineSingularParams( size_t returnParam, std::map<size_t, VectorParamData> const & vectorParams ) const;
-  std::set<size_t>                        determineSkippedParams( std::vector<ParamData> const &            params,
-                                                                  size_t                                    initialSkipCount,
-                                                                  std::map<size_t, VectorParamData> const & vectorParams,
-                                                                  std::vector<size_t> const &               returnParam,
-                                                                  bool                                      singular ) const;
-  std::string                             determineSubStruct( std::pair<std::string, StructData> const & structure ) const;
-  std::map<size_t, VectorParamData>       determineVectorParams( std::vector<ParamData> const & params ) const;
-  std::set<size_t>                        determineVoidPointerParams( std::vector<ParamData> const & params ) const;
-  void                                    distributeEnumValueAliases();
-  void                                    distributeRequirements();
-  void                                    distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy );
-  bool                                    encodesEnumeration( std::vector<ParamData> const &            params,
-                                                              std::map<size_t, VectorParamData> const & vectorParams,
-                                                              size_t                                    returnParam0,
-                                                              size_t                                    returnParam1 ) const;
-  void                                    extendSpecialCommands( std::string const & name, bool definition, bool raii, std::string & cmd ) const;
-  FeatureData                             featureToFeatureData( Feature const & feature, bool supported );
-  void                                    filterLenMembers();
-  std::vector<MemberData>::const_iterator findHandleMember( std::vector<MemberData> const & memberData ) const;
-  std::vector<MemberData>::const_iterator findVectorMember( std::vector<MemberData> const & memberData ) const;
-  void                                    forEachRequiredBitmask( std::vector<RequireData> const &                   requireData,
-                                                                  std::set<std::string> &                            encounteredBitmasks,
-                                                                  std::function<void( TypeBitmask const & )> const & bitmaskAction ) const;
+  std::set<size_t>                          determineSingularParams( size_t returnParam, std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::set<size_t>                          determineSkippedParams( std::vector<ParamData> const &            params,
+                                                                    size_t                                    initialSkipCount,
+                                                                    std::map<size_t, VectorParamData> const & vectorParams,
+                                                                    std::vector<size_t> const &               returnParam,
+                                                                    bool                                      singular ) const;
+  std::string                               determineSubStruct( std::pair<std::string, StructData> const & structure ) const;
+  std::map<size_t, VectorParamData>         determineVectorParams( std::vector<ParamData> const & params ) const;
+  std::set<size_t>                          determineVoidPointerParams( std::vector<ParamData> const & params ) const;
+  void                                      distributeEnumValueAliases();
+  void                                      distributeRequirements();
+  void                                      distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy );
+  bool                                      encodesEnumeration( std::vector<ParamData> const &            params,
+                                                                std::map<size_t, VectorParamData> const & vectorParams,
+                                                                size_t                                    returnParam0,
+                                                                size_t                                    returnParam1 ) const;
+  void                                      extendSpecialCommands( std::string const & name, bool definition, bool raii, std::string & cmd ) const;
+  FeatureData                               featureToFeatureData( Feature const & feature, bool supported );
+  std::vector<StructMember>::const_iterator findHandleMember( std::vector<StructMember> const & members ) const;
+  std::vector<StructMember>::const_iterator findVectorMember( std::vector<StructMember> const & members ) const;
+  void                                      forEachRequiredBitmask( std::vector<RequireData> const &                   requireData,
+                                                                    std::set<std::string> &                            encounteredBitmasks,
+                                                                    std::function<void( TypeBitmask const & )> const & bitmaskAction ) const;
   void forEachRequiredCommand( std::vector<RequireData> const &                                                             requireData,
                                std::function<void( NameLine const &, std::pair<std::string, CommandData> const & )> const & commandAction ) const;
   void forEachRequiredConstant( std::vector<RequireData> const &                     requireData,
@@ -816,8 +797,8 @@ private:
   std::string generateIsDispatchedList() const;
   std::string generateLayerSettingTypeTraits() const;
   std::string
-    generateLenInitializer( std::vector<MemberData>::const_iterator                                                                                 mit,
-                            std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
+    generateLenInitializer( std::vector<StructMember>::const_iterator                                                                                   mit,
+                            std::map<std::vector<StructMember>::const_iterator, std::vector<std::vector<StructMember>::const_iterator>>::const_iterator litit,
                             bool mutualExclusiveLens ) const;
   std::string generateName( Type const & type ) const;
   std::string generateNoExcept( std::vector<std::string> const &          errorCodes,
@@ -967,8 +948,9 @@ private:
                                       std::vector<size_t> const &               returnParams,
                                       std::map<size_t, VectorParamData> const & vectorParams,
                                       CommandFlavourFlags                       flavourFlags ) const;
-  std::string
-    generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts, std::string const & structName, bool mutualExclusiveLens ) const;
+  std::string generateSizeCheck( std::vector<std::vector<StructMember>::const_iterator> const & arrayIts,
+                                 std::string const &                                            structName,
+                                 bool                                                           mutualExclusiveLens ) const;
   std::string generateStaticAssertions() const;
   std::string generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedStructs ) const;
   std::string generateStruct( std::pair<std::string, StructData> const & structure, std::set<std::string> & listedStructs ) const;
@@ -976,10 +958,10 @@ private:
   std::string generateStructCompareOperators( std::pair<std::string, StructData> const & structure ) const;
   std::string generateStructConstructors( std::pair<std::string, StructData> const & structData ) const;
   std::string generateStructConstructorsEnhanced( std::pair<std::string, StructData> const & structData ) const;
-  std::string generateStructConstructorArgument( MemberData const & memberData, bool withDefault ) const;
+  std::string generateStructConstructorArgument( std::string const & structName, StructMember const & member, bool withDefault ) const;
   std::string generateStructHashStructure( std::pair<std::string, StructData> const & structure, std::set<std::string> & listedStructs ) const;
   std::string generateStructHashStructures() const;
-  std::string generateStructHashSum( std::string const & structName, std::vector<MemberData> const & members ) const;
+  std::string generateStructHashSum( std::pair<std::string, StructData> const & structure ) const;
   std::string generateStructs() const;
   std::string generateStructure( std::pair<std::string, StructData> const & structure ) const;
   std::string generateStructExtendsStructs() const;
@@ -989,7 +971,7 @@ private:
   std::string
     generateStructForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedStructs ) const;
   std::tuple<std::string, std::string, std::string, std::string> generateStructMembers( std::pair<std::string, StructData> const & structData ) const;
-  std::string generateStructSetter( std::string const & structureName, std::vector<MemberData> const & memberData, size_t index ) const;
+  std::string generateStructSetter( std::pair<std::string, StructData> const & structure, size_t index ) const;
   std::string generateStructSubConstructor( std::pair<std::string, StructData> const & structData ) const;
   std::string generateSuccessCode( std::string const & code ) const;
   std::string generateSuccessCodeList( std::vector<std::string> const & successCodes, bool enumerating ) const;
@@ -1033,7 +1015,7 @@ private:
   void                                handleRemovals();
   bool                                handleRemovalType( std::string const & type, std::vector<RequireData> & requireData );
   bool                                hasArrayConstructor( HandleData const & handleData ) const;
-  bool                                hasLen( MemberData const & md, std::vector<MemberData> const & members ) const;
+  bool                                hasLen( StructMember const & member, std::vector<StructMember> const & members ) const;
   bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
   bool                                hasPointerParams( std::vector<ParamData> const & params ) const;
   bool isConstructorCandidate( std::pair<std::string, VulkanHppGenerator::CommandData> const & command, std::string const & handleType ) const;
@@ -1049,7 +1031,7 @@ private:
   bool isMultiSuccessCodeConstructor( std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts ) const;
   bool isParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isSimpleStructure( std::string const & name ) const;
-  bool isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const;
+  bool isStructMember( std::string const & name, std::vector<StructMember> const & members ) const;
   bool isStructureChainAnchor( std::string const & type ) const;
   bool isStructureType( std::string const & type ) const;
   bool isSupported( std::set<std::string> const & requiredBy ) const;
@@ -1081,7 +1063,7 @@ private:
   bool                                                   structureHoldsHandle( StructData const & structData ) const;
   bool                                                   structureHoldsVector( StructData const & structData ) const;
   std::string                                            toString( TypeCategory category ) const;
-  MemberData const &                                     vectorMemberByStructure( std::string const & structureType ) const;
+  StructMember const &                                   vectorMemberByStructure( std::string const & structureType ) const;
 
 private:
   std::string                        m_api;

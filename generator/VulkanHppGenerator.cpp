@@ -224,56 +224,9 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     structIt->second.requiredLimitType = ( structure.requiredLimitType == "true" );
     structIt->second.returnedOnly      = ( structure.returnedOnly == "true" );
     structIt->second.structExtends     = structure.structExtends;
-    for ( auto const & member : structure.members )
-    {
-      MemberData memberData;
-      memberData.type           = member.type;
-      memberData.xmlLine        = member.xmlLine;
-      memberData.name           = member.name;
-      memberData.arraySizes     = member.arraySizes;
-      memberData.bitCount       = member.bitCount;
-      memberData.deprecated     = member.deprecated;
-      memberData.lenExpressions = member.len;
-      memberData.limitType      = member.limitType;
-      memberData.noAutoValidity = ( member.noAutoValidity == "true" );
-      for ( auto const & optional : member.optional )
-      {
-        memberData.optional.push_back( optional == "true" );
-      }
-      memberData.selector = member.selector;
-      memberData.value    = member.values;
-      memberData.xmlLine  = member.xmlLine;
-
-      if ( !member.altLen.empty() )
-      {
-        memberData.lenMembers     = filterNumbers( tokenizeAny( member.altLen, " /()+*" ) );
-        memberData.lenExpressions = { member.altLen };
-      }
-      else if ( !member.len.empty() && ( member.len[0] != "null-terminated" ) )
-      {
-        auto lenMemberIt = findByName( structure.members, member.len[0] );
-        checkForError( lenMemberIt != structure.members.end(), member.xmlLine, "member attribute <len> holds unknown value <" + member.len[0] + ">" );
-        memberData.lenMembers.push_back( { member.len[0], std::distance( structure.members.begin(), lenMemberIt ) } );
-      }
-
-      structIt->second.members.push_back( std::move( memberData ) );
-    }
-    structIt->second.xmlLine   = structure.xmlLine;
-    structIt->second.subStruct = determineSubStruct( *structIt );
-
-    // add some default values for some structures here!
-    if ( ( structIt->first == "VkRayTracingShaderGroupCreateInfoNV" ) || ( structIt->first == "VkRayTracingShaderGroupCreateInfoKHR" ) )
-    {
-      assert( ( ( structIt->first != "VkRayTracingShaderGroupCreateInfoNV" ) || ( structIt->second.members.size() == 7 ) ) &&
-              ( ( structIt->first != "VkRayTracingShaderGroupCreateInfoKHR" ) || ( structIt->second.members.size() == 8 ) ) );
-      assert( ( structIt->second.members[3].name == "generalShader" ) && ( structIt->second.members[4].name == "closestHitShader" ) &&
-              ( structIt->second.members[5].name == "anyHitShader" ) && ( structIt->second.members[6].name == "intersectionShader" ) );
-      bool const isKHR = ( structIt->first == "VkRayTracingShaderGroupCreateInfoKHR" );
-      for ( size_t const i : { 3, 4, 5, 6 } )
-      {
-        structIt->second.members[i].defaultValue = isKHR ? "VK_SHADER_UNUSED_KHR" : "VK_SHADER_UNUSED_NV";
-      }
-    }
+    structIt->second.members           = structure.members;
+    structIt->second.xmlLine           = structure.xmlLine;
+    structIt->second.subStruct         = determineSubStruct( *structIt );
 
     // check if multiple structure members use the very same (not empty) len attribute
     // Note: even though the arrays are not marked as optional, they still might be mutually exclusive (like in
@@ -304,11 +257,11 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     bool                         warned                 = false;
     for ( auto m0It = structIt->second.members.begin(); !warned && ( m0It != structIt->second.members.end() ); ++m0It )
     {
-      if ( !m0It->lenExpressions.empty() && ( m0It->lenExpressions.front() != "null-terminated" ) )
+      if ( !m0It->len.empty() && ( m0It->len.front() != "null-terminated" ) )
       {
         for ( auto m1It = std::next( m0It ); !warned && ( m1It != structIt->second.members.end() ); ++m1It )
         {
-          if ( !m1It->lenExpressions.empty() && ( m0It->lenExpressions.front() == m1It->lenExpressions.front() ) )
+          if ( !m1It->len.empty() && ( m0It->len.front() == m1It->len.front() ) )
           {
             if ( mutualExclusiveStructs.contains( structIt->first ) )
             {
@@ -347,18 +300,15 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     structIt->second.returnedOnly = ( u.returnedOnly == "true" );
     for ( auto const & member : u.members )
     {
-      MemberData memberData;
-      memberData.type           = member.type;
-      memberData.xmlLine        = member.xmlLine;
-      memberData.name           = member.name;
-      memberData.arraySizes     = member.arraySizes;
-      memberData.lenExpressions = { member.len };
-      memberData.noAutoValidity = ( member.noAutoValidity == "true" );
-      memberData.optional       = { member.optional == "true" };
-      memberData.selection      = member.selection;
-      memberData.xmlLine        = member.xmlLine;
-
-      structIt->second.members.push_back( std::move( memberData ) );
+      StructMember structMember{ .name           = member.name,
+                                 .arraySizes     = member.arraySizes,
+                                 .len            = { member.len },
+                                 .noAutoValidity = member.noAutoValidity == "true",
+                                 .optional       = { member.optional == "true" },
+                                 .type           = member.type,
+                                 .xmlLine        = member.xmlLine };
+      structIt->second.members.push_back( std::move( structMember ) );
+      structIt->second.selections[member.name] = { member.selection };
     }
     structIt->second.xmlLine = u.xmlLine;
   }
@@ -647,7 +597,6 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   distributeEnumValueAliases();
   distributeRequirements();
   markExtendedStructs();
-  filterLenMembers();
   checkCorrectness();
   handleRemovals();
 
@@ -1372,9 +1321,9 @@ void VulkanHppGenerator::checkStructMemberArraySizesAreValid( std::vector<std::s
   }
 }
 
-void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &             structureName,
-                                                       std::vector<MemberData> const & members,
-                                                       std::set<std::string> &         sTypeValues ) const
+void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &               structureName,
+                                                       std::vector<StructMember> const & members,
+                                                       std::set<std::string> &           sTypeValues ) const
 {
   // determine if this struct is requird/used
   bool const structUsed = isTypeUsed( structureName );
@@ -1385,13 +1334,13 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
     checkStructMemberSelectorConnection( member.selector, members, member.type.name );
     checkStructMemberTypeIsKnown( member.type.name, member.xmlLine );
     checkStructMemberTypeIsRequired( member.type.name, member.xmlLine, structureName );
-    checkStructMemberValueIsValid( member.value, member.type.name, member.name, member.xmlLine, structUsed, structureName, sTypeValues );
+    checkStructMemberValueIsValid( member.values, member.type.name, member.name, member.xmlLine, structUsed, structureName, sTypeValues );
   }
 }
 
-void VulkanHppGenerator::checkStructMemberSelectorConnection( std::string const &             selector,
-                                                              std::vector<MemberData> const & members,
-                                                              std::string const &             memberType ) const
+void VulkanHppGenerator::checkStructMemberSelectorConnection( std::string const &               selector,
+                                                              std::vector<StructMember> const & members,
+                                                              std::string const &               memberType ) const
 {
   // if a member specifies a selector, that member is a union and the selector is an enum
   // check that there's a 1-1 connection between the specified selections and the values of that enum
@@ -1406,8 +1355,8 @@ void VulkanHppGenerator::checkStructMemberSelectorConnection( std::string const 
     for ( auto const & unionMember : unionIt->second.members )
     {
       // check that each union member has a selection, that is a value of the seleting enum
-      assert( !unionMember.selection.empty() );
-      for ( auto const & selection : unionMember.selection )
+      assert( unionIt->second.selections.contains( unionMember.name ) && !unionIt->second.selections.find( unionMember.name )->second.empty() );
+      for ( auto const & selection : unionIt->second.selections.find( unionMember.name )->second )
       {
         checkForError( containsByNameOrAlias( selectorEnumIt->second.values, selection ),
                        unionMember.xmlLine,
@@ -1486,7 +1435,7 @@ bool VulkanHppGenerator::containsArray( std::string const & type ) const
                                 [this]( auto const & member ) { return !member.arraySizes.empty() || containsArray( member.type.name ); } ) );
 }
 
-bool VulkanHppGenerator::containsDeprecated( std::vector<MemberData> const & members ) const
+bool VulkanHppGenerator::containsDeprecated( std::vector<StructMember> const & members ) const
 {
   return std::ranges::any_of( members, []( auto const & member ) { return !member.deprecated.empty(); } );
 }
@@ -1503,7 +1452,7 @@ bool VulkanHppGenerator::containsFuncPointer( std::string const & type ) const
                                                                     } );
 }
 
-bool VulkanHppGenerator::containsFloatingPoints( std::vector<MemberData> const & members ) const
+bool VulkanHppGenerator::containsFloatingPoints( std::vector<StructMember> const & members ) const
 {
   return std::ranges::any_of( members,
                               [this]( auto const & member )
@@ -1530,11 +1479,11 @@ bool VulkanHppGenerator::describesVector( StructData const & structure, std::str
   return std::ranges::any_of( structure.members,
                               [&structure, &type]( auto const & member )
                               {
-                                if ( ( type.empty() || ( member.type.name == type ) ) && member.type.isNonConstPointer() && ( member.lenMembers.size() == 1 ) )
+                                if ( ( type.empty() || ( member.type.name == type ) ) && member.type.isNonConstPointer() && ( member.len.size() == 1 ) )
                                 {
-                                  assert( member.lenMembers[0].second < structure.members.size() );
-                                  auto const & lenMember = structure.members[member.lenMembers[0].second];
-                                  return lenMember.type.isValue() && ( ( lenMember.type.name == "size_t" ) || ( lenMember.type.name == "uint32_t" ) );
+                                  auto lenMemberIt = findByName( structure.members, member.len[0] );
+                                  assert( lenMemberIt != structure.members.end() );
+                                  return lenMemberIt->type.isValue() && ( ( lenMemberIt->type.name == "size_t" ) || ( lenMemberIt->type.name == "uint32_t" ) );
                                 }
                                 return false;
                               } );
@@ -1830,9 +1779,9 @@ std::string VulkanHppGenerator::determineSubStruct( std::pair<std::string, Struc
     {
       // member-by-member comparison of type and name
       auto memberIt = structure.second.members.begin();
-      auto isMember = [&memberIt]( MemberData const & md ) noexcept
+      auto isMember = [&memberIt]( StructMember const & member ) noexcept
       {
-        if ( ( md.type == memberIt->type ) && ( md.name == memberIt->name ) )
+        if ( ( member.type == memberIt->type ) && ( member.name == memberIt->name ) )
         {
           ++memberIt;
           return true;
@@ -2261,10 +2210,10 @@ VulkanHppGenerator::FeatureData VulkanHppGenerator::featureToFeatureData( Featur
       {
         auto structIt = findByNameOrAlias( m_structs, requireType.name );
         assert( structIt != m_structs.end() );
-        if ( !structIt->second.members.empty() && !structIt->second.members.front().value.empty() )
+        if ( !structIt->second.members.empty() && !structIt->second.members.front().values.empty() )
         {
           assert( structIt->second.members.front().name == "sType" );
-          auto valueIt = findByName( structureTypeIt->second.values, structIt->second.members.front().value );
+          auto valueIt = findByName( structureTypeIt->second.values, structIt->second.members.front().values );
           assert( valueIt != structureTypeIt->second.values.end() );
           valueIt->supported = supported;
         }
@@ -2276,39 +2225,15 @@ VulkanHppGenerator::FeatureData VulkanHppGenerator::featureToFeatureData( Featur
   return featureData;
 }
 
-void VulkanHppGenerator::filterLenMembers()
+std::vector<StructMember>::const_iterator VulkanHppGenerator::findHandleMember( std::vector<StructMember> const & members ) const
 {
-  for ( auto & sd : m_structs )
-  {
-    for ( auto & member : sd.second.members )
-    {
-      std::erase_if( member.lenMembers,
-                     [this]( std::pair<std::string, size_t> const & nameIndex ) { return containsByName( m_vkxml.constants.values, nameIndex.first ); } );
-
-      for ( auto & lenMember : member.lenMembers )
-      {
-        if ( lenMember.second == static_cast<size_t>( ~0 ) )
-        {
-          auto lenMemberIt = findByName( sd.second.members, lenMember.first );
-          checkForError( lenMemberIt != sd.second.members.end(),
-                         member.xmlLine,
-                         "struct member <" + member.name + "> uses unknown len member <" + lenMember.first + "> in its \"altlen\" attribute <" +
-                           member.lenExpressions[0] + ">" );
-          lenMember.second = std::distance( sd.second.members.begin(), lenMemberIt );
-        }
-      }
-    }
-  }
+  return std::ranges::find_if( members, [this]( auto const & member ) { return isHandleType( member.type.name ); } );
 }
 
-std::vector<VulkanHppGenerator::MemberData>::const_iterator VulkanHppGenerator::findHandleMember( std::vector<MemberData> const & memberData ) const
+std::vector<StructMember>::const_iterator VulkanHppGenerator::findVectorMember( std::vector<StructMember> const & members ) const
 {
-  return std::ranges::find_if( memberData, [this]( auto const & md ) { return isHandleType( md.type.name ); } );
-}
-
-std::vector<VulkanHppGenerator::MemberData>::const_iterator VulkanHppGenerator::findVectorMember( std::vector<MemberData> const & memberData ) const
-{
-  return std::ranges::find_if( memberData, []( auto const & md ) { return md.arraySizes.empty() && !md.lenMembers.empty(); } );
+  return std::ranges::find_if(
+    members, []( auto const & member ) { return member.arraySizes.empty() && !member.len.empty() && ( member.len[0] != "null-terminated" ); } );
 }
 
 void VulkanHppGenerator::forEachRequiredBitmask( std::vector<RequireData> const &                   requireData,
@@ -3295,17 +3220,18 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
     auto paramIt = std::ranges::find_if( commandData.params, []( ParamData const & pd ) { return pd.name == "pCreateInfo"; } );
     assert( paramIt != commandData.params.end() && ( paramIt->type.name == "VkPipelineBinaryCreateInfoKHR" ) );
     auto structIt = m_structs.find( "VkPipelineBinaryCreateInfoKHR" );
-    assert( ( structIt != m_structs.end() ) && std::ranges::any_of( structIt->second.members, []( MemberData const & md ) { return md.name == "pipeline"; } ) &&
-            std::ranges::any_of( structIt->second.members, []( MemberData const & md ) { return md.name == "pPipelineCreateInfo"; } ) );
-    auto memberIt = std::ranges::find_if( structIt->second.members, []( MemberData const & md ) { return md.name == "pKeysAndDataInfo"; } );
+    assert( ( structIt != m_structs.end() ) &&
+            std::ranges::any_of( structIt->second.members, []( StructMember const & member ) { return member.name == "pipeline"; } ) &&
+            std::ranges::any_of( structIt->second.members, []( StructMember const & member ) { return member.name == "pPipelineCreateInfo"; } ) );
+    auto memberIt = std::ranges::find_if( structIt->second.members, []( StructMember const & member ) { return member.name == "pKeysAndDataInfo"; } );
     assert( memberIt != structIt->second.members.end() && ( memberIt->type.name == "VkPipelineBinaryKeysAndDataKHR" ) );
     structIt = m_structs.find( "VkPipelineBinaryKeysAndDataKHR" );
     assert( ( structIt != m_structs.end() ) &&
-            std::ranges::any_of( structIt->second.members, []( MemberData const & md ) { return md.name == "binaryCount"; } ) );
+            std::ranges::any_of( structIt->second.members, []( StructMember const & member ) { return member.name == "binaryCount"; } ) );
     structIt = m_structs.find( "VkPipelineBinaryHandlesInfoKHR" );
     assert( ( structIt != m_structs.end() ) &&
-            std::ranges::any_of( structIt->second.members, []( MemberData const & md ) { return md.name == "pipelineBinaryCount"; } ) &&
-            std::ranges::any_of( structIt->second.members, []( MemberData const & md ) { return md.name == "pPipelineBinaries"; } ) );
+            std::ranges::any_of( structIt->second.members, []( StructMember const & member ) { return member.name == "pipelineBinaryCount"; } ) &&
+            std::ranges::any_of( structIt->second.members, []( StructMember const & member ) { return member.name == "pPipelineBinaries"; } ) );
 #endif
 
     std::string const callSequenceTemplate = R"(    Result result_;
@@ -3842,9 +3768,9 @@ std::string VulkanHppGenerator::generateCommand1ReturnsVectorOfStructs( std::str
           // the returnType is a vector of non-extendable structs with a vector of handles
           checkForError( std::find_if( std::next( vectorMemberIt ),
                                        structIt->second.members.end(),
-                                       []( auto const & md ) { return !md.lenExpressions.empty(); } ) == structIt->second.members.end(),
+                                       []( auto const & member ) { return !member.len.empty(); } ) == structIt->second.members.end(),
                          structIt->second.xmlLine,
-                         "Structure " + structIt->first + " used for vector of handles return has multiple members with lenExpressions!" );
+                         "Structure " + structIt->first + " used for vector of handles return has multiple members with len!" );
 
           return generateCommandSetInclusive( name,
                                               commandData,
@@ -7902,9 +7828,9 @@ std::string VulkanHppGenerator::generateLayerSettingTypeTraits() const
 }
 
 std::string VulkanHppGenerator::generateLenInitializer(
-  std::vector<MemberData>::const_iterator                                                                                 mit,
-  std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
-  bool                                                                                                                    mutualExclusiveLens ) const
+  std::vector<StructMember>::const_iterator                                                                                   mit,
+  std::map<std::vector<StructMember>::const_iterator, std::vector<std::vector<StructMember>::const_iterator>>::const_iterator litit,
+  bool                                                                                                                        mutualExclusiveLens ) const
 {
   std::string initializer;
   if ( mutualExclusiveLens )
@@ -7923,15 +7849,14 @@ std::string VulkanHppGenerator::generateLenInitializer(
   else
   {
     auto arrayIt = litit->second.front();
-    assert( ( arrayIt->lenExpressions.front() == litit->first->name ) ||
-            ( ( arrayIt->lenExpressions.front() == "codeSize / 4" ) && ( litit->first->name == "codeSize" ) ) );
+    assert( ( arrayIt->len.front() == litit->first->name ) || ( ( arrayIt->altLen == "codeSize / 4" ) && ( litit->first->name == "codeSize" ) ) );
 
     assert( arrayIt->type.isPointer() || !arrayIt->arraySizes.empty() );
     std::string argumentName = ( arrayIt->type.isPointer() ? startLowerCase( stripPrefix( arrayIt->name, "p" ) ) : arrayIt->name ) + "_";
 
     assert( mit->type.prefix.empty() && mit->type.postfix.empty() );
     initializer = argumentName + ".size()";
-    if ( arrayIt->lenExpressions.front() == "codeSize / 4" )
+    if ( arrayIt->altLen == "codeSize / 4" )
     {
       initializer += " * 4";
     }
@@ -10885,9 +10810,9 @@ std::string VulkanHppGenerator::generateReturnVariable( CommandData const &     
   return returnVariable;
 }
 
-std::string VulkanHppGenerator::generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts,
-                                                   std::string const &                                          structName,
-                                                   bool                                                         mutualExclusiveLens ) const
+std::string VulkanHppGenerator::generateSizeCheck( std::vector<std::vector<StructMember>::const_iterator> const & arrayIts,
+                                                   std::string const &                                            structName,
+                                                   bool                                                           mutualExclusiveLens ) const
 {
   std::string sizeCheck;
   if ( 1 < arrayIts.size() )
@@ -11070,7 +10995,7 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
   std::string spaceshipOrdering = containsFloatingPoints( structData.second.members ) ? "std::partial_ordering" : "std::strong_ordering";
   for ( size_t i = 0; i < structData.second.members.size(); i++ )
   {
-    MemberData const & member = structData.second.members[i];
+    StructMember const & member = structData.second.members[i];
     if ( member.deprecated.empty() )
     {
       auto typeIt = m_types.find( member.type.name );
@@ -11088,14 +11013,14 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
         spaceshipMembers +=
           replaceWithMap( spaceshipMemberTemplate, { { "name", member.name }, { "ordering", spaceshipOrdering }, { "type", member.type.name } } );
       }
-      else if ( member.type.name == "char" && !member.lenExpressions.empty() )
+      else if ( member.type.name == "char" && !member.len.empty() )
       {
         // compare null-terminated strings
         nonDefaultCompare = true;
-        assert( member.lenExpressions.size() < 3 );
-        if ( member.lenExpressions.size() == 1 )
+        assert( member.len.size() < 3 );
+        if ( member.len.size() == 1 )
         {
-          assert( member.lenExpressions[0] == "null-terminated" );
+          assert( member.len[0] == "null-terminated" );
           if ( member.arraySizes.empty() )
           {
             compareMembers +=
@@ -11122,11 +11047,11 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
         }
         else
         {
-          assert( member.lenExpressions[1] == "null-terminated" );
+          assert( member.len[1] == "null-terminated" );
           assert( member.type.prefix.empty() && ( member.type.postfix == "const * const *" ) );
           static std::string const compareMemberTemplate =
             R"(std::equal( ${name}, ${name} + ${count}, rhs.${name}, []( char const * left, char const * right ) { return ( left == right ) || ( strcmp( left, right ) == 0 ); } ))";
-          compareMembers += intro + replaceWithMap( compareMemberTemplate, { { "count", member.lenExpressions[0] }, { "name", member.name } } );
+          compareMembers += intro + replaceWithMap( compareMemberTemplate, { { "count", member.len[0] }, { "name", member.name } } );
 
           static std::string const spaceshipMemberTemplate = R"(      for ( size_t i = 0; i < ${count}; ++i )
       {
@@ -11136,27 +11061,27 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
       }
 )";
           spaceshipMembers +=
-            replaceWithMap( spaceshipMemberTemplate, { { "count", member.lenExpressions[0] }, { "name", member.name }, { "ordering", spaceshipOrdering } } );
+            replaceWithMap( spaceshipMemberTemplate, { { "count", member.len[0] }, { "name", member.name }, { "ordering", spaceshipOrdering } } );
         }
       }
-      else if ( !member.arraySizes.empty() && !member.lenExpressions.empty() )
+      else if ( !member.arraySizes.empty() && !member.len.empty() )
       {
         nonDefaultCompare = true;
 
-        assert( ( member.arraySizes.size() == 1 ) && ( member.lenExpressions.size() == 1 ) );
-        assert( std::ranges::any_of( structData.second.members, [&member]( MemberData const & m ) { return m.name == member.lenExpressions[0]; } ) );
+        assert( ( member.arraySizes.size() == 1 ) && ( member.len.size() == 1 ) );
+        assert( std::ranges::any_of( structData.second.members, [&member]( StructMember const & sm ) { return sm.name == member.len[0]; } ) );
 
         std::string type = member.type.compose( "Vk" );
 
         static std::string const compareMemberTemplate = R"(( memcmp( ${name}, rhs.${name}, ${count} * sizeof( ${type} ) ) == 0 ))";
-        compareMembers += intro + replaceWithMap( compareMemberTemplate, { { "count", member.lenExpressions[0] }, { "name", member.name }, { "type", type } } );
+        compareMembers += intro + replaceWithMap( compareMemberTemplate, { { "count", member.len[0] }, { "name", member.name }, { "type", type } } );
 
         static std::string const spaceshipMemberTemplate = R"(      for ( size_t i = 0; i < ${count}; ++i )
       {
         if ( auto cmp = ${name}[i] <=> rhs.${name}[i]; cmp != 0 ) return cmp;
       }
 )";
-        spaceshipMembers += replaceWithMap( spaceshipMemberTemplate, { { "count", member.lenExpressions[0] }, { "name", member.name } } );
+        spaceshipMembers += replaceWithMap( spaceshipMemberTemplate, { { "count", member.len[0] }, { "name", member.name } } );
       }
       else
       {
@@ -11255,20 +11180,20 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
   for ( auto const & member : structData.second.members )
   {
     // gather the arguments
-    std::string argument = generateStructConstructorArgument( member, true );
+    std::string argument = generateStructConstructorArgument( structData.first, member, true );
     if ( !argument.empty() )
     {
       arguments.push_back( argument );
     }
 
     // gather the initializers; skip members with exactly one legal value
-    if ( member.value.empty() )
+    if ( member.values.empty() )
     {
       initializers.push_back( member.name + "{ " + member.name + "_ }" );
     }
   }
 
-  auto pNextIt = std::ranges::find_if( structData.second.members, []( MemberData const & md ) { return md.name == "pNext"; } );
+  auto pNextIt = std::ranges::find_if( structData.second.members, []( StructMember const & member ) { return member.name == "pNext"; } );
   if ( pNextIt != structData.second.members.end() )
   {
     // add pNext as a last optional argument to the constructor
@@ -11331,17 +11256,16 @@ ${byString}
                            } );
   }
   else if ( std::ranges::any_of( structData.second.members,
-                                 [this, &members = structData.second.members]( MemberData const & md ) { return hasLen( md, members ); } ) )
+                                 [this, &members = structData.second.members]( auto const & md ) { return hasLen( md, members ); } ) )
   {
     // map from len-members to all the array members using that len
-    std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>> lenIts;
+    std::map<std::vector<StructMember>::const_iterator, std::vector<std::vector<StructMember>::const_iterator>> lenIts;
     for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
     {
       if ( hasLen( *mit, structData.second.members ) )
       {
-        std::string lenName = ( mit->lenExpressions.front() == "codeSize / 4" ) ? "codeSize" : mit->lenExpressions.front();
+        std::string lenName = ( mit->altLen == "codeSize / 4" ) ? "codeSize" : mit->len.front();
         auto        lenIt   = findByName( structData.second.members, lenName );
-        assert( lenIt != mit );
         lenIts[lenIt].push_back( mit );
       }
     }
@@ -11356,7 +11280,7 @@ ${byString}
       {
         initializers.push_back( "pNext( pNext_ )" );
       }
-      else if ( mit->value.empty() )  // skip constant members
+      else if ( mit->values.empty() )  // skip constant members
       {
         auto litit = lenIts.find( mit );
         if ( litit != lenIts.end() )
@@ -11386,7 +11310,7 @@ ${byString}
             argumentType.replace( pos, strlen( "void" ), "T" );
           }
 
-          if ( mit->lenExpressions[0] == "null-terminated" )
+          if ( mit->len[0] == "null-terminated" )
           {
             assert( ( mit->type.name == "char" ) && ( mit->arraySizes.size() == 1 ) );
             arguments.push_back( "std::string const & " + argumentName );
@@ -11413,7 +11337,7 @@ ${byString}
           else
           {
             assert( mit->deprecated.empty() && ( mit->arraySizes.size() == 1 ) );
-            if ( mit->lenExpressions[0] == "null-terminated" )
+            if ( mit->len[0] == "null-terminated" )
             {
               static std::string const strcpyTemplate = R"(
     VULKAN_HPP_ASSERT( ${memberName}_.size() < ${arraySize} );
@@ -11433,20 +11357,18 @@ ${byString}
     VULKAN_HPP_ASSERT( ${memberName}_.size() < ${arraySize} );
     memcpy( ${memberName}, ${memberName}_.data(), ${lenExpression} * sizeof( ${argumentType} ) );)";
 
-              std::string arraySizeExpression = ( mit->lenExpressions[0] == "null-terminated" )
+              std::string arraySizeExpression = ( mit->len[0] == "null-terminated" )
                                                 ? ( "std::min<size_t>( " + mit->name + "_.size(), " + mit->arraySizes[0] + " )" )
-                                                : ( mit->lenExpressions[0] + " * sizeof( " + argumentType + " )" );
-              copyOps += replaceWithMap( memcpyTemplate,
-                                         { { "arraySize", mit->arraySizes[0] },
-                                           { "argumentType", argumentType },
-                                           { "lenExpression", mit->lenExpressions[0] },
-                                           { "memberName", mit->name } } );
+                                                : ( mit->len[0] + " * sizeof( " + argumentType + " )" );
+              copyOps += replaceWithMap(
+                memcpyTemplate,
+                { { "arraySize", mit->arraySizes[0] }, { "argumentType", argumentType }, { "lenExpression", mit->len[0] }, { "memberName", mit->name } } );
             }
           }
         }
         else
         {
-          std::string argument = generateStructConstructorArgument( *mit, arrayListed );
+          std::string argument = generateStructConstructorArgument( structData.first, *mit, arrayListed );
           if ( !argument.empty() )
           {
             arguments.push_back( argument );
@@ -11456,7 +11378,7 @@ ${byString}
       }
     }
 
-    auto pNextIt = std::ranges::find_if( structData.second.members, []( MemberData const & md ) { return md.name == "pNext"; } );
+    auto pNextIt = std::ranges::find_if( structData.second.members, []( StructMember const & member ) { return member.name == "pNext"; } );
     if ( pNextIt != structData.second.members.end() )
     {
       // add pNext as a last optional argument to the constructor
@@ -11485,42 +11407,46 @@ ${templateHeader}    ${structName}( ${arguments} )
   return "";
 }
 
-std::string VulkanHppGenerator::generateStructConstructorArgument( MemberData const & memberData, bool withDefault ) const
+std::string VulkanHppGenerator::generateStructConstructorArgument( std::string const & structName, StructMember const & member, bool withDefault ) const
 {
   // skip members 'pNext' and members with a specified value, as they are never explicitly set
   std::string str;
-  if ( ( memberData.name != "pNext" ) && memberData.value.empty() )
+  if ( ( member.name != "pNext" ) && member.values.empty() )
   {
-    if ( memberData.type.name.starts_with( "PFN_vk" ) )
+    if ( member.type.name.starts_with( "PFN_vk" ) )
     {
-      str += "PFN_" + stripPrefix( memberData.type.name, "PFN_vk" ) + " ";
+      str += "PFN_" + stripPrefix( member.type.name, "PFN_vk" ) + " ";
     }
-    else if ( memberData.arraySizes.empty() )
+    else if ( member.arraySizes.empty() )
     {
-      str += memberData.type.compose( "Vk" ) + " ";
+      str += member.type.compose( "Vk" ) + " ";
     }
     else
     {
-      str += generateStandardArray( memberData.type.compose( "Vk" ), memberData.arraySizes ) + " const & ";
+      str += generateStandardArray( member.type.compose( "Vk" ), member.arraySizes ) + " const & ";
     }
-    str += memberData.name + "_";
+    str += member.name + "_";
 
     if ( withDefault )
     {
       str += " = ";
-      auto enumIt = m_enums.find( memberData.type.name );
-      if ( enumIt != m_enums.end() && memberData.type.postfix.empty() )
+      auto enumIt = m_enums.find( member.type.name );
+      if ( enumIt != m_enums.end() && member.type.postfix.empty() )
       {
-        str += generateEnumInitializer( memberData.type, memberData.arraySizes, enumIt->second.values, enumIt->second.isBitmask );
+        str += generateEnumInitializer( member.type, member.arraySizes, enumIt->second.values, enumIt->second.isBitmask );
       }
-      else if ( memberData.defaultValue.empty() )
+      else if ( structName.starts_with( "VkRayTracingShaderGroupCreateInfo" ) && member.name.ends_with( "Shader" ) )
       {
-        // if there's no default value, it can be initialized with just {}
-        str += "{}";
+        // the shader member of VkRayTracingShaderGroupCreateInfoNV and VkRayTracingShaderGroupCreateInfoKHR can be initialized with VK_SHADER_UNUSED_NV or
+        // VK_SHADER_UNUSD_KHR
+        assert( structName.ends_with( "KHR" ) || structName.ends_with( "NV" ) );
+        assert( member.type.name == "uint32_t" );
+        str += generateTaggedCamelCase( structName.ends_with( "KHR" ) ? "VK_SHADER_UNUSED_KHR" : "VK_SHADER_UNUSED_NV" );
       }
       else
       {
-        str += generateTaggedCamelCase( memberData.defaultValue );
+        // if there's no default value, it can be initialized with just {}
+        str += "{}";
       }
     }
   }
@@ -11561,7 +11487,7 @@ ${leave})";
     std::string structureName = startLowerCase( structureType );
     str += replaceWithMap( hashTemplate,
                            { { "enter", enter },
-                             { "hashSum", generateStructHashSum( structureName, structure.second.members ) },
+                             { "hashSum", generateStructHashSum( structure ) },
                              { "leave", leave },
                              { "structureName", structureName },
                              { "structureType", structureType } } );
@@ -11601,10 +11527,11 @@ ${hashes}
   return replaceWithMap( hashesTemplate, { { "hashes", hashes } } );
 }
 
-std::string VulkanHppGenerator::generateStructHashSum( std::string const & structName, std::vector<MemberData> const & members ) const
+std::string VulkanHppGenerator::generateStructHashSum( std::pair<std::string, StructData> const & structure ) const
 {
   std::string hashSum;
-  for ( auto const & member : members )
+  std::string structureName = startLowerCase( stripPrefix( structure.first, "Vk" ) );
+  for ( auto const & member : structure.second.members )
   {
     if ( member.deprecated.empty() )
     {
@@ -11615,34 +11542,34 @@ std::string VulkanHppGenerator::generateStructHashSum( std::string const & struc
         hashSum += "    {\n";
         if ( member.arraySizes.size() == 1 )
         {
-          hashSum += "      VULKAN_HPP_HASH_COMBINE( seed, " + structName + "." + member.name + "[i] );\n";
+          hashSum += "      VULKAN_HPP_HASH_COMBINE( seed, " + structureName + "." + member.name + "[i] );\n";
         }
         else
         {
           hashSum += "      for ( size_t j=0; j < " + member.arraySizes[1] + "; ++j )\n";
           hashSum += "      {\n";
-          hashSum += "        VULKAN_HPP_HASH_COMBINE( seed, " + structName + "." + member.name + "[i][j] );\n";
+          hashSum += "        VULKAN_HPP_HASH_COMBINE( seed, " + structureName + "." + member.name + "[i][j] );\n";
           hashSum += "      }\n";
         }
         hashSum += "    }\n";
       }
-      else if ( member.type.name == "char" && !member.lenExpressions.empty() )
+      else if ( member.type.name == "char" && !member.len.empty() )
       {
-        assert( member.lenExpressions.size() < 3 );
-        if ( member.lenExpressions.size() == 1 )
+        assert( member.len.size() < 3 );
+        if ( member.len.size() == 1 )
         {
-          assert( member.lenExpressions[0] == "null-terminated" );
-          hashSum += "    for ( char const * p = " + structName + "." + member.name + "; *p != '\\0'; ++p )\n";
+          assert( member.len[0] == "null-terminated" );
+          hashSum += "    for ( char const * p = " + structureName + "." + member.name + "; *p != '\\0'; ++p )\n";
           hashSum += "    {\n";
           hashSum += "      VULKAN_HPP_HASH_COMBINE( seed, *p );\n";
           hashSum += "    }\n";
         }
         else
         {
-          assert( member.lenExpressions[1] == "null-terminated" );
-          hashSum += "    for ( size_t i = 0; i < " + structName + "." + member.lenExpressions[0] + "; ++i )\n";
+          assert( member.len[1] == "null-terminated" );
+          hashSum += "    for ( size_t i = 0; i < " + structureName + "." + member.len[0] + "; ++i )\n";
           hashSum += "    {\n";
-          hashSum += "        for ( char const * p = " + structName + "." + member.name + "[i]; *p != '\\0'; ++p )\n";
+          hashSum += "        for ( char const * p = " + structureName + "." + member.name + "[i]; *p != '\\0'; ++p )\n";
           hashSum += "        {\n";
           hashSum += "          VULKAN_HPP_HASH_COMBINE( seed, *p );\n";
           hashSum += "        }\n";
@@ -11651,7 +11578,7 @@ std::string VulkanHppGenerator::generateStructHashSum( std::string const & struc
       }
       else
       {
-        hashSum += "    VULKAN_HPP_HASH_COMBINE( seed, " + structName + "." + member.name + " );\n";
+        hashSum += "    VULKAN_HPP_HASH_COMBINE( seed, " + structureName + "." + member.name + " );\n";
       }
     }
   }
@@ -11785,7 +11712,7 @@ ${deprecatedConstructors}
     constructorsAndSetters += "\n#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )";
     for ( size_t i = 0; i < structure.second.members.size(); i++ )
     {
-      constructorsAndSetters += generateStructSetter( stripPrefix( structure.first, "Vk" ), structure.second.members, i );
+      constructorsAndSetters += generateStructSetter( structure, i );
     }
     constructorsAndSetters += generateDeprecatedStructSetters( structure.first );
     constructorsAndSetters += "#endif /*VULKAN_HPP_NO_SETTERS*/\n";
@@ -11939,7 +11866,7 @@ std::string VulkanHppGenerator::generateStructExtendsStructs( std::vector<Requir
                              // append all allowed structure chains
                              for ( auto extendName : structData.second.structExtends )
                              {
-                               auto typeIt                     = m_types.find( extendName );
+                               auto typeIt = m_types.find( extendName );
                                assert( typeIt != m_types.end() );
                                if ( isSupported( typeIt->second.requiredBy ) )
                                {
@@ -12025,7 +11952,7 @@ std::tuple<std::string, std::string, std::string, std::string>
     }
 
     std::string type;
-    if ( !member.bitCount.empty() && member.type.name.starts_with( "Vk" ) )
+    if ( member.bitCount && member.type.name.starts_with( "Vk" ) )
     {
       assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encounterd a different case
       type = member.type.name;
@@ -12045,20 +11972,20 @@ std::tuple<std::string, std::string, std::string, std::string>
       type = generateStandardArrayWrapper( member.type.compose( "Vk" ), member.arraySizes );
     }
     members += type + " " + member.name;
-    if ( member.deprecated.empty() && !member.value.empty() )
+    if ( member.deprecated.empty() && !member.values.empty() )
     {
       // special handling for members with legal value: use it as the default
       members += " = ";
       if ( member.type.name == "uint32_t" )
       {
-        members += member.value;
+        members += member.values;
       }
       else
       {
         auto enumIt = m_enums.find( member.type.name );
         assert( enumIt != m_enums.end() );
-        assert( containsByNameOrAlias( enumIt->second.values, member.value ) );
-        std::string valueName = generateEnumValueName( enumIt->first, member.value, enumIt->second.isBitmask );
+        assert( containsByNameOrAlias( enumIt->second.values, member.values ) );
+        std::string valueName = generateEnumValueName( enumIt->first, member.values, enumIt->second.isBitmask );
         members += stripPrefix( member.type.name, "Vk" ) + "::" + valueName;
         if ( member.name == "sType" )
         {
@@ -12069,12 +11996,12 @@ std::tuple<std::string, std::string, std::string, std::string>
     else
     {
       // when we don't have any default initialization value, everything can be initialized by just '{}'
-      assert( member.arraySizes.empty() || member.bitCount.empty() );
-      if ( !member.bitCount.empty() )
+      assert( member.arraySizes.empty() || !member.bitCount );
+      if ( member.bitCount )
       {
         assert( member.deprecated.empty() );
-        members += " : " + member.bitCount;  // except for bitfield members, where no default member initializatin
-                                             // is supported (up to C++20)
+        members += " : " + std::to_string( member.bitCount );  // except for bitfield members, where no default member initialization
+                                                               // is supported (up to C++20)
       }
       else
       {
@@ -12084,13 +12011,20 @@ std::tuple<std::string, std::string, std::string, std::string>
         {
           members += generateEnumInitializer( member.type, member.arraySizes, enumIt->second.values, enumIt->second.isBitmask );
         }
-        else if ( member.defaultValue.empty() )
-        {
-          members += "{}";
-        }
         else
         {
-          members += generateTaggedCamelCase( member.defaultValue );
+          if ( structData.first.starts_with( "VkRayTracingShaderGroupCreateInfo" ) && member.name.ends_with( "Shader" ) )
+          {
+            // the shader member of VkRayTracingShaderGroupCreateInfoNV and VkRayTracingShaderGroupCreateInfoKHR can be initialized with VK_SHADER_UNUSED_NV or
+            // VK_SHADER_UNUSD_KHR
+            assert( structData.first.ends_with( "KHR" ) || structData.first.ends_with( "NV" ) );
+            assert( member.type.name == "uint32_t" );
+            members += generateTaggedCamelCase( structData.first.ends_with( "KHR" ) ? "VK_SHADER_UNUSED_KHR" : "VK_SHADER_UNUSED_NV" );
+          }
+          else
+          {
+            members += "{}";
+          }
         }
       }
     }
@@ -12105,10 +12039,10 @@ std::tuple<std::string, std::string, std::string, std::string>
   return std::make_tuple( members, stripPostfix( memberNames, ", " ), stripPostfix( memberTypes, ", " ), sTypeValue );
 }
 
-std::string VulkanHppGenerator::generateStructSetter( std::string const & structureName, std::vector<MemberData> const & memberData, size_t index ) const
+std::string VulkanHppGenerator::generateStructSetter( std::pair<std::string, StructData> const & structure, size_t index ) const
 {
-  std::string        str;
-  MemberData const & member = memberData[index];
+  std::string          str;
+  StructMember const & member = structure.second.members[index];
   if ( member.type.name != "VkStructureType" )  // filter out StructureType, which is supposed to be immutable !
   {
     static std::string const templateString = R"(
@@ -12129,7 +12063,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
       member.type.name.starts_with( "PFN_vk" )
         ? "PFN_" + stripPrefix( member.type.name, "PFN_vk" )
         : ( member.arraySizes.empty() ? member.type.compose( "Vk" ) : generateStandardArray( member.type.compose( "Vk" ), member.arraySizes ) );
-    bool const  isReinterpretation = !member.bitCount.empty() && member.type.name.starts_with( "Vk" );
+    bool const  isReinterpretation = member.bitCount && member.type.name.starts_with( "Vk" );
     std::string assignment;
     if ( member.deprecated.empty() )
     {
@@ -12155,16 +12089,16 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
                              { "MemberName", startUpperCase( member.name ) },
                              { "memberType", memberType },
                              { "reference", ( member.type.postfix.empty() && m_structs.contains( member.type.name ) ) ? "const & " : "" },
-                             { "structureName", structureName } } );
+                             { "structureName", stripPrefix( structure.first, "Vk" ) } } );
 
-    if ( hasLen( member, memberData ) )
+    if ( hasLen( member, structure.second.members ) )
     {
       assert( member.type.isPointer() || !member.arraySizes.empty() );
       std::string arrayName = member.type.isPointer() ? startLowerCase( stripPrefix( member.name, "p" ) ) : member.name;
 
-      if ( member.lenExpressions[0] == "null-terminated" )
+      if ( member.len[0] == "null-terminated" )
       {
-        assert( member.deprecated.empty() && member.lenMembers.empty() && ( member.lenExpressions.size() == 1 ) && ( member.arraySizes.size() == 1 ) &&
+        assert( member.deprecated.empty() && member.altLen.empty() && ( member.len.size() == 1 ) && ( member.arraySizes.size() == 1 ) &&
                 ( member.type.name == "char" ) );
 
         static std::string const setStringTemplate = R"(
@@ -12186,9 +12120,9 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
                                { { "arrayName", arrayName },
                                  { "ArrayName", startUpperCase( arrayName ) },
                                  { "arraySize", member.arraySizes[0] },
-                                 { "structureName", structureName } } );
+                                 { "structureName", stripPrefix( structure.first, "Vk" ) } } );
       }
-      else if ( ( structureName == "LayerSettingEXT" ) && ( index == 4 ) )
+      else if ( ( structure.first == "VkLayerSettingEXT" ) && ( index == 4 ) )
       {
         // VkLayerSettingEXT::pValues needs some special handling!
         assert( member.deprecated.empty() && ( member.name == "pValues" ) );
@@ -12225,16 +12159,16 @@ ${byString}
       }
       else
       {
-        assert( ( member.lenExpressions[0] == member.lenMembers[0].first ) || ( member.lenExpressions[0] == "codeSize / 4" ) );
+        assert( ( member.altLen == "codeSize / 4" ) || containsByName( structure.second.members, member.len[0] ) );
         std::string lenName, lenValue;
-        if ( member.lenExpressions[0] == "codeSize / 4" )
+        if ( member.altLen == "codeSize / 4" )
         {
           lenName  = "codeSize";
           lenValue = arrayName + "_.size() * 4";
         }
         else
         {
-          lenName  = member.lenExpressions[0];
+          lenName  = member.len[0];
           lenValue = arrayName + "_.size()";
         }
 
@@ -12257,8 +12191,8 @@ ${byString}
           lenValue += " * sizeof(T)";
         }
 
-        auto lenMember = findByName( memberData, lenName );
-        assert( lenMember != memberData.end() && lenMember->type.prefix.empty() && lenMember->type.postfix.empty() );
+        auto lenMember = findByName( structure.second.members, lenName );
+        assert( lenMember != structure.second.members.end() && lenMember->type.prefix.empty() && lenMember->type.postfix.empty() );
         if ( lenMember->type.name != "size_t" )
         {
           lenValue = "static_cast<" + lenMember->type.name + ">( " + lenValue + " )";
@@ -12302,7 +12236,7 @@ ${byString}
                                    { "deprecated", member.deprecated.empty() ? "" : "VULKAN_HPP_DEPRECATED( \"" + member.deprecated + "\" ) " },
                                    { "functionBody", functionBody },
                                    { "memberType", memberType },
-                                   { "structureName", structureName },
+                                   { "structureName", stripPrefix( structure.first, "Vk" ) },
                                    { "templateHeader", templateHeader } } );
         }
         else
@@ -12328,7 +12262,7 @@ ${byString}
                                    { "lenName", lenName },
                                    { "lenValue", lenValue },
                                    { "memberType", member.type.compose( "Vk", "VULKAN_HPP_NAMESPACE" ) },
-                                   { "structureName", structureName },
+                                   { "structureName", stripPrefix( structure.first, "Vk" ) },
                                    { "templateHeader", templateHeader } } );
         }
       }
@@ -12365,7 +12299,7 @@ std::string VulkanHppGenerator::generateStructSubConstructor( std::pair<std::str
     std::vector<std::string> subArguments;
     for ( size_t i = subStruct->second.members.size(); i < structData.second.members.size(); i++ )
     {
-      std::string argument = generateStructConstructorArgument( structData.second.members[i], true );
+      std::string argument = generateStructConstructorArgument( structData.first, structData.second.members[i], true );
       if ( !argument.empty() )
       {
         subArguments.push_back( argument );
@@ -12525,7 +12459,7 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructData
     if ( listedTypes.insert( typeName ).second )
     {
       bool const multipleType = std::any_of(
-        std::next( memberIt ), structure.second.members.end(), [memberIt]( MemberData const & member ) noexcept { return member.type == memberIt->type; } );
+        std::next( memberIt ), structure.second.members.end(), [memberIt]( StructMember const & member ) noexcept { return member.type == memberIt->type; } );
       std::string memberType = ( memberIt->arraySizes.empty() )
                                ? memberIt->type.compose( "Vk" )
                                : ( "const " + generateStandardArray( memberIt->type.compose( "Vk", "VULKAN_HPP_NAMESPACE" ), memberIt->arraySizes ) + "&" );
@@ -12577,7 +12511,7 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructData
   std::string setters;
   for ( size_t i = 0; i < structure.second.members.size(); i++ )
   {
-    setters += generateStructSetter( stripPrefix( structure.first, "Vk" ), structure.second.members, i );
+    setters += generateStructSetter( structure, i );
   }
   // filter out leading and trailing newline
   setters = setters.substr( 1, setters.length() - 2 );
@@ -12586,7 +12520,7 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructData
   std::string members;
   // if there's at least one Vk... type in this union, check for unrestricted unions support
   bool const needsUnrestrictedUnions =
-    std::ranges::any_of( structure.second.members, []( MemberData const & member ) { return member.type.name.starts_with( "Vk" ); } );
+    std::ranges::any_of( structure.second.members, []( StructMember const & member ) { return member.type.name.starts_with( "Vk" ); } );
   if ( needsUnrestrictedUnions )
   {
     members += "#ifdef VULKAN_HPP_HAS_UNRESTRICTED_UNIONS\n";
@@ -13071,10 +13005,11 @@ std::pair<std::string, std::string> VulkanHppGenerator::getPoolTypeAndName( std:
 {
   auto structIt = m_structs.find( type );
   assert( structIt != m_structs.end() );
-  auto memberIt = std::ranges::find_if( structIt->second.members, []( MemberData const & md ) { return md.name.find( "Pool" ) != std::string::npos; } );
+  auto memberIt =
+    std::ranges::find_if( structIt->second.members, []( StructMember const & member ) { return member.name.find( "Pool" ) != std::string::npos; } );
   assert( memberIt != structIt->second.members.end() );
   assert( std::none_of(
-    std::next( memberIt ), structIt->second.members.end(), []( MemberData const & md ) { return md.name.find( "Pool" ) != std::string::npos; } ) );
+    std::next( memberIt ), structIt->second.members.end(), []( StructMember const & member ) { return member.name.find( "Pool" ) != std::string::npos; } ) );
   return { memberIt->type.name, memberIt->name };
 }
 
@@ -13328,12 +13263,10 @@ bool VulkanHppGenerator::hasArrayConstructor( HandleData const & handleData ) co
   return false;
 }
 
-bool VulkanHppGenerator::hasLen( MemberData const & memberData, std::vector<MemberData> const & members ) const
+bool VulkanHppGenerator::hasLen( StructMember const & member, std::vector<StructMember> const & members ) const
 {
-  return ( !memberData.lenMembers.empty() &&
-           ( ( ( memberData.lenExpressions[0] == memberData.lenMembers[0].first ) && members[memberData.lenMembers[0].second].type.isValue() ) ||
-             ( memberData.lenExpressions[0] == ( memberData.lenMembers[0].first + " / 4" ) ) ) ) ||
-         ( !memberData.lenExpressions.empty() && ( memberData.lenExpressions[0] == "null-terminated" ) && !memberData.arraySizes.empty() );
+  return !member.len.empty() && ( member.altLen.ends_with( " / 4" ) || ( ( member.len[0] == "null-terminated" ) && !member.arraySizes.empty() ) ||
+                                  ( containsByName( members, member.len[0] ) && findByName( members, member.len[0] )->type.isValue() ) );
 }
 
 bool VulkanHppGenerator::hasParentHandle( std::string const & handle, std::string const & parent ) const
@@ -13474,9 +13407,9 @@ bool VulkanHppGenerator::isSimpleStructure( std::string const & name ) const
   return ( structIt != m_structs.end() ) && !structureHoldsHandle( structIt->second ) && !structureHoldsVector( structIt->second );
 }
 
-bool VulkanHppGenerator::isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const
+bool VulkanHppGenerator::isStructMember( std::string const & name, std::vector<StructMember> const & members ) const
 {
-  return findByName( memberData, name ) != memberData.end();
+  return findByName( members, name ) != members.end();
 }
 
 bool VulkanHppGenerator::isStructureChainAnchor( std::string const & type ) const
@@ -13910,7 +13843,7 @@ std::string VulkanHppGenerator::toString( TypeCategory category ) const
   }
 }
 
-VulkanHppGenerator::MemberData const & VulkanHppGenerator::vectorMemberByStructure( std::string const & structureType ) const
+StructMember const & VulkanHppGenerator::vectorMemberByStructure( std::string const & structureType ) const
 {
   auto structIt = m_structs.find( structureType );
   assert( structIt != m_structs.end() );

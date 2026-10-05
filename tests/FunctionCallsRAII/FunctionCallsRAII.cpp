@@ -1415,5 +1415,27 @@ int main()
     uint64_t                  data            = device.getPrivateData( objectType, objectHandle, *privateDataSlot );
   }
 
+  // Promoted from VK_KHR_synchronization2
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::DependencyInfo      dependencyInfo;
+    commandBuffer.pipelineBarrier2( dependencyInfo );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::PipelineStageFlags2 stage         = {};
+    vk::raii::QueryPool     queryPool     = nullptr;
+    uint32_t                query         = 0;
+    commandBuffer.writeTimestamp2( stage, *queryPool, query );
+  }
+
+  {
+    vk::raii::Queue              queue = nullptr;
+    std::vector<vk::SubmitInfo2> submitInfos;
+    vk::raii::Fence              fence = nullptr;
+    queue.submit2( submitInfos, *fence );
+  }
+
   return 0;
 }

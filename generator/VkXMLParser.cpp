@@ -5407,7 +5407,7 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
               auto selectorMemberIt = findByName( structure.members, member.selector );
               assert( selectorMemberIt != structure.members.end() );
               checkForError( "vk.xml",
-                             containsByName( types.enums, selectorMemberIt->type.name ),
+                             containsByNameOrAlias( types.enums, selectorMemberIt->type.name ),
                              member.xmlLine,
                              "struct member <" + member.name + "> in struct <" + structure.name + "> uses selector <" + member.selector + "> of type <" +
                                selectorMemberIt->type.name + "> that is not an enum" );

@@ -143535,127 +143535,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     using Type = DeviceFaultCountsEXT;
   };
 
-  // wrapper struct for struct VkDeviceFaultInfoEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDeviceFaultInfoEXT.html
-  struct DeviceFaultInfoEXT
-  {
-    using NativeType = VkDeviceFaultInfoEXT;
-
-    static bool const                                  allowDuplicate = false;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eDeviceFaultInfoEXT;
-
-#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
-    VULKAN_HPP_CONSTEXPR_14 DeviceFaultInfoEXT( std::array<char, VK_MAX_DESCRIPTION_SIZE> const & description_       = {},
-                                                DeviceFaultAddressInfoKHR *                       pAddressInfos_     = {},
-                                                DeviceFaultVendorInfoKHR *                        pVendorInfos_      = {},
-                                                void *                                            pVendorBinaryData_ = {},
-                                                void *                                            pNext_             = nullptr ) VULKAN_HPP_NOEXCEPT
-      : pNext{ pNext_ }
-      , description{ description_ }
-      , pAddressInfos{ pAddressInfos_ }
-      , pVendorInfos{ pVendorInfos_ }
-      , pVendorBinaryData{ pVendorBinaryData_ }
-    {
-    }
-
-    VULKAN_HPP_CONSTEXPR_14 DeviceFaultInfoEXT( DeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-    DeviceFaultInfoEXT( VkDeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT : DeviceFaultInfoEXT( *reinterpret_cast<DeviceFaultInfoEXT const *>( &rhs ) ) {}
-
-    DeviceFaultInfoEXT & operator=( DeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
-
-    DeviceFaultInfoEXT & operator=( VkDeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      *this = *reinterpret_cast<DeviceFaultInfoEXT const *>( &rhs );
-      return *this;
-    }
-
-    operator VkDeviceFaultInfoEXT const &() const VULKAN_HPP_NOEXCEPT
-    {
-      return *reinterpret_cast<VkDeviceFaultInfoEXT const *>( this );
-    }
-
-    operator VkDeviceFaultInfoEXT &() VULKAN_HPP_NOEXCEPT
-    {
-      return *reinterpret_cast<VkDeviceFaultInfoEXT *>( this );
-    }
-
-    operator VkDeviceFaultInfoEXT const *() const VULKAN_HPP_NOEXCEPT
-    {
-      return reinterpret_cast<VkDeviceFaultInfoEXT const *>( this );
-    }
-
-    operator VkDeviceFaultInfoEXT *() VULKAN_HPP_NOEXCEPT
-    {
-      return reinterpret_cast<VkDeviceFaultInfoEXT *>( this );
-    }
-
-#if defined( VULKAN_HPP_USE_REFLECT )
-    std::tuple<StructureType const &,
-               void * const &,
-               ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> const &,
-               DeviceFaultAddressInfoKHR * const &,
-               DeviceFaultVendorInfoKHR * const &,
-               void * const &> reflect() const VULKAN_HPP_NOEXCEPT
-    {
-      return std::tie( sType, pNext, description, pAddressInfos, pVendorInfos, pVendorBinaryData );
-    }
-#endif
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    std::strong_ordering operator<=>( DeviceFaultInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      if ( auto cmp = sType <=> rhs.sType; cmp != 0 )
-        return cmp;
-      if ( auto cmp = pNext <=> rhs.pNext; cmp != 0 )
-        return cmp;
-      if ( auto cmp = strcmp( description, rhs.description ); cmp != 0 )
-        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
-      if ( auto cmp = pAddressInfos <=> rhs.pAddressInfos; cmp != 0 )
-        return cmp;
-      if ( auto cmp = pVendorInfos <=> rhs.pVendorInfos; cmp != 0 )
-        return cmp;
-      if ( auto cmp = pVendorBinaryData <=> rhs.pVendorBinaryData; cmp != 0 )
-        return cmp;
-
-      return std::strong_ordering::equivalent;
-    }
-#endif
-
-    bool operator==( DeviceFaultInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( strcmp( description, rhs.description ) == 0 ) && ( pAddressInfos == rhs.pAddressInfos ) &&
-             ( pVendorInfos == rhs.pVendorInfos ) && ( pVendorBinaryData == rhs.pVendorBinaryData );
-    }
-
-    bool operator!=( DeviceFaultInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return !operator==( rhs );
-    }
-
-  public:
-    StructureType                                 sType             = StructureType::eDeviceFaultInfoEXT;
-    void *                                        pNext             = {};
-    ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> description       = {};
-    DeviceFaultAddressInfoKHR *                   pAddressInfos     = {};
-    DeviceFaultVendorInfoKHR *                    pVendorInfos      = {};
-    void *                                        pVendorBinaryData = {};
-  };
-
-#if 20 <= VULKAN_HPP_CPP_VERSION
-  template <>
-  struct CppType<VkDeviceFaultInfoEXT>
-  {
-    using Type = DeviceFaultInfoEXT;
-  };
-#endif
-
-  template <>
-  struct CppType<StructureType, StructureType::eDeviceFaultInfoEXT>
-  {
-    using Type = DeviceFaultInfoEXT;
-  };
-
   // wrapper struct for struct VkDeviceFaultAddressInfoKHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDeviceFaultAddressInfoKHR.html
   struct DeviceFaultAddressInfoKHR
   {
@@ -143843,6 +143722,127 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 #endif
   using DeviceFaultVendorInfoEXT = DeviceFaultVendorInfoKHR;
+
+  // wrapper struct for struct VkDeviceFaultInfoEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkDeviceFaultInfoEXT.html
+  struct DeviceFaultInfoEXT
+  {
+    using NativeType = VkDeviceFaultInfoEXT;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eDeviceFaultInfoEXT;
+
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR_14 DeviceFaultInfoEXT( std::array<char, VK_MAX_DESCRIPTION_SIZE> const & description_       = {},
+                                                DeviceFaultAddressInfoKHR *                       pAddressInfos_     = {},
+                                                DeviceFaultVendorInfoKHR *                        pVendorInfos_      = {},
+                                                void *                                            pVendorBinaryData_ = {},
+                                                void *                                            pNext_             = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , description{ description_ }
+      , pAddressInfos{ pAddressInfos_ }
+      , pVendorInfos{ pVendorInfos_ }
+      , pVendorBinaryData{ pVendorBinaryData_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 DeviceFaultInfoEXT( DeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    DeviceFaultInfoEXT( VkDeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT : DeviceFaultInfoEXT( *reinterpret_cast<DeviceFaultInfoEXT const *>( &rhs ) ) {}
+
+    DeviceFaultInfoEXT & operator=( DeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    DeviceFaultInfoEXT & operator=( VkDeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<DeviceFaultInfoEXT const *>( &rhs );
+      return *this;
+    }
+
+    operator VkDeviceFaultInfoEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkDeviceFaultInfoEXT const *>( this );
+    }
+
+    operator VkDeviceFaultInfoEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkDeviceFaultInfoEXT *>( this );
+    }
+
+    operator VkDeviceFaultInfoEXT const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkDeviceFaultInfoEXT const *>( this );
+    }
+
+    operator VkDeviceFaultInfoEXT *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkDeviceFaultInfoEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &,
+               void * const &,
+               ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> const &,
+               DeviceFaultAddressInfoKHR * const &,
+               DeviceFaultVendorInfoKHR * const &,
+               void * const &> reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, description, pAddressInfos, pVendorInfos, pVendorBinaryData );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    std::strong_ordering operator<=>( DeviceFaultInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( auto cmp = sType <=> rhs.sType; cmp != 0 )
+        return cmp;
+      if ( auto cmp = pNext <=> rhs.pNext; cmp != 0 )
+        return cmp;
+      if ( auto cmp = strcmp( description, rhs.description ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = pAddressInfos <=> rhs.pAddressInfos; cmp != 0 )
+        return cmp;
+      if ( auto cmp = pVendorInfos <=> rhs.pVendorInfos; cmp != 0 )
+        return cmp;
+      if ( auto cmp = pVendorBinaryData <=> rhs.pVendorBinaryData; cmp != 0 )
+        return cmp;
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
+    bool operator==( DeviceFaultInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( strcmp( description, rhs.description ) == 0 ) && ( pAddressInfos == rhs.pAddressInfos ) &&
+             ( pVendorInfos == rhs.pVendorInfos ) && ( pVendorBinaryData == rhs.pVendorBinaryData );
+    }
+
+    bool operator!=( DeviceFaultInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    StructureType                                 sType             = StructureType::eDeviceFaultInfoEXT;
+    void *                                        pNext             = {};
+    ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE> description       = {};
+    DeviceFaultAddressInfoKHR *                   pAddressInfos     = {};
+    DeviceFaultVendorInfoKHR *                    pVendorInfos      = {};
+    void *                                        pVendorBinaryData = {};
+  };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkDeviceFaultInfoEXT>
+  {
+    using Type = DeviceFaultInfoEXT;
+  };
+#endif
+
+  template <>
+  struct CppType<StructureType, StructureType::eDeviceFaultInfoEXT>
+  {
+    using Type = DeviceFaultInfoEXT;
+  };
 
   // wrapper struct for struct VkDeviceFaultVendorBinaryHeaderVersionOneKHR, see
   // https://registry.khronos.org/vulkan/specs/latest/man/html/VkDeviceFaultVendorBinaryHeaderVersionOneKHR.html

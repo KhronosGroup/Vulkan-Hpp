@@ -236,16 +236,25 @@ void checkRequiredTypesSorted( std::vector<TypeStruct> const &  structs,
     {
       for ( auto const & member : structIt->members )
       {
-        if ( member.type.isValue() && ( containsByNameOrAlias( structs, member.type.name ) || containsByNameOrAlias( unions, member.type.name ) ) )
+        if ( member.type.isValue() )
         {
-          checkForError( "vk.xml",
-                         listedStructs.contains( member.type.name ),
-                         member.xmlLine,
-                         "struct <" + structIt->name + "> has member <" + member.name + "> of type <" + member.type.name +
-                           "> which is not yet listed as required" );
+          if ( auto memberStructIt = findByNameOrAlias( structs, member.type.name ); memberStructIt != structs.end() )
+          {
+            checkForError( "vk.xml",
+                           listedStructs.contains( memberStructIt->name ),
+                           member.xmlLine,
+                           "struct <" + typeIt->name + "> has member <" + member.type.name + "> that is not yet listed as required" );
+          }
+          else if ( auto memberUnionIt = findByNameOrAlias( unions, member.type.name ); memberUnionIt != unions.end() )
+          {
+            checkForError( "vk.xml",
+                           listedStructs.contains( memberUnionIt->name ),
+                           member.xmlLine,
+                           "struct <" + typeIt->name + "> has member <" + member.type.name + "> that is not yet listed as required" );
+          }
         }
       }
-      listedStructs.insert( typeIt->name );
+      listedStructs.insert( structIt->name );
     }
     else
     {
@@ -254,16 +263,25 @@ void checkRequiredTypesSorted( std::vector<TypeStruct> const &  structs,
       {
         for ( auto const & member : unionIt->members )
         {
-          if ( member.type.isValue() && ( containsByNameOrAlias( structs, member.type.name ) || containsByNameOrAlias( unions, member.type.name ) ) )
+          if ( member.type.isValue() )
           {
-            checkForError( "vk.xml",
-                           listedStructs.contains( member.type.name ),
-                           member.xmlLine,
-                           "union <" + unionIt->name + "> has member <" + member.name + "> of type <" + member.type.name +
-                             "> which is not yet listed as required" );
+            if ( auto memberStructIt = findByNameOrAlias( structs, member.type.name ); memberStructIt != structs.end() )
+            {
+              checkForError( "vk.xml",
+                             listedStructs.contains( memberStructIt->name ),
+                             member.xmlLine,
+                             "union <" + typeIt->name + "> has member <" + member.type.name + "> that is not yet listed as required" );
+            }
+            else if ( auto memberUnionIt = findByNameOrAlias( unions, member.type.name ); memberUnionIt != unions.end() )
+            {
+              checkForError( "vk.xml",
+                             listedStructs.contains( memberUnionIt->name ),
+                             member.xmlLine,
+                             "union <" + typeIt->name + "> has member <" + member.type.name + "> that is not yet listed as required" );
+            }
           }
         }
-        listedStructs.insert( typeIt->name );
+        listedStructs.insert( unionIt->name );
       }
     }
   }
@@ -6117,38 +6135,43 @@ void sortStructs( std::vector<TypeStruct> const &          structs,
 {
   if ( !containsByName( typesOut, typeIt->name ) )
   {
-    auto structIt = findByNameOrAlias( structs, typeIt->name );
-    if ( structIt != structs.end() )
+    std::vector<std::string> memberTypes;
+    if ( auto structIt = findByNameOrAlias( structs, typeIt->name ); structIt != structs.end() )
     {
       for ( auto const & member : structIt->members )
       {
-        if ( !containsByName( typesOut, member.type.name ) &&
-             ( containsByNameOrAlias( structs, member.type.name ) || containsByNameOrAlias( unions, member.type.name ) ) )
-        {
-          auto memberTypeIt = findByName( typesIn, member.type.name );
-          if ( memberTypeIt != typesIn.end() )
-          {
-            sortStructs( structs, unions, typesIn, memberTypeIt, typesOut );
-          }
-        }
+        memberTypes.push_back( member.type.name );
       }
     }
-    else
+    else if ( auto unionIt = findByNameOrAlias( unions, typeIt->name ); unionIt != unions.end() )
     {
-      auto unionIt = findByNameOrAlias( unions, typeIt->name );
-      if ( unionIt != unions.end() )
+      for ( auto const & member : unionIt->members )
       {
-        for ( auto const & member : unionIt->members )
+        memberTypes.push_back( member.type.name );
+      }
+    }
+
+    for ( auto const & memberType : memberTypes )
+    {
+      std::string const *                name    = nullptr;
+      std::map<std::string, int> const * aliases = nullptr;
+      if ( auto memberStructIt = findByName( structs, memberType ); memberStructIt != structs.end() )
+      {
+        name    = &memberStructIt->name;
+        aliases = &memberStructIt->aliases;
+      }
+      else if ( auto memberUnionIt = findByName( unions, memberType ); memberUnionIt != unions.end() )
+      {
+        name    = &memberUnionIt->name;
+        aliases = &memberUnionIt->aliases;
+      }
+      if ( name )
+      {
+        if ( auto memberTypeIt = std::ranges::find_if(
+               typesIn, [name, aliases]( auto const & typeIn ) { return ( *name == typeIn.name ) || ( aliases && aliases->contains( typeIn.name ) ); } );
+             memberTypeIt != typesIn.end() )
         {
-          if ( !containsByName( typesOut, member.type.name ) &&
-               ( containsByNameOrAlias( structs, member.type.name ) || containsByNameOrAlias( unions, member.type.name ) ) )
-          {
-            auto memberTypeIt = findByName( typesIn, member.type.name );
-            if ( memberTypeIt != typesIn.end() )
-            {
-              sortStructs( structs, unions, typesIn, memberTypeIt, typesOut );
-            }
-          }
+          sortStructs( structs, unions, typesIn, memberTypeIt, typesOut );
         }
       }
     }

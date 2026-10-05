@@ -245,7 +245,11 @@ void checkRequiredTypesSorted( std::vector<TypeStruct> const &  structs,
                            "> which is not yet listed as required" );
         }
       }
-      listedStructs.insert( typeIt->name );
+      listedStructs.insert( structIt->name );
+      for ( auto const & alias : structIt->aliases )
+      {
+        listedStructs.insert( alias.first );
+      }
     }
     else
     {

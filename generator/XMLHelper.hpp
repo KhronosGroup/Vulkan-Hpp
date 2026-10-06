@@ -46,7 +46,7 @@ struct NameElement
 struct NameModifiers
 {
   std::vector<std::string> arraySizes;
-  std::string              bitCount;
+  int                      bitCount;
 };
 
 struct TypeInclude
@@ -510,7 +510,7 @@ inline NameElement parseNameElement( tinyxml2::XMLElement const * element )
 inline NameModifiers parseNameModifiers( std::string const & intro, tinyxml2::XMLNode const * node )
 {
   std::vector<std::string> arraySizes;
-  std::string              bitCount;
+  int              bitCount = 0;
   if ( node && node->ToText() )
   {
     // following the name there might be some array size
@@ -531,7 +531,9 @@ inline NameModifiers parseNameModifiers( std::string const & intro, tinyxml2::XM
     }
     else if ( value[0] == ':' )
     {
-      bitCount = trim( value.substr( 1 ) );
+      std::string bc = trim( value.substr( 1 ) );
+      checkForError( "vk.xml", isNumber( bc ), node->GetLineNum(), "unexpected value for bitCount: <" + bc + ">" );
+      bitCount = std::stoi( bc );
     }
     else
     {

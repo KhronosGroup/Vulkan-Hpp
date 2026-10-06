@@ -8,7 +8,6 @@
 
 #include <vector>
 
-void checkExtensionOrStructAndMember( std::string const & depends, int xmlLine, std::string const & prefix, std::vector<TypeStruct> const & structs );
 void checkProperties( std::vector<PropertyElement> const & properties, Vkxml const & vkxml, std::string const & requireType, std::string const & requireName );
 void checkRequiredTypesSorted( std::vector<TypeStruct> const &  structs,
                                std::vector<TypeUnion> const &   unions,
@@ -19,6 +18,7 @@ bool containsByName( std::vector<VideoFormatVariant> const & values, std::string
 template <typename... T>
 bool        containsByName( std::vector<std::variant<T...>> const & values, std::string const & name );
 bool        containsByNameAndExport( std::vector<Command> const & commands, std::string const & name, std::vector<std::string> const & exports );
+bool        describesStructAndMember( std::string const & value, std::vector<TypeStruct> const & structs );
 std::string getName( ExtensionRequireEnumVariant const & enumVariant );
 template <typename... T>
 std::string getName( std::variant<T...> const & value );
@@ -70,24 +70,24 @@ void                         parseImplicitExternSyncParams( tinyxml2::XMLElement
 void                         parseImplicitExternSyncParamsParam( tinyxml2::XMLElement const * element );
 MultiFeatureElement          parseMultiFeatureElement( tinyxml2::XMLElement const * element );
 std::pair<std::string, Type> parseNameAndType( tinyxml2::XMLElement const * element );
-std::tuple<std::string, Type, std::vector<std::string>, std::string> parseNameAndTypeModified( tinyxml2::XMLElement const * element );
-std::pair<std::string, std::string>                                  parseNameWithAlias( tinyxml2::XMLElement const * element );
-Param                                                                parseParam( tinyxml2::XMLElement const * element );
-Plane                                                                parsePlane( tinyxml2::XMLElement const * element );
-Platform                                                             parsePlatform( tinyxml2::XMLElement const * element );
-Platforms                                                            parsePlatforms( tinyxml2::XMLElement const * element );
-PropertyElement                                                      parsePropertyElement( tinyxml2::XMLElement const * element );
-std::pair<std::string, Type>                                         parseProto( tinyxml2::XMLElement const * element );
-Vkxml                                                                parseRegistry( tinyxml2::XMLElement const * element, std::string const & api );
-Remove                                                               parseRemove( tinyxml2::XMLElement const * element );
-RequireType                                                          parseRequireType( tinyxml2::XMLElement const * element );
-SPIRVCapabilities                                                    parseSPIRVCapabilities( tinyxml2::XMLElement const * element );
-SPIRVCapability                                                      parseSPIRVCapability( tinyxml2::XMLElement const * element );
-SPIRVCapabilityEnableVariant                                         parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );
-SPIRVCapabilityEnableByExtension parseSPIRVCapabilityEnableByExtension( tinyxml2::XMLElement const *               element,
-                                                                        std::map<std::string, std::string> const & attributes );
-SPIRVCapabilityEnableByProperty  parseSPIRVCapabilityEnableByProperty( tinyxml2::XMLElement const *               element,
-                                                                       std::map<std::string, std::string> const & attributes );
+std::tuple<std::string, Type, std::vector<std::string>, int> parseNameAndTypeModified( tinyxml2::XMLElement const * element );
+std::pair<std::string, std::string>                          parseNameWithAlias( tinyxml2::XMLElement const * element );
+Param                                                        parseParam( tinyxml2::XMLElement const * element );
+Plane                                                        parsePlane( tinyxml2::XMLElement const * element );
+Platform                                                     parsePlatform( tinyxml2::XMLElement const * element );
+Platforms                                                    parsePlatforms( tinyxml2::XMLElement const * element );
+PropertyElement                                              parsePropertyElement( tinyxml2::XMLElement const * element );
+std::pair<std::string, Type>                                 parseProto( tinyxml2::XMLElement const * element );
+Vkxml                                                        parseRegistry( tinyxml2::XMLElement const * element, std::string const & api );
+Remove                                                       parseRemove( tinyxml2::XMLElement const * element );
+RequireType                                                  parseRequireType( tinyxml2::XMLElement const * element );
+SPIRVCapabilities                                            parseSPIRVCapabilities( tinyxml2::XMLElement const * element );
+SPIRVCapability                                              parseSPIRVCapability( tinyxml2::XMLElement const * element );
+SPIRVCapabilityEnableVariant                                 parseSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );
+SPIRVCapabilityEnableByExtension                             parseSPIRVCapabilityEnableByExtension( tinyxml2::XMLElement const *               element,
+                                                                                                    std::map<std::string, std::string> const & attributes );
+SPIRVCapabilityEnableByProperty                              parseSPIRVCapabilityEnableByProperty( tinyxml2::XMLElement const *               element,
+                                                                                                   std::map<std::string, std::string> const & attributes );
 SPIRVCapabilityEnableByStruct parseSPIRVCapabilityEnableByStruct( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 SPIRVCapabilityEnableByVersion  parseSPIRVCapabilityEnableByVersion( tinyxml2::XMLElement const *               element,
                                                                      std::map<std::string, std::string> const & attributes );
@@ -144,20 +144,6 @@ void sortStructs( std::vector<TypeStruct> const &          structs,
                   std::vector<RequireType> const &         typesIn,
                   std::vector<RequireType>::const_iterator typeIt,
                   std::vector<RequireType> &               typesOut );
-
-void checkExtensionOrStructAndMember( std::string const & depends, int xmlLine, std::string const & prefix, std::vector<TypeStruct> const & structs )
-{
-  std::vector<std::string> tokens = tokenize( depends, "::" );
-  checkForError( "vk.xml", ( tokens.size() == 1 ) || ( tokens.size() == 2 ), xmlLine, prefix + " an unexpectedly formatted string: <" + depends + ">" );
-  if ( tokens.size() == 2 )
-  {
-    auto structIt = std::ranges::find_if( structs, [&tokens]( TypeStruct const & s ) { return s.name == tokens[0]; } );
-    checkForError( "vk.xml", structIt != structs.end(), xmlLine, prefix + " an unknown struct <" + tokens[0] + ">" );
-    checkForError(
-      "vk.xml", containsByName( structIt->members, tokens[1] ), xmlLine, prefix + " an unknown member <" + tokens[1] + "> of structure <" + tokens[0] + ">" );
-  }
-  // CHECK: after extensions: tokens.size() == 1 -> is extension
-}
 
 void checkNumber( std::string const & number, int line, std::string const & message )
 {
@@ -324,6 +310,20 @@ bool containsByNameAndExport( std::vector<Command> const & commands, std::string
                [&exports]( std::string const & commandExport )
                { return std::ranges::any_of( exports, [&commandExport]( std::string const & exportItem ) { return exportItem == commandExport; } ); } );
     } );
+}
+
+bool describesStructAndMember( std::string const & value, std::vector<TypeStruct> const & structs )
+{
+  std::vector<std::string> tokens = tokenize( value, "::" );
+  if ( tokens.size() == 2 )
+  {
+    auto structIt = std::ranges::find_if( structs, [&tokens]( TypeStruct const & s ) { return s.name == tokens[0]; } );
+    if ( structIt != structs.end() )
+    {
+      return containsByName( structIt->members, tokens[1] );
+    }
+  }
+  return false;
 }
 
 std::string getName( ExtensionRequireEnumVariant const & enumVariant )
@@ -2641,12 +2641,12 @@ std::pair<std::string, Type> parseNameAndType( tinyxml2::XMLElement const * elem
   int const line = element->GetLineNum();
 
   auto [name, type, arraySizes, bitCount] = parseNameAndTypeModified( element );
-  checkForError( "vk.xml", arraySizes.empty() && bitCount.empty(), line, "unexpected array size or bit count specification for name <" + name + ">" );
+  checkForError( "vk.xml", arraySizes.empty() && !bitCount, line, "unexpected array size or bit count specification for name <" + name + ">" );
 
   return { name, type };
 }
 
-std::tuple<std::string, Type, std::vector<std::string>, std::string> parseNameAndTypeModified( tinyxml2::XMLElement const * element )
+std::tuple<std::string, Type, std::vector<std::string>, int> parseNameAndTypeModified( tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
 
@@ -2773,9 +2773,9 @@ Param parseParam( tinyxml2::XMLElement const * element )
     }
   }
 
-  std::string bitCount;
+  int bitCount                                                   = 0;
   std::tie( param.name, param.type, param.arraySizes, bitCount ) = parseNameAndTypeModified( element );
-  checkForError( "vk.xml", bitCount.empty(), line, "unexpected bit count specification for param <" + param.name + ">" );
+  checkForError( "vk.xml", !bitCount, line, "unexpected bit count specification for param <" + param.name + ">" );
   checkForError( "vk.xml", param.type.prefix.empty() || ( param.type.prefix == "struct" ), line, "unexpected type prefix <" + param.type.prefix + ">" );
   checkForError( "vk.xml",
                  param.type.postfix.empty() || ( param.type.postfix == "const" ) || ( param.type.postfix == "*" ) || ( param.type.postfix == "const *" ) ||
@@ -3709,7 +3709,11 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
     {
       for ( auto const & depend : require.depends )
       {
-        checkExtensionOrStructAndMember( depend, require.xmlLine, "feature <" + feature.name + "> has a require-member depending on", vkxml.structs );
+        checkForError( "vk.xml",
+                       containsByName( vkxml.features, depend ) || containsByName( vkxml.extensions.extensions, depend ) ||
+                         describesStructAndMember( depend, vkxml.structs ),
+                       require.xmlLine,
+                       "feature <" + feature.name + "> has a require-member depending on unknown feature, extension or struct <" + depend + ">" );
       }
       checkRequiredTypesSorted( vkxml.structs, vkxml.unions, require.types, listedStructs );
     }
@@ -3728,8 +3732,10 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
     {
       if ( !member.alias.empty() )
       {
-        checkExtensionOrStructAndMember(
-          member.alias, member.xmlLine, "member <" + member.name + "> of struct <" + structure.name + "> has an alias with", vkxml.structs );
+        checkForError( "vk.xml",
+                       containsByName( vkxml.extensions.extensions, member.alias ) || describesStructAndMember( member.alias, vkxml.structs ),
+                       member.xmlLine,
+                       "member <" + member.name + "> of struct <" + structure.name + "> has an unknown alias <" + member.alias + ">" );
       }
     }
   }
@@ -4265,16 +4271,23 @@ StructMember parseStructMember( tinyxml2::XMLElement const * element )
     else if ( attribute.first == "noautovalidity" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      member.noAutoValidity = attribute.second;
+      assert( attribute.second == "true" );
+      member.noAutoValidity = true;
     }
     else if ( attribute.first == "objecttype" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      member.objectType = attribute.second;
+      assert( attribute.second == "objectType" );
+      member.objectType = true;
     }
     else if ( attribute.first == "optional" )
     {
-      member.optional = tokenize( attribute.second, "," );
+      auto optional = tokenize( attribute.second, "," );
+      for ( const auto & opt : optional )
+      {
+        assert( ( opt == "true" ) || ( opt == "false" ) );
+        member.optional.push_back( opt == "true" );
+      }
     }
     else if ( attribute.first == "selector" )
     {
@@ -5690,9 +5703,9 @@ UnionMember parseUnionMember( tinyxml2::XMLElement const * element )
     }
   }
 
-  std::string bitCount;
+  int bitCount                                                      = 0;
   std::tie( member.name, member.type, member.arraySizes, bitCount ) = parseNameAndTypeModified( element );
-  checkForError( "vk.xml", bitCount.empty(), line, "unexpected array size or bit count specification for name <" + member.name + ">" );
+  checkForError( "vk.xml", !bitCount, line, "unexpected array size or bit count specification for name <" + member.name + ">" );
   assert( !member.name.empty() );
 
   return member;

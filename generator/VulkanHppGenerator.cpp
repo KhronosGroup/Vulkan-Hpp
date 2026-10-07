@@ -3815,7 +3815,7 @@ std::string VulkanHppGenerator::generateCommand2Returns( std::string const &    
     return generateCommand2ReturnsEnum( name, commandData, initialSkipCount, definition, raii, returnParams, vectorParams );
   }
   else if ( bool param0IsVector = vectorParams.contains( returnParams[0] ), param1IsVector = vectorParams.contains( returnParams[1] );
-            param0IsVector && vectorParams.contains( returnParams[1] ) )
+            param0IsVector && param1IsVector )
   {
     // both parameters encode vectors
     return generateCommand2ReturnsVectorVector( name, commandData, initialSkipCount, definition, raii, returnParams, vectorParams );
@@ -4114,17 +4114,17 @@ std::string VulkanHppGenerator::generateCommand2ReturnsVectorVector( std::string
     if ( m_enums.find( commandData.params[returnParams[1]].type.name ) != m_enums.end() )
     {
       // the second return param is a vector of enums
-      return generateCommandSetInclusive( name,
-                                          commandData,
-                                          initialSkipCount,
-                                          definition,
-                                          returnParams,
-                                          vectorParams,
-                                          true,
-                                          { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator, CommandFlavourFlagBits::singular },
-                                          raii,
-                                          true,
-                                          { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::singular } );
+      std::vector<CommandFlavourFlags> flavourFlags     = { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::withAllocator };
+      std::vector<CommandFlavourFlags> raiiFlavourFlags = { CommandFlavourFlagBits::enhanced };
+      if ( containsByName( commandData.params, commandData.params[returnParams[0]].lenExpression ) &&
+           containsByName( commandData.params, commandData.params[returnParams[1]].lenExpression ) )
+      {
+        // the vector has a len by param -> also generate the singular version
+        flavourFlags.push_back( CommandFlavourFlagBits::singular );
+        raiiFlavourFlags.push_back( CommandFlavourFlagBits::singular );
+      }
+      return generateCommandSetInclusive(
+        name, commandData, initialSkipCount, definition, returnParams, vectorParams, true, flavourFlags, raii, true, raiiFlavourFlags );
     }
   }
   else if ( auto structIt = findByNameOrAlias( m_structs, commandData.params[returnParams[0]].type.name ); structIt != m_structs.end() )
@@ -5222,6 +5222,8 @@ std::string VulkanHppGenerator::generateDataDeclarations2Returns( CommandData co
                                                                   std::string const &                       returnType,
                                                                   std::string const &                       returnVariable ) const
 {
+  assert( returnParams.size() == 2 );
+
   bool const chained       = flavourFlags & CommandFlavourFlagBits::chained;
   bool const singular      = flavourFlags & CommandFlavourFlagBits::singular;
   bool const withAllocator = flavourFlags & CommandFlavourFlagBits::withAllocator;
@@ -5299,44 +5301,85 @@ std::string VulkanHppGenerator::generateDataDeclarations2Returns( CommandData co
       }
       break;
     case 2:
-      assert( ( returnParams[0] == std::next( vectorParams.begin() )->first ) && !vectorParams.contains( returnParams[1] ) && !chained );
+      assert( !chained );
       {
         std::string firstDataVariable  = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
         std::string secondDataVariable = startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) );
-        if ( singular )
+        if ( ( returnParams[0] == std::next( vectorParams.begin() )->first ) && !vectorParams.contains( returnParams[1] ) )
         {
-          firstDataVariable = stripPluralS( firstDataVariable );
+          // the first return is the second vector param, the second return is just a value
+          if ( singular )
+          {
+            firstDataVariable = stripPluralS( firstDataVariable );
 
-          std::string const dataDeclarationTemplate = R"(std::pair<${firstDataType},${secondDataType}> data_;
+            std::string const dataDeclarationTemplate = R"(std::pair<${firstDataType},${secondDataType}> data_;
     ${firstDataType} & ${firstDataVariable} = data_.first;
     ${secondDataType} & ${secondDataVariable} = data_.second;)";
 
-          return replaceWithMap( dataDeclarationTemplate,
-                                 { { "firstDataType", dataTypes[0] },
-                                   { "firstDataVariable", firstDataVariable },
-                                   { "secondDataType", dataTypes[1] },
-                                   { "secondDataVariable", secondDataVariable } } );
-        }
-        else
-        {
-          std::string allocatorType       = raii ? "" : ( startUpperCase( stripPrefix( dataTypes[0], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator" );
-          std::string allocateInitializer = withAllocator ? ( ", " + startLowerCase( allocatorType ) ) : "";
-          if ( !raii )
-          {
-            allocatorType = ", " + allocatorType;
+            return replaceWithMap( dataDeclarationTemplate,
+                                   { { "firstDataType", dataTypes[0] },
+                                     { "firstDataVariable", firstDataVariable },
+                                     { "secondDataType", dataTypes[1] },
+                                     { "secondDataVariable", secondDataVariable } } );
           }
-          std::string vectorSize = startLowerCase( stripPrefix( commandData.params[vectorParams.begin()->first].name, "p" ) ) + ".size()";
+          else
+          {
+            std::string allocatorType       = raii ? "" : ( startUpperCase( stripPrefix( dataTypes[0], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator" );
+            std::string allocateInitializer = withAllocator ? ( ", " + startLowerCase( allocatorType ) ) : "";
+            if ( !raii )
+            {
+              allocatorType = ", " + allocatorType;
+            }
+            std::string vectorSize = startLowerCase( stripPrefix( commandData.params[vectorParams.begin()->first].name, "p" ) ) + ".size()";
 
-          std::string const dataDeclarationTemplate =
-            R"(std::pair<std::vector<${firstDataType}${allocatorType}>,${secondDataType}> data_( std::piecewise_construct, std::forward_as_tuple( ${vectorSize}${allocateInitializer} ), std::forward_as_tuple( 0 ) );
+            std::string const dataDeclarationTemplate =
+              R"(std::pair<std::vector<${firstDataType}${allocatorType}>,${secondDataType}> data_( std::piecewise_construct, std::forward_as_tuple( ${vectorSize}${allocateInitializer} ), std::forward_as_tuple( 0 ) );
     std::vector<${firstDataType}${allocatorType}> & ${firstDataVariable} = data_.first;
     ${secondDataType} & ${secondDataVariable} = data_.second;)";
 
+            return replaceWithMap( dataDeclarationTemplate,
+                                   { { "allocateInitializer", allocateInitializer },
+                                     { "allocatorType", allocatorType },
+                                     { "firstDataType", dataTypes[0] },
+                                     { "firstDataVariable", firstDataVariable },
+                                     { "secondDataType", dataTypes[1] },
+                                     { "secondDataVariable", secondDataVariable },
+                                     { "vectorSize", vectorSize } } );
+          }
+        }
+        else
+        {
+          assert( !singular );
+          assert( ( vectorParams.begin()->first == returnParams[0] ) && ( std::next( vectorParams.begin() )->first == returnParams[1] ) &&
+                  ( vectorParams.begin()->second.lenParam == std::next( vectorParams.begin() )->second.lenParam ) );
+
+          // the two returns are vectors with the same len parameter
+          std::string firstAllocatorType       = raii ? "" : ( startUpperCase( stripPrefix( dataTypes[0], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator" );
+          std::string firstAllocateInitializer = withAllocator ? ( ", " + startLowerCase( firstAllocatorType ) ) : "";
+          if ( !raii )
+          {
+            firstAllocatorType = ", " + firstAllocatorType;
+          }
+          std::string secondAllocatorType       = raii ? "" : ( startUpperCase( stripPrefix( dataTypes[1], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator" );
+          std::string secondAllocateInitializer = withAllocator ? ( ", " + startLowerCase( secondAllocatorType ) ) : "";
+          if ( !raii )
+          {
+            secondAllocatorType = ", " + secondAllocatorType;
+          }
+          std::string vectorSize = getVectorSize( commandData.params, vectorParams, returnParams[0], dataTypes[0], {} );
+
+          std::string const dataDeclarationTemplate =
+            R"(std::pair<std::vector<${firstDataType}${firstAllocatorType}>,std::vector<${secondDataType}${secondAllocatorType}>> data_( std::piecewise_construct, std::forward_as_tuple( ${vectorSize}${firstAllocateInitializer} ), std::forward_as_tuple( ${vectorSize}${secondAllocateInitializer} ) );
+    std::vector<${firstDataType}${firstAllocatorType}> & ${firstDataVariable} = data_.first;
+    std::vector<${secondDataType}${secondAllocatorType}> & ${secondDataVariable} = data_.second;)";
+
           return replaceWithMap( dataDeclarationTemplate,
-                                 { { "allocateInitializer", allocateInitializer },
-                                   { "allocatorType", allocatorType },
+                                 { { "firstAllocateInitializer", firstAllocateInitializer },
+                                   { "firstAllocatorType", firstAllocatorType },
                                    { "firstDataType", dataTypes[0] },
                                    { "firstDataVariable", firstDataVariable },
+                                   { "secondAllocateInitializer", secondAllocateInitializer },
+                                   { "secondAllocatorType", secondAllocatorType },
                                    { "secondDataType", dataTypes[1] },
                                    { "secondDataVariable", secondDataVariable },
                                    { "vectorSize", vectorSize } } );
@@ -9486,13 +9529,22 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
                       ( constructorIt->second.params[returnParams[1]].type.name == "VkResult" ) )
             {
               std::map<size_t, VectorParamData> vectorParams = determineVectorParams( constructorIt->second.params );
-              if ( vectorParams.size() == 3 )
+              switch ( vectorParams.size() )
               {
-                if ( std::ranges::all_of( returnParams, [&vectorParams]( auto returnParam ) { return vectorParams.contains( returnParam ); } ) )
-                {
-                  return { generateRAIIHandleConstructorByCall( handle, constructorIt, enter, leave, true, true ),
-                           generateRAIIHandleConstructorByCall( handle, constructorIt, enter, leave, true, false ) };
-                }
+                case 2:
+                  if ( ( vectorParams.begin()->first == returnParams[0] ) && ( std::next( vectorParams.begin() )->first == returnParams[1] ) &&
+                       ( vectorParams.begin()->second.lenParam == std::next( vectorParams.begin() )->second.lenParam ) )
+                  {
+                    return { "", generateRAIIHandleConstructorByCall( handle, constructorIt, enter, leave, true, false ) };
+                  }
+                  break;
+                case 3:
+                  if ( std::ranges::all_of( returnParams, [&vectorParams]( auto returnParam ) { return vectorParams.contains( returnParam ); } ) )
+                  {
+                    return { generateRAIIHandleConstructorByCall( handle, constructorIt, enter, leave, true, true ),
+                             generateRAIIHandleConstructorByCall( handle, constructorIt, enter, leave, true, false ) };
+                  }
+                  break;
               }
             }
             break;
@@ -9586,7 +9638,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorByCall( std::pair<s
 #if !defined( NDEBUG )
     std::map<size_t, VectorParamData> vectorParams = determineVectorParams( constructorIt->second.params );
 #endif
-    assert( ( vectorParams.size() == 3 ) && vectorParams.contains( returnParams[0] ) && vectorParams.contains( returnParams[1] ) );
+    assert( vectorParams.contains( returnParams[0] ) && vectorParams.contains( returnParams[1] ) );
 
     assert( isPlural );
     if ( forceSingular )

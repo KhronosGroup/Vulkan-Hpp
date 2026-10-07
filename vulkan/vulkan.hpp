@@ -37,6 +37,9 @@
 #  if defined( VULKAN_HPP_SUPPORT_SPAN )
 #    include <span>
 #  endif
+#  if defined( VULKAN_HPP_EXPECTED )
+#    include <expected>
+#  endif
 #endif
 
 VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 365, "Wrong VK_HEADER_VERSION!" );

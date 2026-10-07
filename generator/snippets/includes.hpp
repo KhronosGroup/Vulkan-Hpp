@@ -31,4 +31,7 @@
 #  if defined( VULKAN_HPP_SUPPORT_SPAN )
 #    include <span>
 #  endif
+#  if defined( VULKAN_HPP_EXPECTED )
+#    include <expected>
+#  endif
 #endif

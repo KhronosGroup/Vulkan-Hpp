@@ -8,6 +8,7 @@
 #include "../test_macros.hpp"
 #ifdef VULKAN_HPP_USE_CXX_MODULE
 #  include <cstdint>
+import std;
 import vulkan;
 #else
 #  include "vulkan/vulkan_raii.hpp"

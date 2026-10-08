@@ -4,11 +4,19 @@
 // VulkanHpp Samples : 11_InitShaders
 //                     Initialize vertex and fragment shaders
 
-#include "../utils/shaders.hpp"
-#include "../utils/utils.hpp"
 #include "glslang/Public/ShaderLang.h"
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+import RAII_utils;
+import std;
+import vulkan;
+#else
+#include "../utils/shaders.hpp"
+#include "../utils/utils.hpp"
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "11_InitShaders";
 static char const * EngineName = "Vulkan.hpp";
@@ -24,7 +32,7 @@ int main()
 #endif
     vk::raii::PhysicalDevice physicalDevice = vk::raii::PhysicalDevices( instance ).front();
 
-    uint32_t         graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    std::uint32_t    graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
     vk::raii::Device device                   = vk::raii::su::makeDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
@@ -58,17 +66,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

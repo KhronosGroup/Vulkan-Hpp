@@ -4,23 +4,29 @@
 // VulkanHpp Samples : PhysicalDeviceProperties
 //                     Get properties per physical device.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iomanip>
 #include <sstream>
 #include <vector>
 #include <vulkan/vulkan_to_string.hpp>
+#endif
+
 
 static char const * AppName    = "PhysicalDeviceProperties";
 static char const * EngineName = "Vulkan.hpp";
 
-std::string decodeAPIVersion( uint32_t apiVersion )
+std::string decodeAPIVersion( std::uint32_t apiVersion )
 {
-  return std::to_string( VK_VERSION_MAJOR( apiVersion ) ) + "." + std::to_string( VK_VERSION_MINOR( apiVersion ) ) + "." +
-         std::to_string( VK_VERSION_PATCH( apiVersion ) );
+    return std::to_string( vk::apiVersionMajor( apiVersion ) ) + "." + std::to_string( vk::apiVersionMinor( apiVersion ) ) + "." +
+      std::to_string( vk::apiVersionPatch( apiVersion ) );
 }
 
-std::string decodeDriverVersion( uint32_t driverVersion, uint32_t vendorID )
+std::string decodeDriverVersion( std::uint32_t driverVersion, std::uint32_t vendorID )
 {
   switch ( vendorID )
   {
@@ -32,7 +38,7 @@ std::string decodeDriverVersion( uint32_t driverVersion, uint32_t vendorID )
   }
 }
 
-std::string decodeVendorID( uint32_t vendorID )
+std::string decodeVendorID( std::uint32_t vendorID )
 {
   // below 0x10000 are the PCI vendor IDs (https://pcisig.com/membership/member-companies)
   if ( vendorID < 0x10000 )
@@ -59,20 +65,20 @@ namespace vk
     struct LUID
     {
     public:
-      LUID( uint8_t const data[VK_LUID_SIZE] )
+      LUID( std::uint8_t const data[vk::LuidSize] )
       {
-        memcpy( m_data, data, VK_LUID_SIZE * sizeof( uint8_t ) );
+        std::memcpy( m_data, data, vk::LuidSize * sizeof( std::uint8_t ) );
       }
 
-      uint8_t m_data[VK_LUID_SIZE];
+      std::uint8_t m_data[vk::LuidSize];
     };
 
     std::ostream & operator<<( std::ostream & os, LUID const & uuid )
     {
       os << std::setfill( '0' ) << std::hex;
-      for ( uint32_t j = 0; j < VK_LUID_SIZE; ++j )
+      for ( std::uint32_t j = 0; j < vk::LuidSize; ++j )
       {
-        os << std::setw( 2 ) << static_cast<uint32_t>( uuid.m_data[j] );
+        os << std::setw( 2 ) << static_cast<std::uint32_t>( uuid.m_data[j] );
         if ( j == 3 || j == 5 )
         {
           std::cout << '-';
@@ -88,7 +94,7 @@ int main()
 {
   try
   {
-    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, {}, VK_API_VERSION_1_3 );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, {}, vk::ApiVersion13 );
 #if !defined( NDEBUG )
     vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
@@ -99,7 +105,7 @@ int main()
     /* VULKAN_KEY_START */
 
     std::cout << std::boolalpha;
-    for ( size_t i = 0; i < physicalDevices.size(); i++ )
+    for ( std::size_t i = 0; i < physicalDevices.size(); i++ )
     {
       std::cout << "PhysicalDevice " << i << "\n";
 
@@ -286,8 +292,8 @@ int main()
       // some properties are only valid, if a corresponding extension is available!
       std::vector<vk::ExtensionProperties> extensionProperties = physicalDevices[i].enumerateDeviceExtensionProperties();
 
-      uint32_t apiVersion = properties.apiVersion;
-      if ( VK_API_VERSION_1_1 < apiVersion )
+      std::uint32_t apiVersion = properties.apiVersion;
+      if ( vk::ApiVersion11 < apiVersion )
       {
         if ( vk::su::contains( extensionProperties, "VK_KHR_acceleration_structure" ) )
         {
@@ -430,7 +436,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( ( VK_API_VERSION_1_2 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_depth_stencil_resolve" ) )
+      if ( ( vk::ApiVersion12 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_depth_stencil_resolve" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceDepthStencilResolveProperties>();
         vk::PhysicalDeviceDepthStencilResolveProperties const & depthStencilResolveProperties =
@@ -532,7 +538,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( ( VK_API_VERSION_1_2 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_EXT_descriptor_indexing" ) )
+      if ( ( vk::ApiVersion12 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_EXT_descriptor_indexing" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceDescriptorIndexingProperties>();
         vk::PhysicalDeviceDescriptorIndexingProperties const & descriptorIndexingProperties = properties2.get<vk::PhysicalDeviceDescriptorIndexingProperties>();
@@ -643,7 +649,7 @@ int main()
       }
 #endif
 
-      if ( ( VK_API_VERSION_1_2 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_driver_properties" ) )
+      if ( ( vk::ApiVersion12 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_driver_properties" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceDriverProperties>();
         vk::PhysicalDeviceDriverProperties const & driverProperties = properties2.get<vk::PhysicalDeviceDriverProperties>();
@@ -651,10 +657,10 @@ int main()
         std::cout << std::string( "\t\t" ) << "driverID            = " << vk::to_string( driverProperties.driverID ) << "\n";
         std::cout << std::string( "\t\t" ) << "driverName          = " << driverProperties.driverName << "\n";
         std::cout << std::string( "\t\t" ) << "driverInfo          = " << driverProperties.driverInfo << "\n";
-        std::cout << std::string( "\t\t" ) << "conformanceVersion  = " << static_cast<size_t>( driverProperties.conformanceVersion.major ) << "."
-                  << static_cast<size_t>( driverProperties.conformanceVersion.minor ) << "."
-                  << static_cast<size_t>( driverProperties.conformanceVersion.subminor ) << "."
-                  << static_cast<size_t>( driverProperties.conformanceVersion.patch ) << "\n";
+        std::cout << std::string( "\t\t" ) << "conformanceVersion  = " << static_cast<std::size_t>( driverProperties.conformanceVersion.major ) << "."
+                  << static_cast<std::size_t>( driverProperties.conformanceVersion.minor ) << "."
+                  << static_cast<std::size_t>( driverProperties.conformanceVersion.subminor ) << "."
+                  << static_cast<std::size_t>( driverProperties.conformanceVersion.patch ) << "\n";
         std::cout << "\n";
       }
 
@@ -728,7 +734,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( ( VK_API_VERSION_1_2 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_shader_float_controls" ) )
+      if ( ( vk::ApiVersion12 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_shader_float_controls" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceFloatControlsProperties>();
         vk::PhysicalDeviceFloatControlsProperties const & floatControlsProperties = properties2.get<vk::PhysicalDeviceFloatControlsProperties>();
@@ -903,14 +909,14 @@ int main()
         std::cout << std::string( "\t\t" ) << "copySrcLayoutCount              = " << hostImageCopyProperties.copySrcLayoutCount << "\n";
         std::cout << std::string( "\t\t" ) << "pCopySrcLayouts                 = "
                   << "\n";
-        for ( uint32_t j = 0; j < hostImageCopyProperties.copySrcLayoutCount; ++j )
+        for ( std::uint32_t j = 0; j < hostImageCopyProperties.copySrcLayoutCount; ++j )
         {
           std::cout << std::string( "\t\t\t" ) << j << " : " << vk::to_string( hostImageCopyProperties.pCopySrcLayouts[j] ) << "\n";
         }
         std::cout << std::string( "\t\t" ) << "copyDstLayoutCount              = " << hostImageCopyProperties.copyDstLayoutCount << "\n";
         std::cout << std::string( "\t\t" ) << "pCopyDstLayouts                 = "
                   << "\n";
-        for ( uint32_t j = 0; j < hostImageCopyProperties.copyDstLayoutCount; ++j )
+        for ( std::uint32_t j = 0; j < hostImageCopyProperties.copyDstLayoutCount; ++j )
         {
           std::cout << std::string( "\t\t\t" ) << j << " : " << vk::to_string( hostImageCopyProperties.pCopyDstLayouts[j] ) << "\n";
         }
@@ -919,14 +925,14 @@ int main()
         std::cout << "\n";
       }
 
-      if ( ( VK_API_VERSION_1_1 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_external_memory_capabilities" ) )
+      if ( ( vk::ApiVersion11 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_external_memory_capabilities" ) )
       {
         auto                                   properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties>();
         vk::PhysicalDeviceIDProperties const & idProperties = properties2.get<vk::PhysicalDeviceIDProperties>();
         std::cout << std::string( "\t" ) << "IDProperties:\n";
         std::cout << std::string( "\t\t" ) << "deviceUUID      = " << vk::su::UUID( idProperties.deviceUUID ) << "\n";
         std::cout << std::string( "\t\t" ) << "driverUUID      = " << vk::su::UUID( idProperties.driverUUID ) << "\n";
-        std::cout << std::string( "\t\t" ) << "deviceLUID      = " << vk::su::LUID( idProperties.deviceLUID ) << "\n";
+        std::cout << std::string( "\t\t" ) << "deviceLUID      = " << vk::su::LUID( idProperties.deviceLUID.data() ) << "\n";
         std::cout << std::string( "\t\t" ) << "deviceNodeMask  = " << std::hex << idProperties.deviceNodeMask << std::dec << "\n";
         std::cout << std::string( "\t\t" ) << "deviceLUIDValid = " << !!idProperties.deviceLUIDValid << "\n";
         std::cout << "\n";
@@ -968,7 +974,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( ( VK_API_VERSION_1_3 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_EXT_inline_uniform_block" ) )
+      if ( ( vk::ApiVersion13 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_EXT_inline_uniform_block" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceInlineUniformBlockProperties>();
         vk::PhysicalDeviceInlineUniformBlockProperties const & inlineUniformBlockProperties = properties2.get<vk::PhysicalDeviceInlineUniformBlockProperties>();
@@ -993,7 +999,7 @@ int main()
         vk::PhysicalDeviceLayeredApiPropertiesListKHR const & layeredApiProperties = properties2.get<vk::PhysicalDeviceLayeredApiPropertiesListKHR>();
         std::cout << std::string( "\t" ) << "LayeredApiProperties:\n";
         std::cout << std::string( "\t\t" ) << "layeredApiCount = " << layeredApiProperties.layeredApiCount << "\n";
-        for ( uint32_t j = 0; j < layeredApiProperties.layeredApiCount; ++j )
+        for ( std::uint32_t j = 0; j < layeredApiProperties.layeredApiCount; ++j )
         {
           std::cout << std::string( "\t\t\t" ) << "layeredApi " << j << "\n";
           std::cout << std::string( "\t\t\t\t" ) << "vendorID   = " << decodeVendorID( layeredApiProperties.pLayeredApis[j].vendorID ) << "\n";
@@ -1033,7 +1039,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( ( VK_API_VERSION_1_1 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_maintenance3" ) )
+      if ( ( vk::ApiVersion11 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_maintenance3" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMaintenance3Properties>();
         vk::PhysicalDeviceMaintenance3Properties const & maintenance3Properties = properties2.get<vk::PhysicalDeviceMaintenance3Properties>();
@@ -1043,7 +1049,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( ( VK_API_VERSION_1_3 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_maintenance4" ) )
+      if ( ( vk::ApiVersion13 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_maintenance4" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMaintenance4Properties>();
         vk::PhysicalDeviceMaintenance4Properties const & maintenance4Properties = properties2.get<vk::PhysicalDeviceMaintenance4Properties>();
@@ -1228,7 +1234,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( ( VK_API_VERSION_1_1 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_multiview" ) )
+      if ( ( vk::ApiVersion11 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_multiview" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMultiviewProperties>();
         vk::PhysicalDeviceMultiviewProperties const & multiviewProperties = properties2.get<vk::PhysicalDeviceMultiviewProperties>();
@@ -1331,7 +1337,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( ( VK_API_VERSION_1_1 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_maintenance2" ) )
+      if ( ( vk::ApiVersion11 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_maintenance2" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDevicePointClippingProperties>();
         vk::PhysicalDevicePointClippingProperties const & pointClippingProperties = properties2.get<vk::PhysicalDevicePointClippingProperties>();
@@ -1353,7 +1359,7 @@ int main()
       }
 #endif
 
-      if ( VK_API_VERSION_1_1 <= apiVersion )
+      if ( vk::ApiVersion11 <= apiVersion )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceProtectedMemoryProperties>();
         vk::PhysicalDeviceProtectedMemoryProperties const & protectedMemoryProperties = properties2.get<vk::PhysicalDeviceProtectedMemoryProperties>();
@@ -1555,7 +1561,7 @@ int main()
       }
 #endif
 
-      if ( ( VK_API_VERSION_1_3 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_shader_integer_dot_product" ) )
+      if ( ( vk::ApiVersion13 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_shader_integer_dot_product" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceShaderIntegerDotProductProperties>();
         vk::PhysicalDeviceShaderIntegerDotProductProperties const & shaderIntegerDotProductProperties =
@@ -1682,7 +1688,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( VK_API_VERSION_1_1 <= apiVersion )
+      if ( vk::ApiVersion11 <= apiVersion )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceSubgroupProperties>();
         vk::PhysicalDeviceSubgroupProperties const & subgroupProperties = properties2.get<vk::PhysicalDeviceSubgroupProperties>();
@@ -1694,7 +1700,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( ( VK_API_VERSION_1_3 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_EXT_subgroup_size_control" ) )
+      if ( ( vk::ApiVersion13 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_EXT_subgroup_size_control" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceSubgroupSizeControlProperties>();
         vk::PhysicalDeviceSubgroupSizeControlProperties const & subgroupSizeControlProperties =
@@ -1718,7 +1724,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( ( VK_API_VERSION_1_2 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_timeline_semaphore" ) )
+      if ( ( vk::ApiVersion12 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_KHR_timeline_semaphore" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceTimelineSemaphoreProperties>();
         vk::PhysicalDeviceTimelineSemaphoreProperties const & timelineSemaphoreProperties = properties2.get<vk::PhysicalDeviceTimelineSemaphoreProperties>();
@@ -1728,7 +1734,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( ( VK_API_VERSION_1_3 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_EXT_texel_buffer_alignment" ) )
+      if ( ( vk::ApiVersion13 <= apiVersion ) || vk::su::contains( extensionProperties, "VK_EXT_texel_buffer_alignment" ) )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceTexelBufferAlignmentProperties>();
         vk::PhysicalDeviceTexelBufferAlignmentProperties const & texelBufferAlignmentProperties =
@@ -1793,14 +1799,14 @@ int main()
         std::cout << "\n";
       }
 
-      if ( VK_API_VERSION_1_2 <= apiVersion )
+      if ( vk::ApiVersion12 <= apiVersion )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceVulkan11Properties>();
         vk::PhysicalDeviceVulkan11Properties const & vulkan11Properties = properties2.get<vk::PhysicalDeviceVulkan11Properties>();
         std::cout << std::string( "\t" ) << "Vulkan11Properties:\n";
         std::cout << std::string( "\t\t" ) << "deviceUUID                        = " << vk::su::UUID( vulkan11Properties.deviceUUID ) << "\n";
         std::cout << std::string( "\t\t" ) << "driverUUID                        = " << vk::su::UUID( vulkan11Properties.driverUUID ) << "\n";
-        std::cout << std::string( "\t\t" ) << "deviceLUID                        = " << vk::su::LUID( vulkan11Properties.deviceLUID ) << "\n";
+        std::cout << std::string( "\t\t" ) << "deviceLUID                        = " << vk::su::LUID( vulkan11Properties.deviceLUID.data() ) << "\n";
         std::cout << std::string( "\t\t" ) << "deviceNodeMask                    = " << vulkan11Properties.deviceNodeMask << "\n";
         std::cout << std::string( "\t\t" ) << "deviceLUIDValid                   = " << !!vulkan11Properties.deviceLUIDValid << "\n";
         std::cout << std::string( "\t\t" ) << "subgroupSize                      = " << vulkan11Properties.subgroupSize << "\n";
@@ -1816,7 +1822,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( VK_API_VERSION_1_2 <= apiVersion )
+      if ( vk::ApiVersion12 <= apiVersion )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceVulkan12Properties>();
         vk::PhysicalDeviceVulkan12Properties const & vulkan12Properties = properties2.get<vk::PhysicalDeviceVulkan12Properties>();
@@ -1825,10 +1831,10 @@ int main()
         std::cout << std::string( "\t\t" ) << "driverName                                           = " << vulkan12Properties.driverName << "\n";
         std::cout << std::string( "\t\t" ) << "driverInfo                                           = " << vulkan12Properties.driverInfo << "\n";
         std::cout << std::string( "\t\t" )
-                  << "conformanceVersion                                   = " << static_cast<size_t>( vulkan12Properties.conformanceVersion.major ) << "."
-                  << static_cast<size_t>( vulkan12Properties.conformanceVersion.minor ) << "."
-                  << static_cast<size_t>( vulkan12Properties.conformanceVersion.subminor ) << "."
-                  << static_cast<size_t>( vulkan12Properties.conformanceVersion.patch ) << "\n";
+                  << "conformanceVersion                                   = " << static_cast<std::size_t>( vulkan12Properties.conformanceVersion.major ) << "."
+                  << static_cast<std::size_t>( vulkan12Properties.conformanceVersion.minor ) << "."
+                  << static_cast<std::size_t>( vulkan12Properties.conformanceVersion.subminor ) << "."
+                  << static_cast<std::size_t>( vulkan12Properties.conformanceVersion.patch ) << "\n";
         std::cout << std::string( "\t\t" )
                   << "denormBehaviorIndependence                           = " << vk::to_string( vulkan12Properties.denormBehaviorIndependence ) << "\n";
         std::cout << std::string( "\t\t" )
@@ -1931,7 +1937,7 @@ int main()
         std::cout << "\n";
       }
 
-      if ( VK_API_VERSION_1_3 <= apiVersion )
+      if ( vk::ApiVersion13 <= apiVersion )
       {
         auto properties2 = physicalDevices[i].getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceVulkan13Properties>();
         vk::PhysicalDeviceVulkan13Properties const & vulkan13Properties = properties2.get<vk::PhysicalDeviceVulkan13Properties>();
@@ -2041,17 +2047,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

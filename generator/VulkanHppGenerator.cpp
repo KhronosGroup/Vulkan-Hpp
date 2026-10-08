@@ -220,7 +220,6 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     assert( inserted );
     structIt->second.aliases           = structure.aliases;
     structIt->second.allowDuplicate    = ( structure.allowDuplicate == "true" );
-    structIt->second.isUnion           = false;
     structIt->second.requiredLimitType = ( structure.requiredLimitType == "true" );
     structIt->second.returnedOnly      = ( structure.returnedOnly == "true" );
     structIt->second.structExtends     = structure.structExtends;
@@ -255,11 +254,13 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
                                                             "VkWin32KeyedMutexAcquireReleaseInfoKHR",
                                                             "VkWin32KeyedMutexAcquireReleaseInfoNV" };
     bool                         warned                 = false;
-    for ( auto m0It = structIt->second.members.begin(); !warned && ( m0It != structIt->second.members.end() ); ++m0It )
+    assert( std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
+    auto const & members = std::get<std::vector<StructMember>>( structIt->second.members );
+    for ( auto m0It = members.begin(); !warned && ( m0It != members.end() ); ++m0It )
     {
       if ( !m0It->len.empty() && ( m0It->len.front() != "null-terminated" ) )
       {
-        for ( auto m1It = std::next( m0It ); !warned && ( m1It != structIt->second.members.end() ); ++m1It )
+        for ( auto m1It = std::next( m0It ); !warned && ( m1It != members.end() ); ++m1It )
         {
           if ( !m1It->len.empty() && ( m0It->len.front() == m1It->len.front() ) )
           {
@@ -295,22 +296,10 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     // we hold unions in the same map as structs, but mark them as union, to be able to check for correct usage of selectors
     auto [structIt, inserted] = m_structs.insert( { u.name, {} } );
     assert( inserted );
-    structIt->second.isUnion      = true;
     structIt->second.aliases      = u.aliases;
     structIt->second.returnedOnly = ( u.returnedOnly == "true" );
-    for ( auto const & member : u.members )
-    {
-      StructMember structMember{ .name           = member.name,
-                                 .arraySizes     = member.arraySizes,
-                                 .len            = { member.len },
-                                 .noAutoValidity = member.noAutoValidity == "true",
-                                 .optional       = { member.optional == "true" },
-                                 .type           = member.type,
-                                 .xmlLine        = member.xmlLine };
-      structIt->second.members.push_back( std::move( structMember ) );
-      structIt->second.selections[member.name] = { member.selection };
-    }
-    structIt->second.xmlLine = u.xmlLine;
+    structIt->second.members      = u.members;
+    structIt->second.xmlLine      = u.xmlLine;
   }
   for ( auto const & feature : m_vkxml.features )
   {
@@ -1199,9 +1188,11 @@ void VulkanHppGenerator::checkRequireDependenciesCorrectness( RequireData const 
       std::string member    = depends.substr( separatorPos + 2 );
       auto        structIt  = m_structs.find( structure );
       checkForError( structIt != m_structs.end(), require.xmlLine, section + " <" + name + "> requires member of an unknown struct <" + structure + ">" );
-      checkForError( std::ranges::any_of( structIt->second.members, [&member]( auto const & md ) { return md.name == member; } ),
-                     require.xmlLine,
-                     section + " <" + name + "> requires unknown member <" + member + "> as part of the struct <" + structure + ">" );
+      assert( std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
+      checkForError(
+        std::ranges::any_of( std::get<std::vector<StructMember>>( structIt->second.members ), [&member]( auto const & md ) { return md.name == member; } ),
+        require.xmlLine,
+        section + " <" + name + "> requires unknown member <" + member + "> as part of the struct <" + structure + ">" );
     }
   }
 }
@@ -1277,7 +1268,14 @@ void VulkanHppGenerator::checkStructCorrectness() const
       !typeIt->second.requiredBy.empty(), structure.second.xmlLine, "structure <" + structure.first + "> not required by any feature or extension" );
 
     // checks on the members of a struct
-    checkStructMemberCorrectness( structure.first, structure.second.members, sTypeValues );
+    if ( std::holds_alternative<std::vector<StructMember>>( structure.second.members ) )
+    {
+      checkStructMemberCorrectness( structure.first, std::get<std::vector<StructMember>>( structure.second.members ), sTypeValues );
+    }
+    else
+    {
+      checkUnionMemberCorrectness( structure.first, std::get<std::vector<UnionMember>>( structure.second.members ) );
+    }
   }
 
   // enum VkStructureType checks (need to be after structure checks because of sTypeValues gathered there)
@@ -1351,12 +1349,11 @@ void VulkanHppGenerator::checkStructMemberSelectorConnection( std::string const 
     auto selectorEnumIt = findByNameOrAlias( m_enums, selectorIt->type.name );
     assert( selectorEnumIt != m_enums.end() );
     auto unionIt = m_structs.find( memberType );
-    assert( ( unionIt != m_structs.end() ) && unionIt->second.isUnion );
-    for ( auto const & unionMember : unionIt->second.members )
+    assert( ( unionIt != m_structs.end() ) && std::holds_alternative<std::vector<UnionMember>>( unionIt->second.members ) );
+    for ( auto const & unionMember : std::get<std::vector<UnionMember>>( unionIt->second.members ) )
     {
       // check that each union member has a selection, that is a value of the seleting enum
-      assert( unionIt->second.selections.contains( unionMember.name ) && !unionIt->second.selections.find( unionMember.name )->second.empty() );
-      for ( auto const & selection : unionIt->second.selections.find( unionMember.name )->second )
+      for ( auto const & selection : unionMember.selection )
       {
         checkForError( containsByNameOrAlias( selectorEnumIt->second.values, selection ),
                        unionMember.xmlLine,
@@ -1426,13 +1423,26 @@ void VulkanHppGenerator::checkStructMemberValueIsValid( std::string const &     
   }
 }
 
+void VulkanHppGenerator::checkUnionMemberCorrectness( std::string const & structureName, std::vector<UnionMember> const & members ) const
+{
+  for ( auto const & member : members )
+  {
+    checkStructMemberArraySizesAreValid( member.arraySizes, member.xmlLine );
+    checkStructMemberTypeIsKnown( member.type.name, member.xmlLine );
+    checkStructMemberTypeIsRequired( member.type.name, member.xmlLine, structureName );
+  }
+}
+
 bool VulkanHppGenerator::containsArray( std::string const & type ) const
 {
   // a simple recursive check if a type is or contains an array
   auto structureIt = m_structs.find( type );
   return ( ( structureIt != m_structs.end() ) &&
-           std::ranges::any_of( structureIt->second.members,
-                                [this]( auto const & member ) { return !member.arraySizes.empty() || containsArray( member.type.name ); } ) );
+           ( std::holds_alternative<std::vector<StructMember>>( structureIt->second.members )
+               ? std::ranges::any_of( std::get<std::vector<StructMember>>( structureIt->second.members ),
+                                      [this]( auto const & member ) { return !member.arraySizes.empty() || containsArray( member.type.name ); } )
+               : std::ranges::any_of( std::get<std::vector<UnionMember>>( structureIt->second.members ),
+                                      [this]( auto const & member ) { return !member.arraySizes.empty() || containsArray( member.type.name ); } ) ) );
 }
 
 bool VulkanHppGenerator::containsDeprecated( std::vector<StructMember> const & members ) const
@@ -1444,24 +1454,29 @@ bool VulkanHppGenerator::containsFuncPointer( std::string const & type ) const
 {
   // a simple recursive check if a type contains a funcpointer
   auto structureIt = m_structs.find( type );
-  return ( structureIt != m_structs.end() ) && std::ranges::any_of( structureIt->second.members,
-                                                                    [this, &type]( auto const & member )
-                                                                    {
-                                                                      return containsByName( m_vkxml.funcPointers, member.type.name ) ||
-                                                                             ( ( member.type.name != type ) && containsFuncPointer( member.type.name ) );
-                                                                    } );
+  // We just care for func pointers in structs, no in unions!
+  return ( structureIt != m_structs.end() ) && std::holds_alternative<std::vector<StructMember>>( structureIt->second.members ) &&
+         std::ranges::any_of( std::get<std::vector<StructMember>>( structureIt->second.members ),
+                              [this, &type]( auto const & member )
+                              {
+                                return containsByName( m_vkxml.funcPointers, member.type.name ) ||
+                                       ( ( member.type.name != type ) && containsFuncPointer( member.type.name ) );
+                              } );
 }
 
 bool VulkanHppGenerator::containsFloatingPoints( std::vector<StructMember> const & members ) const
 {
-  return std::ranges::any_of( members,
-                              [this]( auto const & member )
-                              {
-                                auto structureIt = m_structs.find( member.type.name );
-                                return member.type.isValue() &&
-                                       ( ( member.type.name == "float" ) || ( member.type.name == "double" ) ||
-                                         ( ( structureIt != m_structs.end() ) && containsFloatingPoints( structureIt->second.members ) ) );
-                              } );
+  return std::ranges::any_of(
+    members,
+    [this]( auto const & member )
+    {
+      auto structureIt = m_structs.find( member.type.name );
+      assert( !member.type.isValue() || ( structureIt == m_structs.end() ) ||
+              std::holds_alternative<std::vector<StructMember>>( structureIt->second.members ) );
+      return member.type.isValue() &&
+             ( ( member.type.name == "float" ) || ( member.type.name == "double" ) ||
+               ( ( structureIt != m_structs.end() ) && containsFloatingPoints( std::get<std::vector<StructMember>>( structureIt->second.members ) ) ) );
+    } );
 }
 
 bool VulkanHppGenerator::containsUnion( std::string const & type ) const
@@ -1469,24 +1484,45 @@ bool VulkanHppGenerator::containsUnion( std::string const & type ) const
   // a simple recursive check if a type is or contains a union
   auto structureIt = m_structs.find( type );
   return ( structureIt != m_structs.end() ) &&
-         ( structureIt->second.isUnion ||
-           std::ranges::any_of( structureIt->second.members,
+         ( std::holds_alternative<std::vector<UnionMember>>( structureIt->second.members ) ||
+           std::ranges::any_of( std::get<std::vector<StructMember>>( structureIt->second.members ),
                                 [this]( auto const & member ) { return member.type.isValue() && containsUnion( member.type.name ); } ) );
 }
 
 bool VulkanHppGenerator::describesVector( StructData const & structure, std::string const & type ) const
 {
-  return std::ranges::any_of( structure.members,
-                              [&structure, &type]( auto const & member )
-                              {
-                                if ( ( type.empty() || ( member.type.name == type ) ) && member.type.isNonConstPointer() && ( member.len.size() == 1 ) )
+  if ( std::holds_alternative<std::vector<StructMember>>( structure.members ) )
+  {
+    auto const & members = std::get<std::vector<StructMember>>( structure.members );
+    return std::ranges::any_of( members,
+                                [&members, &type]( auto const & member )
                                 {
-                                  auto lenMemberIt = findByName( structure.members, member.len[0] );
-                                  assert( lenMemberIt != structure.members.end() );
-                                  return lenMemberIt->type.isValue() && ( ( lenMemberIt->type.name == "size_t" ) || ( lenMemberIt->type.name == "uint32_t" ) );
-                                }
-                                return false;
-                              } );
+                                  if ( ( type.empty() || ( member.type.name == type ) ) && member.type.isNonConstPointer() && ( member.len.size() == 1 ) )
+                                  {
+                                    auto lenMemberIt = findByName( members, member.len[0] );
+                                    assert( lenMemberIt != members.end() );
+                                    return lenMemberIt->type.isValue() &&
+                                           ( ( lenMemberIt->type.name == "size_t" ) || ( lenMemberIt->type.name == "uint32_t" ) );
+                                  }
+                                  return false;
+                                } );
+  }
+  else
+  {
+    auto const & members = std::get<std::vector<UnionMember>>( structure.members );
+    return std::ranges::any_of( members,
+                                [&members, &type]( auto const & member )
+                                {
+                                  if ( ( type.empty() || ( member.type.name == type ) ) && member.type.isNonConstPointer() )
+                                  {
+                                    auto lenMemberIt = findByName( members, member.len );
+                                    assert( lenMemberIt != members.end() );
+                                    return lenMemberIt->type.isValue() &&
+                                           ( ( lenMemberIt->type.name == "size_t" ) || ( lenMemberIt->type.name == "uint32_t" ) );
+                                  }
+                                  return false;
+                                } );
+  }
 }
 
 std::vector<size_t> VulkanHppGenerator::determineChainedReturnParams( std::vector<ParamData> const & params, std::vector<size_t> const & returnParams ) const
@@ -1660,8 +1696,16 @@ std::vector<std::map<std::string, VulkanHppGenerator::CommandData>::const_iterat
             {
               // check if the destructor param type equals a structure member type
               auto structureIt = m_structs.find( pd.type.name );
-              return ( structureIt != m_structs.end() ) &&
-                     ( findByType( structureIt->second.members, destructorParam.type.name ) != structureIt->second.members.end() );
+              if ( structureIt != m_structs.end() )
+              {
+                assert( std::holds_alternative<std::vector<StructMember>>( structureIt->second.members ) );
+                auto const & members = std::get<std::vector<StructMember>>( structureIt->second.members );
+                return ( findByType( members, destructorParam.type.name ) != members.end() );
+              }
+              else
+              {
+                return false;
+              }
             }
             return true;
           };
@@ -1772,13 +1816,15 @@ std::set<size_t> VulkanHppGenerator::determineSkippedParams( std::vector<ParamDa
 
 std::string VulkanHppGenerator::determineSubStruct( std::pair<std::string, StructData> const & structure ) const
 {
-  if ( structure.second.members.front().name != "sType" )
+  assert( std::holds_alternative<std::vector<StructMember>>( structure.second.members ) );
+  auto const & members = std::get<std::vector<StructMember>>( structure.second.members );
+  if ( members.front().name != "sType" )
   {
     // check if sd is a substruct of structure
-    auto isSubStruct = [&structure]( std::pair<std::string, StructData> const & sd ) noexcept
+    auto isSubStruct = [&structure, &members]( std::pair<std::string, StructData> const & sd ) noexcept
     {
       // member-by-member comparison of type and name
-      auto memberIt = structure.second.members.begin();
+      auto memberIt = members.begin();
       auto isMember = [&memberIt]( StructMember const & member ) noexcept
       {
         if ( ( member.type == memberIt->type ) && ( member.name == memberIt->name ) )
@@ -1789,8 +1835,9 @@ std::string VulkanHppGenerator::determineSubStruct( std::pair<std::string, Struc
         return false;
       };
 
-      return ( sd.second.xmlLine < structure.second.xmlLine ) && ( sd.second.members.size() < structure.second.members.size() ) &&
-             std::ranges::all_of( sd.second.members, isMember );
+      assert( std::holds_alternative<std::vector<StructMember>>( sd.second.members ) );
+      auto const & sdMembers = std::get<std::vector<StructMember>>( sd.second.members );
+      return ( sd.second.xmlLine < structure.second.xmlLine ) && ( sdMembers.size() < members.size() ) && std::ranges::all_of( sdMembers, isMember );
     };
 
     // look for a struct in m_structs that starts identically to structure
@@ -2209,11 +2256,12 @@ VulkanHppGenerator::FeatureData VulkanHppGenerator::featureToFeatureData( Featur
       if ( !supported && typeIt->second.category == TypeCategory::Struct )
       {
         auto structIt = findByNameOrAlias( m_structs, requireType.name );
-        assert( structIt != m_structs.end() );
-        if ( !structIt->second.members.empty() && !structIt->second.members.front().values.empty() )
+        assert( structIt != m_structs.end() && std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
+        auto const & members = std::get<std::vector<StructMember>>( structIt->second.members );
+        if ( !members.empty() && !members.front().values.empty() )
         {
-          assert( structIt->second.members.front().name == "sType" );
-          auto valueIt = findByName( structureTypeIt->second.values, structIt->second.members.front().values );
+          assert( members.front().name == "sType" );
+          auto valueIt = findByName( structureTypeIt->second.values, members.front().values );
           assert( valueIt != structureTypeIt->second.values.end() );
           valueIt->supported = supported;
         }
@@ -3219,19 +3267,28 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
 #if !defined( NDEBUG )
     auto paramIt = std::ranges::find_if( commandData.params, []( ParamData const & pd ) { return pd.name == "pCreateInfo"; } );
     assert( paramIt != commandData.params.end() && ( paramIt->type.name == "VkPipelineBinaryCreateInfoKHR" ) );
-    auto structIt = m_structs.find( "VkPipelineBinaryCreateInfoKHR" );
-    assert( ( structIt != m_structs.end() ) &&
-            std::ranges::any_of( structIt->second.members, []( StructMember const & member ) { return member.name == "pipeline"; } ) &&
-            std::ranges::any_of( structIt->second.members, []( StructMember const & member ) { return member.name == "pPipelineCreateInfo"; } ) );
-    auto memberIt = std::ranges::find_if( structIt->second.members, []( StructMember const & member ) { return member.name == "pKeysAndDataInfo"; } );
-    assert( memberIt != structIt->second.members.end() && ( memberIt->type.name == "VkPipelineBinaryKeysAndDataKHR" ) );
-    structIt = m_structs.find( "VkPipelineBinaryKeysAndDataKHR" );
-    assert( ( structIt != m_structs.end() ) &&
-            std::ranges::any_of( structIt->second.members, []( StructMember const & member ) { return member.name == "binaryCount"; } ) );
-    structIt = m_structs.find( "VkPipelineBinaryHandlesInfoKHR" );
-    assert( ( structIt != m_structs.end() ) &&
-            std::ranges::any_of( structIt->second.members, []( StructMember const & member ) { return member.name == "pipelineBinaryCount"; } ) &&
-            std::ranges::any_of( structIt->second.members, []( StructMember const & member ) { return member.name == "pPipelineBinaries"; } ) );
+    {
+      auto structIt = m_structs.find( "VkPipelineBinaryCreateInfoKHR" );
+      assert( ( structIt != m_structs.end() ) && std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
+      auto const & members = std::get<std::vector<StructMember>>( structIt->second.members );
+      assert( std::ranges::any_of( members, []( StructMember const & member ) { return member.name == "pipeline"; } ) &&
+              std::ranges::any_of( members, []( StructMember const & member ) { return member.name == "pPipelineCreateInfo"; } ) );
+      auto memberIt = std::ranges::find_if( members, []( StructMember const & member ) { return member.name == "pKeysAndDataInfo"; } );
+      assert( memberIt != members.end() && ( memberIt->type.name == "VkPipelineBinaryKeysAndDataKHR" ) );
+    }
+    {
+      auto structIt = m_structs.find( "VkPipelineBinaryKeysAndDataKHR" );
+      assert( ( structIt != m_structs.end() ) && std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
+      auto const & members = std::get<std::vector<StructMember>>( structIt->second.members );
+      assert( std::ranges::any_of( members, []( StructMember const & member ) { return member.name == "binaryCount"; } ) );
+    }
+    {
+      auto structIt = m_structs.find( "VkPipelineBinaryHandlesInfoKHR" );
+      assert( ( structIt != m_structs.end() ) && std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
+      auto const & members = std::get<std::vector<StructMember>>( structIt->second.members );
+      assert( std::ranges::any_of( members, []( StructMember const & member ) { return member.name == "pipelineBinaryCount"; } ) &&
+              std::ranges::any_of( members, []( StructMember const & member ) { return member.name == "pPipelineBinaries"; } ) );
+    }
 #endif
 
     std::string const callSequenceTemplate = R"(    Result result_;
@@ -3279,10 +3336,10 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
     if ( vectorParamIt->second.byStructure )
     {
       auto structIt = m_structs.find( commandData.params[vectorParamIt->first].type.name );
-      assert( structIt != m_structs.end() );
-      vectorName = structIt->second.members.back().name;
-      vectorSize = startLowerCase( stripPrefix( commandData.params[vectorParamIt->first].name, "p" ) ) + "." +
-                   structIt->second.members[vectorParamIt->second.lenParam].name;
+      assert( structIt != m_structs.end() && std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
+      auto const & members = std::get<std::vector<StructMember>>( structIt->second.members );
+      vectorName           = members.back().name;
+      vectorSize = startLowerCase( stripPrefix( commandData.params[vectorParamIt->first].name, "p" ) ) + "." + members[vectorParamIt->second.lenParam].name;
     }
     else
     {
@@ -3754,10 +3811,12 @@ std::string VulkanHppGenerator::generateCommand1ReturnsVectorOfStructs( std::str
                                                                         std::map<size_t, VectorParamData> const &         vectorParams,
                                                                         std::map<std::string, StructData>::const_iterator structIt ) const
 {
-  if ( auto handleMemberIt = findHandleMember( structIt->second.members ); handleMemberIt != structIt->second.members.end() )
+  assert( std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
+  auto const & members = std::get<std::vector<StructMember>>( structIt->second.members );
+  if ( auto handleMemberIt = findHandleMember( members ); handleMemberIt != members.end() )
   {
     // the returnType is a vector of structs with a handle
-    if ( auto vectorMemberIt = findVectorMember( structIt->second.members ); vectorMemberIt != structIt->second.members.end() )
+    if ( auto vectorMemberIt = findVectorMember( members ); vectorMemberIt != members.end() )
     {
       // the returnType is a vector of structs with a handle and a vector
       if ( structIt->second.extendedBy.empty() )
@@ -3766,9 +3825,7 @@ std::string VulkanHppGenerator::generateCommand1ReturnsVectorOfStructs( std::str
         if ( handleMemberIt == vectorMemberIt )
         {
           // the returnType is a vector of non-extendable structs with a vector of handles
-          checkForError( std::find_if( std::next( vectorMemberIt ),
-                                       structIt->second.members.end(),
-                                       []( auto const & member ) { return !member.len.empty(); } ) == structIt->second.members.end(),
+          checkForError( std::find_if( std::next( vectorMemberIt ), members.end(), []( auto const & member ) { return !member.len.empty(); } ) == members.end(),
                          structIt->second.xmlLine,
                          "Structure " + structIt->first + " used for vector of handles return has multiple members with len!" );
 
@@ -3790,7 +3847,7 @@ std::string VulkanHppGenerator::generateCommand1ReturnsVectorOfStructs( std::str
   else
   {
     // the returnType is a vector of structs without a handle
-    if ( auto vectorMemberIt = findVectorMember( structIt->second.members ); vectorMemberIt != structIt->second.members.end() )
+    if ( auto vectorMemberIt = findVectorMember( members ); vectorMemberIt != members.end() )
     {
       // the returnType is a vector of structs with a vector
       // can't generate an enhanced version for such a complex command! Just use the standard version
@@ -4915,12 +4972,13 @@ std::string VulkanHppGenerator::generateConstexprString( std::pair<std::string, 
 {
   // structs with a VkBaseInStructure and VkBaseOutStructure can't be a constexpr!
   bool const isConstExpression = ( structData.first != "VkBaseInStructure" ) && ( structData.first != "VkBaseOutStructure" );
+  assert( std::holds_alternative<std::vector<StructMember>>( structData.second.members ) );
+  auto const & members = std::get<std::vector<StructMember>>( structData.second.members );
   return isConstExpression
          ? ( std::string( "VULKAN_HPP_CONSTEXPR" ) +
-             ( containsDeprecated( structData.second.members )
+             ( containsDeprecated( members )
                  ? "_17 "
-                 : ( ( containsUnion( structData.first ) || containsArray( structData.first ) || containsDeprecated( structData.second.members ) ) ? "_14 "
-                                                                                                                                                   : " " ) ) )
+                 : ( ( containsUnion( structData.first ) || containsArray( structData.first ) || containsDeprecated( members ) ) ? "_14 " : " " ) ) )
          : "";
 }
 
@@ -5733,8 +5791,8 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
     {
       deleterDefinition = "detail::ObjectDestroy<" + className + ", Dispatch> deleter( *this, allocator, d )";
       auto structIt     = m_structs.find( commandData.params[returnParams[0]].type.name );
-      assert( structIt != m_structs.end() );
-      vectorName = startLowerCase( stripPrefix( structIt->second.members.back().name, "p" ) );
+      assert( structIt != m_structs.end() && std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
+      vectorName = startLowerCase( stripPrefix( std::get<std::vector<StructMember>>( structIt->second.members ).back().name, "p" ) );
       vectorSize = vectorName + ".size()";
     }
     else
@@ -9349,8 +9407,10 @@ std::string
             auto structureIt = m_structs.find( constructorParam.type.name );
             if ( structureIt != m_structs.end() )
             {
-              auto structureMemberIt = findByType( structureIt->second.members, destructorParam.type.name );
-              if ( structureMemberIt != structureIt->second.members.end() )
+              assert( std::holds_alternative<std::vector<StructMember>>( structureIt->second.members ) );
+              auto const & members           = std::get<std::vector<StructMember>>( structureIt->second.members );
+              auto         structureMemberIt = findByType( members, destructorParam.type.name );
+              if ( structureMemberIt != members.end() )
               {
                 assert( constructorParam.type.isConstPointer() && constructorParam.arraySizes.empty() && constructorParam.lenExpression.empty() &&
                         !constructorParam.optional );
@@ -10261,8 +10321,10 @@ std::string VulkanHppGenerator::generateRAIIHandleSingularConstructorArguments( 
             auto structureIt = m_structs.find( param.type.name );
             if ( structureIt != m_structs.end() )
             {
-              auto memberIt = findByType( structureIt->second.members, destructorParam.type.name );
-              if ( memberIt != structureIt->second.members.end() )
+              assert( std::holds_alternative<std::vector<StructMember>>( structureIt->second.members ) );
+              auto const & members  = std::get<std::vector<StructMember>>( structureIt->second.members );
+              auto         memberIt = findByType( members, destructorParam.type.name );
+              if ( memberIt != members.end() )
               {
 #if !defined( NDEBUG )
                 found = true;
@@ -10986,7 +11048,7 @@ std::string VulkanHppGenerator::generateStruct( std::pair<std::string, StructDat
     }
   }
 
-  if ( structure.second.isUnion )
+  if ( std::holds_alternative<std::vector<UnionMember>>( structure.second.members ) )
   {
     str += generateUnion( structure );
   }
@@ -11002,9 +11064,11 @@ std::string VulkanHppGenerator::generateStruct( std::pair<std::string, StructDat
 std::string VulkanHppGenerator::generateStructCastAssignments( std::pair<std::string, StructData> const & structData ) const
 {
   std::string castAssignments;
-  if ( containsDeprecated( structData.second.members ) )
+  assert( std::holds_alternative<std::vector<StructMember>>( structData.second.members ) );
+  auto const & members = std::get<std::vector<StructMember>>( structData.second.members );
+  if ( containsDeprecated( members ) )
   {
-    for ( auto const & member : structData.second.members )
+    for ( auto const & member : members )
     {
       if ( member.deprecated.empty() && ( member.type.name != "VkStructureType" ) )
       {
@@ -11044,10 +11108,12 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
   std::string compareMembers, spaceshipMembers;
   std::string intro             = "";
   bool        nonDefaultCompare = false;
-  std::string spaceshipOrdering = containsFloatingPoints( structData.second.members ) ? "std::partial_ordering" : "std::strong_ordering";
-  for ( size_t i = 0; i < structData.second.members.size(); i++ )
+  assert( std::holds_alternative<std::vector<StructMember>>( structData.second.members ) );
+  auto const & members           = std::get<std::vector<StructMember>>( structData.second.members );
+  std::string  spaceshipOrdering = containsFloatingPoints( members ) ? "std::partial_ordering" : "std::strong_ordering";
+  for ( size_t i = 0; i < members.size(); i++ )
   {
-    StructMember const & member = structData.second.members[i];
+    StructMember const & member = members[i];
     if ( member.deprecated.empty() )
     {
       auto typeIt = m_types.find( member.type.name );
@@ -11121,7 +11187,9 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
         nonDefaultCompare = true;
 
         assert( ( member.arraySizes.size() == 1 ) && ( member.len.size() == 1 ) );
-        assert( std::ranges::any_of( structData.second.members, [&member]( StructMember const & sm ) { return sm.name == member.len[0]; } ) );
+        assert( std::holds_alternative<std::vector<StructMember>>( structData.second.members ) );
+        assert( std::ranges::any_of( std::get<std::vector<StructMember>>( structData.second.members ),
+                                     [&member]( StructMember const & sm ) { return sm.name == member.len[0]; } ) );
 
         std::string type = member.type.compose( "Vk" );
 
@@ -11229,7 +11297,9 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
 
   std::vector<std::string> arguments, initializers;
   std::string              ignores;
-  for ( auto const & member : structData.second.members )
+  assert( std::holds_alternative<std::vector<StructMember>>( structData.second.members ) );
+  auto const & members = std::get<std::vector<StructMember>>( structData.second.members );
+  for ( auto const & member : members )
   {
     // gather the arguments
     std::string argument = generateStructConstructorArgument( structData.first, member, true );
@@ -11245,8 +11315,8 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
     }
   }
 
-  auto pNextIt = std::ranges::find_if( structData.second.members, []( StructMember const & member ) { return member.name == "pNext"; } );
-  if ( pNextIt != structData.second.members.end() )
+  auto pNextIt = std::ranges::find_if( members, []( StructMember const & member ) { return member.name == "pNext"; } );
+  if ( pNextIt != members.end() )
   {
     // add pNext as a last optional argument to the constructor
     arguments.push_back( pNextIt->type.compose( "Vk" ) + " pNext_ = nullptr" );
@@ -11266,11 +11336,12 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
 std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<std::string, StructData> const & structData ) const
 {
   // some structs needs some special handling!
+  assert( std::holds_alternative<std::vector<StructMember>>( structData.second.members ) );
+  auto const & members = std::get<std::vector<StructMember>>( structData.second.members );
   if ( structData.first == "VkLayerSettingEXT" )
   {
-    assert( ( structData.second.members.size() == 5 ) && ( structData.second.members[0].name == "pLayerName" ) &&
-            ( structData.second.members[1].name == "pSettingName" ) && ( structData.second.members[2].name == "type" ) &&
-            ( structData.second.members[3].name == "valueCount" ) && ( structData.second.members[4].name == "pValues" ) );
+    assert( ( members.size() == 5 ) && ( members[0].name == "pLayerName" ) && ( members[1].name == "pSettingName" ) && ( members[2].name == "type" ) &&
+            ( members[3].name == "valueCount" ) && ( members[4].name == "pValues" ) );
 
     static std::string const byTypeTemplate =
       R"(    LayerSettingEXT( char const * pLayerName_, char const * pSettingName_, LayerSettingTypeEXT type_, ArrayProxyNoTemporaries<const ${type}> const & values_ )
@@ -11307,17 +11378,16 @@ ${byString}
                              { "byString", replaceWithMap( byTypeTemplate, { { "type", "char *" } } ) },
                            } );
   }
-  else if ( std::ranges::any_of( structData.second.members,
-                                 [this, &members = structData.second.members]( auto const & md ) { return hasLen( md, members ); } ) )
+  else if ( std::ranges::any_of( members, [this, &members]( auto const & md ) { return hasLen( md, members ); } ) )
   {
     // map from len-members to all the array members using that len
     std::map<std::vector<StructMember>::const_iterator, std::vector<std::vector<StructMember>::const_iterator>> lenIts;
-    for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
+    for ( auto mit = members.begin(); mit != members.end(); ++mit )
     {
-      if ( hasLen( *mit, structData.second.members ) )
+      if ( hasLen( *mit, members ) )
       {
         std::string lenName = ( mit->altLen == "codeSize / 4" ) ? "codeSize" : mit->len.front();
-        auto        lenIt   = findByName( structData.second.members, lenName );
+        auto        lenIt   = findByName( members, lenName );
         lenIts[lenIt].push_back( mit );
       }
     }
@@ -11325,7 +11395,7 @@ ${byString}
     std::vector<std::string> arguments, initializers;
     bool                     arrayListed = false;
     std::string              templateHeader, sizeChecks, copyOps;
-    for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
+    for ( auto mit = members.begin(); mit != members.end(); ++mit )
     {
       // gather the initializers
       if ( mit->name == "pNext" )  // for pNext, we just get the initializer... the argument is added at the end
@@ -11341,7 +11411,7 @@ ${byString}
           initializers.push_back( mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )" );
           sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), structData.second.mutualExclusiveLens );
         }
-        else if ( hasLen( *mit, structData.second.members ) )
+        else if ( hasLen( *mit, members ) )
         {
           assert( mit->type.isPointer() || !mit->arraySizes.empty() );
           std::string argumentName = ( mit->type.isPointer() ? startLowerCase( stripPrefix( mit->name, "p" ) ) : mit->name ) + "_";
@@ -11430,8 +11500,8 @@ ${byString}
       }
     }
 
-    auto pNextIt = std::ranges::find_if( structData.second.members, []( StructMember const & member ) { return member.name == "pNext"; } );
-    if ( pNextIt != structData.second.members.end() )
+    auto pNextIt = std::ranges::find_if( members, []( StructMember const & member ) { return member.name == "pNext"; } );
+    if ( pNextIt != members.end() )
     {
       // add pNext as a last optional argument to the constructor
       arguments.push_back( pNextIt->type.compose( "Vk", "VULKAN_HPP_NAMESPACE" ) + " pNext_ = nullptr" );
@@ -11510,18 +11580,20 @@ std::string VulkanHppGenerator::generateStructHashStructure( std::pair<std::stri
   assert( !listedStructs.contains( structure.first ) );
 
   std::string str;
-  for ( auto const & member : structure.second.members )
+  if ( std::holds_alternative<std::vector<StructMember>>( structure.second.members ) )
   {
-    if ( auto structIt = findByNameOrAlias( m_structs, member.type.name );
-         ( structIt != m_structs.end() ) && ( structure.first != member.type.name ) && !listedStructs.contains( structIt->first ) )
+    for ( auto const & member : std::get<std::vector<StructMember>>( structure.second.members ) )
     {
-      str += generateStructHashStructure( *structIt, listedStructs );
+      if ( auto structIt = findByNameOrAlias( m_structs, member.type.name );
+           ( structIt != m_structs.end() ) && ( structure.first != member.type.name ) && !listedStructs.contains( structIt->first ) )
+      {
+        str += generateStructHashStructure( *structIt, listedStructs );
+      }
     }
-  }
 
-  if ( !containsUnion( structure.first ) )
-  {
-    static std::string const hashTemplate = R"(
+    if ( !containsUnion( structure.first ) )
+    {
+      static std::string const hashTemplate = R"(
   ${enter}template <> struct hash<VULKAN_HPP_NAMESPACE::${structureType}>
   {
     std::size_t operator()(VULKAN_HPP_NAMESPACE::${structureType} const & ${structureName}) const VULKAN_HPP_NOEXCEPT
@@ -11533,18 +11605,18 @@ ${hashSum}
   };
 ${leave})";
 
-    auto [enter, leave] = generateProtection( getProtectFromType( structure.first ) );
+      auto [enter, leave] = generateProtection( getProtectFromType( structure.first ) );
 
-    std::string structureType = stripPrefix( structure.first, "Vk" );
-    std::string structureName = startLowerCase( structureType );
-    str += replaceWithMap( hashTemplate,
-                           { { "enter", enter },
-                             { "hashSum", generateStructHashSum( structure ) },
-                             { "leave", leave },
-                             { "structureName", structureName },
-                             { "structureType", structureType } } );
+      std::string structureType = stripPrefix( structure.first, "Vk" );
+      std::string structureName = startLowerCase( structureType );
+      str += replaceWithMap( hashTemplate,
+                             { { "enter", enter },
+                               { "hashSum", generateStructHashSum( structure ) },
+                               { "leave", leave },
+                               { "structureName", structureName },
+                               { "structureType", structureType } } );
+    }
   }
-
   listedStructs.insert( structure.first );
   return str;
 }
@@ -11583,7 +11655,8 @@ std::string VulkanHppGenerator::generateStructHashSum( std::pair<std::string, St
 {
   std::string hashSum;
   std::string structureName = startLowerCase( stripPrefix( structure.first, "Vk" ) );
-  for ( auto const & member : structure.second.members )
+  assert( std::holds_alternative<std::vector<StructMember>>( structure.second.members ) );
+  for ( auto const & member : std::get<std::vector<StructMember>>( structure.second.members ) )
   {
     if ( member.deprecated.empty() )
     {
@@ -11718,7 +11791,9 @@ ${deprecatedConstructors}
 )";
 
   std::string pushIgnored, popIgnored;
-  if ( containsDeprecated( structure.second.members ) )
+  assert( std::holds_alternative<std::vector<StructMember>>( structure.second.members ) );
+  auto const & members = std::get<std::vector<StructMember>>( structure.second.members );
+  if ( containsDeprecated( members ) )
   {
     pushIgnored = R"(
 #if defined( _MSC_VER )
@@ -11762,7 +11837,7 @@ ${deprecatedConstructors}
   {
     // only structs that are not returnedOnly get setters!
     constructorsAndSetters += "\n#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )";
-    for ( size_t i = 0; i < structure.second.members.size(); i++ )
+    for ( size_t i = 0; i < members.size(); i++ )
     {
       constructorsAndSetters += generateStructSetter( structure, i );
     }
@@ -11772,12 +11847,12 @@ ${deprecatedConstructors}
 
   std::string structureType = stripPrefix( structure.first, "Vk" );
   // the member variables
-  std::string members, memberNames, memberTypes, sTypeValue;
-  std::tie( members, memberNames, memberTypes, sTypeValue ) = generateStructMembers( structure );
+  std::string membersString, memberNames, memberTypes, sTypeValue;
+  std::tie( membersString, memberNames, memberTypes, sTypeValue ) = generateStructMembers( structure );
 
   // reflect is meaningfull for structs only, filter out unions
   std::string reflect;
-  if ( !structure.second.isUnion )
+  if ( std::holds_alternative<std::vector<StructMember>>( structure.second.members ) )
   {
     // use reflection only if VULKAN_HPP_USE_REFLECT is defined
     static std::string const reflectTemplate = R"(
@@ -11854,7 +11929,7 @@ ${members}
                          { { "allowDuplicate", allowDuplicate },
                            { "constructorsAndSetters", constructorsAndSetters },
                            { "compareOperators", compareOperators },
-                           { "members", members },
+                           { "members", membersString },
                            { "reflect", reflect },
                            { "structureType", structureType },
                            { "typeValue", typeValue } } );
@@ -11979,7 +12054,8 @@ std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<R
                            if ( listedStructs.insert( structData.first ).second )
                            {
                              std::string structureType = stripPrefix( structData.first, "Vk" );
-                             str += ( structData.second.isUnion ? "  union " : "  struct " ) + structureType + ";\n";
+                             str += ( std::holds_alternative<std::vector<StructMember>>( structData.second.members ) ? "  struct " : "  union " ) +
+                                    structureType + ";\n";
 
                              for ( auto const & alias : structData.second.aliases )
                              {
@@ -11994,7 +12070,8 @@ std::tuple<std::string, std::string, std::string, std::string>
   VulkanHppGenerator::generateStructMembers( std::pair<std::string, StructData> const & structData ) const
 {
   std::string members, memberNames, memberTypes, sTypeValue;
-  for ( auto const & member : structData.second.members )
+  assert( std::holds_alternative<std::vector<StructMember>>( structData.second.members ) );
+  for ( auto const & member : std::get<std::vector<StructMember>>( structData.second.members ) )
   {
     members += "    ";
 
@@ -12093,8 +12170,10 @@ std::tuple<std::string, std::string, std::string, std::string>
 
 std::string VulkanHppGenerator::generateStructSetter( std::pair<std::string, StructData> const & structure, size_t index ) const
 {
-  std::string          str;
-  StructMember const & member = structure.second.members[index];
+  std::string str;
+  assert( std::holds_alternative<std::vector<StructMember>>( structure.second.members ) );
+  auto const &         members = std::get<std::vector<StructMember>>( structure.second.members );
+  StructMember const & member  = members[index];
   if ( member.type.name != "VkStructureType" )  // filter out StructureType, which is supposed to be immutable !
   {
     static std::string const templateString = R"(
@@ -12143,7 +12222,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::pair<std::string, Str
                              { "reference", ( member.type.postfix.empty() && m_structs.contains( member.type.name ) ) ? "const & " : "" },
                              { "structureName", stripPrefix( structure.first, "Vk" ) } } );
 
-    if ( hasLen( member, structure.second.members ) )
+    if ( hasLen( member, members ) )
     {
       assert( member.type.isPointer() || !member.arraySizes.empty() );
       std::string arrayName = member.type.isPointer() ? startLowerCase( stripPrefix( member.name, "p" ) ) : member.name;
@@ -12211,7 +12290,7 @@ ${byString}
       }
       else
       {
-        assert( ( member.altLen == "codeSize / 4" ) || containsByName( structure.second.members, member.len[0] ) );
+        assert( ( member.altLen == "codeSize / 4" ) || containsByName( members, member.len[0] ) );
         std::string lenName, lenValue;
         if ( member.altLen == "codeSize / 4" )
         {
@@ -12243,8 +12322,8 @@ ${byString}
           lenValue += " * sizeof(T)";
         }
 
-        auto lenMember = findByName( structure.second.members, lenName );
-        assert( lenMember != structure.second.members.end() && lenMember->type.prefix.empty() && lenMember->type.postfix.empty() );
+        auto lenMember = findByName( members, lenName );
+        assert( lenMember != members.end() && lenMember->type.prefix.empty() && lenMember->type.postfix.empty() );
         if ( lenMember->type.name != "size_t" )
         {
           lenValue = "static_cast<" + lenMember->type.name + ">( " + lenValue + " )";
@@ -12327,40 +12406,44 @@ std::string VulkanHppGenerator::generateStructSubConstructor( std::pair<std::str
 {
   if ( !structData.second.subStruct.empty() )
   {
+    assert( std::holds_alternative<std::vector<StructMember>>( structData.second.members ) );
+    auto const & members = std::get<std::vector<StructMember>>( structData.second.members );
+
     auto const & subStruct = m_structs.find( structData.second.subStruct );
-    assert( subStruct != m_structs.end() );
+    assert( subStruct != m_structs.end() && std::holds_alternative<std::vector<StructMember>>( subStruct->second.members ) );
+    auto const & subMembers = std::get<std::vector<StructMember>>( subStruct->second.members );
 
     std::string subStructArgumentName = startLowerCase( stripPrefix( subStruct->first, "Vk" ) );
 
     std::string subCopies;
     bool        firstArgument = true;
-    for ( size_t i = 0; i < subStruct->second.members.size(); i++ )
+    for ( size_t i = 0; i < subMembers.size(); i++ )
     {
-      assert( structData.second.members[i].arraySizes.empty() );
+      assert( members[i].arraySizes.empty() );
       static std::string const subCopiesTemplate =
         R"(      ${separator} ${structMemberName}( ${subStructArgumentName}.${subStructMemberName} )
 )";
       subCopies += replaceWithMap( subCopiesTemplate,
                                    { { "separator", firstArgument ? ":" : "," },
-                                     { "structMemberName", structData.second.members[i].name },
-                                     { "subStructMemberName", subStruct->second.members[i].name },
+                                     { "structMemberName", members[i].name },
+                                     { "subStructMemberName", subMembers[i].name },
                                      { "subStructArgumentName", subStructArgumentName } } );
       firstArgument = false;
     }
 
     std::vector<std::string> subArguments;
-    for ( size_t i = subStruct->second.members.size(); i < structData.second.members.size(); i++ )
+    for ( size_t i = subMembers.size(); i < members.size(); i++ )
     {
-      std::string argument = generateStructConstructorArgument( structData.first, structData.second.members[i], true );
+      std::string argument = generateStructConstructorArgument( structData.first, members[i], true );
       if ( !argument.empty() )
       {
         subArguments.push_back( argument );
       }
 
-      assert( structData.second.members[i].arraySizes.empty() );
+      assert( members[i].arraySizes.empty() );
       static std::string const subCopiesTemplate = R"(    , ${memberName}( ${memberName}_ )
 )";
-      subCopies += replaceWithMap( subCopiesTemplate, { { "memberName", structData.second.members[i].name } } );
+      subCopies += replaceWithMap( subCopiesTemplate, { { "memberName", members[i].name } } );
     }
 
     static std::string const subStructConstructorTemplate = R"(
@@ -12482,7 +12565,9 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructData
   bool                  firstMember = true;
   std::set<std::string> listedTypes;  // create just one constructor per different type !
   std::string           constructors;
-  for ( auto memberIt = structure.second.members.begin(); memberIt != structure.second.members.end(); ++memberIt )
+  assert( std::holds_alternative<std::vector<UnionMember>>( structure.second.members ) );
+  auto const & members = std::get<std::vector<UnionMember>>( structure.second.members );
+  for ( auto memberIt = members.begin(); memberIt != members.end(); ++memberIt )
   {
     std::string typeName = memberIt->type.name;
 
@@ -12510,8 +12595,8 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructData
 
     if ( listedTypes.insert( typeName ).second )
     {
-      bool const multipleType = std::any_of(
-        std::next( memberIt ), structure.second.members.end(), [memberIt]( StructMember const & member ) noexcept { return member.type == memberIt->type; } );
+      bool const multipleType =
+        std::any_of( std::next( memberIt ), members.end(), [memberIt]( UnionMember const & member ) noexcept { return member.type == memberIt->type; } );
       std::string memberType = ( memberIt->arraySizes.empty() )
                                ? memberIt->type.compose( "Vk" )
                                : ( "const " + generateStandardArray( memberIt->type.compose( "Vk", "VULKAN_HPP_NAMESPACE" ), memberIt->arraySizes ) + "&" );
@@ -12561,27 +12646,26 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructData
 
   // one setter per union element
   std::string setters;
-  for ( size_t i = 0; i < structure.second.members.size(); i++ )
+  for ( size_t i = 0; i < members.size(); i++ )
   {
-    setters += generateStructSetter( structure, i );
+    setters += generateUnionSetter( structure, i );
   }
   // filter out leading and trailing newline
   setters = setters.substr( 1, setters.length() - 2 );
 
   // the union member variables
-  std::string members;
+  std::string membersString;
   // if there's at least one Vk... type in this union, check for unrestricted unions support
-  bool const needsUnrestrictedUnions =
-    std::ranges::any_of( structure.second.members, []( StructMember const & member ) { return member.type.name.starts_with( "Vk" ); } );
+  bool const needsUnrestrictedUnions = std::ranges::any_of( members, []( UnionMember const & member ) { return member.type.name.starts_with( "Vk" ); } );
   if ( needsUnrestrictedUnions )
   {
-    members += "#ifdef VULKAN_HPP_HAS_UNRESTRICTED_UNIONS\n";
+    membersString += "#ifdef VULKAN_HPP_HAS_UNRESTRICTED_UNIONS\n";
   }
-  for ( auto const & member : structure.second.members )
+  for ( auto const & member : members )
   {
     static std::string const memberTemplate = R"(    ${memberType} ${memberName};
 )";
-    members += replaceWithMap(
+    membersString += replaceWithMap(
       memberTemplate,
       { { "memberName", member.name },
         { "memberType",
@@ -12590,16 +12674,16 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructData
   }
   if ( needsUnrestrictedUnions )
   {
-    members += "#else\n";
-    for ( auto const & member : structure.second.members )
+    membersString += "#else\n";
+    for ( auto const & member : members )
     {
       static std::string const memberTemplate = R"(    ${memberType} ${memberName}${arraySizes};
 )";
-      members += replaceWithMap(
+      membersString += replaceWithMap(
         memberTemplate,
         { { "arraySizes", generateCArraySizes( member.arraySizes ) }, { "memberName", member.name }, { "memberType", member.type.compose( "" ) } } );
     }
-    members += "#endif  /*VULKAN_HPP_HAS_UNRESTRICTED_UNIONS*/\n";
+    membersString += "#endif  /*VULKAN_HPP_HAS_UNRESTRICTED_UNIONS*/\n";
   }
 
   static std::string const unionTemplate = R"(
@@ -12649,9 +12733,49 @@ ${leave})";
                            { "constructors", constructors },
                            { "enter", enter },
                            { "leave", leave },
-                           { "members", members },
+                           { "members", membersString },
                            { "setters", setters },
                            { "unionName", unionName } } );
+}
+
+std::string VulkanHppGenerator::generateUnionSetter( std::pair<std::string, StructData> const & structure, size_t index ) const
+{
+  std::string str;
+  assert( std::holds_alternative<std::vector<UnionMember>>( structure.second.members ) );
+  auto const &        members = std::get<std::vector<UnionMember>>( structure.second.members );
+  UnionMember const & member  = members[index];
+  assert( member.type.name != "VkStructureType" );  // filter out StructureType, which is supposed to be immutable !
+  {
+    static std::string const templateString = R"(
+    VULKAN_HPP_CONSTEXPR_14 ${structureName} & set${MemberName}( ${memberType} ${reference}${memberName}_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      ${assignment};
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 ${structureName} && set${MemberName}( ${memberType} ${reference}${memberName}_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      ${assignment};
+      return std::move( *this );
+    }
+)";
+
+    std::string memberType =
+      member.type.name.starts_with( "PFN_vk" )
+        ? "PFN_" + stripPrefix( member.type.name, "PFN_vk" )
+        : ( member.arraySizes.empty() ? member.type.compose( "Vk" ) : generateStandardArray( member.type.compose( "Vk" ), member.arraySizes ) );
+
+    str += replaceWithMap( templateString,
+                           { { "assignment", member.name + " = " + member.name + "_" },
+                             { "memberName", member.name },
+                             { "MemberName", startUpperCase( member.name ) },
+                             { "memberType", memberType },
+                             { "reference", ( member.type.postfix.empty() && m_structs.contains( member.type.name ) ) ? "const & " : "" },
+                             { "structureName", stripPrefix( structure.first, "Vk" ) } } );
+
+    assert( member.len.empty() || ( member.len == "null-terminated" ) );
+  }
+  return str;
 }
 
 std::string VulkanHppGenerator::generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const
@@ -13056,12 +13180,11 @@ std::pair<std::string, std::string> VulkanHppGenerator::getParentTypeAndName( st
 std::pair<std::string, std::string> VulkanHppGenerator::getPoolTypeAndName( std::string const & type ) const
 {
   auto structIt = m_structs.find( type );
-  assert( structIt != m_structs.end() );
-  auto memberIt =
-    std::ranges::find_if( structIt->second.members, []( StructMember const & member ) { return member.name.find( "Pool" ) != std::string::npos; } );
-  assert( memberIt != structIt->second.members.end() );
-  assert( std::none_of(
-    std::next( memberIt ), structIt->second.members.end(), []( StructMember const & member ) { return member.name.find( "Pool" ) != std::string::npos; } ) );
+  assert( structIt != m_structs.end() && std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
+  auto const & members  = std::get<std::vector<StructMember>>( structIt->second.members );
+  auto         memberIt = std::ranges::find_if( members, []( StructMember const & member ) { return member.name.find( "Pool" ) != std::string::npos; } );
+  assert( memberIt != members.end() );
+  assert( std::none_of( std::next( memberIt ), members.end(), []( StructMember const & member ) { return member.name.find( "Pool" ) != std::string::npos; } ) );
   return { memberIt->type.name, memberIt->name };
 }
 
@@ -13120,8 +13243,9 @@ std::string VulkanHppGenerator::getVectorSize( std::vector<ParamData> const &   
   if ( returnVectorIt->second.byStructure )
   {
     auto structIt = m_structs.find( params[returnParam].type.name );
-    assert( structIt != m_structs.end() );
-    vectorSize = startLowerCase( stripPrefix( params[returnParam].name, "p" ) ) + "." + structIt->second.members[returnVectorIt->second.lenParam].name;
+    assert( structIt != m_structs.end() && std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
+    vectorSize = startLowerCase( stripPrefix( params[returnParam].name, "p" ) ) + "." +
+                 std::get<std::vector<StructMember>>( structIt->second.members )[returnVectorIt->second.lenParam].name;
   }
   else
   {
@@ -13385,7 +13509,9 @@ bool VulkanHppGenerator::isHandleType( std::string const & type ) const
 bool VulkanHppGenerator::isHandleTypeByStructure( std::string const & type ) const
 {
   auto structIt = m_structs.find( type );
-  return ( structIt != m_structs.end() ) && describesVector( structIt->second ) && isHandleType( structIt->second.members[3].type.name );
+  assert( structIt == m_structs.end() || std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
+  return ( structIt != m_structs.end() ) && describesVector( structIt->second ) &&
+         isHandleType( std::get<std::vector<StructMember>>( structIt->second.members )[3].type.name );
 }
 
 bool VulkanHppGenerator::isLenByStructMember( std::string const & name, std::vector<ParamData> const & params ) const
@@ -13400,7 +13526,8 @@ bool VulkanHppGenerator::isLenByStructMember( std::string const & name, std::vec
 #if !defined( NDEBUG )
       auto structureIt = m_structs.find( paramIt->type.name );
       assert( structureIt != m_structs.end() );
-      assert( isStructMember( nameParts[1], structureIt->second.members ) );
+      assert( std::holds_alternative<std::vector<StructMember>>( structureIt->second.members ) );
+      assert( isStructMember( nameParts[1], std::get<std::vector<StructMember>>( structureIt->second.members ) ) );
 #endif
       return true;
     }
@@ -13421,8 +13548,8 @@ bool VulkanHppGenerator::isLenByStructMember( std::string const & name, ParamDat
   {
 #if !defined( NDEBUG )
     auto structureIt = m_structs.find( param.type.name );
-    assert( structureIt != m_structs.end() );
-    assert( isStructMember( nameParts[1], structureIt->second.members ) );
+    assert( structureIt != m_structs.end() && std::holds_alternative<std::vector<StructMember>>( structureIt->second.members ) );
+    assert( isStructMember( nameParts[1], std::get<std::vector<StructMember>>( structureIt->second.members ) ) );
 #endif
     return true;
   }
@@ -13869,12 +13996,16 @@ bool VulkanHppGenerator::structureChainHoldsVector( std::string const & name ) c
 
 bool VulkanHppGenerator::structureHoldsHandle( StructData const & structData ) const
 {
-  return findHandleMember( structData.members ) != structData.members.end();
+  assert( std::holds_alternative<std::vector<StructMember>>( structData.members ) );
+  auto const & members = std::get<std::vector<StructMember>>( structData.members );
+  return findHandleMember( members ) != members.end();
 }
 
 bool VulkanHppGenerator::structureHoldsVector( StructData const & structData ) const
 {
-  return findVectorMember( structData.members ) != structData.members.end();
+  assert( std::holds_alternative<std::vector<StructMember>>( structData.members ) );
+  auto const & members = std::get<std::vector<StructMember>>( structData.members );
+  return findVectorMember( members ) != members.end();
 }
 
 std::string VulkanHppGenerator::toString( TypeCategory category ) const
@@ -13898,9 +14029,9 @@ std::string VulkanHppGenerator::toString( TypeCategory category ) const
 StructMember const & VulkanHppGenerator::vectorMemberByStructure( std::string const & structureType ) const
 {
   auto structIt = m_structs.find( structureType );
-  assert( structIt != m_structs.end() );
+  assert( structIt != m_structs.end() && std::holds_alternative<std::vector<StructMember>>( structIt->second.members ) );
   assert( describesVector( structIt->second ) );
-  return structIt->second.members.back();
+  return std::get<std::vector<StructMember>>( structIt->second.members ).back();
 }
 
 bool VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & protect, bool supported )

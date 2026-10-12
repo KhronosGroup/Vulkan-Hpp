@@ -11638,15 +11638,41 @@ ${hashes}
 #endif    // 14 <= VULKAN_HPP_CPP_VERSION
 )";
 
-  // Note reordering structs or handles by features and extensions is not possible!
-  std::set<std::string> listedStructs;
+  std::set<std::string> listedStructs;  // some structs are used in multiple features/extensions, so we need to make sure we only list them once
   std::string           hashes;
-  for ( auto const & structure : m_structs )
+  for ( auto const & feature : m_features )
   {
-    if ( !listedStructs.contains( structure.first ) && isTypeUsed( structure.first ) )
+    std::string byFeatureHashes;
+    for ( auto const & require : feature.requireData )
     {
-      hashes += generateStructHashStructure( structure, listedStructs );
+      for ( auto const & type : require.types )
+      {
+        auto vkStructIt = findByNameOrAlias( m_vkxml.structs, type.name );
+        if ( vkStructIt != m_vkxml.structs.end() && !listedStructs.contains( vkStructIt->name ) && isTypeUsed( vkStructIt->name ) )
+        {
+          assert( m_structs.contains( vkStructIt->name ) );
+          byFeatureHashes += generateStructHashStructure( *m_structs.find( vkStructIt->name ), listedStructs );
+        }
+      }
     }
+    hashes += addTitleAndProtection( feature.name, byFeatureHashes );
+  }
+  for ( auto const & extension : m_extensions )
+  {
+    std::string byExtensionHashes;
+    for ( auto const & require : extension.requireData )
+    {
+      for ( auto const & type : require.types )
+      {
+        auto vkStructIt = findByNameOrAlias( m_vkxml.structs, type.name );
+        if ( vkStructIt != m_vkxml.structs.end() && !listedStructs.contains( vkStructIt->name ) && isTypeUsed( vkStructIt->name ) )
+        {
+          assert( m_structs.contains( vkStructIt->name ) );
+          byExtensionHashes += generateStructHashStructure( *m_structs.find( vkStructIt->name ), listedStructs );
+        }
+      }
+    }
+    hashes += addTitleAndProtection( extension.name, byExtensionHashes );
   }
   return replaceWithMap( hashesTemplate, { { "hashes", hashes } } );
 }
@@ -11721,7 +11747,7 @@ std::string VulkanHppGenerator::generateStructs() const
 ${structs}
 )";
 
-  std::set<std::string> listedStructs;
+  std::set<std::string> listedStructs;  // some structs are used in multiple features/extensions, so we need to make sure we only list them once
   std::string           structs;
   for ( auto const & feature : m_features )
   {
@@ -11731,11 +11757,11 @@ ${structs}
       for ( auto const & type : require.types )
       {
         std::string name;
-        if ( auto vkStructIt = findByName( m_vkxml.structs, type.name ); vkStructIt != m_vkxml.structs.end() )
+        if ( auto vkStructIt = findByNameOrAlias( m_vkxml.structs, type.name ); vkStructIt != m_vkxml.structs.end() )
         {
           name = vkStructIt->name;
         }
-        else if ( auto vkUnionIt = findByName( m_vkxml.unions, type.name ); vkUnionIt != m_vkxml.unions.end() )
+        else if ( auto vkUnionIt = findByNameOrAlias( m_vkxml.unions, type.name ); vkUnionIt != m_vkxml.unions.end() )
         {
           name = vkUnionIt->name;
         }
@@ -11755,10 +11781,19 @@ ${structs}
     {
       for ( auto const & type : require.types )
       {
-        auto structIt = findByNameOrAlias( m_structs, type.name );
-        if ( ( structIt != m_structs.end() ) && !listedStructs.contains( structIt->first ) && isTypeUsed( structIt->first ) )
+        std::string name;
+        if ( auto vkStructIt = findByNameOrAlias( m_vkxml.structs, type.name ); vkStructIt != m_vkxml.structs.end() )
         {
-          byExtensionStructs += generateStruct( *structIt, listedStructs );
+          name = vkStructIt->name;
+        }
+        else if ( auto vkUnionIt = findByNameOrAlias( m_vkxml.unions, type.name ); vkUnionIt != m_vkxml.unions.end() )
+        {
+          name = vkUnionIt->name;
+        }
+        if ( !name.empty() && !listedStructs.contains( name ) && isTypeUsed( name ) )
+        {
+          assert( m_structs.contains( name ) );
+          byExtensionStructs += generateStruct( *m_structs.find( name ), listedStructs );
         }
       }
     }

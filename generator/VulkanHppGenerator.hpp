@@ -357,18 +357,16 @@ private:
 
   struct StructData
   {
-    std::map<std::string, int>                      aliases             = {};
-    bool                                            allowDuplicate      = {};
-    std::set<std::string>                           extendedBy          = {};
-    bool                                            isUnion             = {};
-    bool                                            requiredLimitType   = {};
-    bool                                            returnedOnly        = {};
-    bool                                            mutualExclusiveLens = {};
-    std::vector<StructMember>                       members             = {};
-    std::map<std::string, std::vector<std::string>> selections          = {};
-    std::vector<std::string>                        structExtends       = {};
-    std::string                                     subStruct           = {};
-    int                                             xmlLine             = {};
+    std::map<std::string, int>                                        aliases             = {};
+    bool                                                              allowDuplicate      = {};
+    std::set<std::string>                                             extendedBy          = {};
+    bool                                                              requiredLimitType   = {};
+    bool                                                              returnedOnly        = {};
+    bool                                                              mutualExclusiveLens = {};
+    std::variant<std::vector<StructMember>, std::vector<UnionMember>> members             = {};
+    std::vector<std::string>                                          structExtends       = {};
+    std::string                                                       subStruct           = {};
+    int                                                               xmlLine             = {};
   };
 
   struct VectorParamData
@@ -414,6 +412,7 @@ private:
                                       bool                    structUsed,
                                       std::string const &     structureName,
                                       std::set<std::string> & sTypeValues ) const;
+  void checkUnionMemberCorrectness( std::string const & structureName, std::vector<UnionMember> const & members ) const;
   bool containsArray( std::string const & type ) const;
   bool containsDeprecated( std::vector<StructMember> const & members ) const;
   bool containsFuncPointer( std::string const & type ) const;
@@ -983,6 +982,7 @@ private:
                                      std::vector<std::string> const &          dataTypes,
                                      CommandFlavourFlags                       flavourFlags ) const;
   std::string generateUnion( std::pair<std::string, StructData> const & structure ) const;
+  std::string generateUnionSetter( std::pair<std::string, StructData> const & structure, size_t index ) const;
   std::string generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const;
   std::string generateUniqueHandle( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedHandles ) const;
   std::string generateUniqueHandles() const;

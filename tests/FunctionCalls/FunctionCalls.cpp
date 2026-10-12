@@ -2802,6 +2802,51 @@ int main()
     queue.submit2( submitInfos, fence );
   }
 
+  // Promoted from VK_KHR_copy_commands2
+  {
+    vk::CommandBuffer   commandBuffer;
+    vk::CopyBufferInfo2 copyBufferInfo2;
+    commandBuffer.copyBuffer2( &copyBufferInfo2 );
+  }
+  {
+    vk::CommandBuffer   commandBuffer;
+    vk::CopyBufferInfo2 copyBufferInfo2;
+    commandBuffer.copyBuffer2( copyBufferInfo2 );
+  }
+
+  {
+    vk::CommandBuffer  commandBuffer;
+    vk::CopyImageInfo2 copyImageInfo2;
+    commandBuffer.copyImage2( &copyImageInfo2 );
+  }
+  {
+    vk::CommandBuffer  commandBuffer;
+    vk::CopyImageInfo2 copyImageInfo2;
+    commandBuffer.copyImage2( copyImageInfo2 );
+  }
+
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::CopyBufferToImageInfo2 copyBufferToImageInfo2;
+    commandBuffer.copyBufferToImage2( &copyBufferToImageInfo2 );
+  }
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::CopyBufferToImageInfo2 copyBufferToImageInfo2;
+    commandBuffer.copyBufferToImage2( copyBufferToImageInfo2 );
+  }
+
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::CopyImageToBufferInfo2 copyImageToBufferInfo2;
+    commandBuffer.copyImageToBuffer2( &copyImageToBufferInfo2 );
+  }
+  {
+    vk::CommandBuffer          commandBuffer;
+    vk::CopyImageToBufferInfo2 copyImageToBufferInfo2;
+    commandBuffer.copyImageToBuffer2( copyImageToBufferInfo2 );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

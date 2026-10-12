@@ -1437,5 +1437,30 @@ int main()
     queue.submit2( submitInfos, *fence );
   }
 
+  // Promoted from VK_KHR_copy_commands2
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::CopyBufferInfo2     copyBufferInfo2;
+    commandBuffer.copyBuffer2( copyBufferInfo2 );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::CopyImageInfo2      copyImageInfo2;
+    commandBuffer.copyImage2( copyImageInfo2 );
+  }
+
+  {
+    vk::raii::CommandBuffer    commandBuffer = nullptr;
+    vk::CopyBufferToImageInfo2 copyBufferToImageInfo2;
+    commandBuffer.copyBufferToImage2( copyBufferToImageInfo2 );
+  }
+
+  {
+    vk::raii::CommandBuffer    commandBuffer = nullptr;
+    vk::CopyImageToBufferInfo2 copyImageToBufferInfo2;
+    commandBuffer.copyImageToBuffer2( copyImageToBufferInfo2 );
+  }
+
   return 0;
 }

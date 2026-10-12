@@ -99,7 +99,7 @@ Constant parseConstant( tinyxml2::XMLElement const * element )
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( "video.xml", line, attributes, { { "name", {} }, { "value", {} } }, { { "type", { "uint32_t", "uint8_t" } } } );
-  checkElements( "videao.xml", line, getChildElements( element ), {} );
+  checkElements( "video.xml", line, getChildElements( element ), {} );
 
   Constant constant{ .xmlLine = line };
   for ( auto const & attribute : attributes )

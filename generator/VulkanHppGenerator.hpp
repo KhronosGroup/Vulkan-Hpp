@@ -357,16 +357,24 @@ private:
 
   struct StructData
   {
-    std::map<std::string, int>                                        aliases             = {};
-    bool                                                              allowDuplicate      = {};
-    std::set<std::string>                                             extendedBy          = {};
-    bool                                                              requiredLimitType   = {};
-    bool                                                              returnedOnly        = {};
-    bool                                                              mutualExclusiveLens = {};
-    std::variant<std::vector<StructMember>, std::vector<UnionMember>> members             = {};
-    std::vector<std::string>                                          structExtends       = {};
-    std::string                                                       subStruct           = {};
-    int                                                               xmlLine             = {};
+    std::map<std::string, int> aliases             = {};
+    bool                       allowDuplicate      = {};
+    std::set<std::string>      extendedBy          = {};
+    bool                       requiredLimitType   = {};
+    bool                       returnedOnly        = {};
+    bool                       mutualExclusiveLens = {};
+    std::vector<StructMember>  members             = {};
+    std::vector<std::string>   structExtends       = {};
+    std::string                subStruct           = {};
+    int                        xmlLine             = {};
+  };
+
+  struct UnionData
+  {
+    std::map<std::string, int> aliases             = {};
+    bool                       returnedOnly        = {};
+    std::vector<UnionMember>   members             = {};
+    int                        xmlLine             = {};
   };
 
   struct VectorParamData
@@ -412,6 +420,7 @@ private:
                                       bool                    structUsed,
                                       std::string const &     structureName,
                                       std::set<std::string> & sTypeValues ) const;
+  void checkUnionCorrectness() const;
   void checkUnionMemberCorrectness( std::string const & structureName, std::vector<UnionMember> const & members ) const;
   bool containsArray( std::string const & type ) const;
   bool containsDeprecated( std::vector<StructMember> const & members ) const;
@@ -419,6 +428,7 @@ private:
   bool containsFloatingPoints( std::vector<StructMember> const & members ) const;
   bool containsUnion( std::string const & type ) const;
   bool describesVector( StructData const & structure, std::string const & type = "" ) const;
+  bool describesVector( UnionData const & unionData, std::string const & type = "" ) const;
   std::vector<size_t>      determineChainedReturnParams( std::vector<ParamData> const & params, std::vector<size_t> const & returnParams ) const;
   std::vector<std::string> determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
                                                std::map<size_t, VectorParamData> const &          vectorParams,
@@ -951,7 +961,7 @@ private:
                                  std::string const &                                            structName,
                                  bool                                                           mutualExclusiveLens ) const;
   std::string generateStaticAssertions() const;
-  std::string generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedStructs ) const;
+  std::string generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedTypes ) const;
   std::string generateStruct( std::pair<std::string, StructData> const & structure, std::set<std::string> & listedStructs ) const;
   std::string generateStructCastAssignments( std::pair<std::string, StructData> const & structData ) const;
   std::string generateStructCompareOperators( std::pair<std::string, StructData> const & structure ) const;
@@ -961,7 +971,7 @@ private:
   std::string generateStructHashStructure( std::pair<std::string, StructData> const & structure, std::set<std::string> & listedStructs ) const;
   std::string generateStructHashStructures() const;
   std::string generateStructHashSum( std::pair<std::string, StructData> const & structure ) const;
-  std::string generateStructs() const;
+  std::string generateStructsAndUnions() const;
   std::string generateStructure( std::pair<std::string, StructData> const & structure ) const;
   std::string generateStructExtendsStructs() const;
   std::string
@@ -981,8 +991,8 @@ private:
                                      bool                                      definition,
                                      std::vector<std::string> const &          dataTypes,
                                      CommandFlavourFlags                       flavourFlags ) const;
-  std::string generateUnion( std::pair<std::string, StructData> const & structure ) const;
-  std::string generateUnionSetter( std::pair<std::string, StructData> const & structure, size_t index ) const;
+  std::string generateUnion( std::pair<std::string, UnionData> const & unionData ) const;
+  std::string generateUnionSetter( std::pair<std::string, UnionData> const & unionData, size_t index ) const;
   std::string generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const;
   std::string generateUniqueHandle( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedHandles ) const;
   std::string generateUniqueHandles() const;
@@ -1079,6 +1089,7 @@ private:
   std::set<std::string>              m_RAIISpecialFunctions;
   std::map<std::string, StructData>  m_structs;
   std::map<std::string, TypeData>    m_types;
+  std::map<std::string, UnionData>   m_unions;
   std::vector<ExtensionData>         m_unsupportedExtensions;
   std::vector<FeatureData>           m_unsupportedFeatures;
   std::string                        m_version;

@@ -369,14 +369,6 @@ private:
     int                        xmlLine             = {};
   };
 
-  struct UnionData
-  {
-    std::map<std::string, int> aliases             = {};
-    bool                       returnedOnly        = {};
-    std::vector<UnionMember>   members             = {};
-    int                        xmlLine             = {};
-  };
-
   struct VectorParamData
   {
     size_t lenParam    = INVALID_INDEX;
@@ -428,7 +420,7 @@ private:
   bool containsFloatingPoints( std::vector<StructMember> const & members ) const;
   bool containsUnion( std::string const & type ) const;
   bool describesVector( StructData const & structure, std::string const & type = "" ) const;
-  bool describesVector( UnionData const & unionData, std::string const & type = "" ) const;
+  bool describesVector( TypeUnion const & vkUnion, std::string const & type = "" ) const;
   std::vector<size_t>      determineChainedReturnParams( std::vector<ParamData> const & params, std::vector<size_t> const & returnParams ) const;
   std::vector<std::string> determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
                                                std::map<size_t, VectorParamData> const &          vectorParams,
@@ -991,8 +983,8 @@ private:
                                      bool                                      definition,
                                      std::vector<std::string> const &          dataTypes,
                                      CommandFlavourFlags                       flavourFlags ) const;
-  std::string generateUnion( std::pair<std::string, UnionData> const & unionData ) const;
-  std::string generateUnionSetter( std::pair<std::string, UnionData> const & unionData, size_t index ) const;
+  std::string generateUnion( TypeUnion const & vkUnion ) const;
+  std::string generateUnionSetter( TypeUnion const & vkUnion, size_t index ) const;
   std::string generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const;
   std::string generateUniqueHandle( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedHandles ) const;
   std::string generateUniqueHandles() const;
@@ -1089,7 +1081,6 @@ private:
   std::set<std::string>              m_RAIISpecialFunctions;
   std::map<std::string, StructData>  m_structs;
   std::map<std::string, TypeData>    m_types;
-  std::map<std::string, UnionData>   m_unions;
   std::vector<ExtensionData>         m_unsupportedExtensions;
   std::vector<FeatureData>           m_unsupportedFeatures;
   std::string                        m_version;

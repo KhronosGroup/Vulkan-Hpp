@@ -41,8 +41,14 @@ option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
 option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
 option( VULKAN_HPP_TESTS_CTEST "Build tests for ctest, enabling wider test coverage" OFF )
 option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
+# The C++ named module imports the C++ standard library module (`import std;`), which requires CMake 4.5 or later.
+# It is enabled by default when CMake finds that the generator, compiler, and standard library support `import std`:
+# CMAKE_CXX_STDLIB_MODULES_JSON is then set, otherwise CMAKE_CXX_COMPILER_IMPORT_STD_ERROR_MESSAGE describes why not.
+# The version check is still needed, as earlier versions also set both variables when their experimental `import std` support is enabled.
+# Detection may be overridden with -D VULKAN_HPP_BUILD_CXX_MODULE=ON.
+# See https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html
 cmake_dependent_option( VULKAN_HPP_BUILD_CXX_MODULE "Build and test the C++ named module." ON
-	[[ CMAKE_VERSION VERSION_GREATER_EQUAL 4.5 OR VULKAN_HPP_BUILD_CXX_MODULE ]] OFF )
+	[[ (CMAKE_VERSION VERSION_GREATER_EQUAL 4.5 AND CMAKE_CXX_STDLIB_MODULES_JSON AND NOT CMAKE_CXX_COMPILER_IMPORT_STD_ERROR_MESSAGE) OR VULKAN_HPP_BUILD_CXX_MODULE ]] OFF )
 
 # options for vulkan hpp compile definitions (see https://github.com/KhronosGroup/Vulkan-Hpp/tree/main?tab=readme-ov-file#configuration-options for details)
 option( VULKAN_HPP_DISABLE_ENHANCED_MODE "Disable all enhanced functionality apart from scoped enums, bitmasks, default initialization and vk::StructureChain" OFF )

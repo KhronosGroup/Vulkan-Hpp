@@ -86,7 +86,7 @@ jobs:
 
     - name: Setup CMake nightly
       env:
-        CMAKE_NIGHTLY_VERSION: 4.4.20260926-gea464ac
+        CMAKE_NIGHTLY_VERSION: 4.5.20261012-g3ea39ee
       run: |
         case "${{runner.os}}" in
           Linux)
@@ -202,8 +202,7 @@ jobs:
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
             echo "================================================================================="
 
-            cmake -B build -G '${{matrix.env.gen}}' --fresh --preset tests             \
-              -D VULKAN_HPP_BUILD_CXX_MODULE=${{matrix.env.modules && 'ON' || 'OFF'}} \
+            cmake -B build -G '${{matrix.env.gen}}' --fresh --preset tests            \
               ${{ env.VAR_CMAKE_FLAGS }}                                              \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD                                     \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE                                         \

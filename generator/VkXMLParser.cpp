@@ -160,7 +160,7 @@ void checkProperties( std::vector<PropertyElement> const & properties, Vkxml con
                    property.xmlLine,
                    requireType + " <" + requireName + "> requires property <" + property.name + "> for an unknown structure <" + property.structure + ">" );
     checkForError( "vk.xml",
-                   structIt->returnedOnly == "true",
+                   structIt->returnedOnly,
                    property.xmlLine,
                    requireType + " <" + requireName + "> requires property <" + property.name + "> for the structure <" + property.structure +
                      "> that is not marked as <returned_only>" );
@@ -5092,7 +5092,7 @@ StructVariant parseTypeStruct( tinyxml2::XMLElement const * element, std::map<st
       if ( attribute.first == "allowduplicate" )
       {
         checkNoList( "vk.xml", attribute.second, line );
-        typeStruct.allowDuplicate = attribute.second;
+        typeStruct.allowDuplicate = ( attribute.second == "true" );
       }
       else if ( attribute.first == "comment" )
       {
@@ -5106,12 +5106,12 @@ StructVariant parseTypeStruct( tinyxml2::XMLElement const * element, std::map<st
       else if ( attribute.first == "requiredlimittype" )
       {
         checkNoList( "vk.xml", attribute.second, line );
-        typeStruct.requiredLimitType = attribute.second;
+        typeStruct.requiredLimitType = ( attribute.second == "true" );
       }
       else if ( attribute.first == "returnedonly" )
       {
         checkNoList( "vk.xml", attribute.second, line );
-        typeStruct.returnedOnly = attribute.second;
+        typeStruct.returnedOnly = ( attribute.second == "true" );
       }
       else if ( attribute.first == "structextends" )
       {
@@ -5176,7 +5176,7 @@ StructVariant parseTypeStruct( tinyxml2::XMLElement const * element, std::map<st
       }
     }
     checkForError( "vk.xml",
-                   ( typeStruct.requiredLimitType != "true" ) ||
+                   !typeStruct.requiredLimitType ||
                      std::ranges::all_of( typeStruct.members,
                                           []( StructMember const & member )
                                           { return ( member.name == "sType" ) || ( member.name == "pNext" ) || !member.limitType.empty(); } ),
@@ -5560,6 +5560,14 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
 
   for ( auto const & structure : types.structs )
   {
+    // gather the set of structs that are extended by this struct
+    for ( auto const & extend : structure.structExtends )
+    {
+      auto extendIt = findByName( types.structs, extend );
+      checkForError( "vk.xml", extendIt != types.structs.end(), structure.xmlLine, "struct <" + structure.name + "> extends unknown struct <" + extend + ">" );
+      extendIt->extendedBy.insert( structure.name );
+    }
+
     for ( auto const & member : structure.members )
     {
       if ( !member.flagsExtend.empty() )
@@ -5592,14 +5600,6 @@ Types parseTypes( tinyxml2::XMLElement const * element, std::string const & api 
                      types.types.contains( member.type.name ),
                      member.xmlLine,
                      "struct member <" + member.name + "> in struct <" + structure.name + "> has unknown type <" + member.type.name + ">" );
-    }
-
-    for ( auto const & structExtend : structure.structExtends )
-    {
-      checkForError( "vk.xml",
-                     containsByNameOrAlias( types.structs, structExtend ),
-                     structure.xmlLine,
-                     "struct <" + structure.name + "> extends unknown struct <" + structExtend + ">" );
     }
 
     auto memberIt = std::ranges::find_if( structure.members, []( auto const & member ) { return !member.values.empty(); } );

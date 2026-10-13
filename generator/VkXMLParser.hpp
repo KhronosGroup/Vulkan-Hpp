@@ -169,13 +169,14 @@ struct StructMember
 struct TypeStruct
 {
   std::string                name              = {};
-  std::string                allowDuplicate    = {};
-  std::string                comment           = {};
-  std::string                requiredLimitType = {};
-  std::string                returnedOnly      = {};
-  std::vector<std::string>   structExtends     = {};
   std::map<std::string, int> aliases           = {};
+  bool                       allowDuplicate    = {};
+  std::string                comment           = {};
+  std::set<std::string>      extendedBy        = {};  // derived from the structExtends member
+  std::vector<std::string>   structExtends     = {};
   std::vector<StructMember>  members           = {};
+  bool                       requiredLimitType = {};
+  bool                       returnedOnly      = {};
   int                        xmlLine           = {};
 };
 

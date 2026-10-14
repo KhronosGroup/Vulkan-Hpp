@@ -286,7 +286,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     std::ranges::for_each( u.aliases,
                            [&]( auto const & alias )
                            {
-                             checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Struct, {}, alias.second } } ).second,
+                             checkForError( m_types.insert( { alias.first, TypeData{ TypeCategory::Union, {}, alias.second } } ).second,
                                             alias.second,
                                             "alias <" + alias.first + "> of union <" + u.name + "> already specified" );
                            } );

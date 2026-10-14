@@ -57,7 +57,6 @@ jobs:
 
     env:
       VAR_CMAKE_FLAGS: |
-        -D VULKAN_HPP_BUILD_CXX_MODULE=${{ matrix.env.modules && 'ON' || 'OFF' }} \
         ${{ matrix.env.c && !(matrix.env.modules && contains(matrix.env.os, 'macos')) && format('-D CMAKE_C_COMPILER={0}', matrix.env.c) || '' }} \
         ${{ matrix.env.cxx && !(matrix.env.modules && contains(matrix.env.os, 'macos')) && format('-D CMAKE_CXX_COMPILER={0}', matrix.env.cxx) || '' }} \
         ${{ contains(matrix.env.os, 'ubuntu') && contains(matrix.env.arch, 'x86') && format('-D CMAKE_C_FLAGS''={0}''', contains(matrix.env.cxx, 'clang') && '--target=i686-linux-gnu' || '-m32') || (matrix.env.c_flags && format('-D CMAKE_C_FLAGS''={0}''', matrix.env.c_flags)) }} \
@@ -163,6 +162,7 @@ jobs:
         for BUILD_TYPE in Debug Release; do
           [ $BUILD_TYPE = Release ] && PRESET="generator-run" || PRESET="generator-build"
           cmake -B build -G '${{matrix.env.gen}}' --fresh --preset $PRESET \
+            -D VULKAN_HPP_BUILD_CXX_MODULE=OFF                             \
             ${{ env.VAR_CMAKE_FLAGS }}                                     \
             -D CMAKE_BUILD_TYPE=$BUILD_TYPE
           cmake --build build --parallel --config $BUILD_TYPE --clean-first
@@ -174,6 +174,7 @@ jobs:
       run: |
         for BUILD_TYPE in Debug Release; do
           cmake -B build -G '${{matrix.env.gen}}' --fresh --preset samples \
+            -D VULKAN_HPP_BUILD_CXX_MODULE=OFF                             \
             ${{ env.VAR_CMAKE_FLAGS }}                                     \
             -D CMAKE_CXX_STANDARD=${{matrix.env.cxx_max}}                  \
             -D CMAKE_BUILD_TYPE=$BUILD_TYPE
@@ -203,7 +204,8 @@ jobs:
             echo "Building C++$CXX_STANDARD in $BUILD_TYPE"
             echo "================================================================================="
 
-            cmake -B build -G '${{matrix.env.gen}}' --fresh --preset tests            \
+            cmake -B build -G '${{matrix.env.gen}}' --fresh --preset tests             \
+              -D VULKAN_HPP_BUILD_CXX_MODULE=${{matrix.env.modules && 'ON' || 'OFF'}} \
               ${{ env.VAR_CMAKE_FLAGS }}                                              \
               -D CMAKE_CXX_STANDARD=$CXX_STANDARD                                     \
               -D CMAKE_BUILD_TYPE=$BUILD_TYPE                                         \

@@ -678,10 +678,6 @@ struct Types
   std::vector<TypeInclude>     includes     = {};
   std::vector<TypeStruct>      structs      = {};
   std::vector<TypeUnion>       unions       = {};
-
-  std::vector<Alias>    structAliases = {};
-  std::vector<Alias>    unionAliases  = {};
-  std::set<std::string> types         = {};
 };
 
 struct VideoCapabilities
@@ -910,31 +906,20 @@ struct SPIRVCapabilities
 
 struct Vkxml
 {
-  std::vector<TypeBaseType>      baseTypes         = {};
-  std::vector<TypeBitmask>       bitmasks          = {};
   std::vector<Command>           commands          = {};
   EnumsConstants                 constants         = {};
   Comment                        copyright         = {};
-  std::vector<TypeDefine>        defines           = {};
   std::vector<DynamicState>      dynamicStates     = {};
-  std::vector<TypeEnum>          enums             = {};
   Extensions                     extensions        = {};
-  std::vector<TypeExternal>      externals         = {};
   std::vector<Feature>           features          = {};
   std::vector<Format>            formats           = {};
-  std::vector<TypeFuncPointer>   funcPointers      = {};
-  std::vector<TypeHandle>        handles           = {};
-  std::vector<TypeInclude>       includes          = {};
   Platforms                      platforms         = {};
   SPIRVCapabilities              spirvCapabilities = {};
   SPIRVExtensions                spirvExtensions   = {};
-  std::vector<TypeStruct>        structs           = {};
   Sync                           sync              = {};
   Tags                           tags              = {};
-  std::vector<TypeUnion>         unions            = {};
+  Types                          types             = {};
   std::vector<VideoCodecVariant> videoCodecs       = {};
-
-  std::set<std::string> types = {};
 };
 
 std::string                         concatenate( std::vector<std::string> const & list );

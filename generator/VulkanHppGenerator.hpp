@@ -355,20 +355,6 @@ private:
     std::vector<std::map<std::string, CommandData>::const_iterator> constructorIts = {};
   };
 
-  struct StructData
-  {
-    std::map<std::string, int> aliases             = {};
-    bool                       allowDuplicate      = {};
-    std::set<std::string>      extendedBy          = {};
-    bool                       requiredLimitType   = {};
-    bool                       returnedOnly        = {};
-    bool                       mutualExclusiveLens = {};
-    std::vector<StructMember>  members             = {};
-    std::vector<std::string>   structExtends       = {};
-    std::string                subStruct           = {};
-    int                        xmlLine             = {};
-  };
-
   struct VectorParamData
   {
     size_t lenParam    = INVALID_INDEX;
@@ -419,7 +405,7 @@ private:
   bool containsFuncPointer( std::string const & type ) const;
   bool containsFloatingPoints( std::vector<StructMember> const & members ) const;
   bool containsUnion( std::string const & type ) const;
-  bool describesVector( StructData const & structure, std::string const & type = "" ) const;
+  bool describesVector( TypeStruct const & vkStruct, std::string const & type = "" ) const;
   bool describesVector( TypeUnion const & vkUnion, std::string const & type = "" ) const;
   std::vector<size_t>      determineChainedReturnParams( std::vector<ParamData> const & params, std::vector<size_t> const & returnParams ) const;
   std::vector<std::string> determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
@@ -440,7 +426,7 @@ private:
                                                                     std::map<size_t, VectorParamData> const & vectorParams,
                                                                     std::vector<size_t> const &               returnParam,
                                                                     bool                                      singular ) const;
-  std::string                               determineSubStruct( std::pair<std::string, StructData> const & structure ) const;
+  TypeStruct const *                        determineSubStruct( TypeStruct const & vkStruct ) const;
   std::map<size_t, VectorParamData>         determineVectorParams( std::vector<ParamData> const & params ) const;
   std::set<size_t>                          determineVoidPointerParams( std::vector<ParamData> const & params ) const;
   void                                      distributeEnumValueAliases();
@@ -467,8 +453,6 @@ private:
                                     std::function<void( EnumConstantData const & )> const & enumConstantAction ) const;
   void forEachRequiredHandle( std::vector<RequireData> const &                                          requireData,
                               std::function<void( std::pair<std::string, HandleData> const & )> const & handleAction ) const;
-  void forEachRequiredStruct( std::vector<RequireData> const &                                          requireData,
-                              std::function<void( std::pair<std::string, StructData> const & )> const & structAction ) const;
   std::set<std::string>                                          gatherResultCodes() const;
   std::tuple<std::string, std::string, std::string, std::string> generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
                                                                                              std::vector<std::string> const &          returnDataTypes,
@@ -545,14 +529,14 @@ private:
   std::string generateCommand0Returns( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateCommand1Returns(
     std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii, size_t returnParam ) const;
-  std::string generateCommand1ReturnsStruct( std::string const &                               name,
-                                             CommandData const &                               commandData,
-                                             size_t                                            initialSkipCount,
-                                             bool                                              definition,
-                                             bool                                              raii,
-                                             size_t                                            returnParam,
-                                             std::map<size_t, VectorParamData> const &         vectorParams,
-                                             std::map<std::string, StructData>::const_iterator structIt ) const;
+  std::string generateCommand1ReturnsStruct( std::string const &                       name,
+                                             CommandData const &                       commandData,
+                                             size_t                                    initialSkipCount,
+                                             bool                                      definition,
+                                             bool                                      raii,
+                                             size_t                                    returnParam,
+                                             std::map<size_t, VectorParamData> const & vectorParams,
+                                             std::vector<TypeStruct>::const_iterator   structIt ) const;
   std::string generateCommand1ReturnsValue( std::string const &                       name,
                                             CommandData const &                       commandData,
                                             size_t                                    initialSkipCount,
@@ -567,14 +551,14 @@ private:
                                              bool                                      raii,
                                              size_t                                    returnParam,
                                              std::map<size_t, VectorParamData> const & vectorParams ) const;
-  std::string generateCommand1ReturnsVectorOfStructs( std::string const &                               name,
-                                                      CommandData const &                               commandData,
-                                                      size_t                                            initialSkipCount,
-                                                      bool                                              definition,
-                                                      bool                                              raii,
-                                                      size_t                                            returnParam,
-                                                      std::map<size_t, VectorParamData> const &         vectorParams,
-                                                      std::map<std::string, StructData>::const_iterator structIt ) const;
+  std::string generateCommand1ReturnsVectorOfStructs( std::string const &                       name,
+                                                      CommandData const &                       commandData,
+                                                      size_t                                    initialSkipCount,
+                                                      bool                                      definition,
+                                                      bool                                      raii,
+                                                      size_t                                    returnParam,
+                                                      std::map<size_t, VectorParamData> const & vectorParams,
+                                                      std::vector<TypeStruct>::const_iterator   structIt ) const;
   std::string generateCommand2Returns( std::string const &         name,
                                        CommandData const &         commandData,
                                        size_t                      initialSkipCount,
@@ -676,7 +660,7 @@ private:
   std::string
     generateCommandSetExclusive( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
-  std::string generateConstexprString( std::pair<std::string, StructData> const & structData ) const;
+  std::string generateConstexprString( TypeStruct const & vkStruct ) const;
   std::string generateConstexprDefines() const;
   std::string generateCppModuleCommands() const;
   std::string generateDataDeclarations( CommandData const &                       commandData,
@@ -954,26 +938,26 @@ private:
                                  bool                                                           mutualExclusiveLens ) const;
   std::string generateStaticAssertions() const;
   std::string generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedTypes ) const;
-  std::string generateStruct( std::pair<std::string, StructData> const & structure, std::set<std::string> & listedStructs ) const;
-  std::string generateStructCastAssignments( std::pair<std::string, StructData> const & structData ) const;
-  std::string generateStructCompareOperators( std::pair<std::string, StructData> const & structure ) const;
-  std::string generateStructConstructors( std::pair<std::string, StructData> const & structData ) const;
-  std::string generateStructConstructorsEnhanced( std::pair<std::string, StructData> const & structData ) const;
+  std::string generateStruct( TypeStruct const & vkStruct, std::set<std::string> & listedStructs ) const;
+  std::string generateStructCastAssignments( TypeStruct const & vkStruct ) const;
+  std::string generateStructCompareOperators( TypeStruct const & vkStruct ) const;
+  std::string generateStructConstructors( TypeStruct const & vkStruct ) const;
+  std::string generateStructConstructorsEnhanced( TypeStruct const & vkStruct ) const;
   std::string generateStructConstructorArgument( std::string const & structName, StructMember const & member, bool withDefault ) const;
-  std::string generateStructHashStructure( std::pair<std::string, StructData> const & structure, std::set<std::string> & listedStructs ) const;
+  std::string generateStructHashStructure( TypeStruct const & vkStruct, std::set<std::string> & listedStructs ) const;
   std::string generateStructHashStructures() const;
-  std::string generateStructHashSum( std::pair<std::string, StructData> const & structure ) const;
+  std::string generateStructHashSum( TypeStruct const & vkStruct ) const;
   std::string generateStructsAndUnions() const;
-  std::string generateStructure( std::pair<std::string, StructData> const & structure ) const;
+  std::string generateStructure( TypeStruct const & vkStruct, TypeStruct const * subStruct ) const;
   std::string generateStructExtendsStructs() const;
   std::string
     generateStructExtendsStructs( std::vector<RequireData> const & requireData, std::set<std::string> & listedStructs, std::string const & title ) const;
   std::string generateStructForwardDeclarations() const;
   std::string
     generateStructForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedStructs ) const;
-  std::tuple<std::string, std::string, std::string, std::string> generateStructMembers( std::pair<std::string, StructData> const & structData ) const;
-  std::string generateStructSetter( std::pair<std::string, StructData> const & structure, size_t index ) const;
-  std::string generateStructSubConstructor( std::pair<std::string, StructData> const & structData ) const;
+  std::tuple<std::string, std::string, std::string, std::string> generateStructMembers( TypeStruct const & vkStruct ) const;
+  std::string                                                    generateStructSetter( TypeStruct const & vkStruct, size_t index ) const;
+  std::string generateStructSubConstructor( TypeStruct const & vkStruct, TypeStruct const * subStruct ) const;
   std::string generateSuccessCode( std::string const & code ) const;
   std::string generateSuccessCodeList( std::vector<std::string> const & successCodes, bool enumerating ) const;
   std::string generateThrowResultException() const;
@@ -1040,7 +1024,6 @@ private:
   bool isTypeRequired( std::string const & type ) const;
   bool isTypeUsed( std::string const & type ) const;
   bool isVectorByStructure( std::string const & type ) const;
-  void markExtendedStructs();
   void mergeInternalFeatures();
   void mergeInternalFeatures( std::vector<std::string> const & depends, FeatureData & feature, std::map<std::string, FeatureData> & internalFeatures );
   bool needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & chainedReturnParams ) const;
@@ -1062,8 +1045,8 @@ private:
   std::string                                            stripPluralS( std::string const & name ) const;
   bool                                                   structureChainHoldsHandle( std::string const & name ) const;
   bool                                                   structureChainHoldsVector( std::string const & name ) const;
-  bool                                                   structureHoldsHandle( StructData const & structData ) const;
-  bool                                                   structureHoldsVector( StructData const & structData ) const;
+  bool                                                   structureHoldsHandle( TypeStruct const & vkStruct ) const;
+  bool                                                   structureHoldsVector( TypeStruct const & vkStruct ) const;
   std::string                                            toString( TypeCategory category ) const;
   StructMember const &                                   vectorMemberByStructure( std::string const & structureType ) const;
 
@@ -1079,7 +1062,6 @@ private:
   std::map<std::string, FormatData>  m_formats;
   std::map<std::string, HandleData>  m_handles;
   std::set<std::string>              m_RAIISpecialFunctions;
-  std::map<std::string, StructData>  m_structs;
   std::map<std::string, TypeData>    m_types;
   std::vector<ExtensionData>         m_unsupportedExtensions;
   std::vector<FeatureData>           m_unsupportedFeatures;

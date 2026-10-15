@@ -2750,7 +2750,7 @@ Param parseParam( tinyxml2::XMLElement const * element )
     else if ( attribute.first == "noautovalidity" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      param.noAutoValidity = attribute.second;
+      param.noAutoValidity = ( attribute.second == "true" );
     }
     else if ( attribute.first == "objecttype" )
     {
@@ -2759,7 +2759,12 @@ Param parseParam( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "optional" )
     {
-      param.optional = tokenize( attribute.second, "," );
+      auto optional = tokenize( attribute.second, "," );
+      for ( const auto & opt : optional )
+      {
+        assert( ( opt == "true" ) || ( opt == "false" ) );
+        param.optional.push_back( opt == "true" );
+      }
     }
     else if ( attribute.first == "stride" )
     {
@@ -5201,7 +5206,7 @@ UnionVariant parseTypeUnion( tinyxml2::XMLElement const * element, std::map<std:
       else if ( attribute.first == "returnedonly" )
       {
         checkNoList( "vk.xml", attribute.second, line );
-        typeUnion.returnedOnly = attribute.second;
+        typeUnion.returnedOnly = ( attribute.second == "true" );
       }
     }
 
@@ -5679,12 +5684,12 @@ UnionMember parseUnionMember( tinyxml2::XMLElement const * element )
     else if ( attribute.first == "noautovalidity" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      member.noAutoValidity = attribute.second;
+      member.noAutoValidity = ( attribute.second == "true" );
     }
     else if ( attribute.first == "optional" )
     {
       checkNoList( "vk.xml", attribute.second, line );
-      member.optional = attribute.second;
+      member.optional = ( attribute.second == "true" );
     }
     else if ( attribute.first == "selection" )
     {

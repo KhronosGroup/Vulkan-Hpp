@@ -15,12 +15,19 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <vulkan/vulkan_core.h>
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <vulkan/vulkan_to_string.hpp>
+#endif
+
 
 static char const * AppName    = "EnableValidationWithCallback";
 static char const * EngineName = "Vulkan.hpp";
@@ -44,9 +51,8 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT( VkInstance instance,
 VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
                                                  vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
                                                  vk::DebugUtilsMessengerCallbackDataEXT const * pCallbackData,
-                                                 VULKAN_HPP_MAYBE_UNUSED void * pUserData )
+                                                 [[maybe_unused]] void * pUserData )
 {
-  VULKAN_HPP_UNUSED( pUserData );
   std::string message;
 
   message += vk::to_string( messageSeverity ) + ": " + vk::to_string( messageTypes ) + ":\n";
@@ -56,7 +62,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFl
   if ( 0 < pCallbackData->queueLabelCount )
   {
     message += std::string( "\t" ) + "Queue Labels:\n";
-    for ( uint32_t i = 0; i < pCallbackData->queueLabelCount; i++ )
+    for ( std::uint32_t i = 0; i < pCallbackData->queueLabelCount; i++ )
     {
       message += std::string( "\t\t" ) + "labelName = <" + pCallbackData->pQueueLabels[i].pLabelName + ">\n";
     }
@@ -64,14 +70,14 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFl
   if ( 0 < pCallbackData->cmdBufLabelCount )
   {
     message += std::string( "\t" ) + "CommandBuffer Labels:\n";
-    for ( uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
+    for ( std::uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
     {
       message += std::string( "\t\t" ) + "labelName = <" + pCallbackData->pCmdBufLabels[i].pLabelName + ">\n";
     }
   }
   if ( 0 < pCallbackData->objectCount )
   {
-    for ( uint32_t i = 0; i < pCallbackData->objectCount; i++ )
+    for ( std::uint32_t i = 0; i < pCallbackData->objectCount; i++ )
     {
       message += std::string( "\t" ) + "Object " + std::to_string( i ) + "\n";
       message += std::string( "\t\t" ) + "objectType   = " + vk::to_string( pCallbackData->pObjects[i].objectType ) + "\n";
@@ -83,11 +89,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( vk::DebugUtilsMessageSeverityFl
     }
   }
 
-#ifdef _WIN32
-  MessageBox( NULL, message.c_str(), "Alert", MB_OK );
-#else
   std::cout << message << std::endl;
-#endif
 
   return false;
 }
@@ -101,7 +103,7 @@ bool checkLayers( std::vector<char const *> const & layers, std::vector<vk::Laye
                       {
                         return std::any_of( properties.begin(),
                                             properties.end(),
-                                            [&name]( vk::LayerProperties const & property ) { return strcmp( property.layerName, name ) == 0; } );
+                                            [&name]( vk::LayerProperties const & property ) { return std::strcmp( property.layerName, name ) == 0; } );
                       } );
 }
 
@@ -121,14 +123,14 @@ int main()
     if ( !checkLayers( instanceLayerNames, instanceLayerProperties ) )
     {
       std::cout << "Set the environment variable VK_LAYER_PATH to point to the location of your layers" << std::endl;
-      exit( 1 );
+      std::exit( 1 );
     }
 
     /* Enable debug callback extension */
     std::vector<char const *> instanceExtensionNames;
-    instanceExtensionNames.push_back( VK_EXT_DEBUG_UTILS_EXTENSION_NAME );
+    instanceExtensionNames.push_back( vk::EXTDebugUtilsExtensionName );
 
-    vk::ApplicationInfo    applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+    vk::ApplicationInfo    applicationInfo( AppName, 1, EngineName, 1, vk::ApiVersion11 );
     vk::InstanceCreateInfo instanceCreateInfo( {}, &applicationInfo, instanceLayerNames, instanceExtensionNames );
     vk::raii::Instance     instance( context, instanceCreateInfo );
 
@@ -136,14 +138,14 @@ int main()
     if ( !pfnVkCreateDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkCreateDebugUtilsMessengerEXT function." << std::endl;
-      exit( 1 );
+      std::exit( 1 );
     }
 
     pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>( instance.getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
     if ( !pfnVkDestroyDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkDestroyDebugUtilsMessengerEXT function." << std::endl;
-      exit( 1 );
+      std::exit( 1 );
     }
 
     vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
@@ -156,7 +158,7 @@ int main()
     vk::raii::PhysicalDevice physicalDevice = vk::raii::PhysicalDevices( instance ).front();
 
     // get the index of the first queue family that supports graphics
-    uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    std::uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
 
     float                     queuePriority = 0.0f;
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo( {}, graphicsQueueFamilyIndex, 1, &queuePriority );
@@ -179,17 +181,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

@@ -84,34 +84,10 @@ jobs:
       if: contains(matrix.env.os, 'macos')
       run: brew update && brew install -y molten-vk
 
-    - name: Setup CMake nightly
-      env:
-        CMAKE_NIGHTLY_VERSION: 4.5.20261012-g3ea39ee
-      run: |
-        case "${{runner.os}}" in
-          Linux)
-            CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-linux-x86_64.tar.gz"
-            CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-linux-x86_64/bin"
-            ;;
-          macOS)
-            CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-macos-universal.tar.gz"
-            CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-macos-universal/CMake.app/Contents/bin"
-            ;;
-          Windows)
-            CMAKE_ARCHIVE="cmake-$CMAKE_NIGHTLY_VERSION-windows-x86_64.zip"
-            CMAKE_BIN="$RUNNER_TEMP/cmake-nightly/cmake-$CMAKE_NIGHTLY_VERSION-windows-x86_64/bin"
-            ;;
-        esac
-
-        mkdir -p "$RUNNER_TEMP/cmake-nightly"
-        curl --fail --location --retry 3 "https://cmake.org/files/dev/$CMAKE_ARCHIVE" --output "$RUNNER_TEMP/$CMAKE_ARCHIVE"
-        if [[ "$CMAKE_ARCHIVE" == *.zip ]]; then
-          7z x -y "$RUNNER_TEMP/$CMAKE_ARCHIVE" -o"$RUNNER_TEMP/cmake-nightly"
-        else
-          tar -xzf "$RUNNER_TEMP/$CMAKE_ARCHIVE" -C "$RUNNER_TEMP/cmake-nightly"
-        fi
-        echo "$CMAKE_BIN" >> "$GITHUB_PATH"
-        "$CMAKE_BIN/cmake" --version
+    - name: Setup CMake
+      uses: lukka/get-cmake@latest
+      with:
+        cmakeVersion: latestrc # `import std` requires CMake 4.5; use 'latest' once it is released
 
     - name: Verify Linux x86 target
       if: contains(matrix.env.os, 'ubuntu') && contains(matrix.env.arch, 'x86')

@@ -13,45 +13,31 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+#include <cstdlib>
+import glm;
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../../samples/utils/geometries.hpp"
 #include "../../samples/utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
+#include <chrono>
 #include <fstream>
 #include <iomanip>
 #include <thread>
-
-// For timestamp code (getMilliseconds)
-#ifdef _WIN32
-#  include <Windows.h>
-#else
-#  include <sys/time.h>
 #endif
 
-typedef unsigned long long timestamp_t;
+using timestamp_t = std::chrono::milliseconds::rep;
 
 timestamp_t getMilliseconds()
 {
-#ifdef _WIN32
-  LARGE_INTEGER frequency;
-  BOOL          useQPC = QueryPerformanceFrequency( &frequency );
-  if ( useQPC )
-  {
-    LARGE_INTEGER now;
-    QueryPerformanceCounter( &now );
-    return ( 1000LL * now.QuadPart ) / frequency.QuadPart;
-  }
-  else
-  {
-    return GetTickCount();
-  }
-#else
-  struct timeval now;
-  gettimeofday( &now, NULL );
-  return ( now.tv_usec / 1000 ) + (timestamp_t)now.tv_sec;
-#endif
+  return std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now().time_since_epoch() ).count();
 }
 
 static char const * AppName    = "PipelineCache";
@@ -71,7 +57,7 @@ int main()
 
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -126,7 +112,7 @@ int main()
     vk::raii::DescriptorSet descriptorSet = std::move( vk::raii::DescriptorSets( device, { descriptorPool, *descriptorSetLayout } ).front() );
 
     vk::raii::su::updateDescriptorSets(
-      device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, nullptr } }, { textureData } );
+      device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::WholeSize, nullptr } }, { textureData } );
 
     /* VULKAN_KEY_START */
 
@@ -139,7 +125,7 @@ int main()
     {
       // Determine cache size
       readCacheStream.seekg( 0, readCacheStream.end );
-      size_t startCacheSize = static_cast<size_t>( readCacheStream.tellg() );
+      std::size_t startCacheSize = static_cast<std::size_t>( readCacheStream.tellg() );
       readCacheStream.seekg( 0, readCacheStream.beg );
 
       // Allocate memory to hold the initial cache data
@@ -172,7 +158,7 @@ int main()
       //      0               4    a device ID equal to VkPhysicalDeviceProperties::DeviceId written
       //                           as a stream of bytes, with the least significant byte first
       //
-      //      4    VK_UUID_SIZE    a pipeline cache ID equal to VkPhysicalDeviceProperties::pipelineCacheUUID
+      //      4    vk::UuidSize    a pipeline cache ID equal to VkPhysicalDeviceProperties::pipelineCacheUUID
       //
       //
       // The code must be updated for latest Vulkan spec, which contains the following table:
@@ -187,20 +173,20 @@ int main()
       //                           as a stream of bytes, with the least significant byte first
       //     12               4    a device ID equal to VkPhysicalDeviceProperties::deviceID written
       //                           as a stream of bytes, with the least significant byte first
-      //     16    VK_UUID_SIZE    a pipeline cache ID equal to VkPhysicalDeviceProperties::pipelineCacheUUID
+      //     16    vk::UuidSize    a pipeline cache ID equal to VkPhysicalDeviceProperties::pipelineCacheUUID
 
-      uint32_t headerLength                    = 0;
-      uint32_t cacheHeaderVersion              = 0;
-      uint32_t vendorID                        = 0;
-      uint32_t deviceID                        = 0;
-      uint8_t  pipelineCacheUUID[VK_UUID_SIZE] = {};
+      std::uint32_t headerLength                    = 0;
+      std::uint32_t cacheHeaderVersion              = 0;
+      std::uint32_t vendorID                        = 0;
+      std::uint32_t deviceID                        = 0;
+      std::uint8_t  pipelineCacheUUID[vk::UuidSize] = {};
 
-      uint8_t * startCacheDataPtr = reinterpret_cast<uint8_t *>( startCacheData.data() );
-      memcpy( &headerLength, startCacheDataPtr + 0, 4 );
-      memcpy( &cacheHeaderVersion, startCacheDataPtr + 4, 4 );
-      memcpy( &vendorID, startCacheDataPtr + 8, 4 );
-      memcpy( &deviceID, startCacheDataPtr + 12, 4 );
-      memcpy( pipelineCacheUUID, startCacheDataPtr + 16, VK_UUID_SIZE );
+      std::uint8_t * startCacheDataPtr = reinterpret_cast<std::uint8_t *>( startCacheData.data() );
+      std::memcpy( &headerLength, startCacheDataPtr + 0, 4 );
+      std::memcpy( &cacheHeaderVersion, startCacheDataPtr + 4, 4 );
+      std::memcpy( &vendorID, startCacheDataPtr + 8, 4 );
+      std::memcpy( &deviceID, startCacheDataPtr + 12, 4 );
+      std::memcpy( pipelineCacheUUID, startCacheDataPtr + 16, vk::UuidSize );
 
       // Check each field and report bad values before freeing existing cache
       bool badCache = false;
@@ -212,7 +198,7 @@ int main()
         std::cout << "    Cache contains: " << std::hex << std::setw( 8 ) << headerLength << "\n";
       }
 
-      if ( cacheHeaderVersion != VK_PIPELINE_CACHE_HEADER_VERSION_ONE )
+      if ( cacheHeaderVersion != static_cast<std::uint32_t>( vk::PipelineCacheHeaderVersion::eOne ) )
       {
         badCache = true;
         std::cout << "  Unsupported cache header version in " << cacheFileName << ".\n";
@@ -235,7 +221,7 @@ int main()
         std::cout << "    Driver expects: " << std::hex << std::setw( 8 ) << properties.deviceID << "\n";
       }
 
-      if ( memcmp( pipelineCacheUUID, properties.pipelineCacheUUID, sizeof( pipelineCacheUUID ) ) != 0 )
+      if ( std::memcmp( pipelineCacheUUID, properties.pipelineCacheUUID, sizeof( pipelineCacheUUID ) ) != 0 )
       {
         badCache = true;
         std::cout << "  UUID mismatch in " << cacheFileName << ".\n";
@@ -253,7 +239,7 @@ int main()
         if ( remove( cacheFileName.c_str() ) != 0 )
         {
           std::cerr << "Reading error";
-          exit( EXIT_FAILURE );
+          std::exit( EXIT_FAILURE );
         }
       }
     }
@@ -286,7 +272,7 @@ int main()
 
     // Get the index of the next available swapchain image:
     vk::Result result;
-    uint32_t   imageIndex;
+    std::uint32_t imageIndex;
     std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
@@ -316,7 +302,7 @@ int main()
     vk::SubmitInfo         submitInfo( *imageAcquiredSemaphore, waitDestinationStageMask, *commandBuffer );
     graphicsQueue.submit( submitInfo, *drawFence );
 
-    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, vk::True, vk::su::FenceTimeout ) )
       ;
 
     vk::PresentInfoKHR presentInfoKHR( nullptr, *swapChainData.swapChain, imageIndex );
@@ -332,7 +318,7 @@ int main()
     // Store away the cache that we've populated.  This could conceivably happen
     // earlier, depends on when the pipeline cache stops being populated
     // internally.
-    std::vector<uint8_t> endCacheData = pipelineCache.getData();
+    std::vector<std::uint8_t> endCacheData = pipelineCache.getData();
 
     // Write the file to disk, overwriting whatever was there
     std::ofstream writeCacheStream( cacheFileName, std::ios_base::out | std::ios_base::binary );
@@ -353,17 +339,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

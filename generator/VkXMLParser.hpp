@@ -184,11 +184,11 @@ using StructVariant = std::variant<TypeStruct, Alias>;
 
 struct UnionMember
 {
+  std::string              name           = {};
   std::vector<std::string> arraySizes     = {};
   std::string              len            = {};
-  std::string              name           = {};
-  std::string              noAutoValidity = {};
-  std::string              optional       = {};
+  bool                     noAutoValidity = {};
+  bool                     optional       = {};
   std::vector<std::string> selection      = {};
   Type                     type           = {};
   int                      xmlLine        = {};
@@ -199,7 +199,7 @@ struct TypeUnion
   std::string                name         = {};
   std::map<std::string, int> aliases      = {};
   std::vector<UnionMember>   members      = {};
-  std::string                returnedOnly = {};
+  bool                       returnedOnly = {};
   int                        xmlLine      = {};
 };
 
@@ -210,15 +210,15 @@ using TypeVariant =
 
 struct Param
 {
+  std::string              name           = {};
   std::string              altLen         = {};
   std::vector<std::string> api            = {};
   std::vector<std::string> arraySizes     = {};
   std::string              externSync     = {};
   std::string              len            = {};
-  std::string              name           = {};
-  std::string              noAutoValidity = {};
+  bool                     noAutoValidity = {};
   std::string              objectType     = {};
-  std::vector<std::string> optional       = {};
+  std::vector<bool>        optional       = {};
   std::string              stride         = {};
   Type                     type           = {};
   std::string              validStructs   = {};
@@ -226,8 +226,8 @@ struct Param
 
   bool operator==( Param const & rhs ) const noexcept
   {
-    return ( altLen == rhs.altLen ) && ( api == rhs.api ) && ( arraySizes == rhs.arraySizes ) && ( externSync == rhs.externSync ) && ( len == rhs.len ) &&
-           ( name == rhs.name ) && ( noAutoValidity == rhs.noAutoValidity ) && ( objectType == rhs.objectType ) && ( optional == rhs.optional ) &&
+    return ( name == rhs.name ) && ( altLen == rhs.altLen ) && ( api == rhs.api ) && ( arraySizes == rhs.arraySizes ) && ( externSync == rhs.externSync ) &&
+           ( len == rhs.len ) && ( noAutoValidity == rhs.noAutoValidity ) && ( objectType == rhs.objectType ) && ( optional == rhs.optional ) &&
            ( stride == rhs.stride ) && ( type == rhs.type ) && ( validStructs == rhs.validStructs );
   }
 };

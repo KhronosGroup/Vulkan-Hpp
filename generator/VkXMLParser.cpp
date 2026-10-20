@@ -30,7 +30,7 @@ void                 normalizeVersion( std::vector<std::vector<std::string>> & d
 Alias                parseAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & category );
 BitmaskValueVariant  parseBitmaskValue( tinyxml2::XMLElement const * element );
 CommandVariant       parseCommand( tinyxml2::XMLElement const * element );
-std::vector<Command> parseCommands( tinyxml2::XMLElement const * element );
+std::vector<Command> parseCommands( tinyxml2::XMLElement const * element, std::string const & api );
 Component            parseComponent( tinyxml2::XMLElement const * element );
 ConstantValue        parseConstantValue( tinyxml2::XMLElement const * element );
 Deprecate            parseDeprecate( tinyxml2::XMLElement const * element );
@@ -675,7 +675,7 @@ CommandVariant parseCommand( tinyxml2::XMLElement const * element )
   }
 }
 
-std::vector<Command> parseCommands( tinyxml2::XMLElement const * element )
+std::vector<Command> parseCommands( tinyxml2::XMLElement const * element, std::string const & api )
 {
   int const line = element->GetLineNum();
   checkAttributes( "vk.xml", line, getAttributes( element ), {}, { { "comment", {} } } );
@@ -690,9 +690,12 @@ std::vector<Command> parseCommands( tinyxml2::XMLElement const * element )
     if ( std::holds_alternative<Command>( commandVariant ) )
     {
       auto const & command = std::get<Command>( commandVariant );
-      checkForError(
-        "vk.xml", !containsByNameAndExport( commands, command.name, command.exports ), command.xmlLine, "command <" + command.name + "> already specified" );
-      commands.push_back( command );
+      if ( command.api.empty() || std::ranges::any_of( command.api, [&api]( std::string const & commandApi ) { return commandApi == api; } ) )
+      {
+        checkForError(
+          "vk.xml", !containsByNameAndExport( commands, command.name, command.exports ), command.xmlLine, "command <" + command.name + "> already specified" );
+        commands.push_back( command );
+      }
     }
     else
     {
@@ -2981,7 +2984,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
     std::string const value = child->Value();
     if ( value == "commands" )
     {
-      vkxml.commands = parseCommands( child );
+      vkxml.commands = parseCommands( child, api );
 
       for ( auto const & command : vkxml.commands )
       {
@@ -3233,10 +3236,12 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
         {
           for ( auto const & command : require.commands )
           {
+            auto commandIt = findByNameOrAlias( vkxml.commands, command.name );
             checkForError( "vk.xml",
-                           containsByNameOrAlias( vkxml.commands, command.name ),
+                           commandIt != vkxml.commands.end(),
                            command.xmlLine,
                            "extension <" + extension.name + "> requires unknown command <" + command.name + ">" );
+            commandIt->requiredBy.insert( extension.name );
           }
           for ( auto const & e : require.enums )
           {
@@ -3394,6 +3399,13 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
       }
       for ( auto & require : feature.require )
       {
+        for ( auto const & command : require.commands )
+        {
+          auto commandIt = findByNameOrAlias( vkxml.commands, command.name );
+          checkForError(
+            "vk.xml", commandIt != vkxml.commands.end(), command.xmlLine, "feature <" + feature.name + "> requires unknown command <" + command.name + ">" );
+          commandIt->requiredBy.insert( feature.name );
+        }
         for ( auto const & enumRegular : require.enumRegulars )
         {
           auto enumIt = findByName( vkxml.types.enums, enumRegular.extends );

@@ -245,6 +245,7 @@ struct Command
   std::vector<Param>         params               = {};
   std::vector<std::string>   queues               = {};
   std::string                renderPass           = {};
+  std::set<std::string>      requiredBy           = {};
   Type                       returnType           = {};
   std::vector<std::string>   successCodes         = {};
   std::vector<std::string>   tasks                = {};

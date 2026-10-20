@@ -89,7 +89,11 @@ template <typename T>
 typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name );
 template <typename T>
 typename std::map<std::string, T>::const_iterator findByNameOrAlias( std::map<std::string, T> const & values, std::string const & name );
-std::string                                       generateCopyrightMessage( std::string const & comment );
+template <typename T>
+typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const & values, std::string const & name );
+template <typename T>
+typename std::vector<T>::iterator findByNameOrAlias( std::vector<T> & values, std::string const & name );
+std::string                       generateCopyrightMessage( std::string const & comment );
 void        generateFileFromTemplate( std::string const & fileName, std::string const & snippetFile, std::map<std::string, std::string> const & replacements );
 std::string generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes );
 std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element );
@@ -216,11 +220,12 @@ struct TypeData
 // attributes : the map of name/value pairs of the encountered attributes
 // required   : the required attributes, with a set of allowed values per attribute
 // optional   : the optional attributes, with a set of allowed values per attribute
-inline void checkAttributes( std::string const &                                  intro,
-                             int                                                  line,
-                             std::map<std::string, std::string> const &           attributes,
-                             std::map<std::string, std::set<std::string>> const & required,
-                             std::map<std::string, std::set<std::string>> const & optional )
+inline
+void checkAttributes( std::string const &                                  intro,
+                      int                                                  line,
+                      std::map<std::string, std::string> const &           attributes,
+                      std::map<std::string, std::set<std::string>> const & required,
+                      std::map<std::string, std::set<std::string>> const & optional )
 {
   // check if all required attributes are included and if there is a set of allowed values, check if the actual
   // value is part of that set
@@ -262,11 +267,12 @@ inline void checkAttributes( std::string const &                                
   }
 }
 
-inline void checkElements( std::string const &                               intro,
-                           int                                               line,
-                           std::vector<tinyxml2::XMLElement const *> const & elements,
-                           std::map<std::string, MultipleAllowed> const &    required,
-                           std::map<std::string, MultipleAllowed> const &    optional )
+inline
+void checkElements( std::string const &                               intro,
+                    int                                               line,
+                    std::vector<tinyxml2::XMLElement const *> const & elements,
+                    std::map<std::string, MultipleAllowed> const &    required,
+                    std::map<std::string, MultipleAllowed> const &    optional )
 {
   std::map<std::string, size_t> encountered;
   for ( auto const & e : elements )
@@ -300,7 +306,8 @@ inline void checkElements( std::string const &                               int
   }
 }
 
-inline void checkForError( std::string const & intro, bool condition, int line, std::string const & message )
+inline
+void checkForError( std::string const & intro, bool condition, int line, std::string const & message )
 {
   if ( !condition )
   {
@@ -308,7 +315,8 @@ inline void checkForError( std::string const & intro, bool condition, int line, 
   }
 }
 
-inline void checkForWarning( std::string const & intro, bool condition, int line, std::string const & message )
+inline
+void checkForWarning( std::string const & intro, bool condition, int line, std::string const & message )
 {
   if ( !condition )
   {
@@ -316,7 +324,8 @@ inline void checkForWarning( std::string const & intro, bool condition, int line
   }
 }
 
-inline void checkNoList( std::string const & intro, std::string const & item, int line )
+inline
+void checkNoList( std::string const & intro, std::string const & item, int line )
 {
   checkForError( intro, item.find( ',' ) == std::string::npos, line, "item <" + item + "> contains unexpected coma, looks like list" );
 }
@@ -375,7 +384,14 @@ typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const 
   return std::ranges::find_if( values, [&name]( T const & value ) { return value.name == name || containsByName( value.aliases, name ); } );
 }
 
-inline std::string generateCopyrightMessage( std::string const & comment )
+template <typename T>
+typename std::vector<T>::iterator findByNameOrAlias( std::vector<T> & values, std::string const & name )
+{
+  return std::ranges::find_if( values, [&name]( T const & value ) { return value.name == name || containsByName( value.aliases, name ); } );
+}
+
+inline
+std::string generateCopyrightMessage( std::string const & comment )
 {
   std::string copyrightMessage = comment;
 
@@ -392,14 +408,16 @@ inline std::string generateCopyrightMessage( std::string const & comment )
   return trim( copyrightMessage ) + "\n";
 }
 
-inline void generateFileFromTemplate( std::string const & fileName, std::string const & snippetFile, std::map<std::string, std::string> const & replacements )
+inline
+void generateFileFromTemplate( std::string const & fileName, std::string const & snippetFile, std::map<std::string, std::string> const & replacements )
 {
   std::string const completeFileName = std::string( BASE_PATH ) + "/vulkan/" + fileName;
   messager.message( "VulkanHppGenerator: Generating " + completeFileName + " ...\n" );
   writeToFile( replaceWithMap( readSnippet( snippetFile ), replacements ), completeFileName );
 }
 
-inline std::string generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes )
+inline
+std::string generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes )
 {
   std::string arrayString = "ArrayWrapper" + std::to_string( sizes.size() ) + "D<" + type;
   for ( auto const & size : sizes )
@@ -410,7 +428,8 @@ inline std::string generateStandardArrayWrapper( std::string const & type, std::
   return arrayString;
 }
 
-inline std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element )
+inline
+std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element )
 {
   assert( element );
   std::map<std::string, std::string> attributes;
@@ -423,7 +442,8 @@ inline std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement co
 }
 
 template <typename ElementContainer>
-inline std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContainer const * element )
+inline
+std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContainer const * element )
 {
   std::vector<tinyxml2::XMLElement const *> childElements;
   for ( tinyxml2::XMLElement const * childElement = element->FirstChildElement(); childElement; childElement = childElement->NextSiblingElement() )
@@ -433,30 +453,35 @@ inline std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContai
   return childElements;
 }
 
-inline bool isFloatNumber(std::string const& number)
+inline
+bool isFloatNumber( std::string const & number )
 {
   auto pointIndex = number.find_first_not_of( "0123456789", number[0] == '-' ? 1 : 0 );
   return ( pointIndex == std::string::npos ) ||
          ( ( number[pointIndex] == '.' ) && number.find_first_not_of( "0123456789", pointIndex + 1 ) == std::string::npos );
 }
 
-inline bool isHexNumber( std::string const & number ) noexcept
+inline
+bool isHexNumber( std::string const & number ) noexcept
 {
   return number.starts_with( "0x" ) && ( number.find_first_not_of( "0123456789ABCDEF", 2 ) == std::string::npos );
 }
 
-inline bool isNumber( std::string const & number ) noexcept
+inline
+bool isNumber( std::string const & number ) noexcept
 {
   return number.find_first_not_of( "0123456789" ) == std::string::npos;
 }
 
-inline bool isSignedNumber( std::string const & number ) noexcept
+inline
+bool isSignedNumber( std::string const & number ) noexcept
 {
   assert( !number.empty() );
   return number.find_first_not_of( "0123456789", number[0] == '-' ? 1 : 0 ) == std::string::npos;
 }
 
-inline CategoryEnum parseCategoryEnum( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+inline
+CategoryEnum parseCategoryEnum( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
 {
   int line = element->GetLineNum();
   checkAttributes( intro, line, attributes, { { "category", { "enum" } }, { "name", {} } }, {} );
@@ -475,7 +500,8 @@ inline CategoryEnum parseCategoryEnum( std::string const & intro, tinyxml2::XMLE
   return categoryEnum;
 }
 
-inline Comment parseComment( std::string const & intro, tinyxml2::XMLElement const * element )
+inline
+Comment parseComment( std::string const & intro, tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
   checkAttributes( intro, line, getAttributes( element ), {}, {} );
@@ -483,7 +509,8 @@ inline Comment parseComment( std::string const & intro, tinyxml2::XMLElement con
   return { .text = element->GetText() ? element->GetText() : "", .xmlLine = line };
 }
 
-inline NameElement parseNameElement( tinyxml2::XMLElement const * element )
+inline
+NameElement parseNameElement( tinyxml2::XMLElement const * element )
 {
   int const                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -507,10 +534,11 @@ inline NameElement parseNameElement( tinyxml2::XMLElement const * element )
   return nameElement;
 }
 
-inline NameModifiers parseNameModifiers( std::string const & intro, tinyxml2::XMLNode const * node )
+inline
+NameModifiers parseNameModifiers( std::string const & intro, tinyxml2::XMLNode const * node )
 {
   std::vector<std::string> arraySizes;
-  int              bitCount = 0;
+  int                      bitCount = 0;
   if ( node && node->ToText() )
   {
     // following the name there might be some array size
@@ -543,7 +571,8 @@ inline NameModifiers parseNameModifiers( std::string const & intro, tinyxml2::XM
   return { arraySizes, bitCount };
 }
 
-inline Type parseType( std::string const & intro, tinyxml2::XMLElement const * element )
+inline
+Type parseType( std::string const & intro, tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
   checkAttributes( intro, line, getAttributes( element ), {}, {} );
@@ -569,7 +598,8 @@ inline Type parseType( std::string const & intro, tinyxml2::XMLElement const * e
   return type;
 }
 
-inline TypeExternal parseTypeExternal( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+inline
+TypeExternal parseTypeExternal( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
 {
   int const line = element->GetLineNum();
   checkAttributes( intro, line, attributes, { { "name", {} }, { "requires", {} } }, {} );
@@ -593,7 +623,8 @@ inline TypeExternal parseTypeExternal( std::string const & intro, tinyxml2::XMLE
   return external;
 }
 
-inline TypeInclude parseTypeInclude( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+inline
+TypeInclude parseTypeInclude( std::string const & intro, tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
 {
   int const line = element->GetLineNum();
   checkAttributes( intro, line, attributes, { { "category", { "include" } }, { "name", {} } }, {} );
@@ -612,7 +643,8 @@ inline TypeInclude parseTypeInclude( std::string const & intro, tinyxml2::XMLEle
   return include;
 }
 
-inline std::string readSnippet( std::string const & snippetFile )
+inline
+std::string readSnippet( std::string const & snippetFile )
 {
   std::ifstream ifs( std::string( BASE_PATH ) + "/generator/snippets/" + snippetFile );
   assert( !ifs.fail() );
@@ -643,7 +675,8 @@ inline std::string readSnippet( std::string const & snippetFile )
   return oss.str();
 }
 
-inline std::string replaceWithMap( std::string const & input, std::map<std::string, std::string> const & replacements )
+inline
+std::string replaceWithMap( std::string const & input, std::map<std::string, std::string> const & replacements )
 {
   // This will match ${someVariable} and contain someVariable in match group 1
   std::regex re( R"(\$\{([^\}]+)\})" );
@@ -694,7 +727,8 @@ inline std::string replaceWithMap( std::string const & input, std::map<std::stri
   return result;
 }
 
-inline std::string stripPostfix( std::string const & value, std::string const & postfix )
+inline
+std::string stripPostfix( std::string const & value, std::string const & postfix )
 {
   std::string strippedValue = value;
   if ( strippedValue.ends_with( postfix ) )
@@ -704,7 +738,8 @@ inline std::string stripPostfix( std::string const & value, std::string const & 
   return strippedValue;
 }
 
-inline std::string stripPrefix( std::string const & value, std::string const & prefix )
+inline
+std::string stripPrefix( std::string const & value, std::string const & prefix )
 {
   std::string strippedValue = value;
   if ( strippedValue.starts_with( prefix ) )
@@ -714,7 +749,8 @@ inline std::string stripPrefix( std::string const & value, std::string const & p
   return strippedValue;
 }
 
-inline std::string toCamelCase( std::string const & value, bool keepSeparatedNumbersSeparated )
+inline
+std::string toCamelCase( std::string const & value, bool keepSeparatedNumbersSeparated )
 {
   assert( value.empty() || isupper( value[0] ) || isdigit( value[0] ) );
   std::string result;
@@ -736,7 +772,8 @@ inline std::string toCamelCase( std::string const & value, bool keepSeparatedNum
   return result;
 }
 
-inline std::vector<std::string> tokenize( std::string const & tokenString, std::string const & separator )
+inline
+std::vector<std::string> tokenize( std::string const & tokenString, std::string const & separator )
 {
   std::vector<std::string> tokens;
   if ( !tokenString.empty() )
@@ -755,7 +792,8 @@ inline std::vector<std::string> tokenize( std::string const & tokenString, std::
   return tokens;
 }
 
-inline std::vector<std::string> tokenizeAny( std::string const & tokenString, std::string const & separators )
+inline
+std::vector<std::string> tokenizeAny( std::string const & tokenString, std::string const & separators )
 {
   size_t const             len = tokenString.length();
   std::vector<std::string> tokens;
@@ -775,7 +813,8 @@ inline std::vector<std::string> tokenizeAny( std::string const & tokenString, st
   return tokens;
 }
 
-inline std::string toString( tinyxml2::XMLError error )
+inline
+std::string toString( tinyxml2::XMLError error )
 {
   switch ( error )
   {
@@ -801,7 +840,8 @@ inline std::string toString( tinyxml2::XMLError error )
   }
 }
 
-inline std::string toUpperCase( std::string const & name )
+inline
+std::string toUpperCase( std::string const & name )
 {
   assert( !name.empty() );
   std::string convertedName;
@@ -820,7 +860,8 @@ inline std::string toUpperCase( std::string const & name )
   return convertedName;
 }
 
-inline std::string trim( std::string const & input )
+inline
+std::string trim( std::string const & input )
 {
   std::string result = input;
   result.erase( result.begin(), std::ranges::find_if( result, []( char c ) noexcept { return !std::isspace( c ); } ) );
@@ -828,14 +869,16 @@ inline std::string trim( std::string const & input )
   return result;
 }
 
-inline std::string trimEnd( std::string const & input )
+inline
+std::string trimEnd( std::string const & input )
 {
   std::string result = input;
   result.erase( std::find_if( result.rbegin(), result.rend(), []( char c ) noexcept { return !std::isspace( c ); } ).base(), result.end() );
   return result;
 }
 
-inline std::string trimStars( std::string const & input )
+inline
+std::string trimStars( std::string const & input )
 {
   std::string result = input;
   size_t      pos    = result.find( '*' );
@@ -855,7 +898,8 @@ inline std::string trimStars( std::string const & input )
   return result;
 }
 
-inline void writeToFile( std::string const & str, std::string const & fileName )
+inline
+void writeToFile( std::string const & str, std::string const & fileName )
 {
   std::ofstream ofs( fileName );
   assert( !ofs.fail() );

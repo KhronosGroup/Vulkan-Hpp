@@ -6145,20 +6145,20 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     public:
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-      AccelerationStructureKHR( Device const &                              device,
-                                AccelerationStructureCreateInfo2KHR const & createInfo,
-                                Optional<AllocationCallbacks const>         allocator = nullptr )
-      {
-        *this = device.createAccelerationStructure2KHR( createInfo, allocator );
-      }
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
       AccelerationStructureKHR( Device const &                             device,
                                 AccelerationStructureCreateInfoKHR const & createInfo,
                                 Optional<AllocationCallbacks const>        allocator = nullptr )
       {
         *this = device.createAccelerationStructureKHR( createInfo, allocator );
+      }
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+      AccelerationStructureKHR( Device const &                              device,
+                                AccelerationStructureCreateInfo2KHR const & createInfo,
+                                Optional<AllocationCallbacks const>         allocator = nullptr )
+      {
+        *this = device.createAccelerationStructure2KHR( createInfo, allocator );
       }
 #  endif
 
@@ -10397,13 +10397,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
     public:
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-      DisplayKHR( PhysicalDevice const & physicalDevice, int32_t drmFd, uint32_t connectorId )
-      {
-        *this = physicalDevice.getDrmDisplayEXT( drmFd, connectorId );
-      }
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
 #    if defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )
       DisplayKHR( PhysicalDevice const & physicalDevice, Display & dpy, RROutput rrOutput )
       {
@@ -10419,6 +10412,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         *this = physicalDevice.getWinrtDisplayNV( deviceRelativeId );
       }
 #    endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+      DisplayKHR( PhysicalDevice const & physicalDevice, int32_t drmFd, uint32_t connectorId )
+      {
+        *this = physicalDevice.getDrmDisplayEXT( drmFd, connectorId );
+      }
 #  endif
 
       DisplayKHR( PhysicalDevice const & physicalDevice, VkDisplayKHR display )
@@ -12626,6 +12626,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
       Pipeline( Device const &                        device,
                 Optional<PipelineCache const> const & pipelineCache,
+                GraphicsPipelineCreateInfo const &    createInfo,
+                Optional<AllocationCallbacks const>   allocator = nullptr )
+      {
+        *this = device.createGraphicsPipeline( pipelineCache, createInfo, allocator );
+      }
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+      Pipeline( Device const &                        device,
+                Optional<PipelineCache const> const & pipelineCache,
                 ComputePipelineCreateInfo const &     createInfo,
                 Optional<AllocationCallbacks const>   allocator = nullptr )
       {
@@ -12634,13 +12644,23 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif
 
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+      Pipeline( Device const &                         device,
+                Optional<PipelineCache const> const &  pipelineCache,
+                RayTracingPipelineCreateInfoNV const & createInfo,
+                Optional<AllocationCallbacks const>    allocator = nullptr )
+      {
+        *this = device.createRayTracingPipelineNV( pipelineCache, createInfo, allocator );
+      }
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
       Pipeline( Device const &                               device,
                 Optional<DeferredOperationKHR const> const & deferredOperation,
                 Optional<PipelineCache const> const &        pipelineCache,
-                DataGraphPipelineCreateInfoARM const &       createInfo,
+                RayTracingPipelineCreateInfoKHR const &      createInfo,
                 Optional<AllocationCallbacks const>          allocator = nullptr )
       {
-        *this = device.createDataGraphPipelineARM( deferredOperation, pipelineCache, createInfo, allocator );
+        *this = device.createRayTracingPipelineKHR( deferredOperation, pipelineCache, createInfo, allocator );
       }
 #  endif
 
@@ -12657,33 +12677,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif
 
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-      Pipeline( Device const &                        device,
-                Optional<PipelineCache const> const & pipelineCache,
-                GraphicsPipelineCreateInfo const &    createInfo,
-                Optional<AllocationCallbacks const>   allocator = nullptr )
-      {
-        *this = device.createGraphicsPipeline( pipelineCache, createInfo, allocator );
-      }
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
       Pipeline( Device const &                               device,
                 Optional<DeferredOperationKHR const> const & deferredOperation,
                 Optional<PipelineCache const> const &        pipelineCache,
-                RayTracingPipelineCreateInfoKHR const &      createInfo,
+                DataGraphPipelineCreateInfoARM const &       createInfo,
                 Optional<AllocationCallbacks const>          allocator = nullptr )
       {
-        *this = device.createRayTracingPipelineKHR( deferredOperation, pipelineCache, createInfo, allocator );
-      }
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-      Pipeline( Device const &                         device,
-                Optional<PipelineCache const> const &  pipelineCache,
-                RayTracingPipelineCreateInfoNV const & createInfo,
-                Optional<AllocationCallbacks const>    allocator = nullptr )
-      {
-        *this = device.createRayTracingPipelineNV( pipelineCache, createInfo, allocator );
+        *this = device.createDataGraphPipelineARM( deferredOperation, pipelineCache, createInfo, allocator );
       }
 #  endif
 
@@ -12896,6 +12896,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     {
     public:
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+      Pipelines( Device const &                                 device,
+                 Optional<PipelineCache const> const &          pipelineCache,
+                 ArrayProxy<GraphicsPipelineCreateInfo> const & createInfos,
+                 Optional<AllocationCallbacks const>            allocator = nullptr )
+      {
+        *this = device.createGraphicsPipelines( pipelineCache, createInfos, allocator );
+      }
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
       Pipelines( Device const &                                device,
                  Optional<PipelineCache const> const &         pipelineCache,
                  ArrayProxy<ComputePipelineCreateInfo> const & createInfos,
@@ -12907,12 +12917,22 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
       Pipelines( Device const &                                     device,
-                 Optional<DeferredOperationKHR const> const &       deferredOperation,
                  Optional<PipelineCache const> const &              pipelineCache,
-                 ArrayProxy<DataGraphPipelineCreateInfoARM> const & createInfos,
+                 ArrayProxy<RayTracingPipelineCreateInfoNV> const & createInfos,
                  Optional<AllocationCallbacks const>                allocator = nullptr )
       {
-        *this = device.createDataGraphPipelinesARM( deferredOperation, pipelineCache, createInfos, allocator );
+        *this = device.createRayTracingPipelinesNV( pipelineCache, createInfos, allocator );
+      }
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+      Pipelines( Device const &                                      device,
+                 Optional<DeferredOperationKHR const> const &        deferredOperation,
+                 Optional<PipelineCache const> const &               pipelineCache,
+                 ArrayProxy<RayTracingPipelineCreateInfoKHR> const & createInfos,
+                 Optional<AllocationCallbacks const>                 allocator = nullptr )
+      {
+        *this = device.createRayTracingPipelinesKHR( deferredOperation, pipelineCache, createInfos, allocator );
       }
 #  endif
 
@@ -12929,33 +12949,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif
 
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-      Pipelines( Device const &                                 device,
-                 Optional<PipelineCache const> const &          pipelineCache,
-                 ArrayProxy<GraphicsPipelineCreateInfo> const & createInfos,
-                 Optional<AllocationCallbacks const>            allocator = nullptr )
-      {
-        *this = device.createGraphicsPipelines( pipelineCache, createInfos, allocator );
-      }
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-      Pipelines( Device const &                                      device,
-                 Optional<DeferredOperationKHR const> const &        deferredOperation,
-                 Optional<PipelineCache const> const &               pipelineCache,
-                 ArrayProxy<RayTracingPipelineCreateInfoKHR> const & createInfos,
-                 Optional<AllocationCallbacks const>                 allocator = nullptr )
-      {
-        *this = device.createRayTracingPipelinesKHR( deferredOperation, pipelineCache, createInfos, allocator );
-      }
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
       Pipelines( Device const &                                     device,
+                 Optional<DeferredOperationKHR const> const &       deferredOperation,
                  Optional<PipelineCache const> const &              pipelineCache,
-                 ArrayProxy<RayTracingPipelineCreateInfoNV> const & createInfos,
+                 ArrayProxy<DataGraphPipelineCreateInfoARM> const & createInfos,
                  Optional<AllocationCallbacks const>                allocator = nullptr )
       {
-        *this = device.createRayTracingPipelinesNV( pipelineCache, createInfos, allocator );
+        *this = device.createDataGraphPipelinesARM( deferredOperation, pipelineCache, createInfos, allocator );
       }
 #  endif
 
@@ -14723,83 +14723,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif
 
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-#    if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
-      SurfaceKHR( Instance const & instance, DirectFBSurfaceCreateInfoEXT const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
-      {
-        *this = instance.createDirectFBSurfaceEXT( createInfo, allocator );
-      }
-#    endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-      SurfaceKHR( Instance const & instance, DisplaySurfaceCreateInfoKHR const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
-      {
-        *this = instance.createDisplayPlaneSurfaceKHR( createInfo, allocator );
-      }
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-      SurfaceKHR( Instance const & instance, HeadlessSurfaceCreateInfoEXT const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
-      {
-        *this = instance.createHeadlessSurfaceEXT( createInfo, allocator );
-      }
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-#    if defined( VK_USE_PLATFORM_IOS_MVK )
-      SurfaceKHR( Instance const & instance, IOSSurfaceCreateInfoMVK const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
-      {
-        *this = instance.createIOSSurfaceMVK( createInfo, allocator );
-      }
-#    endif /*VK_USE_PLATFORM_IOS_MVK*/
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-#    if defined( VK_USE_PLATFORM_FUCHSIA )
-      SurfaceKHR( Instance const & instance, ImagePipeSurfaceCreateInfoFUCHSIA const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
-      {
-        *this = instance.createImagePipeSurfaceFUCHSIA( createInfo, allocator );
-      }
-#    endif /*VK_USE_PLATFORM_FUCHSIA*/
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-#    if defined( VK_USE_PLATFORM_MACOS_MVK )
-      SurfaceKHR( Instance const & instance, MacOSSurfaceCreateInfoMVK const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
-      {
-        *this = instance.createMacOSSurfaceMVK( createInfo, allocator );
-      }
-#    endif /*VK_USE_PLATFORM_MACOS_MVK*/
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-#    if defined( VK_USE_PLATFORM_METAL_EXT )
-      SurfaceKHR( Instance const & instance, MetalSurfaceCreateInfoEXT const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
-      {
-        *this = instance.createMetalSurfaceEXT( createInfo, allocator );
-      }
-#    endif /*VK_USE_PLATFORM_METAL_EXT*/
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-#    if defined( VK_USE_PLATFORM_SCREEN_QNX )
-      SurfaceKHR( Instance const & instance, ScreenSurfaceCreateInfoQNX const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
-      {
-        *this = instance.createScreenSurfaceQNX( createInfo, allocator );
-      }
-#    endif /*VK_USE_PLATFORM_SCREEN_QNX*/
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-#    if defined( VK_USE_PLATFORM_GGP )
-      SurfaceKHR( Instance const & instance, StreamDescriptorSurfaceCreateInfoGGP const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
-      {
-        *this = instance.createStreamDescriptorSurfaceGGP( createInfo, allocator );
-      }
-#    endif /*VK_USE_PLATFORM_GGP*/
-#  endif
-
-#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
 #    if defined( VK_USE_PLATFORM_OHOS )
       SurfaceKHR( Instance const & instance, SurfaceCreateInfoOHOS const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
       {
@@ -14809,12 +14732,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif
 
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-#    if defined( VK_USE_PLATFORM_UBM_SEC )
-      SurfaceKHR( Instance const & instance, UbmSurfaceCreateInfoSEC const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
+      SurfaceKHR( Instance const & instance, DisplaySurfaceCreateInfoKHR const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
       {
-        *this = instance.createUbmSurfaceSEC( createInfo, allocator );
+        *this = instance.createDisplayPlaneSurfaceKHR( createInfo, allocator );
       }
-#    endif /*VK_USE_PLATFORM_UBM_SEC*/
 #  endif
 
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
@@ -14836,12 +14757,30 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif
 
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+#    if defined( VK_USE_PLATFORM_UBM_SEC )
+      SurfaceKHR( Instance const & instance, UbmSurfaceCreateInfoSEC const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
+      {
+        *this = instance.createUbmSurfaceSEC( createInfo, allocator );
+      }
+#    endif /*VK_USE_PLATFORM_UBM_SEC*/
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
 #    if defined( VK_USE_PLATFORM_WIN32_KHR )
       SurfaceKHR( Instance const & instance, Win32SurfaceCreateInfoKHR const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
       {
         *this = instance.createWin32SurfaceKHR( createInfo, allocator );
       }
 #    endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+#    if defined( VK_USE_PLATFORM_XLIB_KHR )
+      SurfaceKHR( Instance const & instance, XlibSurfaceCreateInfoKHR const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
+      {
+        *this = instance.createXlibSurfaceKHR( createInfo, allocator );
+      }
+#    endif /*VK_USE_PLATFORM_XLIB_KHR*/
 #  endif
 
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
@@ -14854,12 +14793,73 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif
 
 #  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
-#    if defined( VK_USE_PLATFORM_XLIB_KHR )
-      SurfaceKHR( Instance const & instance, XlibSurfaceCreateInfoKHR const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
+#    if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
+      SurfaceKHR( Instance const & instance, DirectFBSurfaceCreateInfoEXT const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
       {
-        *this = instance.createXlibSurfaceKHR( createInfo, allocator );
+        *this = instance.createDirectFBSurfaceEXT( createInfo, allocator );
       }
-#    endif /*VK_USE_PLATFORM_XLIB_KHR*/
+#    endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+#    if defined( VK_USE_PLATFORM_FUCHSIA )
+      SurfaceKHR( Instance const & instance, ImagePipeSurfaceCreateInfoFUCHSIA const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
+      {
+        *this = instance.createImagePipeSurfaceFUCHSIA( createInfo, allocator );
+      }
+#    endif /*VK_USE_PLATFORM_FUCHSIA*/
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+#    if defined( VK_USE_PLATFORM_GGP )
+      SurfaceKHR( Instance const & instance, StreamDescriptorSurfaceCreateInfoGGP const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
+      {
+        *this = instance.createStreamDescriptorSurfaceGGP( createInfo, allocator );
+      }
+#    endif /*VK_USE_PLATFORM_GGP*/
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+#    if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      SurfaceKHR( Instance const & instance, ScreenSurfaceCreateInfoQNX const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
+      {
+        *this = instance.createScreenSurfaceQNX( createInfo, allocator );
+      }
+#    endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+#    if defined( VK_USE_PLATFORM_IOS_MVK )
+      SurfaceKHR( Instance const & instance, IOSSurfaceCreateInfoMVK const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
+      {
+        *this = instance.createIOSSurfaceMVK( createInfo, allocator );
+      }
+#    endif /*VK_USE_PLATFORM_IOS_MVK*/
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+#    if defined( VK_USE_PLATFORM_MACOS_MVK )
+      SurfaceKHR( Instance const & instance, MacOSSurfaceCreateInfoMVK const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
+      {
+        *this = instance.createMacOSSurfaceMVK( createInfo, allocator );
+      }
+#    endif /*VK_USE_PLATFORM_MACOS_MVK*/
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+#    if defined( VK_USE_PLATFORM_METAL_EXT )
+      SurfaceKHR( Instance const & instance, MetalSurfaceCreateInfoEXT const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
+      {
+        *this = instance.createMetalSurfaceEXT( createInfo, allocator );
+      }
+#    endif /*VK_USE_PLATFORM_METAL_EXT*/
+#  endif
+
+#  if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+      SurfaceKHR( Instance const & instance, HeadlessSurfaceCreateInfoEXT const & createInfo, Optional<AllocationCallbacks const> allocator = nullptr )
+      {
+        *this = instance.createHeadlessSurfaceEXT( createInfo, allocator );
+      }
 #  endif
 
       SurfaceKHR( Instance const & instance, VkSurfaceKHR surface, Optional<AllocationCallbacks const> allocator = nullptr )

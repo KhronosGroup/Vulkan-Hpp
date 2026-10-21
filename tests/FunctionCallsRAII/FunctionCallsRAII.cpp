@@ -1493,5 +1493,31 @@ int main()
     std::vector<vk::SparseImageMemoryRequirements2> sparseImageMemoryRequirements = device.getImageSparseMemoryRequirements( imageMemoryRequirements );
   }
 
+  //=============================================
+  // Vulkan compute 1.3 API interface definitions
+  //=============================================
+
+  // Promoted from VK_KHR_synchronization2
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::raii::Event         event         = nullptr;
+    vk::DependencyInfo      dependencyInfo;
+    commandBuffer.setEvent2( *event, dependencyInfo );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::raii::Event         event         = nullptr;
+    vk::PipelineStageFlags2 stage         = {};
+    commandBuffer.resetEvent2( *event, stage );
+  }
+
+  {
+    vk::raii::CommandBuffer         commandBuffer = nullptr;
+    std::vector<vk::Event>          events;
+    std::vector<vk::DependencyInfo> depdencyInfos;
+    commandBuffer.waitEvents2( events, depdencyInfos );
+  }
+
   return 0;
 }

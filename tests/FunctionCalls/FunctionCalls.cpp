@@ -2906,6 +2906,44 @@ int main()
       device.getImageSparseMemoryRequirements( imageMemoryRequirements, allocator );
   }
 
+  //=============================================
+  // Vulkan compute 1.3 API interface definitions
+  //=============================================
+
+  // Promoted from VK_KHR_synchronization2
+  {
+    vk::CommandBuffer  commandBuffer;
+    vk::Event          event;
+    vk::DependencyInfo dependencyInfo;
+    commandBuffer.setEvent2( event, &dependencyInfo );
+  }
+  {
+    vk::CommandBuffer  commandBuffer;
+    vk::Event          event;
+    vk::DependencyInfo dependencyInfo;
+    commandBuffer.setEvent2( event, dependencyInfo );
+  }
+
+  {
+    vk::CommandBuffer       commandBuffer;
+    vk::Event               event;
+    vk::PipelineStageFlags2 stage = {};
+    commandBuffer.resetEvent2( event, stage );
+  }
+
+  {
+    vk::CommandBuffer               commandBuffer;
+    std::vector<vk::Event>          events;
+    std::vector<vk::DependencyInfo> depdencyInfos;
+    commandBuffer.waitEvents2( static_cast<uint32_t>( events.size() ), events.data(), depdencyInfos.data() );
+  }
+  {
+    vk::CommandBuffer               commandBuffer;
+    std::vector<vk::Event>          events;
+    std::vector<vk::DependencyInfo> depdencyInfos;
+    commandBuffer.waitEvents2( events, depdencyInfos );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

@@ -557,7 +557,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                             "VK_NV_cooperative_matrix_decode_vector",
                                                             "VK_NV_private_data_base_handle",
                                                             "VK_INTEL_device_info",
-                                                            "VK_VALVE_buffer_device_address_allocation_alignment" };
+                                                            "VK_VALVE_buffer_device_address_allocation_alignment",
+                                                            "VK_GOOGLE_hdr_smpte_st_209450_metadata" };
     return deviceExtensions;
   }
 
@@ -3344,7 +3345,21 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_buffer_device_address",
             } } },
-          { "VK_VERSION_1_2", { {} } } } }
+          { "VK_VERSION_1_2", { {} } } } },
+      { "VK_GOOGLE_hdr_smpte_st_209450_metadata",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_EXT_hdr_metadata",
+              "VK_KHR_get_physical_device_properties2",
+              "VK_KHR_get_surface_capabilities2",
+              "VK_KHR_swapchain",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+              "VK_EXT_hdr_metadata",
+              "VK_KHR_get_surface_capabilities2",
+              "VK_KHR_swapchain",
+            } } } } }
     };
     auto depIt = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
@@ -4341,7 +4356,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_SEC_throttle_hint" ) || ( extension == "VK_ARM_data_graph_neural_accelerator_statistics" ) ||
            ( extension == "VK_EXT_primitive_restart_index" ) || ( extension == "VK_EXT_image_tiling_control" ) ||
            ( extension == "VK_NV_cooperative_matrix_decode_vector" ) || ( extension == "VK_NV_private_data_base_handle" ) ||
-           ( extension == "VK_INTEL_device_info" ) || ( extension == "VK_VALVE_buffer_device_address_allocation_alignment" );
+           ( extension == "VK_INTEL_device_info" ) || ( extension == "VK_VALVE_buffer_device_address_allocation_alignment" ) ||
+           ( extension == "VK_GOOGLE_hdr_smpte_st_209450_metadata" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

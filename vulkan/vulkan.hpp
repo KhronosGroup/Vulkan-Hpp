@@ -42,7 +42,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 365, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 366, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -11576,6 +11576,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto VALVEBufferDeviceAddressAllocationAlignmentExtensionName =
     VK_VALVE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_EXTENSION_NAME;
 
+  //=== VK_GOOGLE_hdr_smpte_st_209450_metadata ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto GOOGLEHdrSmpteSt209450MetadataSpecVersion   = VK_GOOGLE_HDR_SMPTE_ST_209450_METADATA_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto GOOGLEHdrSmpteSt209450MetadataExtensionName = VK_GOOGLE_HDR_SMPTE_ST_209450_METADATA_EXTENSION_NAME;
+
   //===================================
   //=== STRUCT forward declarations ===
   //===================================
@@ -14068,6 +14072,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE;
   struct PhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE;
   struct BufferDeviceAddressAlignmentAllocateInfoVALVE;
+
+  //=== VK_GOOGLE_hdr_smpte_st_209450_metadata ===
+  struct PhysicalDeviceHdrSmpteSt209450FeaturesGOOGLE;
+  struct HdrSmpteSt209450GOOGLE;
+  struct SurfaceCapabilitiesHdrSmpteSt209450GOOGLE;
 
   //===================================
   //=== HANDLE forward declarations ===
@@ -26018,6 +26027,43 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<BufferDeviceAddressAlignmentAllocateInfoVALVE, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_GOOGLE_hdr_smpte_st_209450_metadata ===
+  template <>
+  struct StructExtends<PhysicalDeviceHdrSmpteSt209450FeaturesGOOGLE, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceHdrSmpteSt209450FeaturesGOOGLE, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<HdrSmpteSt209450GOOGLE, HdrMetadataEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<SurfaceCapabilitiesHdrSmpteSt209450GOOGLE, SurfaceCapabilities2KHR>
   {
     enum
     {

@@ -1901,7 +1901,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_FEATURES_VALVE,
     ePhysicalDeviceBufferDeviceAddressAllocationAlignmentPropertiesVALVE =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_ALLOCATION_ALIGNMENT_PROPERTIES_VALVE,
-    eBufferDeviceAddressAlignmentAllocateInfoVALVE = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_ALIGNMENT_ALLOCATE_INFO_VALVE
+    eBufferDeviceAddressAlignmentAllocateInfoVALVE = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_ALIGNMENT_ALLOCATE_INFO_VALVE,
+    ePhysicalDeviceHdrSmpteSt209450FeaturesGOOGLE  = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HDR_SMPTE_ST_209450_FEATURES_GOOGLE,
+    eHdrSmpteSt209450GOOGLE                        = VK_STRUCTURE_TYPE_HDR_SMPTE_ST_209450_GOOGLE,
+    eSurfaceCapabilitiesHdrSmpteSt209450GOOGLE     = VK_STRUCTURE_TYPE_SURFACE_CAPABILITIES_HDR_SMPTE_ST_209450_GOOGLE
   };
 
   // wrapper class for enum VkObjectType, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkObjectType.html
@@ -1987,7 +1990,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eMESA     = VK_VENDOR_ID_MESA,
     ePocl     = VK_VENDOR_ID_POCL,
     eMobileye = VK_VENDOR_ID_MOBILEYE,
-    eApe      = VK_VENDOR_ID_APE
+    eApe      = VK_VENDOR_ID_APE,
+    eAPEX     = VK_VENDOR_ID_APEX
   };
 
   // wrapper class for enum VkFormat, see https://registry.khronos.org/vulkan/specs/latest/man/html/VkFormat.html
@@ -4941,7 +4945,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eMesaKosmickrisp            = VK_DRIVER_ID_MESA_KOSMICKRISP,
     eMesaGfxstream              = VK_DRIVER_ID_MESA_GFXSTREAM,
     eApeSoft                    = VK_DRIVER_ID_APE_SOFT,
-    eReserved31                 = VK_DRIVER_ID_RESERVED_31
+    eReserved31                 = VK_DRIVER_ID_RESERVED_31,
+    eAPEX                       = VK_DRIVER_ID_APEX,
+    eNikki                      = VK_DRIVER_ID_NIKKI,
+    eMomoten                    = VK_DRIVER_ID_MOMOTEN
   };
 
   using DriverIdKHR = DriverId;
@@ -10699,6 +10706,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eDefault        = VK_IMAGE_TILING_CONTROL_DEFAULT_EXT,
     eMinSize        = VK_IMAGE_TILING_CONTROL_MIN_SIZE_EXT,
     eMaxPerformance = VK_IMAGE_TILING_CONTROL_MAX_PERFORMANCE_EXT
+  };
+
+  //=== VK_GOOGLE_hdr_smpte_st_209450_metadata ===
+
+  // wrapper class for enum VkHdrSmpteSt209450PowerPreferenceGOOGLE, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkHdrSmpteSt209450PowerPreferenceGOOGLE.html
+  enum class HdrSmpteSt209450PowerPreferenceGOOGLE
+  {
+    eColorAccuracy = VK_HDR_SMPTE_ST_209450_POWER_PREFERENCE_COLOR_ACCURACY_GOOGLE,
+    eLowPower      = VK_HDR_SMPTE_ST_209450_POWER_PREFERENCE_LOW_POWER_GOOGLE
   };
 
   //===========================================================

@@ -23772,6 +23772,51 @@ VULKAN_HPP_EXPORT namespace std
     }
   };
 
+  //=== VK_GOOGLE_hdr_smpte_st_209450_metadata ===
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceHdrSmpteSt209450FeaturesGOOGLE>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceHdrSmpteSt209450FeaturesGOOGLE const & physicalDeviceHdrSmpteSt209450FeaturesGOOGLE ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceHdrSmpteSt209450FeaturesGOOGLE.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceHdrSmpteSt209450FeaturesGOOGLE.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceHdrSmpteSt209450FeaturesGOOGLE.hdrSmpteSt209450 );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::HdrSmpteSt209450GOOGLE>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::HdrSmpteSt209450GOOGLE const & hdrSmpteSt209450GOOGLE ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, hdrSmpteSt209450GOOGLE.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, hdrSmpteSt209450GOOGLE.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, hdrSmpteSt209450GOOGLE.metadataSize );
+      VULKAN_HPP_HASH_COMBINE( seed, hdrSmpteSt209450GOOGLE.pMetadata );
+      VULKAN_HPP_HASH_COMBINE( seed, hdrSmpteSt209450GOOGLE.powerPreference );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesHdrSmpteSt209450GOOGLE>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesHdrSmpteSt209450GOOGLE const & surfaceCapabilitiesHdrSmpteSt209450GOOGLE ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, surfaceCapabilitiesHdrSmpteSt209450GOOGLE.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, surfaceCapabilitiesHdrSmpteSt209450GOOGLE.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, surfaceCapabilitiesHdrSmpteSt209450GOOGLE.hdrSmpteSt209450Supported );
+      return seed;
+    }
+  };
+
 #endif  // 14 <= VULKAN_HPP_CPP_VERSION
 
 }  // namespace std

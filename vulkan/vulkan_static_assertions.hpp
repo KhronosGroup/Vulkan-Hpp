@@ -10638,4 +10638,27 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::BufferDe
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BufferDeviceAddressAlignmentAllocateInfoVALVE>::value,
                           "BufferDeviceAddressAlignmentAllocateInfoVALVE is not nothrow_move_constructible!" );
 
+//=== VK_GOOGLE_hdr_smpte_st_209450_metadata ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceHdrSmpteSt209450FeaturesGOOGLE ) ==
+                            sizeof( VkPhysicalDeviceHdrSmpteSt209450FeaturesGOOGLE ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceHdrSmpteSt209450FeaturesGOOGLE>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceHdrSmpteSt209450FeaturesGOOGLE>::value,
+                          "PhysicalDeviceHdrSmpteSt209450FeaturesGOOGLE is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::HdrSmpteSt209450GOOGLE ) == sizeof( VkHdrSmpteSt209450GOOGLE ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::HdrSmpteSt209450GOOGLE>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::HdrSmpteSt209450GOOGLE>::value,
+                          "HdrSmpteSt209450GOOGLE is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesHdrSmpteSt209450GOOGLE ) == sizeof( VkSurfaceCapabilitiesHdrSmpteSt209450GOOGLE ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesHdrSmpteSt209450GOOGLE>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesHdrSmpteSt209450GOOGLE>::value,
+                          "SurfaceCapabilitiesHdrSmpteSt209450GOOGLE is not nothrow_move_constructible!" );
+
 #endif

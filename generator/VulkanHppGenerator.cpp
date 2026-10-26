@@ -24,6 +24,7 @@ namespace
   std::string                             generateList( std::vector<std::string> const & elements, std::string const & prefix, std::string const & separator );
   std::string                             generateNoDiscard( bool returnsSomething, bool multiSuccessCodes, bool multiErrorCodes );
   std::string                             generateStandardArray( std::string const & type, std::vector<std::string> const & sizes );
+  bool                                    isApiSupported( std::vector<std::string> const & apis, std::string const & api );
   bool                                    isOptional( std::vector<bool> const & optionals );
   bool                                    isUpperCase( std::string const & name );
   std::string                             startLowerCase( std::string const & input );
@@ -840,7 +841,9 @@ void VulkanHppGenerator::checkCommandCorrectness() const
   {
     // check that a command is referenced somewhere
     // I think, it's not forbidden to not reference a function, but it would probably be not intended?
-    checkForError( !command.requiredBy.empty(), command.xmlLine, "command <" + command.name + "> not required in any feature or extension" );
+    checkForError( !isApiSupported( command.api, m_api ) || !command.requiredBy.empty(),
+                   command.xmlLine,
+                   "command <" + command.name + "> not required in any feature or extension" );
 
     // check for unknown error or succes codes
     for ( auto const & ec : command.errorCodes )
@@ -7698,10 +7701,13 @@ std::string VulkanHppGenerator::generateIsDispatchedList() const
   std::string isDispatchedList;
   for ( auto const & command : m_vkxml.commands )
   {
-    isDispatchedList += "DECLARE_IS_DISPATCHED( " + command.name + " )\n";
-    for ( auto const & alias : command.aliases )
+    if ( isApiSupported( command.api, m_api ) )
     {
-      isDispatchedList += "DECLARE_IS_DISPATCHED( " + alias.first + " )\n";
+      isDispatchedList += "DECLARE_IS_DISPATCHED( " + command.name + " )\n";
+      for ( auto const & alias : command.aliases )
+      {
+        isDispatchedList += "DECLARE_IS_DISPATCHED( " + alias.first + " )\n";
+      }
     }
   }
 
@@ -13966,6 +13972,11 @@ namespace
       arrayString = "std::array<" + arrayString + "," + *it + ">";
     }
     return arrayString;
+  }
+
+  bool isApiSupported( std::vector<std::string> const & apis, std::string const & api )
+  {
+    return apis.empty() || ( std::ranges::find( apis, api ) != apis.end() );
   }
 
   bool isOptional( std::vector<bool> const & optionals )

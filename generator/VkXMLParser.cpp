@@ -30,7 +30,7 @@ void                 normalizeVersion( std::vector<std::vector<std::string>> & d
 Alias                parseAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & category );
 BitmaskValueVariant  parseBitmaskValue( tinyxml2::XMLElement const * element );
 CommandVariant       parseCommand( tinyxml2::XMLElement const * element );
-std::vector<Command> parseCommands( tinyxml2::XMLElement const * element, std::string const & api );
+std::vector<Command> parseCommands( tinyxml2::XMLElement const * element );
 Component            parseComponent( tinyxml2::XMLElement const * element );
 ConstantValue        parseConstantValue( tinyxml2::XMLElement const * element );
 Deprecate            parseDeprecate( tinyxml2::XMLElement const * element );
@@ -675,7 +675,7 @@ CommandVariant parseCommand( tinyxml2::XMLElement const * element )
   }
 }
 
-std::vector<Command> parseCommands( tinyxml2::XMLElement const * element, std::string const & api )
+std::vector<Command> parseCommands( tinyxml2::XMLElement const * element )
 {
   int const line = element->GetLineNum();
   checkAttributes( "vk.xml", line, getAttributes( element ), {}, { { "comment", {} } } );
@@ -690,12 +690,9 @@ std::vector<Command> parseCommands( tinyxml2::XMLElement const * element, std::s
     if ( std::holds_alternative<Command>( commandVariant ) )
     {
       auto const & command = std::get<Command>( commandVariant );
-      if ( command.api.empty() || std::ranges::any_of( command.api, [&api]( std::string const & commandApi ) { return commandApi == api; } ) )
-      {
-        checkForError(
-          "vk.xml", !containsByNameAndExport( commands, command.name, command.exports ), command.xmlLine, "command <" + command.name + "> already specified" );
-        commands.push_back( command );
-      }
+      checkForError(
+        "vk.xml", !containsByNameAndExport( commands, command.name, command.exports ), command.xmlLine, "command <" + command.name + "> already specified" );
+      commands.push_back( command );
     }
     else
     {
@@ -2984,7 +2981,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
     std::string const value = child->Value();
     if ( value == "commands" )
     {
-      vkxml.commands = parseCommands( child, api );
+      vkxml.commands = parseCommands( child );
 
       for ( auto const & command : vkxml.commands )
       {

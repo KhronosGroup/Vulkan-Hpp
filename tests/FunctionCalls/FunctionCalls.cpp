@@ -2944,6 +2944,33 @@ int main()
     commandBuffer.waitEvents2( events, depdencyInfos );
   }
 
+  //==============================================
+  // Vulkan graphics 1.3 API interface definitions
+  //==============================================
+
+  // Promoted from VK_KHR_copy_commands2
+  {
+    vk::CommandBuffer  commandBuffer;
+    vk::BlitImageInfo2 blitImageInfo2;
+    commandBuffer.blitImage2( &blitImageInfo2 );
+  }
+  {
+    vk::CommandBuffer  commandBuffer;
+    vk::BlitImageInfo2 blitImageInfo2;
+    commandBuffer.blitImage2( blitImageInfo2 );
+  }
+
+  {
+    vk::CommandBuffer     commandBuffer;
+    vk::ResolveImageInfo2 resolveImageInfo2;
+    commandBuffer.resolveImage2( &resolveImageInfo2 );
+  }
+  {
+    vk::CommandBuffer     commandBuffer;
+    vk::ResolveImageInfo2 resolveImageInfo2;
+    commandBuffer.resolveImage2( resolveImageInfo2 );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

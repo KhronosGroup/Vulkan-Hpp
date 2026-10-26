@@ -1589,6 +1589,7 @@ bool VulkanHppGenerator::isConstructorCandidate( Command const & command, std::s
   return isSupported( command.requiredBy ) &&
          ( std::ranges::any_of( candidatePrefixes, [&command]( std::string const & prefix ) { return command.name.starts_with( prefix ); } ) ||
            otherCandidates.contains( command.name ) ) &&
+         ( command.api.empty() || std::ranges::any_of( command.api, [this]( auto const & api ) { return api == m_api; } ) ) &&
          std::ranges::any_of( command.params, [this, &handleType]( Param const & pd ) { return isConstructorCandidate( pd, handleType ); } );
 }
 
@@ -13571,10 +13572,15 @@ void VulkanHppGenerator::mergeInternalFeatures( std::vector<std::string> const &
       {
         for ( auto const & command : requireData.commands )
         {
-          auto commandIt = findByNameOrAlias( m_vkxml.commands, command.name );
-          assert( commandIt != m_vkxml.commands.end() && commandIt->requiredBy.contains( depIt->first ) );
-          commandIt->requiredBy.erase( depIt->first );
-          commandIt->requiredBy.insert( feature.name );
+          for ( auto & commandSpec : m_vkxml.commands )
+          {
+            if ( ( commandSpec.name == command.name ) || containsByName( commandSpec.aliases, command.name ) )
+            {
+              assert( commandSpec.requiredBy.contains( depIt->first ) );
+              commandSpec.requiredBy.erase( depIt->first );
+              commandSpec.requiredBy.insert( feature.name );
+            }
+          }
         }
       }
 

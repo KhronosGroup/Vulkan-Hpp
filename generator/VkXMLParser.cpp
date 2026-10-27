@@ -690,8 +690,16 @@ std::vector<Command> parseCommands( tinyxml2::XMLElement const * element )
     if ( std::holds_alternative<Command>( commandVariant ) )
     {
       auto const & command = std::get<Command>( commandVariant );
-      checkForError(
-        "vk.xml", !containsByNameAndExport( commands, command.name, command.exports ), command.xmlLine, "command <" + command.name + "> already specified" );
+      for ( auto commandIt = commands.begin(); commandIt != commands.end(); ++commandIt )
+      {
+        checkForError( "vk.xml",
+                       ( commandIt->name != command.name ) ||
+                         std::ranges::all_of( commandIt->api,
+                                              [&command]( auto const & api )
+                                              { return std::ranges::all_of( command.api, [&api]( auto const & commandApi ) { return commandApi != api; } ); } ),
+                       command.xmlLine,
+                       "command <" + command.name + "> already specified for the same api" );
+      }
       commands.push_back( command );
     }
     else
@@ -1396,6 +1404,10 @@ Extension parseExtension( tinyxml2::XMLElement const * element )
     {
       ExtensionRequire require         = parseExtensionRequire( child );
       auto             extensionNameIt = std::ranges::find_if( require.enums, []( auto const & e ) { return getName( e ).ends_with( "_EXTENSION_NAME" ); } );
+      checkForError( "vk.xml",
+                     require.api.empty() || std::ranges::any_of( extension.supported, [&require]( auto const & api ) { return api == require.api; } ),
+                     require.xmlLine,
+                     "require section lists unsupported api <" + require.api + ">" );
       if ( extensionNameIt != require.enums.end() )
       {
         checkForError( "vk.xml",
@@ -3233,10 +3245,28 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
         {
           for ( auto const & command : require.commands )
           {
-            checkForError( "vk.xml",
-                           containsByNameOrAlias( vkxml.commands, command.name ),
-                           command.xmlLine,
-                           "extension <" + extension.name + "> requires unknown command <" + command.name + ">" );
+            bool foundCommand = false;
+            for ( auto commandIt = vkxml.commands.begin(); commandIt != vkxml.commands.end(); ++commandIt )
+            {
+              if ( ( commandIt->name == command.name || containsByName( commandIt->aliases, command.name ) ) &&
+                   ( commandIt->api.empty() ||
+                     ( require.api.empty()
+                         ? std::ranges::any_of(
+                             commandIt->api,
+                             [&extension]( auto const & api )
+                             { return std::ranges::any_of( extension.supported, [&api]( auto const & extensionApi ) { return extensionApi == api; } ); } )
+                         : std::ranges::any_of( commandIt->api, [&require]( auto const & api ) { return api == require.api; } ) ) ) )
+              {
+                checkForError( "vk.xml",
+                               !foundCommand,
+                               command.xmlLine,
+                               "extension <" + extension.name + "> requires command <" + command.name +
+                                 "> with multiple hits in the command list, which is ambiguous" );
+                commandIt->requiredBy.insert( extension.name );
+                foundCommand = true;
+              }
+            }
+            checkForError( "vk.xml", foundCommand, command.xmlLine, "extension <" + extension.name + "> requires unknown command <" + command.name + ">" );
           }
           for ( auto const & e : require.enums )
           {
@@ -3394,6 +3424,23 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
       }
       for ( auto & require : feature.require )
       {
+        for ( auto const & command : require.commands )
+        {
+          bool foundCommand = false;
+          for ( auto commandIt = vkxml.commands.begin(); commandIt != vkxml.commands.end(); ++commandIt )
+          {
+            if ( ( commandIt->name == command.name || containsByName( commandIt->aliases, command.name ) ) &&
+                 ( commandIt->api.empty() ||
+                   std::ranges::any_of( commandIt->api,
+                                        [&feature]( auto const & api )
+                                        { return std::ranges::any_of( feature.api, [&api]( auto const & featureApi ) { return featureApi == api; } ); } ) ) )
+            {
+              commandIt->requiredBy.insert( feature.name );
+              foundCommand = true;
+            }
+          }
+          checkForError( "vk.xml", foundCommand, command.xmlLine, "feature <" + feature.name + "> requires unknown command <" + command.name + ">" );
+        }
         for ( auto const & enumRegular : require.enumRegulars )
         {
           auto enumIt = findByName( vkxml.types.enums, enumRegular.extends );

@@ -155890,19 +155890,19 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       , indexBuffer( indexBuffer_ )
       , indexStride( indexStride_ )
       , baseTriangle( baseTriangle_ )
-      , usageCountsCount( static_cast<uint32_t>( usageCounts_.size() ) )
+      , usageCountsCount( static_cast<uint32_t>( !usageCounts_.empty() ? usageCounts_.size() : pUsageCounts_.size() ) )
       , pUsageCounts( usageCounts_.data() )
       , ppUsageCounts( pUsageCounts_.data() )
       , micromap( micromap_ )
     {
 #        ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( usageCounts_.empty() || pUsageCounts_.empty() || ( usageCounts_.size() == pUsageCounts_.size() ) );
+      VULKAN_HPP_ASSERT( ( !usageCounts_.empty() + !pUsageCounts_.empty() ) <= 1 );
 #        else
-      if ( !usageCounts_.empty() && !pUsageCounts_.empty() && ( usageCounts_.size() != pUsageCounts_.size() ) )
+      if ( 1 < ( !usageCounts_.empty() + !pUsageCounts_.empty() ) )
       {
         throw LogicError(
           VULKAN_HPP_NAMESPACE_STRING
-          "::AccelerationStructureTrianglesDisplacementMicromapNV::AccelerationStructureTrianglesDisplacementMicromapNV: !usageCounts_.empty() && !pUsageCounts_.empty() && ( usageCounts_.size() != pUsageCounts_.size() )" );
+          "::AccelerationStructureTrianglesDisplacementMicromapNV::AccelerationStructureTrianglesDisplacementMicromapNV: 1 < ( !usageCounts_.empty() + !pUsageCounts_.empty() )" );
       }
 #        endif /*VULKAN_HPP_NO_EXCEPTIONS*/
     }

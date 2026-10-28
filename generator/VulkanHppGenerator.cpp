@@ -38,28 +38,27 @@ static std::set<std::string> const specialPointerTypes = { "Display",          "
 // Some structs hold multiple arrays with the same len attribute, but they are mutually exclusive.
 // That information is not available in vk.xml, so we need to hardcode it here.
 // We list the structs with mutually exclusive arrays and with parallel arrays separately, so that we can check for errors in the vk.xml.
-static std::set<std::string> const structsWithMutualExclusiveArrays = { "VkAccelerationStructureBuildGeometryInfoKHR",
-                                                                        "VkAccelerationStructureGeometryMicromapDataKHR",
-                                                                        "VkAccelerationStructureTrianglesOpacityMicromapEXT",
-                                                                        "VkMicromapBuildInfoEXT",
-                                                                        "VkWriteDescriptorSet" };
-static std::set<std::string> const structsWithParallelArrays        = { "VkAccelerationStructureTrianglesDisplacementMicromapNV",
-                                                                        "VkImageConstraintsInfoFUCHSIA",
-                                                                        "VkIndirectCommandsLayoutTokenNV",
-                                                                        "VkIndirectExecutionSetShaderInfoEXT",
-                                                                        "VkPipelineBinaryKeysAndDataKHR",
-                                                                        "VkPresentInfoKHR",
-                                                                        "VkSemaphoreWaitInfo",
-                                                                        "VkSetDescriptorBufferOffsetsInfoEXT",
-                                                                        "VkSubmitInfo",
-                                                                        "VkSubpassDescription",
-                                                                        "VkSubpassDescription2",
-                                                                        "VkSwapchainTimeDomainPropertiesEXT",
-                                                                        "VkTensorCopyARM",
-                                                                        "VkTensorDescriptionARM",
-                                                                        "VkVideoDecodeAV1PictureInfoKHR",
-                                                                        "VkWin32KeyedMutexAcquireReleaseInfoKHR",
-                                                                        "VkWin32KeyedMutexAcquireReleaseInfoNV" };
+static std::set<std::string> const structsWithMutuallyExclusiveArrays = { "VkAccelerationStructureBuildGeometryInfoKHR",
+                                                                          "VkAccelerationStructureGeometryMicromapDataKHR",
+                                                                          "VkAccelerationStructureTrianglesDisplacementMicromapNV",
+                                                                          "VkAccelerationStructureTrianglesOpacityMicromapEXT",
+                                                                          "VkMicromapBuildInfoEXT",
+                                                                          "VkWriteDescriptorSet" };
+static std::set<std::string> const structsWithParallelArrays          = { "VkIndirectCommandsLayoutTokenNV",
+                                                                          "VkIndirectExecutionSetShaderInfoEXT",
+                                                                          "VkPipelineBinaryKeysAndDataKHR",
+                                                                          "VkPresentInfoKHR",
+                                                                          "VkSemaphoreWaitInfo",
+                                                                          "VkSetDescriptorBufferOffsetsInfoEXT",
+                                                                          "VkSubmitInfo",
+                                                                          "VkSubpassDescription",
+                                                                          "VkSubpassDescription2",
+                                                                          "VkSwapchainTimeDomainPropertiesEXT",
+                                                                          "VkTensorCopyARM",
+                                                                          "VkTensorDescriptionARM",
+                                                                          "VkVideoDecodeAV1PictureInfoKHR",
+                                                                          "VkWin32KeyedMutexAcquireReleaseInfoKHR",
+                                                                          "VkWin32KeyedMutexAcquireReleaseInfoNV" };
 
 //
 // VulkanHppGenerator public interface
@@ -206,7 +205,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
           if ( !m1It->len.empty() && ( m0It->len.front() == m1It->len.front() ) )
           {
             checkForWarning(
-              structsWithMutualExclusiveArrays.contains( structure.name ) || structsWithParallelArrays.contains( structure.name ),
+              structsWithMutuallyExclusiveArrays.contains( structure.name ) || structsWithParallelArrays.contains( structure.name ),
               structure.xmlLine,
               "Encountered structure <" + structure.name +
                 "> with multiple members referencing the same member for len. Need to be checked if they are supposed to be mutually exclusive." );
@@ -7794,10 +7793,10 @@ std::string VulkanHppGenerator::generateLayerSettingTypeTraits() const
 std::string VulkanHppGenerator::generateLenInitializer(
   std::vector<StructMember>::const_iterator                                                                                   mit,
   std::map<std::vector<StructMember>::const_iterator, std::vector<std::vector<StructMember>::const_iterator>>::const_iterator litit,
-  bool                                                                                                                        mutualExclusiveLens ) const
+  bool                                                                                                                        mutuallyExclusiveLens ) const
 {
   std::string initializer;
-  if ( mutualExclusiveLens )
+  if ( mutuallyExclusiveLens )
   {
     // there are multiple mutually exclusive arrays related to this len
     for ( size_t i = 0; i + 1 < litit->second.size(); i++ )
@@ -10755,7 +10754,7 @@ std::string VulkanHppGenerator::generateReturnVariable( Command const &         
 
 std::string VulkanHppGenerator::generateSizeCheck( std::vector<std::vector<StructMember>::const_iterator> const & arrayIts,
                                                    std::string const &                                            structName,
-                                                   bool                                                           mutualExclusiveLens ) const
+                                                   bool                                                           mutuallyExclusiveLens ) const
 {
   std::string sizeCheck;
   if ( 1 < arrayIts.size() )
@@ -10767,7 +10766,7 @@ std::string VulkanHppGenerator::generateSizeCheck( std::vector<std::vector<Struc
 )";
 
     std::string assertionText, throwText;
-    if ( mutualExclusiveLens )
+    if ( mutuallyExclusiveLens )
     {
       // exactly one of the arrays has to be non-empty
       std::string sum;
@@ -11242,9 +11241,9 @@ ${byString}
         if ( litit != lenIts.end() )
         {
           // len arguments just have an initalizer, from the array size
-          bool mutualExclusiveLens = structsWithMutualExclusiveArrays.contains( vkStruct.name );
-          initializers.push_back( mit->name + "( " + generateLenInitializer( mit, litit, mutualExclusiveLens ) + " )" );
-          sizeChecks += generateSizeCheck( litit->second, stripPrefix( vkStruct.name, "Vk" ), mutualExclusiveLens );
+          bool mutuallyExclusiveLens = structsWithMutuallyExclusiveArrays.contains( vkStruct.name );
+          initializers.push_back( mit->name + "( " + generateLenInitializer( mit, litit, mutuallyExclusiveLens ) + " )" );
+          sizeChecks += generateSizeCheck( litit->second, stripPrefix( vkStruct.name, "Vk" ), mutuallyExclusiveLens );
         }
         else if ( hasLen( *mit, members ) )
         {

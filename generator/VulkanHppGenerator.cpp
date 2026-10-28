@@ -226,15 +226,16 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
                                             "alias <" + alias.first + "> of union <" + u.name + "> already specified" );
                            } );
   }
-  for ( auto const & feature : m_vkxml.features )
+  for ( auto featureIt = m_vkxml.features.begin(); featureIt != m_vkxml.features.end(); )
   {
-    if ( isApiSupported( feature.api, m_api ) )
+    if ( isApiSupported( featureIt->api, m_api ) )
     {
-      m_features.push_back( featureToFeatureData( feature ) );
+      ++featureIt;
     }
     else
     {
-      m_unsupportedFeatures.push_back( featureToFeatureData( feature ) );
+      m_unsupportedFeatures.push_back( std::move( *featureIt ) );
+      featureIt = m_vkxml.features.erase( featureIt );
     }
   }
   for ( auto const & extension : m_vkxml.extensions.extensions )
@@ -513,9 +514,9 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   handleRemovals();
 
   // add the commands to the respective handles
-  for ( auto & feature : m_features )
+  for ( auto & feature : m_vkxml.features )
   {
-    forEachRequiredCommand( feature.featureRequires, [this]( std::string const & name, auto const & command ) { addCommandToHandle( name, command ); } );
+    forEachRequiredCommand( feature.require, [this]( std::string const & name, auto const & command ) { addCommandToHandle( name, command ); } );
   }
   for ( auto & extension : m_extensions )
   {
@@ -620,9 +621,9 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
         generateExtensionReplacedBy( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); },
                                      []( ExtensionData const & extension ) { return extension.promotedTo; } ) },
       { "versions",
-        std::accumulate( std::next( m_features.begin() ),
-                         m_features.end(),
-                         "\"" + m_features[0].name + "\"",
+        std::accumulate( std::next( m_vkxml.features.begin() ),
+                         m_vkxml.features.end(),
+                         "\"" + m_vkxml.features[0].name + "\"",
                          []( std::string const & acc, auto const & feature ) { return acc + ", \"" + feature.name + "\""; } ) },
       { "voidExtension", ( m_api == "vulkan" ) ? "" : "(void)extension;" } } );
 }
@@ -871,7 +872,7 @@ void VulkanHppGenerator::checkCommandCorrectness() const
       bool functionUsed = false;
       for ( auto const & require : command.requiredBy )
       {
-        functionUsed |= containsByName( m_features, require ) || containsByName( m_extensions, require );
+        functionUsed |= containsByName( m_vkxml.features, require ) || containsByName( m_extensions, require );
       }
       if ( functionUsed )
       {
@@ -1077,9 +1078,9 @@ void VulkanHppGenerator::checkFuncPointerCorrectness() const
 void VulkanHppGenerator::checkRequireCorrectness() const
 {
   // checks by features and extensions
-  for ( auto & feature : m_features )
+  for ( auto & feature : m_vkxml.features )
   {
-    checkRequireCorrectness( feature.featureRequires, "feature", feature.name );
+    checkRequireCorrectness( feature.require, "feature", feature.name );
   }
   for ( auto & extension : m_extensions )
   {
@@ -1911,9 +1912,9 @@ void VulkanHppGenerator::distributeEnumValueAliases()
 
 void VulkanHppGenerator::distributeRequirements()
 {
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    distributeRequirements( feature.featureRequires, feature.name );
+    distributeRequirements( feature.require, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -1922,7 +1923,7 @@ void VulkanHppGenerator::distributeRequirements()
   }
   for ( auto const & feature : m_unsupportedFeatures )
   {
-    distributeRequirements( feature.featureRequires, feature.name );
+    distributeRequirements( feature.require, feature.name );
   }
   for ( auto const & extension : m_unsupportedExtensions )
   {
@@ -2144,19 +2145,6 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
       }
     }
   }
-}
-
-VulkanHppGenerator::FeatureData VulkanHppGenerator::featureToFeatureData( Feature const & feature )
-{
-  FeatureData featureData;
-  featureData.api             = feature.api;
-  featureData.name            = feature.name;
-  featureData.number          = feature.number;
-  featureData.isInternal      = ( feature.apiType == "internal" );
-  featureData.depends         = feature.depends;
-  featureData.removes         = feature.removes;
-  featureData.featureRequires = feature.require;
-  return featureData;
 }
 
 std::vector<StructMember>::const_iterator VulkanHppGenerator::findHandleMember( std::vector<StructMember> const & members ) const
@@ -2705,9 +2693,9 @@ ${bitmasksToString}
 
   std::string           bitmasksToString;
   std::set<std::string> listedBitmasks;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    bitmasksToString += generateBitmasksToString( feature.featureRequires, listedBitmasks, feature.name );
+    bitmasksToString += generateBitmasksToString( feature.require, listedBitmasks, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -4314,9 +4302,9 @@ ${commandDefinitions}
 
   std::string           commandDefinitions;
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    commandDefinitions += generateCommandDefinitions( feature.featureRequires, listedCommands, feature.name );
+    commandDefinitions += generateCommandDefinitions( feature.require, listedCommands, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -4881,9 +4869,9 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     };
 
     std::set<std::string> listedConstants;
-    for ( auto const & feature : m_features )
+    for ( auto const & feature : m_vkxml.features )
     {
-      constexprDefines += generateConstantsAndProtection( feature.featureRequires, feature.name, listedConstants );
+      constexprDefines += generateConstantsAndProtection( feature.require, feature.name, listedConstants );
     }
     for ( auto const & extension : m_extensions )
     {
@@ -5013,9 +5001,9 @@ std::string VulkanHppGenerator::generateCppModuleCommands() const
   //==================
 )" };
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    appendCppModuleCommands( feature.featureRequires, listedCommands, feature.name, pfnCommands );
+    appendCppModuleCommands( feature.require, listedCommands, feature.name, pfnCommands );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -6083,13 +6071,13 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamic() const
   std::string           commandMembers, deviceCommandAssignments, initialCommandAssignments, instanceCommandAssignments;
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
 
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    commandMembers += generateDispatchLoaderDynamicCommandMembers( feature.featureRequires, listedCommands, feature.name );
-    initialCommandAssignments += generateDispatchLoaderDynamicInitialCommandAssignment( feature.featureRequires, listedCommands, feature.name );
-    instanceCommandAssignments += generateDispatchLoaderDynamicInstanceCommandAssignment( feature.featureRequires, listedCommands, feature.name );
-    deviceCommandAssignments += generateDispatchLoaderDynamicDeviceCommandAssignment( feature.featureRequires, listedCommands, feature.name );
-    forEachRequiredCommand( feature.featureRequires, [&listedCommands]( std::string const & name, auto const & ) { listedCommands.insert( name ); } );
+    commandMembers += generateDispatchLoaderDynamicCommandMembers( feature.require, listedCommands, feature.name );
+    initialCommandAssignments += generateDispatchLoaderDynamicInitialCommandAssignment( feature.require, listedCommands, feature.name );
+    instanceCommandAssignments += generateDispatchLoaderDynamicInstanceCommandAssignment( feature.require, listedCommands, feature.name );
+    deviceCommandAssignments += generateDispatchLoaderDynamicDeviceCommandAssignment( feature.require, listedCommands, feature.name );
+    forEachRequiredCommand( feature.require, [&listedCommands]( std::string const & name, auto const & ) { listedCommands.insert( name ); } );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -6200,9 +6188,9 @@ ${commands}
 
   std::string           commands;
   std::set<std::string> listedCommands;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    commands += generateDispatchLoaderStaticCommands( feature.featureRequires, listedCommands, feature.name );
+    commands += generateDispatchLoaderStaticCommands( feature.require, listedCommands, feature.name );
   }
 
   auto const [onlyexportedEnter, onlyexportedLeave] = generateProtection( "VK_ONLY_EXPORTED_PROTOTYPES", false );
@@ -6496,9 +6484,9 @@ ${enums}
 
   std::string           enums;
   std::set<std::string> listedEnums;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    enums += generateEnums( feature.featureRequires, listedEnums, feature.name );
+    enums += generateEnums( feature.require, listedEnums, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -6554,9 +6542,9 @@ ${enumsToString}
 
   std::string           enumsToString;
   std::set<std::string> listedEnums;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    enumsToString += generateEnumsToString( feature.featureRequires, listedEnums, feature.name );
+    enumsToString += generateEnumsToString( feature.require, listedEnums, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -7205,9 +7193,9 @@ std::string VulkanHppGenerator::generateFuncPointers() const
 
 )";
 
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    funcPointers += funcPointerGenerator( feature.featureRequires, feature.name );
+    funcPointers += funcPointerGenerator( feature.require, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -7400,9 +7388,9 @@ std::string VulkanHppGenerator::generateHandleCommandDeclarations( std::set<std:
 {
   std::string           str;
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    std::vector<std::string> commandNames = selectCommandsByHandle( feature.featureRequires, commands, listedCommands );
+    std::vector<std::string> commandNames = selectCommandsByHandle( feature.require, commands, listedCommands );
     if ( !commandNames.empty() )
     {
       str += "\n  //=== " + feature.name + " ===\n";
@@ -7467,9 +7455,9 @@ std::string VulkanHppGenerator::generateHandleEmpty( HandleData const & handleDa
 {
   std::string           str;
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension !
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    std::vector<std::string> commands = selectCommandsByHandle( feature.featureRequires, handleData.commands, listedCommands );
+    std::vector<std::string> commands = selectCommandsByHandle( feature.require, handleData.commands, listedCommands );
     if ( !commands.empty() )
     {
       str += "\n  //=== "s + feature.name + " ===\n";
@@ -7501,9 +7489,9 @@ ${forwardDeclarations}
 )";
 
   std::string forwardDeclarations;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    forwardDeclarations += generateHandleForwardDeclarations( feature.featureRequires, feature.name );
+    forwardDeclarations += generateHandleForwardDeclarations( feature.require, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -7563,9 +7551,9 @@ ${hashes}
 
   std::string           hashes;
   std::set<std::string> listedHandles;  // some handles are listed with more than one extension !
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    hashes += generateHandleHashStructures( feature.featureRequires, feature.name, listedHandles );
+    hashes += generateHandleHashStructures( feature.require, feature.name, listedHandles );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -7956,9 +7944,9 @@ ${objectTypeCases}
 
   std::string           objectTypeCases;
   std::set<std::string> listedTypes;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    objectTypeCases += generateObjectTypeCases( feature.featureRequires, feature.name, listedTypes );
+    objectTypeCases += generateObjectTypeCases( feature.require, feature.name, listedTypes );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -7986,9 +7974,9 @@ ${commandDefinitions}
 
   std::string           commandDefinitions;
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    commandDefinitions += generateRAIICommandDefinitions( feature.featureRequires, listedCommands, feature.name );
+    commandDefinitions += generateRAIICommandDefinitions( feature.require, listedCommands, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -8148,15 +8136,15 @@ std::string VulkanHppGenerator::generateRAIIDispatchers() const
   std::string contextInitializers, contextMembers, deviceAssignments, deviceMembers, instanceAssignments, instanceMembers;
 
   std::set<std::string> listedCommands;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    contextInitializers += generateRAIIDispatcherCommandsContextInitializers( feature.featureRequires, listedCommands, feature.name );
-    contextMembers += generateRAIIDispatcherCommandsContextMembers( feature.featureRequires, listedCommands, feature.name );
-    deviceAssignments += generateRAIIDispatcherCommandsDeviceAssignments( feature.featureRequires, listedCommands, feature.name );
-    deviceMembers += generateRAIIDispatcherCommandsDeviceMembers( feature.featureRequires, listedCommands, feature.name );
-    instanceAssignments += generateRAIIDispatcherCommandsInstanceAssignments( feature.featureRequires, listedCommands, feature.name );
-    instanceMembers += generateRAIIDispatcherCommandsInstanceMembers( feature.featureRequires, listedCommands, feature.name );
-    forEachRequiredCommand( feature.featureRequires, [&listedCommands]( std::string const & name, auto const & ) { listedCommands.insert( name ); } );
+    contextInitializers += generateRAIIDispatcherCommandsContextInitializers( feature.require, listedCommands, feature.name );
+    contextMembers += generateRAIIDispatcherCommandsContextMembers( feature.require, listedCommands, feature.name );
+    deviceAssignments += generateRAIIDispatcherCommandsDeviceAssignments( feature.require, listedCommands, feature.name );
+    deviceMembers += generateRAIIDispatcherCommandsDeviceMembers( feature.require, listedCommands, feature.name );
+    instanceAssignments += generateRAIIDispatcherCommandsInstanceAssignments( feature.require, listedCommands, feature.name );
+    instanceMembers += generateRAIIDispatcherCommandsInstanceMembers( feature.require, listedCommands, feature.name );
+    forEachRequiredCommand( feature.require, [&listedCommands]( std::string const & name, auto const & ) { listedCommands.insert( name ); } );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -8592,11 +8580,11 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair
 {
   std::string                     functionDeclarations;
   std::map<std::string, NameLine> listedCommands;  // some commands are listed with more than one extension !
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
     std::vector<std::string> firstLevelCommands, secondLevelCommands;
 
-    forEachRequiredCommand( feature.featureRequires,
+    forEachRequiredCommand( feature.require,
                             [&]( std::string const & name, auto const & command )
                             {
                               if ( !specialFunctions.contains( name ) )
@@ -10092,9 +10080,9 @@ ${raiiHandles}
 )";
 
   std::string forwardDeclarations;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    forwardDeclarations += generateRAIIHandleForwardDeclarations( feature.featureRequires, feature.name );
+    forwardDeclarations += generateRAIIHandleForwardDeclarations( feature.require, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -10821,9 +10809,9 @@ std::string VulkanHppGenerator::generateStaticAssertions() const
 {
   std::string           staticAssertions;
   std::set<std::string> listedStructs;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    staticAssertions += generateStaticAssertions( feature.featureRequires, feature.name, listedStructs );
+    staticAssertions += generateStaticAssertions( feature.require, feature.name, listedStructs );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -11472,10 +11460,10 @@ ${hashes}
 
   std::set<std::string> listedStructs;  // some structs are used in multiple features/extensions, so we need to make sure we only list them once
   std::string           hashes;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
     std::string byFeatureHashes;
-    for ( auto const & require : feature.featureRequires )
+    for ( auto const & require : feature.require )
     {
       for ( auto const & type : require.types )
       {
@@ -11578,10 +11566,10 @@ ${structs}
 
   std::set<std::string> listedTypes;  // some structs/unions are used in multiple features/extensions, so we need to make sure we only list them once
   std::string           structs;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
     std::string byFeatureTypes;
-    for ( auto const & require : feature.featureRequires )
+    for ( auto const & require : feature.require )
     {
       for ( auto const & type : require.types )
       {
@@ -11816,9 +11804,9 @@ ${structExtends})";
 
   std::string           structExtends;
   std::set<std::string> listedStructs;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    structExtends += generateStructExtendsStructs( feature.featureRequires, listedStructs, feature.name );
+    structExtends += generateStructExtendsStructs( feature.require, listedStructs, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -11887,9 +11875,9 @@ ${forwardDeclarations}
 
   std::string           forwardDeclarations;
   std::set<std::string> listedStructs;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    forwardDeclarations += generateStructForwardDeclarations( feature.featureRequires, feature.name, listedStructs );
+    forwardDeclarations += generateStructForwardDeclarations( feature.require, feature.name, listedStructs );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -12720,9 +12708,9 @@ ${uniqueHandles}
 
   std::string           uniqueHandles;
   std::set<std::string> listedHandles;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    uniqueHandles += generateUniqueHandle( feature.featureRequires, feature.name, listedHandles );
+    uniqueHandles += generateUniqueHandle( feature.require, feature.name, listedHandles );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -12839,9 +12827,9 @@ std::string VulkanHppGenerator::generateSharedHandleNoDestroy( std::vector<Requi
 std::string VulkanHppGenerator::generateSharedHandlesNoDestroy() const
 {
   std::string sharedHandles;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    sharedHandles += generateSharedHandleNoDestroy( feature.featureRequires, feature.name );
+    sharedHandles += generateSharedHandleNoDestroy( feature.require, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -12864,9 +12852,9 @@ ${sharedHandles}
 
   std::string           sharedHandles;
   std::set<std::string> listedHandles;
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
-    sharedHandles += generateSharedHandle( feature.featureRequires, feature.name, listedHandles );
+    sharedHandles += generateSharedHandle( feature.require, feature.name, listedHandles );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -13059,7 +13047,7 @@ std::string VulkanHppGenerator::getProtectFromPlatform( std::string const & plat
 
 std::string VulkanHppGenerator::getProtectFromTitle( std::string const & title ) const
 {
-  if ( !containsByName( m_features, title ) )
+  if ( !containsByName( m_vkxml.features, title ) )
   {
     auto extensionIt = findByName( m_extensions, title );
     return ( extensionIt != m_extensions.end() ) ? getProtectFromPlatform( extensionIt->platform ) : "";
@@ -13157,10 +13145,10 @@ void VulkanHppGenerator::handleRemoval( Remove const & remove )
     assert( commandIt != m_vkxml.commands.end() );
     for ( auto const & requiredBy : commandIt->requiredBy )
     {
-      auto featureIt = findByName( m_features, requiredBy );
-      if ( featureIt != m_features.end() )
+      auto featureIt = findByName( m_vkxml.features, requiredBy );
+      if ( featureIt != m_vkxml.features.end() )
       {
-        removed |= handleRemovalCommand( command.name, featureIt->featureRequires );
+        removed |= handleRemovalCommand( command.name, featureIt->require );
       }
       else
       {
@@ -13201,10 +13189,10 @@ void VulkanHppGenerator::handleRemoval( Remove const & remove )
     bool removed = typeIt->second.requiredBy.empty();
     for ( auto const & requiredBy : typeIt->second.requiredBy )
     {
-      auto featureIt = findByName( m_features, requiredBy );
-      if ( featureIt != m_features.end() )
+      auto featureIt = findByName( m_vkxml.features, requiredBy );
+      if ( featureIt != m_vkxml.features.end() )
       {
-        removed |= handleRemovalType( type.name, featureIt->featureRequires );
+        removed |= handleRemovalType( type.name, featureIt->require );
       }
       else
       {
@@ -13252,7 +13240,7 @@ bool VulkanHppGenerator::handleRemovalCommand( std::string const & command, std:
 
 void VulkanHppGenerator::handleRemovals()
 {
-  for ( auto const & feature : m_features )
+  for ( auto const & feature : m_vkxml.features )
   {
     for ( auto const & remove : feature.removes )
     {
@@ -13361,7 +13349,7 @@ bool VulkanHppGenerator::isExtension( std::string const & name ) const
 
 bool VulkanHppGenerator::isFeature( std::string const & name ) const
 {
-  return containsByName( m_features, name ) || containsByName( m_unsupportedFeatures, name );
+  return containsByName( m_vkxml.features, name ) || containsByName( m_unsupportedFeatures, name );
 }
 
 bool VulkanHppGenerator::isHandleType( std::string const & type ) const
@@ -13470,7 +13458,7 @@ bool VulkanHppGenerator::isSupported( std::set<std::string> const & requiredBy )
 {
   for ( auto const & r : requiredBy )
   {
-    if ( containsByName( m_features, r ) || containsByName( m_extensions, r ) )
+    if ( containsByName( m_vkxml.features, r ) || containsByName( m_extensions, r ) )
     {
       return true;
     }
@@ -13495,10 +13483,10 @@ bool VulkanHppGenerator::isTypeUsed( std::string const & type ) const
   assert( typeIt != m_types.end() );
   for ( auto const & require : typeIt->second.requiredBy )
   {
-    auto featureIt = findByName( m_features, require );
-    if ( featureIt != m_features.end() )
+    auto featureIt = findByName( m_vkxml.features, require );
+    if ( featureIt != m_vkxml.features.end() )
     {
-      for ( auto const & r : featureIt->featureRequires )
+      for ( auto const & r : featureIt->require )
       {
         if ( std::ranges::any_of( r.types, [&type]( auto const & requireType ) { return requireType.name == type; } ) )
         {
@@ -13533,13 +13521,13 @@ bool VulkanHppGenerator::isVectorByStructure( std::string const & type ) const
 void VulkanHppGenerator::mergeInternalFeatures()
 {
   // separate the internal and public features
-  std::map<std::string, FeatureData> internalFeatures;
-  for ( auto it = m_features.begin(); it != m_features.end(); )
+  std::map<std::string, Feature> internalFeatures;
+  for ( auto it = m_vkxml.features.begin(); it != m_vkxml.features.end(); )
   {
-    if ( it->isInternal )
+    if ( it->apiType == "internal" )
     {
       internalFeatures.insert( { it->name, std::move( *it ) } );
-      it = m_features.erase( it );
+      it = m_vkxml.features.erase( it );
     }
     else
     {
@@ -13547,7 +13535,7 @@ void VulkanHppGenerator::mergeInternalFeatures()
     }
   }
 
-  for ( auto & feature : m_features )
+  for ( auto & feature : m_vkxml.features )
   {
     mergeInternalFeatures( feature.depends, feature, internalFeatures );
   }
@@ -13556,9 +13544,7 @@ void VulkanHppGenerator::mergeInternalFeatures()
   checkForError( internalFeatures.empty(), 0, "not all internal features were merged into public features" );
 }
 
-void VulkanHppGenerator::mergeInternalFeatures( std::vector<std::string> const &     depends,
-                                                FeatureData &                        feature,
-                                                std::map<std::string, FeatureData> & internalFeatures )
+void VulkanHppGenerator::mergeInternalFeatures( std::vector<std::string> const & depends, Feature & feature, std::map<std::string, Feature> & internalFeatures )
 {
   for ( auto const & dep : depends )
   {
@@ -13569,7 +13555,7 @@ void VulkanHppGenerator::mergeInternalFeatures( std::vector<std::string> const &
       mergeInternalFeatures( depIt->second.depends, feature, internalFeatures );
 
       // adjust the requiredBy sets of the commands and enum values that are required by the internal feature to include the public feature
-      for ( auto const & require : depIt->second.featureRequires )
+      for ( auto const & require : depIt->second.require )
       {
         for ( auto const & command : require.commands )
         {
@@ -13594,9 +13580,8 @@ void VulkanHppGenerator::mergeInternalFeatures( std::vector<std::string> const &
       }
 
       // Merge the internal feature's require data into the public feature
-      feature.featureRequires.insert( feature.featureRequires.end(),
-                                      std::make_move_iterator( depIt->second.featureRequires.begin() ),
-                                      std::make_move_iterator( depIt->second.featureRequires.end() ) );
+      feature.require.insert(
+        feature.require.end(), std::make_move_iterator( depIt->second.require.begin() ), std::make_move_iterator( depIt->second.require.end() ) );
 
       // Remove the internal feature to avoid re-processing
       internalFeatures.erase( depIt );

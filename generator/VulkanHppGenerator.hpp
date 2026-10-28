@@ -265,18 +265,6 @@ private:
     int                                                       xmlLine                = 0;
   };
 
-  struct FeatureData
-  {
-    std::vector<std::string>    api             = {};
-    std::string                 name            = {};
-    std::string                 number          = {};
-    bool                        isInternal      = false;
-    std::vector<std::string>    depends         = {};
-    std::vector<Remove>         removes         = {};
-    std::vector<FeatureRequire> featureRequires = {};
-    int                         xmlLine         = 0;
-  };
-
   struct ComponentData
   {
     std::string bits          = {};
@@ -411,7 +399,6 @@ private:
                                                                 size_t                                    returnParam0,
                                                                 size_t                                    returnParam1 ) const;
   void                                      extendSpecialCommands( std::string const & name, bool definition, bool raii, std::string & cmd ) const;
-  FeatureData                               featureToFeatureData( Feature const & feature );
   std::vector<StructMember>::const_iterator findHandleMember( std::vector<StructMember> const & members ) const;
   std::vector<StructMember>::const_iterator findVectorMember( std::vector<StructMember> const & members ) const;
   template <typename RequireType>
@@ -1014,7 +1001,7 @@ private:
   bool isTypeUsed( std::string const & type ) const;
   bool isVectorByStructure( std::string const & type ) const;
   void mergeInternalFeatures();
-  void mergeInternalFeatures( std::vector<std::string> const & depends, FeatureData & feature, std::map<std::string, FeatureData> & internalFeatures );
+  void mergeInternalFeatures( std::vector<std::string> const & depends, Feature & feature, std::map<std::string, Feature> & internalFeatures );
   bool needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & chainedReturnParams ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<Param> const &                params,
                                                                                std::map<size_t, VectorParamData> const & vectorParams,
@@ -1046,13 +1033,12 @@ private:
   DefinesPartition                  m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
   std::map<std::string, EnumData>   m_enums;
   std::vector<ExtensionData>        m_extensions;
-  std::vector<FeatureData>          m_features;
   std::map<std::string, FormatData> m_formats;
   std::map<std::string, HandleData> m_handles;
   std::set<std::string>             m_RAIISpecialFunctions;
   std::map<std::string, TypeData>   m_types;
   std::vector<ExtensionData>        m_unsupportedExtensions;
-  std::vector<FeatureData>          m_unsupportedFeatures;
+  std::vector<Feature>              m_unsupportedFeatures;
   std::string                       m_version;
   Vkxml                             m_vkxml;
 

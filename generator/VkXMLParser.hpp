@@ -572,12 +572,12 @@ struct FeatureRequire
 
 struct Feature
 {
+  std::string                 name       = {};
   std::vector<std::string>    api        = {};
   std::string                 apiType    = {};
   std::string                 comment    = {};
   std::vector<std::string>    depends    = {};
   std::vector<Deprecate>      deprecates = {};
-  std::string                 name       = {};
   std::string                 number     = {};
   std::vector<Remove>         removes    = {};
   std::vector<FeatureRequire> require    = {};

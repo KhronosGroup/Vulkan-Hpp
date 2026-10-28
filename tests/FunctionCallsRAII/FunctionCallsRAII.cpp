@@ -1536,5 +1536,17 @@ int main()
     commandBuffer.resolveImage2( resolveImageInfo2 );
   }
 
+  // Promoted from VK_KHR_dynamic_rendering
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::RenderingInfo       renderingInfo;
+    commandBuffer.beginRendering( renderingInfo );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    commandBuffer.endRendering();
+  }
+
   return 0;
 }

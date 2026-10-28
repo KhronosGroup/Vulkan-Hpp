@@ -2971,6 +2971,23 @@ int main()
     commandBuffer.resolveImage2( resolveImageInfo2 );
   }
 
+  // Promoted from VK_KHR_dynamic_rendering
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::RenderingInfo renderingInfo;
+    commandBuffer.beginRendering( &renderingInfo );
+  }
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::RenderingInfo renderingInfo;
+    commandBuffer.beginRendering( renderingInfo );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    commandBuffer.endRendering();
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

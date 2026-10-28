@@ -123,6 +123,14 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
 
     for ( auto const & enumValue : xmlEnum.values )
     {
+      bool supported = true;
+      if ( !enumValue.requiredBy.empty() )
+      {
+        auto featureIt = findByName( m_vkxml.features, enumValue.requiredBy );
+        assert( featureIt != m_vkxml.features.end() );
+        supported = isApiSupported( featureIt->api, m_api );
+      }
+
       EnumValueData enumValueData;
       for ( auto const & alias : enumValue.aliases )
       {
@@ -130,7 +138,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
       }
       enumValueData.bitpos    = enumValue.bitPos;
       enumValueData.name      = enumValue.name;
-      enumValueData.supported = true;
+      enumValueData.supported = supported;
       enumValueData.value     = enumValue.value;
       enumValueData.xmlLine   = enumValue.xmlLine;
       enumIt->second.values.push_back( std::move( enumValueData ) );
@@ -220,19 +228,18 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   }
   for ( auto const & feature : m_vkxml.features )
   {
-    if ( feature.api.empty() || std::ranges::any_of( feature.api, [&api]( std::string const & featureApi ) { return featureApi == api; } ) )
+    if ( isApiSupported( feature.api, m_api ) )
     {
-      m_features.push_back( featureToFeatureData( feature, true ) );
+      m_features.push_back( featureToFeatureData( feature ) );
     }
     else
     {
-      m_unsupportedFeatures.push_back( featureToFeatureData( feature, false ) );
+      m_unsupportedFeatures.push_back( featureToFeatureData( feature ) );
     }
   }
   for ( auto const & extension : m_vkxml.extensions.extensions )
   {
-    bool const extensionSupported =
-      extension.supported.empty() || std::ranges::any_of( extension.supported, [this]( std::string const & s ) { return s == m_api; } );
+    bool const extensionSupported = isApiSupported( extension.supported, m_api );
 
     ExtensionData extensionData{ .deprecatedBy = extension.deprecatedBy,
                                  .isDeprecated = extension.isDeprecated,
@@ -508,7 +515,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   // add the commands to the respective handles
   for ( auto & feature : m_features )
   {
-    forEachRequiredCommand( feature.requireData, [this]( std::string const & name, auto const & command ) { addCommandToHandle( name, command ); } );
+    forEachRequiredCommand( feature.featureRequires, [this]( std::string const & name, auto const & command ) { addCommandToHandle( name, command ); } );
   }
   for ( auto & extension : m_extensions )
   {
@@ -791,13 +798,14 @@ std::string VulkanHppGenerator::addTitleAndProtection( std::string const & title
   return str;
 }
 
-void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+void VulkanHppGenerator::appendCppModuleCommands( std::vector<RequireType> const & requireTypes,
                                                   std::set<std::string> &          listedCommands,
                                                   std::string const &              title,
                                                   std::string &                    commandMembers ) const
 {
   std::string members;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & )
                           {
                             if ( listedCommands.insert( name ).second )
@@ -1071,7 +1079,7 @@ void VulkanHppGenerator::checkRequireCorrectness() const
   // checks by features and extensions
   for ( auto & feature : m_features )
   {
-    checkRequireCorrectness( feature.requireData, "feature", feature.name );
+    checkRequireCorrectness( feature.featureRequires, "feature", feature.name );
   }
   for ( auto & extension : m_extensions )
   {
@@ -1079,25 +1087,26 @@ void VulkanHppGenerator::checkRequireCorrectness() const
   }
 }
 
-void VulkanHppGenerator::checkRequireCorrectness( std::vector<RequireData> const & requireData, std::string const & section, std::string const & name ) const
+template <typename RequireType>
+void VulkanHppGenerator::checkRequireCorrectness( std::vector<RequireType> const & requireTypes, std::string const & section, std::string const & name ) const
 {
-  for ( auto const & require : requireData )
+  for ( auto const & require : requireTypes )
   {
     checkRequireDependenciesCorrectness( require, section, name );
     checkRequireTypesCorrectness( require );
   }
 }
 
-void VulkanHppGenerator::checkRequireDependenciesCorrectness( RequireData const & require, std::string const & section, std::string const & name ) const
+void
+  VulkanHppGenerator::checkRequireDependenciesCorrectness( FeatureRequire const & featureRequire, std::string const & section, std::string const & name ) const
 {
-  std::vector<std::string> dependencies = tokenizeAny( require.depends, ",+()" );
-  for ( auto const & depends : dependencies )
+  for ( auto const & depends : featureRequire.depends )
   {
     size_t separatorPos = depends.find( "::" );
     if ( separatorPos == std::string::npos )
     {
       checkForError( isFeature( depends ) || isExtension( depends ),
-                     require.xmlLine,
+                     featureRequire.xmlLine,
                      section + " <" + name + "> depends on unknown extension or feature <" + depends + ">" );
     }
     else
@@ -1106,17 +1115,44 @@ void VulkanHppGenerator::checkRequireDependenciesCorrectness( RequireData const 
       std::string member    = depends.substr( separatorPos + 2 );
       auto        structIt  = findByName( m_vkxml.types.structs, structure );
       checkForError(
-        structIt != m_vkxml.types.structs.end(), require.xmlLine, section + " <" + name + "> requires member of an unknown struct <" + structure + ">" );
+        structIt != m_vkxml.types.structs.end(), featureRequire.xmlLine, section + " <" + name + "> requires member of an unknown struct <" + structure + ">" );
       checkForError( std::ranges::any_of( structIt->members, [&member]( auto const & md ) { return md.name == member; } ),
-                     require.xmlLine,
+                     featureRequire.xmlLine,
                      section + " <" + name + "> requires unknown member <" + member + "> as part of the struct <" + structure + ">" );
     }
   }
 }
 
-void VulkanHppGenerator::checkRequireTypesCorrectness( RequireData const & require ) const
+void VulkanHppGenerator::checkRequireDependenciesCorrectness( RequireData const & requireData, std::string const & section, std::string const & name ) const
 {
-  for ( auto const & type : require.types )
+  std::vector<std::string> dependencies = tokenizeAny( requireData.depends, ",+()" );
+  for ( auto const & depends : dependencies )
+  {
+    size_t separatorPos = depends.find( "::" );
+    if ( separatorPos == std::string::npos )
+    {
+      checkForError( isFeature( depends ) || isExtension( depends ),
+                     requireData.xmlLine,
+                     section + " <" + name + "> depends on unknown extension or feature <" + depends + ">" );
+    }
+    else
+    {
+      std::string structure = depends.substr( 0, separatorPos );
+      std::string member    = depends.substr( separatorPos + 2 );
+      auto        structIt  = findByName( m_vkxml.types.structs, structure );
+      checkForError(
+        structIt != m_vkxml.types.structs.end(), requireData.xmlLine, section + " <" + name + "> requires member of an unknown struct <" + structure + ">" );
+      checkForError( std::ranges::any_of( structIt->members, [&member]( auto const & md ) { return md.name == member; } ),
+                     requireData.xmlLine,
+                     section + " <" + name + "> requires unknown member <" + member + "> as part of the struct <" + structure + ">" );
+    }
+  }
+}
+
+template <typename RequireType>
+void VulkanHppGenerator::checkRequireTypesCorrectness( RequireType const & requireType ) const
+{
+  for ( auto const & type : requireType.types )
   {
     auto typeIt = m_types.find( type.name );
     assert( typeIt != m_types.end() );
@@ -1217,7 +1253,13 @@ void VulkanHppGenerator::checkStructCorrectness() const
       sTypeValues.erase( valueIt );
     }
   }
-  assert( sTypeValues.empty() );
+  assert( std::ranges::none_of( sTypeValues,
+                                [&structureTypeIt]( auto const & value )
+                                {
+                                  auto valueIt = findByName( structureTypeIt->second.values, value );
+                                  assert( valueIt != structureTypeIt->second.values.end() );
+                                  return valueIt->supported;
+                                } ) );
 }
 
 void VulkanHppGenerator::checkStructMemberArraySizesAreValid( std::vector<std::string> const & arraySizes, int line ) const
@@ -1589,7 +1631,7 @@ bool VulkanHppGenerator::isConstructorCandidate( Command const & command, std::s
   return isSupported( command.requiredBy ) &&
          ( std::ranges::any_of( candidatePrefixes, [&command]( std::string const & prefix ) { return command.name.starts_with( prefix ); } ) ||
            otherCandidates.contains( command.name ) ) &&
-         ( command.api.empty() || std::ranges::any_of( command.api, [this]( auto const & api ) { return api == m_api; } ) ) &&
+         isApiSupported( command.api, m_api ) &&
          std::ranges::any_of( command.params, [this, &handleType]( Param const & pd ) { return isConstructorCandidate( pd, handleType ); } );
 }
 
@@ -1871,7 +1913,7 @@ void VulkanHppGenerator::distributeRequirements()
 {
   for ( auto const & feature : m_features )
   {
-    distributeRequirements( feature.requireData, feature.name );
+    distributeRequirements( feature.featureRequires, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -1880,7 +1922,7 @@ void VulkanHppGenerator::distributeRequirements()
   }
   for ( auto const & feature : m_unsupportedFeatures )
   {
-    distributeRequirements( feature.requireData, feature.name );
+    distributeRequirements( feature.featureRequires, feature.name );
   }
   for ( auto const & extension : m_unsupportedExtensions )
   {
@@ -1889,9 +1931,10 @@ void VulkanHppGenerator::distributeRequirements()
   }
 }
 
-void VulkanHppGenerator::distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy )
+template <typename RequireTypes>
+void VulkanHppGenerator::distributeRequirements( std::vector<RequireTypes> const & requireTypes, std::string const & requiredBy )
 {
-  for ( auto const & require : requireData )
+  for ( auto const & require : requireTypes )
   {
     for ( auto const & type : require.types )
     {
@@ -2103,101 +2146,16 @@ void VulkanHppGenerator::extendSpecialCommands( std::string const & name, bool d
   }
 }
 
-VulkanHppGenerator::FeatureData VulkanHppGenerator::featureToFeatureData( Feature const & feature, bool supported )
+VulkanHppGenerator::FeatureData VulkanHppGenerator::featureToFeatureData( Feature const & feature )
 {
-  auto structureTypeIt = m_enums.find( "VkStructureType" );
-  assert( structureTypeIt != m_enums.end() );
-
   FeatureData featureData;
-  featureData.api        = feature.api;
-  featureData.name       = feature.name;
-  featureData.number     = feature.number;
-  featureData.isInternal = ( feature.apiType == "internal" );
-  featureData.depends    = feature.depends;
-  for ( auto const & deprecate : feature.deprecates )
-  {
-    DeprecateData deprecateData;
-    deprecateData.explanationLink = deprecate.explanationLink;
-    for ( auto const & deprecateCommand : deprecate.commands )
-    {
-      deprecateData.commands.push_back( { deprecateCommand.name, deprecateCommand.supersededBy } );
-    }
-    for ( auto const & deprecateType : deprecate.types )
-    {
-      deprecateData.types.push_back( { deprecateType.name, deprecateType.supersededBy } );
-    }
-    featureData.deprecateData.push_back( std::move( deprecateData ) );
-  }
-  for ( auto const & remove : feature.removes )
-  {
-    RemoveData removeData;
-    for ( auto const & removeCommand : remove.commands )
-    {
-      removeData.commands.push_back( removeCommand.name );
-    }
-    for ( auto const & removeEnum : remove.enums )
-    {
-      removeData.enums.push_back( removeEnum.name );
-    }
-    for ( auto const & removeFeature : remove.features )
-    {
-      removeData.features.push_back( { { removeFeature.name }, removeFeature.structure, removeFeature.xmlLine } );
-    }
-    for ( auto const & removeType : remove.types )
-    {
-      removeData.types.push_back( removeType.name );
-    }
-    removeData.xmlLine = remove.xmlLine;
-    featureData.removeData.push_back( std::move( removeData ) );
-  }
-  for ( auto const & require : feature.require )
-  {
-    RequireData requireData;
-    requireData.depends = concatenate( require.depends );
-    for ( auto const & requireCommand : require.commands )
-    {
-      requireData.commands.push_back( { requireCommand.name, requireCommand.xmlLine } );
-    }
-    for ( auto const & requireEnum : require.enumConstants )
-    {
-      requireData.constants.push_back( { requireEnum.name, requireEnum.xmlLine } );
-    }
-    if ( !supported )
-    {
-      for ( auto const & enumRegular : require.enumRegulars )
-      {
-        auto enumIt = m_enums.find( enumRegular.extends );
-        assert( enumIt != m_enums.end() );
-        auto valueIt = findByName( enumIt->second.values, enumRegular.name );
-        assert( valueIt != enumIt->second.values.end() );
-        valueIt->supported = supported;
-      }
-    }
-    for ( auto const & requireFeature : require.features )
-    {
-      requireData.features.push_back( { { requireFeature.name }, requireFeature.structure, requireFeature.xmlLine } );
-    }
-    for ( auto const & requireType : require.types )
-    {
-      requireData.types.push_back( { requireType.name, requireType.xmlLine } );
-
-      auto typeIt = m_types.find( requireType.name );
-      assert( typeIt != m_types.end() );
-      if ( !supported && typeIt->second.category == TypeCategory::Struct )
-      {
-        auto structIt = findByNameOrAlias( m_vkxml.types.structs, requireType.name );
-        if ( !structIt->members.empty() && !structIt->members.front().values.empty() )
-        {
-          assert( structIt->members.front().name == "sType" );
-          auto valueIt = findByName( structureTypeIt->second.values, structIt->members.front().values );
-          assert( valueIt != structureTypeIt->second.values.end() );
-          valueIt->supported = supported;
-        }
-      }
-    }
-    requireData.xmlLine = require.xmlLine;
-    featureData.requireData.push_back( std::move( requireData ) );
-  }
+  featureData.api             = feature.api;
+  featureData.name            = feature.name;
+  featureData.number          = feature.number;
+  featureData.isInternal      = ( feature.apiType == "internal" );
+  featureData.depends         = feature.depends;
+  featureData.removes         = feature.removes;
+  featureData.featureRequires = feature.require;
   return featureData;
 }
 
@@ -2212,11 +2170,12 @@ std::vector<StructMember>::const_iterator VulkanHppGenerator::findVectorMember( 
     members, []( auto const & member ) { return member.arraySizes.empty() && !member.len.empty() && ( member.len[0] != "null-terminated" ); } );
 }
 
-void VulkanHppGenerator::forEachRequiredBitmask( std::vector<RequireData> const &                   requireData,
+template <typename RequireType>
+void VulkanHppGenerator::forEachRequiredBitmask( std::vector<RequireType> const &                   requireTypes,
                                                  std::set<std::string> &                            encounteredBitmasks,
                                                  std::function<void( TypeBitmask const & )> const & bitmaskAction ) const
 {
-  for ( auto const & require : requireData )
+  for ( auto const & require : requireTypes )
   {
     for ( auto const & type : require.types )
     {
@@ -2229,10 +2188,11 @@ void VulkanHppGenerator::forEachRequiredBitmask( std::vector<RequireData> const 
   }
 }
 
-void VulkanHppGenerator::forEachRequiredCommand( std::vector<RequireData> const &                                    requireData,
+template <typename RequireType>
+void VulkanHppGenerator::forEachRequiredCommand( std::vector<RequireType> const &                                    requireTypes,
                                                  std::function<void( std::string const &, Command const & )> const & commandAction ) const
 {
-  for ( auto const & require : requireData )
+  for ( auto const & require : requireTypes )
   {
     for ( auto const & command : require.commands )
     {
@@ -2243,11 +2203,29 @@ void VulkanHppGenerator::forEachRequiredCommand( std::vector<RequireData> const 
   }
 }
 
-void VulkanHppGenerator::forEachRequiredConstant( std::vector<RequireData> const &                     requireData,
+void VulkanHppGenerator::forEachRequiredConstant( std::vector<FeatureRequire> const &                  featureRequires,
                                                   std::set<std::string> &                              encounteredConstants,
                                                   std::function<void( ConstantValue const & )> const & constantAction ) const
 {
-  for ( auto const & require : requireData )
+  for ( auto const & require : featureRequires )
+  {
+    for ( auto const & constant : require.enumConstants )
+    {
+      auto constantIt = findByName( m_vkxml.constants.values, constant.name );
+      checkForError( constantIt != m_vkxml.constants.values.end(), constant.xmlLine, "unknown required constant <" + constant.name + ">" );
+      if ( encounteredConstants.insert( constantIt->name ).second )
+      {
+        constantAction( *constantIt );
+      }
+    }
+  }
+}
+
+void VulkanHppGenerator::forEachRequiredConstant( std::vector<RequireData> const &                     requireDatas,
+                                                  std::set<std::string> &                              encounteredConstants,
+                                                  std::function<void( ConstantValue const & )> const & constantAction ) const
+{
+  for ( auto const & require : requireDatas )
   {
     for ( auto const & constant : require.constants )
     {
@@ -2277,10 +2255,11 @@ void VulkanHppGenerator::forEachRequiredEnumConstant( std::vector<RequireData> c
   }
 }
 
-void VulkanHppGenerator::forEachRequiredHandle( std::vector<RequireData> const &                                          requireData,
+template <typename RequireType>
+void VulkanHppGenerator::forEachRequiredHandle( std::vector<RequireType> const &                                          requireTypes,
                                                 std::function<void( std::pair<std::string, HandleData> const & )> const & handleAction ) const
 {
-  for ( auto const & require : requireData )
+  for ( auto const & require : requireTypes )
   {
     for ( auto const & type : require.types )
     {
@@ -2728,7 +2707,7 @@ ${bitmasksToString}
   std::set<std::string> listedBitmasks;
   for ( auto const & feature : m_features )
   {
-    bitmasksToString += generateBitmasksToString( feature.requireData, listedBitmasks, feature.name );
+    bitmasksToString += generateBitmasksToString( feature.featureRequires, listedBitmasks, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -2738,12 +2717,13 @@ ${bitmasksToString}
   return replaceWithMap( bitmasksToStringTemplate, { { "bitmasksToString", bitmasksToString } } );
 }
 
-std::string VulkanHppGenerator::generateBitmasksToString( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateBitmasksToString( std::vector<RequireType> const & requireTypes,
                                                           std::set<std::string> &          listedBitmasks,
                                                           std::string const &              title ) const
 {
   std::string str;
-  forEachRequiredBitmask( requireData, listedBitmasks, [&str, this]( TypeBitmask const & bitmask ) { str += generateBitmaskToString( bitmask ); } );
+  forEachRequiredBitmask( requireTypes, listedBitmasks, [&str, this]( TypeBitmask const & bitmask ) { str += generateBitmaskToString( bitmask ); } );
   return addTitleAndProtection( title, str );
 }
 
@@ -4336,7 +4316,7 @@ ${commandDefinitions}
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
   for ( auto const & feature : m_features )
   {
-    commandDefinitions += generateCommandDefinitions( feature.requireData, listedCommands, feature.name );
+    commandDefinitions += generateCommandDefinitions( feature.featureRequires, listedCommands, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -4346,12 +4326,13 @@ ${commandDefinitions}
   return replaceWithMap( commandDefinitionsTemplate, { { "commandDefinitions", commandDefinitions } } );
 }
 
-std::string VulkanHppGenerator::generateCommandDefinitions( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateCommandDefinitions( std::vector<RequireType> const & requireTypes,
                                                             std::set<std::string> &          listedCommands,
                                                             std::string const &              title ) const
 {
   std::string str;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & command )
                           {
                             if ( listedCommands.insert( name ).second )
@@ -4882,12 +4863,13 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
 )" };
 
   {
-    auto const generateConstantsAndProtection =
-      [&constexprValueTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedConstants )
+    auto const generateConstantsAndProtection = [&constexprValueTemplate, this]<typename RequireType>( std::vector<RequireType> const & requireTypes,
+                                                                                                       std::string const &              title,
+                                                                                                       std::set<std::string> &          listedConstants )
     {
       std::string constants;
       forEachRequiredConstant(
-        requireData,
+        requireTypes,
         listedConstants,
         [&constants, &constexprValueTemplate, this]( ConstantValue const & constantData )
         {
@@ -4901,7 +4883,7 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     std::set<std::string> listedConstants;
     for ( auto const & feature : m_features )
     {
-      constexprDefines += generateConstantsAndProtection( feature.requireData, feature.name, listedConstants );
+      constexprDefines += generateConstantsAndProtection( feature.featureRequires, feature.name, listedConstants );
     }
     for ( auto const & extension : m_extensions )
     {
@@ -5033,7 +5015,7 @@ std::string VulkanHppGenerator::generateCppModuleCommands() const
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
   for ( auto const & feature : m_features )
   {
-    appendCppModuleCommands( feature.requireData, listedCommands, feature.name, pfnCommands );
+    appendCppModuleCommands( feature.featureRequires, listedCommands, feature.name, pfnCommands );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -6103,11 +6085,11 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamic() const
 
   for ( auto const & feature : m_features )
   {
-    commandMembers += generateDispatchLoaderDynamicCommandMembers( feature.requireData, listedCommands, feature.name );
-    initialCommandAssignments += generateDispatchLoaderDynamicInitialCommandAssignment( feature.requireData, listedCommands, feature.name );
-    instanceCommandAssignments += generateDispatchLoaderDynamicInstanceCommandAssignment( feature.requireData, listedCommands, feature.name );
-    deviceCommandAssignments += generateDispatchLoaderDynamicDeviceCommandAssignment( feature.requireData, listedCommands, feature.name );
-    forEachRequiredCommand( feature.requireData, [&listedCommands]( std::string const & name, auto const & ) { listedCommands.insert( name ); } );
+    commandMembers += generateDispatchLoaderDynamicCommandMembers( feature.featureRequires, listedCommands, feature.name );
+    initialCommandAssignments += generateDispatchLoaderDynamicInitialCommandAssignment( feature.featureRequires, listedCommands, feature.name );
+    instanceCommandAssignments += generateDispatchLoaderDynamicInstanceCommandAssignment( feature.featureRequires, listedCommands, feature.name );
+    deviceCommandAssignments += generateDispatchLoaderDynamicDeviceCommandAssignment( feature.featureRequires, listedCommands, feature.name );
+    forEachRequiredCommand( feature.featureRequires, [&listedCommands]( std::string const & name, auto const & ) { listedCommands.insert( name ); } );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -6125,12 +6107,13 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamic() const
                            { "instanceCommandAssignments", instanceCommandAssignments } } );
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandMembers( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandMembers( std::vector<RequireType> const & requireTypes,
                                                                              std::set<std::string> const &    listedCommands,
                                                                              std::string const &              title ) const
 {
   std::string members, placeholders;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & )
                           {
                             if ( !listedCommands.contains( name ) )
@@ -6142,12 +6125,13 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandMembers( std
   return addTitleAndProtection( title, members, placeholders );
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderDynamicDeviceCommandAssignment( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateDispatchLoaderDynamicDeviceCommandAssignment( std::vector<RequireType> const & requireTypes,
                                                                                       std::set<std::string> const &    listedCommands,
                                                                                       std::string const &              title ) const
 {
   std::string deviceCommandAssignments;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & command )
                           {
                             // ignore vkGetDeviceProcAddr as it is already part of instance command assignments
@@ -6160,12 +6144,13 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicDeviceCommandAssign
   return addTitleAndProtection( title, deviceCommandAssignments );
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderDynamicInitialCommandAssignment( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateDispatchLoaderDynamicInitialCommandAssignment( std::vector<RequireType> const & requireTypes,
                                                                                        std::set<std::string> const &    listedCommands,
                                                                                        std::string const &              title ) const
 {
   std::string initialCommandAssignments;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & command )
                           {
                             if ( !listedCommands.contains( name ) && !isHandleType( command.params[0].type.name ) )
@@ -6176,12 +6161,13 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicInitialCommandAssig
   return addTitleAndProtection( title, initialCommandAssignments );
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderDynamicInstanceCommandAssignment( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateDispatchLoaderDynamicInstanceCommandAssignment( std::vector<RequireType> const & requireTypes,
                                                                                         std::set<std::string> const &    listedCommands,
                                                                                         std::string const &              title ) const
 {
   std::string instanceCommandAssignments;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & command )
                           {
                             if ( !listedCommands.contains( name ) && isHandleType( command.params[0].type.name ) )
@@ -6216,7 +6202,7 @@ ${commands}
   std::set<std::string> listedCommands;
   for ( auto const & feature : m_features )
   {
-    commands += generateDispatchLoaderStaticCommands( feature.requireData, listedCommands, feature.name );
+    commands += generateDispatchLoaderStaticCommands( feature.featureRequires, listedCommands, feature.name );
   }
 
   auto const [onlyexportedEnter, onlyexportedLeave] = generateProtection( "VK_ONLY_EXPORTED_PROTOTYPES", false );
@@ -6301,13 +6287,14 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandAssignment( 
   return str;
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vector<RequireType> const & requireTypes,
                                                                       std::set<std::string> &          listedCommands,
                                                                       std::string const &              title ) const
 {
   std::string str;
   forEachRequiredCommand(
-    requireData,
+    requireTypes,
     [&]( std::string const & name, auto const & command )
     {
       // some commands are listed for multiple extensions !
@@ -6511,7 +6498,7 @@ ${enums}
   std::set<std::string> listedEnums;
   for ( auto const & feature : m_features )
   {
-    enums += generateEnums( feature.requireData, listedEnums, feature.name );
+    enums += generateEnums( feature.featureRequires, listedEnums, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -6521,12 +6508,13 @@ ${enums}
   return replaceWithMap( enumsTemplate, { { "enums", enums } } );
 }
 
+template <typename RequireType>
 std::string
-  VulkanHppGenerator::generateEnums( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const
+  VulkanHppGenerator::generateEnums( std::vector<RequireType> const & requireTypes, std::set<std::string> & listedEnums, std::string const & title ) const
 {
   std::string surroundingProtect = getProtectFromTitle( title );
   std::string str;
-  for ( auto const & require : requireData )
+  for ( auto const & require : requireTypes )
   {
     for ( auto const & type : require.types )
     {
@@ -6568,7 +6556,7 @@ ${enumsToString}
   std::set<std::string> listedEnums;
   for ( auto const & feature : m_features )
   {
-    enumsToString += generateEnumsToString( feature.requireData, listedEnums, feature.name );
+    enumsToString += generateEnumsToString( feature.featureRequires, listedEnums, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -6578,12 +6566,13 @@ ${enumsToString}
   return replaceWithMap( enumsToStringTemplate, { { "enumsToString", enumsToString } } );
 }
 
-std::string VulkanHppGenerator::generateEnumsToString( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateEnumsToString( std::vector<RequireType> const & requireTypes,
                                                        std::set<std::string> &          listedEnums,
                                                        std::string const &              title ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
+  for ( auto const & require : requireTypes )
   {
     for ( auto const & type : require.types )
     {
@@ -7193,10 +7182,10 @@ std::string VulkanHppGenerator::generateFuncPointer( TypeFuncPointer const & fun
 
 std::string VulkanHppGenerator::generateFuncPointers() const
 {
-  auto funcPointerGenerator = [this]( std::vector<RequireData> const & requireData, std::string const & title )
+  auto funcPointerGenerator = [this]<typename RequireType>( std::vector<RequireType> const & requireTypes, std::string const & title )
   {
     std::string str;
-    for ( auto const & require : requireData )
+    for ( auto const & require : requireTypes )
     {
       for ( auto const & type : require.types )
       {
@@ -7218,7 +7207,7 @@ std::string VulkanHppGenerator::generateFuncPointers() const
 
   for ( auto const & feature : m_features )
   {
-    funcPointers += funcPointerGenerator( feature.requireData, feature.name );
+    funcPointers += funcPointerGenerator( feature.featureRequires, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -7413,7 +7402,7 @@ std::string VulkanHppGenerator::generateHandleCommandDeclarations( std::set<std:
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
   for ( auto const & feature : m_features )
   {
-    std::vector<std::string> commandNames = selectCommandsByHandle( feature.requireData, commands, listedCommands );
+    std::vector<std::string> commandNames = selectCommandsByHandle( feature.featureRequires, commands, listedCommands );
     if ( !commandNames.empty() )
     {
       str += "\n  //=== " + feature.name + " ===\n";
@@ -7480,7 +7469,7 @@ std::string VulkanHppGenerator::generateHandleEmpty( HandleData const & handleDa
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension !
   for ( auto const & feature : m_features )
   {
-    std::vector<std::string> commands = selectCommandsByHandle( feature.requireData, handleData.commands, listedCommands );
+    std::vector<std::string> commands = selectCommandsByHandle( feature.featureRequires, handleData.commands, listedCommands );
     if ( !commands.empty() )
     {
       str += "\n  //=== "s + feature.name + " ===\n";
@@ -7514,7 +7503,7 @@ ${forwardDeclarations}
   std::string forwardDeclarations;
   for ( auto const & feature : m_features )
   {
-    forwardDeclarations += generateHandleForwardDeclarations( feature.requireData, feature.name );
+    forwardDeclarations += generateHandleForwardDeclarations( feature.featureRequires, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -7524,15 +7513,17 @@ ${forwardDeclarations}
   return replaceWithMap( fowardDeclarationsTemplate, { { "forwardDeclarations", forwardDeclarations } } );
 }
 
-std::string VulkanHppGenerator::generateHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const
+template <typename RequireType>
+std::string VulkanHppGenerator::generateHandleForwardDeclarations( std::vector<RequireType> const & requireTypes, std::string const & title ) const
 {
   std::string str;
-  forEachRequiredHandle( requireData,
+  forEachRequiredHandle( requireTypes,
                          [&str]( std::pair<std::string, HandleData> const & handleData ) { str += "class " + stripPrefix( handleData.first, "Vk" ) + ";\n"; } );
   return addTitleAndProtection( title, str );
 }
 
-std::string VulkanHppGenerator::generateHandleHashStructures( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateHandleHashStructures( std::vector<RequireType> const & requireTypes,
                                                               std::string const &              title,
                                                               std::set<std::string> &          listedHandles ) const
 {
@@ -7547,7 +7538,7 @@ std::string VulkanHppGenerator::generateHandleHashStructures( std::vector<Requir
 )";
 
   std::string str;
-  forEachRequiredHandle( requireData,
+  forEachRequiredHandle( requireTypes,
                          [&str, &listedHandles, &hashTemplate]( std::pair<std::string, HandleData> const & handleData )
                          {
                            if ( listedHandles.insert( handleData.first ).second )
@@ -7574,7 +7565,7 @@ ${hashes}
   std::set<std::string> listedHandles;  // some handles are listed with more than one extension !
   for ( auto const & feature : m_features )
   {
-    hashes += generateHandleHashStructures( feature.requireData, feature.name, listedHandles );
+    hashes += generateHandleHashStructures( feature.featureRequires, feature.name, listedHandles );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -7941,12 +7932,13 @@ ${objectTypeCases}
   }
 )" };
 
-  auto const generateObjectTypeCases = [this]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedTypes )
+  auto const generateObjectTypeCases =
+    [this]<typename RequireType>( std::vector<RequireType> const & requireTypes, std::string const & title, std::set<std::string> & listedTypes )
   {
     static std::string const objectTypeCaseTemplate = "      case ObjectType::${objectType} : return DebugReportObjectTypeEXT::${debugReportObjectType};\n";
 
     std::string objectTypeCases;
-    forEachRequiredHandle( requireData,
+    forEachRequiredHandle( requireTypes,
                            [&objectTypeCases, &listedTypes, this]( std::pair<std::string, HandleData> const & handleData )
                            {
                              if ( listedTypes.insert( handleData.first ).second )
@@ -7966,7 +7958,7 @@ ${objectTypeCases}
   std::set<std::string> listedTypes;
   for ( auto const & feature : m_features )
   {
-    objectTypeCases += generateObjectTypeCases( feature.requireData, feature.name, listedTypes );
+    objectTypeCases += generateObjectTypeCases( feature.featureRequires, feature.name, listedTypes );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -7996,7 +7988,7 @@ ${commandDefinitions}
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
   for ( auto const & feature : m_features )
   {
-    commandDefinitions += generateRAIICommandDefinitions( feature.requireData, listedCommands, feature.name );
+    commandDefinitions += generateRAIICommandDefinitions( feature.featureRequires, listedCommands, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -8006,12 +7998,13 @@ ${commandDefinitions}
   return replaceWithMap( commandDefinitionsTemplate, { { "commandDefinitions", commandDefinitions } } );
 }
 
-std::string VulkanHppGenerator::generateRAIICommandDefinitions( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateRAIICommandDefinitions( std::vector<RequireType> const & requireTypes,
                                                                 std::set<std::string> &          listedCommands,
                                                                 std::string const &              title ) const
 {
   std::string str;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & )
                           {
                             if ( listedCommands.insert( name ).second )
@@ -8022,12 +8015,13 @@ std::string VulkanHppGenerator::generateRAIICommandDefinitions( std::vector<Requ
   return addTitleAndProtection( title, str );
 }
 
-std::string VulkanHppGenerator::generateRAIIDispatcherCommandsContextInitializers( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateRAIIDispatcherCommandsContextInitializers( std::vector<RequireType> const & requireTypes,
                                                                                    std::set<std::string> const &    listedCommands,
                                                                                    std::string const &              title ) const
 {
   std::string contextInitializers;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & command )
                           {
                             if ( !listedCommands.contains( name ) && !isHandleType( command.params[0].type.name ) )
@@ -8038,12 +8032,13 @@ std::string VulkanHppGenerator::generateRAIIDispatcherCommandsContextInitializer
   return addTitleAndProtection( title, contextInitializers );
 }
 
-std::string VulkanHppGenerator::generateRAIIDispatcherCommandsContextMembers( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateRAIIDispatcherCommandsContextMembers( std::vector<RequireType> const & requireTypes,
                                                                               std::set<std::string> const &    listedCommands,
                                                                               std::string const &              title ) const
 {
   std::string contextMembers;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & command )
                           {
                             if ( !listedCommands.contains( name ) && !isHandleType( command.params[0].type.name ) )
@@ -8054,12 +8049,13 @@ std::string VulkanHppGenerator::generateRAIIDispatcherCommandsContextMembers( st
   return addTitleAndProtection( title, contextMembers );
 }
 
-std::string VulkanHppGenerator::generateRAIIDispatcherCommandsDeviceAssignments( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateRAIIDispatcherCommandsDeviceAssignments( std::vector<RequireType> const & requireTypes,
                                                                                  std::set<std::string> const &    listedCommands,
                                                                                  std::string const &              title ) const
 {
   std::string deviceAssignments;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & command )
                           {
                             if ( !listedCommands.contains( name ) && isHandleType( command.params[0].type.name ) &&
@@ -8077,12 +8073,13 @@ std::string VulkanHppGenerator::generateRAIIDispatcherCommandsDeviceAssignments(
   return addTitleAndProtection( title, deviceAssignments );
 }
 
-std::string VulkanHppGenerator::generateRAIIDispatcherCommandsDeviceMembers( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateRAIIDispatcherCommandsDeviceMembers( std::vector<RequireType> const & requireTypes,
                                                                              std::set<std::string> const &    listedCommands,
                                                                              std::string const &              title ) const
 {
   std::string deviceMembers, deviceMemberDummies;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & command )
                           {
                             if ( !listedCommands.contains( name ) && isHandleType( command.params[0].type.name ) &&
@@ -8095,12 +8092,13 @@ std::string VulkanHppGenerator::generateRAIIDispatcherCommandsDeviceMembers( std
   return addTitleAndProtection( title, deviceMembers, deviceMemberDummies );
 }
 
-std::string VulkanHppGenerator::generateRAIIDispatcherCommandsInstanceAssignments( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateRAIIDispatcherCommandsInstanceAssignments( std::vector<RequireType> const & requireTypes,
                                                                                    std::set<std::string> const &    listedCommands,
                                                                                    std::string const &              title ) const
 {
   std::string instanceAssignments;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & command )
                           {
                             if ( !listedCommands.contains( name ) && isHandleType( command.params[0].type.name ) &&
@@ -8124,12 +8122,13 @@ std::string VulkanHppGenerator::generateRAIIDispatcherCommandsInstanceAssignment
   return addTitleAndProtection( title, instanceAssignments );
 }
 
-std::string VulkanHppGenerator::generateRAIIDispatcherCommandsInstanceMembers( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateRAIIDispatcherCommandsInstanceMembers( std::vector<RequireType> const & requireTypes,
                                                                                std::set<std::string> const &    listedCommands,
                                                                                std::string const &              title ) const
 {
   std::string instanceMembers, instanceMemberDummies;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & command )
                           {
                             if ( !listedCommands.contains( name ) && isHandleType( command.params[0].type.name ) &&
@@ -8151,13 +8150,13 @@ std::string VulkanHppGenerator::generateRAIIDispatchers() const
   std::set<std::string> listedCommands;
   for ( auto const & feature : m_features )
   {
-    contextInitializers += generateRAIIDispatcherCommandsContextInitializers( feature.requireData, listedCommands, feature.name );
-    contextMembers += generateRAIIDispatcherCommandsContextMembers( feature.requireData, listedCommands, feature.name );
-    deviceAssignments += generateRAIIDispatcherCommandsDeviceAssignments( feature.requireData, listedCommands, feature.name );
-    deviceMembers += generateRAIIDispatcherCommandsDeviceMembers( feature.requireData, listedCommands, feature.name );
-    instanceAssignments += generateRAIIDispatcherCommandsInstanceAssignments( feature.requireData, listedCommands, feature.name );
-    instanceMembers += generateRAIIDispatcherCommandsInstanceMembers( feature.requireData, listedCommands, feature.name );
-    forEachRequiredCommand( feature.requireData, [&listedCommands]( std::string const & name, auto const & ) { listedCommands.insert( name ); } );
+    contextInitializers += generateRAIIDispatcherCommandsContextInitializers( feature.featureRequires, listedCommands, feature.name );
+    contextMembers += generateRAIIDispatcherCommandsContextMembers( feature.featureRequires, listedCommands, feature.name );
+    deviceAssignments += generateRAIIDispatcherCommandsDeviceAssignments( feature.featureRequires, listedCommands, feature.name );
+    deviceMembers += generateRAIIDispatcherCommandsDeviceMembers( feature.featureRequires, listedCommands, feature.name );
+    instanceAssignments += generateRAIIDispatcherCommandsInstanceAssignments( feature.featureRequires, listedCommands, feature.name );
+    instanceMembers += generateRAIIDispatcherCommandsInstanceMembers( feature.featureRequires, listedCommands, feature.name );
+    forEachRequiredCommand( feature.featureRequires, [&listedCommands]( std::string const & name, auto const & ) { listedCommands.insert( name ); } );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -8597,7 +8596,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair
   {
     std::vector<std::string> firstLevelCommands, secondLevelCommands;
 
-    forEachRequiredCommand( feature.requireData,
+    forEachRequiredCommand( feature.featureRequires,
                             [&]( std::string const & name, auto const & command )
                             {
                               if ( !specialFunctions.contains( name ) )
@@ -9968,10 +9967,11 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
                           releaseMembers );
 }
 
-std::string VulkanHppGenerator::generateRAIIHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const
+template <typename RequireType>
+std::string VulkanHppGenerator::generateRAIIHandleForwardDeclarations( std::vector<RequireType> const & requireTypes, std::string const & title ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
+  for ( auto const & require : requireTypes )
   {
     for ( auto const & type : require.types )
     {
@@ -10094,7 +10094,7 @@ ${raiiHandles}
   std::string forwardDeclarations;
   for ( auto const & feature : m_features )
   {
-    forwardDeclarations += generateRAIIHandleForwardDeclarations( feature.requireData, feature.name );
+    forwardDeclarations += generateRAIIHandleForwardDeclarations( feature.featureRequires, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -10823,7 +10823,7 @@ std::string VulkanHppGenerator::generateStaticAssertions() const
   std::set<std::string> listedStructs;
   for ( auto const & feature : m_features )
   {
-    staticAssertions += generateStaticAssertions( feature.requireData, feature.name, listedStructs );
+    staticAssertions += generateStaticAssertions( feature.featureRequires, feature.name, listedStructs );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -10832,12 +10832,13 @@ std::string VulkanHppGenerator::generateStaticAssertions() const
   return staticAssertions;
 }
 
-std::string VulkanHppGenerator::generateStaticAssertions( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateStaticAssertions( std::vector<RequireType> const & requireTypes,
                                                           std::string const &              title,
                                                           std::set<std::string> &          listedTypes ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
+  for ( auto const & require : requireTypes )
   {
     for ( auto const & type : require.types )
     {
@@ -11474,7 +11475,7 @@ ${hashes}
   for ( auto const & feature : m_features )
   {
     std::string byFeatureHashes;
-    for ( auto const & require : feature.requireData )
+    for ( auto const & require : feature.featureRequires )
     {
       for ( auto const & type : require.types )
       {
@@ -11580,7 +11581,7 @@ ${structs}
   for ( auto const & feature : m_features )
   {
     std::string byFeatureTypes;
-    for ( auto const & require : feature.requireData )
+    for ( auto const & require : feature.featureRequires )
     {
       for ( auto const & type : require.types )
       {
@@ -11817,7 +11818,7 @@ ${structExtends})";
   std::set<std::string> listedStructs;
   for ( auto const & feature : m_features )
   {
-    structExtends += generateStructExtendsStructs( feature.requireData, listedStructs, feature.name );
+    structExtends += generateStructExtendsStructs( feature.featureRequires, listedStructs, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -11827,12 +11828,13 @@ ${structExtends})";
   return replaceWithMap( structExtendsTemplate, { { "structExtends", structExtends } } );
 }
 
-std::string VulkanHppGenerator::generateStructExtendsStructs( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateStructExtendsStructs( std::vector<RequireType> const & requireTypes,
                                                               std::set<std::string> &          listedStructs,
                                                               std::string const &              title ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
+  for ( auto const & require : requireTypes )
   {
     for ( auto const & type : require.types )
     {
@@ -11887,7 +11889,7 @@ ${forwardDeclarations}
   std::set<std::string> listedStructs;
   for ( auto const & feature : m_features )
   {
-    forwardDeclarations += generateStructForwardDeclarations( feature.requireData, feature.name, listedStructs );
+    forwardDeclarations += generateStructForwardDeclarations( feature.featureRequires, feature.name, listedStructs );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -11897,12 +11899,13 @@ ${forwardDeclarations}
   return replaceWithMap( fowardDeclarationsTemplate, { { "forwardDeclarations", forwardDeclarations } } );
 }
 
-std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<RequireType> const & requireTypes,
                                                                    std::string const &              title,
                                                                    std::set<std::string> &          listedStructs ) const
 {
   std::string str;
-  for ( auto const & require : requireData )
+  for ( auto const & require : requireTypes )
   {
     for ( auto const & type : require.types )
     {
@@ -12686,12 +12689,13 @@ ${aliasHandle})";
                            { "type", type } } );
 }
 
-std::string VulkanHppGenerator::generateUniqueHandle( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateUniqueHandle( std::vector<RequireType> const & requireTypes,
                                                       std::string const &              title,
                                                       std::set<std::string> &          listedHandles ) const
 {
   std::string str;
-  forEachRequiredHandle( requireData,
+  forEachRequiredHandle( requireTypes,
                          [&str, &listedHandles, this]( std::pair<std::string, HandleData> const & handleData )
                          {
                            if ( listedHandles.insert( handleData.first ).second )
@@ -12718,7 +12722,7 @@ ${uniqueHandles}
   std::set<std::string> listedHandles;
   for ( auto const & feature : m_features )
   {
-    uniqueHandles += generateUniqueHandle( feature.requireData, feature.name, listedHandles );
+    uniqueHandles += generateUniqueHandle( feature.featureRequires, feature.name, listedHandles );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -12806,12 +12810,13 @@ ${aliasHandle})";
   return "";
 }
 
-std::string VulkanHppGenerator::generateSharedHandle( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::string VulkanHppGenerator::generateSharedHandle( std::vector<RequireType> const & requireTypes,
                                                       std::string const &              title,
                                                       std::set<std::string> &          listedHandles ) const
 {
   std::string str;
-  forEachRequiredHandle( requireData,
+  forEachRequiredHandle( requireTypes,
                          [&str, &listedHandles, this]( std::pair<std::string, HandleData> const & handleData )
                          {
                            if ( listedHandles.insert( handleData.first ).second )
@@ -12822,10 +12827,11 @@ std::string VulkanHppGenerator::generateSharedHandle( std::vector<RequireData> c
   return addTitleAndProtection( title, str );
 }
 
-std::string VulkanHppGenerator::generateSharedHandleNoDestroy( std::vector<RequireData> const & requireData, std::string const & title ) const
+template <typename RequireType>
+std::string VulkanHppGenerator::generateSharedHandleNoDestroy( std::vector<RequireType> const & requireTypes, std::string const & title ) const
 {
   std::string str;
-  forEachRequiredHandle( requireData,
+  forEachRequiredHandle( requireTypes,
                          [&str, this]( std::pair<std::string, HandleData> const & handleData ) { str += generateSharedHandleNoDestroy( handleData ); } );
   return addTitleAndProtection( title, str );
 }
@@ -12835,7 +12841,7 @@ std::string VulkanHppGenerator::generateSharedHandlesNoDestroy() const
   std::string sharedHandles;
   for ( auto const & feature : m_features )
   {
-    sharedHandles += generateSharedHandleNoDestroy( feature.requireData, feature.name );
+    sharedHandles += generateSharedHandleNoDestroy( feature.featureRequires, feature.name );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -12860,7 +12866,7 @@ ${sharedHandles}
   std::set<std::string> listedHandles;
   for ( auto const & feature : m_features )
   {
-    sharedHandles += generateSharedHandle( feature.requireData, feature.name, listedHandles );
+    sharedHandles += generateSharedHandle( feature.featureRequires, feature.name, listedHandles );
   }
   for ( auto const & extension : m_extensions )
   {
@@ -13142,26 +13148,26 @@ std::string VulkanHppGenerator::getVectorSize( std::vector<Param> const &       
   return vectorSize;
 }
 
-void VulkanHppGenerator::handleRemoval( RemoveData const & removeData )
+void VulkanHppGenerator::handleRemoval( Remove const & remove )
 {
-  for ( auto const & name : removeData.commands )
+  for ( auto const & command : remove.commands )
   {
     bool removed   = false;
-    auto commandIt = findByNameOrAlias( m_vkxml.commands, name );
+    auto commandIt = findByNameOrAlias( m_vkxml.commands, command.name );
     assert( commandIt != m_vkxml.commands.end() );
     for ( auto const & requiredBy : commandIt->requiredBy )
     {
       auto featureIt = findByName( m_features, requiredBy );
       if ( featureIt != m_features.end() )
       {
-        removed |= handleRemovalCommand( name, featureIt->requireData );
+        removed |= handleRemovalCommand( command.name, featureIt->featureRequires );
       }
       else
       {
         auto extensionIt = std::ranges::find_if( m_extensions, [&requiredBy]( ExtensionData const & ed ) { return ed.name == requiredBy; } );
         if ( extensionIt != m_extensions.end() )
         {
-          removed |= handleRemovalCommand( name, extensionIt->requireData );
+          removed |= handleRemovalCommand( command.name, extensionIt->requireData );
         }
         else
         {
@@ -13173,24 +13179,24 @@ void VulkanHppGenerator::handleRemoval( RemoveData const & removeData )
     checkForError( removed, commandIt->xmlLine, "to be removed command <" + commandIt->name + "> could not be removed" );
   }
 
-  for ( auto const & e : removeData.enums )
+  for ( auto const & e : remove.enums )
   {
     bool removed = false;
     for ( auto enumIt = m_enums.begin(); !removed && enumIt != m_enums.end(); ++enumIt )
     {
-      auto valueIt = findByName( enumIt->second.values, e );
+      auto valueIt = findByName( enumIt->second.values, e.name );
       if ( valueIt != enumIt->second.values.end() )
       {
         enumIt->second.values.erase( valueIt );
         removed = true;
       }
     }
-    checkForError( removed, 0, "to be removed enum value <" + e + "> could not be removed" );
+    checkForError( removed, 0, "to be removed enum value <" + e.name + "> could not be removed" );
   }
 
-  for ( auto const & type : removeData.types )
+  for ( auto const & type : remove.types )
   {
-    auto typeIt = m_types.find( type );
+    auto typeIt = m_types.find( type.name );
     assert( typeIt != m_types.end() );
     bool removed = typeIt->second.requiredBy.empty();
     for ( auto const & requiredBy : typeIt->second.requiredBy )
@@ -13198,14 +13204,14 @@ void VulkanHppGenerator::handleRemoval( RemoveData const & removeData )
       auto featureIt = findByName( m_features, requiredBy );
       if ( featureIt != m_features.end() )
       {
-        removed |= handleRemovalType( type, featureIt->requireData );
+        removed |= handleRemovalType( type.name, featureIt->featureRequires );
       }
       else
       {
         auto extensionIt = std::ranges::find_if( m_extensions, [&requiredBy]( ExtensionData const & ed ) { return ed.name == requiredBy; } );
         if ( extensionIt != m_extensions.end() )
         {
-          removed |= handleRemovalType( type, extensionIt->requireData );
+          removed |= handleRemovalType( type.name, extensionIt->requireData );
         }
         else
         {
@@ -13218,22 +13224,23 @@ void VulkanHppGenerator::handleRemoval( RemoveData const & removeData )
   }
 }
 
-bool VulkanHppGenerator::handleRemovalCommand( std::string const & command, std::vector<RequireData> & requireData )
+template <typename RequireType>
+bool VulkanHppGenerator::handleRemovalCommand( std::string const & command, std::vector<RequireType> & requireTypes )
 {
   bool removed = false;
-  for ( auto requireDataIt = requireData.begin(); !removed && ( requireDataIt != requireData.end() ); ++requireDataIt )
+  for ( auto requireTypeIt = requireTypes.begin(); !removed && ( requireTypeIt != requireTypes.end() ); ++requireTypeIt )
   {
-    auto requireCommandIt = std::ranges::find_if( requireDataIt->commands, [&command]( auto const & c ) { return c.name == command; } );
-    if ( requireCommandIt != requireDataIt->commands.end() )
+    auto requireCommandIt = std::ranges::find_if( requireTypeIt->commands, [&command]( auto const & c ) { return c.name == command; } );
+    if ( requireCommandIt != requireTypeIt->commands.end() )
     {
       assert( std::none_of(
-        std::next( requireCommandIt ), requireDataIt->commands.end(), [&command]( auto const & requireCommand ) { return requireCommand.name == command; } ) );
-      requireDataIt->commands.erase( requireCommandIt );
-      assert( !requireDataIt->commands.empty() || !requireDataIt->types.empty() );
+        std::next( requireCommandIt ), requireTypeIt->commands.end(), [&command]( auto const & requireCommand ) { return requireCommand.name == command; } ) );
+      requireTypeIt->commands.erase( requireCommandIt );
+      assert( !requireTypeIt->commands.empty() || !requireTypeIt->types.empty() );
       removed = true;
 
 #if !defined( NDEBUG )
-      for ( auto it = std::next( requireDataIt ); it != requireData.end(); ++it )
+      for ( auto it = std::next( requireTypeIt ); it != requireTypes.end(); ++it )
       {
         assert( std::ranges::none_of( it->commands, [&command]( auto const & requireCommand ) { return requireCommand.name == command; } ) );
       }
@@ -13247,29 +13254,29 @@ void VulkanHppGenerator::handleRemovals()
 {
   for ( auto const & feature : m_features )
   {
-    for ( auto const & removeData : feature.removeData )
+    for ( auto const & remove : feature.removes )
     {
-      handleRemoval( removeData );
+      handleRemoval( remove );
     }
   }
 }
 
-bool VulkanHppGenerator::handleRemovalType( std::string const & type, std::vector<RequireData> & requireData )
+template <typename RequireType>
+bool VulkanHppGenerator::handleRemovalType( std::string const & type, std::vector<RequireType> & requireTypes )
 {
   bool removed = false;
-  for ( auto requireDataIt = requireData.begin(); !removed && ( requireDataIt != requireData.end() ); )
+  for ( auto requireTypeIt = requireTypes.begin(); !removed && ( requireTypeIt != requireTypes.end() ); )
   {
-    auto requireTypeIt = std::ranges::find_if( requireDataIt->types, [&type]( auto const & requireType ) { return requireType.name == type; } );
-    if ( requireTypeIt != requireDataIt->types.end() )
+    auto typeIt = std::ranges::find_if( requireTypeIt->types, [&type]( auto const & requireType ) { return requireType.name == type; } );
+    if ( typeIt != requireTypeIt->types.end() )
     {
-      assert(
-        std::none_of( std::next( requireTypeIt ), requireDataIt->types.end(), [&type]( auto const & requireType ) { return requireType.name == type; } ) );
-      requireDataIt->types.erase( requireTypeIt );
-      requireDataIt = ( requireDataIt->commands.empty() && requireDataIt->types.empty() ) ? requireData.erase( requireDataIt ) : std::next( requireDataIt );
+      assert( std::none_of( std::next( typeIt ), requireTypeIt->types.end(), [&type]( auto const & requireType ) { return requireType.name == type; } ) );
+      requireTypeIt->types.erase( typeIt );
+      requireTypeIt = ( requireTypeIt->commands.empty() && requireTypeIt->types.empty() ) ? requireTypes.erase( requireTypeIt ) : std::next( requireTypeIt );
       removed       = true;
 
 #if !defined( NDEBUG )
-      for ( auto it = std::next( requireDataIt ); it != requireData.end(); ++it )
+      for ( auto it = std::next( requireTypeIt ); it != requireTypes.end(); ++it )
       {
         assert( std::ranges::none_of( it->types, [&type]( auto const & requireType ) { return requireType.name == type; } ) );
       }
@@ -13277,7 +13284,7 @@ bool VulkanHppGenerator::handleRemovalType( std::string const & type, std::vecto
     }
     else
     {
-      requireDataIt = std::next( requireDataIt );
+      requireTypeIt = std::next( requireTypeIt );
     }
   }
   return removed;
@@ -13491,7 +13498,7 @@ bool VulkanHppGenerator::isTypeUsed( std::string const & type ) const
     auto featureIt = findByName( m_features, require );
     if ( featureIt != m_features.end() )
     {
-      for ( auto const & r : featureIt->requireData )
+      for ( auto const & r : featureIt->featureRequires )
       {
         if ( std::ranges::any_of( r.types, [&type]( auto const & requireType ) { return requireType.name == type; } ) )
         {
@@ -13542,13 +13549,7 @@ void VulkanHppGenerator::mergeInternalFeatures()
 
   for ( auto & feature : m_features )
   {
-    // Check if the public feature supports the current API
-    bool publicFeatureSupported = std::ranges::any_of( feature.api, [this]( auto const & a ) { return a == m_api; } );
-    if ( publicFeatureSupported )
-    {
-      // Recursively merge all internal features that the public feature depends on
-      mergeInternalFeatures( feature.depends, feature, internalFeatures );
-    }
+    mergeInternalFeatures( feature.depends, feature, internalFeatures );
   }
 
   // Check that all internal features have been processed
@@ -13567,10 +13568,10 @@ void VulkanHppGenerator::mergeInternalFeatures( std::vector<std::string> const &
       // Recursively merge dependencies of the internal feature
       mergeInternalFeatures( depIt->second.depends, feature, internalFeatures );
 
-      // adjust the requiredBy sets of the commands that are required by the internal feature to include the public feature
-      for ( auto const & requireData : depIt->second.requireData )
+      // adjust the requiredBy sets of the commands and enum values that are required by the internal feature to include the public feature
+      for ( auto const & require : depIt->second.featureRequires )
       {
-        for ( auto const & command : requireData.commands )
+        for ( auto const & command : require.commands )
         {
           for ( auto & commandSpec : m_vkxml.commands )
           {
@@ -13582,11 +13583,20 @@ void VulkanHppGenerator::mergeInternalFeatures( std::vector<std::string> const &
             }
           }
         }
+        for ( auto const & e : require.enumRegulars )
+        {
+          auto enumIt = findByName( m_vkxml.types.enums, e.extends );
+          assert( enumIt != m_vkxml.types.enums.end() );
+          auto valueIt = findByName( enumIt->values, e.name );
+          assert( valueIt != enumIt->values.end() );
+          valueIt->requiredBy = depIt->first;
+        }
       }
 
       // Merge the internal feature's require data into the public feature
-      feature.requireData.insert(
-        feature.requireData.end(), std::make_move_iterator( depIt->second.requireData.begin() ), std::make_move_iterator( depIt->second.requireData.end() ) );
+      feature.featureRequires.insert( feature.featureRequires.end(),
+                                      std::make_move_iterator( depIt->second.featureRequires.begin() ),
+                                      std::make_move_iterator( depIt->second.featureRequires.end() ) );
 
       // Remove the internal feature to avoid re-processing
       internalFeatures.erase( depIt );
@@ -13749,12 +13759,13 @@ void VulkanHppGenerator::rescheduleRAIIHandle( std::string &                    
   }
 }
 
-std::vector<std::string> VulkanHppGenerator::selectCommandsByHandle( std::vector<RequireData> const & requireData,
+template <typename RequireType>
+std::vector<std::string> VulkanHppGenerator::selectCommandsByHandle( std::vector<RequireType> const & requireTypes,
                                                                      std::set<std::string> const &    handleCommands,
                                                                      std::set<std::string> &          listedCommands ) const
 {
   std::vector<std::string> selectedCommands;
-  forEachRequiredCommand( requireData,
+  forEachRequiredCommand( requireTypes,
                           [&]( std::string const & name, auto const & )
                           {
                             if ( handleCommands.contains( name ) && listedCommands.insert( name ).second )
@@ -13894,7 +13905,7 @@ bool VulkanHppGenerator::EnumData::addEnumValue(
   bool ok      = ( valueIt == values.end() );
   if ( ok )
   {
-    values.push_back( { {}, bitpos, deprecated, name, protect, supported, value, line } );
+    values.push_back( { name, {}, bitpos, deprecated, protect, supported, value, line } );
   }
   else if ( supported )  // only for supported enum values, we need to check for consistency!
   {

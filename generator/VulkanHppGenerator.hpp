@@ -130,10 +130,10 @@ private:
 
   struct EnumValueData
   {
+    std::string                 name       = {};
     std::vector<EnumValueAlias> aliases    = {};
     std::string                 bitpos     = {};
     bool                        deprecated = {};
-    std::string                 name       = {};
     std::string                 protect    = {};
     bool                        supported  = {};
     std::string                 value      = {};
@@ -267,15 +267,14 @@ private:
 
   struct FeatureData
   {
-    std::vector<std::string>   api           = {};
-    std::string                name          = {};
-    std::string                number        = {};
-    bool                       isInternal    = false;
-    std::vector<std::string>   depends       = {};
-    std::vector<DeprecateData> deprecateData = {};
-    std::vector<RemoveData>    removeData    = {};
-    std::vector<RequireData>   requireData   = {};
-    int                        xmlLine       = 0;
+    std::vector<std::string>    api             = {};
+    std::string                 name            = {};
+    std::string                 number          = {};
+    bool                        isInternal      = false;
+    std::vector<std::string>    depends         = {};
+    std::vector<Remove>         removes         = {};
+    std::vector<FeatureRequire> featureRequires = {};
+    int                         xmlLine         = 0;
   };
 
   struct ComponentData
@@ -336,28 +335,32 @@ private:
 private:
   void        addCommandToHandle( std::string const & name, Command const & command );
   std::string addTitleAndProtection( std::string const & title, std::string const & strIf, std::string const & strElse = {} ) const;
-  void        appendCppModuleCommands( std::vector<RequireData> const & requireData,
-                                       std::set<std::string> &          listedCommands,
-                                       std::string const &              title,
-                                       std::string &                    commandMembers ) const;
-  void        checkBitmaskCorrectness() const;
-  void        checkCommandCorrectness() const;
-  void        checkCorrectness() const;
-  void        checkDefineCorrectness() const;
-  void        checkEnumCorrectness() const;
-  bool        checkEquivalentSingularConstructor( std::vector<size_t> const &        constructorIndices,
-                                                  Command const &                    singularConstructor,
-                                                  std::vector<Param>::const_iterator lenIt ) const;
-  void        checkExtensionCorrectness() const;
-  void        checkForError( bool condition, int line, std::string const & message ) const;
-  void        checkForWarning( bool condition, int line, std::string const & message ) const;
-  void        checkFuncPointerCorrectness() const;
-  void        checkRequireCorrectness() const;
-  void        checkRequireCorrectness( std::vector<RequireData> const & requireData, std::string const & section, std::string const & name ) const;
-  void        checkRequireDependenciesCorrectness( RequireData const & require, std::string const & section, std::string const & name ) const;
-  void        checkRequireTypesCorrectness( RequireData const & require ) const;
-  void        checkStructCorrectness() const;
-  void        checkStructMemberArraySizesAreValid( std::vector<std::string> const & arraySizes, int line ) const;
+  template <typename RequireType>
+  void appendCppModuleCommands( std::vector<RequireType> const & requireTypes,
+                                std::set<std::string> &          listedCommands,
+                                std::string const &              title,
+                                std::string &                    commandMembers ) const;
+  void checkBitmaskCorrectness() const;
+  void checkCommandCorrectness() const;
+  void checkCorrectness() const;
+  void checkDefineCorrectness() const;
+  void checkEnumCorrectness() const;
+  bool checkEquivalentSingularConstructor( std::vector<size_t> const &        constructorIndices,
+                                           Command const &                    singularConstructor,
+                                           std::vector<Param>::const_iterator lenIt ) const;
+  void checkExtensionCorrectness() const;
+  void checkForError( bool condition, int line, std::string const & message ) const;
+  void checkForWarning( bool condition, int line, std::string const & message ) const;
+  void checkFuncPointerCorrectness() const;
+  void checkRequireCorrectness() const;
+  template <typename RequireType>
+  void checkRequireCorrectness( std::vector<RequireType> const & requireTypes, std::string const & section, std::string const & name ) const;
+  void checkRequireDependenciesCorrectness( FeatureRequire const & featureRequire, std::string const & section, std::string const & name ) const;
+  void checkRequireDependenciesCorrectness( RequireData const & requireData, std::string const & section, std::string const & name ) const;
+  template <typename RequireType>
+  void checkRequireTypesCorrectness( RequireType const & requireType ) const;
+  void checkStructCorrectness() const;
+  void checkStructMemberArraySizesAreValid( std::vector<std::string> const & arraySizes, int line ) const;
   void checkStructMemberCorrectness( std::string const & structureName, std::vector<StructMember> const & members, std::set<std::string> & sTypeValues ) const;
   void checkStructMemberSelectorConnection( std::string const & selector, std::vector<StructMember> const & members, std::string const & memberType ) const;
   void checkStructMemberTypeIsKnown( std::string const & memberType, int line ) const;
@@ -397,31 +400,38 @@ private:
                                                    std::vector<size_t> const &               returnParam,
                                                    bool                                      singular ) const;
   TypeStruct const *       determineSubStruct( TypeStruct const & vkStruct ) const;
-  std::map<size_t, VectorParamData>         determineVectorParams( std::vector<Param> const & params ) const;
-  std::set<size_t>                          determineVoidPointerParams( std::vector<Param> const & params ) const;
-  void                                      distributeEnumValueAliases();
-  void                                      distributeRequirements();
-  void                                      distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy );
+  std::map<size_t, VectorParamData> determineVectorParams( std::vector<Param> const & params ) const;
+  std::set<size_t>                  determineVoidPointerParams( std::vector<Param> const & params ) const;
+  void                              distributeEnumValueAliases();
+  void                              distributeRequirements();
+  template <typename RequireType>
+  void                                      distributeRequirements( std::vector<RequireType> const & requireTypes, std::string const & requiredBy );
   bool                                      encodesEnumeration( std::vector<Param> const &                params,
                                                                 std::map<size_t, VectorParamData> const & vectorParams,
                                                                 size_t                                    returnParam0,
                                                                 size_t                                    returnParam1 ) const;
   void                                      extendSpecialCommands( std::string const & name, bool definition, bool raii, std::string & cmd ) const;
-  FeatureData                               featureToFeatureData( Feature const & feature, bool supported );
+  FeatureData                               featureToFeatureData( Feature const & feature );
   std::vector<StructMember>::const_iterator findHandleMember( std::vector<StructMember> const & members ) const;
   std::vector<StructMember>::const_iterator findVectorMember( std::vector<StructMember> const & members ) const;
-  void                                      forEachRequiredBitmask( std::vector<RequireData> const &                   requireData,
-                                                                    std::set<std::string> &                            encounteredBitmasks,
-                                                                    std::function<void( TypeBitmask const & )> const & bitmaskAction ) const;
-  void                                      forEachRequiredCommand( std::vector<RequireData> const &                                    requireData,
-                                                                    std::function<void( std::string const &, Command const & )> const & commandAction ) const;
-  void                                      forEachRequiredConstant( std::vector<RequireData> const &                     requireData,
-                                                                     std::set<std::string> &                              encounteredConstants,
-                                                                     std::function<void( ConstantValue const & )> const & constantAction ) const;
-  void                                      forEachRequiredEnumConstant( std::vector<RequireData> const &                        requireData,
-                                                                         std::set<std::string> &                                 encounteredEnumConstants,
-                                                                         std::function<void( EnumConstantData const & )> const & enumConstantAction ) const;
-  void                  forEachRequiredHandle( std::vector<RequireData> const &                                          requireData,
+  template <typename RequireType>
+  void forEachRequiredBitmask( std::vector<RequireType> const &                   requireType,
+                               std::set<std::string> &                            encounteredBitmasks,
+                               std::function<void( TypeBitmask const & )> const & bitmaskAction ) const;
+  template <typename RequireType>
+  void forEachRequiredCommand( std::vector<RequireType> const &                                    requireTypes,
+                               std::function<void( std::string const &, Command const & )> const & commandAction ) const;
+  void forEachRequiredConstant( std::vector<FeatureRequire> const &                  featureRequires,
+                                std::set<std::string> &                              encounteredConstants,
+                                std::function<void( ConstantValue const & )> const & constantAction ) const;
+  void forEachRequiredConstant( std::vector<RequireData> const &                     requireDatas,
+                                std::set<std::string> &                              encounteredConstants,
+                                std::function<void( ConstantValue const & )> const & constantAction ) const;
+  void forEachRequiredEnumConstant( std::vector<RequireData> const &                        requireData,
+                                    std::set<std::string> &                                 encounteredEnumConstants,
+                                    std::function<void( EnumConstantData const & )> const & enumConstantAction ) const;
+  template <typename RequireType>
+  void                  forEachRequiredHandle( std::vector<RequireType> const &                                          requireTypes,
                                                std::function<void( std::pair<std::string, HandleData> const & )> const & handleAction ) const;
   std::set<std::string> gatherResultCodes() const;
   std::tuple<std::string, std::string, std::string, std::string> generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
@@ -452,7 +462,9 @@ private:
   std::string generateBaseTypes() const;
   std::string generateBitmask( std::vector<TypeBitmask>::const_iterator bitmaskIt, std::string const & surroundingProtect ) const;
   std::string generateBitmasksToString() const;
-  std::string generateBitmasksToString( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const;
+  template <typename RequireType>
+  std::string
+    generateBitmasksToString( std::vector<RequireType> const & requireTypes, std::set<std::string> & listedBitmasks, std::string const & title ) const;
   std::string generateBitmaskToString( TypeBitmask const & bitmask ) const;
   std::string generateCallArgumentsEnhanced( Command const &          command,
                                              size_t                   initialSkipCount,
@@ -582,8 +594,9 @@ private:
   std::string generateCommand3ReturnsValueValueValue(
     std::string const & name, Command const & command, size_t initialSkipCount, bool definition, bool raii, std::vector<size_t> const & returnParams ) const;
   std::string generateCommandDefinitions() const;
+  template <typename RequireType>
   std::string
-    generateCommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;
+    generateCommandDefinitions( std::vector<RequireType> const & requireTypes, std::set<std::string> & listedCommands, std::string const & title ) const;
   std::string generateCommandDefinitions( std::string const & name, std::string const & handle ) const;
   std::string generateCommandEnhanced( std::string const &                       name,
                                        Command const &                           command,
@@ -673,32 +686,39 @@ private:
   std::string generateDeprecatedConstructors( std::string const & name ) const;
   std::string generateDeprecatedStructSetters( std::string const & name ) const;
   std::string generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
-  std::string generateDispatchLoaderDynamicCommandMembers( std::vector<RequireData> const & requireData,
+  template <typename RequireType>
+  std::string generateDispatchLoaderDynamicCommandMembers( std::vector<RequireType> const & requireTypes,
                                                            std::set<std::string> const &    listedCommands,
                                                            std::string const &              title ) const;
-  std::string generateDispatchLoaderDynamicDeviceCommandAssignment( std::vector<RequireData> const & requireData,
+  template <typename RequireType>
+  std::string generateDispatchLoaderDynamicDeviceCommandAssignment( std::vector<RequireType> const & requireTypes,
                                                                     std::set<std::string> const &    listedCommands,
                                                                     std::string const &              title ) const;
-  std::string generateDispatchLoaderDynamicInitialCommandAssignment( std::vector<RequireData> const & requireData,
+  template <typename RequireType>
+  std::string generateDispatchLoaderDynamicInitialCommandAssignment( std::vector<RequireType> const & requireTypes,
                                                                      std::set<std::string> const &    listedCommands,
                                                                      std::string const &              title ) const;
-  std::string generateDispatchLoaderDynamicInstanceCommandAssignment( std::vector<RequireData> const & requireData,
+  template <typename RequireType>
+  std::string generateDispatchLoaderDynamicInstanceCommandAssignment( std::vector<RequireType> const & requireTypes,
                                                                       std::set<std::string> const &    listedCommands,
                                                                       std::string const &              title ) const;
   std::string generateDispatchLoaderStatic() const;  // uses exported symbols from loader
   std::string generateDestroyCommand( std::string const & name, Command const & command ) const;
   std::string
     generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName, std::string const & aliasName, std::string const & firstArg ) const;
-  std::string generateDispatchLoaderStaticCommands( std::vector<RequireData> const & requireData,
+  template <typename RequireType>
+  std::string generateDispatchLoaderStaticCommands( std::vector<RequireType> const & requireTypes,
                                                     std::set<std::string> &          listedCommands,
                                                     std::string const &              title ) const;
   std::string generateEnum( std::pair<std::string, EnumData> const & enumData, std::string const & surroundingProtect ) const;
   std::string
     generateEnumInitializer( Type const & type, std::vector<std::string> const & arraySizes, std::vector<EnumValueData> const & values, bool bitmask ) const;
   std::string generateEnums() const;
-  std::string generateEnums( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
+  template <typename RequireType>
+  std::string generateEnums( std::vector<RequireType> const & requireTypes, std::set<std::string> & listedEnums, std::string const & title ) const;
   std::string generateEnumsToString() const;
-  std::string generateEnumsToString( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
+  template <typename RequireType>
+  std::string generateEnumsToString( std::vector<RequireType> const & requireTypes, std::set<std::string> & listedEnums, std::string const & title ) const;
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
   std::string generateEnumValueName( std::string const & enumName, std::string const & valueName, bool bitmask ) const;
   std::string generateExtensionDependencies() const;
@@ -727,10 +747,12 @@ private:
   std::string generateHandleDependencies( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   std::string generateHandleEmpty( HandleData const & handleData ) const;
   std::string generateHandleForwardDeclarations() const;
-  std::string generateHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const;
-  std::string
-    generateHandleHashStructures( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedHandles ) const;
+  template <typename RequireType>
+  std::string generateHandleForwardDeclarations( std::vector<RequireType> const & requireTypes, std::string const & title ) const;
   std::string generateHandleHashStructures() const;
+  template <typename RequireType>
+  std::string
+    generateHandleHashStructures( std::vector<RequireType> const & requireTypes, std::string const & title, std::set<std::string> & listedHandles ) const;
   std::string generateHandles() const;
   std::string generateIndexTypeTraits( std::pair<std::string, EnumData> const & enumData ) const;
   std::string generateIsDispatchedList() const;
@@ -750,24 +772,31 @@ private:
   std::string                         generateObjectTypeToDebugReportObjectType() const;
   std::pair<std::string, std::string> generateProtection( std::string const & protect, bool defined = true ) const;
   std::string                         generateRAIICommandDefinitions() const;
+  template <typename RequireType>
   std::string
-    generateRAIICommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;
-  std::string generateRAIIDispatcherCommandsContextInitializers( std::vector<RequireData> const & requireData,
+    generateRAIICommandDefinitions( std::vector<RequireType> const & requireTypes, std::set<std::string> & listedCommands, std::string const & title ) const;
+  template <typename RequireType>
+  std::string generateRAIIDispatcherCommandsContextInitializers( std::vector<RequireType> const & requireTypes,
                                                                  std::set<std::string> const &    listedCommands,
                                                                  std::string const &              title ) const;
-  std::string generateRAIIDispatcherCommandsContextMembers( std::vector<RequireData> const & requireData,
+  template <typename RequireType>
+  std::string generateRAIIDispatcherCommandsContextMembers( std::vector<RequireType> const & requireTypes,
                                                             std::set<std::string> const &    listedCommands,
                                                             std::string const &              title ) const;
-  std::string generateRAIIDispatcherCommandsDeviceAssignments( std::vector<RequireData> const & requireData,
+  template <typename RequireType>
+  std::string generateRAIIDispatcherCommandsDeviceAssignments( std::vector<RequireType> const & requireTypes,
                                                                std::set<std::string> const &    listedCommands,
                                                                std::string const &              title ) const;
-  std::string generateRAIIDispatcherCommandsDeviceMembers( std::vector<RequireData> const & requireData,
+  template <typename RequireType>
+  std::string generateRAIIDispatcherCommandsDeviceMembers( std::vector<RequireType> const & requireTypes,
                                                            std::set<std::string> const &    listedCommands,
                                                            std::string const &              title ) const;
-  std::string generateRAIIDispatcherCommandsInstanceAssignments( std::vector<RequireData> const & requireData,
+  template <typename RequireType>
+  std::string generateRAIIDispatcherCommandsInstanceAssignments( std::vector<RequireType> const & requireTypes,
                                                                  std::set<std::string> const &    listedCommands,
                                                                  std::string const &              title ) const;
-  std::string generateRAIIDispatcherCommandsInstanceMembers( std::vector<RequireData> const & requireData,
+  template <typename RequireType>
+  std::string generateRAIIDispatcherCommandsInstanceMembers( std::vector<RequireType> const & requireTypes,
                                                              std::set<std::string> const &    listedCommands,
                                                              std::string const &              title ) const;
   std::string generateRAIIDispatchers() const;
@@ -840,8 +869,9 @@ private:
   std::string generateRAIIHandleContext( std::pair<std::string, HandleData> const & handle, std::set<std::string> const & specialFunctions ) const;
   std::string generateRAIIHandleDestructorCallArguments( std::string const & handleType, Command const & destructor ) const;
   std::tuple<std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string>
-              generateRAIIHandleDetails( std::pair<std::string, HandleData> const & handle ) const;
-  std::string generateRAIIHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const;
+    generateRAIIHandleDetails( std::pair<std::string, HandleData> const & handle ) const;
+  template <typename RequireType>
+  std::string generateRAIIHandleForwardDeclarations( std::vector<RequireType> const & requireTypes, std::string const & title ) const;
   std::string generateRAIIHandles() const;
   std::string generateRAIIHandleSingularConstructorArguments( std::pair<std::string, HandleData> const & handle,
                                                               std::vector<Param> const &                 params,
@@ -888,7 +918,8 @@ private:
                                  std::string const &                                            structName,
                                  bool                                                           mutualExclusiveLens ) const;
   std::string generateStaticAssertions() const;
-  std::string generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedTypes ) const;
+  template <typename RequireType>
+  std::string generateStaticAssertions( std::vector<RequireType> const & requireTypes, std::string const & title, std::set<std::string> & listedTypes ) const;
   std::string generateStruct( TypeStruct const & vkStruct, std::set<std::string> & listedStructs ) const;
   std::string generateStructCastAssignments( TypeStruct const & vkStruct ) const;
   std::string generateStructCompareOperators( TypeStruct const & vkStruct ) const;
@@ -901,11 +932,13 @@ private:
   std::string generateStructsAndUnions() const;
   std::string generateStructure( TypeStruct const & vkStruct, TypeStruct const * subStruct ) const;
   std::string generateStructExtendsStructs() const;
+  template <typename RequireType>
   std::string
-    generateStructExtendsStructs( std::vector<RequireData> const & requireData, std::set<std::string> & listedStructs, std::string const & title ) const;
+    generateStructExtendsStructs( std::vector<RequireType> const & requireType, std::set<std::string> & listedStructs, std::string const & title ) const;
   std::string generateStructForwardDeclarations() const;
+  template <typename RequireType>
   std::string
-    generateStructForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedStructs ) const;
+    generateStructForwardDeclarations( std::vector<RequireType> const & requireType, std::string const & title, std::set<std::string> & listedStructs ) const;
   std::tuple<std::string, std::string, std::string, std::string> generateStructMembers( TypeStruct const & vkStruct ) const;
   std::string                                                    generateStructSetter( TypeStruct const & vkStruct, size_t index ) const;
   std::string generateStructSubConstructor( TypeStruct const & vkStruct, TypeStruct const * subStruct ) const;
@@ -921,21 +954,24 @@ private:
   std::string generateUnion( TypeUnion const & vkUnion ) const;
   std::string generateUnionSetter( TypeUnion const & vkUnion, size_t index ) const;
   std::string generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const;
-  std::string generateUniqueHandle( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedHandles ) const;
+  template <typename RequireType>
+  std::string generateUniqueHandle( std::vector<RequireType> const & requireType, std::string const & title, std::set<std::string> & listedHandles ) const;
   std::string generateUniqueHandles() const;
   std::string generateSharedHandle( std::pair<std::string, HandleData> const & handleData ) const;
-  std::string generateSharedHandle( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedHandles ) const;
+  template <typename RequireType>
+  std::string generateSharedHandle( std::vector<RequireType> const & requireTypes, std::string const & title, std::set<std::string> & listedHandles ) const;
   std::string generateSharedHandleNoDestroy( std::pair<std::string, HandleData> const & handleData ) const;
-  std::string generateSharedHandleNoDestroy( std::vector<RequireData> const & requireData, std::string const & title ) const;
-  std::string generateSharedHandles() const;
-  std::string generateSharedHandlesNoDestroy() const;
-  std::string generateTaggedCamelCase( std::string const & name ) const;
-  std::string generateVectorSizeCheck( std::string const &                           name,
-                                       Command const &                               command,
-                                       size_t                                        initialSkipCount,
-                                       std::map<size_t, std::vector<size_t>> const & countToVectorMap,
-                                       std::set<size_t> const &                      skippedParams,
-                                       bool                                          onlyThrows ) const;
+  template <typename RequireType>
+  std::string                         generateSharedHandleNoDestroy( std::vector<RequireType> const & requireTypes, std::string const & title ) const;
+  std::string                         generateSharedHandles() const;
+  std::string                         generateSharedHandlesNoDestroy() const;
+  std::string                         generateTaggedCamelCase( std::string const & name ) const;
+  std::string                         generateVectorSizeCheck( std::string const &                           name,
+                                                               Command const &                               command,
+                                                               size_t                                        initialSkipCount,
+                                                               std::map<size_t, std::vector<size_t>> const & countToVectorMap,
+                                                               std::set<size_t> const &                      skippedParams,
+                                                               bool                                          onlyThrows ) const;
   std::pair<std::string, std::string> getParentTypeAndName( std::pair<std::string, HandleData> const & handle ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
   std::string                         getProtectFromPlatform( std::string const & platformName ) const;
@@ -947,35 +983,37 @@ private:
                                                      size_t                                    returnParam,
                                                      std::string const &                       returnParamType,
                                                      std::set<size_t> const &                  templatedParams ) const;
-  void                                handleRemoval( RemoveData const & removeData );
-  bool                                handleRemovalCommand( std::string const & command, std::vector<RequireData> & requireData );
-  void                                handleRemovals();
-  bool                                handleRemovalType( std::string const & type, std::vector<RequireData> & requireData );
-  bool                                hasArrayConstructor( HandleData const & handleData ) const;
-  bool                                hasLen( StructMember const & member, std::vector<StructMember> const & members ) const;
-  bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
-  bool                                hasPointerParams( std::vector<Param> const & params ) const;
-  bool                                isConstructorCandidate( Command const & command, std::string const & handleType ) const;
-  bool                                isConstructorCandidate( Param const & paramData, std::string const & handleType ) const;
-  bool                                isDeviceCommand( Command const & command ) const;
-  bool                                isEnumerated( std::string const & type ) const;
-  bool                                isExtension( std::string const & name ) const;
-  bool                                isFeature( std::string const & name ) const;
-  bool                                isHandleType( std::string const & type ) const;
-  bool                                isHandleTypeByStructure( std::string const & type ) const;
-  bool                                isLenByStructMember( std::string const & name, std::vector<Param> const & params ) const;
-  bool                                isLenByStructMember( std::string const & name, Param const & param ) const;
-  bool                                isMultiSuccessCodeConstructor( std::vector<size_t> const & constructorIndices ) const;
-  bool                                isParam( std::string const & name, std::vector<Param> const & params ) const;
-  bool                                isSimpleStructure( std::string const & name ) const;
-  bool                                isStructMember( std::string const & name, std::vector<StructMember> const & members ) const;
-  bool                                isStructureChainAnchor( std::string const & type ) const;
-  bool                                isStructureType( std::string const & type ) const;
-  bool                                isSupported( std::set<std::string> const & requiredBy ) const;
-  bool                                isTypeRequired( std::string const & type ) const;
-  bool                                isTypeUsed( std::string const & type ) const;
-  bool                                isVectorByStructure( std::string const & type ) const;
-  void                                mergeInternalFeatures();
+  void                                handleRemoval( Remove const & remove );
+  template <typename RequireType>
+  bool handleRemovalCommand( std::string const & command, std::vector<RequireType> & requireTypes );
+  void handleRemovals();
+  template <typename RequireType>
+  bool handleRemovalType( std::string const & type, std::vector<RequireType> & requireTypes );
+  bool hasArrayConstructor( HandleData const & handleData ) const;
+  bool hasLen( StructMember const & member, std::vector<StructMember> const & members ) const;
+  bool hasParentHandle( std::string const & handle, std::string const & parent ) const;
+  bool hasPointerParams( std::vector<Param> const & params ) const;
+  bool isConstructorCandidate( Command const & command, std::string const & handleType ) const;
+  bool isConstructorCandidate( Param const & paramData, std::string const & handleType ) const;
+  bool isDeviceCommand( Command const & command ) const;
+  bool isEnumerated( std::string const & type ) const;
+  bool isExtension( std::string const & name ) const;
+  bool isFeature( std::string const & name ) const;
+  bool isHandleType( std::string const & type ) const;
+  bool isHandleTypeByStructure( std::string const & type ) const;
+  bool isLenByStructMember( std::string const & name, std::vector<Param> const & params ) const;
+  bool isLenByStructMember( std::string const & name, Param const & param ) const;
+  bool isMultiSuccessCodeConstructor( std::vector<size_t> const & constructorIndices ) const;
+  bool isParam( std::string const & name, std::vector<Param> const & params ) const;
+  bool isSimpleStructure( std::string const & name ) const;
+  bool isStructMember( std::string const & name, std::vector<StructMember> const & members ) const;
+  bool isStructureChainAnchor( std::string const & type ) const;
+  bool isStructureType( std::string const & type ) const;
+  bool isSupported( std::set<std::string> const & requiredBy ) const;
+  bool isTypeRequired( std::string const & type ) const;
+  bool isTypeUsed( std::string const & type ) const;
+  bool isVectorByStructure( std::string const & type ) const;
+  void mergeInternalFeatures();
   void mergeInternalFeatures( std::vector<std::string> const & depends, FeatureData & feature, std::map<std::string, FeatureData> & internalFeatures );
   bool needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & chainedReturnParams ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<Param> const &                params,
@@ -989,17 +1027,18 @@ private:
                                                                                std::pair<std::string, HandleData> const & handle,
                                                                                std::set<std::string> &                    listedHandles,
                                                                                std::set<std::string> const &              specialFunctions ) const;
-  std::vector<std::string>                               selectCommandsByHandle( std::vector<RequireData> const & requireData,
-                                                                                 std::set<std::string> const &    handleCommands,
-                                                                                 std::set<std::string> &          listedCommands ) const;
-  bool                                                   skipLeadingGrandParent( std::pair<std::string, HandleData> const & handle ) const;
-  std::string                                            stripPluralS( std::string const & name ) const;
-  bool                                                   structureChainHoldsHandle( std::string const & name ) const;
-  bool                                                   structureChainHoldsVector( std::string const & name ) const;
-  bool                                                   structureHoldsHandle( TypeStruct const & vkStruct ) const;
-  bool                                                   structureHoldsVector( TypeStruct const & vkStruct ) const;
-  std::string                                            toString( TypeCategory category ) const;
-  StructMember const &                                   vectorMemberByStructure( std::string const & structureType ) const;
+  template <typename RequireType>
+  std::vector<std::string> selectCommandsByHandle( std::vector<RequireType> const & requireTypes,
+                                                   std::set<std::string> const &    handleCommands,
+                                                   std::set<std::string> &          listedCommands ) const;
+  bool                     skipLeadingGrandParent( std::pair<std::string, HandleData> const & handle ) const;
+  std::string              stripPluralS( std::string const & name ) const;
+  bool                     structureChainHoldsHandle( std::string const & name ) const;
+  bool                     structureChainHoldsVector( std::string const & name ) const;
+  bool                     structureHoldsHandle( TypeStruct const & vkStruct ) const;
+  bool                     structureHoldsVector( TypeStruct const & vkStruct ) const;
+  std::string              toString( TypeCategory category ) const;
+  StructMember const &     vectorMemberByStructure( std::string const & structureType ) const;
 
 private:
   std::string                       m_api;

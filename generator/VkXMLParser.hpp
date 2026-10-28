@@ -104,21 +104,22 @@ struct EnumValueAlias
 
 struct EnumValue
 {
-  std::string                 name    = {};
-  std::string                 bitPos  = {};
-  std::string                 comment = {};
-  std::string                 offset  = {};
-  std::string                 value   = {};
-  std::vector<EnumValueAlias> aliases = {};
-  int                         xmlLine = {};
+  std::string                 name       = {};
+  std::vector<EnumValueAlias> aliases    = {};
+  std::string                 bitPos     = {};
+  std::string                 comment    = {};
+  std::string                 offset     = {};
+  std::string                 requiredBy = {};
+  std::string                 value      = {};
+  int                         xmlLine    = {};
 };
 
 struct TypeEnum
 {
   std::string                name     = {};
+  std::map<std::string, int> aliases  = {};
   std::string                bitwidth = {};
   std::string                category = {};
-  std::map<std::string, int> aliases  = {};
   std::vector<EnumValue>     values   = {};
   int                        xmlLine  = {};
 };

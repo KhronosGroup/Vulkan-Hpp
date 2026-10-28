@@ -3122,10 +3122,10 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
                          "bitmask value <" + bitmaskValue.name + "> does not end with expected postfix <" + postfix + ">" );
 
           enumIt->values.push_back( { .name    = std::move( bitmaskValue.name ),
+                                      .aliases = std::move( bitmaskValue.aliases ),
                                       .bitPos  = std::move( bitmaskValue.bitPos ),
                                       .comment = std::move( bitmaskValue.comment ),
                                       .value   = std::move( bitmaskValue.value ),
-                                      .aliases = std::move( bitmaskValue.aliases ),
                                       .xmlLine = bitmaskValue.xmlLine } );
         }
       }
@@ -3453,11 +3453,12 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
                          enumRegular.xmlLine,
                          "feature <" + feature.name + "> requires to extend enum <" + enumRegular.extends + "> with an already specified value <" +
                            enumRegular.name + ">" );
-          enumIt->values.push_back( { .name    = enumRegular.name,
-                                      .bitPos  = enumRegular.bitPos,
-                                      .comment = enumRegular.comment,
-                                      .value   = enumRegular.value,
-                                      .xmlLine = enumRegular.xmlLine } );
+          enumIt->values.push_back( { .name       = enumRegular.name,
+                                      .bitPos     = enumRegular.bitPos,
+                                      .comment    = enumRegular.comment,
+                                      .requiredBy = feature.name,
+                                      .value      = enumRegular.value,
+                                      .xmlLine    = enumRegular.xmlLine } );
         }
         for ( auto const & enumAlias : require.enumAliases )
         {

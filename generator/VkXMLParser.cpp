@@ -1311,7 +1311,7 @@ Extension parseExtension( tinyxml2::XMLElement const * element )
     {
       checkNoList( "vk.xml", attribute.second, line );
       checkForError( "vk.xml", isNumber( attribute.second ), line, "extension attribute \"number\" is not a number: <" + attribute.second + ">" );
-      extension.number = attribute.second;
+      extension.number = static_cast<uint32_t>( std::stoi( attribute.second ) );
     }
     else if ( attribute.first == "obsoletedby" )
     {
@@ -1963,7 +1963,7 @@ Extensions parseExtensions( tinyxml2::XMLElement const * element )
       checkForError( "vk.xml",
                      std::ranges::none_of( extensions.extensions, [&extension]( auto const & e ) { return e.number == extension.number; } ),
                      extension.xmlLine,
-                     "extension <" + extension.name + "> has the same number <" + extension.number + "> as another extension" );
+                     "extension <" + extension.name + "> has the same number <" + std::to_string( extension.number ) + "> as another extension" );
       extensions.extensions.push_back( std::move( extension ) );
     }
   }
@@ -3279,7 +3279,7 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
                 checkForError( "vk.xml",
                                extendByOffset.extNumber.empty() || std::ranges::any_of( vkxml.extensions.extensions,
                                                                                         [&extNumber = extendByOffset.extNumber]( auto const & extension )
-                                                                                        { return extNumber == extension.number; } ),
+                                                                                        { return extNumber == std::to_string( extension.number ); } ),
                                extendByOffset.xmlLine,
                                "enum value <" + extendByOffset.name + "> references an unknown extension by number <" + extendByOffset.extNumber + ">" );
               }

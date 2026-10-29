@@ -116,12 +116,13 @@ struct EnumValue
 
 struct TypeEnum
 {
-  std::string                name     = {};
-  std::map<std::string, int> aliases  = {};
-  std::string                bitwidth = {};
-  std::string                category = {};
-  std::vector<EnumValue>     values   = {};
-  int                        xmlLine  = {};
+  std::string                name       = {};
+  std::map<std::string, int> aliases    = {};
+  std::string                bitwidth   = {};
+  std::string                category   = {};
+  std::set<std::string>      requiredBy = {};
+  std::vector<EnumValue>     values     = {};
+  int                        xmlLine    = {};
 };
 
 using EnumVariant = std::variant<TypeEnum, Alias>;
@@ -176,6 +177,7 @@ struct TypeStruct
   std::set<std::string>      extendedBy        = {};  // derived from the structExtends member
   std::vector<std::string>   structExtends     = {};
   std::vector<StructMember>  members           = {};
+  std::set<std::string>      requiredBy        = {};
   bool                       requiredLimitType = {};
   bool                       returnedOnly      = {};
   int                        xmlLine           = {};

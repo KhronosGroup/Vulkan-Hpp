@@ -12,24 +12,28 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <vulkan/vulkan.hpp>
+#endif
 
 #define GLM_FORCE_RADIANS
 
-#if defined( _MSC_VER )
-#  pragma warning( push )
-#  pragma warning( disable : 4127 )  // conditional expression is constant (glm)
-#endif
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
+#  if defined( _MSC_VER )
+#    pragma warning( push )
+#    pragma warning( disable : 4127 )  // conditional expression is constant (glm)
+#  endif
 
-#include <glm/gtc/matrix_transform.hpp>
+#  include <glm/gtc/matrix_transform.hpp>
 
-#if defined( _MSC_VER )
-#  pragma warning( pop )
+#  if defined( _MSC_VER )
+#    pragma warning( pop )
+#  endif
 #endif
 
 namespace vk
 {
-  namespace su
+  VULKAN_HPP_EXPORT namespace su
   {
     glm::mat4x4 createModelViewProjectionClipMatrix( vk::Extent2D const & extent );
   }

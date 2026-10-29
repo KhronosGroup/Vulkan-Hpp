@@ -985,7 +985,6 @@ private:
   bool isDeviceCommand( Command const & command ) const;
   bool isEnumerated( std::string const & type ) const;
   bool isExtension( std::string const & name ) const;
-  bool isFeature( std::string const & name ) const;
   bool isHandleType( std::string const & type ) const;
   bool isHandleTypeByStructure( std::string const & type ) const;
   bool isLenByStructMember( std::string const & name, std::vector<Param> const & params ) const;
@@ -1038,7 +1037,6 @@ private:
   std::set<std::string>             m_RAIISpecialFunctions;
   std::map<std::string, TypeData>   m_types;
   std::vector<ExtensionData>        m_unsupportedExtensions;
-  std::vector<Feature>              m_unsupportedFeatures;
   std::string                       m_version;
   Vkxml                             m_vkxml;
 

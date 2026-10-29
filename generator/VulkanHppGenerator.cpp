@@ -233,7 +233,19 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     }
     else
     {
-      m_unsupportedFeatures.push_back( std::move( *featureIt ) );
+      // remove dependencies on this unsupported feature
+      for ( auto commandIt = m_vkxml.commands.begin(); commandIt != m_vkxml.commands.end(); )
+      {
+        // if the command is only required by this feature, remove it from the list of commands
+        if ( ( commandIt->requiredBy.erase( featureIt->name ) > 0 ) && commandIt->requiredBy.empty() )
+        {
+          commandIt = m_vkxml.commands.erase( commandIt );
+        }
+        else
+        {
+          ++commandIt;
+        }
+      }
       featureIt = m_vkxml.features.erase( featureIt );
     }
   }
@@ -924,11 +936,10 @@ void VulkanHppGenerator::checkEnumCorrectness() const
 {
   for ( auto const & e : m_enums )
   {
-    // check that a bitmask is required somewhere
-    // some bitmasks are never required, so make this a warning only
-    auto typeIt = m_types.find( e.first );
-    assert( typeIt != m_types.end() );
-    checkForWarning( !typeIt->second.requiredBy.empty(), e.second.xmlLine, "enum <" + e.first + "> not required in any feature or extension" );
+    // check that the enum is required somewhere
+    auto enumIt = findByName( m_vkxml.types.enums, e.first );
+    assert( enumIt != m_vkxml.types.enums.end() );
+    checkForError( !enumIt->requiredBy.empty(), e.second.xmlLine, "enum <" + e.first + "> not required by any feature or extension" );
 
     if ( e.second.isBitmask )
     {
@@ -1013,12 +1024,14 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
     // check for existence of any depends, deprecation, obsoletion, or promotion
     for ( auto const & dep : extension.depends )
     {
-      checkForError( isFeature( dep.first ), extension.xmlLine, "extension <" + extension.name + "> lists an unknown feature dependency <" + dep.first + ">" );
+      checkForError( containsByName( m_vkxml.features, dep.first ),
+                     extension.xmlLine,
+                     "extension <" + extension.name + "> lists an unknown feature dependency <" + dep.first + ">" );
       for ( auto depsIt = dep.second.begin(); depsIt != dep.second.end(); ++depsIt )
       {
         for ( auto const & d : *depsIt )
         {
-          checkForError( isFeature( d ) || isExtension( d ),
+          checkForError( containsByName( m_vkxml.features, d ) || isExtension( d ),
                          extension.xmlLine,
                          "extension <" + extension.name + "> lists an unknown feature or extension dependency <" + d + ">" );
         }
@@ -1027,13 +1040,13 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
                        "extension <" + extension.name + "> lists multiple identical dependencies" );
       }
     }
-    checkForError( extension.deprecatedBy.empty() || isFeature( extension.deprecatedBy ) || isExtension( extension.deprecatedBy ),
+    checkForError( extension.deprecatedBy.empty() || containsByName( m_vkxml.features, extension.deprecatedBy ) || isExtension( extension.deprecatedBy ),
                    extension.xmlLine,
                    "extension <" + extension.name + "> is deprecated by unknown extension/version <" + extension.deprecatedBy + ">" );
-    checkForError( extension.obsoletedBy.empty() || isFeature( extension.obsoletedBy ) || isExtension( extension.obsoletedBy ),
+    checkForError( extension.obsoletedBy.empty() || containsByName( m_vkxml.features, extension.obsoletedBy ) || isExtension( extension.obsoletedBy ),
                    extension.xmlLine,
                    "extension <" + extension.name + "> is obsoleted by unknown extension/version <" + extension.obsoletedBy + ">" );
-    checkForError( extension.promotedTo.empty() || isFeature( extension.promotedTo ) || isExtension( extension.promotedTo ),
+    checkForError( extension.promotedTo.empty() || containsByName( m_vkxml.features, extension.promotedTo ) || isExtension( extension.promotedTo ),
                    extension.xmlLine,
                    "extension <" + extension.name + "> is promoted to unknown extension/version <" + extension.promotedTo + ">" );
 
@@ -1043,7 +1056,9 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
       std::vector<std::string> requireDepends = tokenizeAny( require.depends, ",+()" );
       for ( auto const & dep : requireDepends )
       {
-        checkForError( isFeature( dep ) || isExtension( dep ), require.xmlLine, "extension <" + extension.name + "> lists an unknown depends <" + dep + ">" );
+        checkForError( containsByName( m_vkxml.features, dep ) || isExtension( dep ),
+                       require.xmlLine,
+                       "extension <" + extension.name + "> lists an unknown depends <" + dep + ">" );
       }
     }
   }
@@ -1105,7 +1120,7 @@ void
     size_t separatorPos = depends.find( "::" );
     if ( separatorPos == std::string::npos )
     {
-      checkForError( isFeature( depends ) || isExtension( depends ),
+      checkForError( containsByName( m_vkxml.features, depends ) || isExtension( depends ),
                      featureRequire.xmlLine,
                      section + " <" + name + "> depends on unknown extension or feature <" + depends + ">" );
     }
@@ -1131,7 +1146,7 @@ void VulkanHppGenerator::checkRequireDependenciesCorrectness( RequireData const 
     size_t separatorPos = depends.find( "::" );
     if ( separatorPos == std::string::npos )
     {
-      checkForError( isFeature( depends ) || isExtension( depends ),
+      checkForError( containsByName( m_vkxml.features, depends ) || isExtension( depends ),
                      requireData.xmlLine,
                      section + " <" + name + "> depends on unknown extension or feature <" + depends + ">" );
     }
@@ -1222,9 +1237,7 @@ void VulkanHppGenerator::checkStructCorrectness() const
   {
     // check that a struct is referenced somewhere
     // I think, it's not forbidden to not reference a struct, but it would probably be not intended?
-    auto typeIt = m_types.find( structure.name );
-    assert( typeIt != m_types.end() );
-    checkForError( !typeIt->second.requiredBy.empty(), structure.xmlLine, "structure <" + structure.name + "> not required by any feature or extension" );
+    checkForError( !structure.requiredBy.empty(), structure.xmlLine, "structure <" + structure.name + "> not required by any feature or extension" );
 
     // checks on the members of a struct
     checkStructMemberCorrectness( structure.name, structure.members, sTypeValues );
@@ -1335,9 +1348,28 @@ void VulkanHppGenerator::checkStructMemberTypeIsRequired( std::string const & me
   {
     auto typeIt = m_types.find( memberType );
     assert( typeIt != m_types.end() );
-    checkForError( !typeIt->second.requiredBy.empty(),
-                   line,
-                   "struct member type <" + memberType + "> used in struct <" + structureName + "> is never required for any feature or extension" );
+    if ( typeIt->second.category == TypeCategory::Enum )
+    {
+      auto enumIt = findByNameOrAlias( m_vkxml.types.enums, memberType );
+      assert( enumIt != m_vkxml.types.enums.end() );
+      checkForError( !enumIt->requiredBy.empty(),
+                     line,
+                     "enum type <" + memberType + "> used in struct <" + structureName + "> is never required for any feature or extension" );
+    }
+    else if ( typeIt->second.category == TypeCategory::Struct )
+    {
+      auto structIt = findByNameOrAlias( m_vkxml.types.structs, memberType );
+      assert( structIt != m_vkxml.types.structs.end() );
+      checkForError( !structIt->requiredBy.empty(),
+                     line,
+                     "struct type <" + memberType + "> used in struct <" + structureName + "> is never required for any feature or extension" );
+    }
+    else
+    {
+      checkForError( !typeIt->second.requiredBy.empty(),
+                     line,
+                     "type <" + memberType + "> used in struct <" + structureName + "> is never required for any feature or extension" );
+    }
   }
 }
 
@@ -1919,10 +1951,6 @@ void VulkanHppGenerator::distributeRequirements()
   {
     distributeRequirements( extension.requireData, extension.name );
     distributeRequirements( extension.unsupportedRequireData, extension.name );
-  }
-  for ( auto const & feature : m_unsupportedFeatures )
-  {
-    distributeRequirements( feature.require, feature.name );
   }
   for ( auto const & extension : m_unsupportedExtensions )
   {
@@ -13346,11 +13374,6 @@ bool VulkanHppGenerator::isExtension( std::string const & name ) const
   return containsByName( m_extensions, name ) || containsByName( m_unsupportedExtensions, name );
 }
 
-bool VulkanHppGenerator::isFeature( std::string const & name ) const
-{
-  return containsByName( m_vkxml.features, name ) || containsByName( m_unsupportedFeatures, name );
-}
-
 bool VulkanHppGenerator::isHandleType( std::string const & type ) const
 {
   return type.starts_with( "Vk" ) && ( findByNameOrAlias( m_vkxml.types.handles, type ) != m_vkxml.types.handles.end() );
@@ -13463,7 +13486,7 @@ bool VulkanHppGenerator::isSupported( std::set<std::string> const & requiredBy )
     }
     else
     {
-      assert( containsByName( m_unsupportedFeatures, r ) || containsByName( m_unsupportedExtensions, r ) );
+      assert( containsByName( m_unsupportedExtensions, r ) );
     }
   }
   return false;

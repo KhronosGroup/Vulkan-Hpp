@@ -3377,6 +3377,25 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
           {
             require.types.push_back( std::move( type ) );
           }
+
+          // mark types as required by this feature, so that we can later check that all types are required by at least one feature or extension
+          for ( auto const & type : require.types )
+          {
+            if ( auto enumIt = findByName( vkxml.types.enums, type.name ); enumIt != vkxml.types.enums.end() )
+            {
+              checkForError( "vk.xml",
+                             enumIt->requiredBy.insert( extension.name ).second,
+                             type.xmlLine,
+                             "extension <" + extension.name + "> already requires enum <" + enumIt->name + ">" );
+            }
+            else if ( auto structIt = findByName( vkxml.types.structs, type.name ); structIt != vkxml.types.structs.end() )
+            {
+              checkForError( "vk.xml",
+                             structIt->requiredBy.insert( extension.name ).second,
+                             type.xmlLine,
+                             "extension <" + extension.name + "> already requires struct <" + structIt->name + ">" );
+            }
+          }
         }
 
         if ( std::ranges::none_of( extension.supported, []( std::string const & s ) { return s == "disabled"; } ) )
@@ -3502,8 +3521,8 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
 
           // we have invented some types required by bitmasks, so if a feature requires a type that is a bitmask, we also need to require the type that the
           // bitmask requires
-          auto bitmaskIt = findByName( vkxml.types.bitmasks, type.name );
-          if ( ( bitmaskIt != vkxml.types.bitmasks.end() ) && !containsByName( require.types, bitmaskIt->require ) )
+          if ( auto bitmaskIt = findByName( vkxml.types.bitmasks, type.name );
+               ( bitmaskIt != vkxml.types.bitmasks.end() ) && !containsByName( require.types, bitmaskIt->require ) )
           {
             assert( typeNames.contains( bitmaskIt->require ) );
             additionalTypes.push_back( { .name = bitmaskIt->require, .xmlLine = -1 } );
@@ -3512,6 +3531,24 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
         for ( auto & type : additionalTypes )
         {
           require.types.push_back( std::move( type ) );
+        }
+        // mark types as required by this feature, so that we can later check that all types are required by at least one feature or extension
+        for ( auto const & type : require.types )
+        {
+          if ( auto enumIt = findByName( vkxml.types.enums, type.name ); enumIt != vkxml.types.enums.end() )
+          {
+            checkForError( "vk.xml",
+                           enumIt->requiredBy.insert( feature.name ).second,
+                           type.xmlLine,
+                           "feature <" + feature.name + "> already requires enum <" + enumIt->name + ">" );
+          }
+          else if ( auto structIt = findByName( vkxml.types.structs, type.name ); structIt != vkxml.types.structs.end() )
+          {
+            checkForError( "vk.xml",
+                           structIt->requiredBy.insert( feature.name ).second,
+                           type.xmlLine,
+                           "feature <" + feature.name + "> already requires struct <" + structIt->name + ">" );
+          }
         }
       }
       vkxml.features.push_back( std::move( feature ) );

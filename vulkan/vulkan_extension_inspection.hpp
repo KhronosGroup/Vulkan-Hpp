@@ -553,6 +553,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                                             "VK_SEC_throttle_hint",
                                                             "VK_ARM_data_graph_neural_accelerator_statistics",
                                                             "VK_EXT_primitive_restart_index",
+                                                            "VK_KHR_maintenance12",
                                                             "VK_EXT_image_tiling_control",
                                                             "VK_NV_cooperative_matrix_decode_vector",
                                                             "VK_NV_private_data_base_handle",
@@ -3317,6 +3318,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_maintenance12",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_EXT_image_tiling_control",
         { { "VK_VERSION_1_0",
             { {
@@ -4354,7 +4361,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_KHR_extended_flags" ) || ( extension == "VK_ARM_cooperative_matrix_layouts" ) ||
            ( extension == "VK_EXT_shader_ocp_microscaling_types" ) || ( extension == "VK_VALVE_shader_mixed_float_dot_product" ) ||
            ( extension == "VK_SEC_throttle_hint" ) || ( extension == "VK_ARM_data_graph_neural_accelerator_statistics" ) ||
-           ( extension == "VK_EXT_primitive_restart_index" ) || ( extension == "VK_EXT_image_tiling_control" ) ||
+           ( extension == "VK_EXT_primitive_restart_index" ) || ( extension == "VK_KHR_maintenance12" ) || ( extension == "VK_EXT_image_tiling_control" ) ||
            ( extension == "VK_NV_cooperative_matrix_decode_vector" ) || ( extension == "VK_NV_private_data_base_handle" ) ||
            ( extension == "VK_INTEL_device_info" ) || ( extension == "VK_VALVE_buffer_device_address_allocation_alignment" ) ||
            ( extension == "VK_GOOGLE_hdr_smpte_st_209450_metadata" );

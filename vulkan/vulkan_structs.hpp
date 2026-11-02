@@ -220293,6 +220293,228 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     using Type = PhysicalDevicePrimitiveRestartIndexFeaturesEXT;
   };
 
+  //=== VK_KHR_maintenance12 ===
+
+  // wrapper struct for struct VkPhysicalDeviceMaintenance12FeaturesKHR, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDeviceMaintenance12FeaturesKHR.html
+  struct PhysicalDeviceMaintenance12FeaturesKHR
+  {
+    using NativeType = VkPhysicalDeviceMaintenance12FeaturesKHR;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePhysicalDeviceMaintenance12FeaturesKHR;
+
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceMaintenance12FeaturesKHR( Bool32 maintenance12_ = {}, void * pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , maintenance12{ maintenance12_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceMaintenance12FeaturesKHR( PhysicalDeviceMaintenance12FeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceMaintenance12FeaturesKHR( VkPhysicalDeviceMaintenance12FeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceMaintenance12FeaturesKHR( *reinterpret_cast<PhysicalDeviceMaintenance12FeaturesKHR const *>( &rhs ) )
+    {
+    }
+
+    PhysicalDeviceMaintenance12FeaturesKHR & operator=( PhysicalDeviceMaintenance12FeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    PhysicalDeviceMaintenance12FeaturesKHR & operator=( VkPhysicalDeviceMaintenance12FeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<PhysicalDeviceMaintenance12FeaturesKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMaintenance12FeaturesKHR & setPNext( void * pNext_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMaintenance12FeaturesKHR && setPNext( void * pNext_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMaintenance12FeaturesKHR & setMaintenance12( Bool32 maintenance12_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      maintenance12 = maintenance12_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMaintenance12FeaturesKHR && setMaintenance12( Bool32 maintenance12_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      maintenance12 = maintenance12_;
+      return std::move( *this );
+    }
+#endif /*VULKAN_HPP_NO_SETTERS*/
+
+    operator VkPhysicalDeviceMaintenance12FeaturesKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMaintenance12FeaturesKHR const *>( this );
+    }
+
+    operator VkPhysicalDeviceMaintenance12FeaturesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMaintenance12FeaturesKHR *>( this );
+    }
+
+    operator VkPhysicalDeviceMaintenance12FeaturesKHR const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceMaintenance12FeaturesKHR const *>( this );
+    }
+
+    operator VkPhysicalDeviceMaintenance12FeaturesKHR *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceMaintenance12FeaturesKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &, void * const &, Bool32 const &> reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, maintenance12 );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceMaintenance12FeaturesKHR const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceMaintenance12FeaturesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( maintenance12 == rhs.maintenance12 );
+#  endif
+    }
+
+    bool operator!=( PhysicalDeviceMaintenance12FeaturesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    StructureType sType         = StructureType::ePhysicalDeviceMaintenance12FeaturesKHR;
+    void *        pNext         = {};
+    Bool32        maintenance12 = {};
+  };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkPhysicalDeviceMaintenance12FeaturesKHR>
+  {
+    using Type = PhysicalDeviceMaintenance12FeaturesKHR;
+  };
+#endif
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceMaintenance12FeaturesKHR>
+  {
+    using Type = PhysicalDeviceMaintenance12FeaturesKHR;
+  };
+
+  // wrapper struct for struct VkPhysicalDeviceMaintenance12PropertiesKHR, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDeviceMaintenance12PropertiesKHR.html
+  struct PhysicalDeviceMaintenance12PropertiesKHR
+  {
+    using NativeType = VkPhysicalDeviceMaintenance12PropertiesKHR;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePhysicalDeviceMaintenance12PropertiesKHR;
+
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceMaintenance12PropertiesKHR( uint32_t maxInputAttachmentIndex_ = {}, void * pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , maxInputAttachmentIndex{ maxInputAttachmentIndex_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceMaintenance12PropertiesKHR( PhysicalDeviceMaintenance12PropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceMaintenance12PropertiesKHR( VkPhysicalDeviceMaintenance12PropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceMaintenance12PropertiesKHR( *reinterpret_cast<PhysicalDeviceMaintenance12PropertiesKHR const *>( &rhs ) )
+    {
+    }
+
+    PhysicalDeviceMaintenance12PropertiesKHR & operator=( PhysicalDeviceMaintenance12PropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    PhysicalDeviceMaintenance12PropertiesKHR & operator=( VkPhysicalDeviceMaintenance12PropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<PhysicalDeviceMaintenance12PropertiesKHR const *>( &rhs );
+      return *this;
+    }
+
+    operator VkPhysicalDeviceMaintenance12PropertiesKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMaintenance12PropertiesKHR const *>( this );
+    }
+
+    operator VkPhysicalDeviceMaintenance12PropertiesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMaintenance12PropertiesKHR *>( this );
+    }
+
+    operator VkPhysicalDeviceMaintenance12PropertiesKHR const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceMaintenance12PropertiesKHR const *>( this );
+    }
+
+    operator VkPhysicalDeviceMaintenance12PropertiesKHR *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceMaintenance12PropertiesKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &, void * const &, uint32_t const &> reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, maxInputAttachmentIndex );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceMaintenance12PropertiesKHR const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceMaintenance12PropertiesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( maxInputAttachmentIndex == rhs.maxInputAttachmentIndex );
+#  endif
+    }
+
+    bool operator!=( PhysicalDeviceMaintenance12PropertiesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    StructureType sType                   = StructureType::ePhysicalDeviceMaintenance12PropertiesKHR;
+    void *        pNext                   = {};
+    uint32_t      maxInputAttachmentIndex = {};
+  };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkPhysicalDeviceMaintenance12PropertiesKHR>
+  {
+    using Type = PhysicalDeviceMaintenance12PropertiesKHR;
+  };
+#endif
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceMaintenance12PropertiesKHR>
+  {
+    using Type = PhysicalDeviceMaintenance12PropertiesKHR;
+  };
+
   //=== VK_EXT_image_tiling_control ===
 
   // wrapper struct for struct VkPhysicalDeviceImageTilingControlFeaturesEXT, see

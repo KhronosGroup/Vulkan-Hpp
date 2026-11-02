@@ -1892,6 +1892,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eDataGraphPipelineSessionNeuralStatisticsCreateInfoARM         = VK_STRUCTURE_TYPE_DATA_GRAPH_PIPELINE_SESSION_NEURAL_STATISTICS_CREATE_INFO_ARM,
     ePhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DATA_GRAPH_NEURAL_ACCELERATOR_STATISTICS_FEATURES_ARM,
     ePhysicalDevicePrimitiveRestartIndexFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_RESTART_INDEX_FEATURES_EXT,
+    ePhysicalDeviceMaintenance12FeaturesKHR                        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_12_FEATURES_KHR,
+    ePhysicalDeviceMaintenance12PropertiesKHR                      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_12_PROPERTIES_KHR,
     ePhysicalDeviceImageTilingControlFeaturesEXT                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_TILING_CONTROL_FEATURES_EXT,
     eImageTilingControlCreateInfoEXT                               = VK_STRUCTURE_TYPE_IMAGE_TILING_CONTROL_CREATE_INFO_EXT,
     ePhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_DECODE_VECTOR_FEATURES_NV,
@@ -4948,7 +4950,8 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     eReserved31                 = VK_DRIVER_ID_RESERVED_31,
     eAPEX                       = VK_DRIVER_ID_APEX,
     eNikki                      = VK_DRIVER_ID_NIKKI,
-    eMomoten                    = VK_DRIVER_ID_MOMOTEN
+    eMomoten                    = VK_DRIVER_ID_MOMOTEN,
+    eAuroraBorealis             = VK_DRIVER_ID_AURORA_BOREALIS
   };
 
   using DriverIdKHR = DriverId;

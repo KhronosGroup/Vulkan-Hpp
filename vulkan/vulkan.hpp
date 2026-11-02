@@ -42,7 +42,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 366, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 367, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -11553,6 +11553,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTPrimitiveRestartIndexSpecVersion   = VK_EXT_PRIMITIVE_RESTART_INDEX_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTPrimitiveRestartIndexExtensionName = VK_EXT_PRIMITIVE_RESTART_INDEX_EXTENSION_NAME;
 
+  //=== VK_KHR_maintenance12 ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance12SpecVersion   = VK_KHR_MAINTENANCE_12_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance12ExtensionName = VK_KHR_MAINTENANCE_12_EXTENSION_NAME;
+
   //=== VK_EXT_image_tiling_control ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTImageTilingControlSpecVersion   = VK_EXT_IMAGE_TILING_CONTROL_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTImageTilingControlExtensionName = VK_EXT_IMAGE_TILING_CONTROL_EXTENSION_NAME;
@@ -14052,6 +14056,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_primitive_restart_index ===
   struct PhysicalDevicePrimitiveRestartIndexFeaturesEXT;
+
+  //=== VK_KHR_maintenance12 ===
+  struct PhysicalDeviceMaintenance12FeaturesKHR;
+  struct PhysicalDeviceMaintenance12PropertiesKHR;
 
   //=== VK_EXT_image_tiling_control ===
   struct PhysicalDeviceImageTilingControlFeaturesEXT;
@@ -25903,6 +25911,34 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDevicePrimitiveRestartIndexFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_maintenance12 ===
+  template <>
+  struct StructExtends<PhysicalDeviceMaintenance12FeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceMaintenance12FeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceMaintenance12PropertiesKHR, PhysicalDeviceProperties2>
   {
     enum
     {

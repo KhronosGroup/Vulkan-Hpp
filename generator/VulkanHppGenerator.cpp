@@ -249,29 +249,36 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
       featureIt = m_vkxml.features.erase( featureIt );
     }
   }
-  for ( auto const & extension : m_vkxml.extensions.extensions )
-  {
-    bool const extensionSupported = isApiSupported( extension.supported, m_api );
 
-    ExtensionData extensionData{ .deprecatedBy = extension.deprecatedBy,
-                                 .deprecates   = extension.deprecates,
-                                 .isDeprecated = extension.isDeprecated,
-                                 .name         = extension.name,
-                                 .number       = extension.number,
-                                 .obsoletedBy  = extension.obsoletedBy,
-                                 .platform     = extension.platform,
-                                 .promotedTo   = extension.promotedTo,
-                                 .depends      = extension.depends,
-                                 .ratified     = extension.ratified,
-                                 .removes      = extension.removes,
-                                 .supported    = extension.supported,
-                                 .type         = extension.type,
-                                 .xmlLine      = extension.xmlLine };
+  // remove unsupported extensions and requirements
+  for ( auto extensionIt = m_vkxml.extensions.extensions.begin(); extensionIt != m_vkxml.extensions.extensions.end(); )
+  {
+    if ( isApiSupported( extensionIt->supported, m_api ) )
+    {
+      for ( auto requireIt = extensionIt->require.begin(); requireIt != extensionIt->require.end(); )
+      {
+        if ( requireIt->api.empty() || ( requireIt->api == m_api ) )
+        {
+          ++requireIt;
+        }
+        else
+        {
+          requireIt = extensionIt->require.erase( requireIt );
+        }
+      }
+      ++extensionIt;
+    }
+    else
+    {
+      extensionIt = m_vkxml.extensions.extensions.erase( extensionIt );
+    }
+  }
+
+  for ( auto & extension : m_vkxml.extensions.extensions )
+  {
+    // remove unsupported requirements from the extension
     for ( auto const & require : extension.require )
     {
-      bool const requireSupported = require.api.empty() || ( require.api == m_api );
-
-      bool holdsEnumConstants = false;
       for ( auto const & e : require.enums )
       {
         if ( std::holds_alternative<ExtensionRequireEnumAliasVariant>( e ) )
@@ -289,9 +296,8 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
                            "enum alias <" + requireEnumAlias.name + "> extends non-enum type <" + requireEnumAlias.extends + ">" );
             auto enumIt = findByNameOrAlias( m_enums, requireEnumAlias.extends );
             assert( enumIt != m_enums.end() );
-            std::string protect = requireEnumAlias.protect.empty() ? getProtectFromPlatform( extensionData.platform ) : requireEnumAlias.protect;
-            checkForError( enumIt->second.addEnumAlias(
-                             requireEnumAlias.xmlLine, requireEnumAlias.name, requireEnumAlias.alias, protect, extensionSupported && requireSupported ),
+            std::string protect = requireEnumAlias.protect.empty() ? getProtectFromPlatform( extension.platform ) : requireEnumAlias.protect;
+            checkForError( enumIt->second.addEnumAlias( requireEnumAlias.xmlLine, requireEnumAlias.name, requireEnumAlias.alias, protect, true ),
                            requireEnumAlias.xmlLine,
                            "enum value alias <" + requireEnumAlias.name + "> already listed with different properties" );
           }
@@ -305,7 +311,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
             checkForError( typeIt->second.category == TypeCategory::Constant,
                            alias.xmlLine,
                            "constant alias <" + alias.name + "> is an alias of a non-constant type <" + alias.alias + ">" );
-            checkForError( m_types.insert( { alias.name, TypeData{ TypeCategory::Constant, { extensionData.name }, alias.xmlLine } } ).second,
+            checkForError( m_types.insert( { alias.name, TypeData{ TypeCategory::Constant, { extension.name }, alias.xmlLine } } ).second,
                            alias.xmlLine,
                            "constant alias <" + alias.name + "> already specified" );
             checkForError( !containsByName( m_vkxml.constants.values, alias.name ),
@@ -333,8 +339,8 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
           if ( std::holds_alternative<ExtensionRequireEnumExtendByBitPos>( extendVariant ) )
           {
             auto const & extendByBitPos = std::get<ExtensionRequireEnumExtendByBitPos>( extendVariant );
-            std::string  protect        = extendByBitPos.protect.empty() ? getProtectFromPlatform( extensionData.platform ) : extendByBitPos.protect;
-            checkForError( enumIt->second.addEnumValue( xmlLine, name, protect, extendByBitPos.bitPos, "", extensionSupported && requireSupported, false ),
+            std::string  protect        = extendByBitPos.protect.empty() ? getProtectFromPlatform( extension.platform ) : extendByBitPos.protect;
+            checkForError( enumIt->second.addEnumValue( xmlLine, name, protect, extendByBitPos.bitPos, "", true, false ),
                            xmlLine,
                            "enum value <" + name + "> already listed with different properties" );
           }
@@ -342,9 +348,8 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
           {
             auto const & extendByOffset = std::get<ExtensionRequireEnumExtendByOffset>( extendVariant );
 
-            std::string protect = extendByOffset.protect.empty() ? getProtectFromPlatform( extensionData.platform ) : extendByOffset.protect;
-            checkForError( enumIt->second.addEnumValue(
-                             xmlLine, name, protect, extendByOffset.offset, "", extensionSupported && requireSupported, extendByOffset.deprecated == "true" ),
+            std::string protect = extendByOffset.protect.empty() ? getProtectFromPlatform( extension.platform ) : extendByOffset.protect;
+            checkForError( enumIt->second.addEnumValue( xmlLine, name, protect, extendByOffset.offset, "", true, extendByOffset.deprecated == "true" ),
                            xmlLine,
                            "enum value <" + name + "> already listed with different properties" );
           }
@@ -353,11 +358,9 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
             assert( std::holds_alternative<ExtensionRequireEnumExtendByValue>( extendVariant ) );
             auto const & extendByValue = std::get<ExtensionRequireEnumExtendByValue>( extendVariant );
 
-            checkForError(
-              enumIt->second.addEnumValue(
-                xmlLine, name, getProtectFromPlatform( extensionData.platform ), "", extendByValue.value, extensionSupported && requireSupported, false ),
-              xmlLine,
-              "enum value <" + name + "> already listed with different properties" );
+            checkForError( enumIt->second.addEnumValue( xmlLine, name, getProtectFromPlatform( extension.platform ), "", extendByValue.value, true, false ),
+                           xmlLine,
+                           "enum value <" + name + "> already listed with different properties" );
           }
         }
         else
@@ -367,10 +370,9 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
           if ( std::holds_alternative<ExtensionRequireEnumConstant>( constantVariant ) )
           {
             auto const & enumConstant = std::get<ExtensionRequireEnumConstant>( constantVariant );
-            checkForError( m_types.insert( { enumConstant.name, TypeData{ TypeCategory::Constant, { extensionData.name }, enumConstant.xmlLine } } ).second,
+            checkForError( m_types.insert( { enumConstant.name, TypeData{ TypeCategory::Constant, { extension.name }, enumConstant.xmlLine } } ).second,
                            enumConstant.xmlLine,
                            "required constant <" + enumConstant.name + "> specified by value <" + enumConstant.value + "> is already specified" );
-            holdsEnumConstants = true;
           }
           else
           {
@@ -386,30 +388,6 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
         auto typeIt = m_types.find( type.name );
         checkForError( typeIt != m_types.end(), type.xmlLine, "required type <" + type.name + "> is not listed as a type" );
       }
-
-      if ( !require.commands.empty() || !require.types.empty() || holdsEnumConstants )
-      {
-        if ( requireSupported )
-        {
-          extensionData.require.push_back( require );
-        }
-        else
-        {
-          extensionData.unsupportedRequires.push_back( require );
-        }
-      }
-    }
-
-    if ( extensionSupported )
-    {
-      m_extensions.push_back( std::move( extensionData ) );
-    }
-    else
-    {
-      checkForError( !containsByName( m_unsupportedExtensions, extensionData.name ),
-                     extensionData.xmlLine,
-                     "unsupported extension <" + extensionData.name + "> already specified" );
-      m_unsupportedExtensions.push_back( std::move( extensionData ) );
     }
   }
 
@@ -495,7 +473,7 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
   {
     forEachRequiredCommand( feature.require, [this]( std::string const & name, auto const & command ) { addCommandToHandle( name, command ); } );
   }
-  for ( auto & extension : m_extensions )
+  for ( auto & extension : m_vkxml.extensions.extensions )
   {
     forEachRequiredCommand( extension.require, [this]( std::string const & name, auto const & command ) { addCommandToHandle( name, command ); } );
   }
@@ -566,43 +544,42 @@ void VulkanHppGenerator::generateEnumsHppFile() const
 
 void VulkanHppGenerator::generateExtensionInspectionFile() const
 {
-  generateFileFromTemplate(
-    m_api + "_extension_inspection.hpp",
-    "ExtensionInspectionHppTemplate.hpp",
-    { { "api", m_api },
-      { "copyrightMessage", m_copyrightMessage },
-      { "deprecatedExtensions",
-        generateReplacedExtensionsList( []( ExtensionData const & extension ) { return extension.isDeprecated; },
-                                        []( ExtensionData const & extension ) { return extension.deprecatedBy; } ) },
-      { "deviceExtensions", generateExtensionsList( "device" ) },
-      { "deviceTest", generateExtensionTypeTest( "device" ) },
-      { "deprecatedBy",
-        generateExtensionReplacedBy( []( ExtensionData const & extension ) { return extension.isDeprecated; },
-                                     []( ExtensionData const & extension ) { return extension.deprecatedBy; } ) },
-      { "deprecatedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return extension.isDeprecated; } ) },
-      { "extensionDependencies", generateExtensionDependencies() },
-      { "instanceExtensions", generateExtensionsList( "instance" ) },
-      { "instanceTest", generateExtensionTypeTest( "instance" ) },
-      { "obsoletedBy",
-        generateExtensionReplacedBy( []( ExtensionData const & extension ) { return !extension.obsoletedBy.empty(); },
-                                     []( ExtensionData const & extension ) { return extension.obsoletedBy; } ) },
-      { "obsoletedExtensions",
-        generateReplacedExtensionsList( []( ExtensionData const & extension ) { return !extension.obsoletedBy.empty(); },
-                                        []( ExtensionData const & extension ) { return extension.obsoletedBy; } ) },
-      { "obsoletedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return !extension.obsoletedBy.empty(); } ) },
-      { "promotedExtensions",
-        generateReplacedExtensionsList( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); },
-                                        []( ExtensionData const & extension ) { return extension.promotedTo; } ) },
-      { "promotedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); } ) },
-      { "promotedTo",
-        generateExtensionReplacedBy( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); },
-                                     []( ExtensionData const & extension ) { return extension.promotedTo; } ) },
-      { "versions",
-        std::accumulate( std::next( m_vkxml.features.begin() ),
-                         m_vkxml.features.end(),
-                         "\"" + m_vkxml.features[0].name + "\"",
-                         []( std::string const & acc, auto const & feature ) { return acc + ", \"" + feature.name + "\""; } ) },
-      { "voidExtension", ( m_api == "vulkan" ) ? "" : "(void)extension;" } } );
+  generateFileFromTemplate( m_api + "_extension_inspection.hpp",
+                            "ExtensionInspectionHppTemplate.hpp",
+                            { { "api", m_api },
+                              { "copyrightMessage", m_copyrightMessage },
+                              { "deprecatedExtensions",
+                                generateReplacedExtensionsList( []( auto const & extension ) { return extension.isDeprecated; },
+                                                                []( auto const & extension ) { return extension.deprecatedBy; } ) },
+                              { "deviceExtensions", generateExtensionsList( "device" ) },
+                              { "deviceTest", generateExtensionTypeTest( "device" ) },
+                              { "deprecatedBy",
+                                generateExtensionReplacedBy( []( auto const & extension ) { return extension.isDeprecated; },
+                                                             []( auto const & extension ) { return extension.deprecatedBy; } ) },
+                              { "deprecatedTest", generateExtensionReplacedTest( []( auto const & extension ) { return extension.isDeprecated; } ) },
+                              { "extensionDependencies", generateExtensionDependencies() },
+                              { "instanceExtensions", generateExtensionsList( "instance" ) },
+                              { "instanceTest", generateExtensionTypeTest( "instance" ) },
+                              { "obsoletedBy",
+                                generateExtensionReplacedBy( []( auto const & extension ) { return !extension.obsoletedBy.empty(); },
+                                                             []( auto const & extension ) { return extension.obsoletedBy; } ) },
+                              { "obsoletedExtensions",
+                                generateReplacedExtensionsList( []( auto const & extension ) { return !extension.obsoletedBy.empty(); },
+                                                                []( auto const & extension ) { return extension.obsoletedBy; } ) },
+                              { "obsoletedTest", generateExtensionReplacedTest( []( auto const & extension ) { return !extension.obsoletedBy.empty(); } ) },
+                              { "promotedExtensions",
+                                generateReplacedExtensionsList( []( auto const & extension ) { return !extension.promotedTo.empty(); },
+                                                                []( auto const & extension ) { return extension.promotedTo; } ) },
+                              { "promotedTest", generateExtensionReplacedTest( []( auto const & extension ) { return !extension.promotedTo.empty(); } ) },
+                              { "promotedTo",
+                                generateExtensionReplacedBy( []( auto const & extension ) { return !extension.promotedTo.empty(); },
+                                                             []( auto const & extension ) { return extension.promotedTo; } ) },
+                              { "versions",
+                                std::accumulate( std::next( m_vkxml.features.begin() ),
+                                                 m_vkxml.features.end(),
+                                                 "\"" + m_vkxml.features[0].name + "\"",
+                                                 []( std::string const & acc, auto const & feature ) { return acc + ", \"" + feature.name + "\""; } ) },
+                              { "voidExtension", ( m_api == "vulkan" ) ? "" : "(void)extension;" } } );
 }
 
 void VulkanHppGenerator::generateFormatTraitsHppFile() const
@@ -798,12 +775,6 @@ void VulkanHppGenerator::checkBitmaskCorrectness() const
 {
   for ( auto const & bitmask : m_vkxml.types.bitmasks )
   {
-    // check that a bitmask is required somewhere
-    // I think, it's not forbidden to not reference a bitmask, but it would probably be not intended?
-    auto typeIt = m_types.find( bitmask.name );
-    assert( typeIt != m_types.end() );
-    checkForError( !typeIt->second.requiredBy.empty(), bitmask.xmlLine, "bitmask <" + bitmask.name + "> not required in any feature or extension" );
-
     // check that the requirement is an enum
     auto requireTypeIt = m_types.find( bitmask.require );
     checkForError( requireTypeIt != m_types.end(), bitmask.xmlLine, "bitmask <" + bitmask.name + "> requires unknown type <" + bitmask.require + ">" );
@@ -811,9 +782,6 @@ void VulkanHppGenerator::checkBitmaskCorrectness() const
                    bitmask.xmlLine,
                    "bitmask <" + bitmask.name + "> requires non-enum type <" + bitmask.require + ">" );
     assert( m_enums.contains( bitmask.require ) );
-    checkForError( !requireTypeIt->second.requiredBy.empty(),
-                   bitmask.xmlLine,
-                   "bitmask <" + bitmask.name + "> requires <" + bitmask.require + "> which is not required by any feature or extension!" );
   }
 }
 
@@ -845,11 +813,11 @@ void VulkanHppGenerator::checkCommandCorrectness() const
     if ( ( command.returnType.name == "VkResult" ) && command.successCodes.empty() )
     {
       // emit an error if this function is required in at least one supported feature or extension
-      // disabled or not supported features/extensions are still listed in requiredBy, but not in m_features/m_extensions
+      // disabled or not supported features/extensions are still listed in requiredBy, but not in m_features/m_vkxml.extensions.extensions
       bool functionUsed = false;
       for ( auto const & require : command.requiredBy )
       {
-        functionUsed |= containsByName( m_vkxml.features, require ) || containsByName( m_extensions, require );
+        functionUsed |= containsByName( m_vkxml.features, require ) || containsByName( m_vkxml.extensions.extensions, require );
       }
       if ( functionUsed )
       {
@@ -985,7 +953,7 @@ bool VulkanHppGenerator::checkEquivalentSingularConstructor( std::vector<size_t>
 
 void VulkanHppGenerator::checkExtensionCorrectness() const
 {
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     // check for existence of any depends, deprecation, obsoletion, or promotion
     for ( auto const & dep : extension.depends )
@@ -997,7 +965,7 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
       {
         for ( auto const & d : *depsIt )
         {
-          checkForError( containsByName( m_vkxml.features, d ) || isExtension( d ),
+          checkForError( containsByName( m_vkxml.features, d ) || containsByName( m_vkxml.extensions.extensions, d ),
                          extension.xmlLine,
                          "extension <" + extension.name + "> lists an unknown feature or extension dependency <" + d + ">" );
         }
@@ -1006,27 +974,18 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
                        "extension <" + extension.name + "> lists multiple identical dependencies" );
       }
     }
-    checkForError( extension.deprecatedBy.empty() || containsByName( m_vkxml.features, extension.deprecatedBy ) || isExtension( extension.deprecatedBy ),
+    checkForError( extension.deprecatedBy.empty() || containsByName( m_vkxml.features, extension.deprecatedBy ) ||
+                     containsByName( m_vkxml.extensions.extensions, extension.deprecatedBy ),
                    extension.xmlLine,
                    "extension <" + extension.name + "> is deprecated by unknown extension/version <" + extension.deprecatedBy + ">" );
-    checkForError( extension.obsoletedBy.empty() || containsByName( m_vkxml.features, extension.obsoletedBy ) || isExtension( extension.obsoletedBy ),
+    checkForError( extension.obsoletedBy.empty() || containsByName( m_vkxml.features, extension.obsoletedBy ) ||
+                     containsByName( m_vkxml.extensions.extensions, extension.obsoletedBy ),
                    extension.xmlLine,
                    "extension <" + extension.name + "> is obsoleted by unknown extension/version <" + extension.obsoletedBy + ">" );
-    checkForError( extension.promotedTo.empty() || containsByName( m_vkxml.features, extension.promotedTo ) || isExtension( extension.promotedTo ),
+    checkForError( extension.promotedTo.empty() || containsByName( m_vkxml.features, extension.promotedTo ) ||
+                     containsByName( m_vkxml.extensions.extensions, extension.promotedTo ),
                    extension.xmlLine,
                    "extension <" + extension.name + "> is promoted to unknown extension/version <" + extension.promotedTo + ">" );
-
-    // check for existence of any requirement
-    for ( auto const & require : extension.require )
-    {
-      std::vector<std::string> requireDepends = tokenizeAny( require.depends, ",+()" );
-      for ( auto const & dep : requireDepends )
-      {
-        checkForError( containsByName( m_vkxml.features, dep ) || isExtension( dep ),
-                       require.xmlLine,
-                       "extension <" + extension.name + "> lists an unknown depends <" + dep + ">" );
-      }
-    }
   }
 }
 
@@ -1060,76 +1019,20 @@ void VulkanHppGenerator::checkRequireCorrectness() const
   // checks by features and extensions
   for ( auto & feature : m_vkxml.features )
   {
-    checkRequireCorrectness( feature.require, "feature", feature.name );
+    checkRequireCorrectness( feature.require );
   }
-  for ( auto & extension : m_extensions )
+  for ( auto & extension : m_vkxml.extensions.extensions )
   {
-    checkRequireCorrectness( extension.require, "extension", extension.name );
+    checkRequireCorrectness( extension.require );
   }
 }
 
 template <typename RequireType>
-void VulkanHppGenerator::checkRequireCorrectness( std::vector<RequireType> const & requireTypes, std::string const & section, std::string const & name ) const
+void VulkanHppGenerator::checkRequireCorrectness( std::vector<RequireType> const & requireTypes ) const
 {
   for ( auto const & require : requireTypes )
   {
-    checkRequireDependenciesCorrectness( require, section, name );
     checkRequireTypesCorrectness( require );
-  }
-}
-
-void
-  VulkanHppGenerator::checkRequireDependenciesCorrectness( FeatureRequire const & featureRequire, std::string const & section, std::string const & name ) const
-{
-  for ( auto const & depends : featureRequire.depends )
-  {
-    size_t separatorPos = depends.find( "::" );
-    if ( separatorPos == std::string::npos )
-    {
-      checkForError( containsByName( m_vkxml.features, depends ) || isExtension( depends ),
-                     featureRequire.xmlLine,
-                     section + " <" + name + "> depends on unknown extension or feature <" + depends + ">" );
-    }
-    else
-    {
-      std::string structure = depends.substr( 0, separatorPos );
-      std::string member    = depends.substr( separatorPos + 2 );
-      auto        structIt  = findByName( m_vkxml.types.structs, structure );
-      checkForError(
-        structIt != m_vkxml.types.structs.end(), featureRequire.xmlLine, section + " <" + name + "> requires member of an unknown struct <" + structure + ">" );
-      checkForError( std::ranges::any_of( structIt->members, [&member]( auto const & md ) { return md.name == member; } ),
-                     featureRequire.xmlLine,
-                     section + " <" + name + "> requires unknown member <" + member + "> as part of the struct <" + structure + ">" );
-    }
-  }
-}
-
-void VulkanHppGenerator::checkRequireDependenciesCorrectness( ExtensionRequire const & extensionRequire,
-                                                              std::string const &      section,
-                                                              std::string const &      name ) const
-{
-  std::vector<std::string> dependencies = tokenizeAny( extensionRequire.depends, ",+()" );
-  for ( auto const & depends : dependencies )
-  {
-    size_t separatorPos = depends.find( "::" );
-    if ( separatorPos == std::string::npos )
-    {
-      checkForError( containsByName( m_vkxml.features, depends ) || isExtension( depends ),
-                     extensionRequire.xmlLine,
-                     section + " <" + name + "> depends on unknown extension or feature <" + depends + ">" );
-    }
-    else
-    {
-      std::string structure = depends.substr( 0, separatorPos );
-      std::string member    = depends.substr( separatorPos + 2 );
-      auto        structIt  = findByName( m_vkxml.types.structs, structure );
-      checkForError( structIt != m_vkxml.types.structs.end(),
-                     extensionRequire.xmlLine,
-                     section + " <" + name + "> requires member of an unknown struct <" + structure + ">" );
-      checkForError( std::ranges::any_of( structIt->members, [&member]( auto const & md ) { return md.name == member; } ),
-                     extensionRequire.xmlLine,
-                     section + " <" + name + "> requires unknown member <" + member + "> as part of the struct <" + structure + ">" );
-    }
   }
 }
 
@@ -1332,12 +1235,6 @@ void VulkanHppGenerator::checkStructMemberTypeIsRequired( std::string const & me
       checkForError( !structIt->requiredBy.empty(),
                      line,
                      "struct type <" + memberType + "> used in struct <" + structureName + "> is never required for any feature or extension" );
-    }
-    else
-    {
-      checkForError( !typeIt->second.requiredBy.empty(),
-                     line,
-                     "type <" + memberType + "> used in struct <" + structureName + "> is never required for any feature or extension" );
     }
   }
 }
@@ -1916,15 +1813,9 @@ void VulkanHppGenerator::distributeRequirements()
   {
     distributeRequirements( feature.require, feature.name );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     distributeRequirements( extension.require, extension.name );
-    distributeRequirements( extension.unsupportedRequires, extension.name );
-  }
-  for ( auto const & extension : m_unsupportedExtensions )
-  {
-    distributeRequirements( extension.require, extension.name );
-    distributeRequirements( extension.unsupportedRequires, extension.name );
   }
 }
 
@@ -2723,7 +2614,7 @@ ${bitmasksToString}
   {
     bitmasksToString += generateBitmasksToString( feature.require, listedBitmasks, feature.name );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     bitmasksToString += generateBitmasksToString( extension.require, listedBitmasks, extension.name );
   }
@@ -4332,7 +4223,7 @@ ${commandDefinitions}
   {
     commandDefinitions += generateCommandDefinitions( feature.require, listedCommands, feature.name );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     commandDefinitions += generateCommandDefinitions( extension.require, listedCommands, extension.name );
   }
@@ -4899,7 +4790,7 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     {
       constexprDefines += generateConstantsAndProtection( feature.require, feature.name, listedConstants );
     }
-    for ( auto const & extension : m_extensions )
+    for ( auto const & extension : m_vkxml.extensions.extensions )
     {
       constexprDefines += generateConstantsAndProtection( extension.require, extension.name, listedConstants );
     }
@@ -4980,7 +4871,7 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
 )" };
 
   std::string enumConstants;
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     std::string           enumConstantsByExtension;
     std::set<std::string> encounteredEnumConstants;
@@ -5031,7 +4922,7 @@ std::string VulkanHppGenerator::generateCppModuleCommands() const
   {
     appendCppModuleCommands( feature.require, listedCommands, feature.name, pfnCommands );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     appendCppModuleCommands( extension.require, listedCommands, extension.name, pfnCommands );
   }
@@ -6105,7 +5996,7 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamic() const
     deviceCommandAssignments += generateDispatchLoaderDynamicDeviceCommandAssignment( feature.require, listedCommands, feature.name );
     forEachRequiredCommand( feature.require, [&listedCommands]( std::string const & name, auto const & ) { listedCommands.insert( name ); } );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     commandMembers += generateDispatchLoaderDynamicCommandMembers( extension.require, listedCommands, extension.name );
     initialCommandAssignments += generateDispatchLoaderDynamicInitialCommandAssignment( extension.require, listedCommands, extension.name );
@@ -6222,7 +6113,7 @@ ${commands}
   auto const [onlyexportedEnter, onlyexportedLeave] = generateProtection( "VK_ONLY_EXPORTED_PROTOTYPES", false );
   commands += onlyexportedEnter;
 
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     commands += generateDispatchLoaderStaticCommands( extension.require, listedCommands, extension.name );
   }
@@ -6514,7 +6405,7 @@ ${enums}
   {
     enums += generateEnums( feature.require, listedEnums, feature.name );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     enums += generateEnums( extension.require, listedEnums, extension.name );
   }
@@ -6572,7 +6463,7 @@ ${enumsToString}
   {
     enumsToString += generateEnumsToString( feature.require, listedEnums, feature.name );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     enumsToString += generateEnumsToString( extension.require, listedEnums, extension.name );
   }
@@ -6720,7 +6611,7 @@ std::string VulkanHppGenerator::generateEnumValueName( std::string const & enumN
 std::string VulkanHppGenerator::generateExtensionDependencies() const
 {
   std::string extensionDependencies, previousEnter, previousLeave;
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     if ( !extension.depends.empty() )
     {
@@ -6771,7 +6662,7 @@ template <class Predicate, class Extraction>
 std::string VulkanHppGenerator::generateExtensionReplacedBy( Predicate p, Extraction e ) const
 {
   std::string replacedBy, previousEnter, previousLeave;
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     if ( p( extension ) )
     {
@@ -6794,7 +6685,7 @@ template <class Predicate>
 std::string VulkanHppGenerator::generateExtensionReplacedTest( Predicate p ) const
 {
   std::string replacedTest, previousEnter, previousLeave;
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     if ( p( extension ) )
     {
@@ -6819,7 +6710,7 @@ std::string VulkanHppGenerator::generateExtensionReplacedTest( Predicate p ) con
 std::string VulkanHppGenerator::generateExtensionsList( std::string const & type ) const
 {
   std::string extensionsList, previousEnter, previousLeave;
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     if ( extension.type == type )
     {
@@ -6844,7 +6735,7 @@ std::string VulkanHppGenerator::generateExtensionTypeTest( std::string const & t
 {
   std::string typeTest, previousEnter, previousLeave;
   bool        first = true;
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     if ( extension.type == type )
     {
@@ -7223,7 +7114,7 @@ std::string VulkanHppGenerator::generateFuncPointers() const
   {
     funcPointers += funcPointerGenerator( feature.require, feature.name );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     funcPointers += funcPointerGenerator( extension.require, extension.name );
   }
@@ -7431,7 +7322,7 @@ std::string VulkanHppGenerator::generateHandleCommandDeclarations( std::set<std:
       }
     }
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     std::vector<std::string> commandNames = selectCommandsByHandle( extension.require, commands, listedCommands );
     if ( !commandNames.empty() )
@@ -7496,7 +7387,7 @@ std::string VulkanHppGenerator::generateHandleEmpty( HandleData const & handleDa
     }
   }
 #if !defined( NDEBUG )
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     assert( selectCommandsByHandle( extension.require, handleData.commands, listedCommands ).empty() );
   }
@@ -7519,7 +7410,7 @@ ${forwardDeclarations}
   {
     forwardDeclarations += generateHandleForwardDeclarations( feature.require, feature.name );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     forwardDeclarations += generateHandleForwardDeclarations( extension.require, extension.name );
   }
@@ -7581,7 +7472,7 @@ ${hashes}
   {
     hashes += generateHandleHashStructures( feature.require, feature.name, listedHandles );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     hashes += generateHandleHashStructures( extension.require, extension.name, listedHandles );
   }
@@ -7974,7 +7865,7 @@ ${objectTypeCases}
   {
     objectTypeCases += generateObjectTypeCases( feature.require, feature.name, listedTypes );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     objectTypeCases += generateObjectTypeCases( extension.require, extension.name, listedTypes );
   }
@@ -8004,7 +7895,7 @@ ${commandDefinitions}
   {
     commandDefinitions += generateRAIICommandDefinitions( feature.require, listedCommands, feature.name );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     commandDefinitions += generateRAIICommandDefinitions( extension.require, listedCommands, extension.name );
   }
@@ -8172,7 +8063,7 @@ std::string VulkanHppGenerator::generateRAIIDispatchers() const
     instanceMembers += generateRAIIDispatcherCommandsInstanceMembers( feature.require, listedCommands, feature.name );
     forEachRequiredCommand( feature.require, [&listedCommands]( std::string const & name, auto const & ) { listedCommands.insert( name ); } );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     contextInitializers += generateRAIIDispatcherCommandsContextInitializers( extension.require, listedCommands, extension.name );
     contextMembers += generateRAIIDispatcherCommandsContextMembers( extension.require, listedCommands, extension.name );
@@ -8655,7 +8546,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair
     }
   }
 
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     std::vector<std::string> firstLevelCommands, secondLevelCommands;
     for ( auto & req : extension.require )
@@ -10110,7 +10001,7 @@ ${raiiHandles}
   {
     forwardDeclarations += generateRAIIHandleForwardDeclarations( feature.require, feature.name );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     forwardDeclarations += generateRAIIHandleForwardDeclarations( extension.require, extension.name );
   }
@@ -10197,7 +10088,7 @@ template <class Predicate, class Extraction>
 std::string VulkanHppGenerator::generateReplacedExtensionsList( Predicate p, Extraction e ) const
 {
   std::string extensionsList, previousEnter, previousLeave;
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     if ( p( extension ) )
     {
@@ -10839,7 +10730,7 @@ std::string VulkanHppGenerator::generateStaticAssertions() const
   {
     staticAssertions += generateStaticAssertions( feature.require, feature.name, listedStructs );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     staticAssertions += generateStaticAssertions( extension.require, extension.name, listedStructs );
   }
@@ -11502,7 +11393,7 @@ ${hashes}
     }
     hashes += addTitleAndProtection( feature.name, byFeatureHashes );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     std::string byExtensionHashes;
     for ( auto const & require : extension.require )
@@ -11614,7 +11505,7 @@ ${structs}
     }
     structs += addTitleAndProtection( feature.name, byFeatureTypes );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     std::string byExtensionTypes;
     for ( auto const & require : extension.require )
@@ -11834,7 +11725,7 @@ ${structExtends})";
   {
     structExtends += generateStructExtendsStructs( feature.require, listedStructs, feature.name );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     structExtends += generateStructExtendsStructs( extension.require, listedStructs, extension.name );
   }
@@ -11905,7 +11796,7 @@ ${forwardDeclarations}
   {
     forwardDeclarations += generateStructForwardDeclarations( feature.require, feature.name, listedStructs );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     forwardDeclarations += generateStructForwardDeclarations( extension.require, extension.name, listedStructs );
   }
@@ -12738,7 +12629,7 @@ ${uniqueHandles}
   {
     uniqueHandles += generateUniqueHandle( feature.require, feature.name, listedHandles );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     uniqueHandles += generateUniqueHandle( extension.require, extension.name, listedHandles );
   }
@@ -12857,7 +12748,7 @@ std::string VulkanHppGenerator::generateSharedHandlesNoDestroy() const
   {
     sharedHandles += generateSharedHandleNoDestroy( feature.require, feature.name );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     sharedHandles += generateSharedHandleNoDestroy( extension.require, extension.name );
   }
@@ -12882,7 +12773,7 @@ ${sharedHandles}
   {
     sharedHandles += generateSharedHandle( feature.require, feature.name, listedHandles );
   }
-  for ( auto const & extension : m_extensions )
+  for ( auto const & extension : m_vkxml.extensions.extensions )
   {
     sharedHandles += generateSharedHandle( extension.require, extension.name, listedHandles );
   }
@@ -13075,8 +12966,8 @@ std::string VulkanHppGenerator::getProtectFromTitle( std::string const & title )
 {
   if ( !containsByName( m_vkxml.features, title ) )
   {
-    auto extensionIt = findByName( m_extensions, title );
-    return ( extensionIt != m_extensions.end() ) ? getProtectFromPlatform( extensionIt->platform ) : "";
+    auto extensionIt = findByName( m_vkxml.extensions.extensions, title );
+    return ( extensionIt != m_vkxml.extensions.extensions.end() ) ? getProtectFromPlatform( extensionIt->platform ) : "";
   }
   return "";
 }
@@ -13178,14 +13069,13 @@ void VulkanHppGenerator::handleRemoval( Remove const & remove )
       }
       else
       {
-        auto extensionIt = std::ranges::find_if( m_extensions, [&requiredBy]( ExtensionData const & ed ) { return ed.name == requiredBy; } );
-        if ( extensionIt != m_extensions.end() )
+        auto extensionIt = std::ranges::find_if( m_vkxml.extensions.extensions, [&requiredBy]( auto const & ed ) { return ed.name == requiredBy; } );
+        if ( extensionIt != m_vkxml.extensions.extensions.end() )
         {
           removed |= handleRemovalCommand( command.name, extensionIt->require );
         }
         else
         {
-          assert( containsByName( m_unsupportedExtensions, requiredBy ) );
           removed = true;
         }
       }
@@ -13222,14 +13112,13 @@ void VulkanHppGenerator::handleRemoval( Remove const & remove )
       }
       else
       {
-        auto extensionIt = std::ranges::find_if( m_extensions, [&requiredBy]( ExtensionData const & ed ) { return ed.name == requiredBy; } );
-        if ( extensionIt != m_extensions.end() )
+        auto extensionIt = std::ranges::find_if( m_vkxml.extensions.extensions, [&requiredBy]( auto const & ed ) { return ed.name == requiredBy; } );
+        if ( extensionIt != m_vkxml.extensions.extensions.end() )
         {
           removed |= handleRemovalType( type.name, extensionIt->require );
         }
         else
         {
-          assert( containsByName( m_unsupportedExtensions, requiredBy ) );
           removed = true;
         }
       }
@@ -13368,11 +13257,6 @@ bool VulkanHppGenerator::isEnumerated( std::string const & type ) const
     m_vkxml.commands, [&pluralType]( auto const & command ) { return command.name.starts_with( "vkEnumerate" ) && command.name.ends_with( pluralType ); } );
 }
 
-bool VulkanHppGenerator::isExtension( std::string const & name ) const
-{
-  return containsByName( m_extensions, name ) || containsByName( m_unsupportedExtensions, name );
-}
-
 bool VulkanHppGenerator::isHandleType( std::string const & type ) const
 {
   return type.starts_with( "Vk" ) && ( findByNameOrAlias( m_vkxml.types.handles, type ) != m_vkxml.types.handles.end() );
@@ -13479,13 +13363,9 @@ bool VulkanHppGenerator::isSupported( std::set<std::string> const & requiredBy )
 {
   for ( auto const & r : requiredBy )
   {
-    if ( containsByName( m_vkxml.features, r ) || containsByName( m_extensions, r ) )
+    if ( containsByName( m_vkxml.features, r ) || containsByName( m_vkxml.extensions.extensions, r ) )
     {
       return true;
-    }
-    else
-    {
-      assert( containsByName( m_unsupportedExtensions, r ) );
     }
   }
   return false;
@@ -13517,8 +13397,8 @@ bool VulkanHppGenerator::isTypeUsed( std::string const & type ) const
     }
     else
     {
-      auto extensionIt = findByName( m_extensions, require );
-      if ( extensionIt != m_extensions.end() )
+      auto extensionIt = findByName( m_vkxml.extensions.extensions, require );
+      if ( extensionIt != m_vkxml.extensions.extensions.end() )
       {
         for ( auto const & r : extensionIt->require )
         {

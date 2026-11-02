@@ -489,6 +489,7 @@ struct ExtensionRequire
 
 struct Extension
 {
+  std::string                                               name         = {};
   std::string                                               author       = {};
   std::string                                               comment      = {};
   std::vector<std::string>                                  contacts     = {};
@@ -496,9 +497,8 @@ struct Extension
   std::string                                               deprecatedBy = {};
   std::vector<Deprecate>                                    deprecates   = {};
   bool                                                      isDeprecated = {};
-  std::string                                               name         = {};
   bool                                                      noFeatures   = {};
-  std::string                                               number       = {};
+  uint32_t                                                  number       = {};
   std::string                                               obsoletedBy  = {};
   std::string                                               platform     = {};
   std::string                                               promotedTo   = {};

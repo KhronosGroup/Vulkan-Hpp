@@ -183,86 +183,24 @@ private:
     std::map<std::string, TypeDefine> values  = {};
   };
 
-  struct EnumConstantData
-  {
-    std::string name    = {};
-    std::string value   = {};
-    int         xmlLine = {};
-  };
-
-  struct RequireFeature
-  {
-    std::vector<std::string> name      = {};
-    std::string              structure = {};
-    int                      xmlLine   = {};
-  };
-
-  struct RemoveData
-  {
-    std::vector<std::string>    commands = {};
-    std::vector<std::string>    enums    = {};
-    std::vector<RequireFeature> features = {};
-    std::vector<std::string>    types    = {};
-    int                         xmlLine  = {};
-  };
-
-  struct RequireData
-  {
-    std::string                   api           = {};
-    std::string                   depends       = {};
-    std::vector<NameLine>         commands      = {};
-    std::vector<EnumConstantData> enumConstants = {};
-    std::vector<NameLine>         constants     = {};
-    std::vector<RequireFeature>   features      = {};
-    std::vector<NameLine>         types         = {};
-    int                           xmlLine       = {};
-  };
-
-  struct DeprecatedCommandData
-  {
-    std::string name         = {};
-    std::string supersededBy = {};
-  };
-
-  struct DeprecatedFeatureData
-  {
-    std::string name      = {};
-    std::string structure = {};
-  };
-
-  struct DeprecatedTypeData
-  {
-    std::string name         = {};
-    std::string supersededBy = {};
-  };
-
-  struct DeprecateData
-  {
-    std::string                        explanationLink = {};
-    std::vector<DeprecatedCommandData> commands        = {};
-    std::vector<DeprecatedFeatureData> features        = {};
-    std::vector<DeprecatedTypeData>    types           = {};
-    int                                xmlLine         = 0;
-  };
-
   struct ExtensionData
   {
-    std::string                                               deprecatedBy           = {};
-    bool                                                      isDeprecated           = false;
-    std::string                                               name                   = {};
-    std::string                                               number                 = {};
-    std::string                                               obsoletedBy            = {};
-    std::string                                               platform               = {};
-    std::string                                               promotedTo             = {};
-    std::map<std::string, std::vector<std::set<std::string>>> depends                = {};
-    std::vector<std::string>                                  ratified               = {};
-    std::vector<DeprecateData>                                deprecateData          = {};
-    std::vector<RemoveData>                                   removeData             = {};
-    std::vector<RequireData>                                  requireData            = {};
-    std::vector<std::string>                                  supported              = {};
-    std::string                                               type                   = {};
-    std::vector<RequireData>                                  unsupportedRequireData = {};
-    int                                                       xmlLine                = 0;
+    std::string                                               deprecatedBy        = {};
+    std::vector<Deprecate>                                    deprecates          = {};
+    bool                                                      isDeprecated        = false;
+    std::string                                               name                = {};
+    uint32_t                                                  number              = {};
+    std::string                                               obsoletedBy         = {};
+    std::string                                               platform            = {};
+    std::string                                               promotedTo          = {};
+    std::map<std::string, std::vector<std::set<std::string>>> depends             = {};
+    std::vector<std::string>                                  ratified            = {};
+    std::vector<ExtensionRemove>                              removes             = {};
+    std::vector<ExtensionRequire>                             require             = {};
+    std::vector<std::string>                                  supported           = {};
+    std::string                                               type                = {};
+    std::vector<ExtensionRequire>                             unsupportedRequires = {};
+    int                                                       xmlLine             = 0;
   };
 
   struct ComponentData
@@ -344,7 +282,7 @@ private:
   template <typename RequireType>
   void checkRequireCorrectness( std::vector<RequireType> const & requireTypes, std::string const & section, std::string const & name ) const;
   void checkRequireDependenciesCorrectness( FeatureRequire const & featureRequire, std::string const & section, std::string const & name ) const;
-  void checkRequireDependenciesCorrectness( RequireData const & requireData, std::string const & section, std::string const & name ) const;
+  void checkRequireDependenciesCorrectness( ExtensionRequire const & extensionRequire, std::string const & section, std::string const & name ) const;
   template <typename RequireType>
   void checkRequireTypesCorrectness( RequireType const & requireType ) const;
   void checkStructCorrectness() const;
@@ -411,12 +349,12 @@ private:
   void forEachRequiredConstant( std::vector<FeatureRequire> const &                  featureRequires,
                                 std::set<std::string> &                              encounteredConstants,
                                 std::function<void( ConstantValue const & )> const & constantAction ) const;
-  void forEachRequiredConstant( std::vector<RequireData> const &                     requireDatas,
+  void forEachRequiredConstant( std::vector<ExtensionRequire> const &                extensionRequires,
                                 std::set<std::string> &                              encounteredConstants,
                                 std::function<void( ConstantValue const & )> const & constantAction ) const;
-  void forEachRequiredEnumConstant( std::vector<RequireData> const &                        requireData,
-                                    std::set<std::string> &                                 encounteredEnumConstants,
-                                    std::function<void( EnumConstantData const & )> const & enumConstantAction ) const;
+  void forEachRequiredEnumConstant( std::vector<ExtensionRequire> const &                               extensionRequires,
+                                    std::set<std::string> &                                             encounteredEnumConstants,
+                                    std::function<void( ExtensionRequireEnumConstant const & )> const & enumConstantAction ) const;
   template <typename RequireType>
   void                  forEachRequiredHandle( std::vector<RequireType> const &                                          requireTypes,
                                                std::function<void( std::pair<std::string, HandleData> const & )> const & handleAction ) const;

@@ -36,24 +36,27 @@ struct TypeDefine
   std::vector<std::string> params             = {};
   std::string              possibleDefinition = {};
   std::string              require            = {};
+  std::string              requiredBy         = {};
   int                      xmlLine            = {};
 };
 
 struct TypeBaseType
 {
-  std::string name    = {};
-  Type        type    = {};
-  int         xmlLine = {};
+  std::string           name       = {};
+  std::set<std::string> requiredBy = {};
+  Type                  type       = {};
+  int                   xmlLine    = {};
 };
 
 struct TypeBitmask
 {
-  std::string                name    = {};
-  std::string                type    = {};
-  std::vector<std::string>   api     = {};
-  std::string                require = {};
-  std::map<std::string, int> aliases = {};
-  int                        xmlLine = {};
+  std::string                name       = {};
+  std::string                type       = {};
+  std::vector<std::string>   api        = {};
+  std::string                require    = {};
+  std::set<std::string>      requiredBy = {};
+  std::map<std::string, int> aliases    = {};
+  int                        xmlLine    = {};
 };
 
 struct Alias
@@ -69,10 +72,11 @@ using BitmaskVariant = std::variant<TypeBitmask, Alias>;
 struct TypeHandle
 {
   std::string                name        = {};
+  std::map<std::string, int> aliases     = {};
   std::string                objTypeEnum = {};
   std::string                parent      = {};
+  std::set<std::string>      requiredBy  = {};
   Type                       type        = {};
-  std::map<std::string, int> aliases     = {};
   int                        xmlLine     = {};
 };
 
@@ -139,6 +143,7 @@ struct TypeFuncPointer
   std::string                   name       = {};
   std::vector<FuncPointerParam> params     = {};
   std::string                   require    = {};
+  std::string                   requiredBy = {};
   Type                          returnType = {};
   int                           xmlLine    = {};
 };
@@ -202,6 +207,7 @@ struct TypeUnion
   std::string                name         = {};
   std::map<std::string, int> aliases      = {};
   std::vector<UnionMember>   members      = {};
+  std::set<std::string>      requiredBy   = {};
   bool                       returnedOnly = {};
   int                        xmlLine      = {};
 };
@@ -479,7 +485,7 @@ struct ExtensionRequire
   std::string                              api        = {};
   std::vector<NameElement>                 commands   = {};
   std::string                              comment    = {};
-  std::string                              depends    = {};
+  std::vector<std::string>                 depends    = {};
   std::vector<ExtensionRequireEnumVariant> enums      = {};
   std::vector<MultiFeatureElement>         features   = {};
   std::vector<PropertyElement>             properties = {};

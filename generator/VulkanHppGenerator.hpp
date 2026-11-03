@@ -183,26 +183,6 @@ private:
     std::map<std::string, TypeDefine> values  = {};
   };
 
-  struct ExtensionData
-  {
-    std::string                                               deprecatedBy        = {};
-    std::vector<Deprecate>                                    deprecates          = {};
-    bool                                                      isDeprecated        = false;
-    std::string                                               name                = {};
-    uint32_t                                                  number              = {};
-    std::string                                               obsoletedBy         = {};
-    std::string                                               platform            = {};
-    std::string                                               promotedTo          = {};
-    std::map<std::string, std::vector<std::set<std::string>>> depends             = {};
-    std::vector<std::string>                                  ratified            = {};
-    std::vector<ExtensionRemove>                              removes             = {};
-    std::vector<ExtensionRequire>                             require             = {};
-    std::vector<std::string>                                  supported           = {};
-    std::string                                               type                = {};
-    std::vector<ExtensionRequire>                             unsupportedRequires = {};
-    int                                                       xmlLine             = 0;
-  };
-
   struct ComponentData
   {
     std::string bits          = {};
@@ -280,9 +260,7 @@ private:
   void checkFuncPointerCorrectness() const;
   void checkRequireCorrectness() const;
   template <typename RequireType>
-  void checkRequireCorrectness( std::vector<RequireType> const & requireTypes, std::string const & section, std::string const & name ) const;
-  void checkRequireDependenciesCorrectness( FeatureRequire const & featureRequire, std::string const & section, std::string const & name ) const;
-  void checkRequireDependenciesCorrectness( ExtensionRequire const & extensionRequire, std::string const & section, std::string const & name ) const;
+  void checkRequireCorrectness( std::vector<RequireType> const & requireTypes ) const;
   template <typename RequireType>
   void checkRequireTypesCorrectness( RequireType const & requireType ) const;
   void checkStructCorrectness() const;
@@ -922,7 +900,6 @@ private:
   bool isConstructorCandidate( Param const & paramData, std::string const & handleType ) const;
   bool isDeviceCommand( Command const & command ) const;
   bool isEnumerated( std::string const & type ) const;
-  bool isExtension( std::string const & name ) const;
   bool isHandleType( std::string const & type ) const;
   bool isHandleTypeByStructure( std::string const & type ) const;
   bool isLenByStructMember( std::string const & name, std::vector<Param> const & params ) const;
@@ -969,12 +946,10 @@ private:
   std::string                       m_copyrightMessage;
   DefinesPartition                  m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
   std::map<std::string, EnumData>   m_enums;
-  std::vector<ExtensionData>        m_extensions;
   std::map<std::string, FormatData> m_formats;
   std::map<std::string, HandleData> m_handles;
   std::set<std::string>             m_RAIISpecialFunctions;
   std::map<std::string, TypeData>   m_types;
-  std::vector<ExtensionData>        m_unsupportedExtensions;
   std::string                       m_version;
   Vkxml                             m_vkxml;
 

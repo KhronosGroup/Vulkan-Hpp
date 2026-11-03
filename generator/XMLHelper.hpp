@@ -51,8 +51,9 @@ struct NameModifiers
 
 struct TypeInclude
 {
-  std::string name    = {};
-  int         xmlLine = {};
+  std::string           name       = {};
+  std::set<std::string> requiredBy = {};
+  int                   xmlLine    = {};
 };
 
 struct TypeExternal

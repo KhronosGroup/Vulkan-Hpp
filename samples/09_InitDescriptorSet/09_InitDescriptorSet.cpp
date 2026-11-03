@@ -13,13 +13,19 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#define GLM_FORCE_RADIANS
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import glm;
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/math.hpp"
 #include "../utils/utils.hpp"
-
-#include <iostream>
-
-#define GLM_FORCE_RADIANS
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
+#endif
 
 static char const * AppName    = "09_InitDescriptorSet";
 static char const * EngineName = "Vulkan.hpp";
@@ -35,7 +41,7 @@ int main()
 
     vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
-    uint32_t   graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    std::uint32_t   graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
     vk::Device device                   = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     vk::su::BufferData uniformBufferData( physicalDevice, device, sizeof( glm::mat4x4 ), vk::BufferUsageFlagBits::eUniformBuffer );
@@ -76,17 +82,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

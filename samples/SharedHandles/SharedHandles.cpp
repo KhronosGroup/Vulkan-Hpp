@@ -4,17 +4,31 @@
 // VulkanHpp Samples : SharedHandles
 //                     Draw a textured cube using shared handles for resource management and correct order of destruction
 
-#define VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
+#  define VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST
+#endif
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+#include <vulkan/vulkan_core.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+import glm;
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
 #include <thread>
 #include <vulkan/vulkan_shared.hpp>
+#endif
+
 
 static char const * AppName    = "SharedHandles";
 static char const * EngineName = "Vulkan.hpp";
@@ -72,8 +86,8 @@ public:
   void createDeviceAndSwapChain( const vk::su::WindowData & window )
   {
     VkSurfaceKHR surface;
-    VkResult     err = glfwCreateWindowSurface( instance.get(), window.handle, nullptr, &surface );
-    if ( err != VK_SUCCESS )
+    vk::Result   result = static_cast<vk::Result>( glfwCreateWindowSurface( instance.get(), window.handle, nullptr, &surface ) );
+    if ( result != vk::Result::eSuccess )
       throw std::runtime_error( "Failed to create window!" );
     vk::SharedSurfaceKHR sharedSurface{ static_cast<vk::SurfaceKHR>( surface ), instance };
 
@@ -173,7 +187,7 @@ public:
                                            device };
 
     // Get the index of the next available swapchain image:
-    vk::ResultValue<uint32_t> currentBufferR = device->acquireNextImageKHR( swapChain.get(), vk::su::FenceTimeout, imageAcquiredSemaphore.get(), nullptr );
+    vk::ResultValue<std::uint32_t> currentBufferR = device->acquireNextImageKHR( swapChain.get(), vk::su::FenceTimeout, imageAcquiredSemaphore.get(), nullptr );
     assert( currentBufferR.result == vk::Result::eSuccess );
     assert( currentBufferR.value < framebuffers.size() );
     currentBuffer = currentBufferR.value;
@@ -208,7 +222,7 @@ public:
     vk::SubmitInfo submitInfo( ias, waitDestinationStageMask, comBuf );
     graphicsQueue->submit( submitInfo, drawFence.get() );
 
-    while ( vk::Result::eTimeout == device->waitForFences( drawFence.get(), VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device->waitForFences( drawFence.get(), vk::True, vk::su::FenceTimeout ) )
       ;
 
     auto       swap   = swapChain.get();
@@ -235,7 +249,7 @@ public:
   std::vector<vk::SharedImageView> imageViews;
   std::vector<vk::SharedImage>     images;
 
-  uint32_t            currentBuffer = 0;
+  std::uint32_t            currentBuffer = 0;
   vk::SharedSemaphore imageAcquiredSemaphore;
 
   // memory still needs to be before the resources that use it in order to get a proper destruction sequence.
@@ -297,7 +311,7 @@ public:
     textureSampler     = vk::SharedSampler{ textureData.sampler, engine.device };
 
     vk::su::updateDescriptorSets(
-      device_handle, engine.descriptorSet.get(), { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, textureData );
+      device_handle, engine.descriptorSet.get(), { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::WholeSize, {} } }, textureData );
     engine.commandBuffer->end();
 
     vk::su::submitAndWait( device_handle, engine.graphicsQueue.get(), engine.commandBuffer.get() );
@@ -355,16 +369,16 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
 }

@@ -41,7 +41,13 @@ option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
 option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
 option( VULKAN_HPP_TESTS_CTEST "Build tests for ctest, enabling wider test coverage" OFF )
 option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
-cmake_dependent_option( VULKAN_HPP_BUILD_CXX_MODULE "Build and test the C++ named module." ON [[ 23 IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD ]] OFF)
+# The C++ named module imports the C++ standard library module (`import std;`), which requires CMake 4.5 or later.
+# It is only available when CMake finds that the generator, compiler, and standard library support `import std`,
+# in which case it sets CMAKE_CXX_STDLIB_MODULES_JSON.
+# When available, the module is enabled by default, and may be disabled with -D VULKAN_HPP_BUILD_CXX_MODULE=OFF.
+# See https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html
+cmake_dependent_option( VULKAN_HPP_BUILD_CXX_MODULE "Build and test the C++ named module." ON
+	[[ CMAKE_CXX_STDLIB_MODULES_JSON ]] OFF )
 
 # options for vulkan hpp compile definitions (see https://github.com/KhronosGroup/Vulkan-Hpp/tree/main?tab=readme-ov-file#configuration-options for details)
 option( VULKAN_HPP_DISABLE_ENHANCED_MODE "Disable all enhanced functionality apart from scoped enums, bitmasks, default initialization and vk::StructureChain" OFF )
@@ -244,7 +250,7 @@ function( vulkan_hpp__setup_vulkan_module )
 	endforeach()
 
 	target_compile_features( ${TARGET_NAME} PUBLIC cxx_std_23 )
-	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_MODULE_STD ON )
+	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON )
 
 	if ( NOT TARGET_FILE_SET )
 		message( FATAL_ERROR "FILE_SET must be defined in vulkan_hpp__setup_module" )
@@ -504,7 +510,6 @@ function( vulkan_hpp__setup_test )
 					"${CMAKE_CURRENT_BINARY_DIR}/tests/${TARGET_NAME}"
 				--build-generator ${CMAKE_GENERATOR}
 				--build-options
-					-D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=${CMAKE_EXPERIMENTAL_CXX_IMPORT_STD} # experimental cmake flag
 					-D TARGET_NAME=${TARGET_NAME}
 					-D TARGET_TEST=${TARGET_TEST}
 					# forward vulkan options
@@ -539,7 +544,8 @@ function( vulkan_hpp__setup_test )
 					-D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 					-D CMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
 					-D CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-					-D CMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS})
+					-D CMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
+					-D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON})
 	else()
 		add_subdirectory( ${TARGET_NAME} )
 	endif()
@@ -555,8 +561,7 @@ function( vulkan_hpp__setup_test_project )
 			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::HppModule )
 			target_compile_definitions( ${TARGET_NAME} PRIVATE VULKAN_HPP_USE_CXX_MODULE )
 			set_target_properties( ${TARGET_NAME} PROPERTIES
-				CXX_SCAN_FOR_MODULES ON
-				CXX_MODULE_STD ON )
+				CXX_SCAN_FOR_MODULES ON )
 		else()
 			target_link_libraries( ${TARGET_NAME} PRIVATE Vulkan::Hpp )
 		endif()

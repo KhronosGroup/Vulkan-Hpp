@@ -2630,9 +2630,16 @@ ${basetypes}
   for ( auto const & baseType : m_vkxml.types.baseTypes )
   {
     // filter out VkFlags and VkFlags64, as they are mapped to our own Flags class, and basetypes without any type information
-    if ( ( baseType.name != "VkFlags" ) && ( baseType.name != "VkFlags64" ) && !baseType.type.name.empty() )
+    if ( ( baseType.name != "VkFlags" ) && ( baseType.name != "VkFlags64" ) )
     {
-      basetypes += "  using " + stripPrefix( baseType.name, "Vk" ) + " = " + baseType.type.compose( "" ) + ";\n";
+      if ( !baseType.type.name.empty() )
+      {
+        basetypes += "  using " + stripPrefix( baseType.name, "Vk" ) + " = " + baseType.type.compose( "" ) + ";\n";
+      }
+      else if ( baseType.name.starts_with( "Vk" ) )
+      {
+        basetypes += "  using " + stripPrefix( baseType.name, "Vk" ) + " = " + baseType.name + ";\n ";
+      }
     }
   }
 

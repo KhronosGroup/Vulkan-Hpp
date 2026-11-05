@@ -15,7 +15,8 @@ using namespace std::literals;
 
 namespace
 {
-  size_t determineParamIndex( std::vector<Param> const & params, std::string const & name );
+  std::string concatenate( std::vector<size_t> const & values );
+  size_t      determineParamIndex( std::vector<Param> const & params, std::string const & name );
   template <typename T>
   typename std::map<std::string, T>::iterator findByNameOrAlias( std::map<std::string, T> & values, std::string const & name );
   template <typename T>
@@ -422,33 +423,12 @@ VulkanHppGenerator::VulkanHppGenerator( Vkxml && vkxml, std::string const & api 
     assert( formatIt != m_enums.end() );
 
     checkForError( containsByName( formatIt->second.values, format.name ), format.xmlLine, "format <" + format.name + "> not listed in enum VkFormat" );
-
-    FormatData formatData{ .blockExtent      = concatenate( format.blockExtent ),
-                           .blockSize        = format.blockSize,
-                           .chroma           = format.chroma,
-                           .classAttribute   = format.classAttribute,
-                           .compressed       = format.compressed,
-                           .packed           = format.packed,
-                           .spirvImageFormat = format.spirvImageFormat.name,
-                           .texelsPerBlock   = format.texelsPerBlock,
-                           .xmlLine          = format.xmlLine };
-    for ( auto const & component : format.components )
-    {
-      formatData.components.push_back( { .bits          = component.bits,
-                                         .name          = component.name,
-                                         .numericFormat = component.numericFormat,
-                                         .planeIndex    = component.planeIndex,
-                                         .xmlLine       = component.xmlLine } );
-    }
     for ( auto const & plane : format.planes )
     {
       checkForError( containsByNameOrAlias( formatIt->second.values, plane.compatible ),
                      plane.xmlLine,
                      "format <" + format.name + "> contains unknown plane compatible format <" + plane.compatible + ">" );
-      formatData.planes.push_back(
-        { .compatible = plane.compatible, .heightDivisor = plane.heightDivisor, .widthDivisor = plane.widthDivisor, .xmlLine = plane.xmlLine } );
     }
-    m_formats.insert( { format.name, std::move( formatData ) } );
   }
 
   auto versionIt = findByName( m_vkxml.types.defines, "VK_HEADER_VERSION" );
@@ -894,14 +874,14 @@ void VulkanHppGenerator::checkEnumCorrectness() const
   }
 
   // special check for VkFormat
-  if ( !m_formats.empty() )
+  if ( !m_vkxml.formats.empty() )
   {
     auto enumIt = m_enums.find( "VkFormat" );
     assert( enumIt != m_enums.end() );
     assert( enumIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
     for ( auto enumValueIt = std::next( enumIt->second.values.begin() ); enumValueIt != enumIt->second.values.end(); ++enumValueIt )
     {
-      checkForError( !enumValueIt->supported || m_formats.contains( enumValueIt->name ),
+      checkForError( !enumValueIt->supported || containsByName( m_vkxml.formats, enumValueIt->name ),
                      enumValueIt->xmlLine,
                      "missing format specification for <" + enumValueIt->name + ">" );
     }
@@ -6763,7 +6743,7 @@ std::string VulkanHppGenerator::generateExtensionTypeTest( std::string const & t
 
 std::string VulkanHppGenerator::generateFormatTraits() const
 {
-  assert( !m_formats.empty() );
+  assert( !m_vkxml.formats.empty() );
 
   auto formatIt = m_enums.find( "VkFormat" );
   assert( formatIt != m_enums.end() );
@@ -6776,57 +6756,48 @@ std::string VulkanHppGenerator::generateFormatTraits() const
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData )
-      { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "A"; } ); },
-      []( FormatData const & ) { return ""; } );
+      []( Format const & format ) { return std::ranges::any_of( format.components, []( auto const & component ) { return component.name == "A"; } ); },
+      []( Format const & ) { return ""; } );
   };
   auto generateComponentCases =
-    [this]( auto const & formatData, std::function<std::string( ComponentData const & componentData )> generator, std::string const & defaultReturn )
+    [this]( auto const & format, std::function<std::string( Component const & component )> generator, std::string const & defaultReturn )
   {
-    return generateFormatTraitsSubCases<ComponentData>(
-      formatData,
-      []( FormatData const & formatData ) -> std::vector<ComponentData> const & { return formatData.components; },
-      "component",
-      generator,
-      defaultReturn );
+    return generateFormatTraitsSubCases<Component>(
+      format, []( Format const & format ) -> std::vector<Component> const & { return format.components; }, "component", generator, defaultReturn );
   };
-  auto generatePlaneCases =
-    [this]( auto const & formatData, std::function<std::string( PlaneData const & PlaneData )> generator, std::string const & defaultReturn )
+  auto generatePlaneCases = [this]( auto const & format, std::function<std::string( Plane const & plane )> generator, std::string const & defaultReturn )
   {
-    return generateFormatTraitsSubCases<PlaneData>(
-      formatData, []( FormatData const & formatData ) -> std::vector<PlaneData> const & { return formatData.planes; }, "plane", generator, defaultReturn );
+    return generateFormatTraitsSubCases<Plane>(
+      format, []( Format const & format ) -> std::vector<Plane> const & { return format.planes; }, "plane", generator, defaultReturn );
   };
 
   auto generateBlockExtentCases = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData ) { return !formatData.blockExtent.empty(); },
-      []( FormatData const & formatData ) { return "return {{ " + formatData.blockExtent + " }};"; } );
+      []( Format const & format ) { return !format.blockExtent.empty(); },
+      []( Format const & format ) { return "return {{ " + concatenate( format.blockExtent ) + " }};"; } );
   };
   auto generateBlockSizeCases = [&]( auto const formatIt )
   {
-    return generateFormatTraitsCases( formatIt->second, noPredicate, []( FormatData const & formatData ) { return "return " + formatData.blockSize + ";"; } );
+    return generateFormatTraitsCases(
+      formatIt->second, noPredicate, []( Format const & format ) { return "return " + std::to_string( format.blockSize ) + ";"; } );
   };
   auto generateBlueCases = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData )
-      { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "B"; } ); },
-      []( FormatData const & ) { return ""; } );
+      []( Format const & format ) { return std::ranges::any_of( format.components, []( auto const & component ) { return component.name == "B"; } ); },
+      []( Format const & ) { return ""; } );
   };
   auto generateClassCases = [&]( auto const formatIt )
-  {
-    return generateFormatTraitsCases(
-      formatIt->second, noPredicate, []( FormatData const & formatData ) { return "return \"" + formatData.classAttribute + "\";"; } );
-  };
+  { return generateFormatTraitsCases( formatIt->second, noPredicate, []( Format const & format ) { return "return \"" + format.className + "\";"; } ); };
   auto generateColorFormatsList = [&]( auto const formatIt )
   {
     return generateFormatTraitsList( formatIt->second,
-                                     []( FormatData const & formatData )
+                                     []( Format const & format )
                                      {
-                                       return std::ranges::any_of( formatData.components,
+                                       return std::ranges::any_of( format.components,
                                                                    []( auto const & component )
                                                                    {
                                                                      return ( component.name == "R" ) || ( component.name == "G" ) ||
@@ -6838,155 +6809,143 @@ std::string VulkanHppGenerator::generateFormatTraits() const
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData ) { return formatData.components.front().bits != "compressed"; },
-      [&]( FormatData const & formatData )
-      { return generateComponentCases( formatData, []( ComponentData const & componentData ) { return componentData.bits; }, "0" ); } );
+      []( Format const & format ) { return format.components.front().bits != "compressed"; },
+      [&]( Format const & format ) { return generateComponentCases( format, []( Component const & component ) { return component.bits; }, "0" ); } );
   };
   auto generateComponentCountCases = [&]( auto const formatIt )
   {
     return generateFormatTraitsCases(
-      formatIt->second, noPredicate, []( FormatData const & formatData ) { return "return " + std::to_string( formatData.components.size() ) + ";"; } );
+      formatIt->second, noPredicate, []( Format const & format ) { return "return " + std::to_string( format.components.size() ) + ";"; } );
   };
   auto generateComponentNameCases = [&]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
       noPredicate,
-      [&]( FormatData const & formatData )
-      { return generateComponentCases( formatData, []( ComponentData const & componentData ) { return "\"" + componentData.name + "\""; }, "\"\"" ); } );
+      [&]( Format const & format )
+      { return generateComponentCases( format, []( Component const & component ) { return "\"" + component.name + "\""; }, "\"\"" ); } );
   };
   auto generateComponentNumericFormatCases = [&]( auto const formatIt )
   {
-    return generateFormatTraitsCases( formatIt->second,
-                                      noPredicate,
-                                      [&]( FormatData const & formatData )
-                                      {
-                                        return generateComponentCases(
-                                          formatData, []( ComponentData const & componentData ) { return "\"" + componentData.numericFormat + "\""; }, "\"\"" );
-                                      } );
+    return generateFormatTraitsCases(
+      formatIt->second,
+      noPredicate,
+      [&]( Format const & format )
+      { return generateComponentCases( format, []( Component const & component ) { return "\"" + component.numericFormat + "\""; }, "\"\"" ); } );
   };
   auto generateComponentPlaneIndexCases = [&]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData ) { return !formatData.components.front().planeIndex.empty(); },
-      [&]( FormatData const & formatData )
-      { return generateComponentCases( formatData, []( ComponentData const & componentData ) { return componentData.planeIndex; }, "0" ); } );
+      []( Format const & format ) { return format.components.front().planeIndex != INVALID_INDEX; },
+      [&]( Format const & format )
+      { return generateComponentCases( format, []( Component const & component ) { return std::to_string( component.planeIndex ); }, "0" ); } );
   };
   auto generateComponentsAreCompressedCases = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
-      formatIt->second,
-      []( FormatData const & formatData ) { return formatData.components.front().bits == "compressed"; },
-      []( FormatData const & ) { return ""; } );
+      formatIt->second, []( Format const & format ) { return format.components.front().bits == "compressed"; }, []( Format const & ) { return ""; } );
   };
   auto generateCompressionSchemeCases = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData ) { return !formatData.compressed.empty(); },
-      []( FormatData const & formatData ) { return " return \"" + formatData.compressed + "\";"; } );
+      []( Format const & format ) { return !format.compressed.empty(); },
+      []( Format const & format ) { return " return \"" + format.compressed + "\";"; } );
   };
   auto generateDepthCases = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData )
-      { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "D"; } ); },
-      []( FormatData const & ) { return ""; } );
+      []( Format const & format ) { return std::ranges::any_of( format.components, []( auto const & component ) { return component.name == "D"; } ); },
+      []( Format const & ) { return ""; } );
   };
   auto generateDepthFormatsList = [&]( auto const formatIt )
   {
     return generateFormatTraitsList( formatIt->second,
-                                     []( FormatData const & formatData )
-                                     { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "D"; } ); } );
+                                     []( Format const & format )
+                                     { return std::ranges::any_of( format.components, []( auto const & component ) { return component.name == "D"; } ); } );
   };
   auto generateDepthStencilFormatsList = [&]( auto const formatIt )
   {
     return generateFormatTraitsList( formatIt->second,
-                                     []( FormatData const & formatData )
+                                     []( Format const & format )
                                      {
-                                       return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "D"; } ) &&
-                                              std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "S"; } );
+                                       return std::ranges::any_of( format.components, []( auto const & component ) { return component.name == "D"; } ) &&
+                                              std::ranges::any_of( format.components, []( auto const & component ) { return component.name == "S"; } );
                                      } );
   };
   auto generateGreenCases = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData )
-      { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "G"; } ); },
-      []( FormatData const & ) { return ""; } );
+      []( Format const & format ) { return std::ranges::any_of( format.components, []( auto const & component ) { return component.name == "G"; } ); },
+      []( Format const & ) { return ""; } );
   };
   auto generatePackedCases = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData ) { return !formatData.packed.empty(); },
-      []( FormatData const & formatData ) { return " return " + formatData.packed + ";"; } );
+      []( Format const & format ) { return format.packed != INVALID_INDEX; },
+      []( Format const & format ) { return " return " + std::to_string( format.packed ) + ";"; } );
   };
   auto generatePlaneCompatibleCases = [&]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData ) { return !formatData.planes.empty(); },
-      [&]( FormatData const & formatData )
+      []( Format const & format ) { return !format.planes.empty(); },
+      [&]( Format const & format )
       {
         return generatePlaneCases(
-          formatData,
-          [&]( PlaneData const & planeData ) { return "Format::" + generateEnumValueName( "VkFormat", planeData.compatible, false ); },
-          "Format::eUndefined" );
+          format, [&]( Plane const & plane ) { return "Format::" + generateEnumValueName( "VkFormat", plane.compatible, false ); }, "Format::eUndefined" );
       } );
   };
   auto generatePlaneCountCases = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData ) { return !formatData.planes.empty(); },
-      []( FormatData const & formatData ) { return " return " + std::to_string( formatData.planes.size() ) + ";"; } );
+      []( Format const & format ) { return !format.planes.empty(); },
+      []( Format const & format ) { return " return " + std::to_string( format.planes.size() ) + ";"; } );
   };
   auto generatePlaneHeightDivisorCases = [&]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData ) { return !formatData.planes.empty(); },
-      [&]( FormatData const & formatData )
-      { return generatePlaneCases( formatData, [&]( PlaneData const & planeData ) { return planeData.heightDivisor; }, "1" ); } );
+      []( Format const & format ) { return !format.planes.empty(); },
+      [&]( Format const & format )
+      { return generatePlaneCases( format, [&]( Plane const & plane ) { return std::to_string( plane.heightDivisor ); }, "1" ); } );
   };
   auto generatePlaneWidthDivisorCases = [&]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData ) { return !formatData.planes.empty(); },
-      [&]( FormatData const & formatData )
-      { return generatePlaneCases( formatData, [&]( PlaneData const & planeData ) { return planeData.widthDivisor; }, "1" ); } );
+      []( Format const & format ) { return !format.planes.empty(); },
+      [&]( Format const & format ) { return generatePlaneCases( format, [&]( Plane const & plane ) { return std::to_string( plane.widthDivisor ); }, "1" ); } );
   };
   auto generateRedCases = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData )
-      { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "R"; } ); },
-      []( FormatData const & ) { return ""; } );
+      []( Format const & format ) { return std::ranges::any_of( format.components, []( auto const & component ) { return component.name == "R"; } ); },
+      []( Format const & ) { return ""; } );
   };
   auto generateStencilCases = [this]( auto const formatIt )
   {
     return generateFormatTraitsCases(
       formatIt->second,
-      []( FormatData const & formatData )
-      { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "S"; } ); },
-      []( FormatData const & ) { return ""; } );
+      []( Format const & format ) { return std::ranges::any_of( format.components, []( auto const & component ) { return component.name == "S"; } ); },
+      []( Format const & ) { return ""; } );
   };
   auto generateStencilFormatsList = [&]( auto const formatIt )
   {
     return generateFormatTraitsList( formatIt->second,
-                                     []( FormatData const & formatData )
-                                     { return std::ranges::any_of( formatData.components, []( auto const & component ) { return component.name == "S"; } ); } );
+                                     []( Format const & format )
+                                     { return std::ranges::any_of( format.components, []( auto const & component ) { return component.name == "S"; } ); } );
   };
   auto generateTexelsPerBlockCases = [&]( auto const formatIt )
   {
     return generateFormatTraitsCases(
-      formatIt->second, noPredicate, []( FormatData const & formatData ) { return "return " + formatData.texelsPerBlock + ";"; } );
+      formatIt->second, noPredicate, []( Format const & format ) { return "return " + std::to_string( format.texelsPerBlock ) + ";"; } );
   };
 
   return replaceWithMap( readSnippet( "FormatTraits.hpp" ),
@@ -7019,44 +6978,44 @@ std::string VulkanHppGenerator::generateFormatTraits() const
                            { "texelsPerBlockCases", generateTexelsPerBlockCases( formatIt ) } } );
 }
 
-std::string VulkanHppGenerator::generateFormatTraitsCases( EnumData const &                                 enumData,
-                                                           std::function<bool( FormatData const & )>        predicate,
-                                                           std::function<std::string( FormatData const & )> generator ) const
+std::string VulkanHppGenerator::generateFormatTraitsCases( EnumData const &                             enumData,
+                                                           std::function<bool( Format const & )>        predicate,
+                                                           std::function<std::string( Format const & )> generator ) const
 {
   std::string cases;
   for ( auto enumValueIt = std::next( enumData.values.begin() ); enumValueIt != enumData.values.end(); ++enumValueIt )
   {
     if ( enumValueIt->supported )
     {
-      auto formatIt = m_formats.find( enumValueIt->name );
-      assert( formatIt != m_formats.end() );
+      auto formatIt = findByName( m_vkxml.formats, enumValueIt->name );
+      assert( formatIt != m_vkxml.formats.end() );
 
-      if ( predicate( formatIt->second ) )
+      if ( predicate( *formatIt ) )
       {
-        cases += "      case Format::" + generateEnumValueName( "VkFormat", formatIt->first, false ) + ": " + generator( formatIt->second ) + "\n";
+        cases += "      case Format::" + generateEnumValueName( "VkFormat", formatIt->name, false ) + ": " + generator( *formatIt ) + "\n";
       }
     }
   }
   return cases;
 }
 
-std::string VulkanHppGenerator::generateFormatTraitsList( EnumData const & enumData, std::function<bool( FormatData const & )> predicate ) const
+std::string VulkanHppGenerator::generateFormatTraitsList( EnumData const & enumData, std::function<bool( Format const & )> predicate ) const
 {
   std::string list;
   for ( auto enumValueIt = std::next( enumData.values.begin() ); enumValueIt != enumData.values.end(); ++enumValueIt )
   {
     if ( enumValueIt->supported )
     {
-      auto formatIt = m_formats.find( enumValueIt->name );
-      assert( formatIt != m_formats.end() );
+      auto formatIt = findByName( m_vkxml.formats, enumValueIt->name );
+      assert( formatIt != m_vkxml.formats.end() );
 
-      if ( predicate( formatIt->second ) )
+      if ( predicate( *formatIt ) )
       {
         if ( !list.empty() )
         {
           list += ", ";
         }
-        list += "Format::" + generateEnumValueName( "VkFormat", formatIt->first, false );
+        list += "Format::" + generateEnumValueName( "VkFormat", formatIt->name, false );
       }
     }
   }
@@ -13819,6 +13778,20 @@ bool VulkanHppGenerator::EnumData::addEnumValue(
 
 namespace
 {
+  std::string concatenate( std::vector<size_t> const & values )
+  {
+    std::string str;
+    for ( auto const & value : values )
+    {
+      if ( !str.empty() )
+      {
+        str += ", ";
+      }
+      str += std::to_string( value );
+    }
+    return str;
+  }
+
   size_t determineParamIndex( std::vector<Param> const & params, std::string const & name )
   {
     auto it = findByName( params, name );

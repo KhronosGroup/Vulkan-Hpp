@@ -23650,6 +23650,22 @@ VULKAN_HPP_EXPORT namespace std
     }
   };
 
+  //=== VK_EXT_vertex_address_binding_unrestricted ===
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const &
+                              physicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT.vertexAddressBindingUnrestricted );
+      return seed;
+    }
+  };
+
   //=== VK_KHR_maintenance12 ===
 
   template <>

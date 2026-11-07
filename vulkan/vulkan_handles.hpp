@@ -8474,6 +8474,31 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
                                         Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+    //=== VK_NV_internal_handle ===
+
+    // wrapper function for command vkGetCommandBufferInternalHandleNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetCommandBufferInternalHandleNV.html
+#if VULKAN_HPP_CPP_VERSION < 20
+    template <typename Dispatch                                                                        = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkGetCommandBufferInternalHandleNV ), bool>::type = true>
+#else
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    requires( IS_DISPATCHED( vkGetCommandBufferInternalHandleNV ) )
+#endif
+    void getInternalHandleNV( InternalHandleNV * pHandle, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetCommandBufferInternalHandleNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetCommandBufferInternalHandleNV.html
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename Dispatch                                                                        = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkGetCommandBufferInternalHandleNV ), bool>::type = true>
+#  else
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    requires( IS_DISPATCHED( vkGetCommandBufferInternalHandleNV ) )
+#  endif
+    VULKAN_HPP_NODISCARD InternalHandleNV getInternalHandleNV( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
     //=== VK_EXT_primitive_restart_index ===
 
     // wrapper function for command vkCmdSetPrimitiveRestartIndexEXT, see
@@ -25311,6 +25336,27 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     void clearShaderInstrumentationMetricsARM( ShaderInstrumentationARM instrumentation,
                                                Dispatch const & d       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
+    //=== VK_NV_internal_handle ===
+
+    // wrapper function for command vkGetDeviceInternalHandleNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceInternalHandleNV.html
+#if VULKAN_HPP_CPP_VERSION < 20
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkGetDeviceInternalHandleNV ), bool>::type = true>
+#else
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    requires( IS_DISPATCHED( vkGetDeviceInternalHandleNV ) )
+#endif
+    void getInternalHandleNV( InternalHandleNV * pHandle, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetDeviceInternalHandleNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceInternalHandleNV.html
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkGetDeviceInternalHandleNV ), bool>::type = true>
+#  else
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    requires( IS_DISPATCHED( vkGetDeviceInternalHandleNV ) )
+#  endif
+    VULKAN_HPP_NODISCARD InternalHandleNV getInternalHandleNV( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
     operator VkDevice() const VULKAN_HPP_NOEXCEPT
     {
       return m_device;
@@ -30461,6 +30507,31 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_UBM_SEC*/
 
+    //=== VK_NV_internal_handle ===
+
+    // wrapper function for command vkGetPhysicalDeviceInternalHandleNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceInternalHandleNV.html
+#if VULKAN_HPP_CPP_VERSION < 20
+    template <typename Dispatch                                                                         = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceInternalHandleNV ), bool>::type = true>
+#else
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    requires( IS_DISPATCHED( vkGetPhysicalDeviceInternalHandleNV ) )
+#endif
+    void getInternalHandleNV( InternalHandleNV * pHandle, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetPhysicalDeviceInternalHandleNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceInternalHandleNV.html
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename Dispatch                                                                         = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<IS_DISPATCHED( vkGetPhysicalDeviceInternalHandleNV ), bool>::type = true>
+#  else
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    requires( IS_DISPATCHED( vkGetPhysicalDeviceInternalHandleNV ) )
+#  endif
+    VULKAN_HPP_NODISCARD InternalHandleNV getInternalHandleNV( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
     operator VkPhysicalDevice() const VULKAN_HPP_NOEXCEPT
     {
       return m_physicalDevice;
@@ -30925,6 +30996,27 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #  endif
     void notifyOutOfBandNV( OutOfBandQueueTypeInfoNV const & queueTypeInfo,
                             Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_NV_internal_handle ===
+
+    // wrapper function for command vkGetQueueInternalHandleNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueueInternalHandleNV.html
+#if VULKAN_HPP_CPP_VERSION < 20
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkGetQueueInternalHandleNV ), bool>::type = true>
+#else
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    requires( IS_DISPATCHED( vkGetQueueInternalHandleNV ) )
+#endif
+    void getInternalHandleNV( InternalHandleNV * pHandle, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    // wrapper function for command vkGetQueueInternalHandleNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueueInternalHandleNV.html
+#  if VULKAN_HPP_CPP_VERSION < 20
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename std::enable_if<IS_DISPATCHED( vkGetQueueInternalHandleNV ), bool>::type = true>
+#  else
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    requires( IS_DISPATCHED( vkGetQueueInternalHandleNV ) )
+#  endif
+    VULKAN_HPP_NODISCARD InternalHandleNV getInternalHandleNV( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     operator VkQueue() const VULKAN_HPP_NOEXCEPT

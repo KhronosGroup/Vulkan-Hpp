@@ -425,6 +425,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
             PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceUbmPresentationSupportSEC" ) );
 #  endif /*VK_USE_PLATFORM_UBM_SEC*/
 
+          //=== VK_NV_internal_handle ===
+          vkGetPhysicalDeviceInternalHandleNV =
+            PFN_vkGetPhysicalDeviceInternalHandleNV( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceInternalHandleNV" ) );
+
           vkGetDeviceProcAddr = PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr" ) );
         }
 
@@ -748,6 +752,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         PFN_dummy vkCreateUbmSurfaceSEC_placeholder                        = 0;
         PFN_dummy vkGetPhysicalDeviceUbmPresentationSupportSEC_placeholder = 0;
 #  endif /*VK_USE_PLATFORM_UBM_SEC*/
+
+        //=== VK_NV_internal_handle ===
+        PFN_vkGetPhysicalDeviceInternalHandleNV vkGetPhysicalDeviceInternalHandleNV = 0;
 
         PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = 0;
       };
@@ -2089,6 +2096,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
           //=== VK_NV_compute_occupancy_priority ===
           vkCmdSetComputeOccupancyPriorityNV = PFN_vkCmdSetComputeOccupancyPriorityNV( vkGetDeviceProcAddr( device, "vkCmdSetComputeOccupancyPriorityNV" ) );
 
+          //=== VK_NV_internal_handle ===
+          vkGetDeviceInternalHandleNV        = PFN_vkGetDeviceInternalHandleNV( vkGetDeviceProcAddr( device, "vkGetDeviceInternalHandleNV" ) );
+          vkGetQueueInternalHandleNV         = PFN_vkGetQueueInternalHandleNV( vkGetDeviceProcAddr( device, "vkGetQueueInternalHandleNV" ) );
+          vkGetCommandBufferInternalHandleNV = PFN_vkGetCommandBufferInternalHandleNV( vkGetDeviceProcAddr( device, "vkGetCommandBufferInternalHandleNV" ) );
+
           //=== VK_EXT_primitive_restart_index ===
           vkCmdSetPrimitiveRestartIndexEXT = PFN_vkCmdSetPrimitiveRestartIndexEXT( vkGetDeviceProcAddr( device, "vkCmdSetPrimitiveRestartIndexEXT" ) );
         }
@@ -3192,6 +3204,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_NV_compute_occupancy_priority ===
         PFN_vkCmdSetComputeOccupancyPriorityNV vkCmdSetComputeOccupancyPriorityNV = 0;
+
+        //=== VK_NV_internal_handle ===
+        PFN_vkGetDeviceInternalHandleNV        vkGetDeviceInternalHandleNV        = 0;
+        PFN_vkGetQueueInternalHandleNV         vkGetQueueInternalHandleNV         = 0;
+        PFN_vkGetCommandBufferInternalHandleNV vkGetCommandBufferInternalHandleNV = 0;
 
         //=== VK_EXT_primitive_restart_index ===
         PFN_vkCmdSetPrimitiveRestartIndexEXT vkCmdSetPrimitiveRestartIndexEXT = 0;
@@ -4437,6 +4454,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceUbmPresentationSupportSEC.html
       VULKAN_HPP_NODISCARD std::pair<Bool32, struct ubm_device> getUbmPresentationSupportSEC( uint32_t queueFamilyIndex ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_USE_PLATFORM_UBM_SEC*/
+
+      //=== VK_NV_internal_handle ===
+
+      // wrapper function for command vkGetPhysicalDeviceInternalHandleNV, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceInternalHandleNV.html
+      VULKAN_HPP_NODISCARD InternalHandleNV getInternalHandleNV() const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::PhysicalDevice m_physicalDevice = {};
@@ -6120,6 +6143,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD typename ResultValueType<ShaderInstrumentationARM>::type
         createShaderInstrumentationARM( ShaderInstrumentationCreateInfoARM const & createInfo,
                                         Optional<AllocationCallbacks const>        allocator = nullptr ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+
+      //=== VK_NV_internal_handle ===
+
+      // wrapper function for command vkGetDeviceInternalHandleNV, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceInternalHandleNV.html
+      VULKAN_HPP_NODISCARD InternalHandleNV getInternalHandleNV() const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device              m_device    = {};
@@ -8583,6 +8612,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       // wrapper function for command vkCmdSetComputeOccupancyPriorityNV, see
       // https://registry.khronos.org/vulkan/specs/latest/man/html/vkCmdSetComputeOccupancyPriorityNV.html
       void setComputeOccupancyPriorityNV( ComputeOccupancyPriorityParametersNV const & parameters ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_NV_internal_handle ===
+
+      // wrapper function for command vkGetCommandBufferInternalHandleNV, see
+      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetCommandBufferInternalHandleNV.html
+      VULKAN_HPP_NODISCARD InternalHandleNV getInternalHandleNV() const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_EXT_primitive_restart_index ===
 
@@ -13712,6 +13747,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
       // wrapper function for command vkQueueNotifyOutOfBandNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkQueueNotifyOutOfBandNV.html
       void notifyOutOfBandNV( OutOfBandQueueTypeInfoNV const & queueTypeInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_NV_internal_handle ===
+
+      // wrapper function for command vkGetQueueInternalHandleNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueueInternalHandleNV.html
+      VULKAN_HPP_NODISCARD InternalHandleNV getInternalHandleNV() const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Queue      m_queue      = {};
@@ -30228,6 +30268,57 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return { result_, device };
     }
 #  endif /*VK_USE_PLATFORM_UBM_SEC*/
+
+    //=== VK_NV_internal_handle ===
+
+    // wrapper function for command vkGetPhysicalDeviceInternalHandleNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetPhysicalDeviceInternalHandleNV.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE InternalHandleNV PhysicalDevice::getInternalHandleNV() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceInternalHandleNV &&
+                         "Function <vkGetPhysicalDeviceInternalHandleNV> requires <VK_NV_internal_handle>" );
+
+      InternalHandleNV handle;
+      getDispatcher()->vkGetPhysicalDeviceInternalHandleNV( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                            reinterpret_cast<VkInternalHandleNV *>( &handle ) );
+
+      return handle;
+    }
+
+    // wrapper function for command vkGetDeviceInternalHandleNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetDeviceInternalHandleNV.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE InternalHandleNV Device::getInternalHandleNV() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeviceInternalHandleNV && "Function <vkGetDeviceInternalHandleNV> requires <VK_NV_internal_handle>" );
+
+      InternalHandleNV handle;
+      getDispatcher()->vkGetDeviceInternalHandleNV( static_cast<VkDevice>( m_device ), reinterpret_cast<VkInternalHandleNV *>( &handle ) );
+
+      return handle;
+    }
+
+    // wrapper function for command vkGetQueueInternalHandleNV, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetQueueInternalHandleNV.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE InternalHandleNV Queue::getInternalHandleNV() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetQueueInternalHandleNV && "Function <vkGetQueueInternalHandleNV> requires <VK_NV_internal_handle>" );
+
+      InternalHandleNV handle;
+      getDispatcher()->vkGetQueueInternalHandleNV( static_cast<VkQueue>( m_queue ), reinterpret_cast<VkInternalHandleNV *>( &handle ) );
+
+      return handle;
+    }
+
+    // wrapper function for command vkGetCommandBufferInternalHandleNV, see
+    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkGetCommandBufferInternalHandleNV.html
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE InternalHandleNV CommandBuffer::getInternalHandleNV() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetCommandBufferInternalHandleNV &&
+                         "Function <vkGetCommandBufferInternalHandleNV> requires <VK_NV_internal_handle>" );
+
+      InternalHandleNV handle;
+      getDispatcher()->vkGetCommandBufferInternalHandleNV( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<VkInternalHandleNV *>( &handle ) );
+
+      return handle;
+    }
 
     //=== VK_EXT_primitive_restart_index ===
 

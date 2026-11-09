@@ -42,7 +42,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 367, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 368, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -2036,6 +2036,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphEngineOperationPropertiesARM )
     DECLARE_IS_DISPATCHED( vkCmdSetDispatchParametersARM )
     DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceQueueFamilyDataGraphOpticalFlowImageFormatsARM )
+    DECLARE_IS_DISPATCHED( vkGetPhysicalDeviceInternalHandleNV )
+    DECLARE_IS_DISPATCHED( vkGetDeviceInternalHandleNV )
+    DECLARE_IS_DISPATCHED( vkGetQueueInternalHandleNV )
+    DECLARE_IS_DISPATCHED( vkGetCommandBufferInternalHandleNV )
 
 #undef DECLARE_IS_DISPATCHED
 
@@ -8335,6 +8339,28 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       }
 #    endif /*VK_USE_PLATFORM_UBM_SEC*/
 
+      //=== VK_NV_internal_handle ===
+
+      VULKAN_HPP_INLINE void vkGetPhysicalDeviceInternalHandleNV( VkPhysicalDevice physicalDevice, VkInternalHandleNV * pHandle ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetPhysicalDeviceInternalHandleNV( physicalDevice, pHandle );
+      }
+
+      VULKAN_HPP_INLINE void vkGetDeviceInternalHandleNV( VkDevice device, VkInternalHandleNV * pHandle ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetDeviceInternalHandleNV( device, pHandle );
+      }
+
+      VULKAN_HPP_INLINE void vkGetQueueInternalHandleNV( VkQueue queue, VkInternalHandleNV * pHandle ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetQueueInternalHandleNV( queue, pHandle );
+      }
+
+      VULKAN_HPP_INLINE void vkGetCommandBufferInternalHandleNV( VkCommandBuffer commandBuffer, VkInternalHandleNV * pHandle ) const VULKAN_HPP_NOEXCEPT
+      {
+        return ::vkGetCommandBufferInternalHandleNV( commandBuffer, pHandle );
+      }
+
       //=== VK_EXT_primitive_restart_index ===
 
       VULKAN_HPP_INLINE void vkCmdSetPrimitiveRestartIndexEXT( VkCommandBuffer commandBuffer, uint32_t primitiveRestartIndex ) const VULKAN_HPP_NOEXCEPT
@@ -8620,11 +8646,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== BASE TYPEs ===
   //==================
 
-  using SampleMask      = uint32_t;
-  using Bool32          = uint32_t;
-  using DeviceSize      = uint64_t;
-  using DeviceAddress   = uint64_t;
-  using RemoteAddressNV = void *;
+  using SampleMask       = uint32_t;
+  using Bool32           = uint32_t;
+  using DeviceSize       = uint64_t;
+  using DeviceAddress    = uint64_t;
+  using RemoteAddressNV  = void *;
+  using InternalHandleNV = VkInternalHandleNV;
 
   template <typename Type, Type value = Type{}>
   struct CppType
@@ -11525,6 +11552,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto SECUbmSurfaceExtensionName = VK_SEC_UBM_SURFACE_EXTENSION_NAME;
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
 
+  //=== VK_NV_internal_handle ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVInternalHandleSpecVersion   = VK_NV_INTERNAL_HANDLE_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVInternalHandleExtensionName = VK_NV_INTERNAL_HANDLE_EXTENSION_NAME;
+
   //=== VK_KHR_extended_flags ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRExtendedFlagsSpecVersion   = VK_KHR_EXTENDED_FLAGS_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRExtendedFlagsExtensionName = VK_KHR_EXTENDED_FLAGS_EXTENSION_NAME;
@@ -11552,6 +11583,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_primitive_restart_index ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTPrimitiveRestartIndexSpecVersion   = VK_EXT_PRIMITIVE_RESTART_INDEX_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTPrimitiveRestartIndexExtensionName = VK_EXT_PRIMITIVE_RESTART_INDEX_EXTENSION_NAME;
+
+  //=== VK_EXT_vertex_address_binding_unrestricted ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTVertexAddressBindingUnrestrictedSpecVersion   = VK_EXT_VERTEX_ADDRESS_BINDING_UNRESTRICTED_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTVertexAddressBindingUnrestrictedExtensionName = VK_EXT_VERTEX_ADDRESS_BINDING_UNRESTRICTED_EXTENSION_NAME;
 
   //=== VK_KHR_maintenance12 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance12SpecVersion   = VK_KHR_MAINTENANCE_12_SPEC_VERSION;
@@ -14056,6 +14091,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_primitive_restart_index ===
   struct PhysicalDevicePrimitiveRestartIndexFeaturesEXT;
+
+  //=== VK_EXT_vertex_address_binding_unrestricted ===
+  struct PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT;
 
   //=== VK_KHR_maintenance12 ===
   struct PhysicalDeviceMaintenance12FeaturesKHR;
@@ -25918,6 +25956,25 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_vertex_address_binding_unrestricted ===
+  template <>
+  struct StructExtends<PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_KHR_maintenance12 ===
   template <>
   struct StructExtends<PhysicalDeviceMaintenance12FeaturesKHR, PhysicalDeviceFeatures2>
@@ -27627,6 +27684,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       PFN_dummy vkCreateUbmSurfaceSEC_placeholder                        = 0;
       PFN_dummy vkGetPhysicalDeviceUbmPresentationSupportSEC_placeholder = 0;
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
+
+      //=== VK_NV_internal_handle ===
+      PFN_vkGetPhysicalDeviceInternalHandleNV vkGetPhysicalDeviceInternalHandleNV = 0;
+      PFN_vkGetDeviceInternalHandleNV         vkGetDeviceInternalHandleNV         = 0;
+      PFN_vkGetQueueInternalHandleNV          vkGetQueueInternalHandleNV          = 0;
+      PFN_vkGetCommandBufferInternalHandleNV  vkGetCommandBufferInternalHandleNV  = 0;
 
       //=== VK_EXT_primitive_restart_index ===
       PFN_vkCmdSetPrimitiveRestartIndexEXT vkCmdSetPrimitiveRestartIndexEXT = 0;
@@ -29393,6 +29456,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
           PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceUbmPresentationSupportSEC" ) );
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
 
+        //=== VK_NV_internal_handle ===
+        vkGetPhysicalDeviceInternalHandleNV =
+          PFN_vkGetPhysicalDeviceInternalHandleNV( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceInternalHandleNV" ) );
+        vkGetDeviceInternalHandleNV        = PFN_vkGetDeviceInternalHandleNV( vkGetInstanceProcAddr( instance, "vkGetDeviceInternalHandleNV" ) );
+        vkGetQueueInternalHandleNV         = PFN_vkGetQueueInternalHandleNV( vkGetInstanceProcAddr( instance, "vkGetQueueInternalHandleNV" ) );
+        vkGetCommandBufferInternalHandleNV = PFN_vkGetCommandBufferInternalHandleNV( vkGetInstanceProcAddr( instance, "vkGetCommandBufferInternalHandleNV" ) );
+
         //=== VK_EXT_primitive_restart_index ===
         vkCmdSetPrimitiveRestartIndexEXT = PFN_vkCmdSetPrimitiveRestartIndexEXT( vkGetInstanceProcAddr( instance, "vkCmdSetPrimitiveRestartIndexEXT" ) );
       }
@@ -30731,6 +30801,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_NV_compute_occupancy_priority ===
         vkCmdSetComputeOccupancyPriorityNV = PFN_vkCmdSetComputeOccupancyPriorityNV( vkGetDeviceProcAddr( device, "vkCmdSetComputeOccupancyPriorityNV" ) );
+
+        //=== VK_NV_internal_handle ===
+        vkGetDeviceInternalHandleNV        = PFN_vkGetDeviceInternalHandleNV( vkGetDeviceProcAddr( device, "vkGetDeviceInternalHandleNV" ) );
+        vkGetQueueInternalHandleNV         = PFN_vkGetQueueInternalHandleNV( vkGetDeviceProcAddr( device, "vkGetQueueInternalHandleNV" ) );
+        vkGetCommandBufferInternalHandleNV = PFN_vkGetCommandBufferInternalHandleNV( vkGetDeviceProcAddr( device, "vkGetCommandBufferInternalHandleNV" ) );
 
         //=== VK_EXT_primitive_restart_index ===
         vkCmdSetPrimitiveRestartIndexEXT = PFN_vkCmdSetPrimitiveRestartIndexEXT( vkGetDeviceProcAddr( device, "vkCmdSetPrimitiveRestartIndexEXT" ) );

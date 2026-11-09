@@ -112698,7 +112698,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 
 #    if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
     VULKAN_HPP_CONSTEXPR
-      MetalSurfaceCreateInfoEXT( MetalSurfaceCreateFlagsEXT flags_ = {}, CAMetalLayer const * pLayer_ = {}, void const * pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
+      MetalSurfaceCreateInfoEXT( MetalSurfaceCreateFlagsEXT flags_ = {}, CAMetalLayer * pLayer_ = {}, void const * pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
       : pNext{ pNext_ }
       , flags{ flags_ }
       , pLayer{ pLayer_ }
@@ -112746,13 +112746,13 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       return std::move( *this );
     }
 
-    VULKAN_HPP_CONSTEXPR_14 MetalSurfaceCreateInfoEXT & setPLayer( CAMetalLayer const * pLayer_ ) & VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 MetalSurfaceCreateInfoEXT & setPLayer( CAMetalLayer * pLayer_ ) & VULKAN_HPP_NOEXCEPT
     {
       pLayer = pLayer_;
       return *this;
     }
 
-    VULKAN_HPP_CONSTEXPR_14 MetalSurfaceCreateInfoEXT && setPLayer( CAMetalLayer const * pLayer_ ) && VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 MetalSurfaceCreateInfoEXT && setPLayer( CAMetalLayer * pLayer_ ) && VULKAN_HPP_NOEXCEPT
     {
       pLayer = pLayer_;
       return std::move( *this );
@@ -112780,8 +112780,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     }
 
 #    if defined( VULKAN_HPP_USE_REFLECT )
-    std::tuple<StructureType const &, void const * const &, MetalSurfaceCreateFlagsEXT const &, CAMetalLayer const * const &>
-      reflect() const VULKAN_HPP_NOEXCEPT
+    std::tuple<StructureType const &, void const * const &, MetalSurfaceCreateFlagsEXT const &, CAMetalLayer * const &> reflect() const VULKAN_HPP_NOEXCEPT
     {
       return std::tie( sType, pNext, flags, pLayer );
     }
@@ -112809,7 +112808,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     StructureType              sType  = StructureType::eMetalSurfaceCreateInfoEXT;
     void const *               pNext  = {};
     MetalSurfaceCreateFlagsEXT flags  = {};
-    CAMetalLayer const *       pLayer = {};
+    CAMetalLayer *             pLayer = {};
   };
 
 #    if 20 <= VULKAN_HPP_CPP_VERSION
@@ -220291,6 +220290,140 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::ePhysicalDevicePrimitiveRestartIndexFeaturesEXT>
   {
     using Type = PhysicalDevicePrimitiveRestartIndexFeaturesEXT;
+  };
+
+  //=== VK_EXT_vertex_address_binding_unrestricted ===
+
+  // wrapper struct for struct VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT.html
+  struct PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT
+  {
+    using NativeType = VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT;
+
+#if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT( Bool32 vertexAddressBindingUnrestricted_ = {},
+                                                                                    void * pNext_                            = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , vertexAddressBindingUnrestricted{ vertexAddressBindingUnrestricted_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT( PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const & rhs )
+      VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT( VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT(
+          *reinterpret_cast<PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const *>( &rhs ) )
+    {
+    }
+
+    PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT &
+      operator=( PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT &
+      operator=( VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT & setPNext( void * pNext_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT && setPNext( void * pNext_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT &
+      setVertexAddressBindingUnrestricted( Bool32 vertexAddressBindingUnrestricted_ ) &
+      VULKAN_HPP_NOEXCEPT
+    {
+      vertexAddressBindingUnrestricted = vertexAddressBindingUnrestricted_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT &&
+      setVertexAddressBindingUnrestricted( Bool32 vertexAddressBindingUnrestricted_ ) &&
+      VULKAN_HPP_NOEXCEPT
+    {
+      vertexAddressBindingUnrestricted = vertexAddressBindingUnrestricted_;
+      return std::move( *this );
+    }
+#endif /*VULKAN_HPP_NO_SETTERS*/
+
+    operator VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const *>( this );
+    }
+
+    operator VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT *>( this );
+    }
+
+    operator VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const *>( this );
+    }
+
+    operator VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &, void * const &, Bool32 const &> reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, vertexAddressBindingUnrestricted );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( vertexAddressBindingUnrestricted == rhs.vertexAddressBindingUnrestricted );
+#  endif
+    }
+
+    bool operator!=( PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    StructureType sType                            = StructureType::ePhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT;
+    void *        pNext                            = {};
+    Bool32        vertexAddressBindingUnrestricted = {};
+  };
+
+#if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT>
+  {
+    using Type = PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT;
+  };
+#endif
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT>
+  {
+    using Type = PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT;
   };
 
   //=== VK_KHR_maintenance12 ===

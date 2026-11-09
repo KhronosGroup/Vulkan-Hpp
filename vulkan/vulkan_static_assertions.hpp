@@ -10568,6 +10568,16 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDevicePrimitiveRestartIndexFeaturesEXT>::value,
                           "PhysicalDevicePrimitiveRestartIndexFeaturesEXT is not nothrow_move_constructible!" );
 
+//=== VK_EXT_vertex_address_binding_unrestricted ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT ) ==
+                            sizeof( VkPhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT>::value,
+                          "PhysicalDeviceVertexAddressBindingUnrestrictedFeaturesEXT is not nothrow_move_constructible!" );
+
 //=== VK_KHR_maintenance12 ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance12FeaturesKHR ) == sizeof( VkPhysicalDeviceMaintenance12FeaturesKHR ),

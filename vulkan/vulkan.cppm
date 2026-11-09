@@ -26,7 +26,7 @@ export module vulkan;
 
 import std;
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 367, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 368, "Wrong VK_HEADER_VERSION!" );
 
 #if defined( __clang__ )
 #  pragma clang diagnostic push
@@ -1342,6 +1342,12 @@ export {
   using ::PFN_vkCreateUbmSurfaceSEC;
   using ::PFN_vkGetPhysicalDeviceUbmPresentationSupportSEC;
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
+
+  //=== VK_NV_internal_handle ===
+  using ::PFN_vkGetCommandBufferInternalHandleNV;
+  using ::PFN_vkGetDeviceInternalHandleNV;
+  using ::PFN_vkGetPhysicalDeviceInternalHandleNV;
+  using ::PFN_vkGetQueueInternalHandleNV;
 
   //=== VK_EXT_primitive_restart_index ===
   using ::PFN_vkCmdSetPrimitiveRestartIndexEXT;

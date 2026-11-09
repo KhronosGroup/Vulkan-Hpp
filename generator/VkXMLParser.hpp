@@ -13,6 +13,8 @@
 #include <variant>
 #include <vector>
 
+constexpr size_t INVALID_INDEX = static_cast<size_t>( ~0 );
+
 struct Platform
 {
   std::string name    = {};
@@ -269,7 +271,7 @@ struct Component
   std::string bits          = {};
   std::string name          = {};
   std::string numericFormat = {};
-  std::string planeIndex    = {};
+  size_t      planeIndex    = INVALID_INDEX;
   int         xmlLine       = {};
 };
 
@@ -773,27 +775,27 @@ using VideoCodecVariant = std::variant<VideoCodecExtend, VideoCodecRegular>;
 struct Plane
 {
   std::string compatible    = {};
-  std::string heightDivisor = {};
-  std::string index         = {};
-  std::string planeIndex    = {};
-  std::string widthDivisor  = {};
+  size_t      heightDivisor = {};
+  size_t      index         = {};
+  size_t      planeIndex    = INVALID_INDEX;
+  size_t      widthDivisor  = {};
   int         xmlLine       = {};
 };
 
 struct Format
 {
-  std::vector<std::string> blockExtent      = {};
-  std::string              blockSize        = {};
-  std::string              chroma           = {};
-  std::string              classAttribute   = {};
-  std::vector<Component>   components       = {};
-  std::string              compressed       = {};
-  std::string              name             = {};
-  std::string              packed           = {};
-  std::vector<Plane>       planes           = {};
-  NameElement              spirvImageFormat = {};
-  std::string              texelsPerBlock   = {};
-  int                      xmlLine          = {};
+  std::string            name             = {};
+  std::vector<size_t>    blockExtent      = {};
+  size_t                 blockSize        = {};
+  size_t                 chroma           = {};
+  std::string            className        = {};
+  std::vector<Component> components       = {};
+  std::string            compressed       = {};
+  size_t                 packed           = INVALID_INDEX;
+  std::vector<Plane>     planes           = {};
+  NameElement            spirvImageFormat = {};
+  size_t                 texelsPerBlock   = {};
+  int                    xmlLine          = {};
 };
 
 struct DynamicStateCmd

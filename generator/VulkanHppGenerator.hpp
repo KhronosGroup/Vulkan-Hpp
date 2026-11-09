@@ -13,8 +13,6 @@
 #include <tinyxml2.h>
 #include <vector>
 
-constexpr size_t INVALID_INDEX = static_cast<size_t>( ~0 );
-
 template <typename BitType>
 class Flags
 {
@@ -181,38 +179,6 @@ private:
     std::map<std::string, TypeDefine> callees = {};
     std::map<std::string, TypeDefine> callers = {};
     std::map<std::string, TypeDefine> values  = {};
-  };
-
-  struct ComponentData
-  {
-    std::string bits          = {};
-    std::string name          = {};
-    std::string numericFormat = {};
-    std::string planeIndex    = {};
-    int         xmlLine       = {};
-  };
-
-  struct PlaneData
-  {
-    std::string compatible    = {};
-    std::string heightDivisor = {};
-    std::string widthDivisor  = {};
-    int         xmlLine       = {};
-  };
-
-  struct FormatData
-  {
-    std::string                blockExtent      = {};
-    std::string                blockSize        = {};
-    std::string                chroma           = {};
-    std::string                classAttribute   = {};
-    std::vector<ComponentData> components       = {};
-    std::string                compressed       = {};
-    std::string                packed           = {};
-    std::vector<PlaneData>     planes           = {};
-    std::string                spirvImageFormat = {};
-    std::string                texelsPerBlock   = {};
-    int                        xmlLine          = {};
   };
 
   struct HandleData
@@ -632,16 +598,16 @@ private:
   std::string generateExtensionsList( std::string const & type ) const;
   std::string generateExtensionTypeTest( std::string const & type ) const;
   std::string generateFormatTraits() const;
-  std::string generateFormatTraitsCases( EnumData const &                                 enumData,
-                                         std::function<bool( FormatData const & )>        predicate,
-                                         std::function<std::string( FormatData const & )> generator ) const;
-  std::string generateFormatTraitsList( EnumData const & enumData, std::function<bool( FormatData const & )> predicate ) const;
+  std::string generateFormatTraitsCases( EnumData const &                             enumData,
+                                         std::function<bool( Format const & )>        predicate,
+                                         std::function<std::string( Format const & )> generator ) const;
+  std::string generateFormatTraitsList( EnumData const & enumData, std::function<bool( Format const & )> predicate ) const;
   template <typename T>
-  std::string generateFormatTraitsSubCases( FormatData const &                                          formatData,
-                                            std::function<std::vector<T> const &( FormatData const & )> accessor,
-                                            std::string const &                                         subCaseName,
-                                            std::function<std::string( T const & subCaseData )>         generator,
-                                            std::string const &                                         defaultReturn ) const;
+  std::string generateFormatTraitsSubCases( Format const &                                          format,
+                                            std::function<std::vector<T> const &( Format const & )> accessor,
+                                            std::string const &                                     subCaseName,
+                                            std::function<std::string( T const & subCaseData )>     generator,
+                                            std::string const &                                     defaultReturn ) const;
   std::string generateFuncPointer( TypeFuncPointer const & funcPointer ) const;
   std::string generateFuncPointers() const;
   std::string generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy, bool raii ) const;
@@ -946,7 +912,6 @@ private:
   std::string                       m_copyrightMessage;
   DefinesPartition                  m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
   std::map<std::string, EnumData>   m_enums;
-  std::map<std::string, FormatData> m_formats;
   std::map<std::string, HandleData> m_handles;
   std::set<std::string>             m_RAIISpecialFunctions;
   std::map<std::string, TypeData>   m_types;
@@ -957,11 +922,11 @@ private:
 };
 
 template <typename T>
-std::string VulkanHppGenerator::generateFormatTraitsSubCases( FormatData const &                                          formatData,
-                                                              std::function<std::vector<T> const &( FormatData const & )> accessor,
-                                                              std::string const &                                         subCaseName,
-                                                              std::function<std::string( T const & subCaseData )>         generator,
-                                                              std::string const &                                         defaultReturn ) const
+std::string VulkanHppGenerator::generateFormatTraitsSubCases( Format const &                                          formatData,
+                                                              std::function<std::vector<T> const &( Format const & )> accessor,
+                                                              std::string const &                                     subCaseName,
+                                                              std::function<std::string( T const & subCaseData )>     generator,
+                                                              std::string const &                                     defaultReturn ) const
 {
   std::string const subCasesTemplate = R"(
         switch( ${subCaseName} )

@@ -163,7 +163,7 @@ int main()
     {
       case vk::Result::eSuccess: break;
       case vk::Result::ePipelineCompileRequiredEXT:
-        // something meaningfull here
+        // something meaningful here
         break;
       default: assert( false );  // should never happen
     }
@@ -200,7 +200,7 @@ void main()
     {
       case vk::Result::eSuccess: break;
       case vk::Result::ePipelineCompileRequiredEXT:
-        // something meaningfull here
+        // something meaningful here
         break;
       default: assert( false );  // should never happen
     }

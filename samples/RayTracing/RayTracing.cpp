@@ -1048,7 +1048,7 @@ int main()
     {
       case vk::Result::eSuccess: rayTracingPipeline = rvPipeline.value; break;
       case vk::Result::ePipelineCompileRequiredEXT:
-        // something meaningfull here
+        // something meaningful here
         break;
       default: assert( false );  // should never happen
     }

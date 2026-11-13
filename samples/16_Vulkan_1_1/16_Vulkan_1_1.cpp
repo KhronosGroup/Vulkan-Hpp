@@ -30,7 +30,7 @@ int main()
     desiredVersionString += std::to_string( desiredMinorVersion );
 
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    // initialize the DipatchLoaderDynamic to use
+    // initialize the DispatchLoaderDynamic to use
     VULKAN_HPP_DEFAULT_DISPATCHER.init();
 #endif
 

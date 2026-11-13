@@ -73,7 +73,7 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 #endif
 
 // XLib.h defines True/False, which collides with our VULKAN_HPP_NAMESPACE::True/VULKAN_HPP_NAMESPACE::False
-// ->  undef them and provide some namepace-secure constexpr
+// ->  undef them and provide some namespace-secure constexpr
 #if defined( True )
 #  undef True
 constexpr int True = 1;

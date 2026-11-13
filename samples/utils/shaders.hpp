@@ -3,13 +3,15 @@
 
 #pragma once
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <string>
 #include <vector>
 #include <vulkan/vulkan.hpp>
+#endif
 
 namespace vk
 {
-  namespace su
+  VULKAN_HPP_EXPORT namespace su
   {
     vk::ShaderModule createShaderModule( vk::Device const & device, vk::ShaderStageFlagBits shaderStage, std::string const & shaderText );
 
@@ -18,7 +20,7 @@ namespace vk
 }  // namespace vk
 
 // vertex shader with (P)osition and (C)olor in and (C)olor out
-const std::string vertexShaderText_PC_C = R"(
+VULKAN_HPP_EXPORT inline const std::string vertexShaderText_PC_C = R"(
 #version 400
 
 #extension GL_ARB_separate_shader_objects : enable
@@ -42,7 +44,7 @@ void main()
 )";
 
 // vertex shader with (P)osition and (T)exCoord in and (T)exCoord out
-const std::string vertexShaderText_PT_T = R"(
+VULKAN_HPP_EXPORT inline const std::string vertexShaderText_PT_T = R"(
 #version 400
 
 #extension GL_ARB_separate_shader_objects : enable
@@ -66,7 +68,7 @@ void main()
 )";
 
 // fragment shader with (C)olor in and (C)olor out
-const std::string fragmentShaderText_C_C = R"(
+VULKAN_HPP_EXPORT inline const std::string fragmentShaderText_C_C = R"(
 #version 400
 
 #extension GL_ARB_separate_shader_objects : enable
@@ -83,7 +85,7 @@ void main()
 )";
 
 // fragment shader with (T)exCoord in and (C)olor out
-const std::string fragmentShaderText_T_C = R"(
+VULKAN_HPP_EXPORT inline const std::string fragmentShaderText_T_C = R"(
 #version 400
 
 #extension GL_ARB_separate_shader_objects : enable

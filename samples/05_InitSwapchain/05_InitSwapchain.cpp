@@ -1,9 +1,19 @@
 // SPDX-FileCopyrightText: 2018-2026 NVIDIA CORPORATION
 // SPDX-License-Identifier: Apache-2.0
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+#include <vulkan/vulkan_core.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "05_InitSwapchain";
 static char const * EngineName = "Vulkan.hpp";
@@ -20,12 +30,12 @@ int main()
     vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
     std::vector<vk::QueueFamilyProperties> queueFamilyProperties    = physicalDevice.getQueueFamilyProperties();
-    uint32_t                               graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( queueFamilyProperties );
+    std::uint32_t                          graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( queueFamilyProperties );
 
     /* VULKAN_HPP_KEY_START */
 
-    uint32_t           width  = 64;
-    uint32_t           height = 64;
+    std::uint32_t      width  = 64;
+    std::uint32_t      height = 64;
     vk::su::WindowData window = vk::su::createWindow( AppName, { width, height } );
     vk::SurfaceKHR     surface;
     {
@@ -36,19 +46,19 @@ int main()
 
     // determine a queueFamilyIndex that suports present
     // first check if the graphicsQueueFamiliyIndex is good enough
-    size_t presentQueueFamilyIndex = physicalDevice.getSurfaceSupportKHR( static_cast<uint32_t>( graphicsQueueFamilyIndex ), surface )
+    std::size_t presentQueueFamilyIndex = physicalDevice.getSurfaceSupportKHR( static_cast<std::uint32_t>( graphicsQueueFamilyIndex ), surface )
                                      ? graphicsQueueFamilyIndex
                                      : queueFamilyProperties.size();
     if ( presentQueueFamilyIndex == queueFamilyProperties.size() )
     {
       // the graphicsQueueFamilyIndex doesn't support present -> look for an other family index that supports both
       // graphics and present
-      for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
+      for ( std::size_t i = 0; i < queueFamilyProperties.size(); i++ )
       {
         if ( ( queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics ) &&
-             physicalDevice.getSurfaceSupportKHR( static_cast<uint32_t>( i ), surface ) )
+             physicalDevice.getSurfaceSupportKHR( static_cast<std::uint32_t>( i ), surface ) )
         {
-          graphicsQueueFamilyIndex = vk::su::checked_cast<uint32_t>( i );
+          graphicsQueueFamilyIndex = vk::su::checked_cast<std::uint32_t>( i );
           presentQueueFamilyIndex  = i;
           break;
         }
@@ -57,9 +67,9 @@ int main()
       {
         // there's nothing like a single family index that supports both graphics and present -> look for an other
         // family index that supports present
-        for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
+        for ( std::size_t i = 0; i < queueFamilyProperties.size(); i++ )
         {
-          if ( physicalDevice.getSurfaceSupportKHR( static_cast<uint32_t>( i ), surface ) )
+          if ( physicalDevice.getSurfaceSupportKHR( static_cast<std::uint32_t>( i ), surface ) )
           {
             presentQueueFamilyIndex = i;
             break;
@@ -82,7 +92,7 @@ int main()
 
     vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
     vk::Extent2D               swapchainExtent;
-    if ( surfaceCapabilities.currentExtent.width == (std::numeric_limits<uint32_t>::max)() )
+    if ( surfaceCapabilities.currentExtent.width == (std::numeric_limits<std::uint32_t>::max)() )
     {
       // If the surface size is undefined, the size is set to the size of the images requested.
       swapchainExtent.width  = vk::su::clamp( width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width );
@@ -123,7 +133,7 @@ int main()
                                                     true,
                                                     nullptr );
 
-    uint32_t queueFamilyIndices[2] = { static_cast<uint32_t>( graphicsQueueFamilyIndex ), static_cast<uint32_t>( presentQueueFamilyIndex ) };
+    std::uint32_t queueFamilyIndices[2] = { static_cast<std::uint32_t>( graphicsQueueFamilyIndex ), static_cast<std::uint32_t>( presentQueueFamilyIndex ) };
     if ( graphicsQueueFamilyIndex != presentQueueFamilyIndex )
     {
       // If the graphics and present queues are from different queue families, we either have to explicitly transfer
@@ -166,17 +176,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

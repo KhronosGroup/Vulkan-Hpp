@@ -4,11 +4,17 @@
 // VulkanHpp Samples : InstanceLayerExtensionProperties
 //                     Get list of global layers and their associated extensions, if any.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iostream>
 #include <sstream>
 #include <vector>
+#endif
+
 
 struct PropertyData
 {
@@ -75,17 +81,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

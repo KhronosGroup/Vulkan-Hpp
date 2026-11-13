@@ -5,9 +5,15 @@
 //                     Get global extension properties to know what extension are available to enable at CreateInstance
 //                     time.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include <iostream>
 #include <sstream>
 #include <vulkan/vulkan.hpp>
+#endif
 
 int main()
 {
@@ -21,7 +27,7 @@ int main()
 
     std::sort( extensionProperties.begin(),
                extensionProperties.end(),
-               []( vk::ExtensionProperties const & a, vk::ExtensionProperties const & b ) { return strcmp( a.extensionName, b.extensionName ) < 0; } );
+               []( vk::ExtensionProperties const & a, vk::ExtensionProperties const & b ) { return std::strcmp( a.extensionName, b.extensionName ) < 0; } );
 
     std::cout << "Instance Extensions:" << std::endl;
     for ( auto const & ep : extensionProperties )
@@ -36,17 +42,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

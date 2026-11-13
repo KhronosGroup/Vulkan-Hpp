@@ -4,10 +4,16 @@
 // VulkanHpp Samples : InstanceLayerProperties
 //                     Get global layer properties to know what layers are available to enable at CreateInstance time.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import std;
+import utils;
+import vulkan;
+#else
 #include <iostream>
 #include <sstream>
 #include <vector>
 #include <vulkan/vulkan.hpp>
+#endif
 
 int main()
 {
@@ -37,17 +43,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

@@ -4,14 +4,22 @@
 // VulkanHpp Samples : TexelBuffer
 //                     Use a texel buffer to draw a green triangle.
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+#include <cassert>
+import std;
+import utils;
+import vulkan;
+#else
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
 #include <thread>
+#endif
+
 
 static char const * AppName    = "TexelBuffer";
 static char const * EngineName = "Vulkan.hpp";
@@ -58,7 +66,7 @@ int main()
     if ( physicalDeviceProperties.limits.maxTexelBufferElements < 4 )
     {
       std::cout << "maxTexelBufferElements too small\n";
-      exit( -1 );
+      std::exit( -1 );
     }
 
     vk::Format           texelFormat      = vk::Format::eR32Sfloat;
@@ -66,12 +74,12 @@ int main()
     if ( !( formatProperties.bufferFeatures & vk::FormatFeatureFlagBits::eUniformTexelBuffer ) )
     {
       std::cout << "R32_SFLOAT format unsupported for texel buffer\n";
-      exit( -1 );
+      std::exit( -1 );
     }
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::CommandPool   commandPool = device.createCommandPool( { {}, graphicsAndPresentQueueFamilyIndex.first } );
@@ -113,7 +121,7 @@ int main()
     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( descriptorPool, descriptorSetLayout );
     vk::DescriptorSet             descriptorSet = device.allocateDescriptorSets( descriptorSetAllocateInfo ).front();
     vk::su::updateDescriptorSets(
-      device, descriptorSet, { { vk::DescriptorType::eUniformTexelBuffer, texelBufferData.buffer, VK_WHOLE_SIZE, texelBufferView } }, {} );
+      device, descriptorSet, { { vk::DescriptorType::eUniformTexelBuffer, texelBufferData.buffer, vk::WholeSize, texelBufferView } }, {} );
 
     vk::PipelineCache pipelineCache    = device.createPipelineCache( vk::PipelineCacheCreateInfo() );
     vk::Pipeline      graphicsPipeline = vk::su::createGraphicsPipeline( device,
@@ -131,7 +139,7 @@ int main()
 
     // Get the index of the next available swapchain image:
     vk::Semaphore             imageAcquiredSemaphore = device.createSemaphore( vk::SemaphoreCreateInfo() );
-    vk::ResultValue<uint32_t> currentBuffer = device.acquireNextImageKHR( swapChainData.swapChain, vk::su::FenceTimeout, imageAcquiredSemaphore, nullptr );
+    vk::ResultValue<std::uint32_t> currentBuffer = device.acquireNextImageKHR( swapChainData.swapChain, vk::su::FenceTimeout, imageAcquiredSemaphore, nullptr );
     assert( currentBuffer.result == vk::Result::eSuccess );
     assert( currentBuffer.value < framebuffers.size() );
 
@@ -160,7 +168,7 @@ int main()
     vk::SubmitInfo         submitInfo( imageAcquiredSemaphore, waitDestinationStageMask, commandBuffer );
     graphicsQueue.submit( submitInfo, drawFence );
 
-    while ( vk::Result::eTimeout == device.waitForFences( drawFence, VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device.waitForFences( drawFence, vk::True, vk::su::FenceTimeout ) )
       ;
 
     vk::Result result = presentQueue.presentKHR( vk::PresentInfoKHR( {}, swapChainData.swapChain, currentBuffer.value ) );
@@ -206,17 +214,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

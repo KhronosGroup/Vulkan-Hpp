@@ -1041,7 +1041,7 @@ namespace vk
       // in non-debug mode just use the InstanceCreateInfo for instance creation
       vk::StructureChain<vk::InstanceCreateInfo> instanceCreateInfo( { instanceCreateFlagBits, &applicationInfo, layers, extensions } );
 #else
-      // in debug mode, addionally use the debugUtilsMessengerCallback in instance creation!
+      // in debug mode, additionally use the debugUtilsMessengerCallback in instance creation!
       vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
                                                            vk::DebugUtilsMessageSeverityFlagBitsEXT::eError );
       vk::DebugUtilsMessageTypeFlagsEXT messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |

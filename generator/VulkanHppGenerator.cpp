@@ -688,7 +688,7 @@ void VulkanHppGenerator::generateToStringHppFile() const
 
 void VulkanHppGenerator::prepareRAIIHandles()
 {
-  // filter out functions that are not usefull on this level of abstraction (like vkGetInstanceProcAddr)
+  // filter out functions that are not useful on this level of abstraction (like vkGetInstanceProcAddr)
   // and all the destruction functions, as they are used differently
   assert( m_handles.begin()->first.empty() );
   for ( auto handleIt = std::next( m_handles.begin() ); handleIt != m_handles.end(); ++handleIt )
@@ -779,7 +779,7 @@ void VulkanHppGenerator::checkCommandCorrectness() const
                    command.xmlLine,
                    "command <" + command.name + "> not required in any feature or extension" );
 
-    // check for unknown error or succes codes
+    // check for unknown error or success codes
     for ( auto const & ec : command.errorCodes )
     {
       checkForError( resultCodes.contains( ec ), command.xmlLine, "command uses unknown error code <" + ec + ">" );
@@ -808,7 +808,7 @@ void VulkanHppGenerator::checkCommandCorrectness() const
     // check that all parameter types as well as the return type are known types
     for ( auto const & p : command.params )
     {
-      checkForError( m_types.contains( p.type.name ), p.xmlLine, "comand uses parameter of unknown type <" + p.type.name + ">" );
+      checkForError( m_types.contains( p.type.name ), p.xmlLine, "command uses parameter of unknown type <" + p.type.name + ">" );
     }
     checkForError( m_types.contains( command.returnType.name ), command.xmlLine, "command uses unknown return type <" + command.returnType.name + ">" );
   }
@@ -3678,7 +3678,7 @@ std::string VulkanHppGenerator::generateCommand2ReturnsEnum( std::string const &
   std::string const & returnType1 = command.params[returnParams[1]].type.name;
   if ( isHandleType( returnType1 ) )
   {
-    // the return params specify an enumaration of handles
+    // the return params specify an enumeration of handles
     return generateCommandSetInclusive( name,
                                         command,
                                         initialSkipCount,
@@ -6166,7 +6166,7 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandAssignment( 
 {
   if ( commandName == "vkGetInstanceProcAddr" )
   {
-    // Don't overwite vkGetInstanceProcAddr with NULL.
+    // Don't overwrite vkGetInstanceProcAddr with NULL.
     return "";
   }
   std::string str = "      " + commandName + " = PFN_" + commandName + "( vkGet" + ( ( firstArg == "device" ) ? "Device" : "Instance" ) + "ProcAddr( " +
@@ -11112,7 +11112,7 @@ ${byString}
         auto litit = lenIts.find( mit );
         if ( litit != lenIts.end() )
         {
-          // len arguments just have an initalizer, from the array size
+          // len arguments just have an initializer, from the array size
           bool mutuallyExclusiveLens = structsWithMutuallyExclusiveArrays.contains( vkStruct.name );
           initializers.push_back( mit->name + "( " + generateLenInitializer( mit, litit, mutuallyExclusiveLens ) + " )" );
           sizeChecks += generateSizeCheck( litit->second, stripPrefix( vkStruct.name, "Vk" ), mutuallyExclusiveLens );
@@ -11589,7 +11589,7 @@ ${deprecatedConstructors}
   std::string              reflect         = replaceWithMap( reflectTemplate, { { "memberNames", memberNames }, { "memberTypes", memberTypes } } );
 
   // operator==() and operator!=()
-  // only structs without a union as a member can have a meaningfull == and != operation; we filter them out
+  // only structs without a union as a member can have a meaningful == and != operation; we filter them out
   std::string compareOperators;
   if ( !containsUnion( vkStruct.name ) )
   {
@@ -11825,12 +11825,12 @@ std::tuple<std::string, std::string, std::string, std::string> VulkanHppGenerato
     std::string type;
     if ( member.bitCount && member.type.name.starts_with( "Vk" ) )
     {
-      assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encounterd a different case
+      assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encountered a different case
       type = member.type.name;
     }
     else if ( member.type.name.starts_with( "PFN_vk" ) )
     {
-      assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encounterd a different case
+      assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encountered a different case
       type = "PFN_" + stripPrefix( member.type.name, "PFN_vk" );
     }
     else if ( member.arraySizes.empty() )
@@ -13722,7 +13722,7 @@ std::string VulkanHppGenerator::toString( TypeCategory category ) const
     case TypeCategory::Handle     : return "handle";
     case TypeCategory::Struct     : return "struct";
     case TypeCategory::Union      : return "union";
-    case TypeCategory::Unknown    : return "unkown";
+    case TypeCategory::Unknown    : return "unknown";
     default                       : assert( false ); return "";
   }
 }

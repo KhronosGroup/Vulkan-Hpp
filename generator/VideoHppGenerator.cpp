@@ -445,7 +445,7 @@ std::string VideoHppGenerator::generateStructMembers( CategoryStruct const & cat
     std::string type;
     if ( member.bitCount && member.type.name.starts_with( "StdVideo" ) )
     {
-      assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encounterd a different case
+      assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encountered a different case
       type = member.type.name;
     }
     else if ( member.arraySizes.empty() )

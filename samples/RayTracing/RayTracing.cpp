@@ -14,7 +14,7 @@
 #  endif
 #elif defined( __GNUC__ )
 #else
-// unknow compiler... just ignore the warnings for yourselves ;)
+// unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
 #include <vulkan/vulkan.hpp>

@@ -12,7 +12,7 @@
 #elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #else
-// unknow compiler... just ignore the warnings for yourselves ;)
+// unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
 #include "../../samples/utils/geometries.hpp"

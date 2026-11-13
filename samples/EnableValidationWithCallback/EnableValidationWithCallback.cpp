@@ -175,7 +175,7 @@ int main()
 
 #if true
     // The commandPool is not destroyed automatically
-    // That is, the device is destroyed before the commmand pool and will trigger a validation error.
+    // That is, the device is destroyed before the command pool and will trigger a validation error.
     std::cout << "*** INTENTIONALLY destroying the Device before destroying a CommandPool ***\n";
     std::cout << "*** The following error message is EXPECTED ***\n";
 #else

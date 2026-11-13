@@ -62,7 +62,7 @@ int main()
 
     /* VULKAN_KEY_START */
 
-    // in order to get a clean desctruction sequence, instantiate the DeviceMemory for the vertex buffer first
+    // in order to get a clean destruction sequence, instantiate the DeviceMemory for the vertex buffer first
     vk::raii::DeviceMemory deviceMemory( nullptr );
 
     // create a vertex buffer for some vertex and color data

@@ -57,7 +57,7 @@ int main()
     // See if we can use a linear tiled image for a texture, if not, we will need a staging buffer for the texture data
     bool needsStaging = !( formatProperties.linearTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage );
 
-    // in order to get a clean desctruction sequence, instantiate the DeviceMemory for the image first
+    // in order to get a clean destruction sequence, instantiate the DeviceMemory for the image first
     vk::raii::DeviceMemory imageMemory( nullptr );
 
     vk::ImageCreateInfo imageCreateInfo( {},

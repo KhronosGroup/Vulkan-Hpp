@@ -11,7 +11,7 @@
 #elif defined( __GNUC__ )
 // no need to ignore any warnings with GCC
 #else
-// unknow compiler... just ignore the warnings for yourselves ;)
+// unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
 #include "../utils/geometries.hpp"
@@ -147,7 +147,7 @@ int main()
     {
       case vk::Result::eSuccess: break;
       case vk::Result::ePipelineCompileRequiredEXT:
-        // something meaningfull here
+        // something meaningful here
         break;
       default: assert( false );  // should never happen
     }

@@ -10,7 +10,7 @@
 #elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"
 #else
-// unknow compiler... just ignore the warnings for yourselves ;)
+// unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
 #include "../test_macros.hpp"
@@ -53,7 +53,7 @@ int main()
     // get the QueueFamilyProperties of the first PhysicalDevice
     std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
-    // get the first index into queueFamiliyProperties which supports graphics
+    // get the first index into queueFamilyProperties which supports graphics
     std::size_t graphicsQueueFamilyIndex =
       std::distance( queueFamilyProperties.begin(),
                      std::find_if( queueFamilyProperties.begin(),

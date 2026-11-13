@@ -2756,7 +2756,7 @@ std::tuple<std::string, Type, std::vector<std::string>, int> parseNameAndTypeMod
                      child->PreviousSibling() && ( strcmp( child->PreviousSibling()->Value(), "[" ) == 0 ) && child->NextSibling() &&
                        ( strcmp( child->NextSibling()->Value(), "]" ) == 0 ),
                      line,
-                     std::string( "array specifiation is ill-formatted: <" ) + modifiers.arraySizes.back() + ">" );
+                     std::string( "array specification is ill-formatted: <" ) + modifiers.arraySizes.back() + ">" );
     }
     else if ( value == "name" )
     {
@@ -4487,7 +4487,7 @@ StructMember parseStructMember( tinyxml2::XMLElement const * element )
                      child->PreviousSibling() && ( strcmp( child->PreviousSibling()->Value(), "[" ) == 0 ) && child->NextSibling() &&
                        ( strcmp( child->NextSibling()->Value(), "]" ) == 0 ),
                      line,
-                     "array specifiation is ill-formatted" );
+                     "array specification is ill-formatted" );
       member.arraySizes.push_back( parseText( child ) );
     }
     else if ( value == "name" )
@@ -4877,7 +4877,7 @@ Tags parseTags( tinyxml2::XMLElement const * element )
   {
     Tag tag = parseTag( child );
 
-    checkForError( "vk.xml", !containsByName( tags.tags, tag.name ), tag.xmlLine, "tag <" + tag.name + "> already specfied" );
+    checkForError( "vk.xml", !containsByName( tags.tags, tag.name ), tag.xmlLine, "tag <" + tag.name + "> already specified" );
 
     tags.tags.push_back( std::move( tag ) );
   }

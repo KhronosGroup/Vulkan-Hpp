@@ -708,7 +708,7 @@ std::string replaceWithMap( std::string const & input, std::map<std::string, std
     result += match.prefix().str() + ( ( itReplacement != replacements.end() ) ? itReplacement->second : match[0].str() );
     ++it;
 
-    // we've passed the last match. Append the rest of the orignal string
+    // we've passed the last match. Append the rest of the original string
     if ( it == end )
     {
       result += match.suffix().str();

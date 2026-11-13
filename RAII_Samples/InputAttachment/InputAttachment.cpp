@@ -11,7 +11,7 @@
 #elif defined( __GNUC__ )
 // no need to ignore any warnings with GCC
 #else
-// unknow compiler... just ignore the warnings for yourselves ;)
+// unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
 #include "../../samples/utils/geometries.hpp"
@@ -100,7 +100,7 @@ int main()
     // attachment which will be cleared to yellow, and then used by the shaders to color the drawn triangle. Final
     // result should be a yellow triangle
 
-    // in order to get a clean desctruction sequence, instantiate the DeviceMemory for the vertex buffer first
+    // in order to get a clean destruction sequence, instantiate the DeviceMemory for the vertex buffer first
     vk::raii::DeviceMemory inputMemory( nullptr );
 
     // Create the image that will be used as the input attachment

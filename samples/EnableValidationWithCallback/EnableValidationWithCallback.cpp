@@ -12,7 +12,7 @@
 #elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #else
-// unknow compiler... just ignore the warnings for yourselves ;)
+// unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
 #include "../utils/utils.hpp"
@@ -110,7 +110,7 @@ int main()
   try
   {
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    // initialize the DipatchLoaderDynamic to use
+    // initialize the DispatchLoaderDynamic to use
     VULKAN_HPP_DEFAULT_DISPATCHER.init();
 #endif
 
@@ -175,7 +175,7 @@ int main()
 
 #if true
     // The commandPool is not destroyed automatically
-    // That is, the device is destroyed before the commmand pool and will trigger a validation error.
+    // That is, the device is destroyed before the command pool and will trigger a validation error.
     std::cout << "*** INTENTIONALLY destroying the Device before destroying a CommandPool ***\n";
     std::cout << "*** The following error message is EXPECTED ***\n";
 #else

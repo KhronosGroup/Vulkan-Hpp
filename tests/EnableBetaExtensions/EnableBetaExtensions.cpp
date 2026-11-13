@@ -14,7 +14,7 @@
 #  pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #  pragma GCC diagnostic ignored "-Wunused-variable"
 #else
-// unknow compiler... just ignore the warnings for yourselves ;)
+// unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
 

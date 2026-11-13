@@ -34,8 +34,8 @@ int main()
     glfwCreateWindowSurface( *instance, window.handle, nullptr, &_surface );
     vk::raii::SurfaceKHR surface( instance, _surface );
 
-    // determine a queueFamilyIndex that suports present
-    // first check if the graphicsQueueFamiliyIndex is good enough
+    // determine a queueFamilyIndex that supports present
+    // first check if the graphicsQueueFamilyIndex is good enough
     uint32_t presentQueueFamilyIndex = physicalDevice.getSurfaceSupportKHR( graphicsQueueFamilyIndex, surface )
                                        ? graphicsQueueFamilyIndex
                                        : vk::su::checked_cast<uint32_t>( queueFamilyProperties.size() );

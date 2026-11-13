@@ -34,8 +34,8 @@ int main()
       surface = vk::SurfaceKHR( _surface );
     }
 
-    // determine a queueFamilyIndex that suports present
-    // first check if the graphicsQueueFamiliyIndex is good enough
+    // determine a queueFamilyIndex that supports present
+    // first check if the graphicsQueueFamilyIndex is good enough
     size_t presentQueueFamilyIndex = physicalDevice.getSurfaceSupportKHR( static_cast<uint32_t>( graphicsQueueFamilyIndex ), surface )
                                      ? graphicsQueueFamilyIndex
                                      : queueFamilyProperties.size();

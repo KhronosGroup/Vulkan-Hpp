@@ -110,7 +110,7 @@ int main()
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
 
-    // in order to get a clean desctruction sequence, instantiate the DeviceMemory for the result buffer first
+    // in order to get a clean destruction sequence, instantiate the DeviceMemory for the result buffer first
     vk::raii::DeviceMemory queryResultMemory( nullptr );
 
     /* Allocate a uniform buffer that will take query results. */

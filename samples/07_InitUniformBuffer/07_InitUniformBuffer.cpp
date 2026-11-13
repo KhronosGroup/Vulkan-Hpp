@@ -11,7 +11,7 @@
 #elif defined( __GNUC__ )
 // don't know how to switch off that warning here
 #else
-// unknow compiler... just ignore the warnings for yourselves ;)
+// unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
 #include "../utils/utils.hpp"

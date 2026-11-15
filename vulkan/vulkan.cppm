@@ -28,28 +28,12 @@ import std;
 
 VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 368, "Wrong VK_HEADER_VERSION!" );
 
-#if defined( __clang__ )
-#  pragma clang diagnostic push
-#  pragma clang diagnostic ignored "-Winclude-angled-in-module-purview"
-#elif defined( _MSC_VER )
-#  pragma warning( push )
-#  pragma warning( disable : 5244 )
-#elif defined( __GNUC__ )
-#endif
-
-#include <vulkan/vulkan.hpp>
-#include <vulkan/vulkan_extension_inspection.hpp>
-#include <vulkan/vulkan_format_traits.hpp>
-#include <vulkan/vulkan_hash.hpp>
-#include <vulkan/vulkan_raii.hpp>
-#include <vulkan/vulkan_shared.hpp>
-
-#if defined( __clang__ )
-#  pragma clang diagnostic pop
-#elif defined( _MSC_VER )
-#  pragma warning( pop )
-#elif defined( __GNUC__ )
-#endif
+#include "vulkan/vulkan.hpp"
+#include "vulkan/vulkan_extension_inspection.hpp"
+#include "vulkan/vulkan_format_traits.hpp"
+#include "vulkan/vulkan_hash.hpp"
+#include "vulkan/vulkan_raii.hpp"
+#include "vulkan/vulkan_shared.hpp"
 
 export {
   // This VkFlags type is used as part of a bitfield in some structures.

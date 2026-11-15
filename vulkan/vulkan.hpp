@@ -8659,9 +8659,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   };
 }  // namespace VULKAN_HPP_NAMESPACE
 
-#include <vulkan/vulkan_enums.hpp>
+#include "vulkan/vulkan_enums.hpp"
 #if !defined( VULKAN_HPP_NO_TO_STRING )
-#  include <vulkan/vulkan_to_string.hpp>
+#  include "vulkan/vulkan_to_string.hpp"
 #endif
 
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
@@ -14305,9 +14305,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 }  // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off
-#include <vulkan/vulkan_handles.hpp>
-#include <vulkan/vulkan_structs.hpp>
-#include <vulkan/vulkan_funcs.hpp>
+#include "vulkan/vulkan_handles.hpp"
+#include "vulkan/vulkan_structs.hpp"
+#include "vulkan/vulkan_funcs.hpp"
 // clang-format on
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE

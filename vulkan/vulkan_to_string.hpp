@@ -2261,6 +2261,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       result += " OpacityMicromapDisallowMixedSpecialIndexKHR |";
     if ( value & PipelineCreateFlagBits2::e64BitIndexingEXT )
       result += " 64BitIndexingEXT |";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    if ( value & PipelineCreateFlagBits2::eRayTracingAllowMultiLevelAccelerationStructuresAMDX )
+      result += " RayTracingAllowMultiLevelAccelerationStructuresAMDX |";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     if ( result.size() > 1 )
       result.back() = '}';
@@ -6181,13 +6185,16 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT: return "PhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT";
       case StructureType::eComputeOccupancyPriorityParametersNV                    : return "ComputeOccupancyPriorityParametersNV";
       case StructureType::ePhysicalDeviceComputeOccupancyPriorityFeaturesNV        : return "PhysicalDeviceComputeOccupancyPriorityFeaturesNV";
-      case StructureType::ePhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR    : return "PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR";
-      case StructureType::ePhysicalDeviceMaintenance11FeaturesKHR                  : return "PhysicalDeviceMaintenance11FeaturesKHR";
-      case StructureType::eQueueFamilyOptimalImageTransferGranularityPropertiesKHR : return "QueueFamilyOptimalImageTransferGranularityPropertiesKHR";
-      case StructureType::ePhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT  : return "PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT";
-      case StructureType::ePhysicalDeviceCooperativeMatrixInfo2EXT                 : return "PhysicalDeviceCooperativeMatrixInfo2EXT";
-      case StructureType::eCooperativeMatrixProperties2EXT                         : return "CooperativeMatrixProperties2EXT";
-      case StructureType::ePhysicalDeviceShaderSubgroupPartitionedFeaturesEXT      : return "PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case StructureType::ePhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX: return "PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case StructureType::ePhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR   : return "PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR";
+      case StructureType::ePhysicalDeviceMaintenance11FeaturesKHR                 : return "PhysicalDeviceMaintenance11FeaturesKHR";
+      case StructureType::eQueueFamilyOptimalImageTransferGranularityPropertiesKHR: return "QueueFamilyOptimalImageTransferGranularityPropertiesKHR";
+      case StructureType::ePhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT : return "PhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT";
+      case StructureType::ePhysicalDeviceCooperativeMatrixInfo2EXT                : return "PhysicalDeviceCooperativeMatrixInfo2EXT";
+      case StructureType::eCooperativeMatrixProperties2EXT                        : return "CooperativeMatrixProperties2EXT";
+      case StructureType::ePhysicalDeviceShaderSubgroupPartitionedFeaturesEXT     : return "PhysicalDeviceShaderSubgroupPartitionedFeaturesEXT";
 #if defined( VK_USE_PLATFORM_UBM_SEC )
       case StructureType::eUbmSurfaceCreateInfoSEC: return "UbmSurfaceCreateInfoSEC";
 #endif /*VK_USE_PLATFORM_UBM_SEC*/
@@ -8751,7 +8758,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case PipelineCreateFlagBits2::eRayTracingOpacityMicromapKHR               : return "RayTracingOpacityMicromapKHR";
       case PipelineCreateFlagBits2::eOpacityMicromapDisallowMixedSpecialIndexKHR: return "OpacityMicromapDisallowMixedSpecialIndexKHR";
       case PipelineCreateFlagBits2::e64BitIndexingEXT                           : return "64BitIndexingEXT";
-      default                                                                   : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case PipelineCreateFlagBits2::eRayTracingAllowMultiLevelAccelerationStructuresAMDX: return "RayTracingAllowMultiLevelAccelerationStructuresAMDX";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      default: return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 
@@ -9820,7 +9830,10 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       case AccelerationStructureTypeKHR::eBottomLevel    : return "BottomLevel";
       case AccelerationStructureTypeKHR::eGeneric        : return "Generic";
       case AccelerationStructureTypeKHR::eOpacityMicromap: return "OpacityMicromap";
-      default                                            : return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case AccelerationStructureTypeKHR::eMidLevelAMDX: return "MidLevelAMDX";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      default: return "invalid ( " + toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
 

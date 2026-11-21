@@ -217183,6 +217183,144 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
     using Type = PhysicalDeviceComputeOccupancyPriorityFeaturesNV;
   };
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_multi_level_acceleration_structure ===
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  // wrapper struct for struct VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX, see
+  // https://registry.khronos.org/vulkan/specs/latest/man/html/VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX.html
+  struct PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX
+  {
+    using NativeType = VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX;
+
+    static bool const                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX;
+
+#    if !defined( VULKAN_HPP_NO_CONSTRUCTORS ) && !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX( Bool32 multiLevelAccelerationStructure_ = {},
+                                                                                    void * pNext_                           = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , multiLevelAccelerationStructure{ multiLevelAccelerationStructure_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX( PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const & rhs )
+      VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX( VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX(
+          *reinterpret_cast<PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const *>( &rhs ) )
+    {
+    }
+
+    PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX &
+      operator=( PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#    endif /*VULKAN_HPP_NO_CONSTRUCTORS*/
+
+    PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX &
+      operator=( VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const *>( &rhs );
+      return *this;
+    }
+
+#    if !defined( VULKAN_HPP_NO_SETTERS ) && !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX & setPNext( void * pNext_ ) & VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX && setPNext( void * pNext_ ) && VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return std::move( *this );
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX &
+      setMultiLevelAccelerationStructure( Bool32 multiLevelAccelerationStructure_ ) &
+      VULKAN_HPP_NOEXCEPT
+    {
+      multiLevelAccelerationStructure = multiLevelAccelerationStructure_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX &&
+      setMultiLevelAccelerationStructure( Bool32 multiLevelAccelerationStructure_ ) &&
+      VULKAN_HPP_NOEXCEPT
+    {
+      multiLevelAccelerationStructure = multiLevelAccelerationStructure_;
+      return std::move( *this );
+    }
+#    endif /*VULKAN_HPP_NO_SETTERS*/
+
+    operator VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const *>( this );
+    }
+
+    operator VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX *>( this );
+    }
+
+    operator VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const *() const VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const *>( this );
+    }
+
+    operator VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX *() VULKAN_HPP_NOEXCEPT
+    {
+      return reinterpret_cast<VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX *>( this );
+    }
+
+#    if defined( VULKAN_HPP_USE_REFLECT )
+    std::tuple<StructureType const &, void * const &, Bool32 const &> reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, multiLevelAccelerationStructure );
+    }
+#    endif
+
+#    if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const & ) const = default;
+#    else
+    bool operator==( PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#      if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#      else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( multiLevelAccelerationStructure == rhs.multiLevelAccelerationStructure );
+#      endif
+    }
+
+    bool operator!=( PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#    endif
+
+  public:
+    StructureType sType                           = StructureType::ePhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX;
+    void *        pNext                           = {};
+    Bool32        multiLevelAccelerationStructure = {};
+  };
+
+#    if 20 <= VULKAN_HPP_CPP_VERSION
+  template <>
+  struct CppType<VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX>
+  {
+    using Type = PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX;
+  };
+#    endif
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX>
+  {
+    using Type = PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX;
+  };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#endif   /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_KHR_maintenance11 ===
 
   // wrapper struct for struct VkPhysicalDeviceMaintenance11FeaturesKHR, see

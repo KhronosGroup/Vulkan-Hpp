@@ -50,12 +50,10 @@ jobs:
           { os: windows-2022,        cxx: cl,               c: cl,             arch: x86, gen: Visual Studio 17 2022, cxx_max: 23 },
           { os: windows-2022,        cxx: cl,               c: cl,             arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
           { os: windows-2022,        cxx: clang-cl,         c: clang-cl,       arch: x64, gen: Ninja,                 cxx_max: 23 },
-          # { os: windows-2022,        cxx: c++,              c: cc,             arch: x64, gen: Visual Studio 17 2022, cxx_max: 23 },
 
           { os: windows-2025,        cxx: cl,               c: cl,             arch: x86, gen: Visual Studio 18 2026, cxx_max: 23 },
           { os: windows-2025,        cxx: cl,               c: cl,             arch: x64, gen: Visual Studio 18 2026, cxx_max: 23 },
-          { os: windows-2025,        cxx: clang-cl,         c: clang-cl,       arch: x64, gen: Ninja,                 cxx_max: 23 },
-          # { os: windows-2025-vs2026, cxx: c++,              c: cc,             arch: x64, gen: Visual Studio 18 2026, cxx_max: 23 },
+          # { os: windows-2025,        cxx: clang-cl,         c: clang-cl,       arch: x64, gen: Ninja,                 cxx_max: 23 },
 
           { os: macos-26,            cxx: /usr/bin/clang++, c: /usr/bin/clang, arch: x64, gen: Ninja, modules: true,  cxx_max: 23 },
           { os: ubuntu-24.04, cxx: clang++-21, c: clang-21, arch: x64, gen: Ninja, modules: true, cxx_max: 23, cxx_flags: '-stdlib=libc++', linker_flags: '-stdlib=libc++ -lc++abi' },

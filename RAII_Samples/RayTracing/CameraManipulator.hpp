@@ -27,7 +27,9 @@
 #  endif
 #endif
 
+#if !defined( VULKAN_HPP_USE_CXX_MODULE )
 #include <vulkan/vulkan.hpp>
+#endif
 
 namespace vk
 {
@@ -58,7 +60,7 @@ namespace vk
         Middle,
         Right
       };
-      enum class ModifierFlagBits : uint32_t
+      enum class ModifierFlagBits : std::uint32_t
       {
         Shift = 1,
         Ctrl  = 2,

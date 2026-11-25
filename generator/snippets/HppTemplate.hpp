@@ -64,9 +64,9 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   {};
 } // namespace VULKAN_HPP_NAMESPACE
 
-#include <vulkan/${api}_enums.hpp>
+#include "vulkan/${api}_enums.hpp"
 #if !defined( VULKAN_HPP_NO_TO_STRING )
-#include <vulkan/${api}_to_string.hpp>
+#include "vulkan/${api}_to_string.hpp"
 #endif
 
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
@@ -103,9 +103,9 @@ ${funcPointers}
  } // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off
-#include <vulkan/${api}_handles.hpp>
-#include <vulkan/${api}_structs.hpp>
-#include <vulkan/${api}_funcs.hpp>
+#include "vulkan/${api}_handles.hpp"
+#include "vulkan/${api}_structs.hpp"
+#include "vulkan/${api}_funcs.hpp"
 // clang-format on
 
 

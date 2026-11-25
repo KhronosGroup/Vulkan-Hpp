@@ -4,12 +4,18 @@
 // VulkanHpp Samples : PhysicalDeviceQueueFamilyProperties
 //                     Get queue family properties per physical device.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iomanip>
 #include <sstream>
 #include <vector>
 #include <vulkan/vulkan_to_string.hpp>
+#endif
+
 
 static char const * AppName    = "PhysicalDeviceQueueFamilyProperties";
 static char const * EngineName = "Vulkan.hpp";
@@ -19,7 +25,7 @@ int main()
   try
   {
     vk::raii::Context  context;
-    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, {}, vk::ApiVersion11 );
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
@@ -30,7 +36,7 @@ int main()
     /* VULKAN_KEY_START */
 
     std::cout << std::boolalpha;
-    for ( size_t i = 0; i < physicalDevices.size(); i++ )
+    for ( std::size_t i = 0; i < physicalDevices.size(); i++ )
     {
       // some features are only valid, if a corresponding extension is available!
       std::vector<vk::ExtensionProperties> extensionProperties = physicalDevices[i].enumerateDeviceExtensionProperties();
@@ -39,7 +45,7 @@ int main()
 
       using Chain                 = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
       auto queueFamilyProperties2 = physicalDevices[i].getQueueFamilyProperties2<Chain>();
-      for ( size_t j = 0; j < queueFamilyProperties2.size(); j++ )
+      for ( std::size_t j = 0; j < queueFamilyProperties2.size(); j++ )
       {
         std::cout << std::string( "\t" ) << "QueueFamily " << j << " :" << std::endl;
         vk::QueueFamilyProperties const & properties = queueFamilyProperties2[j].get<vk::QueueFamilyProperties2>().queueFamilyProperties;
@@ -67,17 +73,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

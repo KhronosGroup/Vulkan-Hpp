@@ -15,13 +15,20 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#include "glslang/Public/ShaderLang.h"
+
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../../samples/utils/geometries.hpp"
 #include "../../samples/utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "glslang/Public/ShaderLang.h"
-
 #include <iostream>
+#endif
+
 
 static char const * AppName    = "InitTexture";
 static char const * EngineName = "Vulkan.hpp";
@@ -39,7 +46,7 @@ int main()
 
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 50, 50 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
+    std::pair<std::uint32_t, std::uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -75,7 +82,7 @@ int main()
     vk::raii::Image     image( device, imageCreateInfo );
 
     vk::MemoryRequirements memoryRequirements = image.getMemoryRequirements();
-    uint32_t               memoryTypeIndex    = vk::su::findMemoryType(
+    std::uint32_t          memoryTypeIndex    = vk::su::findMemoryType(
       physicalDevice.getMemoryProperties(),
       memoryRequirements.memoryTypeBits,
       needsStaging ? vk::MemoryPropertyFlags() : ( vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent ) );
@@ -117,9 +124,9 @@ int main()
 
     // Checkerboard of 16x16 pixel squares
     unsigned char * pImageMemory = static_cast<unsigned char *>( data );
-    for ( uint32_t row = 0; row < surfaceData.extent.height; row++ )
+    for ( std::uint32_t row = 0; row < surfaceData.extent.height; row++ )
     {
-      for ( uint32_t col = 0; col < surfaceData.extent.width; col++ )
+      for ( std::uint32_t col = 0; col < surfaceData.extent.width; col++ )
       {
         unsigned char rgb = ( ( ( row & 0x10 ) == 0 ) ^ ( ( col & 0x10 ) == 0 ) ) * 255;
         pImageMemory[0]   = rgb;
@@ -181,17 +188,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

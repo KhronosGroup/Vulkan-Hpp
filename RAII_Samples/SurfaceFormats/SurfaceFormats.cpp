@@ -4,12 +4,18 @@
 // VulkanHpp Samples : SurfaceFormats
 //                     Get surface formats.
 
+#if defined( VULKAN_HPP_USE_CXX_MODULE )
+import RAII_utils;
+import std;
+import vulkan;
+#else
 #include "../utils/utils.hpp"
-
 #include <iomanip>
 #include <sstream>
 #include <vector>
 #include <vulkan/vulkan_to_string.hpp>
+#endif
+
 
 static char const * AppName    = "SurfaceFormats";
 static char const * EngineName = "Vulkan.hpp";
@@ -32,11 +38,11 @@ int main()
     /* VULKAN_KEY_START */
 
     std::cout << std::boolalpha;
-    for ( size_t i = 0; i < physicalDevices.size(); i++ )
+    for ( std::size_t i = 0; i < physicalDevices.size(); i++ )
     {
       std::cout << "PhysicalDevice " << i << "\n";
       std::vector<vk::SurfaceFormatKHR> surfaceFormats = physicalDevices[i].getSurfaceFormatsKHR( surfaceData.surface );
-      for ( size_t j = 0; j < surfaceFormats.size(); j++ )
+      for ( std::size_t j = 0; j < surfaceFormats.size(); j++ )
       {
         std::cout << std::string( "\t" ) << "Format " << j << "\n";
         std::cout << std::string( "\t\t" ) << "colorSpace  = " << vk::to_string( surfaceFormats[j].colorSpace ) << "\n";
@@ -50,17 +56,17 @@ int main()
   catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( std::exception & err )
   {
     std::cout << "std::exception: " << err.what() << std::endl;
-    exit( -1 );
+    std::exit( -1 );
   }
   catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit( -1 );
+    std::exit( -1 );
   }
   return 0;
 }

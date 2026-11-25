@@ -10372,6 +10372,18 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceComputeOccupancyPriorityFeaturesNV>::value,
                           "PhysicalDeviceComputeOccupancyPriorityFeaturesNV is not nothrow_move_constructible!" );
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+//=== VK_AMDX_multi_level_acceleration_structure ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX ) ==
+                            sizeof( VkPhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX>::value,
+                          "PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX is not nothrow_move_constructible!" );
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
 //=== VK_KHR_pipeline_library_group_handles ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR ) ==

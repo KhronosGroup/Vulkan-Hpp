@@ -232,7 +232,7 @@ struct Param
   std::vector<bool>        optional       = {};
   std::string              stride         = {};
   Type                     type           = {};
-  std::string              validStructs   = {};
+  std::vector<std::string> validStructs   = {};
   int                      xmlLine        = {};
 
   bool operator==( Param const & rhs ) const noexcept

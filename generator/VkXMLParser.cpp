@@ -2859,8 +2859,7 @@ Param parseParam( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "validstructs" )
     {
-      checkNoList( "vk.xml", attribute.second, line );
-      param.validStructs = attribute.second;
+      param.validStructs = tokenize( attribute.second, "," );
     }
   }
 
@@ -3104,9 +3103,11 @@ Vkxml parseRegistry( tinyxml2::XMLElement const * element, std::string const & a
                          param.xmlLine,
                          "unknown type <" + param.type.name + "> of parameter <" + param.name + "> of command <" + command.name + ">" );
           checkForError( "vk.xml",
-                         param.validStructs.empty() || containsByName( vkxml.types.structs, param.validStructs ),
+                         std::ranges::all_of( param.validStructs,
+                                              [&vkxml]( std::string const & validStruct ) { return containsByName( vkxml.types.structs, validStruct ); } ),
                          param.xmlLine,
-                         "unknown validstructs <" + param.validStructs + "> specified for parameter <" + param.name + "> of command <" + command.name + ">" );
+                         "unknown validstructs <" + concatenate( param.validStructs ) + "> specified for parameter <" + param.name + "> of command <" +
+                           command.name + ">" );
         }
       }
     }

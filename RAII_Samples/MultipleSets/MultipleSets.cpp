@@ -13,7 +13,7 @@
 #    pragma GCC diagnostic ignored "-Winit-list-lifetime"
 #  endif
 #else
-// unknow compiler... just ignore the warnings for yourselves ;)
+// unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
 #include "../../samples/utils/geometries.hpp"

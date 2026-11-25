@@ -14,7 +14,7 @@
 #  endif
 #elif defined( __GNUC__ )
 #else
-// unknow compiler... just ignore the warnings for yourselves ;)
+// unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
 // clang-format off
@@ -1047,7 +1047,7 @@ int main()
     {
       case vk::Result::eSuccess: break;
       case vk::Result::ePipelineCompileRequiredEXT:
-        // something meaningfull here
+        // something meaningful here
         break;
       default: assert( false );  // should never happen
     }

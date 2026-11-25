@@ -44,7 +44,7 @@ These are exposed as the following compiler macros, which be defined in a build 
 
 ## `VULKAN_HPP_ASSERT`
 
-At various places in `vulkan.hpp` an assertion statement is used. By default, the standard assert funtions from `<cassert>` is called. By defining `VULKAN_HPP_ASSERT` before including `vulkan.hpp`, you can change that to any function with the very same interface.
+At various places in `vulkan.hpp` an assertion statement is used. By default, the standard assert functions from `<cassert>` is called. By defining `VULKAN_HPP_ASSERT` before including `vulkan.hpp`, you can change that to any function with the very same interface.
 
 ## `VULKAN_HPP_ASSERT_ON_RESULT`
 

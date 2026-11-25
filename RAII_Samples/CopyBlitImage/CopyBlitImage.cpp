@@ -70,7 +70,7 @@ int main()
     vk::raii::su::setImageLayout(
       commandBuffer, swapChainData.images[imageIndex], swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
 
-    // in order to get a clean desctruction sequence, instantiate the DeviceMemory for the image first
+    // in order to get a clean destruction sequence, instantiate the DeviceMemory for the image first
     vk::raii::DeviceMemory deviceMemory( nullptr );
 
     // Create an image, map it, and write some values to the image

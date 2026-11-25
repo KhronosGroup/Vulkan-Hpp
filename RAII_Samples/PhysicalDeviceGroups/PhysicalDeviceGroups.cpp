@@ -46,7 +46,7 @@ int main()
         // get the QueueFamilyProperties of the first PhysicalDevice
         std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
-        // get the first index into queueFamiliyProperties which supports graphics
+        // get the first index into queueFamilyProperties which supports graphics
         auto   propertyIterator         = std::find_if( queueFamilyProperties.begin(),
                                               queueFamilyProperties.end(),
                                               []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );

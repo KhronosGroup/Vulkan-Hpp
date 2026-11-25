@@ -14,7 +14,7 @@
 #elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"
 #else
-// unknow compiler... just ignore the warnings for yourselves ;)
+// unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
 #include "../test_macros.hpp"

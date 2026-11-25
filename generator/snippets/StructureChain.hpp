@@ -342,7 +342,7 @@ private:
     }
   }
 };
-// interupt the VULKAN_HPP_NAMESPACE for a moment to add specializations of std::tuple_size and std::tuple_element for the StructureChain!
+// interrupt the VULKAN_HPP_NAMESPACE for a moment to add specializations of std::tuple_size and std::tuple_element for the StructureChain!
 }
 
 VULKAN_HPP_EXPORT namespace std

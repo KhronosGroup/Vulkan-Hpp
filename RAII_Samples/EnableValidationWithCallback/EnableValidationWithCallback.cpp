@@ -12,7 +12,7 @@
 #elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #else
-// unknow compiler... just ignore the warnings for yourselves ;)
+// unknown compiler... just ignore the warnings for yourselves ;)
 #endif
 
 #include "../utils/utils.hpp"
@@ -170,7 +170,7 @@ int main()
     vk::CommandPool cp = commandPool.release();
 
     // The commandPool is not destroyed automatically (as it's released from its handle)
-    // That is, the device is destroyed before the commmand pool and will trigger a validation error.
+    // That is, the device is destroyed before the command pool and will trigger a validation error.
     std::cout << "*** INTENTIONALLY destroying the Device before destroying a CommandPool ***\n";
     std::cout << "*** The following error message is EXPECTED ***\n";
 

@@ -42,7 +42,7 @@
 #  endif
 #endif
 
-VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 368, "Wrong VK_HEADER_VERSION!" );
+VULKAN_HPP_STATIC_ASSERT( VK_HEADER_VERSION == 369, "Wrong VK_HEADER_VERSION!" );
 
 VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
 {
@@ -11530,6 +11530,12 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto NVComputeOccupancyPrioritySpecVersion   = VK_NV_COMPUTE_OCCUPANCY_PRIORITY_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVComputeOccupancyPriorityExtensionName = VK_NV_COMPUTE_OCCUPANCY_PRIORITY_EXTENSION_NAME;
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_multi_level_acceleration_structure ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto AMDXMultiLevelAccelerationStructureSpecVersion   = VK_AMDX_MULTI_LEVEL_ACCELERATION_STRUCTURE_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto AMDXMultiLevelAccelerationStructureExtensionName = VK_AMDX_MULTI_LEVEL_ACCELERATION_STRUCTURE_EXTENSION_NAME;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_KHR_pipeline_library_group_handles ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRPipelineLibraryGroupHandlesSpecVersion   = VK_KHR_PIPELINE_LIBRARY_GROUP_HANDLES_SPEC_VERSION;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRPipelineLibraryGroupHandlesExtensionName = VK_KHR_PIPELINE_LIBRARY_GROUP_HANDLES_EXTENSION_NAME;
@@ -14040,6 +14046,11 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_compute_occupancy_priority ===
   struct ComputeOccupancyPriorityParametersNV;
   struct PhysicalDeviceComputeOccupancyPriorityFeaturesNV;
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_multi_level_acceleration_structure ===
+  struct PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_KHR_pipeline_library_group_handles ===
   struct PhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR;
@@ -25557,6 +25568,27 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_multi_level_acceleration_structure ===
+  template <>
+  struct StructExtends<PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceMultiLevelAccelerationStructureFeaturesAMDX, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_KHR_pipeline_library_group_handles ===
   template <>

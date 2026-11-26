@@ -5038,12 +5038,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         createDescriptorUpdateTemplateKHR( DescriptorUpdateTemplateCreateInfo const & createInfo,
                                            Optional<AllocationCallbacks const>        allocator = nullptr ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
 
-      // wrapper function for command vkDestroyDescriptorUpdateTemplateKHR, see
-      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyDescriptorUpdateTemplateKHR.html
-      void
-        destroyDescriptorUpdateTemplateKHR( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate VULKAN_HPP_DEFAULT_ASSIGNMENT( {} ),
-                                            Optional<AllocationCallbacks const> allocator VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ) ) const VULKAN_HPP_NOEXCEPT;
-
       //=== VK_EXT_display_control ===
 
       // wrapper function for command vkDisplayPowerControlEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDisplayPowerControlEXT.html
@@ -5326,11 +5320,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         createSamplerYcbcrConversionKHR( SamplerYcbcrConversionCreateInfo const & createInfo,
                                          Optional<AllocationCallbacks const>      allocator = nullptr ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
 
-      // wrapper function for command vkDestroySamplerYcbcrConversionKHR, see
-      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroySamplerYcbcrConversionKHR.html
-      void destroySamplerYcbcrConversionKHR( VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion ycbcrConversion VULKAN_HPP_DEFAULT_ASSIGNMENT( {} ),
-                                             Optional<AllocationCallbacks const> allocator VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ) ) const VULKAN_HPP_NOEXCEPT;
-
       //=== VK_KHR_bind_memory2 ===
 
       // wrapper function for command vkBindBufferMemory2KHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkBindBufferMemory2KHR.html
@@ -5558,11 +5547,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD typename ResultValueType<PrivateDataSlot>::type
         createPrivateDataSlotEXT( PrivateDataSlotCreateInfo const &   createInfo,
                                   Optional<AllocationCallbacks const> allocator = nullptr ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
-
-      // wrapper function for command vkDestroyPrivateDataSlotEXT, see
-      // https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyPrivateDataSlotEXT.html
-      void destroyPrivateDataSlotEXT( VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot VULKAN_HPP_DEFAULT_ASSIGNMENT( {} ),
-                                      Optional<AllocationCallbacks const> allocator VULKAN_HPP_DEFAULT_ASSIGNMENT( nullptr ) ) const VULKAN_HPP_NOEXCEPT;
 
       // wrapper function for command vkSetPrivateDataEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetPrivateDataEXT.html
       typename ResultValueType<void>::type
@@ -21433,19 +21417,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         result_, DescriptorUpdateTemplate( *this, *reinterpret_cast<VkDescriptorUpdateTemplate *>( &descriptorUpdateTemplate ), allocator ) );
     }
 
-    // wrapper function for command vkDestroyDescriptorUpdateTemplateKHR, see
-    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyDescriptorUpdateTemplateKHR.html
-    VULKAN_HPP_INLINE void Device::destroyDescriptorUpdateTemplateKHR( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
-                                                                       Optional<AllocationCallbacks const>            allocator ) const VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkDestroyDescriptorUpdateTemplateKHR &&
-                         "Function <vkDestroyDescriptorUpdateTemplateKHR> requires <VK_KHR_descriptor_update_template> or <VK_VERSION_1_1>" );
-
-      getDispatcher()->vkDestroyDescriptorUpdateTemplateKHR( static_cast<VkDevice>( m_device ),
-                                                             static_cast<VkDescriptorUpdateTemplate>( descriptorUpdateTemplate ),
-                                                             reinterpret_cast<VkAllocationCallbacks const *>( allocator.get() ) );
-    }
-
     // wrapper function for command vkUpdateDescriptorSetWithTemplateKHR, see
     // https://registry.khronos.org/vulkan/specs/latest/man/html/vkUpdateDescriptorSetWithTemplateKHR.html
     template <typename DataType>
@@ -23688,19 +23659,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
         result_, SamplerYcbcrConversion( *this, *reinterpret_cast<VkSamplerYcbcrConversion *>( &ycbcrConversion ), allocator ) );
     }
 
-    // wrapper function for command vkDestroySamplerYcbcrConversionKHR, see
-    // https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroySamplerYcbcrConversionKHR.html
-    VULKAN_HPP_INLINE void Device::destroySamplerYcbcrConversionKHR( VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion ycbcrConversion,
-                                                                     Optional<AllocationCallbacks const>          allocator ) const VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkDestroySamplerYcbcrConversionKHR &&
-                         "Function <vkDestroySamplerYcbcrConversionKHR> requires <VK_KHR_sampler_ycbcr_conversion> or <VK_VERSION_1_1>" );
-
-      getDispatcher()->vkDestroySamplerYcbcrConversionKHR( static_cast<VkDevice>( m_device ),
-                                                           static_cast<VkSamplerYcbcrConversion>( ycbcrConversion ),
-                                                           reinterpret_cast<VkAllocationCallbacks const *>( allocator.get() ) );
-    }
-
     //=== VK_KHR_bind_memory2 ===
 
     // wrapper function for command vkBindBufferMemory2KHR, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkBindBufferMemory2KHR.html
@@ -25744,18 +25702,6 @@ VULKAN_HPP_EXPORT namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::detail::resultCheck( result_, VULKAN_HPP_RAII_NAMESPACE_STRING "::Device::createPrivateDataSlotEXT" );
       return VULKAN_HPP_NAMESPACE::detail::createResultValueType(
         result_, PrivateDataSlot( *this, *reinterpret_cast<VkPrivateDataSlot *>( &privateDataSlot ), allocator ) );
-    }
-
-    // wrapper function for command vkDestroyPrivateDataSlotEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkDestroyPrivateDataSlotEXT.html
-    VULKAN_HPP_INLINE void Device::destroyPrivateDataSlotEXT( VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot,
-                                                              Optional<AllocationCallbacks const>   allocator ) const VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkDestroyPrivateDataSlotEXT &&
-                         "Function <vkDestroyPrivateDataSlotEXT> requires <VK_EXT_private_data> or <VK_VERSION_1_3>" );
-
-      getDispatcher()->vkDestroyPrivateDataSlotEXT( static_cast<VkDevice>( m_device ),
-                                                    static_cast<VkPrivateDataSlot>( privateDataSlot ),
-                                                    reinterpret_cast<VkAllocationCallbacks const *>( allocator.get() ) );
     }
 
     // wrapper function for command vkSetPrivateDataEXT, see https://registry.khronos.org/vulkan/specs/latest/man/html/vkSetPrivateDataEXT.html

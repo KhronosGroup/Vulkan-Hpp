@@ -672,11 +672,9 @@ private:
                                                    std::string const & returnType,
                                                    std::string const & returnVariable,
                                                    bool                singular ) const;
-  std::string generateRAIIHandle( std::pair<std::string, HandleData> const & handle,
-                                  std::set<std::string> &                    listedHandles,
-                                  std::set<std::string> const &              specialFunctions ) const;
+  std::string generateRAIIHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   std::string generateRAIIHandleCommand( std::string const & name, size_t initialSkipCount, bool definition ) const;
-  std::string generateRAIIHandleCommandDeclarations( std::pair<std::string, HandleData> const & handle, std::set<std::string> const & specialFunctions ) const;
+  std::string generateRAIIHandleCommandDeclarations( std::pair<std::string, HandleData> const & handle ) const;
   std::string generateRAIIHandleCommandEnhanced( std::string const &                       name,
                                                  Command const &                           command,
                                                  size_t                                    initialSkipCount,
@@ -732,8 +730,8 @@ private:
                                                                          Command const &                            constructor,
                                                                          std::string const &                        enter,
                                                                          std::string const &                        leave ) const;
-  std::string generateRAIIHandleContext( std::pair<std::string, HandleData> const & handle, std::set<std::string> const & specialFunctions ) const;
-  std::string generateRAIIHandleDestructorCallArguments( std::string const & handleType, Command const & destructor ) const;
+  std::string                         generateRAIIHandleContext( std::pair<std::string, HandleData> const & handle ) const;
+  std::string                         generateRAIIHandleDestructorCallArguments( std::string const & handleType, Command const & destructor ) const;
   std::tuple<std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string>
     generateRAIIHandleDetails( std::pair<std::string, HandleData> const & handle ) const;
   template <typename RequireType>
@@ -861,6 +859,7 @@ private:
   bool hasPointerParams( std::vector<Param> const & params ) const;
   bool isConstructorCandidate( Command const & command, std::string const & handleType ) const;
   bool isConstructorCandidate( Param const & paramData, std::string const & handleType ) const;
+  bool isDestructor( std::string const & commandName ) const;
   bool isDeviceCommand( Command const & command ) const;
   bool isEnumerated( std::string const & type ) const;
   bool isHandleType( std::string const & type ) const;
@@ -886,10 +885,7 @@ private:
                                                                                std::set<size_t> const &                  skippedParams ) const;
   DefinesPartition                                       partitionDefines( std::vector<TypeDefine> const & defines ) const;
   void                                                   registerDeleter( Command const & command );
-  void                                                   rescheduleRAIIHandle( std::string &                              str,
-                                                                               std::pair<std::string, HandleData> const & handle,
-                                                                               std::set<std::string> &                    listedHandles,
-                                                                               std::set<std::string> const &              specialFunctions ) const;
+  void rescheduleRAIIHandle( std::string & str, std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   template <typename RequireType>
   std::vector<std::string> selectCommandsByHandle( std::vector<RequireType> const & requireTypes,
                                                    std::set<std::string> const &    handleCommands,
@@ -909,7 +905,6 @@ private:
   DefinesPartition                  m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
   std::map<std::string, EnumData>   m_enums;
   std::map<std::string, HandleData> m_handles;
-  std::set<std::string>             m_RAIISpecialFunctions;
   std::string                       m_version;
   Vkxml                             m_vkxml;
 

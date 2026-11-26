@@ -359,7 +359,7 @@ void VulkanHppGenerator::distributeSecondLevelCommands()
     for ( auto command = handleIt->second.commands.begin(); command != handleIt->second.commands.end(); )
     {
       bool foundCommand = false;
-      if ( !m_RAIISpecialFunctions.contains( *command ) )
+      if ( ( handleIt->second.destructorIndex == INVALID_INDEX ) || ( m_vkxml.commands[handleIt->second.destructorIndex].name != *command ) )
       {
         auto commandIt = findByNameOrAlias( m_vkxml.commands, *command );
         assert( commandIt != m_vkxml.commands.end() );
@@ -583,10 +583,6 @@ void VulkanHppGenerator::prepareRAIIHandles()
   for ( auto handleIt = std::next( m_handles.begin() ); handleIt != m_handles.end(); ++handleIt )
   {
     handleIt->second.destructorIndex = determineRAIIHandleDestructor( handleIt->first );
-    if ( handleIt->second.destructorIndex != INVALID_INDEX )
-    {
-      m_RAIISpecialFunctions.insert( m_vkxml.commands[handleIt->second.destructorIndex].name );
-    }
     handleIt->second.constructorIndices = determineRAIIHandleConstructors( handleIt->first, handleIt->second.destructorIndex );
   }
 }
@@ -8006,14 +8002,12 @@ std::string VulkanHppGenerator::generateRAIIFactoryReturnStatements( Command con
   }
 }
 
-std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, HandleData> const & handle,
-                                                    std::set<std::string> &                    listedHandles,
-                                                    std::set<std::string> const &              specialFunctions ) const
+std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const
 {
   std::string str;
   if ( !listedHandles.contains( handle.first ) )
   {
-    rescheduleRAIIHandle( str, handle, listedHandles, specialFunctions );
+    rescheduleRAIIHandle( str, handle, listedHandles );
 
     auto [enter, leave]    = generateProtection( getProtectFromType( handle.first ) );
     std::string handleType = stripPrefix( handle.first, "Vk" );
@@ -8031,7 +8025,7 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
           swapMembers,
           releaseMembers] = generateRAIIHandleDetails( handle );
 
-    std::string declarations = generateRAIIHandleCommandDeclarations( handle, specialFunctions );
+    std::string declarations = generateRAIIHandleCommandDeclarations( handle );
 
     auto vkHandleIt = findByName( m_vkxml.types.handles, handle.first );
     assert( vkHandleIt != m_vkxml.types.handles.end() );
@@ -8248,7 +8242,7 @@ ${leave}
 std::string VulkanHppGenerator::generateRAIIHandleCommand( std::string const & name, size_t initialSkipCount, bool definition ) const
 {
   std::string str;
-  if ( !m_RAIISpecialFunctions.contains( name ) )
+  if ( !isDestructor( name ) )
   {
     auto commandIt = findByNameOrAlias( m_vkxml.commands, name );
     assert( commandIt != m_vkxml.commands.end() );
@@ -8257,8 +8251,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommand( std::string const & n
   return str;
 }
 
-std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair<std::string, HandleData> const & handle,
-                                                                       std::set<std::string> const &              specialFunctions ) const
+std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair<std::string, HandleData> const & handle ) const
 {
   std::string                     functionDeclarations;
   std::map<std::string, NameLine> listedCommands;  // some commands are listed with more than one extension !
@@ -8269,7 +8262,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair
     forEachRequiredCommand( feature.require,
                             [&]( std::string const & name, auto const & command )
                             {
-                              if ( !specialFunctions.contains( name ) )
+                              if ( !isDestructor( name ) )
                               {
                                 if ( handle.second.commands.contains( name ) )
                                 {
@@ -8318,7 +8311,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair
     {
       for ( auto const & command : req.commands )
       {
-        if ( !specialFunctions.contains( command.name ) && !listedCommands.contains( command.name ) )
+        if ( !isDestructor( command.name ) && !listedCommands.contains( command.name ) )
         {
           if ( handle.second.commands.contains( command.name ) )
           {
@@ -9361,8 +9354,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
   return {};
 }
 
-std::string VulkanHppGenerator::generateRAIIHandleContext( std::pair<std::string, HandleData> const & handle,
-                                                           std::set<std::string> const &              specialFunctions ) const
+std::string VulkanHppGenerator::generateRAIIHandleContext( std::pair<std::string, HandleData> const & handle ) const
 {
   std::string const contextTemplate = R"(
     class Context
@@ -9424,7 +9416,7 @@ ${memberFunctionDeclarations}
 
 )";
 
-  return replaceWithMap( contextTemplate, { { "memberFunctionDeclarations", generateRAIIHandleCommandDeclarations( handle, specialFunctions ) } } );
+  return replaceWithMap( contextTemplate, { { "memberFunctionDeclarations", generateRAIIHandleCommandDeclarations( handle ) } } );
 }
 
 std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::string const & handleType, Command const & destructor ) const
@@ -9774,14 +9766,14 @@ ${raiiHandles}
   std::set<std::string> listedHandles;
   auto                  handleIt = m_handles.begin();
   assert( handleIt->first.empty() );
-  std::string raiiHandles = generateRAIIHandleContext( *handleIt, m_RAIISpecialFunctions );
+  std::string raiiHandles = generateRAIIHandleContext( *handleIt );
   for ( ++handleIt; handleIt != m_handles.end(); ++handleIt )
   {
     auto vkHandleIt = findByName( m_vkxml.types.handles, handleIt->first );
     assert( vkHandleIt != m_vkxml.types.handles.end() );
     if ( isTypeUsed( handleIt->first, vkHandleIt->requiredBy ) )
     {
-      raiiHandles += generateRAIIHandle( *handleIt, listedHandles, m_RAIISpecialFunctions );
+      raiiHandles += generateRAIIHandle( *handleIt, listedHandles );
     }
   }
   return replaceWithMap( raiiHandlesTemplate, { { "forwardDeclarations", forwardDeclarations }, { "raiiHandles", raiiHandles } } );
@@ -13021,6 +13013,49 @@ bool VulkanHppGenerator::hasPointerParams( std::vector<Param> const & params ) c
   return std::ranges::any_of( params, []( auto const & pd ) { return pd.type.isPointer() || !pd.arraySizes.empty(); } );
 }
 
+bool VulkanHppGenerator::isDestructor( std::string const & commandName ) const
+{
+  if ( commandName.starts_with( "vkDestroy" ) )
+  {
+#if !defined( NDEBUG )
+    std::string handleName = "Vk" + commandName.substr( 9 );
+    assert( containsByNameOrAlias( m_vkxml.types.handles, handleName ) );
+#endif
+    return true;
+  }
+  else if ( commandName.starts_with( "vkFree" ) )
+  {
+#if !defined( NDEBUG )
+    if ( commandName != "vkFreeMemory" )
+    {
+      std::string handleName = "Vk" + commandName.substr( 6 );
+      assert( containsByName( m_vkxml.types.handles, handleName ) ||
+              ( handleName.ends_with( "s" ) && containsByName( m_vkxml.types.handles, stripPostfix( handleName, "s" ) ) ) );
+    }
+#endif
+    return true;
+  }
+  else if ( commandName.starts_with( "vkRelease" ) )
+  {
+    if ( ( commandName == "vkReleaseDisplayEXT" ) || ( commandName == "vkReleasePerformanceConfigurationINTEL" ) )
+    {
+      return true;
+    }
+    else
+    {
+#if !defined( NDEBUG )
+      static const std::set<std::string> nonDestructorReleaseCommands = { "vkReleaseCapturedPipelineDataKHR",
+                                                                          "vkReleaseFullScreenExclusiveModeEXT",
+                                                                          "vkReleaseProfilingLockKHR",
+                                                                          "vkReleaseSwapchainImagesEXT",
+                                                                          "vkReleaseSwapchainImagesKHR" };
+      assert( nonDestructorReleaseCommands.contains( commandName ) );
+#endif
+    }
+  }
+  return false;
+}
+
 bool VulkanHppGenerator::isDeviceCommand( Command const & command ) const
 {
   return !command.params.empty() && isHandleType( command.params[0].type.name ) && ( command.params[0].type.name != "VkInstance" ) &&
@@ -13434,10 +13469,8 @@ void VulkanHppGenerator::registerDeleter( Command const & command )
   }
 }
 
-void VulkanHppGenerator::rescheduleRAIIHandle( std::string &                              str,
-                                               std::pair<std::string, HandleData> const & handle,
-                                               std::set<std::string> &                    listedHandles,
-                                               std::set<std::string> const &              specialFunctions ) const
+void
+  VulkanHppGenerator::rescheduleRAIIHandle( std::string & str, std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const
 {
   auto vkHandleIt = findByName( m_vkxml.types.handles, handle.first );
   assert( vkHandleIt != m_vkxml.types.handles.end() );
@@ -13447,7 +13480,7 @@ void VulkanHppGenerator::rescheduleRAIIHandle( std::string &                    
   {
     auto parentIt = m_handles.find( vkHandleIt->parent );
     assert( parentIt != m_handles.end() );
-    str += generateRAIIHandle( *parentIt, listedHandles, specialFunctions );
+    str += generateRAIIHandle( *parentIt, listedHandles );
   }
 
   for ( auto constructorIndex : handle.second.constructorIndices )
@@ -13457,7 +13490,7 @@ void VulkanHppGenerator::rescheduleRAIIHandle( std::string &                    
       auto handleIt = m_handles.find( param.type.name );
       if ( handleIt != m_handles.end() && !listedHandles.contains( param.type.name ) )
       {
-        str += generateRAIIHandle( *handleIt, listedHandles, specialFunctions );
+        str += generateRAIIHandle( *handleIt, listedHandles );
       }
     }
   }

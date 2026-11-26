@@ -2988,6 +2988,106 @@ int main()
     commandBuffer.endRendering();
   }
 
+  // Promoted from VK_EXT_extended_dynamic_state
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::CullModeFlags cullMode = {};
+    commandBuffer.setCullMode( cullMode );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::FrontFace     frontFace = {};
+    commandBuffer.setFrontFace( frontFace );
+  }
+
+  {
+    vk::CommandBuffer     commandBuffer;
+    vk::PrimitiveTopology primitiveTopology = {};
+    commandBuffer.setPrimitiveTopology( primitiveTopology );
+  }
+
+  {
+    vk::CommandBuffer         commandBuffer;
+    std::vector<vk::Viewport> viewports;
+    commandBuffer.setViewportWithCount( static_cast<uint32_t>( viewports.size() ), viewports.data() );
+  }
+  {
+    vk::CommandBuffer         commandBuffer;
+    std::vector<vk::Viewport> viewports;
+    commandBuffer.setViewportWithCount( viewports );
+  }
+
+  {
+    vk::CommandBuffer       commandBuffer;
+    std::vector<vk::Rect2D> scissors;
+    commandBuffer.setScissorWithCount( static_cast<uint32_t>( scissors.size() ), scissors.data() );
+  }
+  {
+    vk::CommandBuffer       commandBuffer;
+    std::vector<vk::Rect2D> scissors;
+    commandBuffer.setScissorWithCount( scissors );
+  }
+
+  {
+    vk::CommandBuffer           commandBuffer;
+    uint32_t                    firstBinding = 0;
+    std::vector<vk::Buffer>     buffers;
+    std::vector<vk::DeviceSize> offsets;
+    std::vector<vk::DeviceSize> sizes;
+    std::vector<vk::DeviceSize> strides;
+    commandBuffer.bindVertexBuffers2( firstBinding, static_cast<uint32_t>( buffers.size() ), buffers.data(), offsets.data(), sizes.data(), strides.data() );
+  }
+  {
+    vk::CommandBuffer           commandBuffer;
+    uint32_t                    firstBinding = 0;
+    std::vector<vk::Buffer>     buffers;
+    std::vector<vk::DeviceSize> offsets;
+    std::vector<vk::DeviceSize> sizes;
+    std::vector<vk::DeviceSize> strides;
+    commandBuffer.bindVertexBuffers2( firstBinding, buffers, offsets, sizes, strides );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::Bool32        depthTestEnable = {};
+    commandBuffer.setDepthTestEnable( depthTestEnable );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::Bool32        depthWriteEnable = {};
+    commandBuffer.setDepthWriteEnable( depthWriteEnable );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    vk::CompareOp     depthCompareOp = {};
+    commandBuffer.setDepthCompareOp( depthCompareOp );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    bool              depthBoundsTestEnable = {};
+    commandBuffer.setDepthBoundsTestEnable( depthBoundsTestEnable );
+  }
+
+  {
+    vk::CommandBuffer commandBuffer;
+    bool              stencilTestEnable = {};
+    commandBuffer.setStencilTestEnable( stencilTestEnable );
+  }
+
+  {
+    vk::CommandBuffer    commandBuffer;
+    vk::StencilFaceFlags faceMask    = {};
+    vk::StencilOp        failOp      = {};
+    vk::StencilOp        passOp      = {};
+    vk::StencilOp        depthFailOp = {};
+    vk::CompareOp        compareOp   = {};
+    commandBuffer.setStencilOp( faceMask, failOp, passOp, depthFailOp, compareOp );
+  }
+
 #if 0
   {
     vk::PhysicalDevice physicalDevice;

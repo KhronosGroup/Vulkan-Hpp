@@ -1548,5 +1548,86 @@ int main()
     commandBuffer.endRendering();
   }
 
+  // Promoted from VK_EXT_extended_dynamic_state
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::CullModeFlags       cullMode      = {};
+    commandBuffer.setCullMode( cullMode );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::FrontFace           frontFace     = {};
+    commandBuffer.setFrontFace( frontFace );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer     = nullptr;
+    vk::PrimitiveTopology   primitiveTopology = {};
+    commandBuffer.setPrimitiveTopology( primitiveTopology );
+  }
+
+  {
+    vk::raii::CommandBuffer   commandBuffer = nullptr;
+    std::vector<vk::Viewport> viewports;
+    commandBuffer.setViewportWithCount( viewports );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    std::vector<vk::Rect2D> scissors;
+    commandBuffer.setScissorWithCount( scissors );
+  }
+
+  {
+    vk::raii::CommandBuffer     commandBuffer = nullptr;
+    uint32_t                    firstBinding  = 0;
+    std::vector<vk::Buffer>     buffers;
+    std::vector<vk::DeviceSize> offsets;
+    std::vector<vk::DeviceSize> sizes;
+    std::vector<vk::DeviceSize> strides;
+    commandBuffer.bindVertexBuffers2( firstBinding, buffers, offsets, sizes, strides );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer   = nullptr;
+    vk::Bool32              depthTestEnable = {};
+    commandBuffer.setDepthTestEnable( depthTestEnable );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer    = nullptr;
+    vk::Bool32              depthWriteEnable = {};
+    commandBuffer.setDepthWriteEnable( depthWriteEnable );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer  = nullptr;
+    vk::CompareOp           depthCompareOp = {};
+    commandBuffer.setDepthCompareOp( depthCompareOp );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer         = nullptr;
+    bool                    depthBoundsTestEnable = {};
+    commandBuffer.setDepthBoundsTestEnable( depthBoundsTestEnable );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer     = nullptr;
+    bool                    stencilTestEnable = {};
+    commandBuffer.setStencilTestEnable( stencilTestEnable );
+  }
+
+  {
+    vk::raii::CommandBuffer commandBuffer = nullptr;
+    vk::StencilFaceFlags    faceMask      = {};
+    vk::StencilOp           failOp        = {};
+    vk::StencilOp           passOp        = {};
+    vk::StencilOp           depthFailOp   = {};
+    vk::CompareOp           compareOp     = {};
+    commandBuffer.setStencilOp( faceMask, failOp, passOp, depthFailOp, compareOp );
+  }
+
   return 0;
 }

@@ -115,7 +115,7 @@ Tags                          parseTags( tinyxml2::XMLElement const * element );
 std::string                   parseText( tinyxml2::XMLElement const * element );
 Type                          parseType( tinyxml2::XMLElement const * element );
 TypeBaseType                  parseTypeBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-BitmaskVariant                parseTypeBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+BitmaskVariant                parseTypeBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & api );
 TypeDefine                    parseTypeDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 EnumVariant                   parseTypeEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
 TypeFuncPointer               parseTypeFuncPointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
@@ -4957,7 +4957,7 @@ TypeBaseType parseTypeBaseType( tinyxml2::XMLElement const * element, std::map<s
   return baseType;
 }
 
-BitmaskVariant parseTypeBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
+BitmaskVariant parseTypeBitmask( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes, std::string const & api )
 {
   if ( attributes.contains( "alias" ) )
   {
@@ -4967,7 +4967,7 @@ BitmaskVariant parseTypeBitmask( tinyxml2::XMLElement const * element, std::map<
   {
     int const line = element->GetLineNum();
 
-    TypeBitmask bitmask{ .api = { "vulkan" }, .xmlLine = line };  // default is vulkan, if api attribute is not specified
+    TypeBitmask bitmask{ .api = { api }, .xmlLine = line };  // default api provided by command line, if api attribute is not specified
 
     // parse name and type first, to have them available for error checking of the attributes
     Type type;
@@ -5454,7 +5454,8 @@ std::pair<Types, std::set<std::string>> parseTypes( tinyxml2::XMLElement const *
           assert( std::holds_alternative<TypeBitmask>( bitmaskVariant ) );
           auto const & bitmask = std::get<TypeBitmask>( bitmaskVariant );
 
-          if ( std::ranges::any_of( bitmask.api, [&api]( auto const & a ) { return a == api; } ) )
+          assert( !bitmask.api.empty() );
+          if ( bitmask.api.empty() || std::ranges::any_of( bitmask.api, [&api]( auto const & a ) { return a == api; } ) )
           {
             checkForError( "vk.xml", typeNames.insert( bitmask.name ).second, bitmask.xmlLine, "bitmask <" + bitmask.name + "> already specified as a type" );
             checkForError( "vk.xml", !containsByName( types.bitmasks, bitmask.name ), bitmask.xmlLine, "bitmask <" + bitmask.name + "> already specified" );
@@ -5803,7 +5804,7 @@ TypeVariant parseTypesType( tinyxml2::XMLElement const * element, std::string co
     }
     else if ( categoryIt->second == "bitmask" )
     {
-      return parseTypeBitmask( element, attributes );
+      return parseTypeBitmask( element, attributes, api );
     }
     else if ( categoryIt->second == "define" )
     {

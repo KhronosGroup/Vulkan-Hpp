@@ -231,7 +231,7 @@ private:
   void checkRequireTypesCorrectness( RequireType const & requireType ) const;
   void checkStructCorrectness() const;
   void checkStructMemberArraySizesAreValid( std::vector<std::string> const & arraySizes, int line ) const;
-  void checkStructMemberCorrectness( std::string const & structureName, std::vector<StructMember> const & members, std::set<std::string> & sTypeValues ) const;
+  void checkStructMemberCorrectness( TypeStruct const & structure, std::set<std::string> & sTypeValues ) const;
   void checkStructMemberSelectorConnection( std::string const & selector, std::vector<StructMember> const & members, std::string const & memberType ) const;
   void checkStructMemberTypeIsKnown( std::string const & memberType, int line ) const;
   void checkStructMemberTypeIsRequired( std::string const & memberType, int line, std::string const & structureName ) const;
@@ -270,12 +270,9 @@ private:
                                                    std::vector<size_t> const &               returnParam,
                                                    bool                                      singular ) const;
   TypeStruct const *       determineSubStruct( TypeStruct const & vkStruct ) const;
-  std::map<size_t, VectorParamData> determineVectorParams( std::vector<Param> const & params ) const;
-  std::set<size_t>                  determineVoidPointerParams( std::vector<Param> const & params ) const;
-  void                              distributeEnumValueAliases();
-  void                              distributeRequirements();
-  template <typename RequireType>
-  void                                      distributeRequirements( std::vector<RequireType> const & requireTypes, std::string const & requiredBy );
+  std::map<size_t, VectorParamData>         determineVectorParams( std::vector<Param> const & params ) const;
+  std::set<size_t>                          determineVoidPointerParams( std::vector<Param> const & params ) const;
+  void                                      distributeEnumValueAliases();
   bool                                      encodesEnumeration( std::vector<Param> const &                params,
                                                                 std::map<size_t, VectorParamData> const & vectorParams,
                                                                 size_t                                    returnParam0,
@@ -877,8 +874,7 @@ private:
   bool isStructureChainAnchor( std::string const & type ) const;
   bool isStructureType( std::string const & type ) const;
   bool isSupported( std::set<std::string> const & requiredBy ) const;
-  bool isTypeRequired( std::string const & type ) const;
-  bool isTypeUsed( std::string const & type ) const;
+  bool isTypeUsed( std::string const & type, std::set<std::string> const & requiredBy ) const;
   bool isVectorByStructure( std::string const & type ) const;
   void mergeInternalFeatures();
   void mergeInternalFeatures( std::vector<std::string> const & depends, Feature & feature, std::map<std::string, Feature> & internalFeatures );
@@ -914,7 +910,6 @@ private:
   std::map<std::string, EnumData>   m_enums;
   std::map<std::string, HandleData> m_handles;
   std::set<std::string>             m_RAIISpecialFunctions;
-  std::map<std::string, TypeData>   m_types;
   std::string                       m_version;
   Vkxml                             m_vkxml;
 

@@ -804,8 +804,7 @@ The named module has been tested with the following toolchains:
 - MSVC 19.44 or later
 - Clang 19.0 or later
 - GCC 15.1 or later
-- CMake version 4.2.1 or later
-+ CMake version 4.5.0 or later
+- CMake version 4.5.0 or later
 
 >[!NOTE]
 > Other toolchain versions and platforms may work, but have not been tested.

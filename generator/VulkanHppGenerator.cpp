@@ -13723,7 +13723,7 @@ namespace
   {
     return containsByName( types.baseTypes, type ) || containsByNameOrAlias( types.bitmasks, type ) || containsByNameOrAlias( types.enums, type ) ||
            containsByName( types.externals, type ) || containsByName( types.funcPointers, type ) || containsByNameOrAlias( types.handles, type ) ||
-           containsByNameOrAlias( types.structs, type ) || containsByName( types.unions, type );
+           containsByNameOrAlias( types.structs, type ) || containsByNameOrAlias( types.unions, type );
   }
 
   void replace( std::set<std::string> & values, std::string const & oldValue, std::string const & newValue )
